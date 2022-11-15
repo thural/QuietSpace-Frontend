@@ -6,11 +6,22 @@ const passport = require("passport")
 
 exports.login_post = passport.authenticate("local", {
   successRedirect: "/",
-  failureRedirect: "/log-in" 
+  failureRedirect: "/log-in"
 })
 
+exports.logout_get = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) return next(err);
+    res.redirect("/");
+  });
+}
+
+exports.user_get = (req, res) => {
+  res.json({ user: req.user })
+}
+
 exports.create_post = [
-  
+
   body("username", "username required")
     .trim()
     .isLength({ min: 3, max: 12 })

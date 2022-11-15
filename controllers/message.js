@@ -1,9 +1,9 @@
+const Filter = require('bad-words')
 const customFilter = new Filter({ placeHolder: '*' })
 const dirty_words = require("../dirty_words")
 const Message = require("../models/message")
 const User = require("../models/user")
 customFilter.addWords(...dirty_words)
-const Filter = require('bad-words')
 
 const checkInput = (value, { req }) => {
   if (customFilter.isProfane(value)) return false;
@@ -18,12 +18,12 @@ const checkInput = (value, { req }) => {
 const { body, validationResult } = require("express-validator")
 const { validateMessage, saveMessage } = require("../middleware/message")
 
-exports.board = (req, res, next) => {
+exports.list = (req, res, next) => {
   Message.find()
     .sort([["date", "descending"]])
     .exec((err, messages) => {
       if (err) return next(err)
-      if (req.user) { 
+      if (req.user) {
         const postIndex = messages.findIndex(elem => elem.username === req.user.username)
         if (postIndex !== -1) {
           const userPost = messages[postIndex]
@@ -33,6 +33,13 @@ exports.board = (req, res, next) => {
       }
       res.json({ messages })
     })
+}
+
+exports.item = async (req, res, next) => {
+  try {
+    const message = await Message.findOne({ id: req.param.id })
+    res.json({ message })
+  } catch (err) { return next(err) }
 }
 
 exports.create_post = [
@@ -50,9 +57,9 @@ exports.edit_post = [
   async (req, res, next) => {
     const errors = validationResult(req)
     try {
-      const message = await Message.findOne({ "username": req.user.username })
-      message.message = req.body.message;
-      if (!errors.isEmpty()) return res.json({ errors: errors.array() })  
+      const message = await Message.findOne({ "_id": req.params.id })
+      message.message = req.body.message
+      if (!errors.isEmpty()) return res.json({ errors: errors.array() })
       message.save((err) => {
         if (err) return next(err)
         res.redirect('/')
@@ -62,28 +69,28 @@ exports.edit_post = [
 ]
 
 exports.delete_post = (req, res, next) => {
-  if (req.params.id === "") return res.status(204).send() 
+  if (req.params.id === "") return res.status(204).send()
   Message.deleteOne({ _id: req.params.id })
     .exec((err, message) => {
       if (err) return next(err)
-      res.status(204).send() 
+      res.status(204).send()
     })
 }
 
 exports.like_post = async (req, res, next) => {
-  if (req.params.id === "") return res.status(204).send() 
+  if (req.params.id === "") return res.status(204).send()
   try {
     await Message.updateOne({ _id: req.params.id }, { "$push": { likes: req.user._id } })
     await User.updateOne({ _id: req.user._id }, { "$push": { likes: req.params.id } })
-    res.status(204).send() 
+    res.status(204).send()
   } catch (err) { return next(err) }
 }
 
 exports.unlike_post = async (req, res, next) => {
-  if (req.params.id === "") return res.status(204).send() 
+  if (req.params.id === "") return res.status(204).send()
   try {
     await Message.updateOne({ _id: req.params.id }, { "$pull": { likes: req.user._id } })
     await User.updateOne({ _id: req.user._id }, { "$pull": { likes: req.params.id } })
-    res.status(204).send() 
+    res.status(204).send()
   } catch (err) { return next(err) }
 }

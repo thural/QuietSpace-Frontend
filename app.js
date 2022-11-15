@@ -9,6 +9,10 @@ const bcrypt = require("bcryptjs")
 const dotenv = require('dotenv')
 dotenv.config()
 
+
+const usersRouter = require('./routes/user')
+const messagesRouter = require('./routes/message')
+
 const mongoose = require('mongoose')
 const mongoDB = process.env.MONGODB_URI || process.env.DEV_DB_URL
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -41,7 +45,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(logger('dev'))
 
-app.use('/', indexRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/messages', messagesRouter)
 
