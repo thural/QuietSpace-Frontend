@@ -23,40 +23,52 @@ const useStyles = createUseStyles(
   }
 );
 
-// function postReducer(state, { id, type, item, count }) {
-//   const matchesID = (element) => element.id === id;
-//   const hasInCart = state.findIndex(matchesID) !== -1;
-//   switch (type) {
-//     case 'increment':
-//       if (hasInCart) return state.map(product => {
-//         if (product.id == id) return { ...product, count: product.count + 1 }
-//         return product
-//       })
-//       else return [...state, { ...item, count: 1 }];
-//     case 'decrement':
-//       if (hasInCart && count > 1) return state.map(product => {
-//         if (product.id == id) return { ...product, count: product.count - 1 }
-//         return product
-//       });
-//       return state.filter(product => product.id !== id);
-//     case 'remove':
-//       return state.filter(product => product.id !== id);
-//     default: return state
-//   }
-// };
+function postReducer(state, { posts, user, _id, type }) {
+  switch (type) {
+    case 'like':
+      return state.map(post => {
+        if (post['_id'] == _id) {
+          if (post.likes.includes(user['id'])) return post
+          const postLikes = [...post.likes, user['_id']]
+          return { ...post, likes: postLikes }
+        }
+        return post
+      });
+    case 'unlike':
+      return state.map(post => {
+        if (post['_id'] == _id) {
+          const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
+          return { ...post, likes: reducedLikes }
+        }
+        return post
+      })
+    case 'delete':
+      return state.filter(post => post['_id'] !== _id);
+    case 'load':
+      return posts
+    default: return state
+  }
+};
 
 const App = () => {
   const fetchPosts = async () => {
     const data = await fetch('http://localhost:5000/api/messages');
     const items = await data.json();
-    setPosts(items.messages);
+    setPosts({posts:items.messages, type:'load'});
+  };
+
+  const fetchUser = async () => {
+    const data = await fetch('http://localhost:5000/api/users/user');
+    const item = await data.json();
+    setUser(item);
   };
 
   //const [post, setPost] = useReducer(postReducer, []);
 
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useReducer(postReducer, []);
+  const [user, setUser] = useState([]);
 
-  useEffect(() => { fetchPosts() }, []);
+  useEffect(() => { fetchPosts(), fetchUser() }, []);
 
   console.log(posts)//log
 
@@ -64,7 +76,7 @@ const App = () => {
 
   return (
     <div className={classes.app}>
-      <PostsContext.Provider value={posts}>
+      <PostsContext.Provider value={{posts, user}}>
         <HandlerContext.Provider value={setPosts}>
           <NavBar />
           <Routes>

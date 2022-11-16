@@ -15,7 +15,7 @@ const useStyles = createUseStyles({
 });
 
 const CardBoard = () => {
-  const cards = useContext(PostsContext);
+  const {posts:cards} = useContext(PostsContext);
   const classes = useStyles();
 
   return (

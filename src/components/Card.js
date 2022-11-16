@@ -1,6 +1,7 @@
 import React, { useContext } from "react"
 import { createUseStyles } from "react-jss"
 import HandlerContext from "./HandlersContext"
+import PostsContext from "./PostsContext"
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -38,11 +39,13 @@ const useStyles = createUseStyles({
 })
 
 const Card = ({ card }) => {
+  const {user} = useContext(PostsContext);
   const handleCard = useContext(HandlerContext);
   const classes = useStyles();
-  const { id, username, message, likes } = card;
+  const { _id, username, message, likes } = card;
+  const liked = card.likes.includes(user['_id']) ? 'unlike' : 'like';
   return (
-    <div id={id} className={classes.wrapper}>
+    <div id={_id} className={classes.wrapper}>
       <div className="author">
         {username}
       </div>
@@ -51,9 +54,9 @@ const Card = ({ card }) => {
       </div>
       <div className="buttons">
         <p>{likes.length}</p>
-        <button onClick={() => handleCard({ id, type: 'like', item: card })}>like</button>
-        <button onClick={() => handleCard({ id, type: 'edit', item: card })}>edit</button>
-        <button onClick={() => handleCard({ id, type: 'delete', item: card })}>delete</button>
+        <button onClick={() => handleCard({ _id, user, type: liked })}>{liked}</button>
+        {/*<button onClick={() => handleCard({ _id, user, type: 'unlike' })}>unlike</button>*/}
+        <button onClick={() => handleCard({ _id, user, type: 'delete' })}>delete</button>
       </div>
     </div>
   )
