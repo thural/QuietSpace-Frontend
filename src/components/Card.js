@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
-import { createUseStyles } from "react-jss";
-import HandlerContext from "./Handlers"
+import React, { useContext } from "react"
+import { createUseStyles } from "react-jss"
+import HandlerContext from "./HandlersContext"
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -10,40 +10,23 @@ const useStyles = createUseStyles({
     borderRadius: '1rem',
     justifyItems: 'center',
     backgroundColor: 'white',
-    gridTemplateRows: '3fr 1.5rem 3rem',
     boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
-    '& img': {
-      margin: 'auto',
-      maxWidth: 'inherit',
-      maxHeight: 'inherit',
-    },
-    '& .image': {
-      display: 'flex',
-      maxWidth: '12rem',
-      minWidth: '8rem',
-      maxHeight: '12rem',
-      minHeight: '8rem',
-      marginBottom: '1rem'
-    },
-    '& .title': {
+    '& .author': {
       width: '100%',
-      margin: '0px',
-      borderTop: '1px solid black',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: '-webkit-box',
-      WebkitLineClamp: '2',
-      lineClamp: '2',
-      WebkitBoxOrient: 'vertical'
+      fontSize: '1.2rem',
+      fontWeight: '500'
     },
-    '& h3': {
-      textAlign: 'center',
+    '& .message':{
       fontSize: '1rem',
+      fontStyle: 'italic',
+      padding: 0,
       margin: '0px'
     },
-    '& p': {
-      display: 'inline-block',
-      marginRight: '1rem'
+    '& .buttons': {
+      display: 'flex',
+      flexFlow: 'row nowrap',
+      alignItems: 'center',
+      gap: '4px'
     },
     '& button': {
       color: 'white',
@@ -52,21 +35,25 @@ const useStyles = createUseStyles({
       padding: '0.2rem 0.6rem'
     }
   },
-});
+})
 
 const Card = ({ card }) => {
-  const handleCart = useContext(HandlerContext);
+  const handleCard = useContext(HandlerContext);
   const classes = useStyles();
-  const { id, title, price, image } = card;
+  const { id, username, message, likes } = card;
   return (
     <div id={id} className={classes.wrapper}>
-      <div className="image"><img src={image}></img></div>
-      <div className="title"><h3>{title}</h3></div>
-      <div className="add">
-        <p>${price}</p>
-        <button onClick={() => handleCart({ id, type: 'increment', item: card })}>
-          add to cart
-        </button>
+      <div className="author">
+        {username}
+      </div>
+      <div className="message">
+        <p>{message}</p>
+      </div>
+      <div className="buttons">
+        <p>{likes.length}</p>
+        <button onClick={() => handleCard({ id, type: 'like', item: card })}>like</button>
+        <button onClick={() => handleCard({ id, type: 'edit', item: card })}>edit</button>
+        <button onClick={() => handleCard({ id, type: 'delete', item: card })}>delete</button>
       </div>
     </div>
   )

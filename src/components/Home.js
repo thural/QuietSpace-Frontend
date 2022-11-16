@@ -37,9 +37,9 @@ const Home = () => {
   return (
     <div className={classes.wrapper}>
       <div className="home-text">
-        <h3>"Best fake store of the galaxy"</h3>
-        <h1>We don't do fashion, we are fashion</h1>
-        <Link to="/products"><button>Shop now</button></Link>
+        <h3>"Contribute to society by speaking your truth"</h3>
+        <h1>Free speech is the foundation of a healthy society</h1>
+        <Link to="/posts"><button>Post now</button></Link>
       </div>
       <div className="home-image"></div>
     </div>

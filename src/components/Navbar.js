@@ -55,18 +55,18 @@ const NavBar = ({ children }) => {
 
   return (
     <div className={classes.navbar}>
-      <h1>FakeStore</h1>
+      <h1>Message Board</h1>
       <nav>
         <ul>
           <Link to="/"><li>Home</li></Link>
-          <Link to="/products"><li>Products</li></Link>
+          <Link to="/posts"><li>Posts</li></Link>
           <Link to="/contact"><li>Contact</li></Link>
         </ul>
         {children}
       </nav>
 
     </div>
-  );
+  )
 };
 
 export default NavBar;

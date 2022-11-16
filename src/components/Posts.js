@@ -8,7 +8,7 @@ const useStyle = createUseStyles({
     padding: '10vh 10vw',
   }
 })
-const Products = () => {
+const Posts = () => {
 
   const classes = useStyle();
 
@@ -16,7 +16,7 @@ const Products = () => {
     <div className={classes.products}>
       <CardBoard />
     </div>
-  );
+  )
 };
 
-export default Products;
+export default Posts;

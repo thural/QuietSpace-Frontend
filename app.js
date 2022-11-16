@@ -7,6 +7,7 @@ const User = require("./models/user")
 const LocalStrategy = require("passport-local").Strategy
 const bcrypt = require("bcryptjs")
 const dotenv = require('dotenv')
+const cors = require('cors')
 dotenv.config()
 
 
@@ -19,7 +20,13 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
 db.on("error", console.error.bind(console, "MongoDB connection error:"))
 
+const corsOptions = {
+  origin: 'http://localhost:8080',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 const app = express()
+app.use(cors(corsOptions))
 
 passport.use(
   new LocalStrategy((username, password, done) => {

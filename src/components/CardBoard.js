@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import { createUseStyles } from "react-jss";
-import StoreContext from "./Store";
+import PostsContext from "./PostsContext";
 import Card from "./Card";
 
 const useStyles = createUseStyles({
@@ -15,13 +15,13 @@ const useStyles = createUseStyles({
 });
 
 const CardBoard = () => {
-  const cards = useContext(StoreContext);
+  const cards = useContext(PostsContext);
   const classes = useStyles();
 
   return (
     <div className={classes.cardboard}>
       {
-        cards.map((card) => (<Card key={card.id} card={card} />))
+        cards.map((card) => (<Card key={card._id} card={card} />))
       }
     </div>
   )

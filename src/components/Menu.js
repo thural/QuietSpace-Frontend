@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { createUseStyles } from "react-jss";
 import cartImg from '../assets/cart.svg';
-import HandlerContext from "./Handlers";
+import HandlerContext from "./HandlersContext";
 
 const useStyles = createUseStyles(
   {
@@ -147,7 +147,7 @@ const useStyles = createUseStyles(
   }
 );
 
-const Cart = ({ cart: items}) => {
+const Cart = ({ menu: items}) => {
   const handleCart = useContext(HandlerContext)
   const classes = useStyles();
 
