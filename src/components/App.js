@@ -8,7 +8,6 @@ import PostsContext from "./PostsContext"
 import Contact from "./Contact"
 import NavBar from "./Navbar"
 import Home from "./Home"
-//import Menu from "./Menu"
 
 const useStyles = createUseStyles(
   {
@@ -22,6 +21,33 @@ const useStyles = createUseStyles(
     }
   }
 );
+
+function userReducer(state, { user, type }) {
+  switch (type) {
+    case 'login':
+      return state.map(post => {
+        if (post['_id'] == _id) {
+          if (post.likes.includes(user['id'])) return post
+          const postLikes = [...post.likes, user['_id']]
+          return { ...post, likes: postLikes }
+        }
+        return post
+      });
+    case 'logout':
+      return state.map(post => {
+        if (post['_id'] == _id) {
+          const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
+          return { ...post, likes: reducedLikes }
+        }
+        return post
+      })
+    case 'signup':
+      return state.filter(post => post['_id'] !== _id);
+    case 'load':
+      return posts
+    default: return state
+  }
+};
 
 function postReducer(state, { posts, user, _id, type }) {
   switch (type) {
@@ -70,7 +96,7 @@ const App = () => {
 
   useEffect(() => { fetchPosts(), fetchUser() }, []);
 
-  console.log(posts)//log
+  console.log("CURRENT USER: ", user.username)//log
 
   const classes = useStyles();
 

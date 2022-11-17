@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { createUseStyles } from "react-jss";
+import PostsContext from "./PostsContext";
+import SignupForm from "./SignupForm";
+import Overlay from "./Overlay";
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -33,16 +36,21 @@ const useStyles = createUseStyles({
 })
 
 const Home = () => {
+  const { user } = useContext(PostsContext);
   const classes = useStyles();
   return (
-    <div className={classes.wrapper}>
-      <div className="home-text">
-        <h3>"Contribute to society by speaking your truth"</h3>
-        <h1>Free speech is the foundation of a healthy society</h1>
-        <Link to="/posts"><button>Post now</button></Link>
+    <>
+      <div className={classes.wrapper}>
+        <div className="home-text">
+          <h3>"Contribute to society by speaking your truth"</h3>
+          <h1>Free speech is the foundation of a healthy society</h1>
+          {
+            user.username ? <Link to="/posts"><button>Post now</button></Link> :
+              <button>Login to post</button>
+          }
+        </div>
       </div>
-      <div className="home-image"></div>
-    </div>
+    </>
   );
 };
 

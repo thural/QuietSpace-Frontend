@@ -3,7 +3,7 @@ const router = express.Router()
 
 const message = require("../controllers/message")
 
-router.route("/").get(message.list)
+router.route("/").get(message.list).post(message.create_post)
 router.route("/:id").get(message.item)
 router.route("/edit/:id").post(message.edit_post)
 router.route('/delete/:id').post(message.delete_post)

@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
       fontSize: '1.2rem',
       fontWeight: '500'
     },
-    '& .message':{
+    '& .message': {
       fontSize: '1rem',
       fontStyle: 'italic',
       padding: 0,
@@ -39,7 +39,7 @@ const useStyles = createUseStyles({
 })
 
 const Card = ({ card }) => {
-  const {user} = useContext(PostsContext);
+  const { user } = useContext(PostsContext);
   const handleCard = useContext(HandlerContext);
   const classes = useStyles();
   const { _id, username, message, likes } = card;
@@ -52,12 +52,18 @@ const Card = ({ card }) => {
       <div className="message">
         <p>{message}</p>
       </div>
-      <div className="buttons">
-        <p>{likes.length}</p>
-        <button onClick={() => handleCard({ _id, user, type: liked })}>{liked}</button>
-        {/*<button onClick={() => handleCard({ _id, user, type: 'unlike' })}>unlike</button>*/}
-        <button onClick={() => handleCard({ _id, user, type: 'delete' })}>delete</button>
-      </div>
+      {user &&
+        <div className="buttons">
+          <p>{likes.length}</p>
+          <button onClick={() => handleCard({ _id, user, type: liked })}>{liked}</button>
+          {card.username == user.username &&
+            <button onClick={() => handleCard({ _id, user, type: 'edit' })}>edit</button>
+          }
+          {user.admin || card.username == user.username &&
+            <button onClick={() => handleCard({ _id, user, type: 'delete' })}>delete</button>
+          }
+        </div>
+      }
     </div>
   )
 }
