@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
 import SignupForm from "./SignupForm";
-import Overlay from "./Overlay";
+import LoginForm from "./LoginForm";
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -38,6 +38,25 @@ const useStyles = createUseStyles({
 const Home = () => {
   const { user } = useContext(PostsContext);
   const classes = useStyles();
+
+  const [form, setForm] = useState({login:false, signup:false, overlay:false});
+
+  const toggleComponent = (name) => {
+    switch (name) {
+      case "login":
+        setForm({ login: !form.login, signup: false });
+        break;
+      case "signup":
+        setForm({ signup: !form.signup, login: false });
+        break;
+      case "overlay":
+        setForm({ signup: false, login: false });
+        break;
+        default:
+        null;
+    }
+  }
+
   return (
     <>
       <div className={classes.wrapper}>
@@ -46,12 +65,17 @@ const Home = () => {
           <h1>Free speech is the foundation of a healthy society</h1>
           {
             user.username ? <Link to="/posts"><button>Post now</button></Link> :
-              <button>Login to post</button>
+              <button onClick={() => toggleComponent('login')}>Login to post</button>
           }
         </div>
       </div>
+      {
+      form.signup ? <SignupForm toggleComponent={toggleComponent}/> :
+      form.login ? <LoginForm toggleComponent={toggleComponent}/> :
+      null
+      }
     </>
-  );
+  )
 };
 
 export default Home;

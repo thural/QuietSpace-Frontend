@@ -1,10 +1,9 @@
 import React, { useContext} from "react";
 import { createUseStyles } from "react-jss";
-import PostsContext from "./PostsContext";
 
 const useStyle = createUseStyles({
   overlay: {
-    display: 'none',
+    display: 'block',
     position: 'fixed',
     top: 0,
     left: 0,
@@ -13,12 +12,11 @@ const useStyle = createUseStyles({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   }
 })
-const Overlay = () => {
-  const { user } = useContext(PostsContext);
+const Overlay = ({toggleComponent}) => {
   const classes = useStyle();
 
   return (
-    <div className={classes.overlay}></div>
+    <div className={classes.overlay} onClick={() => toggleComponent('overlay')}></div>
   )
 };
 

@@ -1,6 +1,7 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
+import Overlay from "./Overlay";
 
 const useStyles = createUseStyles({
   signup: {
@@ -49,22 +50,24 @@ const useStyles = createUseStyles({
   },
 });
 
-const SignupForm = () => {
-  const {posts:cards} = useContext(PostsContext);
+const SignupForm = ({ toggleComponent }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.signup}>
-      <h1>Sign Up</h1>
-      <form class='signup form' method='POST' action='/log-in'>
-        <div className="signup input">
-          <input type='text' name='username' placeholder="username"></input>
-          <input type='password' name='password' placeholder="password"></input>
-          <input type='password' name='confirmPassword' placeholder="confirm password"></input>
-        </div>
-        <button type='submit'>SignUp</button>
-      </form>
-    </div>
+    <>
+      <Overlay toggleComponent={toggleComponent}/>
+      <div className={classes.signup}>
+        <h1>Sign Up</h1>
+        <form className='signup form' method='POST' action='/log-in'>
+          <div className="signup input">
+            <input type='text' name='username' placeholder="username"></input>
+            <input type='password' name='password' placeholder="password"></input>
+            <input type='password' name='confirmPassword' placeholder="confirm password"></input>
+          </div>
+          <button type='submit' onClick={() => toggleComponent('signup')}>Submit</button>
+        </form>
+      </div>
+    </>
   )
 }
 

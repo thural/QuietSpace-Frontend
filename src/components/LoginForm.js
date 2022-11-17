@@ -1,9 +1,10 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
+import Overlay from "./Overlay";
 
 const useStyles = createUseStyles({
-  signup: {
+  login: {
     display: 'flex',
     flexFlow: 'column nowrap',
     backgroundColor: 'white',
@@ -49,23 +50,26 @@ const useStyles = createUseStyles({
   },
 });
 
-const LoginForm = () => {
-  const {posts:cards} = useContext(PostsContext);
+const LoginForm = ({ toggleComponent }) => {
+  const { posts: cards } = useContext(PostsContext);
   const classes = useStyles();
 
   return (
-    <div className={classes.login}>
-      <h1>Login</h1>
-      <form class='login form' method='POST' action='/log-in'>
-        <div className="login input">
-          <input type='text' name='username' placeholder="username"></input>
-          <input type='password' name='password' placeholder="password"></input>
-        </div>
-        <button type='submit'>Login</button>
-      </form>
-      <h3>don't have an account?</h3>
-      <a href="#">Signup</a>
-    </div>
+    <>
+      <Overlay toggleComponent={toggleComponent}/>
+      <div className={classes.login}>
+        <h1>Login</h1>
+        <form className='login form' method='POST' action='/log-in'>
+          <div className="login input">
+            <input type='text' name='username' placeholder="username"></input>
+            <input type='password' name='password' placeholder="password"></input>
+          </div>
+          <button type='submit' onClick={() => toggleComponent('login')}>Login</button>
+        </form>
+        <h3>don't have an account?</h3>
+        <button onClick={() => toggleComponent('signup')}>Signup</button>
+      </div>
+    </>
   )
 }
 
