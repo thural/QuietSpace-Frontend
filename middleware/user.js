@@ -7,7 +7,6 @@ module.exports.validateUser = (req, res, next) => {
   req.user = new User({ username: req.body.username, password: req.body.password })
   if (!errors.isEmpty()) {
     return res.json({
-      title: "Create User",
       user: req.user,
       errors: errors.array()
     })
@@ -19,7 +18,6 @@ module.exports.saveUser = async (req, res, next) => {
     const found_user = await User.findOne({ username: req.body.username })
     if (found_user) {
       return res.json( {
-        title: "Create User",
         user: req.user,
         errors: [{ msg: "User with same name already exists" }],
       })

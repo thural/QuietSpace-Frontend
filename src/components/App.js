@@ -96,7 +96,7 @@ const App = () => {
 
   useEffect(() => { fetchPosts(), fetchUser() }, []);
 
-  console.log("CURRENT USER: ", user.username)//log
+  console.log("CURRENT USER: ", user)//log
 
   const classes = useStyles();
 

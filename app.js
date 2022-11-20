@@ -1,4 +1,5 @@
 const express = require('express')
+const errorHandler = require('./middleware/errorHandler')
 const session = require("express-session")
 const passport = require("passport")
 const logger = require('morgan')
@@ -10,9 +11,15 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 dotenv.config()
 
-
-const usersRouter = require('./routes/user')
-const messagesRouter = require('./routes/message')
+const my_logger = (request, response, next) => {
+  console.log(
+    "URL: ", request.url,
+    "Method: ", request.method,
+    "Body: ", request.body,
+    new Date().getMilliseconds()
+  );
+  next()
+};
 
 const mongoose = require('mongoose')
 const mongoDB = process.env.MONGODB_URI || process.env.DEV_DB_URL
@@ -21,12 +28,13 @@ const db = mongoose.connection
 db.on("error", console.error.bind(console, "MongoDB connection error:"))
 
 const corsOptions = {
-  origin: 'http://localhost:8080',
+  origin: 'http://localhost:5000',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
 const app = express()
 app.use(cors(corsOptions))
+app.use(errorHandler)
 
 passport.use(
   new LocalStrategy((username, password, done) => {
@@ -52,8 +60,10 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(logger('dev'))
 
-app.use('/api/users', usersRouter)
-app.use('/api/messages', messagesRouter)
+app.use(my_logger)
+
+app.use('/api/users', require('./routes/userRoutes'))
+app.use('/api/messages', require('./routes/messageRoutes'))
 
 app.all('*', (request, response) => { response.status(404).send('Error 404, Page not found') })
 

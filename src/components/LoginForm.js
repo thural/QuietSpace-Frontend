@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
 import Overlay from "./Overlay";
@@ -51,23 +51,47 @@ const useStyles = createUseStyles({
 });
 
 const LoginForm = ({ toggleComponent }) => {
-  const { posts: cards } = useContext(PostsContext);
+  //const { posts: cards } = useContext(PostsContext);
   const classes = useStyles();
+  const [formData, setFormData] = useState({ username:'', password:'' })
+
+  useEffect(() => console.log(formData.username), [formData])
+
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  }
+
+  const handleSubmit = (event) => {
+    alert(`A form was submitted: ${formData.username} ${formData.password}`);
+    fetch('http://localhost:5000/log-in', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    }).then(function (response) {
+      console.log(response)
+      return response.json();
+    })
+    event.preventDefault();
+  }
 
   return (
     <>
-      <Overlay toggleComponent={toggleComponent}/>
+      <Overlay toggleComponent={toggleComponent} />
       <div className={classes.login}>
         <h1>Login</h1>
-        <form className='login form' method='POST' action='/log-in'>
+        <form className='login form' onSubmit={handleSubmit}>
           <div className="login input">
-            <input type='text' name='username' placeholder="username"></input>
-            <input type='password' name='password' placeholder="password"></input>
+            <input type='text' name='username' placeholder="username"
+              value={formData.username} onChange={handleChange} />
+            <input type='password' name='password' placeholder="password"
+              value={formData.password} onChange={handleChange} />
           </div>
-          <button type='submit' onClick={() => toggleComponent('login')}>Login</button>
+          <button type='submit'>Login</button>
         </form>
         <h3>don't have an account?</h3>
-        <button onClick={() => toggleComponent('signup')}>Signup</button>
+        <button type='button'>Signup</button>
       </div>
     </>
   )

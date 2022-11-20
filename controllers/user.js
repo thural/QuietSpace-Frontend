@@ -6,7 +6,7 @@ const passport = require("passport")
 
 exports.login_post = passport.authenticate("local", {
   successRedirect: "/",
-  failureRedirect: "/log-in"
+  failureRedirect: "/"
 })
 
 exports.logout_get = (req, res, next) => {
