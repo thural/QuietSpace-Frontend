@@ -1,22 +1,8 @@
 import React from "react";
-import { createUseStyles } from "react-jss";
-
-const useStyles = createUseStyles({
-  wrapper: {
-    margin: 'auto',
-    padding: '10vw',
-    '& .content': {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'flex-start'
-    }
-  },
-
-})
+import styles from "../styles/contactStyles"
 
 const Contact = () => {
-  const classes = useStyles();
+  const classes = styles();
 
   return (
     <div className={classes.wrapper}>

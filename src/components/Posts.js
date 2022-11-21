@@ -1,17 +1,11 @@
 import React, { useContext} from "react";
-import { createUseStyles } from "react-jss";
 import CardBoard from "./CardBoard";
 import PostsContext from "./PostsContext";
+import styles from "../styles/postsStyles"
 
-const useStyle = createUseStyles({
-  posts: {
-    margin: 'auto',
-    padding: '10vh 10vw',
-  }
-})
 const Posts = () => {
   const { user } = useContext(PostsContext);
-  const classes = useStyle();
+  const classes = styles();
 
   return (
     <div className={classes.posts}>

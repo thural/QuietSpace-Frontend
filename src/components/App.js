@@ -1,6 +1,5 @@
 import React, { useState, useReducer, useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
-import { createUseStyles } from "react-jss"
 import HandlerContext from "./HandlersContext"
 import Posts from "./Posts"
 import Copyright from "./Copyright"
@@ -8,19 +7,8 @@ import PostsContext from "./PostsContext"
 import Contact from "./Contact"
 import NavBar from "./Navbar"
 import Home from "./Home"
+import styles from "../styles/appStyles"
 
-const useStyles = createUseStyles(
-  {
-    app: {
-      margin: '0',
-      padding: '0',
-      minWidth: '100%',
-      minHeight: '100vh',
-      position: 'relative',
-      backgroundColor: 'whitesmoke',
-    }
-  }
-);
 
 function userReducer(state, { user, type }) {
   switch (type) {
@@ -49,7 +37,7 @@ function userReducer(state, { user, type }) {
   }
 };
 
-function postReducer(state, { posts, user, _id, type }) {
+function postReducer(state, { posts, posted, user, _id, type }) {
   switch (type) {
     case 'like':
       return state.map(post => {
@@ -70,6 +58,8 @@ function postReducer(state, { posts, user, _id, type }) {
       })
     case 'delete':
       return state.filter(post => post['_id'] !== _id);
+    case 'add':
+      return {...posts, posted}
     case 'load':
       return posts
     default: return state
@@ -98,7 +88,7 @@ const App = () => {
 
   console.log("CURRENT USER: ", user)//log
 
-  const classes = useStyles();
+  const classes = styles();
 
   return (
     <div className={classes.app}>

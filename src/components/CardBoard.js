@@ -1,22 +1,11 @@
 import React, {useContext} from "react";
-import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
 import Card from "./Card";
-
-const useStyles = createUseStyles({
-  cardboard: {
-    gap: '24px',
-    width: '100%',
-    margin: 'auto',
-    display: 'grid',
-    gridTemplateRows: 'repeat( auto-fit, minmax(12rem, 1fr) )',
-    gridTemplateColumns: 'repeat( auto-fit, minmax(12rem, 1fr) )'
-  }
-});
+import styles from "../styles/cardBoardStyles"
 
 const CardBoard = () => {
   const {posts:cards, user} = useContext(PostsContext);
-  const classes = useStyles();
+  const classes = styles();
 
   return (
     <div className={classes.cardboard}>

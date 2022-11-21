@@ -1,43 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
-
-const useStyles = createUseStyles({
-  wrapper: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '20vh',
-    '& .home-text': {
-      minWidth: 'min-content',
-      display: 'flex',
-      flexFlow: 'column nowrap',
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    '& h1': {
-      marginBottom: '6rem'
-    },
-    '& button': {
-      fontSize: '2rem',
-      backgroundColor: 'black',
-      color: 'white',
-      padding: '1rem 3rem',
-      fontWeight: '600',
-      border: '1px solid black',
-      borderRadius: '3rem',
-      width: 'max-content'
-    }
-  }
-})
+import styles from "../styles/homeStyles"
 
 const Home = () => {
   const { user } = useContext(PostsContext);
-  const classes = useStyles();
+  const classes = styles();
 
   const [form, setForm] = useState({login:false, signup:false, overlay:false});
 

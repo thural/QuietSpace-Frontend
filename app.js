@@ -75,7 +75,7 @@ app.post("/log-in", (req, res, next) => {
     else {
       req.logIn(user, (err) => {
         if (err) throw err;
-        res.json({msg:"Successfully Authenticated"});
+        res.status(200).json(req.user);
         console.log(req.user);
       });
     }
