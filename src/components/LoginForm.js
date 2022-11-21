@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import PostsContext from "./PostsContext";
+import HandlerContext from "./HandlersContext";
 import Overlay from "./Overlay";
 
 const useStyles = createUseStyles({
@@ -52,7 +53,9 @@ const useStyles = createUseStyles({
 
 const LoginForm = ({ toggleComponent }) => {
   //const { posts: cards } = useContext(PostsContext);
+  //const { user } = useContext(PostsContext);
   const classes = useStyles();
+  //const { setUser } = useContext(HandlerContext);
   const [formData, setFormData] = useState({ username:'', password:'' })
 
   useEffect(() => console.log(formData.username), [formData])
@@ -63,6 +66,8 @@ const LoginForm = ({ toggleComponent }) => {
 
   const handleSubmit = (event) => {
     alert(`A form was submitted: ${formData.username} ${formData.password}`);
+    event.preventDefault();
+    //console.log(JSON.stringify(formData))
     fetch('http://localhost:5000/log-in', {
       method: 'POST',
       headers: {
@@ -71,9 +76,9 @@ const LoginForm = ({ toggleComponent }) => {
       body: JSON.stringify(formData)
     }).then(function (response) {
       console.log(response)
+      //setUser(response)
       return response.json();
     })
-    event.preventDefault();
   }
 
   return (

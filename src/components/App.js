@@ -103,7 +103,7 @@ const App = () => {
   return (
     <div className={classes.app}>
       <PostsContext.Provider value={{posts, user}}>
-        <HandlerContext.Provider value={setPosts}>
+        <HandlerContext.Provider value={{setPosts,setUser}}>
           <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />

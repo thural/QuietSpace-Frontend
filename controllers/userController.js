@@ -17,11 +17,11 @@ exports.logout_get = (req, res, next) => {
 }
 
 exports.user_get = (req, res) => {
-  if (!user) {
-    res.status(400)
-    throw new Error('user has not logged in')
+  if (!req.user) {
+    res.status(400).json({msg:'user has not logged in'})
+    //throw new Error()
   }
-  res.json({ user: req.user })
+  res.json(req.user)
 }
 
 exports.create_post = [

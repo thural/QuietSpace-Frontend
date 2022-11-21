@@ -50,22 +50,54 @@ app.use(
 app.use(cookieParser("secretcode"))
 app.use(passport.initialize())
 app.use(passport.session())
+require("./passportConfig")(passport)
 //app.use(errorHandler)
 
-passport.use(
-  new passportLocal((username, password, done) => {
-    User.findOne({ username: username }, (err, user) => {
-      if (err) return done(err)
-      if (!user) return done(null, false, { message: "Incorrect username" })
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (!res) return done(null, false, { message: "Incorrect password" })
-        else return done(null, user)
-      })
-    })
-  })
-)
-passport.serializeUser((user, done) => { done(null, user.id) })
-passport.deserializeUser((id, done) => { User.findById(id, (err, user) => { done(err, user) }) })
+// passport.use(
+//   new passportLocal((username, password, done) => {
+//     User.findOne({ username: username }, (err, user) => {
+//       if (err) return done(err)
+//       if (!user) return done(null, false, { message: "Incorrect username" })
+//       bcrypt.compare(password, user.password, (err, res) => {
+//         if (!res) return done(null, false, { message: "Incorrect password" })
+//         else return done(null, user)
+//       })
+//     })
+//   })
+// )
+// passport.serializeUser((user, done) => { done(null, user.id) })
+// passport.deserializeUser((id, done) => { User.findById(id, (err, user) => { done(err, user) }) })
+
+app.post("/log-in", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) throw err;
+    if (!user) res.json({msg:"User does not exist"});
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        res.json({msg:"Successfully Authenticated"});
+        console.log(req.user);
+      });
+    }
+  })(req, res, next);
+});
+
+app.post("/register", (req, res) => {
+  User.findOne({ username: req.body.username }, async (err, doc) => {
+    if (err) throw err;
+    if (doc) res.send("User Already Exists");
+    if (!doc) {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+      const newUser = new User({
+        username: req.body.username,
+        password: hashedPassword,
+      });
+      await newUser.save();
+      res.send("User Created");
+    }
+  });
+});
 
 
 app.use(express.static(path.join(__dirname, 'public')))
