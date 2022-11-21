@@ -1,4 +1,4 @@
-const Message = require("../models/message")
+const Message = require("../models/messageModel")
 const { validationResult } = require("express-validator")
 
 module.exports.validateMessage = (req, res, next) => {

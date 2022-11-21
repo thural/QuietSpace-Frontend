@@ -1,8 +1,8 @@
 const Filter = require('bad-words')
 const customFilter = new Filter({ placeHolder: '*' })
 const dirty_words = require("../dirty_words")
-const Message = require("../models/message")
-const User = require("../models/user")
+const Message = require("../models/messageModel")
+const User = require("../models/userModel")
 customFilter.addWords(...dirty_words)
 
 const checkInput = (value, { req }) => {
@@ -16,7 +16,7 @@ const checkInput = (value, { req }) => {
 }
 
 const { body, validationResult } = require("express-validator")
-const { validateMessage, saveMessage } = require("../middleware/message")
+const { validateMessage, saveMessage } = require("../middleware/messageMiddleware")
 
 exports.list = (req, res, next) => {
   Message.find()

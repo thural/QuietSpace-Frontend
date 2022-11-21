@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 
-const message = require("../controllers/message")
+const message = require("../controllers/messageController")
 
 router.route("/").get(message.list).post(message.create_post)
 router.route("/:id").get(message.item)

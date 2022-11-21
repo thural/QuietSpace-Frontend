@@ -1,4 +1,4 @@
-const { validateUser, saveUser } = require("../middleware/user")
+const { validateUser, saveUser } = require("../middleware/userMiddleware")
 const Filter = require('bad-words')
 const customFilter = new Filter({ placeHolder: '*' })
 const { body } = require("express-validator")
@@ -17,6 +17,10 @@ exports.logout_get = (req, res, next) => {
 }
 
 exports.user_get = (req, res) => {
+  if (!user) {
+    res.status(400)
+    throw new Error('user has not logged in')
+  }
   res.json({ user: req.user })
 }
 
