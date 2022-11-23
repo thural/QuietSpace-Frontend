@@ -7,7 +7,7 @@ const LoginForm = ({ toggleComponent }) => {
   //const { posts: cards } = useContext(PostsContext);
   //const { user } = useContext(PostsContext);
   const classes = styles();
-  const { setPost } = useContext(HandlerContext);
+  const { fetchUser } = useContext(HandlerContext);
   const [formData, setFormData] = useState({ username: '', password: '' })
 
   const handleChange = (event) => {
@@ -21,8 +21,8 @@ const LoginForm = ({ toggleComponent }) => {
       headers: {'Content-type': 'application/json'},
       body: JSON.stringify(formData)
     }).then(function (res) {
-      console.log('LOGIN RESPONSE: ', res.user)
-      //setUser(response)
+      //console.log('LOGIN RESPONSE: ', res.json())
+      fetchUser()
       return res.json();
     })
   }

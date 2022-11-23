@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator")
 
 module.exports.validateMessage = (req, res, next) => {
   const errors = validationResult(req);
-  console.log('VASLIDATE MESSAGE USER: ', req.user)
+  console.log('VALIDATE MESSAGE USER: ', req.user)
   req.message = new Message({ username: req.user.username, message: req.body.message })
   if (!errors.isEmpty()) {
     return res.json({errors: errors.array()})
@@ -17,7 +17,7 @@ module.exports.saveMessage = async (req, res, next) => {
     else {
       req.message.save(err => {
         if (err) return next(err)
-        res.status(200) // TODO: avoid page reaload
+        return res.status(200).json(req.message) // TODO: avoid page reaload
       })
     }
   } catch (err) { return next(err) }

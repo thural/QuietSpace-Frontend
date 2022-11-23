@@ -96,7 +96,7 @@ app.post("/register", (req, res) => {
       await newUser.save();
       res.send("User Created");
     }
-  });
+  })
 });
 
 
@@ -105,7 +105,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(logger('dev'))
 
-app.use(my_logger)
+//app.use(my_logger)
 
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/messages', require('./routes/messageRoutes'))

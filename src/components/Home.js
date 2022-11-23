@@ -31,7 +31,7 @@ const Home = () => {
     <>
       <div className={classes.wrapper}>
         <div className="home-text">
-          <h3>"Contribute to society by speaking your truth"</h3>
+          <h3>Contribute to society by speaking your truth</h3>
           <h1>Free speech is the foundation of a healthy society</h1>
           {
             user.username ? <Link to="/posts"><button>Post now</button></Link> :

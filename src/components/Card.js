@@ -5,7 +5,7 @@ import styles from "../styles/cardStyles"
 
 const Card = ({ card }) => {
   const { user } = useContext(PostsContext);
-  const handleCard = useContext(HandlerContext);
+  const { setPosts } = useContext(HandlerContext);
   const classes = styles()
   const { _id, username, message, likes } = card;
   const liked = card.likes.includes(user['_id']) ? 'unlike' : 'like';
@@ -20,12 +20,12 @@ const Card = ({ card }) => {
       {user &&
         <div className="buttons">
           <p>{likes.length}</p>
-          <button onClick={() => handleCard({ _id, user, type: liked })}>{liked}</button>
+          <button onClick={() => setPosts({ _id, user, type: liked })}>{liked}</button>
           {card.username == user.username &&
-            <button onClick={() => handleCard({ _id, user, type: 'edit' })}>edit</button>
+            <button onClick={() => setPosts({ _id, user, type: 'edit' })}>edit</button>
           }
           {user.admin || card.username == user.username &&
-            <button onClick={() => handleCard({ _id, user, type: 'delete' })}>delete</button>
+            <button onClick={() => setPosts({ _id, user, type: 'delete' })}>delete</button>
           }
         </div>
       }

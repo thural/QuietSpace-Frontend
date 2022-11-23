@@ -10,34 +10,55 @@ import Home from "./Home"
 import styles from "../styles/appStyles"
 
 
-function userReducer(state, { user, type }) {
-  switch (type) {
-    case 'login':
-      return state.map(post => {
-        if (post['_id'] == _id) {
-          if (post.likes.includes(user['id'])) return post
-          const postLikes = [...post.likes, user['_id']]
-          return { ...post, likes: postLikes }
-        }
-        return post
-      });
-    case 'logout':
-      return state.map(post => {
-        if (post['_id'] == _id) {
-          const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
-          return { ...post, likes: reducedLikes }
-        }
-        return post
-      })
-    case 'signup':
-      return state.filter(post => post['_id'] !== _id);
-    case 'load':
-      return posts
-    default: return state
-  }
-};
+// function userReducer(state, { user, type }) {
+//   switch (type) {
+//     case 'login':
+//       return state.map(post => {
+//         if (post['_id'] == _id) {
+//           if (post.likes.includes(user['id'])) return post
+//           const postLikes = [...post.likes, user['_id']]
+//           return { ...post, likes: postLikes }
+//         }
+//         return post
+//       });
+//     case 'logout':
+//       return state.map(post => {
+//         if (post['_id'] == _id) {
+//           const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
+//           return { ...post, likes: reducedLikes }
+//         }
+//         return post
+//       })
+//     case 'signup':
+//       return state.filter(post => post['_id'] !== _id);
+//     case 'load':
+//       return posts
+//     default: return state
+//   }
+// };
 
-function postReducer(state, { posts, posted, user, _id, type }) {
+const deletePost = async (_id) => {
+  try {
+    await fetch(`http://localhost:5000/api/messages/delete/${_id}`, {method: 'POST'})
+    return true
+  } catch (err) { return false}
+}
+
+const addPost = async (newPost) => {
+  try {
+    let post = null;
+    await fetch('http://localhost:5000/api/messages', {
+      method: 'POST',
+      headers: {'Content-type': 'application/json'},
+      body: JSON.stringify(newPost)
+    }).then(function (res) {
+      post = res.json();
+    })
+    return post
+  } catch (err) { throw err}
+}
+
+function postReducer(state, { posts, newPost, user, _id, type }) {
   switch (type) {
     case 'like':
       return state.map(post => {
@@ -57,9 +78,13 @@ function postReducer(state, { posts, posted, user, _id, type }) {
         return post
       })
     case 'delete':
-      return state.filter(post => post['_id'] !== _id);
+      deletePost(_id)
+      return state.filter(post => post['_id'] !== _id)
+      //else return state
     case 'add':
-      return {...posts, posted}
+      const response = addPost(newPost)
+      if (response) return [...state, response]
+      return state
     case 'load':
       return posts
     default: return state
@@ -67,6 +92,7 @@ function postReducer(state, { posts, posted, user, _id, type }) {
 };
 
 const App = () => {
+
   const fetchPosts = async () => {
     const data = await fetch('http://localhost:5000/api/messages');
     const items = await data.json();
@@ -93,7 +119,7 @@ const App = () => {
   return (
     <div className={classes.app}>
       <PostsContext.Provider value={{posts, user}}>
-        <HandlerContext.Provider value={{setPosts,setUser}}>
+        <HandlerContext.Provider value={{setPosts,setUser,fetchUser}}>
           <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />

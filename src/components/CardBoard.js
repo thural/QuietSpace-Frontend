@@ -1,10 +1,10 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import PostsContext from "./PostsContext";
 import Card from "./Card";
 import styles from "../styles/cardBoardStyles"
 
 const CardBoard = () => {
-  const {posts:cards, user} = useContext(PostsContext);
+  const { posts: cards } = useContext(PostsContext);
   const classes = styles();
 
   return (
