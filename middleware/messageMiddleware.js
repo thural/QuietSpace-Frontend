@@ -17,6 +17,7 @@ module.exports.saveMessage = async (req, res, next) => {
     else {
       req.message.save(err => {
         if (err) return next(err)
+        console.log("saved message: ", req.message)
         return res.status(200).json(req.message) // TODO: avoid page reaload
       })
     }

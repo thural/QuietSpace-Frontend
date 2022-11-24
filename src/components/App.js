@@ -44,21 +44,7 @@ const deletePost = async (_id) => {
   } catch (err) { return false}
 }
 
-const addPost = async (newPost) => {
-  try {
-    let post = null;
-    await fetch('http://localhost:5000/api/messages', {
-      method: 'POST',
-      headers: {'Content-type': 'application/json'},
-      body: JSON.stringify(newPost)
-    }).then(function (res) {
-      post = res.json();
-    })
-    return post
-  } catch (err) { throw err}
-}
-
-function postReducer(state, { posts, newPost, user, _id, type }) {
+function postReducer(state, { posts, response, user, _id, type }) {
   switch (type) {
     case 'like':
       return state.map(post => {
@@ -80,11 +66,11 @@ function postReducer(state, { posts, newPost, user, _id, type }) {
     case 'delete':
       deletePost(_id)
       return state.filter(post => post['_id'] !== _id)
-      //else return state
     case 'add':
-      const response = addPost(newPost)
-      if (response) return [...state, response]
-      return state
+      //console.log('response in "add" reducer: ', response)
+      const newState = [...state, response]
+      console.log('newState in "add" reducer: ', newState)
+      return newState // TODO: first figure out the response and then get back here.
     case 'load':
       return posts
     default: return state
