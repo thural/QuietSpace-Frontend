@@ -23,7 +23,7 @@ const LoginForm = ({ toggleComponent }) => {
     }).then(function (res) {
       //console.log('LOGIN RESPONSE: ', res.json())
       fetchUser()
-      return res.json();
+      //return res.json();
     })
   }
 
@@ -32,7 +32,7 @@ const LoginForm = ({ toggleComponent }) => {
       <Overlay toggleComponent={toggleComponent} />
       <div className={classes.login}>
         <h1>Login</h1>
-        <form className='login form' onSubmit={handleSubmit}>
+        <form className='login form' onSubmit={e => {handleSubmit(e); toggleComponent('overlay')}}>
           <div className="login input">
             <input type='text' name='username' placeholder="username"
               value={formData.username} onChange={handleChange} />

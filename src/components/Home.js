@@ -9,20 +9,20 @@ const Home = () => {
   const { user } = useContext(PostsContext);
   const classes = styles();
 
-  const [form, setForm] = useState({login:false, signup:false, overlay:false});
+  const [formView, setFormView] = useState({ login: false, signup: false, overlay: false });
 
   const toggleComponent = (name) => {
     switch (name) {
       case "login":
-        setForm({ login: !form.login, signup: false });
+        setFormView({ login: true, signup: false });
         break;
       case "signup":
-        setForm({ signup: !form.signup, login: false });
+        setFormView({ signup: true, login: false });
         break;
       case "overlay":
-        setForm({ signup: false, login: false });
+        setFormView({ signup: false, login: false });
         break;
-        default:
+      default:
         null;
     }
   }
@@ -35,14 +35,14 @@ const Home = () => {
           <h1>Free speech is the foundation of a healthy society</h1>
           {
             user.username ? <Link to="/posts"><button>Post now</button></Link> :
-              <button onClick={() => toggleComponent('login')}>Login to post</button>
+            <button onClick={() => toggleComponent('login')}>Login to post</button>
           }
         </div>
       </div>
       {
-      form.signup ? <SignupForm toggleComponent={toggleComponent}/> :
-      form.login ? <LoginForm toggleComponent={toggleComponent}/> :
-      null
+        formView.signup ? <SignupForm toggleComponent={toggleComponent} /> :
+        formView.login ? <LoginForm toggleComponent={toggleComponent} /> :
+        null
       }
     </>
   )
