@@ -1,22 +1,50 @@
+import React, { useContext, useState } from "react";
+import HandlerContext from "./HandlersContext";
 import Overlay from "./Overlay";
 import styles from "../styles/signupStyles"
 
 const SignupForm = ({ toggleComponent }) => {
-const classes = styles();
+  const classes = styles();
+
+  const { fetchUser } = useContext(HandlerContext);
+
+  const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
+
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    fetch('http://localhost:5000/api/sign-up', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(formData)
+    }).then(function (res) {
+      //console.log('LOGIN RESPONSE: ', res.json())
+      fetchUser()
+      //return res.json();
+    })
+  }
 
   return (
     <>
-      <Overlay toggleComponent={toggleComponent}/>
+      <Overlay toggleComponent={toggleComponent} />
       <div className={classes.signup}>
-        <h1>Sign Up</h1>
-        <form className='signup form' method='POST' action='/log-in'>
+        <h1>Signup</h1>
+        <form className='signup form' onSubmit={e => { handleSubmit(e); toggleComponent('overlay') }}>
           <div className="signup input">
-            <input type='text' name='username' placeholder="username"></input>
-            <input type='password' name='password' placeholder="password"></input>
-            <input type='password' name='confirmPassword' placeholder="confirm password"></input>
+            <input type='text' name='username' placeholder="username"
+              value={formData.username} onChange={handleChange} />
+            <input type='password' name='password' placeholder="password"
+              value={formData.password} onChange={handleChange} />
+            <input type='password' name='confirmPassword' placeholder="confirm password"
+              value={formData.confirmPassword} onChange={handleChange} />
           </div>
-          <button type='submit' onClick={() => toggleComponent('signup')}>Submit</button>
+          <button type='submit'>Signup</button>
         </form>
+        <h3>already have an account?</h3>
+        <button type='button' onClick={() => toggleComponent('login')}>Login</button>
       </div>
     </>
   )

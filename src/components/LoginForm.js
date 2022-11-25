@@ -42,7 +42,7 @@ const LoginForm = ({ toggleComponent }) => {
           <button type='submit'>Login</button>
         </form>
         <h3>don't have an account?</h3>
-        <button type='button'>Signup</button>
+        <button type='button' onClick={() => toggleComponent('signup')}>Signup</button>
       </div>
     </>
   )

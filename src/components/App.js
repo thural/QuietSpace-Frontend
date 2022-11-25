@@ -88,6 +88,7 @@ const App = () => {
   const fetchUser = async () => {
     const data = await fetch('http://localhost:5000/api/users/user');
     const item = await data.json();
+    console.log("Fetched User: ", item)
     setUser(item);
   };
 
