@@ -16,7 +16,7 @@ const LoginForm = ({ toggleComponent }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    fetch('http://localhost:5000/log-in', {
+    fetch('http://localhost:5000/api/users/log-in', {
       method: 'POST',
       headers: {'Content-type': 'application/json'},
       body: JSON.stringify(formData)

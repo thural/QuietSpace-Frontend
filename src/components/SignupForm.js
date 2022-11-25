@@ -6,7 +6,7 @@ import styles from "../styles/signupStyles"
 const SignupForm = ({ toggleComponent }) => {
   const classes = styles();
 
-  const { fetchUser } = useContext(HandlerContext);
+  const { fetchUser, setUser } = useContext(HandlerContext);
 
   const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
 
@@ -16,14 +16,15 @@ const SignupForm = ({ toggleComponent }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    fetch('http://localhost:5000/api/sign-up', {
+    fetch('http://localhost:5000/api/users/sign-up', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(formData)
-    }).then(function (res) {
-      //console.log('LOGIN RESPONSE: ', res.json())
-      fetchUser()
-      //return res.json();
+    })
+    .then(res => res.json(), err => console.log('error message: ', err))
+    .then(response => {
+      console.log('NEW USER: ', response);
+      setUser(response)
     })
   }
 
