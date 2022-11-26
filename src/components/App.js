@@ -92,6 +92,26 @@ const App = () => {
     setUser(item);
   };
 
+  const [formView, setFormView] = useState({ login: false, signup: false, post: false, overlay: false });
+
+  const toggleComponent = (name) => {
+    switch (name) {
+      case "login":
+        setFormView({ login: true, signup: false });
+        break;
+      case "signup":
+        setFormView({ signup: true, login: false });
+        break;
+      case "post":
+        setFormView({ post: true })
+      case "overlay":
+        setFormView({ signup: false, login: false, post: false });
+        break;
+      default:
+        null;
+    }
+  }
+
   //const [post, setPost] = useReducer(postReducer, []);
 
   const [posts, setPosts] = useReducer(postReducer, []);
@@ -105,8 +125,8 @@ const App = () => {
 
   return (
     <div className={classes.app}>
-      <PostsContext.Provider value={{posts, user}}>
-        <HandlerContext.Provider value={{setPosts,setUser,fetchUser}}>
+      <PostsContext.Provider value={{posts, user, formView}}>
+        <HandlerContext.Provider value={{setPosts,setUser,fetchUser, toggleComponent}}>
           <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />

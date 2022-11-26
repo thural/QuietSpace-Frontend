@@ -2,11 +2,12 @@ import React, { useContext, useState } from "react";
 import CardBoard from "./CardBoard";
 import PostsContext from "./PostsContext";
 import HandlerContext from "./HandlersContext"
+import Overlay from "./Overlay";
 import styles from "../styles/postsStyles"
 
 const Posts = () => {
-  const { user } = useContext(PostsContext);
-  const { setPosts } = useContext(HandlerContext);
+  const { user, formView } = useContext(PostsContext);
+  const { setPosts, toggleComponent } = useContext(HandlerContext);
   const classes = styles();
 
   const [postData, setPostData] = useState({ message: '' })
@@ -31,9 +32,13 @@ const Posts = () => {
   }
 
   return (
+    <>
     <div className={classes.posts}>
-      {user.username &&
+
+      {user.username && <button className="add-btn" onClick={() => toggleComponent('post')} > Add </button>}
+      {user.username && formView.post &&
         <div>
+          <Overlay toggleComponent={toggleComponent} />
           <h3>Create a post</h3>
           <form onSubmit={(e) => { e.preventDefault(); addPost(postData) }}>
             <input className='message input'
@@ -47,6 +52,7 @@ const Posts = () => {
       }
       <CardBoard />
     </div>
+    </>
   )
 };
 

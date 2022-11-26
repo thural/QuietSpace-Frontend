@@ -1,31 +1,15 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import PostsContext from "./PostsContext";
+import HandlerContext from "./HandlersContext";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 import styles from "../styles/homeStyles"
 
 const Home = () => {
-  const { user } = useContext(PostsContext);
+  const { user, formView } = useContext(PostsContext);
+  const { toggleComponent } = useContext(HandlerContext);
   const classes = styles();
-
-  const [formView, setFormView] = useState({ login: false, signup: false, overlay: false });
-
-  const toggleComponent = (name) => {
-    switch (name) {
-      case "login":
-        setFormView({ login: true, signup: false });
-        break;
-      case "signup":
-        setFormView({ signup: true, login: false });
-        break;
-      case "overlay":
-        setFormView({ signup: false, login: false });
-        break;
-      default:
-        null;
-    }
-  }
 
   return (
     <>
