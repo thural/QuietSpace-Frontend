@@ -104,6 +104,7 @@ const App = () => {
         break;
       case "post":
         setFormView({ post: true })
+        break;
       case "overlay":
         setFormView({ signup: false, login: false, post: false });
         break;

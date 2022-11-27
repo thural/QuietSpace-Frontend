@@ -29,7 +29,7 @@ const LoginForm = ({ toggleComponent }) => {
 
   return (
     <>
-      <Overlay toggleComponent={toggleComponent} />
+      <Overlay />
       <div className={classes.login}>
         <h1>Login</h1>
         <form className='login form' onSubmit={e => {handleSubmit(e); toggleComponent('overlay')}}>

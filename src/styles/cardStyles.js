@@ -24,7 +24,8 @@ const styles = createUseStyles({
       display: 'flex',
       flexFlow: 'row nowrap',
       alignItems: 'center',
-      gap: '4px'
+      gap: '4px',
+      marginLeft: 'auto'
     },
     '& button': {
       color: 'white',
