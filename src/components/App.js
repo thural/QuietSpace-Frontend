@@ -38,107 +38,107 @@ import styles from "../styles/appStyles"
 // };
 
 const deletePost = async (_id) => {
-  try {
-    await fetch(`http://localhost:5000/api/messages/delete/${_id}`, {method: 'POST'})
-    return true
-  } catch (err) { return false}
+	try {
+		await fetch(`http://localhost:5000/api/messages/delete/${_id}`, { method: 'POST' })
+		return true
+	} catch (err) { return false }
 }
 
 function postReducer(state, { posts, response, user, _id, type }) {
-  switch (type) {
-    case 'like':
-      return state.map(post => {
-        if (post['_id'] == _id) {
-          if (post.likes.includes(user['id'])) return post
-          const postLikes = [...post.likes, user['_id']]
-          return { ...post, likes: postLikes }
-        }
-        return post
-      });
-    case 'unlike':
-      return state.map(post => {
-        if (post['_id'] == _id) {
-          const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
-          return { ...post, likes: reducedLikes }
-        }
-        return post
-      })
-    case 'delete':
-      deletePost(_id)
-      return state.filter(post => post['_id'] !== _id)
-    case 'add':
-      //console.log('response in "add" reducer: ', response)
-      const newState = [...state, response]
-      console.log('newState in "add" reducer: ', newState)
-      return newState // TODO: first figure out the response and then get back here.
-    case 'load':
-      return posts
-    default: return state
-  }
+	switch (type) {
+		case 'like':
+			return state.map(post => {
+				if (post['_id'] == _id) {
+					if (post.likes.includes(user['id'])) return post
+					const postLikes = [...post.likes, user['_id']]
+					return { ...post, likes: postLikes }
+				}
+				return post
+			});
+		case 'unlike':
+			return state.map(post => {
+				if (post['_id'] == _id) {
+					const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
+					return { ...post, likes: reducedLikes }
+				}
+				return post
+			})
+		case 'delete':
+			deletePost(_id)
+			return state.filter(post => post['_id'] !== _id)
+		case 'add':
+			//console.log('response in "add" reducer: ', response)
+			const newState = [...state, response]
+			console.log('newState in "add" reducer: ', newState)
+			return newState // TODO: first figure out the response and then get back here.
+		case 'load':
+			return posts
+		default: return state
+	}
 };
 
 const App = () => {
 
-  const fetchPosts = async () => {
-    const data = await fetch('http://localhost:5000/api/messages');
-    const items = await data.json();
-    setPosts({posts:items.messages, type:'load'});
-  };
+	const fetchPosts = async () => {
+		const data = await fetch('http://localhost:5000/api/messages');
+		const items = await data.json();
+		setPosts({ posts: items.messages, type: 'load' });
+	};
 
-  const fetchUser = async () => {
-    const data = await fetch('http://localhost:5000/api/users/user');
-    const item = await data.json();
-    console.log("Fetched User: ", item)
-    setUser(item);
-  };
+	const fetchUser = async () => {
+		const data = await fetch('http://localhost:5000/api/users/user');
+		const item = await data.json();
+		console.log("Fetched User: ", item)
+		setUser(item);
+	};
 
-  const [formView, setFormView] = useState({ login: false, signup: false, post: false, overlay: false });
+	const [formView, setFormView] = useState({ login: false, signup: false, post: false, overlay: false });
 
-  const toggleComponent = (name) => {
-    switch (name) {
-      case "login":
-        setFormView({ login: true, signup: false });
-        break;
-      case "signup":
-        setFormView({ signup: true, login: false });
-        break;
-      case "post":
-        setFormView({ post: true })
-        break;
-      case "overlay":
-        setFormView({ signup: false, login: false, post: false });
-        break;
-      default:
-        null;
-    }
-  }
+	const toggleComponent = (name) => {
+		switch (name) {
+			case "login":
+				setFormView({ login: true, signup: false });
+				break;
+			case "signup":
+				setFormView({ signup: true, login: false });
+				break;
+			case "post":
+				setFormView({ post: true })
+				break;
+			case "overlay":
+				setFormView({ signup: false, login: false, post: false });
+				break;
+			default:
+				null;
+		}
+	}
 
-  //const [post, setPost] = useReducer(postReducer, []);
+	//const [post, setPost] = useReducer(postReducer, []);
 
-  const [posts, setPosts] = useReducer(postReducer, []);
-  const [user, setUser] = useState([]);
+	const [posts, setPosts] = useReducer(postReducer, []);
+	const [user, setUser] = useState([]);
 
-  useEffect(() => { fetchPosts(), fetchUser() }, []);
+	useEffect(() => { fetchPosts(), fetchUser() }, []);
 
-  console.log("CURRENT USER: ", user)//log
+	console.log("CURRENT USER: ", user)//log
 
-  const classes = styles();
+	const classes = styles();
 
-  return (
-    <div className={classes.app}>
-      <PostsContext.Provider value={{posts, user, formView}}>
-        <HandlerContext.Provider value={{setPosts,setUser,fetchUser, toggleComponent}}>
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/posts" element={<Posts />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
-        </HandlerContext.Provider>
-      </PostsContext.Provider>
-      <Copyright />
-    </div>
-  )
+	return (
+		<div className={classes.app}>
+			<PostsContext.Provider value={{ posts, user, formView }}>
+				<HandlerContext.Provider value={{ setPosts, setUser, fetchUser, toggleComponent }}>
+					<NavBar />
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/posts" element={<Posts />} />
+						<Route path="/contact" element={<Contact />} />
+					</Routes>
+				</HandlerContext.Provider>
+			</PostsContext.Provider>
+			<Copyright />
+		</div>
+	)
 }
 
 export default App

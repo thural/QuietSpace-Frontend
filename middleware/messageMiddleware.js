@@ -6,14 +6,14 @@ module.exports.validateMessage = (req, res, next) => {
   console.log('VALIDATE MESSAGE USER: ', req.user)
   req.message = new Message({ username: req.user.username, message: req.body.message })
   if (!errors.isEmpty()) {
-    return res.json({errors: errors.array()})
+    return res.json({ errors: errors.array() })
   } next()
 }
 
 module.exports.saveMessage = async (req, res, next) => {
   try {
     const found_message = await Message.findOne({ username: req.user.username, message: req.body.message })
-    if (found_message) res.json({msg:'message already exists'})
+    if (found_message) res.json({ msg: 'message already exists' })
     else {
       req.message.save(err => {
         if (err) return next(err)
