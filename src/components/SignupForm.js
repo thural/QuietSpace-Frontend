@@ -36,17 +36,32 @@ const SignupForm = ({ toggleComponent }) => {
 				<h1>Signup</h1>
 				<form className='signup form' onSubmit={e => { handleSubmit(e); toggleComponent('overlay') }}>
 					<div className="signup input">
-						<input type='text' name='username' placeholder="username"
-							value={formData.username} onChange={handleChange} />
-						<input type='password' name='password' placeholder="password"
-							value={formData.password} onChange={handleChange} />
-						<input type='password' name='confirmPassword' placeholder="confirm password"
-							value={formData.confirmPassword} onChange={handleChange} />
+						<input
+							type='text'
+							name='username'
+							placeholder="username"
+							value={formData.username}
+							onChange={handleChange}
+						/>
+						<input
+							type='password'
+							name='password'
+							placeholder="password"
+							value={formData.password}
+							onChange={handleChange}
+						/>
+						<input
+							type='password'
+							name='confirmPassword'
+							placeholder="confirm password"
+							value={formData.confirmPassword}
+							onChange={handleChange}
+						/>
 					</div>
 					<button type='submit'>Signup</button>
 				</form>
 				<h3>already have an account?</h3>
-				<button type='button' onClick={() => toggleComponent('login')}>Login</button>
+				<button type='button' onClick={() => toggleComponent({formName:'login'})}>Login</button>
 			</div>
 		</>
 	)

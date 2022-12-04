@@ -7,7 +7,7 @@ const NavBar = ({ children }) => {
 
 	return (
 		<div className={classes.navbar}>
-			<h1>Message Board</h1>
+			<h1>INFJ Space</h1>
 			<nav>
 				<ul>
 					<Link to="/"><li>Home</li></Link>

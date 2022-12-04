@@ -19,7 +19,7 @@ const Home = () => {
 					<h1>Free speech is the foundation of a healthy society</h1>
 					{
 						user.username ? <Link to="/posts"><button>Post now</button></Link> :
-							<button onClick={() => toggleComponent('login')}>Login to post</button>
+							<button onClick={() => toggleComponent({formName:'login'})}>Login to post</button>
 					}
 				</div>
 			</div>

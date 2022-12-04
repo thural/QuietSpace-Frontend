@@ -6,7 +6,7 @@ const styles = createUseStyles({
 		width: '100%',
 		margin: 'auto',
 		display: 'grid',
-		gridTemplateRows: 'repeat( auto-fit, minmax(12rem, 1fr) )',
+		//gridTemplateRows: 'repeat( auto-fit, minmax(12rem, 1fr) )',
 		gridTemplateColumns: 'repeat( auto-fit, minmax(12rem, 1fr) )'
 	}
 });
