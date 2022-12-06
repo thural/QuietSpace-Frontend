@@ -21,7 +21,7 @@ const PostForm = () => {
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(postData)
 			})
-				.then(res => res.json(), err => console.log('error message: ', err))
+				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
 					console.log('message: ', data);
 					setPosts({ type: 'add', data })

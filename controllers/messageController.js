@@ -62,7 +62,8 @@ exports.edit_post = [
 			if (!errors.isEmpty()) return res.json({ errors: errors.array() })
 			message.save((err) => {
 				if (err) return next(err)
-				res.redirect('/')
+        console.log("saved message: ", message)
+        return res.status(200).json(message)
 			})
 		} catch (err) { return next(err) }
 	}

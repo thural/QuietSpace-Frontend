@@ -18,7 +18,7 @@ const deletePost = async (_id) => {
 	} catch (err) { return false }
 }
 
-function postReducer(state, { posts, response: data, user, _id, type }) {
+function postReducer(state, { posts, data, user, _id, type }) {
 	switch (type) {
 		case 'like':
 			return state.map(post => {
@@ -42,8 +42,10 @@ function postReducer(state, { posts, response: data, user, _id, type }) {
 			return state.filter(post => post['_id'] !== _id)
 		case 'add':
 			const newState = [...state, data]
-			//console.log('newState in "add" reducer: ', newState)
+			//console.log('data after "add" reducer: ', data)
 			return newState // TODO: first figure out the response and then get back here.
+		case 'edit':
+			return state.map( message => message['_id'] == _id ? data : message )
 		case 'load':
 			return posts
 		default: return state
@@ -69,7 +71,7 @@ const App = () => {
 		login: false,
 		signup: false,
 		post: false,
-		edit: { view: false, id: null },
+		edit: { view: false, _id: null },
 		overlay: false
 	})
 

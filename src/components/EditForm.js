@@ -1,15 +1,22 @@
 import React, { useContext, useState } from "react"
 import HandlerContext from "./HandlersContext"
 import styles from "../styles/newPostStyles"
+import PostsContext from "./PostsContext"
 import Overlay from "./Overlay"
 
 const PostForm = () => {
 
 	const classes = styles()
-
+	const { user, posts, formView } = useContext(PostsContext)
 	const { setPosts, toggleComponent } = useContext(HandlerContext)
 
-	const [postData, setPostData] = useState({ message: '' })
+	const _id = formView.edit["_id"]
+
+	//console.log("edit formView ID: ", _id)
+
+	const message = posts.find( post => post["_id"] == _id)["message"]
+
+	const [postData, setPostData] = useState({ "message": message })
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
@@ -23,10 +30,10 @@ const PostForm = () => {
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(postData)
 			})
-				.then(res => res.json(), err => console.log('error message: ', err))
+				.then(res => res.json(), err => console.log('error message from edit POST: ', err))
 				.then(data => {
 					console.log('Edited Message: ', data)
-					setPosts({ _id, user, type: 'edit' })
+					setPosts({ type: 'edit', data, _id })
 				})
 		} catch (err) { throw err }
 	}
@@ -36,7 +43,7 @@ const PostForm = () => {
 			<Overlay />
 			<div className={classes.post}>
 				<h3>Edit post</h3>
-				<form onSubmit={(e) => { e.preventDefault(); addPost(postData); toggleComponent({ formName: 'overlay' }) }}>
+				<form onSubmit={(e) => { e.preventDefault(); addPost(postData, _id); toggleComponent({ formName: 'overlay' }) }}>
 
 					<input
 						className='message input'
@@ -44,7 +51,7 @@ const PostForm = () => {
 						name='message'
 						placeholder="message"
 						maxLength="64"
-						value={postData.message}
+						value={postData["message"]}
 						onChange={handleChange}>
 					</input>
 
