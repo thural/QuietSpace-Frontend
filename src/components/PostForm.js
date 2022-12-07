@@ -4,7 +4,7 @@ import styles from "../styles/newPostStyles"
 import Overlay from "./Overlay"
 
 const PostForm = () => {
-	const { setPosts, toggleComponent } = useContext(HandlerContext);
+	const { setPosts, setFormView } = useContext(HandlerContext);
 	const classes = styles();
 
 	const [postData, setPostData] = useState({ message: '' })
@@ -34,7 +34,7 @@ const PostForm = () => {
 			<Overlay />
 			<div className={classes.post}>
 				<h3>Create a post</h3>
-				<form onSubmit={(e) => { e.preventDefault(); addPost(postData); toggleComponent({formName:'overlay'}) }}>
+				<form onSubmit={(e) => { e.preventDefault(); addPost(postData); setFormView({formName:'overlay'}) }}>
 					<input
 						className='message input'
 						type='text' name='message'

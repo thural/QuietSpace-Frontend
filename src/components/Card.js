@@ -4,8 +4,8 @@ import PostsContext from "./PostsContext"
 import styles from "../styles/cardStyles"
 
 const Card = ({ card }) => {
-	const { user } = useContext(PostsContext);
-	const { setPosts, toggleComponent } = useContext(HandlerContext);
+	const { user } = useContext(PostsContext)
+	const { setPosts, setFormView } = useContext(HandlerContext)
 	const classes = styles()
 	const { _id, username, message, likes } = card
 	const liked = card.likes.includes(user['_id']) ? 'unlike' : 'like'
@@ -29,7 +29,7 @@ const Card = ({ card }) => {
 					</button>
 
 					{card.username == user.username &&
-						<button onClick={() => toggleComponent({formName:'edit', _id})}>
+						<button onClick={() => setFormView({formName:'edit', _id})}>
 							edit
 						</button>
 					}

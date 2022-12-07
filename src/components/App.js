@@ -41,7 +41,7 @@ function postReducer(state, { posts, data, user, _id, type }) {
 			deletePost(_id)
 			return state.filter(post => post['_id'] !== _id)
 		case 'add':
-			const newState = [...state, data]
+			const newState = [data, ...state]
 			//console.log('data after "add" reducer: ', data)
 			return newState // TODO: first figure out the response and then get back here.
 		case 'edit':
@@ -49,6 +49,23 @@ function postReducer(state, { posts, data, user, _id, type }) {
 		case 'load':
 			return posts
 		default: return state
+	}
+}
+
+const formViewReducer = (state, { formName, _id }) => {
+	switch (formName) {
+		case "login":
+			return({ login: true, signup: false })
+		case "signup":
+			return({ signup: true, login: false })
+		case "post":
+			return({...state, post: true })
+		case "edit":
+			return({ edit: { view: true, _id } })
+		case "overlay":
+			return({ signup: false, login: false, post: false, edit: false })
+		default:
+			return state
 	}
 }
 
@@ -67,35 +84,13 @@ const App = () => {
 		setUser(item)
 	}
 
-	const [formView, setFormView] = useState({
+	const [formView, setFormView] = useReducer(formViewReducer, {
 		login: false,
 		signup: false,
 		post: false,
 		edit: { view: false, _id: null },
 		overlay: false
 	})
-
-	const toggleComponent = ({ formName, _id }) => {
-		switch (formName) {
-			case "login":
-				setFormView({ login: true, signup: false })
-				break;
-			case "signup":
-				setFormView({ signup: true, login: false })
-				break;
-			case "post":
-				setFormView({...formView, post: true })
-				break;
-			case "edit":
-				setFormView({ edit: { view: true, _id } })
-				break;
-			case "overlay":
-				setFormView({ signup: false, login: false, post: false, edit: false })
-				break
-			default:
-				null
-		}
-	}
 
 	const [posts, setPosts] = useReducer(postReducer, []);
 	const [user, setUser] = useState([]);
@@ -107,7 +102,7 @@ const App = () => {
 	return (
 		<div className={classes.app}>
 			<PostsContext.Provider value={{ posts, user, formView }}>
-				<HandlerContext.Provider value={{ setPosts, setUser, fetchUser, toggleComponent }}>
+				<HandlerContext.Provider value={{ setPosts, setUser, fetchUser, setFormView }}>
 					<NavBar />
 					<Routes>
 						<Route path="/" element={<Home />} />

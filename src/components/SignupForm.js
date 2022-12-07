@@ -3,10 +3,10 @@ import HandlerContext from "./HandlersContext";
 import Overlay from "./Overlay";
 import styles from "../styles/signupStyles"
 
-const SignupForm = ({ toggleComponent }) => {
+const SignupForm = () => {
 	const classes = styles();
 
-	const { fetchUser, setUser } = useContext(HandlerContext);
+	const { setUser, setFormView } = useContext(HandlerContext);
 
 	const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
 
@@ -31,10 +31,10 @@ const SignupForm = ({ toggleComponent }) => {
 
 	return (
 		<>
-			<Overlay toggleComponent={toggleComponent} />
+			<Overlay />
 			<div className={classes.signup}>
 				<h1>Signup</h1>
-				<form className='signup form' onSubmit={e => { handleSubmit(e); toggleComponent('overlay') }}>
+				<form className='signup form' onSubmit={e => { handleSubmit(e); setFormView('overlay') }}>
 					<div className="signup input">
 						<input
 							type='text'
@@ -61,7 +61,7 @@ const SignupForm = ({ toggleComponent }) => {
 					<button type='submit'>Signup</button>
 				</form>
 				<h3>already have an account?</h3>
-				<button type='button' onClick={() => toggleComponent({formName:'login'})}>Login</button>
+				<button type='button' onClick={() => setFormView({formName:'login'})}>Login</button>
 			</div>
 		</>
 	)

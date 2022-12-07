@@ -8,7 +8,7 @@ import styles from "../styles/postsStyles"
 
 const Posts = () => {
 	const { user, formView } = useContext(PostsContext)
-	const { setPosts, toggleComponent } = useContext(HandlerContext)
+	const { setPosts, setFormView } = useContext(HandlerContext)
 	const classes = styles()
 
 
@@ -17,7 +17,7 @@ const Posts = () => {
 			<div className={classes.posts}>
 
 				{user.username &&
-					<button className="add-post-btn" onClick={() => toggleComponent({formName:'post'})} >
+					<button className="add-post-btn" onClick={() => setFormView({formName:'post'})} >
 						Add
 					</button>}
 

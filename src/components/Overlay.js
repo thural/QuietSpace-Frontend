@@ -5,10 +5,10 @@ import HandlerContext from "./HandlersContext"
 
 const Overlay = () => {
 	const classes = styles();
-	const { toggleComponent } = useContext(HandlerContext);
+	const { setFormView } = useContext(HandlerContext);
 
 	return (
-		<div className={classes.overlay} onClick={() => toggleComponent({formName:'overlay'})}></div>
+		<div className={classes.overlay} onClick={() => setFormView({formName:'overlay'})}></div>
 	)
 }
 

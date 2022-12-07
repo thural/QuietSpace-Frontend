@@ -3,15 +3,14 @@ import HandlerContext from "./HandlersContext";
 import Overlay from "./Overlay";
 import styles from "../styles/loginStyles"
 
-const LoginForm = ({ toggleComponent }) => {
-	//const { posts: cards } = useContext(PostsContext);
-	//const { user } = useContext(PostsContext);
+const LoginForm = () => {
 	const classes = styles();
-	const { fetchUser } = useContext(HandlerContext);
+	const { fetchUser, setFormView } = useContext(HandlerContext);
 	const [formData, setFormData] = useState({ username: '', password: '' })
 
 	const handleChange = (event) => {
-		setFormData({ ...formData, [event.target.name]: event.target.value });
+		const { name, value } = event.target
+		setFormData({ ...formData, [name]: value })
 	}
 
 	const handleSubmit = (event) => {
@@ -20,11 +19,7 @@ const LoginForm = ({ toggleComponent }) => {
 			method: 'POST',
 			headers: { 'Content-type': 'application/json' },
 			body: JSON.stringify(formData)
-		}).then(function (res) {
-			//console.log('LOGIN RESPONSE: ', res.json())
-			fetchUser()
-			//return res.json();
-		})
+		}).then(() => fetchUser())
 	}
 
 	return (
@@ -32,7 +27,7 @@ const LoginForm = ({ toggleComponent }) => {
 			<Overlay />
 			<div className={classes.login}>
 				<h1>Login</h1>
-				<form className='login form' onSubmit={e => { handleSubmit(e); toggleComponent({formName:'overlay'}) }}>
+				<form className='login form' onSubmit={e => { handleSubmit(e); setFormView({ formName: 'overlay' }) }}>
 					<div className="login input">
 						<input
 							type='text'
@@ -52,7 +47,7 @@ const LoginForm = ({ toggleComponent }) => {
 					<button type='submit'>Login</button>
 				</form>
 				<h3>don't have an account?</h3>
-				<button type='button' onClick={() => toggleComponent({formName:'signup'})}>Signup</button>
+				<button type='button' onClick={() => setFormView({ formName: 'signup' })}>Signup</button>
 			</div>
 		</>
 	)

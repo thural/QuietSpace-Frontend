@@ -8,7 +8,7 @@ import styles from "../styles/homeStyles"
 
 const Home = () => {
 	const { user, formView } = useContext(PostsContext);
-	const { toggleComponent } = useContext(HandlerContext);
+	const { setFormView } = useContext(HandlerContext);
 	const classes = styles();
 
 	return (
@@ -19,13 +19,13 @@ const Home = () => {
 					<h1>Free speech is the foundation of a healthy society</h1>
 					{
 						user.username ? <Link to="/posts"><button>Post now</button></Link> :
-							<button onClick={() => toggleComponent({formName:'login'})}>Login to post</button>
+							<button onClick={() => setFormView({formName:'login'})}>Login to post</button>
 					}
 				</div>
 			</div>
 			{
-				formView.signup ? <SignupForm toggleComponent={toggleComponent} /> :
-					formView.login ? <LoginForm toggleComponent={toggleComponent} /> :
+				formView.signup ? <SignupForm /> :
+					formView.login ? <LoginForm /> :
 						null
 			}
 		</>

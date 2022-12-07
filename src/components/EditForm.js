@@ -8,7 +8,7 @@ const PostForm = () => {
 
 	const classes = styles()
 	const { user, posts, formView } = useContext(PostsContext)
-	const { setPosts, toggleComponent } = useContext(HandlerContext)
+	const { setPosts, setFormView } = useContext(HandlerContext)
 
 	const _id = formView.edit["_id"]
 
@@ -43,7 +43,7 @@ const PostForm = () => {
 			<Overlay />
 			<div className={classes.post}>
 				<h3>Edit post</h3>
-				<form onSubmit={(e) => { e.preventDefault(); addPost(postData, _id); toggleComponent({ formName: 'overlay' }) }}>
+				<form onSubmit={(e) => { e.preventDefault(); addPost(postData, _id); setFormView({ formName: 'overlay' }) }}>
 
 					<input
 						className='message input'
