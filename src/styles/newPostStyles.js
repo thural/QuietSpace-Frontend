@@ -9,7 +9,6 @@ const styles = createUseStyles({
 		gap: '0.5rem',
 		borderRadius: '1em',
 		color: 'black',
-		boxShadow: '4px 4px lightsteelblue',
 		margin: 'auto',
 		position: 'fixed',
 		top: '50%',

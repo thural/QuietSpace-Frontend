@@ -58,10 +58,10 @@ const SignupForm = () => {
 							onChange={handleChange}
 						/>
 					</div>
-					<button type='submit'>Signup</button>
+					<button type='submit'>submit</button>
 				</form>
 				<h3>already have an account?</h3>
-				<button type='button' onClick={() => setFormView({formName:'login'})}>Login</button>
+				<button type='button' onClick={() => setFormView({formName:'login'})}>login</button>
 			</div>
 		</>
 	)

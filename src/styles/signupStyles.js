@@ -9,7 +9,6 @@ const styles = createUseStyles({
 		gap: '0.5rem',
 		borderRadius: '1em',
 		color: 'black',
-		boxShadow: '4px 4px lightsteelblue',
 		margin: 'auto',
 		position: 'fixed',
 		top: '50%',
@@ -17,6 +16,7 @@ const styles = createUseStyles({
 		transform: 'translate(-50%, -50%)',
 		'& button': {
 			marginTop: '1rem',
+			marginLeft: 'auto',
 			width: 'fit-content',
 			backgroundColor: 'black',
 			color: 'white',
@@ -43,6 +43,9 @@ const styles = createUseStyles({
 		'& input:focus': {
 			outline: 'none',
 			borderColor: '#a7abb1',
+		},
+		'& h3': {
+			marginBottom: '0'
 		}
 	},
 });

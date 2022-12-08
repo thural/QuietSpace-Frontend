@@ -2,7 +2,7 @@ const Message = require("../models/messageModel")
 const { validationResult } = require("express-validator")
 
 module.exports.validateMessage = (req, res, next) => {
-  const errors = validationResult(req);
+  const errors = validationResult(req)
   console.log('VALIDATE MESSAGE USER: ', req.user)
   req.message = new Message({ username: req.user.username, message: req.body.message })
   if (!errors.isEmpty()) {
