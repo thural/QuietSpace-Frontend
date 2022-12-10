@@ -1,6 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 import styles from "../styles/navbarStyles"
+import Menu from "./Menu"
+
+
 const NavBar = ({ children }) => {
 
 	const classes = styles();
@@ -13,6 +16,7 @@ const NavBar = ({ children }) => {
 					<Link to="/"><li>Home</li></Link>
 					<Link to="/posts"><li>Posts</li></Link>
 					<Link to="/contact"><li>Contact</li></Link>
+					<Menu />
 				</ul>
 				{children}
 			</nav>
