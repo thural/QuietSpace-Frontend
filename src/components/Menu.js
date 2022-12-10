@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
-import cartImg from '../assets/cart.svg';
-import HandlerContext from "./HandlersContext";
+import React, { useState, useContext } from "react"
+import cartImg from '../assets/cart.svg'
 import styles from "../styles/menuStyles"
+import HandlerContext from "./HandlersContext"
+
 
 const Menu = ({ menu: items }) => {
-
-	// const handleCart = useContext(HandlerContext)
+	const { fetchUser } = useContext(HandlerContext);
 	const classes = styles();
 
 	const [display, setDisplay] = useState('none');
@@ -13,7 +13,14 @@ const Menu = ({ menu: items }) => {
 	const toggleDisplay = () => {
 		if (display === "none") setDisplay("block")
 		else setDisplay("none");
-	};
+	}
+
+	const handleLogout = (event) => {
+		event.preventDefault()
+		fetch('http://localhost:5000/api/users/log-out', {
+			method: 'GET'
+		}).then(() => fetchUser())
+	}
 
 	// const countItems = (items) => {
 	// 	const count = items
@@ -48,7 +55,7 @@ const Menu = ({ menu: items }) => {
 				{/* <h3>total: ${calcTotal(items)}</h3> */}
 
 				<div className='buttons'>
-					<button>Log out</button>
+					<button onClick={handleLogout}>Log out</button>
 				</div>
 			</div>
 		</>

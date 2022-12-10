@@ -6,11 +6,13 @@ const Copyright = () => {
 	const classes = styles();
 
 	return (
-		<a href='https://github.com/thural' className={classes.wrapper}>
-			<p>Copyright © 2022 thural</p>
-			<img src={logo}></img>
-		</a>
+		<div className={classes.footer}>
+			<a href='https://github.com/thural'>
+				<p>Copyright © 2022 thural</p>
+				<img src={logo}></img>
+			</a>
+		</div>
 	);
 };
 
-export default Copyright;
+export default Copyright

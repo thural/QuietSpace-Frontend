@@ -1,30 +1,25 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-	wrapper: {
-		boxSizing: 'border-box',
-		display: 'flex',
-		width: '100%',
-		flexFlow: 'row nowrap',
-		alignItems: 'center',
-		justifyContent: 'center',
+	footer: {
 		gap: '1rem',
-		position: 'absolute',
+		color: 'black',
+		width: '100%',
 		bottom: '0',
 		margin: '0',
+		display: 'flex',
 		padding: '1rem',
-		textDecoration: 'none',
-		color: 'black',
-		textDecoration: 'inherit',
-		fontWeight: 'inherit',
-	},
-	'& a, a:link, a:visited, a:hover, a:focus, a:active': {
-		textDecoration: 'none',
-		color: 'black',
-		textDecoration: 'inherit',
-		fontWeight: 'inherit',
-	},
-
+		position: 'absolute',
+		boxSizing: 'border-box',
+		alignItems: 'center',
+		justifyContent: 'center',
+		'& a, a:link, a:visited, a:hover, a:focus, a:active': {
+			display: 'flex',
+			gap: '1rem',
+			color: 'black',
+			textDecoration: 'inherit'
+		}
+	}
 })
 
 
