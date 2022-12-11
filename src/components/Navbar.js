@@ -10,7 +10,7 @@ const NavBar = ({ children }) => {
 
 	return (
 		<div className={classes.navbar}>
-			<h1>MBTI Space</h1>
+			<h1>Quiet Space</h1>
 			<nav>
 				<ul>
 					<Link to="/"><li>Home</li></Link>

@@ -2,32 +2,7 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles(
 	{
-		cartBtn: {
-			width: '2rem',
-			height: '2rem',
-			zIndex: '1',
-			backgroundColor: 'bisque',
-			padding: '10px',
-			borderRadius: '50px',
-		},
-		cartBadge: {
-			top: '-25%',
-			right: '50%',
-			width: '75%',
-			height: '75%',
-			margin: '0',
-			display: 'flex',
-			padding: '0',
-			position: 'relative',
-			fontSize: '1rem',
-			alignItems: 'center',
-			borderRadius: '50%',
-			justifyContent: 'center',
-			verticalAlign: 'middle',
-			lineHeight: '100%',
-			backgroundColor: 'lightcoral'
-		},
-		cartBckg: {
+		menuOverlay: {
 			position: "fixed",
 			top: '0',
 			right: '0',
@@ -36,7 +11,7 @@ const styles = createUseStyles(
 			zIndex: '0',
 			display: 'none',
 		},
-		cart: {
+		menu: {
 			top: '0',
 			color: 'black',
 			right: '0',
@@ -50,7 +25,7 @@ const styles = createUseStyles(
 			boxShadow: 'rgb(0 0 0 / 25%) 0px 0px 64px 32px',
 			boxSizing: 'border-box',
 			backgroundColor: 'white',
-			borderRadius: '0rem 0rem 0rem 1rem',
+			borderRadius: '0rem 0rem 0rem 0.5rem',
 			'& a, a:hover, a:focus, a:active': {
 				textDecoration: 'none',
 				color: 'inherit',
@@ -78,11 +53,6 @@ const styles = createUseStyles(
 				minWidth: '64px',
 				minHeight: '64px',
 				display: 'flex',
-			},
-			'& img': {
-				maxHeight: '64px',
-				maxWidth: '64px',
-				margin: 'auto',
 			},
 			'& .details': {
 				display: 'flex',
@@ -126,7 +96,6 @@ const styles = createUseStyles(
 				borderRadius: '0.5rem',
 				backgroundColor: 'lightsalmon'
 			},
-
 		}
 	}
 );
