@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import PostsContext from "./PostsContext"
-import Card from "./Card"
+import Message from "./Message"
 import styles from "../styles/cardBoardStyles"
 
 const Chat = () => {
@@ -10,7 +10,7 @@ const Chat = () => {
 	return (
 		<div className={classes.cardboard}>
 			{
-				cards.map((message) => (<Card key={message._id} card={message} />))
+				cards.map((message) => (<Message key={message._id} content={message} />))
 			}
 		</div>
 	)
