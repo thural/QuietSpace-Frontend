@@ -14,15 +14,15 @@ const bodyParser = require("body-parser")
 const app = express()
 dotenv.config()
 
-const my_logger = (request, response, next) => {
-	console.log(
-		"URL: ", request.url,
-		"Method: ", request.method,
-		"Body: ", request.body,
-		new Date().getMilliseconds()
-	);
-	next()
-}
+// const my_logger = (request, response, next) => {
+// 	console.log(
+// 		"URL: ", request.url,
+// 		"Method: ", request.method,
+// 		"Body: ", request.body,
+// 		new Date().getMilliseconds()
+// 	);
+// 	next()
+// }
 
 const mongoose = require('mongoose')
 const mongoDB = process.env.MONGODB_URI || process.env.DEV_DB_URL
@@ -68,38 +68,6 @@ passport.use(
 passport.serializeUser((user, done) => { done(null, user.id) })
 passport.deserializeUser((id, done) => { User.findById(id, (err, user) => { done(err, user) }) })
 
-// app.post("/log-in", (req, res, next) => {
-//   passport.authenticate("local", (err, user, info) => {
-//     if (err) throw err;
-//     if (!user) res.json({msg:"User does not exist"});
-//     else {
-//       req.logIn(user, (err) => {
-//         if (err) throw err;
-//         res.status(200).json(req.user);
-//         console.log(req.user);
-//       });
-//     }
-//   })(req, res, next);
-// });
-
-// app.post("/register", (req, res) => {
-//   User.findOne({ username: req.body.username }, async (err, doc) => {
-//     if (err) throw err;
-//     if (doc) res.send("User Already Exists");
-//     if (!doc) {
-//       const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-//       const newUser = new User({
-//         username: req.body.username,
-//         password: hashedPassword,
-//       });
-//       await newUser.save();
-//       res.send("User Created");
-//     }
-//   })
-// });
-
-
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
@@ -109,7 +77,23 @@ app.use(logger('dev'))
 
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/messages', require('./routes/messageRoutes'))
-
 app.all('*', (request, response) => { response.status(404).send('Error 404, Page not found') })
 
-app.listen(5000)
+// const server = require('http').Server(app)
+// const io = require('socket.io')(server)
+// app.listen(5000)
+
+
+const server = app.listen(5000, function () {
+	console.log('server listening at', server.address())
+})
+
+const io = require('socket.io')(server)
+
+io.on('connection', socket => {
+	//console.log(socket.id)
+	socket.on('custom-event', (str, num, arr) => {
+		console.log('message from custom event triggered on App component load:')
+		console.log("string: ", str, "number: ", num, "array: ", arr)
+	})
+})

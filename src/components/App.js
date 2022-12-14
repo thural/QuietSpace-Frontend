@@ -3,11 +3,22 @@ import { Route, Routes } from "react-router-dom"
 import HandlerContext from "./HandlersContext"
 import PostsContext from "./PostsContext"
 import styles from "../styles/appStyles"
+import { io } from 'socket.io-client'
 import Copyright from "./Copyright"
 import Contact from "./Contact"
 import NavBar from "./Navbar"
 import Posts from "./Posts"
 import Home from "./Home"
+import Chat from "./Chat"
+
+
+const socket = io('http://localhost:5000')
+
+socket.on('connect', () => {
+	console.log("socket id from App component: ", socket.id)
+})
+
+socket.emit('custom-event', "test message", 10, [1, 2, 3])
 
 
 
@@ -45,7 +56,7 @@ function postReducer(state, { posts, data, user, _id, type }) {
 			//console.log('data after "add" reducer: ', data)
 			return newState // TODO: first figure out the response and then get back here.
 		case 'edit':
-			return state.map( message => message['_id'] == _id ? data : message )
+			return state.map(message => message['_id'] == _id ? data : message)
 		case 'load':
 			return posts
 		default: return state
@@ -55,15 +66,15 @@ function postReducer(state, { posts, data, user, _id, type }) {
 const formViewReducer = (state, { formName, _id }) => {
 	switch (formName) {
 		case "login":
-			return({ login: true, signup: false })
+			return ({ login: true, signup: false })
 		case "signup":
-			return({ signup: true, login: false })
+			return ({ signup: true, login: false })
 		case "post":
-			return({...state, post: true })
+			return ({ ...state, post: true })
 		case "edit":
-			return({ edit: { view: true, _id } })
+			return ({ edit: { view: true, _id } })
 		case "overlay":
-			return({ signup: false, login: false, post: false, edit: false })
+			return ({ signup: false, login: false, post: false, edit: false })
 		default:
 			return state
 	}
@@ -107,6 +118,7 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/posts" element={<Posts />} />
+						<Route path="/chat" element={<Chat />} />
 						<Route path="/contact" element={<Contact />} />
 					</Routes>
 				</HandlerContext.Provider>
