@@ -1,14 +1,17 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-	wrapper: {
-		display: 'grid',
+	message: {
+		width: 'fit-content',
+		maxWidth: '70%',
+		border: 'grey solid 1px',
+		display: 'flex',
+		flexFlow: 'column nowrap',
 		padding: '1rem',
+		boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
 		borderRadius: '1rem',
 		justifyItems: 'center',
-		border: 'grey solid 1px',
 		backgroundColor: 'white',
-		boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
 		'& .author': {
 			width: '100%',
 			fontSize: '1.2rem',
@@ -35,6 +38,5 @@ const styles = createUseStyles({
 		}
 	},
 })
-
 
 export default styles

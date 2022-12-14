@@ -1,10 +1,13 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 import styles from "../styles/navbarStyles"
 import Menu from "./Menu"
+import PostsContext from "./PostsContext"
 
 
 const NavBar = ({ children }) => {
+
+	const { user } = useContext(PostsContext)
 
 	const classes = styles();
 
@@ -15,6 +18,9 @@ const NavBar = ({ children }) => {
 				<ul>
 					<Link to="/"><li>Home</li></Link>
 					<Link to="/posts"><li>Posts</li></Link>
+					{
+						user.username && <Link to="/chat"><li>Chat</li></Link>
+					}
 					<Link to="/contact"><li>Contact</li></Link>
 					<Menu />
 				</ul>
@@ -25,4 +31,4 @@ const NavBar = ({ children }) => {
 	)
 };
 
-export default NavBar;
+export default NavBar

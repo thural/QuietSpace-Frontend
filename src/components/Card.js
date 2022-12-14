@@ -23,13 +23,15 @@ const Card = ({ card }) => {
 
 			{user.username &&
 				<div className="buttons">
-
-					<button onClick={() => setPosts({ _id, user, type: liked })}>
-						{likes.length} {liked}
-					</button>
+					
+					{card.username !== user.username &&
+						<button onClick={() => setPosts({ _id, user, type: liked })}>
+							{likes.length} {liked}
+						</button>
+					}
 
 					{card.username == user.username &&
-						<button onClick={() => setFormView({formName:'edit', _id})}>
+						<button onClick={() => setFormView({ formName: 'edit', _id })}>
 							edit
 						</button>
 					}
