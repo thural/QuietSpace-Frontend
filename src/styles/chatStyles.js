@@ -1,9 +1,25 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-	posts: {
-		margin: 'auto',
-		padding: '10vh 10vw',
+	container : {
+		height: "100%"
+	},
+	chat: {
+		display: "flex"
+	},
+	contacts: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'amber',
+		flexBasis: '200px',
+		flexGrow: '1',
+		flexShrink: '1'
+	},
+	messages: {
+		padding: '0 5vw',
+		width: '100%',
+		flexBasis: 'min-content',
+		flexGrow: '1',
 		'& .add-post-btn': {
 			marginTop: '1rem',
 			width: 'fit-content',
@@ -16,7 +32,8 @@ const styles = createUseStyles({
 			fontWeight: '500',
 			marginBottom: '1rem'
 		},
-	}
+	},
 })
+
 
 export default styles

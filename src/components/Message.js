@@ -11,10 +11,11 @@ const Message = ({ message }) => {
 	const { sender_id, text, reactions } = message
 	const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
 	const margin = message.sender_id !== user.username ? "auto" : "0"
+	console.log(margin)
 
 	return (
 
-		<div id={sender_id} className={classes.message} style={{marginLeft:{margin}}}>
+		<div id={sender_id} className={classes.message} style={{marginLeft:margin}}>
 
 			<div className="author">
 				{sender_id}

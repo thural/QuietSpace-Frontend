@@ -29,6 +29,6 @@ const NavBar = ({ children }) => {
 
 		</div>
 	)
-};
+}
 
 export default NavBar

@@ -38,23 +38,26 @@ const Chat = () => {
 
 
 	return (
-		<div className={classes.posts} style={{ display: user.username ? "block" : "none" }}>
+		<div className={classes.chat}>
 
-			{user.username &&
-				<button className="add-post-btn" onClick={() => setFormView({ formName: 'post' })} >
-					Add
-				</button>}
+			<div className={classes.contacts}></div>
 
-			{/* 
-				{user.username && formView.post &&
-					<PostForm />
-				} */}
+			<div className={classes.messages} style={{ display: user.username ? "block" : "none" }}>
 
-			{user.username && formView.edit.view &&
-				<EditChat />
-			}
+				{user.username &&
+					<button className="add-post-btn" onClick={() => setFormView({ formName: 'post' })} >
+						Add
+					</button>}
 
-			<ChatBoard messages={messages} />
+				{/* {user.username && formView.post &&
+					<PostForm />} */}
+
+				{user.username && formView.edit.view &&
+					<EditChat />
+				}
+
+				<ChatBoard messages={messages} />
+			</div>
 
 		</div>
 	)
