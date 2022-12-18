@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 	posts: {
-		margin: 'auto',
+		flexGrow: '1',
 		padding: '10vh 10vw',
 		'& .add-post-btn': {
 			marginTop: '1rem',

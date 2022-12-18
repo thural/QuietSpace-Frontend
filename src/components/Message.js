@@ -11,43 +11,18 @@ const Message = ({ message }) => {
 	const { sender_id, text, reactions } = message
 	const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
 	const margin = message.sender_id !== user.username ? "auto" : "0"
-	console.log(margin)
 
 	return (
 
 		<div id={sender_id} className={classes.message} style={{marginLeft:margin}}>
 
-			<div className="author">
+			<div className={classes.sender}>
 				{sender_id}
 			</div>
 
-			<div className="message">
+			<div className={classes.text}>
 				<p>{text}</p>
 			</div>
-
-			{user.username &&
-				<div className="buttons">
-
-					{sender_id !== user.username &&
-						<button onClick={() => setPosts({ _id: sender_id, user, type: liked })}>
-							{reactions.length} {liked}
-						</button>
-					}
-
-					{message.username == user.username &&
-						<button onClick={() => setFormView({ formName: 'edit', _id: sender_id })}>
-							edit
-						</button>
-					}
-
-					{user.admin || message.username == user.username &&
-						<button onClick={() => setPosts({ _id: sender_id, user, type: 'delete' })}>
-							delete
-						</button>
-					}
-
-				</div>
-			}
 
 		</div>
 	)

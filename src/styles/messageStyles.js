@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 	message: {
-		width: 'fit-content',
+		width: '200px',
 		maxWidth: '70%',
 		border: 'grey solid 1px',
 		display: 'flex',
@@ -12,17 +12,6 @@ const styles = createUseStyles({
 		borderRadius: '1rem',
 		justifyItems: 'center',
 		backgroundColor: 'white',
-		'& .author': {
-			width: '100%',
-			fontSize: '1.2rem',
-			fontWeight: '500'
-		},
-		'& .message': {
-			fontSize: '1rem',
-			fontStyle: 'italic',
-			padding: 0,
-			margin: '0px'
-		},
 		'& .buttons': {
 			display: 'flex',
 			flexFlow: 'row nowrap',
@@ -35,6 +24,22 @@ const styles = createUseStyles({
 			backgroundColor: 'black',
 			borderRadius: '1rem',
 			padding: '0.2rem 0.6rem'
+		}
+	},
+	sender: {
+		width: '100%',
+		fontSize: '1.2rem',
+		fontWeight: '500',
+		marginBottom: '0.5rem'
+	},
+	text: {
+		fontSize: '1rem',
+		padding: 0,
+		margin: '0px',
+		lineHeight: '1.3',
+		'& p': {
+			margin: '0',
+			padding: '0',
 		}
 	},
 })
