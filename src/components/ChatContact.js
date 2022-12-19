@@ -1,18 +1,28 @@
 import React, { useContext } from "react"
-import HandlerContext from "./HandlersContext"
-import PostsContext from "./PostsContext"
+import ChatContext from "./ChatContext"
 import styles from "../styles/chatContactStyles"
 
-const ChatContact = ({ contact }) => {
+const ChatContact = ({ contact, selectedChat, setSelectedChat }) => {
 
-	const { user } = useContext(PostsContext)
-	const { setPosts, setFormView } = useContext(HandlerContext)
-	const classes = styles()
+	const { setMessages, chat } = useContext(ChatContext)
 	const { sender_id, text, reactions } = contact
+	const backgroundColor = selectedChat == contact['sender_id'] ? '#e3e3e3' : 'white'
+
+	const classes = styles()
 
 	return (
 
-		<div id={sender_id} className={classes.contact} >
+		<div id={sender_id}
+			className={classes.contact}
+
+			onClick={
+				() => {
+					setSelectedChat(contact['sender_id']);
+					setMessages({ type: 'load', sender_id, chat });
+				}}
+
+			style={{ backgroundColor }}
+		>
 
 			<div className={classes.author}>
 				{sender_id}
@@ -21,6 +31,7 @@ const ChatContact = ({ contact }) => {
 			<div className={classes.text}>
 				<p>{text}</p>
 			</div>
+
 		</div>
 	)
 }
