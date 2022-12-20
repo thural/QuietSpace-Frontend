@@ -1,16 +1,14 @@
-import React, { useContext } from "react"
-import PostsContext from "./PostsContext"
 import Card from "./Card"
 import styles from "../styles/cardBoardStyles"
+import React from "react"
 
-const CardBoard = () => {
-	const { posts: cards } = useContext(PostsContext)
+const CardBoard = ({posts}) => {
 	const classes = styles()
 
 	return (
 		<div className={classes.cardboard}>
 			{
-				cards.map((card) => (<Card key={card._id} card={card} />))
+				posts.map((card) => (<Card key={card._id} card={card} />))
 			}
 		</div>
 	)

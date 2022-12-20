@@ -2,12 +2,12 @@ import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 import styles from "../styles/navbarStyles"
 import Menu from "./Menu"
-import PostsContext from "./PostsContext"
+import HandlerContext from "./HandlerContext"
 
 
 const NavBar = ({ children }) => {
 
-	const { user } = useContext(PostsContext)
+	const { user } = useContext(HandlerContext)
 
 	const classes = styles();
 

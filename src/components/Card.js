@@ -1,11 +1,9 @@
 import React, { useContext } from "react"
-import HandlerContext from "./HandlersContext"
-import PostsContext from "./PostsContext"
+import HandlerContext from "./HandlerContext"
 import styles from "../styles/cardStyles"
 
 const Card = ({ card }) => {
-	const { user } = useContext(PostsContext)
-	const { setPosts, setFormView } = useContext(HandlerContext)
+	const { user, setPosts, setFormView } = useContext(HandlerContext)
 	const classes = styles()
 	const { _id, username, message, likes } = card
 	const liked = card.likes.includes(user['_id']) ? 'unlike' : 'like'

@@ -1,14 +1,12 @@
 import React, { useContext, useState } from "react"
-import HandlerContext from "./HandlersContext"
+import HandlerContext from "./HandlerContext"
 import styles from "../styles/newPostStyles"
-import PostsContext from "./PostsContext"
 import Overlay from "./Overlay"
 
-const PostForm = () => {
+const EditForm = ({setPosts}) => {
 
 	const classes = styles()
-	const { user, posts, formView } = useContext(PostsContext)
-	const { setPosts, setFormView } = useContext(HandlerContext)
+	const { user, posts, formView, setFormView } = useContext(HandlerContext)
 
 	const _id = formView.edit["_id"]
 
@@ -63,4 +61,4 @@ const PostForm = () => {
 	)
 }
 
-export default PostForm
+export default EditForm

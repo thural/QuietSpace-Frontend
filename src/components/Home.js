@@ -1,14 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import PostsContext from "./PostsContext";
-import HandlerContext from "./HandlersContext";
+import HandlerContext from "./HandlerContext";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 import styles from "../styles/homeStyles"
 
 const Home = () => {
-	const { user, formView } = useContext(PostsContext);
-	const { setFormView } = useContext(HandlerContext);
+	const { user, formView, setFormView } = useContext(HandlerContext);
 	const classes = styles();
 
 	return (

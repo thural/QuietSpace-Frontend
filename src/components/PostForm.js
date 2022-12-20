@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import HandlerContext from "./HandlersContext"
+import HandlerContext from "./HandlerContext"
 import styles from "../styles/newPostStyles"
 import Overlay from "./Overlay"
 

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useReducer, useEffect } from "react"
 import ChatBoard from "./ChatBoard"
 import ContactBoard from "./ContactBoard"
-import PostsContext from "./PostsContext"
+import HandlerContext from "./HandlerContext"
 import ChatContext from "./ChatContext"
 import styles from "../styles/chatStyles"
 
@@ -66,13 +66,11 @@ function chatReducer(state, { messages, data, chat, user, sender_id, type }) {
 }
 
 const Chat = () => {
-	const { user } = useContext(PostsContext)
+	const { user } = useContext(HandlerContext)
 	const classes = styles()
 	const [chat, setChat] = useReducer(chatReducer, data)
 
 	//useEffect(() => setChat({ data, type: 'init' }), [])
-
-	console.log('CHAT DATA: ', chat)
 
 	const contacts = chat.map(sender => sender
 		.findLast(message => message['sender_id'] !== user.username))

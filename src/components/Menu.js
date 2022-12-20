@@ -1,12 +1,10 @@
 import React, { useState, useContext } from "react"
 import styles from "../styles/menuStyles"
-import HandlerContext from "./HandlersContext"
-import PostsContext from "./PostsContext"
+import HandlerContext from "./HandlerContext"
 
 
 const Menu = ({ menu: items }) => {
-	const { fetchUser } = useContext(HandlerContext)
-	const { user } = useContext(PostsContext)
+	const { user, fetchUser } = useContext(HandlerContext)
 	const classes = styles();
 
 	const [display, setDisplay] = useState('none');
