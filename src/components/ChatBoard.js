@@ -1,21 +1,21 @@
 import React, { useContext, useState } from "react"
-//import PostsContext from "./PostsContext"
-import HandlerContext from "./HandlersContext"
+import ChatContext from "./ChatContext"
 import Message from "./Message"
 import styles from "../styles/chatBoardStyles"
 
 const ChatBoard = ({ messages }) => {
 
-	//const { messages } = useContext(PostsContext)
-	const { setChat } = useContext(HandlerContext);
+	const { setMessages } = useContext(ChatContext)
 	const classes = styles()
 
 	const [messageData, setMessageData] = useState({ message: '' })
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
-		setMessageData({ ...messageData, [name]: value });
+		setMessageData({ ...messageData, [name]: value })
 	}
+
+console.log("messageData: ", messageData)
 
 	const sendMessage = async (messageData) => {
 		try {
@@ -27,7 +27,7 @@ const ChatBoard = ({ messages }) => {
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
 					console.log('message: ', data);
-					setChat({ type: 'add', data })
+					setMessages({type:'add', messageData})
 				})
 		} catch (err) { throw err }
 	}

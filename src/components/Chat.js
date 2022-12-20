@@ -2,14 +2,10 @@ import React, { useContext, useState, useReducer, useEffect } from "react"
 import ChatBoard from "./ChatBoard"
 import ContactBoard from "./ContactBoard"
 import PostsContext from "./PostsContext"
-import HandlerContext from "./HandlersContext"
 import ChatContext from "./ChatContext"
 import styles from "../styles/chatStyles"
-import { matchPath } from "react-router-dom"
-// import PostForm from "./PostForm"
-// import EditForm from "./EditForm"
 
-const chat = [
+const data = [
 	[
 		{
 			_id: 1,
@@ -58,38 +54,13 @@ const chat = [
 	],
 ];
 
-function messagesReducer(state, { messages, data, chat, user, sender_id, type }) {
+function chatReducer(state, { messages, data, chat, user, sender_id, type }) {
 	switch (type) {
-		// case 'like':
-		// 	return state.map(post => {
-		// 		if (post['_id'] == sender_id) {
-		// 			if (post.likes.includes(user['id'])) return post
-		// 			const postLikes = [...post.likes, user['_id']]
-		// 			return { ...post, likes: postLikes }
-		// 		}
-		// 		return post
-		// 	})
-		// case 'unlike':
-		// 	return state.map(post => {
-		// 		if (post['_id'] == sender_id) {
-		// 			const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
-		// 			return { ...post, likes: reducedLikes }
-		// 		}
-		// 		return post
-		// 	})
-		// case 'delete':
-		// 	deletePost(sender_id)
-		// 	return state.filter(post => post['_id'] !== sender_id)
-		// case 'add':
-		// 	const newState = [data, ...state]
-		// 	//console.log('data after "add" reducer: ', data)
-		// 	return newState // TODO: first figure out the response and then get back here.
-		// case 'edit':
-		// 	return state.map(message => message['_id'] == sender_id ? data : message)
 		case 'init':
-			return chat[0]
-		case 'load':
-			return chat.find(sender => sender.some(message => message['sender_id'] == sender_id))
+			console.log('data from reducer: ', data)
+			return data
+		// case 'load':
+		// 	return chat.find(sender => sender.some(message => message['sender_id'] == sender_id))
 		default: return state
 	}
 }
@@ -97,33 +68,24 @@ function messagesReducer(state, { messages, data, chat, user, sender_id, type })
 const Chat = () => {
 	const { user } = useContext(PostsContext)
 	const classes = styles()
+	const [chat, setChat] = useReducer(chatReducer, data)
 
-	const [messages, setMessages] = useReducer(messagesReducer, [])
+	//useEffect(() => setChat({ data, type: 'init' }), [])
 
-	useEffect(() => setMessages({ chat, type: 'init' }), [])
-
-
-	// const contacts = [
-	// 	{
-	// 		_id: 1,
-	// 		sender_id: "Brogrammer",
-	// 		text: "Coding as always.. You going to the party tonight? 🤔",
-	// 	},
-	// 	{
-	// 		_id: 3,
-	// 		sender_id: "Susan",
-	// 		text: "Thanks gonna check these for now 👍",
-	// 	},
-	// ]
+	console.log('CHAT DATA: ', chat)
 
 	const contacts = chat.map(sender => sender
 		.findLast(message => message['sender_id'] !== user.username))
 
+	const [selectedChat, setSelectedChat] = useState(contacts[0]['sender_id'])
+
+	const messages = chat.find(sender => sender
+		.some(message => message['sender_id'] == selectedChat))
 
 	return (
 		<div className={classes.chat}>
 
-			<ChatContext.Provider value={{ setMessages, chat }} >
+			<ChatContext.Provider value={{ chat, setChat, selectedChat, setSelectedChat }} >
 				<ContactBoard contacts={contacts} />
 				<ChatBoard messages={messages} />
 			</ChatContext.Provider>

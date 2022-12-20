@@ -1,12 +1,10 @@
 import React, { useContext } from "react"
-import HandlerContext from "./HandlersContext"
 import PostsContext from "./PostsContext"
 import styles from "../styles/messageStyles"
 
 const Message = ({ message }) => {
 
 	const { user } = useContext(PostsContext)
-	const { setPosts, setFormView } = useContext(HandlerContext)
 	const classes = styles()
 	const { sender_id, text, reactions } = message
 	const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
