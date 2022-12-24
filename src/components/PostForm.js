@@ -5,9 +5,8 @@ import Overlay from "./Overlay"
 
 const PostForm = () => {
 	const { setPosts, setFormView } = useContext(HandlerContext);
-	const classes = styles();
 
-	const [postData, setPostData] = useState({ message: '' })
+	const [postData, setPostData] = useState({ text: '' })
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
@@ -16,19 +15,20 @@ const PostForm = () => {
 
 	const addPost = async (postData) => {
 		try {
-			await fetch('http://localhost:5000/api/messages', {
+			await fetch('http://localhost:5000/api/posts', {
 				method: 'POST',
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(postData)
 			})
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
-					console.log('message: ', data);
+					console.log('added post: ', data);
 					setPosts({ type: 'add', data })
 				})
 		} catch (err) { throw err }
 	}
 
+	const classes = styles()
 	return (
 		<>
 			<Overlay />
@@ -36,10 +36,10 @@ const PostForm = () => {
 				<h3>Create a post</h3>
 				<form onSubmit={(e) => { e.preventDefault(); addPost(postData); setFormView({formName:'overlay'}) }}>
 					<input
-						className='message input'
-						type='text' name='message'
-						placeholder="message" maxLength="64"
-						value={postData.message} onChange={handleChange}>	
+						className='text input'
+						type='text' name='text'
+						placeholder="text" maxLength="64"
+						value={postData.text} onChange={handleChange}>	
 					</input>
 					<button className="submit-btn" type='submit'> Submit </button>
 				</form>

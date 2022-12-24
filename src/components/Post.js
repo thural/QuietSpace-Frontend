@@ -1,13 +1,13 @@
 import React, { useContext } from "react"
 import HandlerContext from "./HandlerContext"
-import styles from "../styles/cardStyles"
+import styles from "../styles/postStyles"
 
-const Card = ({ card }) => {
+const Post = ({ post }) => {
 	const { user, setPosts, setFormView } = useContext(HandlerContext)
-	const classes = styles()
-	const { _id, username, message, likes } = card
-	const liked = card.likes.includes(user['_id']) ? 'unlike' : 'like'
+	const { _id, username, text, likes } = post
+	const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
+	const classes = styles()
 	return (
 		<div id={_id} className={classes.wrapper}>
 
@@ -15,26 +15,26 @@ const Card = ({ card }) => {
 				{username}
 			</div>
 
-			<div className="message">
-				<p>{message}</p>
+			<div className="text">
+				<p>{text}</p>
 			</div>
 
 			{user.username &&
 				<div className="buttons">
-					
-					{card.username !== user.username &&
+
+					{post.username !== user.username &&
 						<button onClick={() => setPosts({ _id, user, type: liked })}>
 							{likes.length} {liked}
 						</button>
 					}
 
-					{card.username == user.username &&
+					{post.username == user.username &&
 						<button onClick={() => setFormView({ formName: 'edit', _id })}>
 							edit
 						</button>
 					}
 
-					{user.admin || card.username == user.username &&
+					{user.admin || post.username == user.username &&
 						<button onClick={() => setPosts({ _id, user, type: 'delete' })}>
 							delete
 						</button>
@@ -47,4 +47,4 @@ const Card = ({ card }) => {
 	)
 }
 
-export default Card
+export default Post

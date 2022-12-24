@@ -67,7 +67,6 @@ function chatReducer(state, { messages, data, chat, user, sender_id, type }) {
 
 const Chat = () => {
 	const { user } = useContext(HandlerContext)
-	const classes = styles()
 	const [chat, setChat] = useReducer(chatReducer, data)
 
 	//useEffect(() => setChat({ data, type: 'init' }), [])
@@ -75,15 +74,16 @@ const Chat = () => {
 	const contacts = chat.map(sender => sender
 		.findLast(message => message['sender_id'] !== user.username))
 
-	const [selectedChat, setSelectedChat] = useState(contacts[0]['sender_id'])
+	const [currentChat, setCurrentChat] = useState(contacts[0]['sender_id'])
 
 	const messages = chat.find(sender => sender
-		.some(message => message['sender_id'] == selectedChat))
+		.some(message => message['sender_id'] == currentChat))
 
+	const classes = styles()
 	return (
 		<div className={classes.chat}>
 
-			<ChatContext.Provider value={{ chat, setChat, selectedChat, setSelectedChat }} >
+			<ChatContext.Provider value={{ chat, setChat, currentChat, setCurrentChat }} >
 				<ContactBoard contacts={contacts} />
 				<ChatBoard messages={messages} />
 			</ChatContext.Provider>

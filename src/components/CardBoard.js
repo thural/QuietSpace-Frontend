@@ -1,4 +1,4 @@
-import Card from "./Card"
+import Post from "./Post"
 import styles from "../styles/cardBoardStyles"
 import React from "react"
 
@@ -8,7 +8,7 @@ const CardBoard = ({posts}) => {
 	return (
 		<div className={classes.cardboard}>
 			{
-				posts.map((card) => (<Card key={card._id} card={card} />))
+				posts.map((post) => (<Post key={post._id} card={post} />))
 			}
 		</div>
 	)

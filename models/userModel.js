@@ -6,7 +6,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   date: { type: Date, default: Date.now },
   admin: {type:Boolean, default: false},
-  likes: [{ type: Schema.Types.ObjectId, ref: "Message" }],
+  likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 })
 
 const User = mongoose.model("User", UserSchema)

@@ -12,9 +12,9 @@ const EditForm = ({setPosts}) => {
 
 	//console.log("edit formView ID: ", _id)
 
-	const message = posts.find( post => post["_id"] == _id)["message"]
+	const text = posts.find( post => post["_id"] == _id)["text"]
 
-	const [postData, setPostData] = useState({ "message": message })
+	const [postData, setPostData] = useState({ "text": text })
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
@@ -23,14 +23,14 @@ const EditForm = ({setPosts}) => {
 
 	const addPost = async (postData, _id) => {
 		try {
-			await fetch(`http://localhost:5000/api/messages/edit/${_id}`, {
+			await fetch(`http://localhost:5000/api/posts/edit/${_id}`, {
 				method: 'POST',
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(postData)
 			})
 				.then(res => res.json(), err => console.log('error message from edit POST: ', err))
 				.then(data => {
-					console.log('Edited Message: ', data)
+					console.log('Edited Post: ', data)
 					setPosts({ type: 'edit', data, _id })
 				})
 		} catch (err) { throw err }
@@ -44,12 +44,12 @@ const EditForm = ({setPosts}) => {
 				<form onSubmit={(e) => { e.preventDefault(); addPost(postData, _id); setFormView({ formName: 'overlay' }) }}>
 
 					<input
-						className='message input'
+						className='text input'
 						type='text'
-						name='message'
-						placeholder="message"
+						name='text'
+						placeholder="text"
 						maxLength="64"
-						value={postData["message"]}
+						value={postData["text"]}
 						onChange={handleChange}>
 					</input>
 

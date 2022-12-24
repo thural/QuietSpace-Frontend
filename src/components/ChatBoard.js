@@ -5,8 +5,7 @@ import styles from "../styles/chatBoardStyles"
 
 const ChatBoard = ({ messages }) => {
 
-	const { setMessages } = useContext(ChatContext)
-	const classes = styles()
+	const { currentChat, setChat } = useContext(ChatContext)
 
 	const [messageData, setMessageData] = useState({ message: '' })
 
@@ -15,7 +14,7 @@ const ChatBoard = ({ messages }) => {
 		setMessageData({ ...messageData, [name]: value })
 	}
 
-console.log("messageData: ", messageData)
+	console.log("currentChat: ", currentChat)
 
 	const sendMessage = async (messageData) => {
 		try {
@@ -24,14 +23,15 @@ console.log("messageData: ", messageData)
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(messageData)
 			})
-				.then(res => res.json(), err => console.log('error from add post: ', err))
+				.then(res => res.json(), err => console.log('error from add message: ', err))
 				.then(data => {
 					console.log('message: ', data);
-					setMessages({type:'add', messageData})
+					setChat({ type: 'add', messageData })
 				})
 		} catch (err) { throw err }
 	}
 
+	const classes = styles()
 	return (
 		<div className={classes.chatboard}>
 			{

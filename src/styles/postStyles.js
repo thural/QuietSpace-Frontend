@@ -14,7 +14,7 @@ const styles = createUseStyles({
 			fontSize: '1.2rem',
 			fontWeight: '500'
 		},
-		'& .message': {
+		'& .text': {
 			fontSize: '1rem',
 			fontStyle: 'italic',
 			padding: 0,
