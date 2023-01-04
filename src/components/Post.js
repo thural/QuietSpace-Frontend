@@ -3,8 +3,8 @@ import HandlerContext from "./HandlerContext"
 import styles from "../styles/postStyles"
 
 const Post = ({ post }) => {
-	const { user, setPosts, setFormView } = useContext(HandlerContext)
 	const { _id, username, text, likes } = post
+	const { user, setPosts, setFormView } = useContext(HandlerContext)
 	const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
 	const classes = styles()
@@ -23,7 +23,7 @@ const Post = ({ post }) => {
 				<div className="buttons">
 
 					{post.username !== user.username &&
-						<button onClick={() => setPosts({ _id, user, type: liked })}>
+						<button onClick={() => setPosts({ _id, user, type: 'liked' })}>
 							{likes.length} {liked}
 						</button>
 					}

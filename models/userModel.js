@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  admin: {type:Boolean, default: false},
+  admin: { type: Boolean, default: false },
   likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 })
 

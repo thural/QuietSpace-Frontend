@@ -1,5 +1,5 @@
 import React, { useContext, useReducer, useEffect } from "react"
-import CardBoard from "./CardBoard"
+import PostBoard from "./PostBoard"
 import HandlerContext from "./HandlerContext"
 import PostForm from "./PostForm"
 import EditForm from "./EditForm"
@@ -28,7 +28,7 @@ const Posts = () => {
 					<EditForm />
 				}
 
-				<CardBoard posts={posts} />
+				<PostBoard posts={posts} />
 
 			</div>
 		</>

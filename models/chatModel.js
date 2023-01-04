@@ -6,15 +6,15 @@ const ChatSchema = new Schema({
   date: { type: Date, default: Date.now },
   chat: [
     {
-      username: { type: String, required: true },
+      username: { type: Schema.Types.ObjectId, ref: "User" },
       messages: [
         {
-          sender_id: { type: String, required: true },
+          username: { type: Schema.Types.ObjectId, ref: "User" },
           text: { type: String, required: true, maxLength: 100 },
           date: { type: Date, default: Date.now },
-          reactions: [{ user: { type: Schema.Types.ObjectId, ref: "User" }, emoji: { type: String } }]
+          //reactions: [{ user: { type: Schema.Types.ObjectId, ref: "User" }, emoji: { type: String } }]
         }
-      ],
+      ]
     }
   ]
 })

@@ -38,6 +38,7 @@ const ChatBoard = ({ messages }) => {
 				messages.map((message) => (<Message key={message._id} message={message} />))
 			}
 
+			/////chat input field
 			<form className={classes.chatInput} onSubmit={(e) => { e.preventDefault(); sendMessage(messageData) }}>
 				<input
 					className='input'
