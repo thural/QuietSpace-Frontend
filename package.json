@@ -1,10 +1,10 @@
 {
-	"name": "message-board-react",
+	"name": "quiet-space",
 	"version": "1.0.0",
-	"description": "a one user - one message posting app",
-	"main": "app.js",
+	"description": "Social media without the distraction",
+	"main": "server.js",
 	"scripts": {
-		"start": "nodemon app.js",
+		"start": "nodemon server.js",
 		"test": "jest",
 		"build": "webpack",
 		"watch": "webpack --watch",
