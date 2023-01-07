@@ -2,17 +2,23 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 	wrapper: {
-		display: 'grid',
-		padding: '1rem',
-		borderRadius: '1rem',
-		justifyItems: 'center',
-		border: 'grey solid 1px',
+		padding: '1.2rem',
+		fontSize: '1rem',
+		boxShadow: '1px 1px 5px 1px rgba(72, 72, 72, 0.3)',
+		borderRadius: '10px',
 		backgroundColor: 'white',
-		boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
+		margin: '0 0 1em 0',
+		breakInside: 'avoid',
+		pageBreakInside: 'avoid',
 		'& .author': {
 			width: '100%',
 			fontSize: '1.2rem',
 			fontWeight: '500'
+		},
+		'& .panel': {
+			display: 'flex',
+			flexFlow: 'row nowrap',
+			justifyContent: 'space-around'
 		},
 		'& .text': {
 			fontSize: '1rem',
@@ -28,10 +34,25 @@ const styles = createUseStyles({
 			marginLeft: 'auto'
 		},
 		'& button': {
-			color: 'white',
-			backgroundColor: 'black',
+			font: 'inherit',
+			color: 'black',
+			border: '1px solid black',
+			cursor: 'pointer',
+			outline: 'inherit',
+			padding: '0.2rem 0.6rem',
+			fontSize: '.85rem',
 			borderRadius: '1rem',
-			padding: '0.2rem 0.6rem'
+			backgroundColor: 'white',
+			marginLeft: 'auto'
+		}
+	},
+	postinfo : {
+		display: 'flex',
+		justifyContent: 'flex-end',
+		gap: '10px',
+		fontSize: '14px',
+		'& .likes': {
+			marginRight: "auto"
 		}
 	},
 })

@@ -1,6 +1,9 @@
 import React, { useContext } from "react"
 import HandlerContext from "./HandlerContext"
 import styles from "../styles/postStyles"
+import likeIcon from "../assets/thumbs.svg"
+import shareIcon from "../assets/share.svg"
+import editIcon from "../assets/edit.svg"
 
 const Post = ({ post }) => {
 	const { _id, username, text, likes } = post
@@ -19,9 +22,8 @@ const Post = ({ post }) => {
 				<p>{text}</p>
 			</div>
 
-			{user.username &&
+			{/*user.username &&
 				<div className="buttons">
-
 					{post.username !== user.username &&
 						<button onClick={() => setPosts({ _id, user, type: 'liked' })}>
 							{likes.length} {liked}
@@ -39,9 +41,26 @@ const Post = ({ post }) => {
 							delete
 						</button>
 					}
-
+				</div>
+			*/}
+			
+			<div className={classes.postinfo}>
+				<p className="likes">0 likes</p>
+				<p>0 comments</p>
+				<p>0 shares</p>	
+			</div>
+			<hr></hr>
+			{user.username &&
+				<div className="panel">
+					<img src={likeIcon} />
+					<img src={editIcon} />
+					<img src={shareIcon} />
 				</div>
 			}
+
+
+
+
 
 		</div>
 	)

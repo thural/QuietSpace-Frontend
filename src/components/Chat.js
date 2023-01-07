@@ -32,7 +32,7 @@ const data = [
 	[
 		{
 			_id: 1,
-			sender_id: "Susan",
+			sender_id: "Lera",
 			text: "Hi, what movies can you suggest for tonight",
 			date: "2022-10-30T08:23:36.345+00:00",
 			reactions: [{ user: "John", emoji: "👋" }]
@@ -46,7 +46,7 @@ const data = [
 		},
 		{
 			_id: 3,
-			sender_id: "Susan",
+			sender_id: "Lera",
 			text: "Thanks gonna check these for now 👍",
 			date: "2022-10-30T08:24:56.345+00:00",
 			reactions: [{ user: "John", emoji: "💯" }]
