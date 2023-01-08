@@ -9,20 +9,28 @@ const styles = createUseStyles(
 			width: '100%',
 			margin: '0px',
 			display: 'flex',
-			padding: '2vh 2rem',
+			padding: '0.5rem 2.5rem 0.5rem 1rem',
+			zIndex: '3',
+			gridRow: '1 / 2',
 			position: 'sticky',
 			flexWrap: 'wrap',
 			fontSize: '1.5rem',
+			boxShadow: '0 4px 6px -4px rgba(72, 72, 72, 0.3)',
 			boxSizing: 'border-box',
 			alignItems: 'center',
-			justifyContent: 'space-between',
 			fontWeight: '400',
+			gridColumn: '1 / 3',
+			justifyContent: 'space-between',
 			backgroundColor: 'black',
 			'& nav': {
+				margin: '0',
+				marginLeft: 'auto',
 				display: 'flex',
+				padding: '0',
+				fontSize: '1.5rem',
 				alignItems: 'center',
+				fontWeight: '500',
 				justifyContent: 'center',
-				gap: '2rem'
 			},
 			'& h1': {
 				margin: '0',
@@ -33,15 +41,20 @@ const styles = createUseStyles(
 				color: 'inherit',
 			},
 			'& ul': {
-				display: "flex",
-				listStyle: "none",
+				display: 'flex',
+				fontSize: '1.5rem',
+				alignItems: 'center',
+				fontWeight: '500',
 				justifyContent: 'center',
-				padding: '0',
-				gap: '2rem',
 				margin: '0',
+				padding: '0',
+			},
+			'& li:first-of-type':{
+				marginLeft: 0
 			},
 			'& li': {
 				listStyle: "none",
+				margin: '0 1rem'
 			}
 		}
 	}

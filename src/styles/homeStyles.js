@@ -1,12 +1,14 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-	wrapper: {
+	home: {
 		display: 'flex',
+		gridRow: '2 / 3',
 		flexFlow: 'column nowrap',
-		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: '20vh',
+		gridColumn: '1 / 3',
+		justifyContent: 'center',
+		padding: '1rem',
 		'& .home-text': {
 			minWidth: 'min-content',
 			display: 'flex',
@@ -15,7 +17,8 @@ const styles = createUseStyles({
 			alignItems: 'center'
 		},
 		'& h1': {
-			marginBottom: '6rem'
+			marginBottom: '6rem',
+			textAlign: 'center'
 		},
 		'& button': {
 			fontSize: '2rem',

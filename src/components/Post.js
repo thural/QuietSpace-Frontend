@@ -43,12 +43,13 @@ const Post = ({ post }) => {
 					}
 				</div>
 			*/}
-			
+
 			<div className={classes.postinfo}>
 				<p className="likes">0 likes</p>
 				<p>0 comments</p>
 				<p>0 shares</p>	
 			</div>
+			
 			<hr></hr>
 			{user.username &&
 				<div className="panel">

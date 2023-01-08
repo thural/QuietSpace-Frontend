@@ -3,15 +3,16 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles({
 	message: {
 		width: '200px',
-		maxWidth: '70%',
 		border: 'grey solid 1px',
 		display: 'flex',
-		flexFlow: 'column nowrap',
 		padding: '1rem',
+		flexFlow: 'column nowrap',
+		maxWidth: '70%',
 		boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
 		borderRadius: '1rem',
 		justifyItems: 'center',
 		backgroundColor: 'white',
+		marginTop: '1rem',
 		'& .buttons': {
 			display: 'flex',
 			flexFlow: 'row nowrap',

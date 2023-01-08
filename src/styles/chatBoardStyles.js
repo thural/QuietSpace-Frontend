@@ -2,15 +2,12 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 	chatboard: {
-		display: 'flex',
-		flexFlow: 'column nowrap',
-		gap: '1rem',
 		width: '100%',
 		margin: '0 10%',
-		padding: '5%',
-		width: '100%',
-		flexBasis: 'min-content',
+		display: 'flex',
+		flexFlow: 'column nowrap',
 		flexGrow: '1',
+		flexBasis: 'min-content',
 		marginTop: '0',
 		marginBottom: '0',
 		'& .add-post-btn': {

@@ -11,15 +11,15 @@ const Home = () => {
 
 	return (
 		<>
-			<div className={classes.wrapper}>
+			<div className={classes.home}>
 				<div className="home-text">
 					<h3>Social media without the distraction</h3>
 					<h1>Free speech is the foundation of a healthy society</h1>
-					{
+				</div>
+				{
 						user.username ? <Link to="/posts"><button>Post now</button></Link> :
 							<button onClick={() => setFormView({formName:'login'})}>Login to post</button>
 					}
-				</div>
 			</div>
 			{
 				formView.signup ? <SignupForm /> :

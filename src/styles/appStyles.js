@@ -3,16 +3,15 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles(
 	{
 		app: {
-			margin: '0',
-			padding: '0',
-			display: 'flex',
-			flexFlow: 'column nowrap',
 			height: '100vh',
+			margin: '0',
+			display: 'grid',
+			padding: '0',
 			position: 'relative',
-			backgroundColor: 'whitesmoke',
+			gridTemplate: '1fr 9fr / 3fr 7fr',
+			backgroundColor: 'whitesmoke'
 		}
 	}
 );
-
 
 export default styles
