@@ -1,6 +1,11 @@
 import React, { useState, useContext } from "react"
 import styles from "../styles/menuStyles"
 import HandlerContext from "./HandlerContext"
+import savedIcon from "../assets/bookmark.svg"
+import historyIcon from "../assets/history.svg"
+import settingsIcon from "../assets/settings.svg"
+import logoutIcon from "../assets/log-out.svg"
+
 
 
 const Menu = ({ menu: items }) => {
@@ -23,24 +28,17 @@ const Menu = ({ menu: items }) => {
 
 	return (
 		<div style={{ display: user.username ? "block" : "none" }}>
-			<div onClick={toggleDisplay} style={{cursor: 'pointer'}}>
+			<div onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
 				Menu
 			</div>
 
 			<div className={classes.menuOverlay} style={{ display: display }} onClick={toggleDisplay}></div>
 
 			<div className={classes.menu} style={{ display: display }}>
-				<h3>Menu</h3>
-
-				<div className='items'>
-					<h4>Saved</h4>
-					<h4>Activity</h4>
-					<h4>Settings</h4>
-				</div>
-
-				<div className='buttons'>
-					<button onClick={handleLogout}>Log out</button>
-				</div>
+				<div className="menu-item"><p>Saved</p><img src={savedIcon} /></div>
+				<div className="menu-item"><p>Activity</p><img src={historyIcon} /></div>
+				<div className="menu-item"><p>Settings</p><img src={settingsIcon} /></div>
+				<div className="menu-item" onClick={handleLogout}><p>Logout</p><img src={logoutIcon} /></div>
 			</div>
 		</div>
 	);

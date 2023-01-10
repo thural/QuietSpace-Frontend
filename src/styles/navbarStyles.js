@@ -42,9 +42,9 @@ const styles = createUseStyles(
 			},
 			'& ul': {
 				display: 'flex',
-				fontSize: '1.5rem',
+				fontSize: '1.6rem',
 				alignItems: 'center',
-				fontWeight: '500',
+				fontWeight: '400',
 				justifyContent: 'center',
 				margin: '0',
 				padding: '0',
@@ -54,7 +54,7 @@ const styles = createUseStyles(
 			},
 			'& li': {
 				listStyle: "none",
-				margin: '0 1rem'
+				margin: '0 1.5rem'
 			}
 		}
 	}

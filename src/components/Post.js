@@ -50,13 +50,15 @@ const Post = ({ post }) => {
 				<p>0 shares</p>	
 			</div>
 			
-			<hr></hr>
 			{user.username &&
+			<>
+				<hr></hr>
 				<div className="panel">
 					<img src={likeIcon} />
 					<img src={editIcon} />
 					<img src={shareIcon} />
 				</div>
+			</>
 			}
 
 

@@ -12,20 +12,19 @@ const styles = createUseStyles(
 			display: 'none',
 		},
 		menu: {
-			top: '0',
+			top: '1rem',
 			color: 'black',
-			right: '0',
-			width: '32vmax',
+			right: '1rem',
+			width: '12rem',
 			margin: '0px',
 			display: 'none',
-			padding: '1rem',
 			zIndex: '1',
 			position: 'fixed',
-			fontSize: '16px',
-			boxShadow: 'rgb(0 0 0 / 25%) 0px 0px 64px 32px',
+			fontSize: '1.4rem',
+			boxShadow: 'rgb(0 0 0 / 25%) 0px 0px 96px 16px',
 			boxSizing: 'border-box',
+			borderRadius: '0.3rem',
 			backgroundColor: 'white',
-			borderRadius: '0rem 0rem 0rem 0.5rem',
 			'& a, a:hover, a:focus, a:active': {
 				textDecoration: 'none',
 				color: 'inherit',
@@ -48,6 +47,15 @@ const styles = createUseStyles(
 				alignContent: 'center',
 				justifyContent: 'center',
 				gridTemplateColumns: '1fr 2fr'
+			},
+			'& .menu-item': {
+				display: 'flex',
+				flexFlow: 'row nowrap',
+				justifyContent: 'space-between',
+				padding: '.5rem 1rem'
+			},
+			'& .menu-item:not(:last-child)':{
+				borderBottom: '#c5c5c5 solid 1px'
 			},
 			'& .image': {
 				minWidth: '64px',
@@ -75,8 +83,10 @@ const styles = createUseStyles(
 				gap: '1rem'
 			},
 			'& p': {
+				margin: '0',
+				padding: '0',
 				alignSelf: 'center',
-				fontWeight: '600',
+				fontWeight: '300',
 			},
 			'& h3': {
 				fontSize: '2rem',
