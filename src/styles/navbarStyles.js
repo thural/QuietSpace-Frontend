@@ -3,13 +3,12 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles(
 	{
 		navbar: {
-			gap: '1vw',
 			top: '0',
 			color: 'white',
 			width: '100%',
 			margin: '0px',
 			display: 'flex',
-			padding: '0.5rem 2.5rem 0.5rem 1rem',
+			padding: '0.5rem 1rem 0.5rem 1rem',
 			zIndex: '3',
 			gridRow: '1 / 2',
 			position: 'sticky',
@@ -21,20 +20,31 @@ const styles = createUseStyles(
 			fontWeight: '400',
 			gridColumn: '1 / 3',
 			justifyContent: 'space-between',
-			backgroundColor: 'black',
+			backgroundColor: 'white',
+			'& .navbar-item>a>img': {
+				width: '100%',
+				display: 'block',
+				texAlign: 'center'
+			},
 			'& nav': {
 				margin: '0',
-				marginLeft: 'auto',
 				display: 'flex',
 				padding: '0',
 				fontSize: '1.5rem',
 				alignItems: 'center',
 				fontWeight: '500',
-				justifyContent: 'center',
+				justifyContent: 'center'
+			},
+			'& .navbar-item': {
+				width: '2.9rem',
+				margin: '0 1.8rem',
+			},
+			'& .navbar-item.menu': {
+				margin: '0 1rem 0 0'
 			},
 			'& h1': {
 				margin: '0',
-				color: 'bisque'
+				color: 'darkblue'
 			},
 			'& a, a:hover, a:focus, a:active': {
 				textDecoration: 'none',

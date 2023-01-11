@@ -14,11 +14,16 @@ const styles = createUseStyles({
 			display: 'flex',
 			flexFlow: 'column nowrap',
 			justifyContent: 'center',
-			alignItems: 'center'
+			alignItems: 'center',
+			textAlign: 'center'
 		},
 		'& h1': {
+			fontWeight: '500',
+		},
+		'& h3': {
+			fontWeight: '300',
+			fontStyle: 'italic',
 			marginBottom: '6rem',
-			textAlign: 'center'
 		},
 		'& button': {
 			fontSize: '2rem',

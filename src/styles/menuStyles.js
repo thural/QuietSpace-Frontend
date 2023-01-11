@@ -11,6 +11,13 @@ const styles = createUseStyles(
 			zIndex: '0',
 			display: 'none',
 		},
+		icon: {
+			'& img': {
+				width: '100%',
+				display: 'block',
+				texAlign: 'center'
+			},
+		},
 		menu: {
 			top: '1rem',
 			color: 'black',

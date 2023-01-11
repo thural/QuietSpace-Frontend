@@ -5,6 +5,7 @@ import savedIcon from "../assets/bookmark.svg"
 import historyIcon from "../assets/history.svg"
 import settingsIcon from "../assets/settings.svg"
 import logoutIcon from "../assets/log-out.svg"
+import menuIcon from "../assets/menu-line.svg"
 
 
 
@@ -28,8 +29,8 @@ const Menu = ({ menu: items }) => {
 
 	return (
 		<div style={{ display: user.username ? "block" : "none" }}>
-			<div onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
-				Menu
+			<div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
+				<img src={menuIcon} />
 			</div>
 
 			<div className={classes.menuOverlay} style={{ display: display }} onClick={toggleDisplay}></div>

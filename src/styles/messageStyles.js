@@ -5,14 +5,14 @@ const styles = createUseStyles({
 		width: '200px',
 		border: 'grey solid 1px',
 		display: 'flex',
-		padding: '1rem',
+		padding: '0.8rem',
 		flexFlow: 'column nowrap',
 		maxWidth: '70%',
-		boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
+		boxShadow: 'rgb(0 0 0 / 25%) 0px 16px 32px -8px',
+		marginTop: '1rem',
 		borderRadius: '1rem',
 		justifyItems: 'center',
 		backgroundColor: 'white',
-		marginTop: '1rem',
 		'& .buttons': {
 			display: 'flex',
 			flexFlow: 'row nowrap',
@@ -29,7 +29,7 @@ const styles = createUseStyles({
 	},
 	sender: {
 		width: '100%',
-		fontSize: '1.2rem',
+		fontSize: '1rem',
 		fontWeight: '500',
 		marginBottom: '0.5rem'
 	},

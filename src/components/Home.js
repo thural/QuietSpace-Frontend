@@ -13,13 +13,13 @@ const Home = () => {
 		<>
 			<div className={classes.home}>
 				<div className="home-text">
-					<h3>Social media without the distraction</h3>
-					<h1>Free speech is the foundation of a healthy society</h1>
+					<h1>Social media without the distraction</h1>
+					<h3>Free speech is the foundation of a healthy society</h3>
 				</div>
 				{
-						user.username ? <Link to="/posts"><button>Post now</button></Link> :
-							<button onClick={() => setFormView({formName:'login'})}>Login to post</button>
-					}
+					user.username ? <Link to="/posts"><button>Post now</button></Link> :
+						<button onClick={() => setFormView({ formName: 'login' })}>Login to post</button>
+				}
 			</div>
 			{
 				formView.signup ? <SignupForm /> :

@@ -7,7 +7,7 @@ const styles = createUseStyles({
 		boxShadow: '1px 1px 5px 1px rgba(72, 72, 72, 0.3)',
 		borderRadius: '10px',
 		backgroundColor: 'white',
-		margin: '0 0 1em 0',
+		margin: '0 0 1.2rem 0',
 		breakInside: 'avoid',
 		pageBreakInside: 'avoid',
 		'& .author': {
