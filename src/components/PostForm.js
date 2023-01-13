@@ -35,13 +35,13 @@ const PostForm = () => {
 			<div className={classes.post}>
 				<h3>Create a post</h3>
 				<form onSubmit={(e) => { e.preventDefault(); addPost(postData); setFormView({formName:'overlay'}) }}>
-					<input
-						className='text input'
+					<textarea
+						className='text area'
 						type='text' name='text'
-						placeholder="text" maxLength="64"
+						placeholder="What's on your mind?" maxLength="64"
 						value={postData.text} onChange={handleChange}>	
-					</input>
-					<button className="submit-btn" type='submit'> Submit </button>
+					</textarea>
+					<button className="submit-btn" type='submit'> Post </button>
 				</form>
 			</div>
 		</>

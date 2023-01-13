@@ -43,7 +43,7 @@ const EditForm = ({setPosts}) => {
 				<h3>Edit post</h3>
 				<form onSubmit={(e) => { e.preventDefault(); addPost(postData, _id); setFormView({ formName: 'overlay' }) }}>
 
-					<input
+					<textarea
 						className='text input'
 						type='text'
 						name='text'
@@ -51,7 +51,7 @@ const EditForm = ({setPosts}) => {
 						maxLength="64"
 						value={postData["text"]}
 						onChange={handleChange}>
-					</input>
+					</textarea>
 
 					<button className="submit-btn" type='submit'> Submit </button>
 
