@@ -17,6 +17,7 @@ const styles = createUseStyles({
 		},
 		'& .panel': {
 			display: 'flex',
+			height: '1.5rem',
 			flexFlow: 'row nowrap',
 			justifyContent: 'space-around'
 		},

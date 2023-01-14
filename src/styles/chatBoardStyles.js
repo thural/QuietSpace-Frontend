@@ -35,7 +35,8 @@ const styles = createUseStyles({
 		borderRadius: '1em',
 		marginBottom: '1rem',
 		backgroundColor: 'white',
-		boxShadow: 'rgb(0 0 0 / 25%) -16px 0px 32px -8px',
+		boxSizing: 'border-box',
+		boxShadow: 'rgb(0 0 0 / 25%) 0px 16px 32px -8px',
 		border: '1px solid gray',
 		'& button': {
 			color: 'white',

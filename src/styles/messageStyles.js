@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles({
 	message: {
 		width: '200px',
-		border: 'grey solid 1px',
+		border: '#a1a1a1 solid 1px',
 		display: 'flex',
 		padding: '0.8rem',
 		flexFlow: 'column nowrap',

@@ -4,6 +4,7 @@ import styles from "../styles/postStyles"
 import likeIcon from "../assets/thumbs.svg"
 import shareIcon from "../assets/share.svg"
 import editIcon from "../assets/edit.svg"
+import commentIcon from "../assets/comment-3-line.svg"
 
 const Post = ({ post }) => {
 	const { _id, username, text, likes } = post
@@ -45,18 +46,29 @@ const Post = ({ post }) => {
 			*/}
 
 			<div className={classes.postinfo}>
-				<p className="likes">0 likes</p>
-				<p>0 comments</p>
+				<p className="likes" >{likes.length} likes</p>
+				<p>0 comments </p>
 				<p>0 shares</p>	
 			</div>
 			
 			{user.username &&
 			<>
 				<hr></hr>
+
 				<div className="panel">
-					<img src={likeIcon} />
-					<img src={editIcon} />
+
+					{post.username !== user.username &&
+						<img src={likeIcon} onClick={() => setPosts({ _id, user, type: 'liked' })}/>
+					}
+
+					<img src={commentIcon} />
+
+					{post.username == user.username &&
+						<img src={editIcon} onClick={() => setFormView({ formName: 'edit', _id })} />
+					}
+
 					<img src={shareIcon} />
+
 				</div>
 			</>
 			}

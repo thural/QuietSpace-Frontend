@@ -7,7 +7,7 @@ const styles = createUseStyles({
 		bottom: '0',
 		margin: '0',
 		display: 'flex',
-		padding: '1rem',
+		padding: '0',
 		boxSizing: 'border-box',
 		alignItems: 'center',
 		justifyContent: 'center',
