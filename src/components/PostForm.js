@@ -13,6 +13,8 @@ const PostForm = () => {
 		setPostData({ ...postData, [name]: value });
 	}
 
+	console.log("postData: ", postData)
+
 	const addPost = async (postData) => {
 		try {
 			await fetch('http://localhost:5000/api/posts', {
@@ -38,7 +40,7 @@ const PostForm = () => {
 					<textarea
 						className='text area'
 						type='text' name='text'
-						placeholder="What's on your mind?" maxLength="64"
+						placeholder="What's on your mind?" maxLength="128"
 						value={postData.text} onChange={handleChange}>	
 					</textarea>
 					<button className="submit-btn" type='submit'> Post </button>

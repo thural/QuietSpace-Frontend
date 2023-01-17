@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator")
 
 module.exports.validatePost = (req, res, next) => {
   const errors = validationResult(req)
-  //console.log('USER value inside validatePost() : ', req.user)
+  console.log('USER value inside validatePost() : ', req.user)
   req.post = new Post({ username: req.user.username, text: req.body.text })
   if (!errors.isEmpty()) {
     return res.json({ errors: errors.array() })

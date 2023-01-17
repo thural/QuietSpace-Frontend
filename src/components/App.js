@@ -97,8 +97,6 @@ const App = () => {
 	const [user, setUser] = useState([])
 	const [posts, setPosts] = useReducer(postReducer, [])
 
-	//console.log("posts from App: ", posts)
-
 	const [formView, setFormView] = useReducer(formViewReducer, {
 		login: false,
 		signup: false,

@@ -43,16 +43,16 @@ exports.item = async (req, res, next) => {
 }
 
 exports.create_post = [
-	body("text", "at least 2 characters required").isLength({ min: 2 }),
-	body("text", "max 64 characters allowed").isLength({ max: 64 }),
+	body("text", "at least 3 characters required").isLength({ min: 3 }),
+	body("text", "max 128 characters allowed").isLength({ max: 128 }),
 	body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
 	validatePost,
 	savePost
 ]
 
 exports.edit_post = [
-	body("text", "at least 2 characters required").isLength({ min: 2 }),
-	body("text", "max 64 characters allowed").isLength({ max: 64 }),
+	body("text", "at least 3 characters required").isLength({ min: 3 }),
+	body("text", "max 128 characters allowed").isLength({ max: 128 }),
 	body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
 	async (req, res, next) => {
 		const errors = validationResult(req)

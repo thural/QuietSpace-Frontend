@@ -6,9 +6,10 @@ import shareIcon from "../assets/share.svg"
 import editIcon from "../assets/edit.svg"
 import commentIcon from "../assets/comment-3-line.svg"
 import deleteIcon from "../assets/delete-bin-line.svg"
+import CommentSection from "./CommentSection"
 
 const Post = ({ post }) => {
-	const { _id, username, text, likes } = post
+	const { _id, username, text, likes, comments } = post
 	const { user, setPosts, setFormView } = useContext(HandlerContext)
 	const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
@@ -64,6 +65,8 @@ const Post = ({ post }) => {
 						}
 
 					</div>
+
+					<CommentSection postid={_id} comments={comments} />
 				</>
 			}
 
