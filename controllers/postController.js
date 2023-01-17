@@ -75,7 +75,8 @@ exports.delete_post = (req, res, next) => {
 		.exec((err, post) => {
 			if (err) return next(err)
 			console.log("deleted post: ", post)
-			res.status(204).send()
+			//res.status(204).send()
+			return res.status(200).json(post)
 		})
 }
 

@@ -15,7 +15,7 @@ const Post = ({ post }) => {
 
 	const deletePost = async (_id) => {
 		try {
-			await fetch(`http://localhost:5000/api/posts/delete/${_id}`)
+			await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
 					console.log('deleted post: ', data);

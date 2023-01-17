@@ -48,7 +48,7 @@ const EditForm = ({setPosts}) => {
 						type='text'
 						name='text'
 						placeholder="text"
-						maxLength="64"
+						maxLength="128"
 						value={postData["text"]}
 						onChange={handleChange}>
 					</textarea>

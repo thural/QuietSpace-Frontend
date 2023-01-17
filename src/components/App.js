@@ -21,12 +21,12 @@ socket.emit('custom-event', "test message", 10, [1, 2, 3])
 ////// socket test
 
 
-const deletePost = async (_id) => {
-	try {
-		await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
-		return true
-	} catch (err) { return false }
-}
+// const deletePost = async (_id) => {
+// 	try {
+// 		await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
+// 		return true
+// 	} catch (err) { return false }
+// }
 
 function postReducer(state, { posts, data, user, _id, type }) {
 	switch (type) {
