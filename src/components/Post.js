@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import HandlerContext from "./HandlerContext"
 import styles from "../styles/postStyles"
 import likeIcon from "../assets/thumbs.svg"
@@ -11,6 +11,7 @@ import CommentSection from "./CommentSection"
 const Post = ({ post }) => {
 	const { _id, username, text, likes, comments } = post
 	const { user, setPosts, setFormView } = useContext(HandlerContext)
+	const [active, setActive] = useState(false)
 	const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
 	const deletePost = async (_id) => {
@@ -52,7 +53,7 @@ const Post = ({ post }) => {
 							<img src={likeIcon} onClick={() => setPosts({ _id, user, type: 'like' })} />
 						}
 
-						<img src={commentIcon} />
+						<img src={commentIcon} onClick={() => setActive(active ? false : true)} />
 
 						{post.username == user.username &&
 							<img src={editIcon} onClick={() => setFormView({ formName: 'edit', _id })} />
@@ -66,7 +67,9 @@ const Post = ({ post }) => {
 
 					</div>
 
-					<CommentSection postid={_id} comments={comments} />
+					{ active &&
+						<CommentSection postid={_id} comments={comments} />
+					}
 				</>
 			}
 

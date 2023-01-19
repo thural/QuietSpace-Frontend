@@ -5,12 +5,15 @@ import styles from "../styles/commentStyles"
 const CommentSection = (postid, comments) => {
 	const { setPosts, setFormView } = useContext(HandlerContext);
 
+
 	const [commentData, setCommentData] = useState({ text: '' })
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
 		setCommentData({ ...commentData, [name]: value });
 	}
+
+
 
 	const addComment = async (commentData) => {
 		try {
@@ -29,9 +32,8 @@ const CommentSection = (postid, comments) => {
 
 	const classes = styles()
 	return (
-		<>
 
-			<div className={classes.commentSection}>
+			<div className={classes.commentSection} >
 				
 				<form onSubmit={(e) => { e.preventDefault(); addComment(commentData); setFormView({ formName: 'overlay' }) }}>
 					<textarea className={classes.commentInput}
@@ -52,7 +54,6 @@ const CommentSection = (postid, comments) => {
 				}
 
 			</div>
-		</>
 	)
 }
 
