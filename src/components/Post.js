@@ -16,11 +16,22 @@ const Post = ({ post }) => {
 
 	const deletePost = async (_id) => {
 		try {
-			await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
-				.then(res => res.json(), err => console.log('error from add post: ', err))
+		  await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
+				.then(res => res.json(), err => console.log('error from delete post: ', err))
 				.then(data => {
 					console.log('deleted post: ', data);
 					setPosts({ _id, user, type: 'delete' })
+				})
+		} catch (err) { throw err }
+	}
+
+	const likePost = async (_id) => {
+		try {
+			await fetch(`http://localhost:5000/api/posts/like/${_id}`, { method: 'POST' })
+				.then(res => res.json(), err => console.log('error from like post: ', err))
+				.then(data => {
+					console.log('liked post: ', data);
+					setPosts({ _id, user, type: 'like' })
 				})
 		} catch (err) { throw err }
 	}
@@ -50,7 +61,7 @@ const Post = ({ post }) => {
 					<div className="panel">
 
 						{post.username !== user.username &&
-							<img src={likeIcon} onClick={() => setPosts({ _id, user, type: 'like' })} />
+							<img src={likeIcon} onClick={() => likePost(_id)} />
 						}
 
 						<img src={commentIcon} onClick={() => setActive(active ? false : true)} />

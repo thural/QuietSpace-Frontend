@@ -10,12 +10,13 @@ const CommentSection = (postid, comments) => {
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
-		setCommentData({ ...commentData, [name]: value });
+		setCommentData({ ...commentData, [name]: value })
 	}
 
 
 
-	const addComment = async (commentData) => {
+	const addComment = async (commentData, postid) => {
+		console.log('postid:', postid)
 		try {
 			await fetch(`http://localhost:5000/api/posts/:${postid}/comments`, {
 				method: 'POST',
@@ -35,9 +36,10 @@ const CommentSection = (postid, comments) => {
 
 			<div className={classes.commentSection} >
 				
-				<form onSubmit={(e) => { e.preventDefault(); addComment(commentData); setFormView({ formName: 'overlay' }) }}>
+				<form onSubmit={(e) => { e.preventDefault(); addComment(commentData, postid); setFormView({ formName: 'overlay' }) }}>
 					<textarea className={classes.commentInput}
-						type='text' name='text'
+						type='text'
+						name='text'
 						placeholder="Write a comment ..." maxLength="128"
 						value={commentData.text} onChange={handleChange}>
 					</textarea>

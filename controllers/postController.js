@@ -75,7 +75,6 @@ exports.delete_post = (req, res, next) => {
 		.exec((err, post) => {
 			if (err) return next(err)
 			console.log("deleted post: ", post)
-			//res.status(204).send()
 			return res.status(200).json(post)
 		})
 }
@@ -85,7 +84,8 @@ exports.like_post = async (req, res, next) => {
 	try {
 		await Post.updateOne({ _id: req.params.id }, { "$push": { likes: req.user._id } })
 		await User.updateOne({ _id: req.user._id }, { "$push": { likes: req.params.id } })
-		res.status(204).send()
+		console.log("liked post: ", req.params.id)
+		return res.status(200).json({post_id: req.params.id})
 	} catch (err) { return next(err) }
 }
 
@@ -94,6 +94,36 @@ exports.unlike_post = async (req, res, next) => {
 	try {
 		await Post.updateOne({ _id: req.params.id }, { "$pull": { likes: req.user._id } })
 		await User.updateOne({ _id: req.user._id }, { "$pull": { likes: req.params.id } })
-		res.status(204).send()
+		console.log("unliked post: ", req.params.id)
+		return res.status(200).json({post_id: req.params.id})
 	} catch (err) { return next(err) }
 }
+
+exports.add_comment = [
+	body("text", "at least 3 characters required").isLength({ min: 3 }),
+	body("text", "max 128 characters allowed").isLength({ max: 128 }),
+	body("text").custom(checkInput).withMessage("Your comment can not contain bad words"),
+
+	(req, res, next) => {
+		const errors = validationResult(req)
+		console.log('USER value inside validatePost() : ', req.user)
+		req.comment = { username: req.user.username, text: req.body.text }
+		if (!errors.isEmpty()) {
+			return res.json({ errors: errors.array() })
+		} next()
+	},
+
+	async (req, res, next) => {
+		try {
+
+			const post = await Post.findOne({ "_id": req.params.id })
+			post.comments.push(req.comment)
+				post.save(err => {
+					if (err) return next(err)
+					console.log("saved post: ", req.post)
+					return res.status(200).json(req.post)
+				})
+			
+		} catch (err) { return next(err) }
+	}
+]
