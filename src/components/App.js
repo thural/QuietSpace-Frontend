@@ -48,7 +48,6 @@ function postReducer(state, { posts, data, user, _id, type }) {
 				return post
 			})
 		case 'delete':
-			deletePost(_id)
 			return state.filter(post => post['_id'] !== _id)
 		case 'add':
 			const newState = [data, ...state]

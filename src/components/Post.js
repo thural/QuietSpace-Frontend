@@ -79,7 +79,7 @@ const Post = ({ post }) => {
 					</div>
 
 					{ active &&
-						<CommentSection postid={_id} comments={comments} />
+						<CommentSection _id={_id} comments={comments} />
 					}
 				</>
 			}

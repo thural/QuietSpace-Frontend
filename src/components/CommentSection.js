@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react"
 import HandlerContext from "./HandlerContext"
 import styles from "../styles/commentStyles"
 
-const CommentSection = (postid, comments) => {
+const CommentSection = ({_id, comments}) => {
 	const { setPosts, setFormView } = useContext(HandlerContext);
 
 
@@ -15,10 +15,10 @@ const CommentSection = (postid, comments) => {
 
 
 
-	const addComment = async (commentData, postid) => {
-		console.log('postid:', postid)
+	const addComment = async (commentData, _id) => {
+		console.log('postid:', _id)
 		try {
-			await fetch(`http://localhost:5000/api/posts/:${postid}/comments`, {
+			await fetch(`http://localhost:5000/api/posts/${_id}/comments`, {
 				method: 'POST',
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(commentData)
@@ -26,7 +26,7 @@ const CommentSection = (postid, comments) => {
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
 					console.log('added comment: ', data)
-					setPosts({ type: 'comment', data })
+					setPosts({ type: 'add', data })
 				})
 		} catch (err) { throw err }
 	}
@@ -36,7 +36,7 @@ const CommentSection = (postid, comments) => {
 
 			<div className={classes.commentSection} >
 				
-				<form onSubmit={(e) => { e.preventDefault(); addComment(commentData, postid); setFormView({ formName: 'overlay' }) }}>
+				<form onSubmit={(e) => { e.preventDefault(); addComment(commentData, _id); setFormView({ formName: 'overlay' }) }}>
 					<textarea className={classes.commentInput}
 						type='text'
 						name='text'
@@ -46,8 +46,8 @@ const CommentSection = (postid, comments) => {
 					<button className="submit-btn" type='submit'> add </button>
 				</form>
 
-				{ comments == true &&
-					comments.map((comment) => (
+				{ comments &&
+					comments.map(comment => (
 						<div className="comment">
 							<p className="comment-author">{comment.author}</p>
 							<p className="comment-text">{comment.text}</p>

@@ -120,8 +120,8 @@ exports.add_comment = [
 			post.comments.push(req.comment)
 				post.save(err => {
 					if (err) return next(err)
-					console.log("saved post: ", req.post)
-					return res.status(200).json(req.post)
+					console.log("saved comment to the post: ", post)
+					return res.status(200).json(post)
 				})
 			
 		} catch (err) { return next(err) }
