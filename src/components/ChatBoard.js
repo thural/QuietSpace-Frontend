@@ -42,7 +42,7 @@ const ChatBoard = ({ messages }) => {
 				<input
 					className='input'
 					type='text' name='message'
-					placeholder="message" maxLength="64"
+					placeholder="message" maxLength="128"
 					value={messageData.message} onChange={handleChange}
 				/>
 				<button className={classes.submitBtn} type='submit'> send </button>
