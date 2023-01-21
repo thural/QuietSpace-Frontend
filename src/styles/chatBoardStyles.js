@@ -27,6 +27,7 @@ const styles = createUseStyles({
 		gap: '1rem',
 		color: 'black',
 		width: '100%',
+		maxWidth: '512px',
 		display: 'flex',
 		padding: '1rem',
 		flexFlow: 'row nowrap',

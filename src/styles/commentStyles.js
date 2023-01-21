@@ -4,8 +4,6 @@ const styles = createUseStyles({
 	commentSection: {
 		fontSize: '1rem',
 		marginTop: '12px',
-		borderRadius: '10px',
-		backgroundColor: '#e2e8f0',
 		'& .author': {
 			width: '100%',
 			fontSize: '1.2rem',
@@ -17,9 +15,10 @@ const styles = createUseStyles({
 			padding: '0',
 			boxSizing: 'border-box',
 			alignItems: 'center',
-			borderRadius: '10px',
 			justifyContent: 'center',
-			backgroundColor: 'transparent'
+			backgroundColor: 'transparent',
+			borderRadius: '10px',
+			backgroundColor: '#e2e8f0',
 		},
 		'& button': {
 			color: 'white',
@@ -33,6 +32,24 @@ const styles = createUseStyles({
 			backgroundColor: 'black',
 			marginRight: '10px'
 		},
+	},
+	comment: {
+		width: 'fit-content',
+		margin: '10px 0',
+		padding: '10px 10px',
+		boxSizing: 'border-box',
+		alignItems: 'center',
+		borderRadius: '10px',
+		backgroundColor: '#e2e8f0',
+		'& .comment-text': {
+			margin: '0',
+			padding: '0'
+		},
+		'& .comment-author': {
+			margin: '0',
+			fontSize: '14px',
+			fontWeight: '600'
+		}
 	},
 	commentInput: {
 		width: '100%',

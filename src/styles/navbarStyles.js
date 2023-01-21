@@ -36,7 +36,7 @@ const styles = createUseStyles(
 				justifyContent: 'center'
 			},
 			'& .navbar-item': {
-				width: '2.9rem',
+				width: '2.5rem',
 				margin: '0 1.8rem',
 			},
 			'& .navbar-item.menu': {
