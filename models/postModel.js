@@ -10,7 +10,7 @@ const CommentSchema = new Schema({
 
 const PostSchema = new Schema({
   username: { type: String, required: true, maxLength: 16 },
-  text: { type: String, required: true, maxLength: 100 },
+  text: { type: String, required: true, maxLength: 128 },
   date: { type: Date, default: Date.now },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   comments: [CommentSchema]
