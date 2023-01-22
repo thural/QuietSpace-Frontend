@@ -14,11 +14,11 @@ const data = [
 			user_id: "Brogrammer",
 			text: "Hi man how're u doing",
 			date: "2022-10-30T08:23:39.345+00:00",
-			reactions: [{ user: "John", emoji: "👋" }]
+			reactions: [{ user: "Thural", emoji: "👋" }]
 		},
 		{
 			_id: 2,
-			user_id: "John",
+			user_id: "Thural",
 			text: "Hi, walking my dog.. you?",
 			date: "2022-10-30T08:24:55.345+00:00",
 			reactions: [{ user: "Brogrammer", emoji: "👍" }]
@@ -28,7 +28,7 @@ const data = [
 			user_id: "Brogrammer",
 			text: "Coding as always.. You going to the party tonight? 🤔",
 			date: "2022-10-30T08:24:59.345+00:00",
-			reactions: [{ user: "John", emoji: "💯" }]
+			reactions: [{ user: "Thural", emoji: "💯" }]
 		},
 	 ]
 	},
@@ -40,11 +40,11 @@ const data = [
 				user_id: "Lera",
 				text: "Hi, what movies can you suggest for tonight",
 				date: "2022-10-30T08:23:36.345+00:00",
-				reactions: [{ user: "John", emoji: "👋" }]
+				reactions: [{ user: "Thural", emoji: "👋" }]
 			},
 			{
 				_id: 2,
-				user_id: "John",
+				user_id: "Thural",
 				text: "Hi, BladeRunner, Joker(2019) and Taxi Driver",
 				date: "2022-10-30T08:24:50.345+00:00",
 				reactions: [{ user: "Susan", emoji: "👍" }]
@@ -54,7 +54,7 @@ const data = [
 				user_id: "Lera",
 				text: "Thanks gonna check these for now 👍",
 				date: "2022-10-30T08:24:56.345+00:00",
-				reactions: [{ user: "John", emoji: "💯" }]
+				reactions: [{ user: "Thural", emoji: "💯" }]
 			},
 		]
 	},

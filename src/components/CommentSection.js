@@ -31,6 +31,8 @@ const CommentSection = ({_id, comments}) => {
 		} catch (err) { throw err }
 	}
 
+
+	
 	const classes = styles()
 	return (
 
@@ -48,12 +50,13 @@ const CommentSection = ({_id, comments}) => {
 
 				{ comments &&
 					comments.map(comment => (
-						<div className="comment">
-							<p className="comment-author">{comment.author}</p>
+						<div key= {comments.indexOf(comment)} className={classes.comment}>
+							<p className="comment-author">{comment.username}</p>
 							<p className="comment-text">{comment.text}</p>
 						</div>
 					))
 				}
+
 
 			</div>
 	)

@@ -3,14 +3,12 @@ import HandlerContext from "./HandlerContext"
 import styles from "../styles/newPostStyles"
 import Overlay from "./Overlay"
 
-const EditForm = ({setPosts}) => {
+const EditForm = () => {
 
 	const classes = styles()
-	const { user, posts, formView, setFormView } = useContext(HandlerContext)
+	const { posts, setPosts, formView, setFormView } = useContext(HandlerContext)
 
 	const _id = formView.edit["_id"]
-
-	//console.log("edit formView ID: ", _id)
 
 	const text = posts.find( post => post["_id"] == _id)["text"]
 

@@ -50,7 +50,7 @@ const Post = ({ post }) => {
 
 			<div className={classes.postinfo}>
 				<p className="likes" >{likes.length} likes</p>
-				<p>0 comments </p>
+				<p>{comments.length} comments </p>
 				<p>0 shares</p>
 			</div>
 
