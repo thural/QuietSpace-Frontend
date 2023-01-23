@@ -12,13 +12,13 @@ const MessageSchema = new Schema(
 
 const ContactSchema = new Schema(
   {
-    user_id: { type: Schema.Types.ObjectId, ref: "User", requied: true },
+    _id: { type: Schema.Types.ObjectId, ref: "User", requied: true },
     messages: [MessageSchema]
   }
 )
 
 const ChatSchema = new Schema({
-  user_id: { type: Schema.Types.ObjectId, ref: "User", requied: true },
+  _id: { type: Schema.Types.ObjectId, ref: "User", requied: true },
   date: { type: Date, default: Date.now },
   chat: [ContactSchema]
 })

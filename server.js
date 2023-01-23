@@ -77,6 +77,7 @@ app.use(logger('dev'))
 
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/posts', require('./routes/postRoutes'))
+app.use('/api/chats', require('./routes/chatRoutes'))
 app.all('*', (request, response) => { response.status(404).send('Error 404, Page not found') })
 
 // const server = require('http').Server(app)

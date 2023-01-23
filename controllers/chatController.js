@@ -6,13 +6,13 @@ const Chat = require("../models/chatModel")
 customFilter.addWords(...dirty_words)
 
 const checkInput = (value, { req }) => {
-	if (customFilter.isProfane(value)) return false;
-	const does_match = dirty_words.some(word => {
-		const regex = new RegExp(`\\s${word}\\s|mother.+|sister.+`, 'i')
-		return regex.test(value)
-	})
-	if (does_match) return false
-	else return true
+  if (customFilter.isProfane(value)) return false;
+  const does_match = dirty_words.some(word => {
+    const regex = new RegExp(`\\s${word}\\s|mother.+|sister.+`, 'i')
+    return regex.test(value)
+  })
+  if (does_match) return false
+  else return true
 }
 
 const { body, validationResult } = require("express-validator")
@@ -21,7 +21,7 @@ const { body, validationResult } = require("express-validator")
 exports.add_message = [
   body("text", "at least 1 characters required").isLength({ min: 1 }),
   body("text", "max 256 characters allowed").isLength({ max: 256 }),
-  body("text").custom(checkInput).withMessage("Your comment can not contain bad words"),
+  body("text").custom(checkInput).withMessage("Your message can not contain bad words"),
 
   (req, res, next) => {
     const errors = validationResult(req)
@@ -33,55 +33,92 @@ exports.add_message = [
   },
 
   async (req, res, next) => {
+    console.log("user_id from params: ", req.params.contact_id)
     try {
+      const found_chat_sender = await Chat.findOne({ "user_id": req.user._id })
+      const found_chat_receiver = await Chat.findOne({ "user_id": req.params.contact_id })
+      var prevMessagedSender = undefined
+      var prevMessagedReceiver = undefined
+      var senderChat = undefined
+      var receiverChat = undefined
 
-      const found_chat = await Chat.findOne({ "_id": req.user._id })
-      const prevMessaged = undefined
-      const chat = undefined
-
-
-      if (found_chat) {
-
-        prevMessaged = found_chat.chat
-        .some(contact => contact.user_id == req.param.user_id)
-
-        if (prevMessaged) {
+      // for sender
+      if (found_chat_sender) {
+        prevMessagedSender = found_chat_sender.chat
+          .some(contact => contact.user_id == req.params.contact_id)
+        if (prevMessagedSender) {
           //if the contact already been messaged previously
-          found_chat.chat.map(contact => {
-            if (contact.user_id == req.params.sender_id) {
+          found_chat_sender.chat.map(contact => {
+            if (contact.user_id == req.params.contact_id) {
               contact.messages.push(req.message)
               return contact
             } else return contact
           })
         } else {
           //if the contact never been messaged previously
-          found_chat.chat.push({
-            user_id: req.param.user_id,
+          found_chat_sender.chat.push({
+            _id: req.params.contact_id,
             messages: [req.message]
           })
         }
-
       } else {
-
         //if there is no any message by the current user
-       chat = new Chat({
-          user_id: req.user._id,
+        senderChat = new Chat({
+          _id: req.user._id,
           chat: [
             {
-              user_id: req.param.user_id,
+              _id: req.params.contact_id,
               messages: [req.message]
             }
           ]
         })
-
       }
 
-      const toBeSaved = prevMessaged ? found_chat : chat
+      // for receiver
+      if (found_chat_receiver) {
+        prevMessagedReceiver = found_chat_receiver.chat
+          .some(contact => contact.user_id == req.user._id)
+        if (prevMessagedReceiver) {
+          //if the contact already been messaged previously
+          found_chat_receiver.chat.map(contact => {
+            if (contact.user_id == req.user._id) {
+              contact.messages.push(req.message)
+              return contact
+            } else return contact
+          })
+        } else {
+          //if the contact never been messaged previously
+          found_chat_sender.chat.push({
+            _id: req.user._id,
+            messages: [req.message]
+          })
+        }
+      } else {
+        //if there is no any message by the current user
+        receiverChat = new Chat({
+          _id: req.params.contact_id,
+          chat: [
+            {
+              _id: req.user._id,
+              messages: [req.message]
+            }
+          ]
+        })
+      }
 
-      toBeSaved.save(err => {
+      const toBeSavedSender = found_chat_sender ? found_chat_sender : senderChat
+      const toBeSavedReceiver = found_chat_receiver ? found_chat_receiver : receiverChat
+
+
+      toBeSavedSender.save(err => {
         if (err) return next(err)
-        console.log("saved message to the chat: ", toBeSaved)
-        return res.status(200).json(toBeSaved)
+
+        toBeSavedReceiver.save(err => {
+          if (err) return next(err)
+          console.log("saved message to the chat: ", toBeSavedReceiver)
+          return res.status(200).json(toBeSavedReceiver)
+        })
+
       })
 
     } catch (err) { return next(err) }

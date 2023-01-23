@@ -19,7 +19,6 @@ exports.logout_get = (req, res, next) => {
 exports.user_get = (req, res) => {
 	if (!req.user) {
 		res.status(400).json({ msg: 'user has not logged in' })
-		//throw new Error()
 	}
 	res.json(req.user)
 }
