@@ -35,8 +35,8 @@ exports.add_message = [
   async (req, res, next) => {
     console.log("user_id from params: ", req.params.contact_id)
     try {
-      const found_chat_sender = await Chat.findOne({ "user_id": req.user._id })
-      const found_chat_receiver = await Chat.findOne({ "user_id": req.params.contact_id })
+      const found_chat_sender = await Chat.findOne({ "_id": req.user._id })
+      const found_chat_receiver = await Chat.findOne({ "_id": req.params.contact_id })
       var prevMessagedSender = undefined
       var prevMessagedReceiver = undefined
       var senderChat = undefined
@@ -45,11 +45,11 @@ exports.add_message = [
       // for sender
       if (found_chat_sender) {
         prevMessagedSender = found_chat_sender.chat
-          .some(contact => contact.user_id == req.params.contact_id)
+          .some(contact => contact._id == req.params.contact_id)
         if (prevMessagedSender) {
           //if the contact already been messaged previously
           found_chat_sender.chat.map(contact => {
-            if (contact.user_id == req.params.contact_id) {
+            if (contact._id == req.params.contact_id) {
               contact.messages.push(req.message)
               return contact
             } else return contact
@@ -77,11 +77,11 @@ exports.add_message = [
       // for receiver
       if (found_chat_receiver) {
         prevMessagedReceiver = found_chat_receiver.chat
-          .some(contact => contact.user_id == req.user._id)
+          .some(contact => contact._id == req.user._id)
         if (prevMessagedReceiver) {
           //if the contact already been messaged previously
           found_chat_receiver.chat.map(contact => {
-            if (contact.user_id == req.user._id) {
+            if (contact._id == req.user._id) {
               contact.messages.push(req.message)
               return contact
             } else return contact

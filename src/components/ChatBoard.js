@@ -7,18 +7,24 @@ const ChatBoard = ({ messages }) => {
 
 	const { currentChat, setChat } = useContext(ChatContext)
 
-	const [messageData, setMessageData] = useState({ message: '' })
+	const [textData, setTextData] = useState({ text: '' })
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
-		setMessageData({ ...messageData, [name]: value })
+		setTextData({ ...textData, [name]: value })
 	}
 
-	console.log("currentChat: ", currentChat)
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		sendMessage(textData);
+		setTextData({...textData, text: ''})
+	}
+
+	//console.log("currentChat: ", currentChat)
 
 	const sendMessage = async (messageData) => {
 		try {
-			await fetch(`http://localhost:5000/api/chat/${_id}`, {
+			await fetch(`http://localhost:5000/api/chats/send/6364d1833ad132dc27e28e6c`, {
 				method: 'POST',
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(messageData)
@@ -38,12 +44,12 @@ const ChatBoard = ({ messages }) => {
 				messages.map((message) => (<Message key={message._id} message={message} />))
 			}
 
-			<form className={classes.chatInput} onSubmit={(e) => { e.preventDefault(); sendMessage(messageData) }}>
+			<form className={classes.chatInput} onSubmit={handleSubmit}>
 				<input
 					className='input'
-					type='text' name='message'
-					placeholder="message" maxLength="128"
-					value={messageData.message} onChange={handleChange}
+					type='text' name='text'
+					placeholder="text" maxLength="128"
+					value={textData.message} onChange={handleChange}
 				/>
 				<button className={classes.submitBtn} type='submit'> send </button>
 			</form>
