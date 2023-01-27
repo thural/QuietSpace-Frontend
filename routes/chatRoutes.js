@@ -3,7 +3,7 @@ const router = express.Router()
 
 const chat = require("../controllers/chatController")
 
-// router.route("/").get(chat.list).post(chat.create_post)
+router.route("/").get(chat.load)
 // router.route("/edit/:id").post(chat.edit_post)
 router.route("/send/:contact_id").post(chat.add_message) 
 // router.route('/delete/:id').post(chat.delete_post)

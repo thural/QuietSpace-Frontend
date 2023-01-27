@@ -17,6 +17,22 @@ const checkInput = (value, { req }) => {
 
 const { body, validationResult } = require("express-validator")
 
+exports.load = (req, res, next) => {
+	Chat.find({_id: req.user._id})
+		.sort([["date", "descending"]])
+		.exec((err, chatData) => {
+			if (err) return next(err)
+			// if (req.user) {
+			// 	const postIndex = contacts.findIndex(elem => elem.username === req.user.username)
+			// 	if (postIndex !== -1) {
+			// 		const userPost = contacts[postIndex]
+			// 		contacts.splice(postIndex, 1)
+			// 		contacts.unshift(userPost)
+			// 	}
+			// }
+			res.status(200).json(chatData[0])
+		})
+}
 
 exports.add_message = [
   body("text", "at least 1 characters required").isLength({ min: 1 }),
