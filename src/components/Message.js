@@ -5,8 +5,9 @@ import styles from "../styles/messageStyles"
 const Message = ({ message }) => {
 
 	const { user } = useContext(HandlerContext)
+	
 	const { user_id, text, reactions } = message
-	const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
+	//const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
 	const margin = message.user_id !== user.username ? "auto" : "0"
 
 	const classes = styles()

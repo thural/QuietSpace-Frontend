@@ -9,7 +9,7 @@ const ContactBoard = ({ contacts }) => {
 	return (
 		<div className={classes.contacts}>
 			{
-				contacts.map((contact) => (<ChatContact key={contact.user_id} contact={contact}/>))
+				contacts.map((contact, index) => (<ChatContact key={index} contact={contact}/>))
 			}
 		</div>
 	)

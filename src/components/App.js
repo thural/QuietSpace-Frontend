@@ -28,6 +28,17 @@ socket.emit('custom-event', "test message", 10, [1, 2, 3])
 // 	} catch (err) { return false }
 // }
 
+function chatReducer(state, { messages, chatData, chat, user, sender_id, type }) {
+	switch (type) {
+		case 'load':
+			console.log('data from reducer: ', chatData)
+			return chatData
+		// case 'load':
+		// 	return chat.find(sender => sender.some(message => message['sender_id'] == sender_id))
+		default: return state
+	}
+}
+
 function postReducer(state, { posts, data, user, _id, type }) {
 	switch (type) {
 		case 'like':
@@ -93,9 +104,16 @@ const App = () => {
 		setPosts({ posts: items.posts, type: 'load' })
 	}
 
+	const fetchChat = async () => {
+		const data = await fetch('http://localhost:5000/api/chats')
+		const chatData = await data.json()
+		setChat({ chatData, type: 'load' })
+		console.log("LOADED CHAT: ", chatData)
+	}
+
 	const [user, setUser] = useState([])
 	const [posts, setPosts] = useReducer(postReducer, [])
-
+	const [chat, setChat] = useReducer(chatReducer, [])
 	const [formView, setFormView] = useReducer(formViewReducer, {
 		login: false,
 		signup: false,
@@ -104,21 +122,25 @@ const App = () => {
 		overlay: false
 	})
 
-	useEffect(() => { fetchUser(); fetchPosts() }, [])
+	useEffect(() => { fetchUser(); fetchPosts(); fetchChat() }, [])
 
 	const classes = styles()
 	return (
 		<div className={classes.app}>
 
-			<HandlerContext.Provider value={{
-				user,
-				setUser,
-				posts,
-				setPosts,
-				fetchUser,
-				formView,
-				setFormView
-			}}>
+			<HandlerContext.Provider
+
+				value={{
+					user,
+					setUser,
+					posts,
+					setPosts,
+					fetchUser,
+					formView,
+					setFormView,
+					chat
+				}}>
+
 				<NavBar />
 				<Routes>
 					<Route path="/" element={<Home />} />
@@ -127,6 +149,7 @@ const App = () => {
 					<Route path="/contact" element={<Contact />} />
 				</Routes>
 				<Copyright />
+
 			</HandlerContext.Provider>
 		</div>
 	)
