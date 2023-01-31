@@ -2,7 +2,7 @@ import React, { useState, useReducer, useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
 import HandlerContext from "./HandlerContext"
 import styles from "../styles/appStyles"
-import { io } from 'socket.io-client'
+//import { io } from 'socket.io-client'
 import Copyright from "./Copyright"
 import Contact from "./Contact"
 import NavBar from "./Navbar"
@@ -10,15 +10,15 @@ import Posts from "./Posts"
 import Home from "./Home"
 import Chat from "./Chat"
 
-////// socket test
-const socket = io('http://localhost:5000')
+// ////// socket test
+// const socket = io('http://localhost:5000')
 
-socket.on('connect', () => {
-	console.log("socket id from App component: ", socket.id)
-})
+// socket.on('connect', () => {
+// 	console.log("socket id from App component: ", socket.id)
+// })
 
-socket.emit('custom-event', "test message", 10, [1, 2, 3])
-////// socket test
+// socket.emit('custom-event', "test message", 10, [1, 2, 3])
+// ////// socket test
 
 
 // const deletePost = async (_id) => {

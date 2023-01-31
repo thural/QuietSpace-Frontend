@@ -17,7 +17,7 @@ const Message = ({ message }) => {
 		<div id={user_id} className={classes.message} style={{marginLeft:margin}}>
 
 			<div className={classes.sender}>
-				{user_id}
+				{user_id.username}
 			</div>
 
 			<div className={classes.text}>

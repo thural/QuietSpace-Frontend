@@ -8,6 +8,8 @@ import styles from "../styles/chatStyles"
 const Chat = () => {
 	const { chat, setChat } = useContext(HandlerContext)
 
+	console.log(chat)
+
 	const contacts = chat['chat'].map(contact => contact._id)
 	//const contacts = chat.chat.map(contact => contact.messages.findLast(message => message.user_id !== user.username))
 

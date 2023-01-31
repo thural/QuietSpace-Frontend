@@ -44,7 +44,7 @@ const styles = createUseStyles(
 			},
 			'& h1': {
 				margin: '0',
-				color: 'darkblue'
+				color: '#3e3e3e'
 			},
 			'& a, a:hover, a:focus, a:active': {
 				textDecoration: 'none',

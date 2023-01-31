@@ -19,6 +19,18 @@ const { body, validationResult } = require("express-validator")
 
 exports.load = (req, res, next) => {
 	Chat.find({_id: req.user._id})
+    .populate("_id", "username")
+    .populate({ 
+      path: 'chat',
+      model: 'User'
+    })
+    .populate({ 
+      path: 'chat',
+      populate: {
+        path: 'messages',
+        model: 'User'
+      } 
+   })
 		.sort([["date", "descending"]])
 		.exec((err, chatData) => {
 			if (err) return next(err)
