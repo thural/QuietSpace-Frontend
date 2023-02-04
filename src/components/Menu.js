@@ -10,7 +10,7 @@ import menuIcon from "../assets/menu-line.svg"
 
 
 const Menu = ({ menu: items }) => {
-	const { user, fetchUser } = useContext(HandlerContext)
+	const { loggedUser, fetchUser } = useContext(HandlerContext)
 	const classes = styles();
 
 	const [display, setDisplay] = useState('none');
@@ -28,7 +28,7 @@ const Menu = ({ menu: items }) => {
 	}
 
 	return (
-		<div style={{ display: user.username ? "block" : "none" }}>
+		<div style={{ display: loggedUser.username ? "block" : "none" }}>
 			<div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
 				<img src={menuIcon} />
 			</div>

@@ -9,7 +9,7 @@ const styles = createUseStyles(
 			padding: '0',
 			position: 'relative',
 			gridTemplate: '1fr 9fr / 3fr 7fr',
-			backgroundColor: 'whitesmoke'
+			backgroundColor: '#e9e9e9'
 		}
 	}
 );

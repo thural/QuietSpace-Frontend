@@ -10,9 +10,9 @@ import CommentSection from "./CommentSection"
 
 const Post = ({ post }) => {
 	const { _id, username, text, likes, comments } = post
-	const { user, setPosts, setFormView } = useContext(HandlerContext)
+	const { loggedUser, setPosts, setFormView } = useContext(HandlerContext)
 	const [active, setActive] = useState(false)
-	const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
+	const liked = post.likes.includes(loggedUser['_id']) ? 'unlike' : 'like'
 
 	const deletePost = async (_id) => {
 		try {
@@ -20,7 +20,7 @@ const Post = ({ post }) => {
 				.then(res => res.json(), err => console.log('error from delete post: ', err))
 				.then(data => {
 					console.log('deleted post: ', data);
-					setPosts({ _id, user, type: 'delete' })
+					setPosts({ _id, user: loggedUser, type: 'delete' })
 				})
 		} catch (err) { throw err }
 	}
@@ -31,7 +31,7 @@ const Post = ({ post }) => {
 				.then(res => res.json(), err => console.log('error from like post: ', err))
 				.then(data => {
 					console.log('liked post: ', data);
-					setPosts({ _id, user, type: 'like' })
+					setPosts({ _id, user: loggedUser, type: 'like' })
 				})
 		} catch (err) { throw err }
 	}
@@ -54,25 +54,25 @@ const Post = ({ post }) => {
 				<p>0 shares</p>
 			</div>
 
-			{user.username &&
+			{loggedUser.username &&
 				<>
 					<hr></hr>
 
 					<div className="panel">
 
-						{post.username !== user.username &&
+						{post.username !== loggedUser.username &&
 							<img src={likeIcon} onClick={() => likePost(_id)} />
 						}
 
 						<img src={commentIcon} onClick={() => setActive(active ? false : true)} />
 
-						{post.username == user.username &&
+						{post.username == loggedUser.username &&
 							<img src={editIcon} onClick={() => setFormView({ formName: 'edit', _id })} />
 						}
 
 						<img src={shareIcon} />
 
-						{user.admin || post.username == user.username &&
+						{loggedUser.admin || post.username == loggedUser.username &&
 							<img src={deleteIcon} onClick={() => deletePost(_id)} />
 						}
 

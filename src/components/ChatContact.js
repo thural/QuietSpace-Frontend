@@ -5,21 +5,23 @@ import ChatContext from "./ChatContext"
 const ChatContact = ({ contact }) => {
 
 	const { currentChat, setCurrentChat } = useContext(ChatContext)
-	const { user_id, text, reactions } = contact
+	const { username, text, reactions } = contact
 	const backgroundColor = currentChat == contact['user_id'] ? '#e3e3e3' : 'white'
+
+	console.log("contact from ChatCOntact", contact)
 
 	const classes = styles()
 
 	return (
 
-		<div id={user_id}
+		<div id={username}
 			className={classes.contact}
-			onClick={() => {setCurrentChat(contact['user_id'])}}
+			onClick={() => {setCurrentChat(contact['_id'])}}
 			style={{ backgroundColor }}
 		>
 
 			<div className={classes.author}>
-				{user_id}
+				{username}
 			</div>
 
 			<div className={classes.text}>

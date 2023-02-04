@@ -6,7 +6,7 @@ import LoginForm from "./LoginForm";
 import styles from "../styles/homeStyles"
 
 const Home = () => {
-	const { user, formView, setFormView } = useContext(HandlerContext);
+	const { loggedUser, formView, setFormView } = useContext(HandlerContext);
 	const classes = styles();
 
 	return (
@@ -17,7 +17,7 @@ const Home = () => {
 					<h3>Free speech is the foundation of a healthy society</h3>
 				</div>
 				{
-					user.username ? <Link to="/posts"><button>Post now</button></Link> :
+					loggedUser.username ? <Link to="/posts"><button>Post now</button></Link> :
 						<button onClick={() => setFormView({ formName: 'login' })}>Login to post</button>
 				}
 			</div>

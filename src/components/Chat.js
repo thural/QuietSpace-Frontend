@@ -9,13 +9,13 @@ const Chat = () => {
 	const { chat, setChat } = useContext(HandlerContext)
 
 	console.log(chat)
-
-	const contacts = chat['chat'].map(contact => contact._id)
+	const contacts = chat
+	// const contacts = chat.map(contact => contact._id)
 	//const contacts = chat.chat.map(contact => contact.messages.findLast(message => message.user_id !== user.username))
 
-	const [currentChat, setCurrentChat] = useState(contacts[0])
+	const [currentChat, setCurrentChat] = useState(contacts[0]["_id"])
 
-	const messages = chat['chat'].find(contact => contact._id == currentChat).messages
+	const messages = chat.find(contact => contact._id == currentChat).messages
 
 	const classes = styles()
 	return (

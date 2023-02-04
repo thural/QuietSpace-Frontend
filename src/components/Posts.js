@@ -6,25 +6,25 @@ import EditForm from "./EditForm"
 import styles from "../styles/postsStyles"
 
 const Posts = () => {
-	const { user, posts, setPosts, setFormView, formView } = useContext(HandlerContext)
+	const { loggedUser, posts, setPosts, setFormView, formView } = useContext(HandlerContext)
 
 	const classes = styles()
 	return (
 		<>
 			<div className={classes.posts}>
 
-				{user.username &&
+				{loggedUser.username &&
 					<button
 						className="add-post-btn" onClick={() => setFormView({ formName: 'post' })}
 					>
 						Add
 					</button>}
 
-				{user.username && formView.post &&
+				{loggedUser.username && formView.post &&
 					<PostForm />
 				}
 
-				{user.username && formView.edit.view &&
+				{loggedUser.username && formView.edit.view &&
 					<EditForm />
 				}
 

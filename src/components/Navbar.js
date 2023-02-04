@@ -11,7 +11,7 @@ import contactIcon from "../assets/question-circle-line.svg"
 
 const NavBar = ({ children }) => {
 
-	const { user } = useContext(HandlerContext)
+	const { loggedUser } = useContext(HandlerContext)
 
 	const classes = styles();
 
@@ -29,7 +29,7 @@ const NavBar = ({ children }) => {
 				</div>
 
 				{
-					user.username &&
+					loggedUser.username &&
 					<div className="navbar-item">
 						<Link to="/chat"><img src={chatIcon} /></Link>
 					</div>

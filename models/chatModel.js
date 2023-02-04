@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const MessageSchema = new Schema(
   {
-    user_id: { type: Schema.Types.ObjectId, ref: "User", requied: true },
+    username: { type: String, required: true },
     text: { type: String, required: true, maxLength: 128 },
     date: { type: Date, default: Date.now },
     //reactions: [{ user: { type: Schema.Types.ObjectId, ref: "User" }, emoji: { type: String } }]

@@ -31,7 +31,7 @@ import Chat from "./Chat"
 function chatReducer(state, { messages, chatData, chat, user, sender_id, type }) {
 	switch (type) {
 		case 'load':
-			console.log('data from reducer: ', chatData)
+			console.log("chat data in reducer:", chatData)
 			return chatData
 		// case 'load':
 		// 	return chat.find(sender => sender.some(message => message['sender_id'] == sender_id))
@@ -111,9 +111,9 @@ const App = () => {
 		console.log("LOADED CHAT: ", chatData)
 	}
 
-	const [user, setUser] = useState([])
+	const [loggedUser, setUser] = useState([])
 	const [posts, setPosts] = useReducer(postReducer, [])
-	const [chat, setChat] = useReducer(chatReducer, [])
+	const [chatData, setChat] = useReducer(chatReducer, [])
 	const [formView, setFormView] = useReducer(formViewReducer, {
 		login: false,
 		signup: false,
@@ -122,7 +122,11 @@ const App = () => {
 		overlay: false
 	})
 
-	useEffect(() => { fetchUser(); fetchPosts(); fetchChat() }, [])
+	useEffect(() => {
+		fetchUser();
+		fetchPosts();
+		fetchChat()
+	}, [])
 
 	const classes = styles()
 	return (
@@ -131,14 +135,14 @@ const App = () => {
 			<HandlerContext.Provider
 
 				value={{
-					user,
+					loggedUser,
 					setUser,
 					posts,
 					setPosts,
 					fetchUser,
 					formView,
 					setFormView,
-					chat
+					chat: chatData.chat
 				}}>
 
 				<NavBar />
