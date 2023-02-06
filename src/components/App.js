@@ -123,9 +123,10 @@ const App = () => {
 	})
 
 	useEffect(() => {
-		fetchUser();
-		fetchPosts();
-		fetchChat()
+		fetchUser().then(
+			fetchPosts(),
+			fetchChat()
+		)
 	}, [])
 
 	const classes = styles()
@@ -140,6 +141,8 @@ const App = () => {
 					posts,
 					setPosts,
 					fetchUser,
+					fetchPosts,
+					fetchChat,
 					formView,
 					setFormView,
 					chat: chatData.chat

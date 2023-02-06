@@ -5,7 +5,7 @@ import styles from "../styles/loginStyles"
 
 const LoginForm = () => {
 	const classes = styles();
-	const { fetchUser, setFormView } = useContext(HandlerContext);
+	const { fetchUser, fetchPosts, fetchChat, setFormView } = useContext(HandlerContext)
 	const [formData, setFormData] = useState({ username: '', password: '' })
 
 	const handleChange = (event) => {
@@ -19,7 +19,7 @@ const LoginForm = () => {
 			method: 'POST',
 			headers: { 'Content-type': 'application/json' },
 			body: JSON.stringify(formData)
-		}).then(() => fetchUser())
+		}).then(() => fetchUser().then(fetchPosts(), fetchChat()))
 	}
 
 	return (
