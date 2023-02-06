@@ -18,7 +18,7 @@ const checkInput = (value, { req }) => {
 const { body, validationResult } = require("express-validator")
 
 exports.load = (req, res, next) => {
-	Chat.find({_id: req.user._id})
+	Chat.find({_id: senderID})
     .populate("_id", "username")
 		.sort([["date", "descending"]])
 		.exec((err, chatData) => {
@@ -48,86 +48,86 @@ exports.add_message = [
 
     try {
 
-      const chatOfSender = await Chat.findOne({ "_id": req.user._id })
-      const chatOfReceiver = await Chat.findOne({ "_id": req.params.contactID })
-
-      var prevMessagedSender = undefined
-      var prevMessagedReceiver = undefined
       var newSenderChat = undefined
       var newReceiverChat = undefined
 
-      // for sender
-      if (chatOfSender) {
+      const senderID = req.user['_id'].toString()
+      const receiverID = req.params['contactID']
 
-        prevMessagedSender = chatOfSender.chat
-          .some(contact => contact._id == req.params.contactID)
+      console.log("senderID: ", senderID)
+      console.log("receiverID: ", receiverID)
 
-        if (prevMessagedSender) {
+      const senderChat = await Chat.findOne({ "_id": senderID })
+      const receiverChat = await Chat.findOne({ "_id": receiverID })
+
+
+
+      // if chat already exists for sender
+      if (senderChat) {
+
+        const receiverExists = senderChat.chat.some(contact => contact['_id'] == receiverID)
+
+        console.log("receiverExists: ", receiverExists)
+
+        if (receiverExists) {
+
           //if the contact already been messaged previously
-
-          chatOfSender.chat.map(contact => {
-            if (contact._id == req.params.contactID) contact.messages.push(req.message)
+          senderChat.chat.map(contact => {
+            if (contact._id == receiverID) contact.messages.push(req.message)
             return contact
           })
 
         } else {
+
           //if the contact never been messaged previously
-          chatOfSender.chat.push({
-            _id: req.params.contactID,
+          senderChat.chat.push({
+            _id: receiverID,
             messages: [req.message]
           })
+
         }
       } else {
         //if there is no any message by the current user
         newSenderChat = new Chat({
-          _id: req.user._id,
-          chat: [
-            {
-              _id: req.params.contactID,
-              messages: [req.message]
-            }
-          ]
+          _id: senderID,
+          chat: [ { _id: receiverID, messages: [req.message] } ]
         })
       }
 
 
+      // if chat already exists for receiver
+      if (receiverChat) {
 
-      // for receiver
-      if (chatOfReceiver) {
+        const senderExists = receiverChat.chat.some(contact => contact['_id'] == senderID)
 
-        prevMessagedReceiver = chatOfReceiver.chat
-          .some(contact => contact._id == req.params.contactID)
+        console.log("senderExists: ", senderExists)
 
-        if (prevMessagedReceiver) {
+        if (senderExists) {
           //if the contact already been messaged previously
 
-          chatOfReceiver.chat.map(contact => {
-            if (contact._id == req.user._id) contact.messages.push(req.message)
+          receiverChat.chat.map(contact => {
+            if (contact._id == senderID) contact.messages.push(req.message)
             return contact
           })
-          
+
         } else {
           //if the contact never been messaged previously
-          chatOfSender.chat.push({
-            _id: req.user._id,
+          receiverChat.chat.push({
+            _id: senderID,
             messages: [req.message]
           })
         }
       } else {
         //if there is no any message by the current user
         newReceiverChat = new Chat({
-          _id: req.params.contactID,
-          chat: [
-            {
-              _id: req.user._id,
-              messages: [req.message]
-            }
-          ]
+          _id: receiverID,
+          chat: [ { _id: senderID, messages: [req.message] } ]
         })
       }
 
-      const forSender = chatOfSender ? chatOfSender : newSenderChat
-      const forReceiver = chatOfReceiver ? chatOfReceiver : newReceiverChat
+
+      const forSender = senderChat ? senderChat : newSenderChat
+      const forReceiver = receiverChat ? receiverChat : newReceiverChat
 
 
       forSender.save(err => {
@@ -136,7 +136,7 @@ exports.add_message = [
 
         forReceiver.save(err => {
           if (err) return next(err)
-          console.log("saved message to the chat: ", forReceiver)
+          console.log("saved message to the chat: ", forReceiver.chat.messages)
           return res.status(200).json(forReceiver)
         })
 
