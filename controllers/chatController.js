@@ -7,11 +7,6 @@ customFilter.addWords(...dirty_words)
 
 const checkInput = (value, { req }) => {
   if (customFilter.isProfane(value)) return false;
-  const does_match = dirty_words.some(word => {
-    const regex = new RegExp(`\\s${word}\\s|mother.+|sister.+`, 'i')
-    return regex.test(value)
-  })
-  if (does_match) return false
   else return true
 }
 
