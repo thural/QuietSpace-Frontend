@@ -1,5 +1,5 @@
 import Post from "./Post"
-import styles from "../styles/cardBoardStyles"
+import styles from "./styles/cardBoardStyles"
 import React from "react"
 
 const PostBoard = ({posts}) => {

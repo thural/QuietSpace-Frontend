@@ -1,14 +1,14 @@
 import React, { useState, useReducer, useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
-import HandlerContext from "./HandlerContext"
+import MainContext from "./MainContext"
 import styles from "../styles/appStyles"
 //import { io } from 'socket.io-client'
 import Copyright from "./Copyright"
-import Contact from "./Contact"
-import NavBar from "./Navbar"
-import Posts from "./Posts"
-import Home from "./Home"
-import Chat from "./Chat"
+import Contact from "./Contact/Contact"
+import NavBar from "./Navbar/Navbar"
+import Posts from "./Posts/Posts"
+import Home from "./Home/Home"
+import Chat from "./Chat/Chat"
 
 // ////// socket test
 // const socket = io('http://localhost:5000')
@@ -28,13 +28,20 @@ import Chat from "./Chat"
 // 	} catch (err) { return false }
 // }
 
-function chatReducer(state, { messages, chatData, chat, user, sender_id, type }) {
+function chatReducer(state, { messageData, chatData, chat, user, currentChat, type }) {
 	switch (type) {
+
 		case 'load':
-			console.log("chat data in reducer:", chatData)
 			return chatData
-		// case 'load':
-		// 	return chat.find(sender => sender.some(message => message['sender_id'] == sender_id))
+
+		case 'addMessage':
+			return state.chat.map(contact => {
+				if (contact['_id'] == currentChat) {
+					contact.messages.push(messageData)
+				}
+				return contact
+			})
+
 		default: return state
 	}
 }
@@ -133,11 +140,12 @@ const App = () => {
 	return (
 		<div className={classes.app}>
 
-			<HandlerContext.Provider
+			<MainContext.Provider
 
 				value={{
 					loggedUser,
 					setUser,
+					setChat,
 					posts,
 					setPosts,
 					fetchUser,
@@ -155,9 +163,9 @@ const App = () => {
 					<Route path="/chat" element={<Chat />} />
 					<Route path="/contact" element={<Contact />} />
 				</Routes>
-				<Copyright />
+				{/*<Copyright />*/}
 
-			</HandlerContext.Provider>
+			</MainContext.Provider>
 		</div>
 	)
 }

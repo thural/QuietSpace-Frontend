@@ -1,16 +1,16 @@
 import React, { useState, useContext } from "react"
-import styles from "../styles/menuStyles"
-import HandlerContext from "./HandlerContext"
-import savedIcon from "../assets/bookmark.svg"
-import historyIcon from "../assets/history.svg"
-import settingsIcon from "../assets/settings.svg"
-import logoutIcon from "../assets/log-out.svg"
-import menuIcon from "../assets/menu-line.svg"
+import styles from "./styles/menuStyles"
+import MainContext from "../MainContext"
+import savedIcon from "../../assets/bookmark.svg"
+import historyIcon from "../../assets/history.svg"
+import settingsIcon from "../../assets/settings.svg"
+import logoutIcon from "../../assets/log-out.svg"
+import menuIcon from "../../assets/menu-line.svg"
 
 
 
 const Menu = ({ menu: items }) => {
-	const { loggedUser, fetchUser } = useContext(HandlerContext)
+	const { loggedUser, fetchUser } = useContext(MainContext)
 	const classes = styles();
 
 	const [display, setDisplay] = useState('none');

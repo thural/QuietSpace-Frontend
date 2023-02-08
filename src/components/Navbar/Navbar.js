@@ -1,17 +1,17 @@
 import React, { useContext } from "react"
 import { Link } from "react-router-dom"
-import styles from "../styles/navbarStyles"
+import styles from "./styles/navbarStyles"
 import Menu from "./Menu"
-import HandlerContext from "./HandlerContext"
-import homeIcon from "../assets/home-line.svg"
-import postsIcon from "../assets/compass-line.svg"
-import chatIcon from "../assets/chat-line.svg"
-import contactIcon from "../assets/question-circle-line.svg"
+import MainContext from "../MainContext"
+import homeIcon from "../../assets/home-line.svg"
+import postsIcon from "../../assets/compass-line.svg"
+import chatIcon from "../../assets/chat-line.svg"
+import contactIcon from "../../assets/question-circle-line.svg"
 
 
 const NavBar = ({ children }) => {
 
-	const { loggedUser } = useContext(HandlerContext)
+	const { loggedUser } = useContext(MainContext)
 
 	const classes = styles();
 

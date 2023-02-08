@@ -1,11 +1,13 @@
 import React, { useContext, useState } from "react"
 import ChatContext from "./ChatContext"
 import Message from "./Message"
-import styles from "../styles/chatBoardStyles"
+import styles from "./styles/chatBoardStyles"
+import MainContext from "../MainContext"
 
 const ChatBoard = ({ messages }) => {
 
-	const { currentChat, setChat } = useContext(ChatContext)
+	const { currentChat } = useContext(ChatContext)
+	const { setChat } = useContext(MainContext)
 
 	const [textData, setTextData] = useState({ text: '' })
 
@@ -17,14 +19,14 @@ const ChatBoard = ({ messages }) => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		sendMessage(textData);
-		setTextData({...textData, text: ''})
+		setTextData({ ...textData, text: '' })
 	}
 
 	//console.log("currentChat: ", currentChat)
 
 	const sendMessage = async (messageData) => {
 		try {
-			await fetch(`http://localhost:5000/api/chats/send/6364d1833ad132dc27e28e6c`, {
+			await fetch(`http://localhost:5000/api/chats/send/${currentChat}`, {
 				method: 'POST',
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(messageData)
@@ -32,7 +34,7 @@ const ChatBoard = ({ messages }) => {
 				.then(res => res.json(), err => console.log('error from add message: ', err))
 				.then(data => {
 					console.log('message: ', data);
-					setChat({ type: 'add', messageData })
+					setChat({ type: 'addMessage', messageData, currentChat })
 				})
 		} catch (err) { throw err }
 	}
@@ -40,9 +42,12 @@ const ChatBoard = ({ messages }) => {
 	const classes = styles()
 	return (
 		<div className={classes.chatboard}>
-			{
-				messages.map((message) => (<Message key={message._id} message={message} />))
-			}
+
+			<div className={classes.messages} >
+				{
+					messages.map((message) => (<Message key={message._id} message={message} />))
+				}
+			</div>
 
 			<form className={classes.chatInput} onSubmit={handleSubmit}>
 				<input
@@ -51,6 +56,7 @@ const ChatBoard = ({ messages }) => {
 					placeholder="text" maxLength="128"
 					value={textData.message} onChange={handleChange}
 				/>
+
 				<button className={classes.submitBtn} type='submit'> send </button>
 			</form>
 

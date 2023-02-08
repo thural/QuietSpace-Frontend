@@ -2,14 +2,15 @@ import React, { useState, useContext } from "react"
 import ChatBoard from "./ChatBoard"
 import ContactBoard from "./ContactBoard"
 import ChatContext from "./ChatContext"
-import HandlerContext from "./HandlerContext"
-import styles from "../styles/chatStyles"
+import MainContext from "../MainContext"
+import styles from "./styles/chatStyles"
 
 const Chat = () => {
-	const { chat, setChat } = useContext(HandlerContext)
+	const { chat, setChat } = useContext(MainContext)
 
 	console.log(chat)
 	const contacts = chat
+	console.log("contacts: ", contacts)
 	// const contacts = chat.map(contact => contact._id)
 	//const contacts = chat.chat.map(contact => contact.messages.findLast(message => message.user_id !== user.username))
 

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react"
 import ChatContact from "./ChatContact"
-import styles from "../styles/contactBoardStyles"
+import styles from "./styles/contactBoardStyles"
 
 const ContactBoard = ({ contacts }) => {
 

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import HandlerContext from "./HandlerContext";
-import Overlay from "./Overlay";
-import styles from "../styles/loginStyles"
+import HandlerContext from "../MainContext";
+import Overlay from "../Overlay";
+import styles from "./styles/loginStyles"
 
 const LoginForm = () => {
 	const classes = styles();

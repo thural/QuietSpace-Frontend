@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react"
-import HandlerContext from "./HandlerContext"
-import styles from "../styles/newPostStyles"
-import Overlay from "./Overlay"
+import MainContext from "../MainContext"
+import styles from "./styles/newPostStyles"
+import Overlay from "../Overlay"
 
 const EditForm = () => {
 
 	const classes = styles()
-	const { posts, setPosts, formView, setFormView } = useContext(HandlerContext)
+	const { posts, setPosts, formView, setFormView } = useContext(MainContext)
 
 	const _id = formView.edit["_id"]
 

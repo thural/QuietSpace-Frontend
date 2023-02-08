@@ -1,12 +1,12 @@
 import React, { useContext, useReducer, useEffect } from "react"
 import PostBoard from "./PostBoard"
-import HandlerContext from "./HandlerContext"
+import MainContext from "../MainContext"
 import PostForm from "./PostForm"
 import EditForm from "./EditForm"
-import styles from "../styles/postsStyles"
+import styles from "./styles/postsStyles"
 
 const Posts = () => {
-	const { loggedUser, posts, setPosts, setFormView, formView } = useContext(HandlerContext)
+	const { loggedUser, posts, setPosts, setFormView, formView } = useContext(MainContext)
 
 	const classes = styles()
 	return (

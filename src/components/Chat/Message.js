@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
-import HandlerContext from "./HandlerContext"
-import styles from "../styles/messageStyles"
+import HandlerContext from "../MainContext"
+import styles from "./styles/messageStyles"
 
 const Message = ({ message }) => {
 

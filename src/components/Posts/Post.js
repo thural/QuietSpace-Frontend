@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react"
-import HandlerContext from "./HandlerContext"
-import styles from "../styles/postStyles"
-import likeIcon from "../assets/thumbs.svg"
-import shareIcon from "../assets/share.svg"
-import editIcon from "../assets/edit.svg"
-import commentIcon from "../assets/comment-3-line.svg"
-import deleteIcon from "../assets/delete-bin-line.svg"
+import HandlerContext from "../MainContext"
+import styles from "./styles/postStyles"
+import likeIcon from "../../assets/thumbs.svg"
+import shareIcon from "../../assets/share.svg"
+import editIcon from "../../assets/edit.svg"
+import commentIcon from "../../assets/comment-3-line.svg"
+import deleteIcon from "../../assets/delete-bin-line.svg"
 import CommentSection from "./CommentSection"
 
 const Post = ({ post }) => {

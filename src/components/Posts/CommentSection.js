@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react"
-import HandlerContext from "./HandlerContext"
-import styles from "../styles/commentStyles"
+import MainContext from "../MainContext"
+import styles from "./styles/commentStyles"
 
 const CommentSection = ({_id, comments}) => {
-	const { setPosts, setFormView } = useContext(HandlerContext);
+	const { setPosts, setFormView } = useContext(MainContext);
 
 
 	const [commentData, setCommentData] = useState({ text: '' })

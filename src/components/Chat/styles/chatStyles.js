@@ -5,18 +5,17 @@ const styles = createUseStyles({
 		height: "100%"
 	},
 	chat: {
-		display: 'flex',
-		flexGrow: '1',
-		gridColumn: '1 / 3',
+		display: 'grid',
 		gridRow: '2 / 3',
+		gridTemplateColumns: '3fr 7fr',
+		flexGrow: '1',
+		gridColumn: '1 / 3'
 	},
 	contacts: {
-		width: '100%',
-		height: '100%',
-		backgroundColor: 'amber',
-		flexBasis: '200px',
-		flexGrow: '0.5',
-		flexShrink: '0'
+		display: 'flex',
+		flexFlow: 'column nowrap',
+		borderRight: '1px solid',
+		gridColumn: '1/2'
 	},
 	messages: {
 		padding: '0 10%',

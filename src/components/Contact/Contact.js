@@ -1,5 +1,5 @@
 import React from "react"
-import styles from "../styles/contactStyles"
+import styles from "./styles/contactStyles"
 
 const Contact = () => {
 	const classes = styles();

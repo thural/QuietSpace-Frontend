@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
-import HandlerContext from "./HandlerContext";
-import Overlay from "./Overlay";
-import styles from "../styles/signupStyles"
+import MainContext from "../MainContext";
+import Overlay from "../Overlay";
+import styles from "./styles/signupStyles"
 
 const SignupForm = () => {
 	const classes = styles();
 
-	const { setUser, setFormView } = useContext(HandlerContext);
+	const { setUser, setFormView } = useContext(MainContext);
 
 	const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
 

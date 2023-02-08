@@ -2,14 +2,14 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 	chatboard: {
-		width: '100%',
-		margin: '0 10%',
-		display: 'flex',
+		display: 'grid',
+		gridTemplateRows: '7fr 1fr',
+		padding: '0 10%',
+		overflow: 'auto',
 		flexFlow: 'column nowrap',
-		flexGrow: '1',
-		flexBasis: 'min-content',
 		marginTop: '0',
 		marginBottom: '0',
+		gridColumn: '2/3',
 		'& .add-post-btn': {
 			marginTop: '1rem',
 			width: 'fit-content',
@@ -23,22 +23,26 @@ const styles = createUseStyles({
 			marginBottom: '1rem'
 		}
 	},
+	messages: {
+		height: '300px',
+		gridRow: '1/2'
+	},
 	chatInput: {
 		gap: '1rem',
 		color: 'black',
 		width: '100%',
-		maxWidth: '512px',
+		border: '1px solid gray',
 		display: 'flex',
 		padding: '1rem',
 		flexFlow: 'row nowrap',
+		maxWidth: '512px',
+		boxShadow: 'rgb(0 0 0 / 25%) 0px 16px 32px -8px',
+		boxSizing: 'border-box',
 		marginTop: 'auto',
 		alignItems: 'center',
 		borderRadius: '1em',
 		marginBottom: '1rem',
 		backgroundColor: 'white',
-		boxSizing: 'border-box',
-		boxShadow: 'rgb(0 0 0 / 25%) 0px 16px 32px -8px',
-		border: '1px solid gray',
 		'& button': {
 			color: 'white',
 			width: 'fit-content',

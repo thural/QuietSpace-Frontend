@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import HandlerContext from "./HandlerContext"
-import styles from "../styles/newPostStyles"
-import Overlay from "./Overlay"
+import MainContext from "../MainContext"
+import styles from "./styles/newPostStyles"
+import Overlay from "../Overlay"
 
 const PostForm = () => {
-	const { setPosts, setFormView } = useContext(HandlerContext);
+	const { setPosts, setFormView } = useContext(MainContext);
 
 	const [postData, setPostData] = useState({ text: '' })
 

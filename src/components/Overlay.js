@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import styles from "../styles/overlayStyles"
-import HandlerContext from "./HandlerContext"
+import HandlerContext from "./MainContext"
 
 
 const Overlay = () => {
