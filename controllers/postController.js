@@ -7,7 +7,7 @@ customFilter.addWords(...dirty_words)
 
 const checkInput = (value, { req }) => {
 	if (customFilter.isProfane(value)) return false
-	else return true
+	return true
 }
 
 const { body, validationResult } = require("express-validator")
@@ -97,7 +97,7 @@ exports.unlike_post = async (req, res, next) => {
 exports.add_comment = [
 	body("text", "at least 3 characters required").isLength({ min: 3 }),
 	body("text", "max 128 characters allowed").isLength({ max: 128 }),
-	body("text").custom(checkInput).withMessage("Your comment can not contain bad words"),
+	//body("text").custom(checkInput).withMessage("Your comment can not contain bad words"),
 
 	(req, res, next) => {
 		const errors = validationResult(req)
