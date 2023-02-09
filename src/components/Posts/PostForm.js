@@ -13,8 +13,6 @@ const PostForm = () => {
 		setPostData({ ...postData, [name]: value });
 	}
 
-	console.log("postData: ", postData)
-
 	const addPost = async (postData) => {
 		try {
 			await fetch('http://localhost:5000/api/posts', {
@@ -24,7 +22,6 @@ const PostForm = () => {
 			})
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
-					console.log('added post: ', data);
 					setPosts({ type: 'add', data })
 				})
 		} catch (err) { throw err }

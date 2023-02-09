@@ -24,7 +24,6 @@ const SignupForm = () => {
 		})
 			.then(res => res.json(), err => console.log('error message: ', err))
 			.then(response => {
-				console.log('NEW USER: ', response);
 				setUser(response)
 			})
 	}

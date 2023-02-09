@@ -16,7 +16,6 @@ const CommentSection = ({_id, comments}) => {
 
 
 	const addComment = async (commentData, _id) => {
-		console.log('postid:', _id)
 		try {
 			await fetch(`http://localhost:5000/api/posts/${_id}/comments`, {
 				method: 'POST',
@@ -25,7 +24,6 @@ const CommentSection = ({_id, comments}) => {
 			})
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
-					console.log('added comment: ', data)
 					setPosts({ type: 'add', data })
 				})
 		} catch (err) { throw err }
@@ -53,6 +51,8 @@ const CommentSection = ({_id, comments}) => {
 						<div key= {comments.indexOf(comment)} className={classes.comment}>
 							<p className="comment-author">{comment.username}</p>
 							<p className="comment-text">{comment.text}</p>
+							<p>like</p>
+							<p>reply</p>
 						</div>
 					))
 				}

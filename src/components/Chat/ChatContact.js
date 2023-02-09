@@ -8,8 +8,6 @@ const ChatContact = ({ contact }) => {
 	const { currentChat, setCurrentChat } = useContext(ChatContext)
 	const backgroundColor = currentChat == contact['_id'] ? '#e3e3e3' : 'white'
 
-	console.log("contact from ChatCOntact", contact)
-
 	const contactName = contact.messages.findLast(message => message.username != loggedUser.username).username
 	const recentText = contact.messages[contact.messages.length - 1].text
 

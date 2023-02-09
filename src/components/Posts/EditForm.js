@@ -28,7 +28,6 @@ const EditForm = () => {
 			})
 				.then(res => res.json(), err => console.log('error message from edit POST: ', err))
 				.then(data => {
-					console.log('Edited Post: ', data)
 					setPosts({ type: 'edit', data, _id })
 				})
 		} catch (err) { throw err }

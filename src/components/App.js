@@ -69,7 +69,6 @@ function postReducer(state, { posts, data, user, _id, type }) {
 			return state.filter(post => post['_id'] !== _id)
 		case 'add':
 			const newState = [data, ...state]
-			//console.log('data after "add" reducer: ', data)
 			return newState // TODO: first figure out the response and then get back here.
 		case 'edit':
 			return state.map(post => post['_id'] == _id ? data : post)
@@ -101,7 +100,6 @@ const App = () => {
 	const fetchUser = async () => {
 		const data = await fetch('http://localhost:5000/api/users/user')
 		const user = await data.json()
-		console.log("Fetched User: ", user)
 		setUser(user)
 	}
 
@@ -115,7 +113,6 @@ const App = () => {
 		const data = await fetch('http://localhost:5000/api/chats')
 		const chatData = await data.json()
 		setChat({ chatData, type: 'load' })
-		console.log("LOADED CHAT: ", chatData)
 	}
 
 	const [loggedUser, setUser] = useState([])

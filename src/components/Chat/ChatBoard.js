@@ -22,8 +22,6 @@ const ChatBoard = ({ messages }) => {
 		setTextData({ ...textData, text: '' })
 	}
 
-	//console.log("currentChat: ", currentChat)
-
 	const sendMessage = async (messageData) => {
 		try {
 			await fetch(`http://localhost:5000/api/chats/send/${currentChat}`, {
@@ -33,7 +31,6 @@ const ChatBoard = ({ messages }) => {
 			})
 				.then(res => res.json(), err => console.log('error from add message: ', err))
 				.then(data => {
-					console.log('message: ', data);
 					setChat({ type: 'addMessage', messageData, currentChat })
 				})
 		} catch (err) { throw err }

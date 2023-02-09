@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react"
-import HandlerContext from "../MainContext"
+import MainContext from "../MainContext"
 import styles from "./styles/postStyles"
 import likeIcon from "../../assets/thumbs.svg"
 import shareIcon from "../../assets/share.svg"
@@ -10,7 +10,7 @@ import CommentSection from "./CommentSection"
 
 const Post = ({ post }) => {
 	const { _id, username, text, likes, comments } = post
-	const { loggedUser, setPosts, setFormView } = useContext(HandlerContext)
+	const { loggedUser, setPosts, setFormView } = useContext(MainContext)
 	const [active, setActive] = useState(false)
 	const liked = post.likes.includes(loggedUser['_id']) ? 'unlike' : 'like'
 
@@ -19,7 +19,6 @@ const Post = ({ post }) => {
 		  await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
 				.then(res => res.json(), err => console.log('error from delete post: ', err))
 				.then(data => {
-					console.log('deleted post: ', data);
 					setPosts({ _id, user: loggedUser, type: 'delete' })
 				})
 		} catch (err) { throw err }
@@ -30,7 +29,6 @@ const Post = ({ post }) => {
 			await fetch(`http://localhost:5000/api/posts/like/${_id}`, { method: 'POST' })
 				.then(res => res.json(), err => console.log('error from like post: ', err))
 				.then(data => {
-					console.log('liked post: ', data);
 					setPosts({ _id, user: loggedUser, type: 'like' })
 				})
 		} catch (err) { throw err }
