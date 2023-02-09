@@ -4,7 +4,8 @@ import Overlay from "../Overlay";
 import styles from "./styles/loginStyles"
 
 const LoginForm = () => {
-	const classes = styles();
+
+	const classes = styles()
 	const { fetchUser, fetchPosts, fetchChat, setFormView } = useContext(HandlerContext)
 	const [formData, setFormData] = useState({ username: '', password: '' })
 

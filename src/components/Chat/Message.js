@@ -7,14 +7,16 @@ const Message = ({ message }) => {
 	const { loggedUser } = useContext(HandlerContext)
 	
 	const { username, text, reactions } = message
+
 	//const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
-	const margin = username !== loggedUser.username ? "auto" : "0"
+	
+	const marginLeft = username !== loggedUser.username ? "auto" : "0"
 
 	const classes = styles()
 
 	return (
 
-		<div id={username} className={classes.message} style={{marginLeft:margin}}>
+		<div id={username} className={classes.message} style={{marginLeft}}>
 
 			<div className={classes.sender}>
 				{username}
@@ -26,6 +28,7 @@ const Message = ({ message }) => {
 
 		</div>
 	)
+
 }
 
 export default Message

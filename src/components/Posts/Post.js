@@ -9,10 +9,12 @@ import deleteIcon from "../../assets/delete-bin-line.svg"
 import CommentSection from "./CommentSection"
 
 const Post = ({ post }) => {
+
 	const { _id, username, text, likes, comments } = post
 	const { loggedUser, setPosts, setFormView } = useContext(MainContext)
 	const [active, setActive] = useState(false)
 	const liked = post.likes.includes(loggedUser['_id']) ? 'unlike' : 'like'
+	
 
 	const deletePost = async (_id) => {
 		try {
@@ -24,6 +26,7 @@ const Post = ({ post }) => {
 		} catch (err) { throw err }
 	}
 
+
 	const likePost = async (_id) => {
 		try {
 			await fetch(`http://localhost:5000/api/posts/like/${_id}`, { method: 'POST' })
@@ -33,9 +36,12 @@ const Post = ({ post }) => {
 				})
 		} catch (err) { throw err }
 	}
+	
 
 	const classes = styles()
+
 	return (
+
 		<div id={_id} className={classes.wrapper}>
 
 			<div className="author">
@@ -54,6 +60,7 @@ const Post = ({ post }) => {
 
 			{loggedUser.username &&
 				<>
+
 					<hr></hr>
 
 					<div className="panel">
@@ -79,12 +86,9 @@ const Post = ({ post }) => {
 					{ active &&
 						<CommentSection _id={_id} comments={comments} />
 					}
+
 				</>
 			}
-
-
-
-
 
 		</div>
 	)

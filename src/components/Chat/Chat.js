@@ -6,6 +6,7 @@ import MainContext from "../MainContext"
 import styles from "./styles/chatStyles"
 
 const Chat = () => {
+
 	const { chat, setChat } = useContext(MainContext)
 	
 	const contacts = chat
@@ -15,6 +16,7 @@ const Chat = () => {
 	const messages = chat.find(contact => contact._id == currentChat).messages
 
 	const classes = styles()
+	
 	return (
 		<div className={classes.chat}>
 
@@ -25,6 +27,7 @@ const Chat = () => {
 
 		</div>
 	)
+
 }
 
 export default Chat

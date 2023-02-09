@@ -4,10 +4,9 @@ import Overlay from "../Overlay";
 import styles from "./styles/signupStyles"
 
 const SignupForm = () => {
-	const classes = styles();
 
-	const { setUser, setFormView } = useContext(MainContext);
-
+	const classes = styles()
+	const { setUser, setFormView } = useContext(MainContext)
 	const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
 
 	const handleChange = (event) => {

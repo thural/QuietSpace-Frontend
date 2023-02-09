@@ -6,10 +6,11 @@ import LoginForm from "../Auth/LoginForm"
 import styles from "./styles/homeStyles"
 
 const Home = () => {
-	const { loggedUser, formView, setFormView } = useContext(MainContext);
-	const classes = styles();
+	const classes = styles()
+	const { loggedUser, formView, setFormView } = useContext(MainContext)
 
 	return (
+
 		<>
 			<div className={classes.home}>
 				<div className="home-text">
@@ -28,6 +29,7 @@ const Home = () => {
 			}
 		</>
 	)
-};
 
-export default Home;
+}
+
+export default Home

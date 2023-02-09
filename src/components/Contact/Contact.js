@@ -3,9 +3,11 @@ import logo from "../../assets/github-svgrepo-com.svg"
 import styles from "./styles/contactStyles"
 
 const Contact = () => {
+
 	const classes = styles();
 
 	return (
+
 		<div className={classes.wrapper}>
 
 			<div className="content">
@@ -22,7 +24,8 @@ const Contact = () => {
 			</div>
 
 		</div>
-	);
-};
+	)
+
+}
 
 export default Contact

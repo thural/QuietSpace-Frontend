@@ -4,14 +4,17 @@ import styles from "./styles/newPostStyles"
 import Overlay from "../Overlay"
 
 const PostForm = () => {
+
 	const { setPosts, setFormView } = useContext(MainContext);
 
 	const [postData, setPostData] = useState({ text: '' })
+
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
 		setPostData({ ...postData, [name]: value });
 	}
+
 
 	const addPost = async (postData) => {
 		try {
@@ -27,21 +30,38 @@ const PostForm = () => {
 		} catch (err) { throw err }
 	}
 
+
 	const classes = styles()
+
 	return (
 		<>
 			<Overlay />
+
 			<div className={classes.post}>
+
 				<h3>Create a post</h3>
-				<form onSubmit={(e) => { e.preventDefault(); addPost(postData); setFormView({formName:'overlay'}) }}>
+
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						addPost(postData);
+						setFormView({ formName: 'overlay' })
+					}}
+				>
+
 					<textarea
 						className='text area'
 						type='text' name='text'
-						placeholder="What's on your mind?" maxLength="128"
-						value={postData.text} onChange={handleChange}>	
+						placeholder="What's on your mind?"
+						maxLength="128"
+						value={postData.text}
+						onChange={handleChange}>
 					</textarea>
+
 					<button className="submit-btn" type='submit'> Post </button>
+
 				</form>
+
 			</div>
 		</>
 	)

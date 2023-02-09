@@ -9,16 +9,19 @@ const Posts = () => {
 	const { loggedUser, posts, setPosts, setFormView, formView } = useContext(MainContext)
 
 	const classes = styles()
+
 	return (
 		<>
 			<div className={classes.posts}>
 
 				{loggedUser.username &&
 					<button
-						className="add-post-btn" onClick={() => setFormView({ formName: 'post' })}
+						className="add-post-btn"
+						onClick={() => setFormView({ formName: 'post' })}
 					>
 						Add
-					</button>}
+					</button>
+				}
 
 				{loggedUser.username && formView.post &&
 					<PostForm />

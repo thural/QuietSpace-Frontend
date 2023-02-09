@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom"
 import MainContext from "./MainContext"
 import styles from "../styles/appStyles"
 //import { io } from 'socket.io-client'
-import Copyright from "./Copyright"
 import Contact from "./Contact/Contact"
 import NavBar from "./Navbar/Navbar"
 import Posts from "./Posts/Posts"
@@ -28,7 +27,8 @@ import Chat from "./Chat/Chat"
 // 	} catch (err) { return false }
 // }
 
-function chatReducer(state, { messageData, chatData, chat, user, currentChat, type }) {
+function chatReducer(state, { messageData, chatData, currentChat, type }) {
+
 	switch (type) {
 
 		case 'load':
@@ -42,9 +42,12 @@ function chatReducer(state, { messageData, chatData, chat, user, currentChat, ty
 				return contact
 			})
 
-		default: return state
+		default:
+			return state
 	}
+	
 }
+
 
 function postReducer(state, { posts, data, user, _id, type }) {
 	switch (type) {
@@ -57,6 +60,7 @@ function postReducer(state, { posts, data, user, _id, type }) {
 				}
 				return post
 			})
+
 		case 'unlike':
 			return state.map(post => {
 				if (post['_id'] == _id) {
@@ -65,18 +69,24 @@ function postReducer(state, { posts, data, user, _id, type }) {
 				}
 				return post
 			})
+
 		case 'delete':
 			return state.filter(post => post['_id'] !== _id)
+
 		case 'add':
 			const newState = [data, ...state]
 			return newState // TODO: first figure out the response and then get back here.
+
 		case 'edit':
 			return state.map(post => post['_id'] == _id ? data : post)
+
 		case 'load':
 			return posts
+
 		default: return state
 	}
 }
+
 
 const formViewReducer = (state, { formName, _id }) => {
 	switch (formName) {
@@ -94,6 +104,7 @@ const formViewReducer = (state, { formName, _id }) => {
 			return state
 	}
 }
+
 
 const App = () => {
 
@@ -126,15 +137,17 @@ const App = () => {
 		overlay: false
 	})
 
-	useEffect(() => {
-		fetchUser().then(
-			fetchPosts(),
-			fetchChat()
-		)
-	}, [])
+	useEffect(
+		() => {
+			fetchUser().then(
+				fetchPosts(),
+				fetchChat()
+			)
+		}, [])
 
 	const classes = styles()
 	return (
+
 		<div className={classes.app}>
 
 			<MainContext.Provider
@@ -154,16 +167,18 @@ const App = () => {
 				}}>
 
 				<NavBar />
+
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/posts" element={<Posts />} />
 					<Route path="/chat" element={<Chat />} />
 					<Route path="/contact" element={<Contact />} />
 				</Routes>
-				{/*<Copyright />*/}
 
 			</MainContext.Provider>
+
 		</div>
+
 	)
 }
 

@@ -11,13 +11,16 @@ import contactIcon from "../../assets/question-circle-line.svg"
 
 const NavBar = ({ children }) => {
 
+	const classes = styles()
+	
 	const { loggedUser } = useContext(MainContext)
 
-	const classes = styles();
-
 	return (
+
 		<div className={classes.navbar}>
+
 			<h1>Quiet Space</h1>
+
 			<nav>
 
 				<div className="navbar-item">
@@ -40,6 +43,7 @@ const NavBar = ({ children }) => {
 				</div>
 
 				{children}
+
 			</nav>
 
 			<div className="navbar-item menu">
