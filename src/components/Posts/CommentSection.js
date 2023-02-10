@@ -14,6 +14,12 @@ const CommentSection = ({ _id, comments }) => {
 		setCommentData({ ...commentData, [name]: value })
 	}
 
+	const handleSubmit = (event) => {
+		event.preventDefault()
+		addComment(commentData, _id)
+		setFormView({ formName: 'overlay' })
+	}
+
 
 	const addComment = async (commentData, _id) => {
 		try {
@@ -24,7 +30,7 @@ const CommentSection = ({ _id, comments }) => {
 			})
 				.then(res => res.json(), err => console.log('error from add post: ', err))
 				.then(data => {
-					setPosts({ type: 'add', data })
+					setPosts({ type: 'addComment', data })
 				})
 		} catch (err) { throw err }
 	}
@@ -36,13 +42,7 @@ const CommentSection = ({ _id, comments }) => {
 
 		<div className={classes.commentSection} >
 
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					addComment(commentData, _id);
-					setFormView({ formName: 'overlay' })
-				}}
-			>
+			<form onSubmit={handleSubmit} >
 
 				<textarea className={classes.commentInput}
 					type='text'
@@ -68,7 +68,7 @@ const CommentSection = ({ _id, comments }) => {
 							<p className="comment-reply">reply</p>
 							{comment.username == loggedUser.username && <p className="comment-delete">delete</p>}
 						</div>
-						
+
 					</div>
 				))
 			}

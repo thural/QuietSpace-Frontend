@@ -83,6 +83,13 @@ function postReducer(state, { posts, data, user, _id, type }) {
 		case 'load':
 			return posts
 
+		case 'addComment': 
+			const id = data['_id']
+			return state.map(post => {
+				if (post['_id'] == id) post = data;
+				return post
+			})
+
 		default: return state
 	}
 }
