@@ -6,10 +6,9 @@ const styles = createUseStyles({
 	},
 	chat: {
 		display: 'grid',
-		gridRow: '2 / 3',
-		gridTemplateColumns: '3fr 7fr',
-		flexGrow: '1',
-		gridColumn: '1 / 3'
+		gridRow: '2 / 4',
+		gridColumn: '1 / 3',
+		gridTemplateColumns: '3fr 7fr'
 	},
 	contacts: {
 		display: 'flex',

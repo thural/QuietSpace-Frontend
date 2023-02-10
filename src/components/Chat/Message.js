@@ -10,13 +10,13 @@ const Message = ({ message }) => {
 
 	//const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
 	
-	const marginLeft = username !== loggedUser.username ? "auto" : "0"
+	const appliedStyle = username !== loggedUser.username ? {marginLeft:"auto"} : {marginRight:"auto"}
 
 	const classes = styles()
 
 	return (
 
-		<div id={username} className={classes.message} style={{marginLeft}}>
+		<div id={username} className={classes.message} style={appliedStyle}>
 
 			<div className={classes.sender}>
 				{username}

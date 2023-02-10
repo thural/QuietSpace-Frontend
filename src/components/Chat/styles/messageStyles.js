@@ -1,15 +1,14 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-	message: {
-		width: '200px',
+	message: {		
+		maxWidth: '200px',
+		position: 'relative',
 		border: '#a1a1a1 solid 1px',
+		margin: '.3rem 0',
 		display: 'flex',
 		padding: '0.8rem',
 		flexFlow: 'column nowrap',
-		maxWidth: '70%',
-		boxShadow: 'rgb(0 0 0 / 25%) 0px 16px 32px -8px',
-		marginTop: '1rem',
 		borderRadius: '1rem',
 		justifyItems: 'center',
 		backgroundColor: 'white',
@@ -29,15 +28,19 @@ const styles = createUseStyles({
 	},
 	sender: {
 		width: '100%',
-		fontSize: '1rem',
-		fontWeight: '500',
-		marginBottom: '0.5rem'
+		fontSize: '.7rem',
+		fontWeight: '400',
+		marginBottom: '0.2rem',
+		color: '#404040',
+		position: 'absolute',
+		top: '-1.3rem',
 	},
 	text: {
-		fontSize: '1rem',
-		padding: 0,
 		margin: '0px',
-		lineHeight: '1.3',
+		padding: '0',
+		fontSize: '.9rem',
+		lineHeight: '1.4',
+		fontWeight: '400',
 		'& p': {
 			margin: '0',
 			padding: '0',

@@ -15,6 +15,8 @@ const Chat = () => {
 
 	const messages = chat.find(contact => contact._id == currentChat).messages
 
+	const reversedMessages = [...messages].reverse()
+
 	const classes = styles()
 	
 	return (
@@ -22,7 +24,7 @@ const Chat = () => {
 
 			<ChatContext.Provider value={{ chat, setChat, currentChat, setCurrentChat }} >
 				<ContactBoard contacts={contacts} />
-				<ChatBoard messages={messages} />
+				<ChatBoard messages={reversedMessages} />
 			</ChatContext.Provider>
 
 		</div>

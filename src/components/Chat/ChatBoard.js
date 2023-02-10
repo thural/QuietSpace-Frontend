@@ -17,8 +17,8 @@ const ChatBoard = ({ messages }) => {
 	}
 
 	const handleSubmit = (event) => {
-		event.preventDefault();
-		sendMessage(textData);
+		event.preventDefault()
+		sendMessage(textData)
 		setTextData({ ...textData, text: '' })
 	}
 
@@ -58,7 +58,7 @@ const ChatBoard = ({ messages }) => {
 					className='input'
 					type='text'
 					name='text'
-					placeholder="text"
+					placeholder="message ..."
 					maxLength="128"
 					value={textData.message}
 					onChange={handleChange}

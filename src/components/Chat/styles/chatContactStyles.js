@@ -3,10 +3,10 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles({
 	contact: {
 		display: 'flex',
+		padding: '.6rem 1rem',
 		flexFlow: 'column nowrap',
-		padding: '1rem',
 		justifyItems: 'flex-start',
-		backgroundColor: 'white',
+		backgroundColor: 'white'
 	},
 	author: {
 		marginLeft: '0',
