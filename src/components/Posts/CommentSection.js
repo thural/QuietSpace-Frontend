@@ -4,7 +4,7 @@ import styles from "./styles/commentStyles"
 
 const CommentSection = ({ _id, comments }) => {
 
-	const { setPosts, setFormView } = useContext(MainContext);
+	const { setPosts, setFormView, loggedUser } = useContext(MainContext);
 
 	const [commentData, setCommentData] = useState({ text: '' })
 
@@ -58,17 +58,24 @@ const CommentSection = ({ _id, comments }) => {
 			{comments &&
 				comments.map(comment => (
 					<div key={comments.indexOf(comment)} className={classes.comment}>
+
 						<p className="comment-author">{comment.username}</p>
+
 						<p className="comment-text">{comment.text}</p>
-						<p>like</p>
-						<p>reply</p>
+
+						<div className="comment-options">
+							<p className="comment-like">like</p>
+							<p className="comment-reply">reply</p>
+							{comment.username == loggedUser.username && <p className="comment-delete">delete</p>}
+						</div>
+						
 					</div>
 				))
 			}
 
 		</div>
 	)
-	
+
 }
 
 export default CommentSection

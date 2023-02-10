@@ -35,10 +35,10 @@ const styles = createUseStyles({
 	},
 	comment: {
 		width: 'fit-content',
-		margin: '10px 0',
+		margin: '.8rem 0 1.6rem 0',
 		padding: '10px 10px',
+		position: 'relative',
 		boxSizing: 'border-box',
-		alignItems: 'center',
 		borderRadius: '10px',
 		backgroundColor: '#e2e8f0',
 		'& .comment-text': {
@@ -49,7 +49,42 @@ const styles = createUseStyles({
 			margin: '0',
 			fontSize: '14px',
 			fontWeight: '600'
-		}
+		},
+		'& .comment-options': {
+			width: '100%',
+			gap: '10px',
+			color: '#303030',
+			left: '4px',
+			bottom: '-2rem',
+			display: 'flex',
+			position: 'absolute',
+			flexFlow: 'row nowrap',
+			fontSize: '.8rem',
+			fontWeight: '500',
+		},
+		// '& .comment-like': {
+		// 	position: 'absolute',
+		// 	bottom: '-2rem',
+		// 	fontSize: '.85rem',
+		// 	fontWeight: '500',
+		// 	color: '#303030'
+		// },
+		// '& .comment-reply': {
+		// 	position: 'absolute',
+		// 	bottom: '-2rem',
+		// 	left: '3rem',
+		// 	fontSize: '.85rem',
+		// 	fontWeight: '500',
+		// 	color: '#303030'
+		// },
+		// '& .comment-delete': {
+		// 	position: 'absolute',
+		// 	bottom: '-2rem',
+		// 	right: '0',
+		// 	fontSize: '.85rem',
+		// 	fontWeight: '500',
+		// 	color: '#303030'
+		// }
 	},
 	commentInput: {
 		width: '100%',
