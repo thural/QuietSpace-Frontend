@@ -12,6 +12,7 @@ const checkInput = (value, { req }) => {
 
 const { body, validationResult } = require("express-validator")
 const { validatePost, savePost } = require("../middleware/postMiddleware")
+const { findIndex } = require('../dirty_words')
 
 exports.list = (req, res, next) => {
 	Post.find()
@@ -57,8 +58,8 @@ exports.edit_post = [
 			if (!errors.isEmpty()) return res.json({ errors: errors.array() })
 			post.save((err) => {
 				if (err) return next(err)
-        console.log("saved post: ", post)
-        return res.status(200).json(post)
+				console.log("saved post: ", post)
+				return res.status(200).json(post)
 			})
 		} catch (err) { return next(err) }
 	}
@@ -80,7 +81,7 @@ exports.like_post = async (req, res, next) => {
 		await Post.updateOne({ _id: req.params.id }, { "$push": { likes: req.user._id } })
 		await User.updateOne({ _id: req.user._id }, { "$push": { likes: req.params.id } })
 		console.log("liked post: ", req.params.id)
-		return res.status(200).json({post_id: req.params.id})
+		return res.status(200).json({ post_id: req.params.id })
 	} catch (err) { return next(err) }
 }
 
@@ -90,7 +91,7 @@ exports.unlike_post = async (req, res, next) => {
 		await Post.updateOne({ _id: req.params.id }, { "$pull": { likes: req.user._id } })
 		await User.updateOne({ _id: req.user._id }, { "$pull": { likes: req.params.id } })
 		console.log("unliked post: ", req.params.id)
-		return res.status(200).json({post_id: req.params.id})
+		return res.status(200).json({ post_id: req.params.id })
 	} catch (err) { return next(err) }
 }
 
@@ -113,12 +114,29 @@ exports.add_comment = [
 
 			const post = await Post.findOne({ "_id": req.params.id })
 			post.comments.push(req.comment)
-				post.save(err => {
-					if (err) return next(err)
-					console.log("saved comment to the post: ", post)
-					return res.status(200).json(post)
-				})
-			
+			post.save(err => {
+				if (err) return next(err)
+				console.log("saved comment to the post: ", post)
+				return res.status(200).json(post)
+			})
+
 		} catch (err) { return next(err) }
 	}
 ]
+
+exports.delete_comment = async (req, res, next) => {
+		try {
+
+			const post = await Post.findOne({ "_id": req.params.postID })
+			const indexOfComment = post.comments.findIndex(comment => comment['_id'].toString() == req.params.commentID)
+			const removedComment = post.comments.splice(indexOfComment, 1)
+			console.log("removed comment from postController: ", removedComment)
+
+			if(indexOfComment !== -1) post.save(err => {
+				if (err) return next(err)
+				console.log("deleted comment from the post: ", removedComment)
+				return res.status(200).json({ commentID: req.params.commentID })
+			})
+
+		} catch (err) { return next(err) }
+	}
