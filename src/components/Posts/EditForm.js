@@ -18,7 +18,13 @@ const EditForm = () => {
 		setPostData({ ...postData, [name]: value })
 	}
 
-	const addPost = async (postData, _id) => {
+	const handleSubmit = (event) => {
+		event.preventDefault()
+		editPost(postData, _id)
+		setFormView({ formName: 'overlay' })
+	}
+
+	const editPost = async (postData, _id) => {
 		try {
 			await fetch(`http://localhost:5000/api/posts/edit/${_id}`, {
 				method: 'POST',
@@ -32,23 +38,19 @@ const EditForm = () => {
 		} catch (err) { throw err }
 	}
 
+
 	const classes = styles()
 
 	return (
 
 		<>
 			<Overlay />
+
 			<div className={classes.post}>
 
 				<h3>Edit post</h3>
 
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						addPost(postData, _id);
-						setFormView({ formName: 'overlay' })
-					}}
-				>
+				<form onSubmit={handleSubmit}>
 
 					<textarea
 						className='text input'

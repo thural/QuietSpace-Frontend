@@ -15,10 +15,7 @@ const Posts = () => {
 			<div className={classes.posts}>
 
 				{loggedUser.username &&
-					<button
-						className="add-post-btn"
-						onClick={() => setFormView({ formName: 'post' })}
-					>
+					<button className="add-post-btn" onClick={() => setFormView({ formName: 'post' })}>
 						Add
 					</button>
 				}

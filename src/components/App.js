@@ -49,7 +49,7 @@ function chatReducer(state, { messageData, chatData, currentChat, type }) {
 }
 
 
-function postReducer(state, { posts, data, user, _id, type }) {
+function postReducer(state, { posts, data, user, _id, type, postID, commentID }) {
 	switch (type) {
 		case 'like':
 			return state.map(post => {
@@ -89,6 +89,15 @@ function postReducer(state, { posts, data, user, _id, type }) {
 				if (post['_id'] == id) post = data;
 				return post
 			})
+
+		case 'deleteComment': 
+		return state.map(post => {
+			if (post['_id'] == postID) {
+				const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
+				if(indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
+			}
+			return post
+		})
 
 		default: return state
 	}

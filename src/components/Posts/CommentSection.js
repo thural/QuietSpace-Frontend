@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react"
 import MainContext from "../MainContext"
-import styles from "./styles/commentStyles"
+import Comment from "./Comment"
+import styles from "./styles/commentSectionStyles"
 
-const CommentSection = ({ _id, comments }) => {
+const CommentSection = ({ _id: postID, comments }) => {
 
 	const { setPosts, setFormView, loggedUser } = useContext(MainContext);
 
@@ -16,7 +17,7 @@ const CommentSection = ({ _id, comments }) => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
-		addComment(commentData, _id)
+		addComment(commentData, postID)
 		setFormView({ formName: 'overlay' })
 	}
 
@@ -56,21 +57,7 @@ const CommentSection = ({ _id, comments }) => {
 			</form>
 
 			{comments &&
-				comments.map(comment => (
-					<div key={comments.indexOf(comment)} className={classes.comment}>
-
-						<p className="comment-author">{comment.username}</p>
-
-						<p className="comment-text">{comment.text}</p>
-
-						<div className="comment-options">
-							<p className="comment-like">like</p>
-							<p className="comment-reply">reply</p>
-							{comment.username == loggedUser.username && <p className="comment-delete">delete</p>}
-						</div>
-
-					</div>
-				))
+				comments.map(comment => <Comment key={comment['_id']} loggedUser={loggedUser} comment={comment} postID={postID}/>)
 			}
 
 		</div>
