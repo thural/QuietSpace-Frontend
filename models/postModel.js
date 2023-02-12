@@ -5,7 +5,8 @@ const { DateTime } = require('luxon')
 const CommentSchema = new Schema({
   username: String,
   text: String,
-  date: { type: Date, default: Date.now }
+  date: { type: Date, default: Date.now },
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }]
 })
 
 const PostSchema = new Schema({
