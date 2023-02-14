@@ -41,7 +41,7 @@ exports.item = async (req, res, next) => {
 exports.create_post = [
 	body("text", "at least 3 characters required").isLength({ min: 3 }),
 	body("text", "max 128 characters allowed").isLength({ max: 128 }),
-	body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
+	// body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
 	validatePost,
 	savePost
 ]
@@ -49,7 +49,7 @@ exports.create_post = [
 exports.edit_post = [
 	body("text", "at least 3 characters required").isLength({ min: 3 }),
 	body("text", "max 128 characters allowed").isLength({ max: 128 }),
-	body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
+	// body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
 	async (req, res, next) => {
 		const errors = validationResult(req)
 		try {
@@ -125,18 +125,80 @@ exports.add_comment = [
 ]
 
 exports.delete_comment = async (req, res, next) => {
-		try {
+	try {
 
-			const post = await Post.findOne({ "_id": req.params.postID })
-			const indexOfComment = post.comments.findIndex(comment => comment['_id'].toString() == req.params.commentID)
-			const removedComment = post.comments.splice(indexOfComment, 1)
-			console.log("removed comment from postController: ", removedComment)
+		const post = await Post.findOne({ "_id": req.params.postID })
+		const indexOfComment = post.comments.findIndex(comment => comment['_id'].toString() == req.params.commentID)
+		const removedComment = post.comments.splice(indexOfComment, 1)
+		console.log("removed comment from postController: ", removedComment)
 
-			if(indexOfComment !== -1) post.save(err => {
+		if (indexOfComment !== -1) post.save(err => {
+			if (err) return next(err)
+			console.log("deleted comment from the post: ", removedComment)
+			return res.status(200).json({ commentID: req.params.commentID })
+		})
+
+	} catch (err) { return next(err) }
+}
+
+exports.like_comment = async (req, res, next) => {
+	const { commentID, postID } = req.params
+	const userID = req.user._id
+
+	try {
+		const post = await Post.findOne({ _id: postID })
+		const user = await User.findOne({ _id: userID })
+
+		post.comments.map(comment => {
+			if (comment['_id'].toString() == commentID) {
+				comment.likes.push(userID)
+			}
+			return comment
+		})
+
+		user.commentlikes.push(commentID)
+
+		post.save(err => {
+			if (err) return next(err)
+			user.save(err => {
 				if (err) return next(err)
-				console.log("deleted comment from the post: ", removedComment)
-				return res.status(200).json({ commentID: req.params.commentID })
+				console.log("liked comment from the post: ", commentID)
+				return res.status(200).json({ commentID })
 			})
+		})
 
-		} catch (err) { return next(err) }
-	}
+	} catch (err) { return next(err) }
+}
+
+exports.unlike_comment = async (req, res, next) => {
+	const { commentID, postID } = req.params
+	const userID = req.user._id
+
+	try {
+		const post = await Post.findOne({ _id: postID })
+		const user = await User.findOne({ _id: userID })
+
+		post.comments.map(comment => {
+			if (comment['_id'].toString() == commentID) {
+				const likeIndex = comment.likes.indexOf(userID)
+				console.log("likeIndex:", likeIndex)
+				if (likeIndex !== -1) comment.likes.splice(likeIndex, 1)
+				console.log("comment likes after unlike: ", comment.likes)
+			}
+			return comment
+		})
+
+		const likeIndexInUser = user.commentlikes.indexOf(commentID)
+		user.commentlikes.splice(likeIndexInUser, 1)
+
+		post.save(err => {
+			if (err) return next(err)
+			user.save(err => {
+				if (err) return next(err)
+				console.log("unliked comment from the post: ", commentID)
+				return res.status(200).json({ commentID })
+			})
+		})
+
+	} catch (err) { return next(err) }
+}
