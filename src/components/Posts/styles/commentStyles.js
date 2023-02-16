@@ -62,6 +62,9 @@ const styles = createUseStyles({
 			fontSize: '.8rem',
 			fontWeight: '500',
 		},
+		'& .comment-options > *': {
+			cursor: 'pointer',
+		},
 		// '& .comment-like': {
 		// 	position: 'absolute',
 		// 	bottom: '-2rem',
