@@ -13,7 +13,7 @@ exports.logout_get = (req, res, next) => {
 	req.logout(function (err) {
 		if (err) return next(err);
 		res.redirect("/");
-	});
+	})
 }
 
 exports.user_get = (req, res) => {
@@ -24,7 +24,6 @@ exports.user_get = (req, res) => {
 }
 
 exports.create_post = [
-
 	body("username", "username required")
 		.trim()
 		.isLength({ min: 3, max: 12 })
@@ -49,7 +48,6 @@ exports.create_post = [
 			if (value === req.body.password) return true
 			else return false;
 		}).withMessage("Passwords does not match."),
-
 	validateUser,
 	saveUser
 ]

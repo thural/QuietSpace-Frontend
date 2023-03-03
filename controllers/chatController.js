@@ -13,9 +13,7 @@ const checkInput = (value, { req }) => {
 const { body, validationResult } = require("express-validator")
 
 exports.load = (req, res, next) => {
-
   const senderID = req.user['_id'].toString()
-
 	Chat.find({_id: senderID})
     .populate("_id", "username")
 		.sort([["date", "descending"]])
@@ -26,12 +24,10 @@ exports.load = (req, res, next) => {
 }
 
 exports.add_message = [
-
   // input validation
   body("text", "at least 1 characters required").isLength({ min: 1 }),
   body("text", "max 256 characters allowed").isLength({ max: 256 }),
   body("text").custom(checkInput).withMessage("Your message can not contain bad words"),
-
   // validation results
   (req, res, next) => {
     const errors = validationResult(req)
@@ -43,46 +39,28 @@ exports.add_message = [
 
   // saving to database
   async (req, res, next) => {
-
     try {
-
       var newSenderChat = undefined
       var newReceiverChat = undefined
-
-      const senderID = req.user['_id'].toString()
-      const receiverID = req.params['contactID']
-
-      console.log("senderID: ", senderID)
-      console.log("receiverID: ", receiverID)
 
       const senderChat = await Chat.findOne({ "_id": senderID })
       const receiverChat = await Chat.findOne({ "_id": receiverID })
 
-
-
       // if chat already exists for sender
       if (senderChat) {
-
         const receiverExists = senderChat.chat.some(contact => contact['_id'] == receiverID)
-
-        console.log("receiverExists: ", receiverExists)
-
         if (receiverExists) {
-
           //if the contact already been messaged previously
           senderChat.chat.map(contact => {
             if (contact._id == receiverID) contact.messages.push(req.message)
             return contact
           })
-
         } else {
-
           //if the contact never been messaged previously
           senderChat.chat.push({
             _id: receiverID,
             messages: [req.message]
           })
-
         }
       } else {
         //if there is no any message by the current user
@@ -92,22 +70,16 @@ exports.add_message = [
         })
       }
 
-
       // if chat already exists for receiver
       if (receiverChat) {
-
         const senderExists = receiverChat.chat.some(contact => contact['_id'] == senderID)
-
-        console.log("senderExists: ", senderExists)
 
         if (senderExists) {
           //if the contact already been messaged previously
-
           receiverChat.chat.map(contact => {
             if (contact._id == senderID) contact.messages.push(req.message)
             return contact
           })
-
         } else {
           //if the contact never been messaged previously
           receiverChat.chat.push({
@@ -123,23 +95,17 @@ exports.add_message = [
         })
       }
 
-
       const forSender = senderChat ? senderChat : newSenderChat
       const forReceiver = receiverChat ? receiverChat : newReceiverChat
 
-
       forSender.save(err => {
-
         if (err) return next(err)
-
         forReceiver.save(err => {
           if (err) return next(err)
           console.log("saved message to the chat: ", forReceiver.chat.messages)
           return res.status(200).json(forReceiver)
         })
-
       })
-
     } catch (err) { return next(err) }
   }
 ]
