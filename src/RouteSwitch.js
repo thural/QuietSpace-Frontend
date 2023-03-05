@@ -7,7 +7,7 @@ const RouteSwitch = () => {
 		<BrowserRouter>
 			<App />
 		</BrowserRouter>
-	);
-};
+	)
+}
 
 export default RouteSwitch

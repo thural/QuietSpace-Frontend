@@ -6,11 +6,8 @@ import Overlay from "../Overlay"
 const EditForm = () => {
 
 	const { posts, setPosts, formView, setFormView } = useContext(MainContext)
-
 	const _id = formView.edit["_id"]
-
 	const text = posts.find(post => post["_id"] == _id)["text"]
-
 	const [postData, setPostData] = useState({ "text": text })
 
 	const handleChange = (event) => {
@@ -38,20 +35,13 @@ const EditForm = () => {
 		} catch (err) { throw err }
 	}
 
-
 	const classes = styles()
-
 	return (
-
 		<>
 			<Overlay />
-
 			<div className={classes.post}>
-
 				<h3>Edit post</h3>
-
 				<form onSubmit={handleSubmit}>
-
 					<textarea
 						className='text input'
 						type='text'
@@ -61,11 +51,8 @@ const EditForm = () => {
 						value={postData["text"]}
 						onChange={handleChange}>
 					</textarea>
-
 					<button className="submit-btn" type='submit'> Submit </button>
-
 				</form>
-
 			</div>
 		</>
 

@@ -4,13 +4,12 @@ import MainContext from "../MainContext"
 
 
 
-
 const Comment = ({ comment, postID }) => {
 
-  const { setPosts, setFormView, loggedUser } = useContext(MainContext)
+  const { setPosts, loggedUser } = useContext(MainContext)
   const [liked, setLiked] = useState(comment.likes.includes(loggedUser._id))
 
-  const deleteComment = async (commentID, postID) => {
+  const deleteComment = async () => {
     try {
       await fetch(`http://localhost:5000/api/posts/${postID}/comments/delete/${commentID}`, {
         method: 'POST',
@@ -46,38 +45,26 @@ const Comment = ({ comment, postID }) => {
     } catch (err) { throw err }
   }
 
-  const handleLike = (commentID, postID) => {
-
+  const handleLike = () => {
     if (liked) unlikeComment(commentID, postID)
     else likeComment(commentID, postID)
-
   }
 
-
   const classes = styles()
-
   const commentID = comment['_id'].toString()
 
   return (
-
     <div key={commentID} className={classes.comment}>
-
       <p className="comment-author">{comment.username}</p>
-
       <p className="comment-text">{comment.text}</p>
-
       <div className="comment-options">
-
-        <p className="comment-like" onClick={() => handleLike(commentID, postID)}>{liked ? "unlike" : "like"}</p>
-
+        <p className="comment-like" onClick={handleLike}>{liked ? "unlike" : "like"}</p>
         <p className="comment-reply">reply</p>
-
-        {comment.username == loggedUser.username &&
-          <p className="comment-delete" onClick={() => deleteComment(commentID, postID)}>delete</p>
+        {
+          comment.username == loggedUser.username &&
+          <p className="comment-delete" onClick={deleteComment}>delete</p>
         }
-
       </div>
-
     </div>
   )
 }

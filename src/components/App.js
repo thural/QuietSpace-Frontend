@@ -28,12 +28,9 @@ import Chat from "./Chat/Chat"
 // }
 
 function chatReducer(state, { messageData, chatData, currentChat, type }) {
-
 	switch (type) {
-
 		case 'load':
 			return chatData
-
 		case 'addMessage':
 			return state.chat.map(contact => {
 				if (contact['_id'] == currentChat) {
@@ -41,13 +38,10 @@ function chatReducer(state, { messageData, chatData, currentChat, type }) {
 				}
 				return contact
 			})
-
 		default:
 			return state
 	}
-	
 }
-
 
 function postReducer(state, { posts, data, user, _id, type, postID, commentID }) {
 	switch (type) {
@@ -60,7 +54,6 @@ function postReducer(state, { posts, data, user, _id, type, postID, commentID })
 				}
 				return post
 			})
-
 		case 'unlike':
 			return state.map(post => {
 				if (post['_id'] == _id) {
@@ -69,40 +62,32 @@ function postReducer(state, { posts, data, user, _id, type, postID, commentID })
 				}
 				return post
 			})
-
 		case 'delete':
 			return state.filter(post => post['_id'] !== _id)
-
 		case 'add':
 			const newState = [data, ...state]
 			return newState // TODO: first figure out the response and then get back here.
-
 		case 'edit':
 			return state.map(post => post['_id'] == _id ? data : post)
-
 		case 'load':
 			return posts
-
-		case 'addComment': 
+		case 'addComment':
 			const id = data['_id']
 			return state.map(post => {
 				if (post['_id'] == id) post = data;
 				return post
 			})
-
-		case 'deleteComment': 
-		return state.map(post => {
-			if (post['_id'] == postID) {
-				const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
-				if(indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
-			}
-			return post
-		})
-
+		case 'deleteComment':
+			return state.map(post => {
+				if (post['_id'] == postID) {
+					const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
+					if (indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
+				}
+				return post
+			})
 		default: return state
 	}
 }
-
 
 const formViewReducer = (state, { formName, _id }) => {
 	switch (formName) {
@@ -121,9 +106,7 @@ const formViewReducer = (state, { formName, _id }) => {
 	}
 }
 
-
 const App = () => {
-
 	const fetchUser = async () => {
 		const data = await fetch('http://localhost:5000/api/users/user')
 		const user = await data.json()
@@ -153,21 +136,17 @@ const App = () => {
 		overlay: false
 	})
 
-	useEffect(
-		() => {
-			fetchUser().then(
-				fetchPosts(),
-				fetchChat()
-			)
-		}, [])
+	useEffect(() => {
+		fetchUser().then(
+			fetchPosts(),
+			fetchChat()
+		)
+	}, [])
 
 	const classes = styles()
 	return (
-
 		<div className={classes.app}>
-
 			<MainContext.Provider
-
 				value={{
 					loggedUser,
 					setUser,
@@ -192,9 +171,7 @@ const App = () => {
 				</Routes>
 
 			</MainContext.Provider>
-
 		</div>
-
 	)
 }
 

@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
-import HandlerContext from "../MainContext";
-import Overlay from "../Overlay";
+import React, { useContext, useState } from "react"
+import HandlerContext from "../MainContext"
+import Overlay from "../Overlay"
 import styles from "./styles/loginStyles"
 
 const LoginForm = () => {
@@ -28,7 +28,13 @@ const LoginForm = () => {
 			<Overlay />
 			<div className={classes.login}>
 				<h1>Login</h1>
-				<form className='login form' onSubmit={e => { handleSubmit(e); setFormView({ formName: 'overlay' }) }}>
+				<form
+					className='login form'
+					onSubmit={e => {
+						handleSubmit(e)
+						setFormView({ formName: 'overlay' })
+					}}>
+
 					<div className="login input">
 						<input
 							type='text'

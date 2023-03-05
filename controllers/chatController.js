@@ -6,7 +6,7 @@ const Chat = require("../models/chatModel")
 customFilter.addWords(...dirty_words)
 
 const checkInput = (value, { req }) => {
-  if (customFilter.isProfane(value)) return false;
+  if (customFilter.isProfane(value)) return false
   else return true
 }
 

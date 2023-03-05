@@ -32,7 +32,12 @@ const SignupForm = () => {
 			<Overlay />
 			<div className={classes.signup}>
 				<h1>Signup</h1>
-				<form className='signup form' onSubmit={e => { handleSubmit(e); setFormView('overlay') }}>
+				<form
+					className='signup form'
+					onSubmit={e => {
+						handleSubmit(e);
+						setFormView('overlay')
+					}}>
 					<div className="signup input">
 						<input
 							type='text'
@@ -59,7 +64,7 @@ const SignupForm = () => {
 					<button type='submit'>submit</button>
 				</form>
 				<h3>already have an account?</h3>
-				<button type='button' onClick={() => setFormView({formName:'login'})}>login</button>
+				<button type='button' onClick={() => setFormView({ formName: 'login' })}>login</button>
 			</div>
 		</>
 	)

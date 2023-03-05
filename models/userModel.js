@@ -8,7 +8,6 @@ const UserSchema = new Schema({
   admin: { type: Boolean, default: false },
   likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
   commentlikes: [{ type: Schema.Types.ObjectId, ref: "Post.comments" }],
-  
 })
 
 const User = mongoose.model("User", UserSchema)

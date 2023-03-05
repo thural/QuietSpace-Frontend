@@ -5,11 +5,10 @@ import styles from "./styles/chatBoardStyles"
 import MainContext from "../MainContext"
 
 const ChatBoard = ({ messages }) => {
-
+	
 	const { currentChat } = useContext(ChatContext)
 	const { setChat } = useContext(MainContext)
 	const [textData, setTextData] = useState({ text: '' })
-
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
@@ -21,7 +20,6 @@ const ChatBoard = ({ messages }) => {
 		sendMessage(textData)
 		setTextData({ ...textData, text: '' })
 	}
-
 
 	const sendMessage = async (messageData) => {
 		try {
@@ -41,35 +39,27 @@ const ChatBoard = ({ messages }) => {
 	const classes = styles()
 
 	return (
-
 		<div className={classes.chatboard}>
-
 			<div className={classes.messages} >
-
 				{
 					messages.map(message => <Message key={message._id} message={message} />)
 				}
-
 			</div>
 
 			<form className={classes.chatInput} onSubmit={handleSubmit}>
-
 				<input
 					className='input'
 					type='text'
 					name='text'
-					placeholder="message ..."
+					placeholder="Write a message ..."
 					maxLength="128"
 					value={textData.message}
 					onChange={handleChange}
 				/>
-
 				<button className={classes.submitBtn} type='submit'> send </button>
-
 			</form>
-
 		</div>
-		
+
 	)
 }
 

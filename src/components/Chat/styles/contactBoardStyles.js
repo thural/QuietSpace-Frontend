@@ -5,7 +5,8 @@ const styles = createUseStyles({
 		display: 'flex',
 		flexFlow: 'column nowrap',
 		borderRight: '1px solid',
-		gridColumn: '1/2'
+		gridColumn: '1/2',
+		maxWidth: "300px"
 	}
 });
 

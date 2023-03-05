@@ -7,7 +7,6 @@ const Contact = () => {
 	const classes = styles();
 
 	return (
-
 		<div className={classes.wrapper}>
 
 			<div className="content">
@@ -25,7 +24,6 @@ const Contact = () => {
 
 		</div>
 	)
-
 }
 
 export default Contact

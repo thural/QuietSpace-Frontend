@@ -4,11 +4,8 @@ import Comment from "./Comment"
 import styles from "./styles/commentSectionStyles"
 
 const CommentSection = ({ _id: postID, comments }) => {
-
 	const { setPosts, setFormView, loggedUser } = useContext(MainContext);
-
 	const [commentData, setCommentData] = useState({ text: '' })
-
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
@@ -20,7 +17,6 @@ const CommentSection = ({ _id: postID, comments }) => {
 		addComment(commentData, postID)
 		setFormView({ formName: 'overlay' })
 	}
-
 
 	const addComment = async (commentData, _id) => {
 		try {
@@ -40,11 +36,8 @@ const CommentSection = ({ _id: postID, comments }) => {
 	const classes = styles()
 
 	return (
-
 		<div className={classes.commentSection} >
-
 			<form onSubmit={handleSubmit} >
-
 				<textarea className={classes.commentInput}
 					type='text'
 					name='text'
@@ -53,16 +46,21 @@ const CommentSection = ({ _id: postID, comments }) => {
 				</textarea>
 
 				<button className="submit-btn" type='submit'> add </button>
-
 			</form>
 
-			{comments &&
-				comments.map(comment => <Comment key={comment['_id']} loggedUser={loggedUser} comment={comment} postID={postID}/>)
+			{
+				comments &&
+				comments.map(comment =>
+					<Comment
+						key={comment['_id']}
+						loggedUser={loggedUser}
+						comment={comment}
+						postID={postID}
+					/>
+				)
 			}
-
 		</div>
 	)
-
 }
 
 export default CommentSection

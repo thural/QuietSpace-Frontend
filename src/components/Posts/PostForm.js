@@ -6,15 +6,12 @@ import Overlay from "../Overlay"
 const PostForm = () => {
 
 	const { setPosts, setFormView } = useContext(MainContext);
-
 	const [postData, setPostData] = useState({ text: '' })
-
 
 	const handleChange = (event) => {
 		const { name, value } = event.target
 		setPostData({ ...postData, [name]: value });
 	}
-
 
 	const addPost = async (postData) => {
 		try {
@@ -30,21 +27,19 @@ const PostForm = () => {
 		} catch (err) { throw err }
 	}
 
-
 	const classes = styles()
-
+	
 	return (
 		<>
 			<Overlay />
 
 			<div className={classes.post}>
-
 				<h3>Create a post</h3>
 
 				<form
 					onSubmit={(e) => {
-						e.preventDefault();
-						addPost(postData);
+						e.preventDefault()
+						addPost(postData)
 						setFormView({ formName: 'overlay' })
 					}}
 				>
@@ -59,7 +54,6 @@ const PostForm = () => {
 					</textarea>
 
 					<button className="submit-btn" type='submit'> Post </button>
-
 				</form>
 
 			</div>

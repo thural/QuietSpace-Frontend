@@ -21,7 +21,6 @@ const Menu = () => {
 		else setDisplay("none")
 	}
 
-	
 	const handleLogout = (event) => {
 		event.preventDefault()
 		fetch('http://localhost:5000/api/users/log-out', {
@@ -29,11 +28,8 @@ const Menu = () => {
 		}).then(() => fetchUser())
 	}
 
-
 	return (
-
 		<div style={{ display: loggedUser.username ? "block" : "none" }}>
-
 			<div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
 				<img src={menuIcon} />
 			</div>
@@ -46,9 +42,7 @@ const Menu = () => {
 				<div className="menu-item"><p>Settings</p><img src={settingsIcon} /></div>
 				<div className="menu-item" onClick={handleLogout}><p>Logout</p><img src={logoutIcon} /></div>
 			</div>
-
 		</div>
-
 	)
 
 }
