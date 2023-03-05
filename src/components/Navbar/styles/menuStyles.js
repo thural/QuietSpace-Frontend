@@ -61,7 +61,7 @@ const styles = createUseStyles(
 				justifyContent: 'space-between',
 				padding: '.5rem 1rem'
 			},
-			'& .menu-item:not(:last-child)':{
+			'& .menu-item:not(:last-child)': {
 				borderBottom: '#c5c5c5 solid 1px'
 			},
 			'& .image': {

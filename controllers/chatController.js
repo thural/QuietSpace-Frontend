@@ -14,13 +14,13 @@ const { body, validationResult } = require("express-validator")
 
 exports.load = (req, res, next) => {
   const senderID = req.user['_id'].toString()
-	Chat.find({_id: senderID})
+  Chat.find({_id: senderID})
     .populate("_id", "username")
-		.sort([["date", "descending"]])
-		.exec((err, chatData) => {
-			if (err) return next(err)
-			res.status(200).json(chatData[0])
-		})
+    .sort([["date", "descending"]])
+    .exec((err, chatData) => {
+      if (err) return next(err)
+      res.status(200).json(chatData[0])
+    })
 }
 
 exports.add_message = [

@@ -59,7 +59,7 @@ const styles = createUseStyles(
 				margin: '0',
 				padding: '0',
 			},
-			'& li:first-of-type':{
+			'& li:first-of-type': {
 				marginLeft: 0
 			},
 			'& li': {

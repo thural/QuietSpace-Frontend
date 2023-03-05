@@ -31,9 +31,9 @@ const db = mongoose.connection
 db.on("error", console.error.bind(console, "MongoDB connection error:"))
 
 const corsOptions = {
-	origin: "http://localhost:5000", // <-- location of the react app were connecting to
-	credentials: true,
-	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: "http://localhost:5000", // <-- location of the react app were connecting to
+  credentials: true,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 // Middleware
 app.use(bodyParser.json())
@@ -41,11 +41,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(cors(corsOptions))
 app.use(
-	session({
-		secret: "secretcode",
-		resave: true,
-		saveUninitialized: true,
-	})
+  session({
+    secret: "secretcode",
+    resave: true,
+    saveUninitialized: true,
+  })
 );
 app.use(cookieParser("secretcode"))
 app.use(passport.initialize())
@@ -54,16 +54,16 @@ app.use(passport.session())
 //app.use(errorHandler)
 
 passport.use(
-	new passportLocal((username, password, done) => {
-		User.findOne({ username: username }, (err, user) => {
-			if (err) return done(err)
-			if (!user) return done(null, false, { message: "Incorrect username" })
-			bcrypt.compare(password, user.password, (err, res) => {
-				if (!res) return done(null, false, { message: "Incorrect password" })
-				else return done(null, user)
-			})
-		})
-	})
+  new passportLocal((username, password, done) => {
+    User.findOne({ username: username }, (err, user) => {
+      if (err) return done(err)
+      if (!user) return done(null, false, { message: "Incorrect username" })
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (!res) return done(null, false, { message: "Incorrect password" })
+        else return done(null, user)
+      })
+    })
+  })
 )
 passport.serializeUser((user, done) => { done(null, user.id) })
 passport.deserializeUser((id, done) => { User.findById(id, (err, user) => { done(err, user) }) })
@@ -86,15 +86,15 @@ app.all('*', (request, response) => { response.status(404).send('Error 404, Page
 
 
 const server = app.listen(5000, function () {
-	console.log('server listening at', server.address())
+  console.log('server listening at', server.address())
 })
 
 const io = require('socket.io')(server)
 
 io.on('connection', socket => {
-	//console.log(socket.id)
-	socket.on('custom-event', (str, num, arr) => {
-		console.log('message from custom event triggered on App component load:')
-		console.log("string: ", str, "number: ", num, "array: ", arr)
-	})
+  //console.log(socket.id)
+  socket.on('custom-event', (str, num, arr) => {
+    console.log('message from custom event triggered on App component load:')
+    console.log("string: ", str, "number: ", num, "array: ", arr)
+  })
 })

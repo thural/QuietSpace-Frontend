@@ -11,41 +11,41 @@ import contactIcon from "../../assets/question-circle-line.svg"
 
 const NavBar = ({ children }) => {
 
-	const classes = styles()
-	const { loggedUser } = useContext(MainContext)
+  const classes = styles()
+  const { loggedUser } = useContext(MainContext)
 
-	return (
-		<div className={classes.navbar}>
-			<h1>Quiet Space</h1>
+  return (
+    <div className={classes.navbar}>
+      <h1>Quiet Space</h1>
 
-			<nav>
-				<div className="navbar-item">
-					<Link to="/"><img src={homeIcon} /></Link>
-				</div>
+      <nav>
+        <div className="navbar-item">
+          <Link to="/"><img src={homeIcon} /></Link>
+        </div>
 
-				<div className="navbar-item">
-					<Link to="/posts"><img src={postsIcon} /></Link>
-				</div>
+        <div className="navbar-item">
+          <Link to="/posts"><img src={postsIcon} /></Link>
+        </div>
 
-				{
-					loggedUser.username &&
-					<div className="navbar-item">
-						<Link to="/chat"><img src={chatIcon} /></Link>
-					</div>
-				}
+        {
+          loggedUser.username &&
+          <div className="navbar-item">
+            <Link to="/chat"><img src={chatIcon} /></Link>
+          </div>
+        }
 
-				<div className="navbar-item">
-					<Link to="/contact"><img src={contactIcon} /></Link>
-				</div>
+        <div className="navbar-item">
+          <Link to="/contact"><img src={contactIcon} /></Link>
+        </div>
 
-				{children}
-			</nav>
+        {children}
+      </nav>
 
-			<div className="navbar-item menu">
-				<Menu />
-			</div>
-		</div>
-	)
+      <div className="navbar-item menu">
+        <Menu />
+      </div>
+    </div>
+  )
 }
 
 export default NavBar
