@@ -66,7 +66,7 @@ function postReducer(state, { posts, data, user, _id, type, postID, commentID })
       return state.filter(post => post['_id'] !== _id)
     case 'add':
       const newState = [data, ...state]
-      return newState // TODO: first figure out the response and then get back here.
+      return newState
     case 'edit':
       return state.map(post => post['_id'] == _id ? data : post)
     case 'load':

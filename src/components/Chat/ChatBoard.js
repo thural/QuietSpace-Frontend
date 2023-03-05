@@ -5,7 +5,7 @@ import styles from "./styles/chatBoardStyles"
 import MainContext from "../MainContext"
 
 const ChatBoard = ({ messages }) => {
-  
+
   const { currentChat } = useContext(ChatContext)
   const { setChat } = useContext(MainContext)
   const [textData, setTextData] = useState({ text: '' })
@@ -29,9 +29,7 @@ const ChatBoard = ({ messages }) => {
         body: JSON.stringify(messageData)
       })
         .then(res => res.json(), err => console.log('error from add message: ', err))
-        .then(data => {
-          setChat({ type: 'addMessage', messageData, currentChat })
-        })
+        .then(data => { setChat({ type: 'addMessage', messageData, currentChat }) })
     } catch (err) { throw err }
   }
 

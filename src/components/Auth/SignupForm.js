@@ -22,9 +22,7 @@ const SignupForm = () => {
       body: JSON.stringify(formData)
     })
       .then(res => res.json(), err => console.log('error message: ', err))
-      .then(response => {
-        setUser(response)
-      })
+      .then(response => { setUser(response) })
   }
 
   return (
@@ -35,7 +33,7 @@ const SignupForm = () => {
         <form
           className='signup form'
           onSubmit={e => {
-            handleSubmit(e);
+            handleSubmit(e)
             setFormView('overlay')
           }}>
           <div className="signup input">

@@ -15,7 +15,6 @@ const Menu = () => {
   const { loggedUser, fetchUser } = useContext(MainContext)
   const [display, setDisplay] = useState('none');
 
-
   const toggleDisplay = () => {
     if (display === "none") setDisplay("block")
     else setDisplay("none")
