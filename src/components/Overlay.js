@@ -1,14 +1,14 @@
 import React, { useContext } from "react"
 import styles from "../styles/overlayStyles"
-import HandlerContext from "./MainContext"
+import { useDispatch } from "react-redux"
 
 
 const Overlay = () => {
   const classes = styles()
-  const { setFormView } = useContext(HandlerContext)
+  const dispatch = useDispatch()
 
   return (
-    <div className={classes.overlay} onClick={() => setFormView({ formName: 'overlay' })}></div>
+    <div className={classes.overlay} onClick={() => dispatch({ type: 'overlay' })}></div>
   )
 }
 
