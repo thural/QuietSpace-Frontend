@@ -7,10 +7,14 @@ import editIcon from "../../assets/edit.svg"
 import commentIcon from "../../assets/comment-3-line.svg"
 import deleteIcon from "../../assets/delete-bin-line.svg"
 import CommentSection from "./CommentSection"
+import { useDispatch, useSelector } from "react-redux"
 
 const Post = ({ post }) => {
+  const dispatch = useDispatch()
+  const loggedUser = useSelector(state => state.userReducer)
+  
   const { _id, username, text, likes, comments } = post
-  const { loggedUser, setPosts, setFormView } = useContext(MainContext)
+  const { setFormView } = useContext(MainContext)
   const [active, setActive] = useState(false)
   const liked = post.likes.includes(loggedUser['_id']) ? 'unlike' : 'like'
 
@@ -19,7 +23,7 @@ const Post = ({ post }) => {
       await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
         .then(res => res.json(), err => console.log('error from delete post: ', err))
         .then(data => {
-          setPosts({ _id, user: loggedUser, type: 'delete' })
+          dispatch({ type: 'delete', payload: { _id, user: loggedUser, } })
         })
     } catch (err) { throw err }
   }
@@ -29,7 +33,7 @@ const Post = ({ post }) => {
       await fetch(`http://localhost:5000/api/posts/like/${_id}`, { method: 'POST' })
         .then(res => res.json(), err => console.log('error from like post: ', err))
         .then(data => {
-          setPosts({ _id, user: loggedUser, type: 'like' })
+          dispatch({ type: 'like', payload: { _id, user: loggedUser, } })
         })
     } catch (err) { throw err }
   }

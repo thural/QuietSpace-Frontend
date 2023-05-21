@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react";
-import MainContext from "../MainContext";
+import React, { useState } from "react";
 import Overlay from "../Overlay";
 import styles from "./styles/signupStyles"
+import { useDispatch } from "react-redux";
 
 const SignupForm = () => {
 
+  const dispatch = useDispatch()
+
   const classes = styles()
-  const { setUser, setFormView } = useContext(MainContext)
   const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
 
   const handleChange = (event) => {
@@ -22,7 +23,7 @@ const SignupForm = () => {
       body: JSON.stringify(formData)
     })
       .then(res => res.json(), err => console.log('error message: ', err))
-      .then(response => { setUser(response) })
+      .then(response => { console.log(response); dispatch({ type: 'loadUser', payload: { user: response } }) })
   }
 
   return (
@@ -34,7 +35,7 @@ const SignupForm = () => {
           className='signup form'
           onSubmit={e => {
             handleSubmit(e)
-            setFormView('overlay')
+            dispatch({ type: 'overlay' })
           }}>
           <div className="signup input">
             <input
@@ -62,7 +63,7 @@ const SignupForm = () => {
           <button type='submit'>submit</button>
         </form>
         <h3>already have an account?</h3>
-        <button type='button' onClick={() => setFormView({ formName: 'login' })}>login</button>
+        <button type='button' onClick={() => dispatch({ type: 'login' })}>login</button>
       </div>
     </>
   )

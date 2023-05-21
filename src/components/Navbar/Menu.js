@@ -6,14 +6,17 @@ import historyIcon from "../../assets/history.svg"
 import settingsIcon from "../../assets/settings.svg"
 import logoutIcon from "../../assets/log-out.svg"
 import menuIcon from "../../assets/menu-line.svg"
+import { useSelector } from "react-redux"
 
 
 
 const Menu = () => {
 
+  const loggedUser = useSelector(state => state.userReducer)
+
   const classes = styles()
-  const { loggedUser, fetchUser } = useContext(MainContext)
-  const [display, setDisplay] = useState('none');
+  const { fetchUser } = useContext(MainContext)
+  const [ display, setDisplay ] = useState('none')
 
   const toggleDisplay = () => {
     if (display === "none") setDisplay("block")

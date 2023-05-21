@@ -1,12 +1,12 @@
 import React, { useContext } from "react"
 import styles from "./styles/chatContactStyles"
 import ChatContext from "./ChatContext"
-import MainContext from "../MainContext"
+import { useSelector } from "react-redux"
 
 const ChatContact = ({ contact }) => {
 
   const classes = styles()
-  const { loggedUser } = useContext(MainContext);
+  const loggedUser = useSelector(state => state.userReducer)
   const { currentChat, setCurrentChat } = useContext(ChatContext)
   const backgroundColor = currentChat == contact['_id'] ? '#e3e3e3' : 'white'
   const contactName = contact.messages

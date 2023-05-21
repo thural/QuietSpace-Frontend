@@ -2,11 +2,14 @@ import React, { useContext, useState } from "react"
 import HandlerContext from "../MainContext"
 import Overlay from "../Overlay"
 import styles from "./styles/loginStyles"
+import { useDispatch } from "react-redux"
 
 const LoginForm = () => {
 
+  const dispatch = useDispatch()
+
   const classes = styles()
-  const { fetchUser, fetchPosts, fetchChat, setFormView } = useContext(HandlerContext)
+  const { fetchUser, fetchPosts, fetchChat } = useContext(HandlerContext)
   const [formData, setFormData] = useState({ username: '', password: '' })
 
   const handleChange = (event) => {
@@ -32,7 +35,7 @@ const LoginForm = () => {
           className='login form'
           onSubmit={e => {
             handleSubmit(e)
-            setFormView({ formName: 'overlay' })
+            dispatch({ type: 'overlay' })
           }}>
 
           <div className="login input">
@@ -54,7 +57,7 @@ const LoginForm = () => {
           <button type='submit'>login</button>
         </form>
         <h3>don't have an account?</h3>
-        <button type='button' onClick={() => setFormView({ formName: 'signup' })}>signup</button>
+        <button type='button' onClick={() => dispatch({ type: 'signup' })}>signup</button>
       </div>
     </>
   )

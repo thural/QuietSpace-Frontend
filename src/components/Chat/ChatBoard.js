@@ -1,13 +1,12 @@
-import React, { useContext, useState } from "react"
-import ChatContext from "./ChatContext"
+import React, { useState } from "react"
 import Message from "./Message"
 import styles from "./styles/chatBoardStyles"
-import MainContext from "../MainContext"
+import { useDispatch } from 'react-redux'
 
-const ChatBoard = ({ messages }) => {
+const ChatBoard = ({ messages, currentChat }) => {
 
-  const { currentChat } = useContext(ChatContext)
-  const { setChat } = useContext(MainContext)
+  const dispatch = useDispatch()
+
   const [textData, setTextData] = useState({ text: '' })
 
   const handleChange = (event) => {
@@ -29,7 +28,7 @@ const ChatBoard = ({ messages }) => {
         body: JSON.stringify(messageData)
       })
         .then(res => res.json(), err => console.log('error from add message: ', err))
-        .then(data => { setChat({ type: 'addMessage', messageData, currentChat }) })
+        .then(data => { dispatch({ type: 'addMessage', payload:{messageData, currentChat} }) })
     } catch (err) { throw err }
   }
 
@@ -37,7 +36,7 @@ const ChatBoard = ({ messages }) => {
   const classes = styles()
 
   return (
-    <div className={classes.chatboard}>
+    <div className={classes.chatboard} >
       <div className={classes.messages} >
         {
           messages.map(message => <Message key={message._id} message={message} />)

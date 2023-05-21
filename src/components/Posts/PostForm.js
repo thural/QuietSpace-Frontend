@@ -1,11 +1,12 @@
-import React, { useContext, useState } from "react";
-import MainContext from "../MainContext"
+import React, { useState } from "react";
 import styles from "./styles/newPostStyles"
 import Overlay from "../Overlay"
+import { useDispatch } from "react-redux";
 
 const PostForm = () => {
 
-  const { setPosts, setFormView } = useContext(MainContext);
+  const dispatch = useDispatch
+
   const [postData, setPostData] = useState({ text: '' })
 
   const handleChange = (event) => {
@@ -22,7 +23,7 @@ const PostForm = () => {
       })
         .then(res => res.json(), err => console.log('error from add post: ', err))
         .then(data => {
-          setPosts({ type: 'add', data })
+          dispatch({ type: 'addPost', payload: { data } })
         })
     } catch (err) { throw err }
   }
@@ -40,7 +41,7 @@ const PostForm = () => {
           onSubmit={(e) => {
             e.preventDefault()
             addPost(postData)
-            setFormView({ formName: 'overlay' })
+            dispatch({ type: 'overlay' })
           }}
         >
 

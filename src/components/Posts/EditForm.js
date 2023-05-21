@@ -2,12 +2,16 @@ import React, { useContext, useState } from "react"
 import MainContext from "../MainContext"
 import styles from "./styles/newPostStyles"
 import Overlay from "../Overlay"
+import { useDispatch, useSelector } from "react-redux"
 
 const EditForm = () => {
 
-  const { posts, setPosts, formView, setFormView } = useContext(MainContext)
+  const dispatch = useDispatch()
+  const postsFromStore = useSelector(state => state.postReducer)
+
+  const { formView, setFormView } = useContext(MainContext)
   const _id = formView.edit["_id"]
-  const text = posts.find(post => post["_id"] == _id)["text"]
+  const text = postsFromStore.find(post => post["_id"] == _id)["text"]
   const [postData, setPostData] = useState({ "text": text })
 
   const handleChange = (event) => {
@@ -30,7 +34,7 @@ const EditForm = () => {
       })
         .then(res => res.json(), err => console.log('error message from edit POST: ', err))
         .then(data => {
-          setPosts({ type: 'edit', data, _id })
+          dispatch({ type: 'editPost', payload: {data, _id}})
         })
     } catch (err) { throw err }
   }
@@ -55,7 +59,6 @@ const EditForm = () => {
         </form>
       </div>
     </>
-
   )
 }
 

@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/thural/Message-Board-React#readme",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "async": "^3.2.4",
     "bad-words": "^3.0.4",
     "bcryptjs": "^2.4.3",
@@ -38,7 +39,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-jss": "^10.9.2",
+    "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.3",
+    "redux": "^4.2.1",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4"
   },

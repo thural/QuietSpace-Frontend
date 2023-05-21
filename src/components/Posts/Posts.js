@@ -1,12 +1,15 @@
-import React, { useContext, useReducer, useEffect } from "react"
+import React from "react"
 import PostBoard from "./PostBoard"
-import MainContext from "../MainContext"
 import PostForm from "./PostForm"
 import EditForm from "./EditForm"
 import styles from "./styles/postsStyles"
+import { useDispatch, useSelector } from "react-redux"
 
 const Posts = () => {
-  const { loggedUser, posts, setFormView, formView } = useContext(MainContext)
+  const formView = useSelector(state => state.formViewReducer)
+  const dispatch = useDispatch()
+  const loggedUser = useSelector(state => state.userReducer)
+  const posts = useSelector(state => state.postReducer)
 
   const classes = styles()
 
@@ -15,7 +18,7 @@ const Posts = () => {
       <div className={classes.posts}>
         {
           loggedUser.username &&
-          <button className="add-post-btn" onClick={() => setFormView({ formName: 'post' })}>
+          <button className="add-post-btn" onClick={() => dispatch({ type: 'post' })}>
             Add
           </button>
         }

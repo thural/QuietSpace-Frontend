@@ -1,14 +1,14 @@
-const Filter = require('bad-words')
-const customFilter = new Filter({ placeHolder: '*' })
-const dirty_words = require("../dirty_words")
+// const Filter = require('bad-words')
+// const customFilter = new Filter({ placeHolder: '*' })
+// const dirty_words = require("../dirty_words")
 const Chat = require("../models/chatModel")
 // const User = require("../models/userModel")
-customFilter.addWords(...dirty_words)
+// customFilter.addWords(...dirty_words)
 
-const checkInput = (value, { req }) => {
-  if (customFilter.isProfane(value)) return false
-  else return true
-}
+// const checkInput = (value, { req }) => {
+//   if (customFilter.isProfane(value)) return false
+//   else return true
+// }
 
 const { body, validationResult } = require("express-validator")
 
@@ -27,7 +27,7 @@ exports.add_message = [
   // input validation
   body("text", "at least 1 characters required").isLength({ min: 1 }),
   body("text", "max 256 characters allowed").isLength({ max: 256 }),
-  body("text").custom(checkInput).withMessage("Your message can not contain bad words"),
+  // body("text").custom(checkInput).withMessage("Your message can not contain bad words"),
   // validation results
   (req, res, next) => {
     const errors = validationResult(req)
@@ -36,7 +36,7 @@ exports.add_message = [
       return res.json({ errors: errors.array() })
     } next()
   },
-
+  
   // saving to database
   async (req, res, next) => {
     try {

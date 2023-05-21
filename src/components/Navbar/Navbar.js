@@ -2,17 +2,18 @@ import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 import styles from "./styles/navbarStyles"
 import Menu from "./Menu"
-import MainContext from "../MainContext"
 import homeIcon from "../../assets/home-line.svg"
 import postsIcon from "../../assets/compass-line.svg"
 import chatIcon from "../../assets/chat-line.svg"
 import contactIcon from "../../assets/question-circle-line.svg"
+import { useSelector } from "react-redux"
 
 
 const NavBar = ({ children }) => {
 
   const classes = styles()
-  const { loggedUser } = useContext(MainContext)
+
+  const loggedUser = useSelector(state => state.userReducer)
 
   return (
     <div className={classes.navbar}>

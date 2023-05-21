@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from "react"
+import React, { useReducer, useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
 import MainContext from "./MainContext"
 import styles from "../styles/appStyles"
@@ -8,6 +8,8 @@ import NavBar from "./Navbar/Navbar"
 import Posts from "./Posts/Posts"
 import Home from "./Home/Home"
 import Chat from "./Chat/Chat"
+
+import { useSelector, useDispatch } from 'react-redux'
 
 // ////// socket test
 // const socket = io('http://localhost:5000')
@@ -27,120 +29,33 @@ import Chat from "./Chat/Chat"
 // 	} catch (err) { return false }
 // }
 
-function chatReducer(state, { messageData, chatData, currentChat, type }) {
-  switch (type) {
-    case 'load':
-      return chatData
-    case 'addMessage':
-      return state.chat.map(contact => {
-        if (contact['_id'] == currentChat) {
-          contact.messages.push(messageData)
-        }
-        return contact
-      })
-    default:
-      return state
-  }
-}
-
-function postReducer(state, { posts, data, user, _id, type, postID, commentID }) {
-  switch (type) {
-    case 'like':
-      return state.map(post => {
-        if (post['_id'] == _id) {
-          if (post.likes.includes(user['id'])) return post
-          const postLikes = [...post.likes, user['_id']]
-          return { ...post, likes: postLikes }
-        }
-        return post
-      })
-    case 'unlike':
-      return state.map(post => {
-        if (post['_id'] == _id) {
-          const reducedLikes = post.likes.filter(likeId => likeId !== user['_id'])
-          return { ...post, likes: reducedLikes }
-        }
-        return post
-      })
-    case 'delete':
-      return state.filter(post => post['_id'] !== _id)
-    case 'add':
-      const newState = [data, ...state]
-      return newState
-    case 'edit':
-      return state.map(post => post['_id'] == _id ? data : post)
-    case 'load':
-      return posts
-    case 'addComment':
-      const id = data['_id']
-      return state.map(post => {
-        if (post['_id'] == id) post = data;
-        return post
-      })
-    case 'deleteComment':
-      return state.map(post => {
-        if (post['_id'] == postID) {
-          const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
-          if (indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
-        }
-        return post
-      })
-    default: return state
-  }
-}
-
-const formViewReducer = (state, { formName, _id }) => {
-  switch (formName) {
-    case "login":
-      return ({ login: true, signup: false })
-    case "signup":
-      return ({ signup: true, login: false })
-    case "post":
-      return ({ ...state, post: true })
-    case "edit":
-      return ({ edit: { view: true, _id } })
-    case "overlay":
-      return ({ signup: false, login: false, post: false, edit: false })
-    default:
-      return state
-  }
-}
-
 const App = () => {
+  const chatFromStore = useSelector(state => state.chatReducer)
+  const postsFromStore = useSelector(state => state.postReducer)
+  const currentUser = useSelector(state => state.userReducer)
+  const dispatch = useDispatch()
+
   const fetchUser = async () => {
     const data = await fetch('http://localhost:5000/api/users/user')
     const user = await data.json()
-    setUser(user)
+    dispatch({ type: 'loadUser', payload: { user } })
   }
 
   const fetchPosts = async () => {
     const data = await fetch('http://localhost:5000/api/posts')
     const items = await data.json()
-    setPosts({ posts: items.posts, type: 'load' })
+    console.log('post items', items)
+    dispatch({ type: 'loadPosts', payload: { posts: items.posts } })
   }
 
   const fetchChat = async () => {
     const data = await fetch('http://localhost:5000/api/chats')
     const chatData = await data.json()
-    setChat({ chatData, type: 'load' })
+    dispatch({ type: 'load', payload: { chatData } })
   }
 
-  const [loggedUser, setUser] = useState([])
-  const [posts, setPosts] = useReducer(postReducer, [])
-  const [chatData, setChat] = useReducer(chatReducer, [])
-  const [formView, setFormView] = useReducer(formViewReducer, {
-    login: false,
-    signup: false,
-    post: false,
-    edit: { view: false, _id: null },
-    overlay: false
-  })
-
   useEffect(() => {
-    fetchUser().then(
-      fetchPosts(),
-      fetchChat()
-    )
+    fetchUser().then(fetchPosts(), fetchChat())
   }, [])
 
   const classes = styles()
@@ -148,17 +63,9 @@ const App = () => {
     <div className={classes.app}>
       <MainContext.Provider
         value={{
-          loggedUser,
-          setUser,
-          setChat,
-          posts,
-          setPosts,
           fetchUser,
           fetchPosts,
           fetchChat,
-          formView,
-          setFormView,
-          chat: chatData.chat
         }}>
 
         <NavBar />

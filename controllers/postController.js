@@ -1,18 +1,18 @@
-const Filter = require('bad-words')
-const customFilter = new Filter({ placeHolder: '*' })
-const dirty_words = require("../dirty_words")
 const Post = require("../models/postModel")
 const User = require("../models/userModel")
-customFilter.addWords(...dirty_words)
+// const Filter = require('bad-words')
+// const dirty_words = require("../dirty_words")
+// const customFilter = new Filter({ placeHolder: '*' })
+// customFilter.addWords(...dirty_words)
 
-const checkInput = (value, { req }) => {
-  if (customFilter.isProfane(value)) return false
-  return true
-}
+// const checkInput = (value, { req }) => {
+//   if (customFilter.isProfane(value)) return false
+//   return true
+// }
 
 const { body, validationResult } = require("express-validator")
 const { validatePost, savePost } = require("../middleware/postMiddleware")
-const { findIndex } = require('../dirty_words')
+// const { findIndex } = require('../dirty_words')
 
 exports.list = (req, res, next) => {
   Post.find()

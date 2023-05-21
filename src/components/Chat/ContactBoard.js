@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React from "react"
 import ChatContact from "./ChatContact"
 import styles from "./styles/contactBoardStyles"
 

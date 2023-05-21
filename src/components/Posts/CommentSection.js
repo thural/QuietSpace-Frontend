@@ -2,9 +2,11 @@ import React, { useContext, useState } from "react"
 import MainContext from "../MainContext"
 import Comment from "./Comment"
 import styles from "./styles/commentSectionStyles"
+import { useSelector, useDispatch } from "react-redux"
 
 const CommentSection = ({ _id: postID, comments }) => {
-  const { setPosts, setFormView, loggedUser } = useContext(MainContext);
+  const loggedUser = useSelector(state => state.userReducer)
+  const dispatch = useDispatch()
   const [commentData, setCommentData] = useState({ text: '' })
 
   const handleChange = (event) => {
@@ -15,7 +17,7 @@ const CommentSection = ({ _id: postID, comments }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     addComment(commentData, postID)
-    setFormView({ formName: 'overlay' })
+    dispatch({ type: 'overlay' })
   }
 
   const addComment = async (commentData, _id) => {
@@ -27,7 +29,7 @@ const CommentSection = ({ _id: postID, comments }) => {
       })
         .then(res => res.json(), err => console.log('error from add post: ', err))
         .then(data => {
-          setPosts({ type: 'addComment', data })
+          dispatch({ type: 'addComment', payload: { data } })
         })
     } catch (err) { throw err }
   }
@@ -37,6 +39,7 @@ const CommentSection = ({ _id: postID, comments }) => {
 
   return (
     <div className={classes.commentSection} >
+      
       <form onSubmit={handleSubmit} >
         <textarea className={classes.commentInput}
           type='text'

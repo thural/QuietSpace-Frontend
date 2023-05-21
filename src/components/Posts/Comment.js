@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import styles from "./styles/commentStyles"
-import MainContext from "../MainContext"
+import { useDispatch, useSelector } from "react-redux"
 
 
 
 const Comment = ({ comment, postID }) => {
+  const loggedUser = useSelector(state => state.userReducer)
+  const dispatch = useDispatch()
 
-  const { setPosts, loggedUser } = useContext(MainContext)
   const [liked, setLiked] = useState(comment.likes.includes(loggedUser._id))
 
   const deleteComment = async () => {
@@ -17,7 +18,7 @@ const Comment = ({ comment, postID }) => {
         body: JSON.stringify({ commentID })
       })
         .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-        .then(setPosts({ type: 'deleteComment', postID, commentID }))
+        .then(dispatch({type: 'deleteComment', payload: { postID, commentID }}))
     } catch (err) { throw err }
   }
 
