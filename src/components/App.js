@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react"
+import React, { useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
 import MainContext from "./MainContext"
 import styles from "../styles/appStyles"
@@ -9,7 +9,10 @@ import Posts from "./Posts/Posts"
 import Home from "./Home/Home"
 import Chat from "./Chat/Chat"
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { loadChat } from "../redux/chatReducer"
+import { loadUser } from "../redux/userReducer"
+import { loadPosts } from "../redux/postReducer"
 
 // ////// socket test
 // const socket = io('http://localhost:5000')
@@ -30,43 +33,45 @@ import { useSelector, useDispatch } from 'react-redux'
 // }
 
 const App = () => {
-  const chatFromStore = useSelector(state => state.chatReducer)
-  const postsFromStore = useSelector(state => state.postReducer)
-  const currentUser = useSelector(state => state.userReducer)
+
   const dispatch = useDispatch()
 
   const fetchUser = async () => {
     const data = await fetch('http://localhost:5000/api/users/user')
     const user = await data.json()
-    dispatch({ type: 'loadUser', payload: { user } })
+    dispatch(loadUser({ user }))
   }
 
   const fetchPosts = async () => {
     const data = await fetch('http://localhost:5000/api/posts')
     const items = await data.json()
-    console.log('post items', items)
-    dispatch({ type: 'loadPosts', payload: { posts: items.posts } })
+    dispatch(loadPosts(items))
   }
 
   const fetchChat = async () => {
     const data = await fetch('http://localhost:5000/api/chats')
     const chatData = await data.json()
-    dispatch({ type: 'load', payload: { chatData } })
+    dispatch(loadChat({ chatData }))
   }
 
   useEffect(() => {
     fetchUser().then(fetchPosts(), fetchChat())
   }, [])
 
+  // useEffect(() => {
+  //   Promise.all([fetchUser, fetchPosts, fetchChat]).then((data) =>
+  //   ({
+  //     first: dispatch(loadUser({ user: data[0] })),
+  //     second: dispatch(loadPosts({ posts: data[1].posts })),
+  //     third: dispatch(loadChat({ chatData: data[2] }))
+  //   })
+  //   ).then(console.log)
+  // }, [])
+
   const classes = styles()
   return (
     <div className={classes.app}>
-      <MainContext.Provider
-        value={{
-          fetchUser,
-          fetchPosts,
-          fetchChat,
-        }}>
+      <MainContext.Provider value={{ fetchUser, fetchPosts, fetchChat }}>
 
         <NavBar />
 
@@ -76,7 +81,7 @@ const App = () => {
           <Route path="/chat" element={<Chat />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
-
+        
       </MainContext.Provider>
     </div>
   )

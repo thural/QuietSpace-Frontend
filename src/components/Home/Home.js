@@ -4,12 +4,14 @@ import SignupForm from "../Auth/SignupForm"
 import LoginForm from "../Auth/LoginForm"
 import styles from "./styles/homeStyles"
 import { useDispatch, useSelector } from "react-redux"
+import { login } from "../../redux/formViewReducer"
 
 const Home = () => {
   const dispatch = useDispatch()
   const formView = useSelector(state => state.formViewReducer)
+  const user = useSelector(state => state.userReducer)
+
   const classes = styles()
-  const loggedUser = useSelector(state => state.userReducer)
 
   return (
     <>
@@ -19,8 +21,8 @@ const Home = () => {
           <h3>Free speech is the foundation of a healthy society</h3>
         </div>
         {
-          loggedUser.username ? <Link to="/posts"><button>Post now</button></Link> :
-            <button onClick={() => dispatch({ type: 'login' })}>Login to post</button>
+          user?.username ? <Link to="/posts"><button>Post now</button></Link> :
+            <button onClick={() => dispatch(login())}>Login to post</button>
         }
       </div>
       {

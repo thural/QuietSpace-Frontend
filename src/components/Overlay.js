@@ -1,6 +1,7 @@
-import React, { useContext } from "react"
+import { overlay } from "../redux/formViewReducer"
 import styles from "../styles/overlayStyles"
 import { useDispatch } from "react-redux"
+import React from "react"
 
 
 const Overlay = () => {
@@ -8,7 +9,7 @@ const Overlay = () => {
   const dispatch = useDispatch()
 
   return (
-    <div className={classes.overlay} onClick={() => dispatch({ type: 'overlay' })}></div>
+    <div className={classes.overlay} onClick={() => dispatch(overlay())}></div>
   )
 }
 

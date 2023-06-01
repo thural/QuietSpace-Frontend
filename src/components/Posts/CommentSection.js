@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react"
-import MainContext from "../MainContext"
+import React, { useState } from "react"
 import Comment from "./Comment"
 import styles from "./styles/commentSectionStyles"
 import { useSelector, useDispatch } from "react-redux"
+import { overlay } from "../../redux/formViewReducer"
 
 const CommentSection = ({ _id: postID, comments }) => {
-  const loggedUser = useSelector(state => state.userReducer)
+  const { user } = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
   const [commentData, setCommentData] = useState({ text: '' })
 
@@ -17,21 +17,19 @@ const CommentSection = ({ _id: postID, comments }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     addComment(commentData, postID)
-    dispatch({ type: 'overlay' })
+    dispatch(overlay())
   }
 
   const addComment = async (commentData, _id) => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/${_id}/comments`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(commentData)
+    await fetch(`http://localhost:5000/api/posts/${_id}/comments`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(commentData)
+    })
+      .then(res => res.json(), err => console.log('error from add post: ', err))
+      .then(data => {
+        dispatch(addComment({ data }))
       })
-        .then(res => res.json(), err => console.log('error from add post: ', err))
-        .then(data => {
-          dispatch({ type: 'addComment', payload: { data } })
-        })
-    } catch (err) { throw err }
   }
 
 
@@ -39,7 +37,7 @@ const CommentSection = ({ _id: postID, comments }) => {
 
   return (
     <div className={classes.commentSection} >
-      
+
       <form onSubmit={handleSubmit} >
         <textarea className={classes.commentInput}
           type='text'
@@ -56,7 +54,7 @@ const CommentSection = ({ _id: postID, comments }) => {
         comments.map(comment =>
           <Comment
             key={comment['_id']}
-            loggedUser={loggedUser}
+            loggedUser={user}
             comment={comment}
             postID={postID}
           />

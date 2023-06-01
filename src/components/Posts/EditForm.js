@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from "react-redux"
 const EditForm = () => {
 
   const dispatch = useDispatch()
-  const postsFromStore = useSelector(state => state.postReducer)
+  const { posts } = useSelector(state => state.postReducer)
 
   const { formView, setFormView } = useContext(MainContext)
   const _id = formView.edit["_id"]
-  const text = postsFromStore.find(post => post["_id"] == _id)["text"]
+  const text = posts.find(post => post["_id"] == _id)["text"]
   const [postData, setPostData] = useState({ "text": text })
 
   const handleChange = (event) => {
@@ -26,17 +26,16 @@ const EditForm = () => {
   }
 
   const editPost = async (postData, _id) => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/edit/${_id}`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(postData)
+    await fetch(`http://localhost:5000/api/posts/edit/${_id}`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(postData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        dispatch(editPost({ data, _id }))
       })
-        .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-        .then(data => {
-          dispatch({ type: 'editPost', payload: {data, _id}})
-        })
-    } catch (err) { throw err }
+      .catch(err => console.log('error message from edit POST: ', err))
   }
 
   const classes = styles()

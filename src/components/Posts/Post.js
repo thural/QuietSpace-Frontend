@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react"
-import MainContext from "../MainContext"
+import React, { useState } from "react"
 import styles from "./styles/postStyles"
 import likeIcon from "../../assets/thumbs.svg"
 import shareIcon from "../../assets/share.svg"
@@ -8,34 +7,31 @@ import commentIcon from "../../assets/comment-3-line.svg"
 import deleteIcon from "../../assets/delete-bin-line.svg"
 import CommentSection from "./CommentSection"
 import { useDispatch, useSelector } from "react-redux"
+import { deletePost, likePost } from "../../redux/postReducer"
+import { edit } from "../../redux/formViewReducer"
 
 const Post = ({ post }) => {
   const dispatch = useDispatch()
-  const loggedUser = useSelector(state => state.userReducer)
-  
-  const { _id, username, text, likes, comments } = post
-  const { setFormView } = useContext(MainContext)
-  const [active, setActive] = useState(false)
-  const liked = post.likes.includes(loggedUser['_id']) ? 'unlike' : 'like'
+  const user = useSelector(state => state.userReducer)
 
-  const deletePost = async (_id) => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
-        .then(res => res.json(), err => console.log('error from delete post: ', err))
-        .then(data => {
-          dispatch({ type: 'delete', payload: { _id, user: loggedUser, } })
-        })
-    } catch (err) { throw err }
+  const { _id, username, text, likes, comments } = post
+  const [active, setActive] = useState(false)
+  const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
+
+  const fetchDeletePost = async (_id) => {
+    await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
+      .then(res => res.json())
+      .then(() => dispatch(deletePost({ _id, user: user, })))
+      .catch(err => console.log('error from delete post: ', err))
   }
 
-  const likePost = async (_id) => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/like/${_id}`, { method: 'POST' })
-        .then(res => res.json(), err => console.log('error from like post: ', err))
-        .then(data => {
-          dispatch({ type: 'like', payload: { _id, user: loggedUser, } })
-        })
-    } catch (err) { throw err }
+  const fetchLikePost = async (_id) => {
+    await fetch(`http://localhost:5000/api/posts/like/${_id}`, { method: 'POST' })
+      .then(res => res.json())
+      .then(() => {
+        dispatch(likePost({ _id, user }))
+      })
+      .catch(err => console.log('error from like post: ', err))
   }
 
   const classes = styles()
@@ -51,27 +47,27 @@ const Post = ({ post }) => {
       </div>
 
       {
-        loggedUser.username &&
+        user.username &&
         <>
           <hr></hr>
           <div className="panel">
             {
-              post.username !== loggedUser.username &&
-              <img src={likeIcon} onClick={() => likePost(_id)} />
+              post.username !== user.username &&
+              <img src={likeIcon} onClick={() => fetchLikePost(_id)} />
             }
 
             <img src={commentIcon} onClick={() => setActive(active ? false : true)} />
 
             {
-              post.username == loggedUser.username &&
-              <img src={editIcon} onClick={() => setFormView({ formName: 'edit', _id })} />
+              post.username == user.username &&
+              <img src={editIcon} onClick={() => dispatch(edit(_id))} />
             }
 
             <img src={shareIcon} />
 
             {
-              loggedUser.admin || post.username == loggedUser.username &&
-              <img src={deleteIcon} onClick={() => deletePost(_id)} />
+              user.admin || post.username == user.username &&
+              <img src={deleteIcon} onClick={() => fetchDeletePost(_id)} />
             }
           </div>
           {

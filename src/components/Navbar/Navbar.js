@@ -13,7 +13,8 @@ const NavBar = ({ children }) => {
 
   const classes = styles()
 
-  const loggedUser = useSelector(state => state.userReducer)
+  const user = useSelector(state => state.userReducer)
+  // console.log(user)
 
   return (
     <div className={classes.navbar}>
@@ -29,7 +30,7 @@ const NavBar = ({ children }) => {
         </div>
 
         {
-          loggedUser.username &&
+          user && user?.username &&
           <div className="navbar-item">
             <Link to="/chat"><img src={chatIcon} /></Link>
           </div>

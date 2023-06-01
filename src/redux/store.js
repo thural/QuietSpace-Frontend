@@ -1,10 +1,20 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore, combineReducers } from "@reduxjs/toolkit"
+import chatReducer from "./chatReducer"
+import postReducer from "./postReducer"
+import userReducer from "./userReducer"
+import formViewReducer from "./formViewReducer"
 
-// import a reducer
-import { allReducers } from './reducers'
+const reducer = combineReducers({
+    chatReducer,
+    postReducer,
+    userReducer,
+    formViewReducer
+})
 
 //create store using a reducer
-export const store = configureStore({ reducer: allReducers })
+export const store = configureStore({
+    reducer
+})
 
 // //console log changes to the store
 // store.subscribe(() => console.log(store.getState()))

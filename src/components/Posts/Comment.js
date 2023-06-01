@@ -5,45 +5,39 @@ import { useDispatch, useSelector } from "react-redux"
 
 
 const Comment = ({ comment, postID }) => {
-  const loggedUser = useSelector(state => state.userReducer)
+  const { user } = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
 
-  const [liked, setLiked] = useState(comment.likes.includes(loggedUser._id))
+  const [liked, setLiked] = useState(comment.likes.includes(user._id))
 
   const deleteComment = async () => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/${postID}/comments/delete/${commentID}`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({ commentID })
-      })
-        .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-        .then(dispatch({type: 'deleteComment', payload: { postID, commentID }}))
-    } catch (err) { throw err }
+    await fetch(`http://localhost:5000/api/posts/${postID}/comments/delete/${commentID}`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ commentID })
+    })
+      .then(res => res.json(), err => console.log('error message from edit POST: ', err))
+      .then(dispatch(deleteComment({ postID, commentID })))
   }
 
   const likeComment = async (commentID, postID) => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/${postID}/comments/like/${commentID}`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({ commentID })
-      })
-        .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-        .then(setLiked(true))
-    } catch (err) { throw err }
+    await fetch(`http://localhost:5000/api/posts/${postID}/comments/like/${commentID}`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ commentID })
+    })
+      .then(res => res.json(), err => console.log('error message from edit POST: ', err))
+      .then(setLiked(true))
   }
 
   const unlikeComment = async (commentID, postID) => {
-    try {
-      await fetch(`http://localhost:5000/api/posts/${postID}/comments/unlike/${commentID}`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({ commentID })
-      })
-        .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-        .then(setLiked(false))
-    } catch (err) { throw err }
+    await fetch(`http://localhost:5000/api/posts/${postID}/comments/unlike/${commentID}`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ commentID })
+    })
+      .then(res => res.json(), err => console.log('error message from edit POST: ', err))
+      .then(setLiked(false))
   }
 
   const handleLike = () => {
@@ -62,7 +56,7 @@ const Comment = ({ comment, postID }) => {
         <p className="comment-like" onClick={handleLike}>{liked ? "unlike" : "like"}</p>
         <p className="comment-reply">reply</p>
         {
-          comment.username == loggedUser.username &&
+          comment.username == user.username &&
           <p className="comment-delete" onClick={deleteComment}>delete</p>
         }
       </div>

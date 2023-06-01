@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux'
 
 const Chat = () => {
 
-  const chatFromStore = useSelector(state => state.chatReducer)
+  const chat = useSelector(state => state.chatReducer)
 
-  const contacts = chatFromStore.chat
+  const contacts = chat.chat
   const [currentChat, setCurrentChat] = useState(contacts[0]["_id"])
-  const messages = chatFromStore.chat.find(contact => contact._id == currentChat).messages
+  const messages = chat.chat.find(contact => contact._id == currentChat).messages
   const reversedMessages = [...messages].reverse()
   const classes = styles()
   
@@ -23,7 +23,6 @@ const Chat = () => {
       </ChatContext.Provider>
     </div>
   )
-
 }
 
 export default Chat

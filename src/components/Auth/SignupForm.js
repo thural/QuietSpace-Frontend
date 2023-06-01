@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Overlay from "../Overlay";
 import styles from "./styles/signupStyles"
 import { useDispatch } from "react-redux";
+import { loadUser } from "../../redux/userReducer";
+import { login, overlay } from "../../redux/formViewReducer";
 
 const SignupForm = () => {
 
@@ -23,7 +25,7 @@ const SignupForm = () => {
       body: JSON.stringify(formData)
     })
       .then(res => res.json(), err => console.log('error message: ', err))
-      .then(response => { console.log(response); dispatch({ type: 'loadUser', payload: { user: response } }) })
+      .then(response => { console.log(response); dispatch(loadUser({ user: response })) })
   }
 
   return (
@@ -35,7 +37,7 @@ const SignupForm = () => {
           className='signup form'
           onSubmit={e => {
             handleSubmit(e)
-            dispatch({ type: 'overlay' })
+            dispatch(overlay())
           }}>
           <div className="signup input">
             <input
@@ -63,7 +65,7 @@ const SignupForm = () => {
           <button type='submit'>submit</button>
         </form>
         <h3>already have an account?</h3>
-        <button type='button' onClick={() => dispatch({ type: 'login' })}>login</button>
+        <button type='button' onClick={() => dispatch(login())}>login</button>
       </div>
     </>
   )

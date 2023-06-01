@@ -12,11 +12,11 @@ import { useSelector } from "react-redux"
 
 const Menu = () => {
 
-  const loggedUser = useSelector(state => state.userReducer)
+  const user = useSelector(state => state.userReducer)
 
   const classes = styles()
   const { fetchUser } = useContext(MainContext)
-  const [ display, setDisplay ] = useState('none')
+  const [display, setDisplay] = useState('none')
 
   const toggleDisplay = () => {
     if (display === "none") setDisplay("block")
@@ -24,20 +24,18 @@ const Menu = () => {
   }
 
   const handleLogout = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     fetch('http://localhost:5000/api/users/log-out', {
       method: 'GET'
     }).then(() => fetchUser())
   }
 
   return (
-    <div style={{ display: loggedUser.username ? "block" : "none" }}>
+    <div style={{ display: user.username ? "block" : "none" }}>
       <div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
         <img src={menuIcon} />
       </div>
-
       <div className={classes.menuOverlay} style={{ display }} onClick={toggleDisplay}></div>
-
       <div className={classes.menu} style={{ display }}>
         <div className="menu-item"><p>Saved</p><img src={savedIcon} /></div>
         <div className="menu-item"><p>Activity</p><img src={historyIcon} /></div>
@@ -46,7 +44,6 @@ const Menu = () => {
       </div>
     </div>
   )
-
 }
 
 export default Menu

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import styles from "./styles/newPostStyles"
 import Overlay from "../Overlay"
 import { useDispatch } from "react-redux";
+import { addPost } from "../../redux/postReducer";
+import { overlay } from "../../redux/formViewReducer";
 
 const PostForm = () => {
-
-  const dispatch = useDispatch
-
+  const dispatch = useDispatch()
   const [postData, setPostData] = useState({ text: '' })
 
   const handleChange = (event) => {
@@ -14,37 +14,33 @@ const PostForm = () => {
     setPostData({ ...postData, [name]: value });
   }
 
-  const addPost = async (postData) => {
-    try {
-      await fetch('http://localhost:5000/api/posts', {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(postData)
+  const fetchNewPost = async (postData) => {
+    await fetch('http://localhost:5000/api/posts', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(postData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        dispatch(addPost(data))
       })
-        .then(res => res.json(), err => console.log('error from add post: ', err))
-        .then(data => {
-          dispatch({ type: 'addPost', payload: { data } })
-        })
-    } catch (err) { throw err }
+      .catch(err => console.log(err))
   }
 
   const classes = styles()
-  
+
   return (
     <>
       <Overlay />
-
       <div className={classes.post}>
         <h3>Create a post</h3>
-
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            addPost(postData)
-            dispatch({ type: 'overlay' })
+            fetchNewPost(postData);
+            dispatch(overlay)
           }}
         >
-
           <textarea
             className='text area'
             type='text' name='text'
@@ -53,10 +49,8 @@ const PostForm = () => {
             value={postData.text}
             onChange={handleChange}>
           </textarea>
-
           <button className="submit-btn" type='submit'> Post </button>
         </form>
-
       </div>
     </>
   )

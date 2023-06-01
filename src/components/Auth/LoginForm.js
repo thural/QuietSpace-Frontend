@@ -3,12 +3,13 @@ import HandlerContext from "../MainContext"
 import Overlay from "../Overlay"
 import styles from "./styles/loginStyles"
 import { useDispatch } from "react-redux"
+import { overlay, signup } from "../../redux/formViewReducer"
 
 const LoginForm = () => {
 
   const dispatch = useDispatch()
-
   const classes = styles()
+
   const { fetchUser, fetchPosts, fetchChat } = useContext(HandlerContext)
   const [formData, setFormData] = useState({ username: '', password: '' })
 
@@ -35,7 +36,7 @@ const LoginForm = () => {
           className='login form'
           onSubmit={e => {
             handleSubmit(e)
-            dispatch({ type: 'overlay' })
+            dispatch(overlay())
           }}>
 
           <div className="login input">
@@ -57,7 +58,7 @@ const LoginForm = () => {
           <button type='submit'>login</button>
         </form>
         <h3>don't have an account?</h3>
-        <button type='button' onClick={() => dispatch({ type: 'signup' })}>signup</button>
+        <button type='button' onClick={() => dispatch(signup())}>signup</button>
       </div>
     </>
   )

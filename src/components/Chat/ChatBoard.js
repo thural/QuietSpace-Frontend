@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Message from "./Message"
 import styles from "./styles/chatBoardStyles"
 import { useDispatch } from 'react-redux'
+import { addMessage } from "../../redux/chatReducer"
 
 const ChatBoard = ({ messages, currentChat }) => {
 
@@ -21,15 +22,13 @@ const ChatBoard = ({ messages, currentChat }) => {
   }
 
   const sendMessage = async (messageData) => {
-    try {
-      await fetch(`http://localhost:5000/api/chats/send/${currentChat}`, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(messageData)
-      })
-        .then(res => res.json(), err => console.log('error from add message: ', err))
-        .then(data => { dispatch({ type: 'addMessage', payload:{messageData, currentChat} }) })
-    } catch (err) { throw err }
+    await fetch(`http://localhost:5000/api/chats/send/${currentChat}`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(messageData)
+    })
+      .then(res => res.json(), err => console.log('error from add message: ', err))
+      .then(() => { dispatch(addMessage({messageData, currentChat})) })
   }
 
 
