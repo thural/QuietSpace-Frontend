@@ -14,7 +14,7 @@ const Post = ({ post }) => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.userReducer)
 
-  const { _id, username, text, likes, comments } = post
+  const { _id: postID, username, text, likes, comments } = post
   const [active, setActive] = useState(false)
   const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
@@ -37,7 +37,7 @@ const Post = ({ post }) => {
   const classes = styles()
 
   return (
-    <div id={_id} className={classes.wrapper}>
+    <div id={postID} className={classes.wrapper}>
       <div className="author">{username}</div>
       <div className="text"><p>{text}</p></div>
       <div className={classes.postinfo}>
@@ -53,26 +53,26 @@ const Post = ({ post }) => {
           <div className="panel">
             {
               post.username !== user.username &&
-              <img src={likeIcon} onClick={() => fetchLikePost(_id)} />
+              <img src={likeIcon} onClick={() => fetchLikePost(postID)} />
             }
 
             <img src={commentIcon} onClick={() => setActive(active ? false : true)} />
 
             {
               post.username == user.username &&
-              <img src={editIcon} onClick={() => dispatch(edit(_id))} />
+              <img src={editIcon} onClick={() => dispatch(edit(postID))} />
             }
 
             <img src={shareIcon} />
 
             {
               user.admin || post.username == user.username &&
-              <img src={deleteIcon} onClick={() => fetchDeletePost(_id)} />
+              <img src={deleteIcon} onClick={() => fetchDeletePost(postID)} />
             }
           </div>
           {
             active &&
-            <CommentSection _id={_id} comments={comments} />
+            <CommentSection postID={postID} comments={comments} />
           }
         </>
       }

@@ -45,9 +45,10 @@ export const postSlice = createSlice({
             })
         },
         deleteComment: (state, action) => {
-            return state.map(post => {
-                if (post['_id'] == action.payload.postID) {
-                  const indexOfComment = post.comments.findIndex(comment => comment['_id'] == action.payload.commentID)
+            const {postID, commentID} = action.payload;
+            state = state.map(post => {
+                if (post['_id'] == postID) {
+                  const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
                   if (indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
                 }
                 return post

@@ -1,23 +1,24 @@
 import React, { useState } from "react"
 import styles from "./styles/commentStyles"
 import { useDispatch, useSelector } from "react-redux"
+import { deleteComment } from "../../redux/postReducer"
 
 
 
 const Comment = ({ comment, postID }) => {
-  const { user } = useSelector(state => state.userReducer)
+  const user = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
 
   const [liked, setLiked] = useState(comment.likes.includes(user._id))
 
-  const deleteComment = async () => {
+  const postDeleteComment = async () => {
     await fetch(`http://localhost:5000/api/posts/${postID}/comments/delete/${commentID}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ commentID })
     })
       .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-      .then(dispatch(deleteComment({ postID, commentID })))
+      .then(() => {dispatch(deleteComment({ postID, commentID })); console.log('comment deleted')})
   }
 
   const likeComment = async (commentID, postID) => {
@@ -57,7 +58,7 @@ const Comment = ({ comment, postID }) => {
         <p className="comment-reply">reply</p>
         {
           comment.username == user.username &&
-          <p className="comment-delete" onClick={deleteComment}>delete</p>
+          <p className="comment-delete" onClick={postDeleteComment}>delete</p>
         }
       </div>
     </div>

@@ -3,8 +3,9 @@ import Comment from "./Comment"
 import styles from "./styles/commentSectionStyles"
 import { useSelector, useDispatch } from "react-redux"
 import { overlay } from "../../redux/formViewReducer"
+import { addComment } from "../../redux/postReducer"
 
-const CommentSection = ({ _id: postID, comments }) => {
+const CommentSection = ({ postID, comments }) => {
   const { user } = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
   const [commentData, setCommentData] = useState({ text: '' })
@@ -16,12 +17,12 @@ const CommentSection = ({ _id: postID, comments }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    addComment(commentData, postID)
+    postComment(commentData, postID)
     dispatch(overlay())
   }
 
-  const addComment = async (commentData, _id) => {
-    await fetch(`http://localhost:5000/api/posts/${_id}/comments`, {
+  const postComment = async (commentData, postID) => {
+    await fetch(`http://localhost:5000/api/posts/${postID}/comments`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(commentData)
@@ -45,7 +46,6 @@ const CommentSection = ({ _id: postID, comments }) => {
           placeholder="Write a comment ..." maxLength="128"
           value={commentData.text} onChange={handleChange}>
         </textarea>
-
         <button className="submit-btn" type='submit'> add </button>
       </form>
 
