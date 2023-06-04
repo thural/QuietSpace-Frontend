@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 
 const Message = ({ message }) => {
 
-  const { user } = useSelector(state => state.userReducer)
+  const user = useSelector(state => state.userReducer)
 
   const { username, text, reactions } = message
 

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 const ChatContact = ({ contact }) => {
 
   const classes = styles()
-  const { user } = useSelector(state => state.userReducer)
+  const user = useSelector(state => state.userReducer)
   const { currentChat, setCurrentChat } = useContext(ChatContext)
   const backgroundColor = currentChat == contact['_id'] ? '#e3e3e3' : 'white'
   const contactName = contact.messages

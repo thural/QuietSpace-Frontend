@@ -1,5 +1,5 @@
 const express = require('express')
-// const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const passport = require("passport")
 const logger = require('morgan')

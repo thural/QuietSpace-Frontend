@@ -11,7 +11,7 @@ const Chat = () => {
 
   const contacts = chat.chat
   const [currentChat, setCurrentChat] = useState(contacts[0]["_id"])
-  const messages = chat.chat.find(contact => contact._id == currentChat).messages
+  const messages = contacts.find(contact => contact._id == currentChat)['messages']
   const reversedMessages = [...messages].reverse()
   const classes = styles()
   
