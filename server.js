@@ -89,12 +89,12 @@ const server = app.listen(5000, function () {
   console.log('server listening at', server.address())
 })
 
-const io = require('socket.io')(server)
+// const io = require('socket.io')(server)
 
-io.on('connection', socket => {
-  //console.log(socket.id)
-  socket.on('custom-event', (str, num, arr) => {
-    console.log('message from custom event triggered on App component load:')
-    console.log("string: ", str, "number: ", num, "array: ", arr)
-  })
-})
+// io.on('connection', socket => {
+//   //console.log(socket.id)
+//   socket.on('custom-event', (str, num, arr) => {
+//     console.log('message from custom event triggered on App component load:')
+//     console.log("string: ", str, "number: ", num, "array: ", arr)
+//   })
+// })
