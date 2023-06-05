@@ -1,7 +1,8 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
 import MainContext from "./MainContext"
 import styles from "../styles/appStyles"
+import './App.css'
 //import { io } from 'socket.io-client'
 import Contact from "./Contact/Contact"
 import NavBar from "./Navbar/Navbar"

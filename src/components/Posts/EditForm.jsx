@@ -1,16 +1,17 @@
-import React, { useContext, useState } from "react"
-import MainContext from "../MainContext"
+import React, { useState } from "react"
 import styles from "./styles/newPostStyles"
 import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux"
+import { editPost } from "../../redux/postReducer"
+import { edit } from "../../redux/formViewReducer"
 
 const EditForm = () => {
 
   const dispatch = useDispatch()
-  const { posts } = useSelector(state => state.postReducer)
+  const posts = useSelector(state => state.postReducer)
+  const { edit: editView } = useSelector(state => state.formViewReducer)
 
-  const { formView, setFormView } = useContext(MainContext)
-  const _id = formView.edit["_id"]
+  const _id = editView["_id"]
   const text = posts.find(post => post["_id"] == _id)["text"]
   const [postData, setPostData] = useState({ "text": text })
 
@@ -21,11 +22,11 @@ const EditForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    editPost(postData, _id)
-    setFormView({ formName: 'overlay' })
+    editPostFetch(postData, _id)
+    dispatch(edit({ view: false, _id }))
   }
 
-  const editPost = async (postData, _id) => {
+  const editPostFetch = async (postData, _id) => {
     await fetch(`http://localhost:5000/api/posts/edit/${_id}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },

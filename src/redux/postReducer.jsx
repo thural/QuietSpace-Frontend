@@ -32,7 +32,7 @@ export const postSlice = createSlice({
             return [action.payload, ...state]
         },
         editPost: (state, action) => {
-            state = state.map(post => post['_id'] == action.payload._id ? action.payload.data : post)
+            return state.map(post => post['_id'] == action.payload._id ? action.payload.data : post)
         },
         loadPosts: (state, action) => {
            return action.payload.posts

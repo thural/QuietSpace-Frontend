@@ -1,4 +1,5 @@
 const express = require('express')
+// const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const passport = require("passport")
@@ -30,7 +31,7 @@ const db = mongoose.connection
 db.on("error", console.error.bind(console, "MongoDB connection error:"))
 
 const corsOptions = {
-  origin: "http://localhost:5000", // <-- location of the react app were connecting to
+  origin: "*", // <-- location of the react app were connecting to
   credentials: true,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
@@ -88,12 +89,12 @@ const server = app.listen(5000, function () {
   console.log('server listening at', server.address())
 })
 
-const io = require('socket.io')(server)
+// const io = require('socket.io')(server)
 
-io.on('connection', socket => {
-  //console.log(socket.id)
-  socket.on('custom-event', (str, num, arr) => {
-    console.log('message from custom event triggered on App component load:')
-    console.log("string: ", str, "number: ", num, "array: ", arr)
-  })
-})
+// io.on('connection', socket => {
+//   //console.log(socket.id)
+//   socket.on('custom-event', (str, num, arr) => {
+//     console.log('message from custom event triggered on App component load:')
+//     console.log("string: ", str, "number: ", num, "array: ", arr)
+//   })
+// })

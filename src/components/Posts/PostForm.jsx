@@ -38,7 +38,7 @@ const PostForm = () => {
           onSubmit={(e) => {
             e.preventDefault()
             fetchNewPost(postData);
-            dispatch(overlay)
+            dispatch(overlay())
           }}
         >
           <textarea

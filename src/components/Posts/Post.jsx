@@ -16,7 +16,7 @@ const Post = ({ post }) => {
 
   const { _id: postID, username, text, likes, comments } = post
   const [active, setActive] = useState(false)
-  const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
+  // const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
   const fetchDeletePost = async (_id) => {
     await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
@@ -60,7 +60,7 @@ const Post = ({ post }) => {
 
             {
               post.username == user.username &&
-              <img src={editIcon} onClick={() => dispatch(edit(postID))} />
+              <img src={editIcon} onClick={() => dispatch(edit({view:true, _id:postID}))} />
             }
 
             <img src={shareIcon} />

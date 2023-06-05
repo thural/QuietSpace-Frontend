@@ -22,7 +22,6 @@ const styles = createUseStyles({
     gridColumn: '1 / 3',
     justifyContent: 'center',
     position: 'fixed',
-    bottom: '0px',
     width: '100%',
     '& a, a:link, a:visited, a:hover, a:focus, a:active': {
       display: 'flex',

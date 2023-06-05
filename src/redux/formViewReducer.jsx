@@ -21,8 +21,8 @@ export const formViewSlice = createSlice({
         post: (state) => {
             return { ...state, post: true }
         },
-        edit: (state, payload) => {
-            return { ...state, edit: { view: true, _id: payload._id } }
+        edit: (state, action) => {
+            return { ...state, edit: { view: action.payload.view, _id: action.payload._id } }
         },
         overlay: (state) => {
             return { ...state, signup: false, login: false, post: false, edit: false }

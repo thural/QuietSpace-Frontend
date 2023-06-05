@@ -1,27 +1,33 @@
 {
+  "private": true,
+  "type": "commonjs",
   "name": "quiet-space",
   "version": "1.0.0",
   "description": "Social media without the distraction",
   "main": "server.js",
   "scripts": {
+    "dev": "vite --port 5001",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
     "start": "nodemon server.js",
-    "test": "jest",
-    "build": "webpack",
-    "watch": "webpack --watch",
-    "serve": "webpack serve --mode development --open --hot"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thural/Message-Board-React.git"
+    "test": "jest"
   },
   "author": "thural",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thural/Message-Board-React/issues"
+    "url": "https://github.com/thural/Quiet-Space/issues"
   },
-  "homepage": "https://github.com/thural/Message-Board-React#readme",
+  "homepage": "https://github.com/thural/Quiet-Space#readme",
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "@vitejs/plugin-react": "^4.0.0",
+    "react-jss": "^10.9.2",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.4.3",
+    "redux": "^4.2.1",
     "async": "^3.2.4",
     "bad-words": "^3.0.4",
     "bcryptjs": "^2.4.3",
@@ -35,28 +41,16 @@
     "mongoose": "^6.7.2",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
-    "passport-local": "^1.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-jss": "^10.9.2",
-    "react-redux": "^8.0.5",
-    "react-router-dom": "^6.4.3",
-    "redux": "^4.2.1",
-    "socket.io": "^4.5.4",
-    "socket.io-client": "^4.5.4"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.2",
-    "@babel/preset-react": "^7.18.6",
-    "babel-loader": "^9.1.0",
-    "css-loader": "^6.7.2",
-    "eslint": "^8.41.0",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^4.0.0",
+    "eslint": "^8.38.0",
     "eslint-plugin-react": "^7.32.2",
-    "html-loader": "^4.2.0",
-    "html-webpack-plugin": "^5.5.0",
-    "style-loader": "^3.3.1",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.1"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "vite": "^4.3.9"
   }
 }
