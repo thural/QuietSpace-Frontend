@@ -31,7 +31,7 @@ exports.create_post = [
     .escape(),
 
   body("username")
-    .custom((value, { req }) => {
+    .custom((value) => {
       if (customFilter.isProfane(value)) return false
       else return true
     }).withMessage("User name can not contain bad words"),
