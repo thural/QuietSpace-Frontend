@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import { useContext, useState } from "react"
 import HandlerContext from "../MainContext"
 import Overlay from "../Overlay"
 import styles from "./styles/loginStyles"
@@ -20,7 +20,7 @@ const LoginForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    fetch('http://localhost:5000/api/users/log-in', {
+    fetch('http://localhost:5000/api/users/log-in/', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(formData)

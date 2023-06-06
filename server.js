@@ -65,6 +65,7 @@ passport.use(
     })
   })
 )
+
 passport.serializeUser((user, done) => { done(null, user.id) })
 passport.deserializeUser((id, done) => { User.findById(id, (err, user) => { done(err, user)}) })
 
@@ -78,12 +79,19 @@ app.use(logger('dev'))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/posts', require('./routes/postRoutes'))
 app.use('/api/chats', require('./routes/chatRoutes'))
-app.all('*', (request, response) => { response.status(404).send('Error 404, Page not found') })
+// app.all('*', (request, response) => { response.status(404).send('Error 404, Page not found') })
 
 // const server = require('http').Server(app)
 // const io = require('socket.io')(server)
 // app.listen(5000)
 
+app.get('/success', (req,res) => {
+  res.send('Login success!')
+})
+
+app.get('/failure', (req,res) => {
+  res.send('Login failed!')
+})
 
 const server = app.listen(5000, function () {
   console.log('server listening at', server.address())

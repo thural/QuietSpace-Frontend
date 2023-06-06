@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import Message from "./Message"
 import styles from "./styles/chatBoardStyles"
 import { useDispatch } from 'react-redux'
@@ -41,7 +41,7 @@ const ChatBoard = ({ messages, currentChat }) => {
           messages.map(message => <Message key={message._id} message={message} />)
         }
       </div>
-
+      <div className={classes.inputSection}>
       <form className={classes.chatInput} onSubmit={handleSubmit}>
         <input
           className='input'
@@ -54,6 +54,7 @@ const ChatBoard = ({ messages, currentChat }) => {
         />
         <button className={classes.submitBtn} type='submit'> send </button>
       </form>
+      </div>
     </div>
 
   )

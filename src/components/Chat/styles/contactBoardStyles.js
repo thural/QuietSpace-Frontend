@@ -6,7 +6,6 @@ const styles = createUseStyles({
     flexFlow: 'column nowrap',
     borderRight: '1px solid',
     gridColumn: '1/2',
-    maxWidth: "300px"
   }
 });
 

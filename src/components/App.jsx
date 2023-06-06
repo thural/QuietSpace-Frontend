@@ -38,21 +38,27 @@ const App = () => {
   const dispatch = useDispatch()
 
   const fetchUser = async () => {
-    const data = await fetch('http://localhost:5000/api/users/user')
-    const user = await data.json()
-    dispatch(loadUser({ user }))
+    try {
+      const data = await fetch('http://localhost:5000/api/users/user')
+      const user = await data.json()
+      dispatch(loadUser({ user }))
+    } catch (err) { console.log(err) }
   }
 
   const fetchPosts = async () => {
-    const data = await fetch('http://localhost:5000/api/posts')
-    const items = await data.json()
-    dispatch(loadPosts(items))
+    try {
+      const data = await fetch('http://localhost:5000/api/posts')
+      const items = await data.json()
+      dispatch(loadPosts(items))
+    } catch (err) { console.log(err) }
   }
 
   const fetchChat = async () => {
-    const data = await fetch('http://localhost:5000/api/chats')
-    const chatData = await data.json()
-    dispatch(loadChat({ chatData }))
+    try {
+      const data = await fetch('http://localhost:5000/api/chats')
+      const chatData = await data.json()
+      dispatch(loadChat({ chatData }))
+    } catch (err) { console.log(err) }
   }
 
   useEffect(() => {
@@ -82,7 +88,7 @@ const App = () => {
           <Route path="/chat" element={<Chat />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
-        
+
       </MainContext.Provider>
     </div>
   )
