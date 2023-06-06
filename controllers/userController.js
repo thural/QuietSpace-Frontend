@@ -5,8 +5,8 @@ const { body } = require("express-validator")
 const passport = require("passport")
 
 exports.login_post = passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/"
+  successRedirect: "http://localhost:5001/",
+  failureRedirect: "http://localhost:5001/"
 })
 
 exports.logout_get = (req, res, next) => {

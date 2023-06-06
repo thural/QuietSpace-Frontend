@@ -8,9 +8,10 @@
   "scripts": {
     "dev": "vite --port 5001",
     "build": "vite build",
+    "watch": "vite build --watch",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "nodemon server.js",
+    "start": "nodemon server.js, ",
     "test": "jest"
   },
   "author": "thural",
