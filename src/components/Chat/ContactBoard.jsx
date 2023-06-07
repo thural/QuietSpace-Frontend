@@ -1,4 +1,3 @@
-import React from "react"
 import ChatContact from "./ChatContact"
 import styles from "./styles/contactBoardStyles"
 

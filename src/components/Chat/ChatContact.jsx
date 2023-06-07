@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import styles from "./styles/chatContactStyles"
 import ChatContext from "./ChatContext"
 import { useSelector } from "react-redux"

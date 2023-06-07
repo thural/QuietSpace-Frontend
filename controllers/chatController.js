@@ -10,6 +10,7 @@ const Chat = require("../models/chatModel")
 //   else return true
 // }
 
+
 const { body, validationResult } = require("express-validator")
 
 exports.load = (req, res, next) => {
@@ -24,6 +25,7 @@ exports.load = (req, res, next) => {
 }
 
 exports.add_message = [
+
   // input validation
   body("text", "at least 1 characters required").isLength({ min: 1 }),
   body("text", "max 256 characters allowed").isLength({ max: 256 }),
@@ -39,6 +41,9 @@ exports.add_message = [
   
   // saving to database
   async (req, res, next) => {
+    const senderID = req.user['_id'].toString()
+    const receiverID = req.params.contactID
+    console.log('receiver ID from chatController',receiverID)
     try {
       var newSenderChat = undefined
       var newReceiverChat = undefined

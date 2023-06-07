@@ -10,7 +10,7 @@ const Message = ({ message }) => {
 
   //const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
   
-  const appliedStyle = username !== user.username ? {marginLeft:"auto", backgroundColor:'#f1f1f1'} : {marginRight:"auto"}
+  const appliedStyle = username !== user.username ? {marginRight:"auto"} : {marginLeft:"auto", backgroundColor:'#f1f1f1'}
 
   const classes = styles()
 
