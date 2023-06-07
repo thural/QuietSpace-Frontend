@@ -28,21 +28,21 @@ const styles = createUseStyles({
     overflow: 'auto',
     flexDirection: 'column-reverse',
   },
+  inputSection: {
+    zIndex: '1'
+  },
   chatInput: {
     gap: '1rem',
     color: 'black',
     width: '100%',
-    maxHeight: '64px',
-    border: '1px solid gray',
+    height: '100%',
     margin: 'auto',
     display: 'flex',
     padding: '1rem',
     flexFlow: 'row nowrap',
-    maxWidth: '512px',
     boxShadow: 'rgb(0 0 0 / 50%) 0px 0px 16px -4px',
     boxSizing: 'border-box',
     alignItems: 'center',
-    borderRadius: '1em',
     backgroundColor: 'white',
     '& button': {
       color: 'white',

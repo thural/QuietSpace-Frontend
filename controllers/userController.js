@@ -5,8 +5,8 @@ const { body } = require("express-validator")
 const passport = require("passport")
 
 exports.login_post = passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/"
+  successRedirect: "/success",
+  failureRedirect: "/failure"
 })
 
 exports.logout_get = (req, res, next) => {
@@ -31,7 +31,7 @@ exports.create_post = [
     .escape(),
 
   body("username")
-    .custom((value, { req }) => {
+    .custom((value) => {
       if (customFilter.isProfane(value)) return false
       else return true
     }).withMessage("User name can not contain bad words"),
