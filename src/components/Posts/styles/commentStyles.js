@@ -42,6 +42,7 @@ const styles = createUseStyles({
     borderRadius: '10px',
     backgroundColor: '#e2e8f0',
     '& .comment-text': {
+      display: 'inline-block',
       margin: '0',
       padding: '0'
     },

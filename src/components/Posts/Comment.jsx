@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import styles from "./styles/commentStyles"
 import { useDispatch, useSelector } from "react-redux"
 import { deleteComment } from "../../redux/postReducer"
+import emoji from 'react-easy-emoji'
 
 
 
@@ -52,7 +53,11 @@ const Comment = ({ comment, postID }) => {
   return (
     <div key={commentID} className={classes.comment}>
       <p className="comment-author">{comment.username}</p>
-      <p className="comment-text">{comment.text}</p>
+      {emoji(comment.text).map(element => (
+            <p className="comment-text">
+              {element}
+            </p>
+          ))}
       <div className="comment-options">
         <p className="comment-like" onClick={handleLike}>{liked ? "unlike" : "like"}</p>
         <p className="comment-reply">reply</p>
@@ -66,4 +71,3 @@ const Comment = ({ comment, postID }) => {
 }
 
 export default Comment
-
