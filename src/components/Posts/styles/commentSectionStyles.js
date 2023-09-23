@@ -62,6 +62,13 @@ const styles = createUseStyles({
       fontSize: '.8rem',
       fontWeight: '500',
     },
+    emojiPicker: {
+      height: '420px',
+      width: '420px',
+      position: 'relative',
+      top: '37%',
+      left: '0%'
+    }
     // '& .comment-like': {
     // 	position: 'absolute',
     // 	bottom: '-2rem',
