@@ -4,17 +4,17 @@ import styles from "./styles/commentSectionStyles"
 import { useSelector, useDispatch } from "react-redux"
 import { overlay } from "../../redux/formViewReducer"
 import { addComment } from "../../redux/postReducer"
-import EmojiPicker, {
-  EmojiStyle,
-  SkinTones,
-  Theme,
-  Categories,
-  EmojiClickData,
-  Emoji,
-  SuggestionMode,
-  SkinTonePickerLocation
-} from "emoji-picker-react";
-// import InputEmoji from 'react-input-emoji'
+// import EmojiPicker, {
+//   EmojiStyle,
+//   SkinTones,
+//   Theme,
+//   Categories,
+//   EmojiClickData,
+//   Emoji,
+//   SuggestionMode,
+//   SkinTonePickerLocation
+// } from "emoji-picker-react";
+import InputEmoji from 'react-input-emoji'
 
 
 
@@ -36,8 +36,6 @@ const CommentSection = ({ postID, comments }) => {
     inputRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
   }, [commentData.text]);
 
-
-
   const postComment = async (commentData, postID) => {
     await fetch(`http://localhost:5000/api/posts/${postID}/comments`, {
       method: 'POST',
@@ -50,62 +48,63 @@ const CommentSection = ({ postID, comments }) => {
       })
   }
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
+  // const handleChange = (event) => {
+  //   const { name, value } = event.target
 
-    //cursorPos.current = inputRef.current.selectionStart;
-    cursorPos.current = event.target.selectionStart;
-    console.log("current cursor position: ", cursorPos.current)
+  //   //cursorPos.current = inputRef.current.selectionStart;
+  //   cursorPos.current = event.target.selectionStart;
 
+  //   console.log("current cursor position: ", cursorPos.current)
 
-    setCommentData({ ...commentData, [name]: value })
-    console.log("current input value: ", value)
-    console.log("input value at state: ", commentData.text)
-  }
-  // // backup code for inputEmoji module
+  //   setCommentData({ ...commentData, [name]: value })
+  //   console.log("current input value: ", value)
+  //   console.log("input value at state: ", commentData.text)
+  // }
+
+  // backup code for inputEmoji module
   // const [inputStr, setInputStr] = useState('');
   // const [showPicker, setShowPicker] = useState(false);
-  // const handleEmojiInput = (event) => {
-  //   const { value } = event.target
-  //   setCommentData({ ...commentData, text: event })
-  //   console.log(event)
-  //   console.log(commentData.text)
-  // }
+
+  const handleEmojiInput = (event) => {
+    setCommentData({ ...commentData, text: event })
+    console.log(event)
+    console.log(commentData.text)
+  }
 
   // handle the submit event on the comment form
   const handleSubmit = (event) => {
-    event.preventDefault()
+    //event.preventDefault()
     postComment(commentData, postID)
     dispatch(overlay())
   }
 
-  // show/hide the emoji picker
-  const handleEmojiPicker = (event) => {
-    event.preventDefault()
-    //setChosenEmoji(emojiObject)
-    if (pickerState) setPickerState(false)
-    else setPickerState(true)
-  }
+  // // show/hide the emoji picker
+  // const handleEmojiPicker = (event) => {
+  //   event.preventDefault()
+  //   //setChosenEmoji(emojiObject)
+  //   if (pickerState) setPickerState(false)
+  //   else setPickerState(true)
+  // }
 
-  // handle emoji click event
-  const onEmojiClick = (emojiObject, event) => {
-    setCommentData({
-      ...commentData,
-      text: commentData.text.slice(0, cursorPos.current) + 
-      emojiObject.emoji + 
-      commentData.text.slice(cursorPos.current + 1)
-    })
+  // // handle emoji click event
+  // const onEmojiClick = (emojiObject, event) => {
+  //   setCommentData({
+  //     ...commentData,
+  //     text: commentData.text.slice(0, cursorPos.current) + 
+  //     emojiObject.emoji + 
+  //     commentData.text.slice(cursorPos.current + 1)
+  //   })
 
-    // hide emoji pciker on clinking any emoji
-    setPickerState(false);
-  }
+  //   // hide emoji pciker on clinking any emoji
+  //   setPickerState(false);
+  // }
 
   const classes = styles()
 
   return (
     <div className={classes.commentSection} >
 
-      {
+      {/* {
         pickerState &&
         <EmojiPicker
           emojiStyle="apple"
@@ -114,28 +113,34 @@ const CommentSection = ({ postID, comments }) => {
           className={classes.emojiPicker}
           onEmojiClick={onEmojiClick}
         />
-      }
+      } */}
 
 
 
       <form onSubmit={handleSubmit}>
-        <textarea className={classes.commentInput}
+        {/* <textarea className={classes.commentInput}
           type='text'
           name='text'
           placeholder="Write a comment ..." maxLength="128"
           value={commentData.text} onChange={handleChange}>
-        </textarea>
-        {/* <InputEmoji
+        </textarea> */}
+
+        <InputEmoji
           className={classes.commentInput}
           value={commentData.text}
-          onChange={handleChange}
+          onChange={handleEmojiInput}
+          fontSize={15}
           cleanOnEnter
           buttonElement
-          onEnter={handleOnEnter}
+          borderColor="#FFFFFF"
+          onEnter={handleSubmit}
+          theme="light"
           placeholder="Type a comment"
-          /> */}
-        <button className="submit-btn" type="button" onClick={handleEmojiPicker}>emoji</button>
-        <button onSubmit={handleSubmit} className="submit-btn" type="submit">add</button>
+          />
+
+        {/* <button onSubmit={handleSubmit} className="submit-btn" type="submit">add</button> */}
+        {/* <button className="submit-btn" type="button" onClick={handleEmojiPicker}>emoji</button> */}
+
       </form>
 
 

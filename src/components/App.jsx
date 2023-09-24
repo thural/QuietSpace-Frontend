@@ -1,37 +1,25 @@
-import { useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
-import MainContext from "./MainContext"
 import styles from "../styles/appStyles"
-import './App.css'
-//import { io } from 'socket.io-client'
+import MainContext from "./MainContext"
 import Contact from "./Contact/Contact"
 import NavBar from "./Navbar/Navbar"
 import Posts from "./Posts/Posts"
+import { useEffect } from "react"
 import Home from "./Home/Home"
 import Chat from "./Chat/Chat"
+import './App.css'
 
 import { useDispatch } from 'react-redux'
 import { loadChat } from "../redux/chatReducer"
 import { loadUser } from "../redux/userReducer"
 import { loadPosts } from "../redux/postReducer"
 
-// ////// socket test
+// import { io } from 'socket.io-client'
 // const socket = io('http://localhost:5000')
-
 // socket.on('connect', () => {
 // 	console.log("socket id from App component: ", socket.id)
 // })
-
 // socket.emit('custom-event', "test message", 10, [1, 2, 3])
-// ////// socket test
-
-
-// const deletePost = async (_id) => {
-// 	try {
-// 		await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })
-// 		return true
-// 	} catch (err) { return false }
-// }
 
 const App = () => {
 
@@ -76,6 +64,7 @@ const App = () => {
   // }, [])
 
   const classes = styles()
+  
   return (
     <div className={classes.app}>
       <MainContext.Provider value={{ fetchUser, fetchPosts, fetchChat }}>

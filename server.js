@@ -1,5 +1,5 @@
-const express = require('express')
 // const errorHandler = require('./middleware/errorHandler')
+const express = require('express')
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const passport = require("passport")
@@ -35,6 +35,7 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
+
 // Middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -52,7 +53,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 //require("./passportConfig")(passport)
 //app.use(errorHandler)
-
 passport.use(
   new passportLocal((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
@@ -65,7 +65,6 @@ passport.use(
     })
   })
 )
-
 passport.serializeUser((user, done) => { done(null, user.id) })
 passport.deserializeUser((id, done) => { User.findById(id, (err, user) => { done(err, user)}) })
 
@@ -98,7 +97,6 @@ const server = app.listen(5000, function () {
 })
 
 // const io = require('socket.io')(server)
-
 // io.on('connection', socket => {
 //   //console.log(socket.id)
 //   socket.on('custom-event', (str, num, arr) => {

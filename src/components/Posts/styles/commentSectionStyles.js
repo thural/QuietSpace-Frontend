@@ -4,6 +4,42 @@ const styles = createUseStyles({
   commentSection: {
     fontSize: '1rem',
     marginTop: '12px',
+    '& .react-input-emoji--container': {
+      borderRadius: '21px',
+      borderColor: 'rgb(255, 255, 255)',
+      fontSize: '15px',
+      fontFamily: 'sans-serif',
+      padding: '0',
+      margin: '8px'
+    },
+    '& .react-input-emoji--button': {
+      display: "flex",
+      font: 'inherit',
+      cursor: 'pointer',
+      margin: '8px',
+      padding: '8px 8px',
+      fontSize: '1rem',
+      marginLeft: '0',
+      borderColor: 'white',
+      borderRadius: '1rem',
+      backgroundColor: 'white'
+    },
+    '& .react-input-emoji--input': {
+      fontWeight: '400',
+      maxHeight: '100px',
+      minHeight: '20px',
+      outline: 'none',
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      position: 'relative',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word',
+      zIndex: '1',
+      width: '100%',
+      userSelect: 'text',
+      padding: '10px 16px',
+      textAlign: 'left'
+    },
     '& .author': {
       width: '100%',
       fontSize: '1.2rem',
@@ -20,7 +56,7 @@ const styles = createUseStyles({
       borderRadius: '10px',
       backgroundColor: '#e2e8f0',
     },
-    '& button': {
+    '& .submit-btn': {
       color: 'white',
       border: '1px solid black',
       display: 'block',
