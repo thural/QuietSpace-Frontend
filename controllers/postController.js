@@ -1,18 +1,8 @@
 const Post = require("../models/postModel")
 const User = require("../models/userModel")
-// const Filter = require('bad-words')
-// const dirty_words = require("../dirty_words")
-// const customFilter = new Filter({ placeHolder: '*' })
-// customFilter.addWords(...dirty_words)
-
-// const checkInput = (value, { req }) => {
-//   if (customFilter.isProfane(value)) return false
-//   return true
-// }
-
 const { body, validationResult } = require("express-validator")
 const { validatePost, savePost } = require("../middleware/postMiddleware")
-// const { findIndex } = require('../dirty_words')
+
 
 exports.list = (req, res, next) => {
   Post.find()
@@ -42,7 +32,6 @@ exports.item = async (req, res, next) => {
 exports.create_post = [
   body("text", "at least 3 characters required").isLength({ min: 3 }),
   body("text", "max 128 characters allowed").isLength({ max: 128 }),
-  // body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
   validatePost,
   savePost
 ]
@@ -50,7 +39,7 @@ exports.create_post = [
 exports.edit_post = [
   body("text", "at least 3 characters required").isLength({ min: 3 }),
   body("text", "max 128 characters allowed").isLength({ max: 128 }),
-  // body("text").custom(checkInput).withMessage("Your post can not contain bad words"),
+
   async (req, res, next) => {
     const errors = validationResult(req)
     try {
@@ -95,7 +84,8 @@ exports.unlike_post = async (req, res, next) => {
 exports.add_comment = [
   body("text", "at least 3 characters required").isLength({ min: 3 }),
   body("text", "max 128 characters allowed").isLength({ max: 128 }),
-  //body("text").custom(checkInput).withMessage("Your comment can not contain bad words"),
+
+  
   (req, res, next) => {
     const errors = validationResult(req)
     req.comment = { username: req.user.username, text: req.body.text }

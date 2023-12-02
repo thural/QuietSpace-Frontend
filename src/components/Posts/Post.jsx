@@ -13,10 +13,9 @@ import { edit } from "../../redux/formViewReducer"
 const Post = ({ post }) => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.userReducer)
-
+  
   const { _id: postID, username, text, likes, comments } = post
   const [active, setActive] = useState(false)
-  // const liked = post.likes.includes(user['_id']) ? 'unlike' : 'like'
 
   const fetchDeletePost = async (_id) => {
     await fetch(`http://localhost:5000/api/posts/delete/${_id}`, { method: 'POST' })

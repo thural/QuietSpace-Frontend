@@ -12,7 +12,6 @@ const Home = () => {
   const user = useSelector(state => state.userReducer)
 
   const classes = styles()
-
   return (
     <>
       <div className={classes.home}>

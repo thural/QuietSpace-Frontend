@@ -14,13 +14,6 @@ import { loadChat } from "../redux/chatReducer"
 import { loadUser } from "../redux/userReducer"
 import { loadPosts } from "../redux/postReducer"
 
-// import { io } from 'socket.io-client'
-// const socket = io('http://localhost:5000')
-// socket.on('connect', () => {
-// 	console.log("socket id from App component: ", socket.id)
-// })
-// socket.emit('custom-event', "test message", 10, [1, 2, 3])
-
 const App = () => {
 
   const dispatch = useDispatch()
@@ -53,31 +46,18 @@ const App = () => {
     fetchUser().then(fetchPosts(), fetchChat())
   }, [])
 
-  // useEffect(() => {
-  //   Promise.all([fetchUser, fetchPosts, fetchChat]).then((data) =>
-  //   ({
-  //     first: dispatch(loadUser({ user: data[0] })),
-  //     second: dispatch(loadPosts({ posts: data[1].posts })),
-  //     third: dispatch(loadChat({ chatData: data[2] }))
-  //   })
-  //   ).then(console.log)
-  // }, [])
-
   const classes = styles()
   
   return (
     <div className={classes.app}>
       <MainContext.Provider value={{ fetchUser, fetchPosts, fetchChat }}>
-
         <NavBar />
-
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/posts" element={<Posts />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
-
       </MainContext.Provider>
     </div>
   )

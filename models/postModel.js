@@ -22,5 +22,4 @@ PostSchema.virtual("date_formatted").get(function () {
 })
 
 const Post = mongoose.model("Post", PostSchema)
-
 module.exports = Post

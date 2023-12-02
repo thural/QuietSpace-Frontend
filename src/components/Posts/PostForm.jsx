@@ -28,7 +28,6 @@ const PostForm = () => {
   }
 
   const classes = styles()
-
   return (
     <>
       <Overlay />

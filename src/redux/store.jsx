@@ -11,14 +11,6 @@ const reducer = combineReducers({
     formViewReducer
 })
 
-//create store using a reducer
 export const store = configureStore({
     reducer
 })
-
-// //console log changes to the store
-// store.subscribe(() => console.log(store.getState()))
-
-// // dispatch action to counterStore
-// store.dispatch(increment())
-// store.dispatch(incrementByValue(3))

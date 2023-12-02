@@ -11,7 +11,6 @@ import { useSelector } from "react-redux"
 
 
 const Menu = () => {
-
   const user = useSelector(state => state.userReducer)
 
   const classes = styles()

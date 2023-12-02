@@ -1,4 +1,3 @@
-// const errorHandler = require('./middleware/errorHandler')
 const express = require('express')
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
@@ -14,16 +13,6 @@ const bodyParser = require("body-parser")
 const app = express()
 dotenv.config()
 
-// const my_logger = (request, response, next) => {
-// 	console.log(
-// 		"URL: ", request.url,
-// 		"Method: ", request.method,
-// 		"Body: ", request.body,
-// 		new Date().getMilliseconds()
-// 	);
-// 	next()
-// }
-
 const mongoose = require('mongoose')
 const mongoDB = process.env.MONGODB_URI || process.env.DEV_DB_URL
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -31,12 +20,11 @@ const db = mongoose.connection
 db.on("error", console.error.bind(console, "MongoDB connection error:"))
 
 const corsOptions = {
-  origin: "*", // <-- location of the react app were connecting to
+  origin: "*", 
   credentials: true,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200 
 }
 
-// Middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -51,8 +39,7 @@ app.use(
 app.use(cookieParser("secretcode"))
 app.use(passport.initialize())
 app.use(passport.session())
-//require("./passportConfig")(passport)
-//app.use(errorHandler)
+
 passport.use(
   new passportLocal((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
@@ -73,16 +60,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(logger('dev'))
 
-//app.use(my_logger)
-
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/posts', require('./routes/postRoutes'))
 app.use('/api/chats', require('./routes/chatRoutes'))
-// app.all('*', (request, response) => { response.status(404).send('Error 404, Page not found') })
-
-// const server = require('http').Server(app)
-// const io = require('socket.io')(server)
-// app.listen(5000)
 
 app.get('/success', (req,res) => {
   res.send('Login success!')
@@ -95,12 +75,3 @@ app.get('/failure', (req,res) => {
 const server = app.listen(5000, function () {
   console.log('server listening at', server.address())
 })
-
-// const io = require('socket.io')(server)
-// io.on('connection', socket => {
-//   //console.log(socket.id)
-//   socket.on('custom-event', (str, num, arr) => {
-//     console.log('message from custom event triggered on App component load:')
-//     console.log("string: ", str, "number: ", num, "array: ", arr)
-//   })
-// })

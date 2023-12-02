@@ -29,7 +29,7 @@ module.exports.saveUser = async (req, res, next) => {
     req.user.password = hashedPassword
     req.user.save(err => {
       if (err) return next(err)
-      //res.redirect('/')
+      
       console.log(req.user)
       return res.status(200).json(req.user)
     })

@@ -5,15 +5,10 @@ import { useSelector } from "react-redux"
 const Message = ({ message }) => {
 
   const user = useSelector(state => state.userReducer)
-
   const { username, text, reactions } = message
-
-  //const liked = reactions.includes(user['_id']) ? 'unlike' : 'like'
-  
   const appliedStyle = username !== user.username ? {marginRight:"auto"} : {marginLeft:"auto", backgroundColor:'#f1f1f1'}
 
   const classes = styles()
-
   return (
     <div id={username} className={classes.message} style={appliedStyle}>
       {/* <div className={classes.sender}>{username}</div> */}

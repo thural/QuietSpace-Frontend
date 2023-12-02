@@ -9,7 +9,6 @@ import emoji from 'react-easy-emoji'
 const Comment = ({ comment, postID }) => {
   const user = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
-
   const [liked, setLiked] = useState(comment.likes.includes(user._id))
 
   const postDeleteComment = async () => {
@@ -19,7 +18,7 @@ const Comment = ({ comment, postID }) => {
       body: JSON.stringify({ commentID })
     })
       .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-      .then(() => {dispatch(deleteComment({ postID, commentID })); console.log('comment deleted')})
+      .then(() => { dispatch(deleteComment({ postID, commentID })); console.log('comment deleted') })
   }
 
   const likeComment = async (commentID, postID) => {
@@ -53,11 +52,13 @@ const Comment = ({ comment, postID }) => {
   return (
     <div key={commentID} className={classes.comment}>
       <p className="comment-author">{comment.username}</p>
-      {emoji(comment.text).map(element => (
-            <p className="comment-text">
-              {element}
-            </p>
-          ))}
+      {
+        emoji(comment.text).map(element => (
+          <p className="comment-text">
+            {element}
+          </p>
+        ))
+      }
       <div className="comment-options">
         <p className="comment-like" onClick={handleLike}>{liked ? "unlike" : "like"}</p>
         <p className="comment-reply">reply</p>

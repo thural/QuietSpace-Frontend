@@ -31,15 +31,6 @@ const ChatBoard = ({ messages, currentChat }) => {
       .then(() => { dispatch(addMessage({messageData, currentChat})) })
   }
 
-
-  // import { io } from 'socket.io-client'
-  // const socket = io('http://localhost:5000')
-  // socket.on('connect', () => {
-  //   console.log("socket id from App component: ", socket.id)
-  // })
-  // socket.emit('custom-event', "test message", 10, [1, 2, 3])
-
-
   const classes = styles()
 
   return (

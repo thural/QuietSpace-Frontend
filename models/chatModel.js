@@ -6,7 +6,6 @@ const MessageSchema = new Schema(
     username: { type: String, required: true },
     text: { type: String, required: true, maxLength: 128 },
     date: { type: Date, default: Date.now },
-    //reactions: [{ user: { type: Schema.Types.ObjectId, ref: "User" }, emoji: { type: String } }]
   }
 )
 
@@ -24,5 +23,4 @@ const ChatSchema = new Schema({
 })
 
 const Chat = mongoose.model("Chat", ChatSchema)
-
 module.exports = Chat
