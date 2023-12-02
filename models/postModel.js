@@ -3,8 +3,8 @@ const { Schema } = require("mongoose")
 const { DateTime } = require('luxon')
 
 const CommentSchema = new Schema({
-  username: String,
-  text: String,
+  username: {type:String, required:true},
+  text: {type:String, required:true},
   date: { type: Date, default: Date.now },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }]
 })
