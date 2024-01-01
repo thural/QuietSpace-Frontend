@@ -12,7 +12,6 @@ const CommentSection = ({ postID, comments }) => {
   const { user } = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
   const [commentData, setCommentData] = useState({ text: '' })
-  const [pickerState, setPickerState] = useState(false)
 
   const cursorPosition = useRef(commentData.text.length);
   const inputRef = useRef(null);
@@ -42,9 +41,7 @@ const CommentSection = ({ postID, comments }) => {
     console.log(commentData.text)
   }
 
-  // handle the submit event on the comment form
   const handleSubmit = (event) => {
-    //event.preventDefault()
     postComment(commentData, postID)
     dispatch(overlay())
   }
@@ -67,9 +64,6 @@ const CommentSection = ({ postID, comments }) => {
           theme="light"
           placeholder="Type a comment"
         />
-
-        {/* <button onSubmit={handleSubmit} className="submit-btn" type="submit">add</button> */}
-        {/* <button className="submit-btn" type="button" onClick={handleEmojiPicker}>emoji</button> */}
 
       </form>
 

@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom"
+import {POST_URL, USER_URL, USER_PROFILE_URL} from "../constants/ApiPath"
 import styles from "../styles/appStyles"
 import MainContext from "./MainContext"
 import Contact from "./Contact/Contact"
@@ -20,7 +21,7 @@ const App = () => {
 
   const fetchUser = async () => {
     try {
-      const data = await fetch('http://localhost:5000/api/users/user')
+      const data = await fetch(USER_PROFILE_URL)
       const user = await data.json()
       dispatch(loadUser({ user }))
     } catch (err) { console.log(err) }
@@ -28,8 +29,9 @@ const App = () => {
 
   const fetchPosts = async () => {
     try {
-      const data = await fetch('http://localhost:5000/api/posts')
+      const data = await fetch(POST_URL)
       const items = await data.json()
+      console.log(items[0])
       dispatch(loadPosts(items))
     } catch (err) { console.log(err) }
   }
