@@ -19,6 +19,14 @@ export async function getApiResponse(url, method, body, token) {
 
 }
 
+export const fetchSignup = async (url, body) => {
+    try {
+        const responseData = await getApiResponse(url, 'POST', body, null);
+        console.log(responseData)
+        return responseData;
+    } catch (error) { console.log(error) }
+}
+
 export const fetchLogin = async (url, body) => {
     try {
         const responseData = await getApiResponse(url, 'POST', body, null);

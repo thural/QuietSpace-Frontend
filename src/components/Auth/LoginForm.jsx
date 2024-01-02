@@ -8,6 +8,8 @@ import { LOGIN_URL } from "../../constants/ApiPath"
 import { fetchLogin } from "../../api/requestMethods"
 import { loadAuth } from "../../redux/authReducer"
 
+
+
 const LoginForm = () => {
 
   const dispatch = useDispatch()
@@ -24,7 +26,7 @@ const LoginForm = () => {
     event.preventDefault();
     const authResponse = await fetchLogin(LOGIN_URL, formData);
     dispatch(loadAuth(authResponse));
-    console.log(auth);
+    console.log(authResponse);
   }
 
   return (

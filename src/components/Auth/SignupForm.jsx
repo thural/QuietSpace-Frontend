@@ -2,30 +2,32 @@ import React, { useState } from "react";
 import Overlay from "../Overlay";
 import styles from "./styles/signupStyles"
 import { useDispatch } from "react-redux";
-import { loadUser } from "../../redux/userReducer";
 import { login, overlay } from "../../redux/formViewReducer";
+import { fetchSignup } from "../../api/requestMethods";
+import { SIGNUP_URL } from "../../constants/ApiPath";
 
 const SignupForm = () => {
 
   const dispatch = useDispatch()
 
   const classes = styles()
-  const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' })
+  const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' })
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData({ ...formData, [name]: value });
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    fetch('http://localhost:5000/api/users/sign-up', {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-      .then(res => res.json(), err => console.log('error message: ', err))
-      .then(response => { console.log(response); dispatch(loadUser({ user: response })) })
+  const handleSubmit = async (event) => {
+    const { password, confirmPassword } = formData;
+    if (password !== confirmPassword) alert("passwords dooes not match, try again!")
+    else {
+      delete formData["confirmPassword"];
+      event.preventDefault();
+      const authResponse = await fetchSignup(SIGNUP_URL, formData);
+      dispatch(loadAuth(authResponse));
+      console.log(authResponse);
+    }
   }
 
   return (
@@ -42,9 +44,9 @@ const SignupForm = () => {
           <div className="signup input">
             <input
               type='text'
-              name='username'
-              placeholder="username"
-              value={formData.username}
+              name='email'
+              placeholder="email"
+              value={formData.email}
               onChange={handleChange}
             />
             <input
@@ -62,7 +64,7 @@ const SignupForm = () => {
               onChange={handleChange}
             />
           </div>
-          <button type='submit'>submit</button>
+          <button type='button' onClick={handleSubmit}>submit</button>
         </form>
         <h3>already have an account?</h3>
         <button type='button' onClick={() => dispatch(login())}>login</button>
