@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom"
-import {POST_URL, USER_URL, USER_PROFILE_URL} from "../constants/ApiPath"
+import { POST_URL, USER_URL, USER_PROFILE_URL } from "../constants/ApiPath"
 import styles from "../styles/appStyles"
 import MainContext from "./MainContext"
 import Contact from "./Contact/Contact"
@@ -9,6 +9,8 @@ import { useEffect } from "react"
 import Home from "./Home/Home"
 import Chat from "./Chat/Chat"
 import './App.css'
+
+import { fetchPosts } from "../api/requestMethods"
 
 import { useDispatch } from 'react-redux'
 import { loadChat } from "../redux/chatReducer"
@@ -27,14 +29,6 @@ const App = () => {
     } catch (err) { console.log(err) }
   }
 
-  const fetchPosts = async () => {
-    try {
-      const data = await fetch(POST_URL)
-      const items = await data.json()
-      console.log(items[0])
-      dispatch(loadPosts(items))
-    } catch (err) { console.log(err) }
-  }
 
   const fetchChat = async () => {
     try {
@@ -44,12 +38,16 @@ const App = () => {
     } catch (err) { console.log(err) }
   }
 
+  // useEffect(() => {
+  //   fetchUser().then(fetchPosts(), fetchChat())
+  // }, [])
+
   useEffect(() => {
-    fetchUser().then(fetchPosts(), fetchChat())
+    fetchPosts(POST_URL, null).then(responseData => dispatch(loadPosts(responseData)))
   }, [])
 
   const classes = styles()
-  
+
   return (
     <div className={classes.app}>
       <MainContext.Provider value={{ fetchUser, fetchPosts, fetchChat }}>
