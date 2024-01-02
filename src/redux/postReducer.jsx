@@ -35,7 +35,8 @@ export const postSlice = createSlice({
             return state.map(post => post['_id'] == action.payload._id ? action.payload.data : post)
         },
         loadPosts: (state, action) => {
-           return action.payload.posts
+            const {responseData} = action.payload;
+           return responseData
         },
         addComment: (state, action) => {
             const id = action.payload.data['_id']

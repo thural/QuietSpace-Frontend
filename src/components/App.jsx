@@ -43,7 +43,7 @@ const App = () => {
   // }, [])
 
   useEffect(() => {
-    fetchPosts(POST_URL, null).then(responseData => dispatch(loadPosts(responseData)))
+    fetchPosts(POST_URL, null).then(responseData => dispatch(loadPosts({responseData})))
   }, [])
 
   const classes = styles()

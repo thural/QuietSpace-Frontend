@@ -10,7 +10,7 @@ const PostBoard = ({ posts }) => {
 
     <div className={classes.cardboard}>
       {
-        posts.map((post) => (<Post key={post._id} post={post} />))
+        posts.map((post) => (<Post key={post["id"]} post={post} />))
       }
     </div>
 

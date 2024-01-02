@@ -23,6 +23,6 @@ export async function getApiResponse(url, method, body, token) {
     try {
       const responseData = await getApiResponse(url, 'GET', null, token);
       console.log(responseData['content'][0])
-      return responseData
+      return responseData['content'];
     } catch (err) { console.log(err) }
   }

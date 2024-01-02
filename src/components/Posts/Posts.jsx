@@ -33,7 +33,9 @@ const Posts = () => {
           user.username && formView.edit.view &&
           <EditForm />
         }
+
         <PostBoard posts={posts} />
+
       </div>
     </>
   )
