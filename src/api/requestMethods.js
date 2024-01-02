@@ -6,8 +6,8 @@ export async function getApiResponse(url, method, body, token) {
     if (token != null) headers.append("Authorization", "Bearer " + token);
 
     const options = {
-      method: method,
-      headers: headers,
+        method: method,
+        headers: headers,
     };
 
     if (body != null) options.body = JSON.stringify(body);
@@ -17,12 +17,20 @@ export async function getApiResponse(url, method, body, token) {
 
     return await parsedData;
 
-  }
+}
 
-  export const fetchPosts = async (url, token) => {
+export const fetchLogin = async (url, body) => {
     try {
-      const responseData = await getApiResponse(url, 'GET', null, token);
-      console.log(responseData['content'][0])
-      return responseData['content'];
+        const responseData = await getApiResponse(url, 'POST', body, null);
+        console.log(responseData)
+        return responseData;
+    } catch (error) { console.log(error) }
+}
+
+export const fetchPosts = async (url, token) => {
+    try {
+        const responseData = await getApiResponse(url, 'GET', null, token);
+        console.log(responseData['content'][0])
+        return responseData['content'];
     } catch (err) { console.log(err) }
-  }
+}

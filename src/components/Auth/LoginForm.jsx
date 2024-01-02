@@ -1,30 +1,30 @@
-import { useContext, useState } from "react"
-import HandlerContext from "../MainContext"
+import { useState } from "react"
 import Overlay from "../Overlay"
 import styles from "./styles/loginStyles"
-import { useDispatch } from "react-redux"
+import { useDispatch , useSelector} from "react-redux"
 import { overlay, signup } from "../../redux/formViewReducer"
+
+import { LOGIN_URL } from "../../constants/ApiPath"
+import { fetchLogin } from "../../api/requestMethods"
+import { loadAuth } from "../../redux/authReducer"
 
 const LoginForm = () => {
 
   const dispatch = useDispatch()
   const classes = styles()
 
-  const { fetchUser, fetchPosts, fetchChat } = useContext(HandlerContext)
-  const [formData, setFormData] = useState({ username: '', password: '' })
+  const [formData, setFormData] = useState({ email: '', password: '' })
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData({ ...formData, [name]: value })
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    fetch('http://localhost:5000/api/users/log-in/', {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(formData)
-    }).then(() => fetchUser().then(fetchPosts(), fetchChat()))
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const authResponse = await fetchLogin(LOGIN_URL, formData);
+    dispatch(loadAuth(authResponse));
+    console.log(auth);
   }
 
   return (
@@ -42,9 +42,9 @@ const LoginForm = () => {
           <div className="login input">
             <input
               type='text'
-              name='username'
-              placeholder="username"
-              value={formData.username}
+              name='email'
+              placeholder="email"
+              value={formData.email}
               onChange={handleChange}
             />
             <input
