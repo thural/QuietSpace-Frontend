@@ -43,6 +43,14 @@ export const fetchLogout = async (url, token) => {
     } catch (error) { console.log(error) }
 }
 
+export const fetchUser = async (url, token) => {
+    try {
+      const responseData = await getApiResponse(url, 'GET', null, token);
+      console.log(responseData);
+      return responseData;
+    } catch (err) { console.log(err) }
+  }
+
 export const fetchPosts = async (url, token) => {
     try {
         const responseData = await getApiResponse(url, 'GET', null, token);

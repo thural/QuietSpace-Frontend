@@ -1,33 +1,35 @@
 import React, { useState, useContext } from "react"
 import styles from "./styles/menuStyles"
-import MainContext from "../MainContext"
 import savedIcon from "../../assets/bookmark.svg"
 import historyIcon from "../../assets/history.svg"
 import settingsIcon from "../../assets/settings.svg"
 import logoutIcon from "../../assets/log-out.svg"
 import menuIcon from "../../assets/menu-line.svg"
-import { useSelector } from "react-redux"
 import { fetchLogout } from "../../api/requestMethods"
 import { LOGOUT_URL } from "../../constants/ApiPath"
+import { useDispatch, useSelector } from "react-redux"
+import { loadAuth } from "../../redux/authReducer"
 
 
 
 const Menu = () => {
-  const user = useSelector(state => state.userReducer)
+  const user = useSelector(state => state.userReducer);
+  const auth = useSelector(state => state.authReducer);
 
-  const classes = styles()
-  const { fetchUser } = useContext(MainContext)
-  const [display, setDisplay] = useState('none')
+  const dispatch = useDispatch();
+
+  const classes = styles();
+  const [display, setDisplay] = useState('none');
 
   const toggleDisplay = () => {
     if (display === "none") setDisplay("block")
-    else setDisplay("none")
+    else setDisplay("none");
   }
 
   const handleLogout = (event) => {
     event.preventDefault();
-    const token = "token feature yet to be imlpemented";
-    fetchLogout(LOGOUT_URL, token).then(() => fetchUser());
+    fetchLogout(LOGOUT_URL, auth.token);
+    dispatch(loadAuth({userId:null, token:null}))
   }
 
   return (
