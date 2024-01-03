@@ -8,8 +8,8 @@ import { post } from "../../redux/formViewReducer"
 
 const Posts = () => {
   const formView = useSelector(state => state.formViewReducer);
-  const user = useSelector(state => state.userReducer);
   const posts = useSelector(state => state.postReducer);
+  const user = useSelector(state => state.userReducer);
 
   console.log("POSTS FROM posts component: ", posts)
 

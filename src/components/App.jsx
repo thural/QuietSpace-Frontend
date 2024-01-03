@@ -36,10 +36,10 @@ const App = () => {
   }
 
   const handlefetchPosts = async () => {
-    if(auth.token != null) {
+    if (auth.token != null) {
       const response = await fetchPosts(POST_URL, auth.token);
       const responseData = await response.json();
-      dispatch(loadPosts( responseData ));
+      dispatch(loadPosts(responseData["content"]));
     } else {
       dispatch(loadPosts([]));
     }
@@ -49,7 +49,7 @@ const App = () => {
     try {
       const data = await fetch('http://localhost:5000/api/chats')
       const chatData = await data.json()
-      dispatch(loadChat( chatData ))
+      dispatch(loadChat(chatData))
     } catch (err) { console.log(err) }
   }
 

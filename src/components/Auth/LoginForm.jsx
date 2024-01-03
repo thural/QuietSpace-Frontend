@@ -23,9 +23,10 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const authResponse = await fetchLogin(LOGIN_URL, formData);
-    dispatch(loadAuth(authResponse));
-    console.log(authResponse);
+    const response = await fetchLogin(LOGIN_URL, formData);
+    const responseData = await response.json();
+    dispatch(loadAuth(responseData));
+    console.log(response);
   }
 
   return (
