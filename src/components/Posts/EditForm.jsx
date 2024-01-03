@@ -4,6 +4,8 @@ import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux"
 import { editPost } from "../../redux/postReducer"
 import { edit } from "../../redux/formViewReducer"
+import { fetchEditPost } from "../../api/requestMethods"
+import { POST_URL } from "../../constants/ApiPath"
 
 const EditForm = () => {
 
@@ -11,8 +13,8 @@ const EditForm = () => {
   const posts = useSelector(state => state.postReducer)
   const { edit: editView } = useSelector(state => state.formViewReducer)
 
-  const _id = editView["_id"]
-  const text = posts.find(post => post["_id"] == _id)["text"]
+  const postId = editView["_id"]
+  const text = posts.find(post => post["_id"] == postId)["text"]
   const [postData, setPostData] = useState({ "text": text })
 
   const handleChange = (event) => {
@@ -22,21 +24,18 @@ const EditForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    editPostFetch(postData, _id)
-    dispatch(edit({ view: false, _id }))
+    handleEditPostFetch(postData, postId)
+    dispatch(edit({ view: false, _id: postId }))
   }
 
-  const editPostFetch = async (postData, _id) => {
-    await fetch(`http://localhost:5000/api/posts/edit/${_id}`, {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(postData)
-    })
-      .then(res => res.json())
-      .then(data => {
-        dispatch(editPost({ data, _id }))
-      })
-      .catch(err => console.log('error message from edit POST: ', err))
+  const handleEditPostFetch = async (postData, postId) => {
+    try {
+      const response = fetchEditPost(POST_URL, postData, auth.token, postId);
+      const responseData = response.json();
+      if (response.ok) dispatch(editPost({ data: responseData, _id: postId }));
+    } catch (error) {
+      console.log('error message from edit POST: ', err)
+    }
   }
 
   const classes = styles()

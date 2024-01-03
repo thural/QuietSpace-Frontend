@@ -27,7 +27,8 @@ const App = () => {
 
   const handleFetchUser = async () => {
     if (auth.token != null) {
-      const userResponseData = await fetchUser(USER_PROFILE_URL, auth.token);
+      const userResponse = await fetchUser(USER_PROFILE_URL, auth.token)
+      const userResponseData = await userResponse.json();
       dispatch(loadUser(userResponseData));
     } else {
       dispatch(loadUser({}));
@@ -36,7 +37,8 @@ const App = () => {
 
   const handlefetchPosts = async () => {
     if(auth.token != null) {
-      const responseData = await fetchPosts(POST_URL, auth.token);
+      const response = await fetchPosts(POST_URL, auth.token);
+      const responseData = await response.json();
       dispatch(loadPosts( responseData ));
     } else {
       dispatch(loadPosts([]));

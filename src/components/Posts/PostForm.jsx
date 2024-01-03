@@ -1,30 +1,29 @@
 import React, { useState } from "react";
 import styles from "./styles/newPostStyles"
 import Overlay from "../Overlay"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../../redux/postReducer";
 import { overlay } from "../../redux/formViewReducer";
+import { fetchCreatePost } from "../../api/requestMethods";
+import { POST_URL } from "../../constants/ApiPath";
 
 const PostForm = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.authReducer);
   const [postData, setPostData] = useState({ text: '' })
 
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setPostData({ ...postData, [name]: value });
   }
 
-  const fetchNewPost = async (postData) => {
-    await fetch('http://localhost:5000/api/posts', {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(postData)
-    })
-      .then(res => res.json())
-      .then(data => {
-        dispatch(addPost(data))
-      })
-      .catch(err => console.log(err))
+  const handleFetchNewPost = async (postData, token) => {
+    try {
+      const response = await fetchCreatePost(POST_URL, postData, token);
+      const responseData = await response.json();
+      console.log(responseData);
+      dispatch(addPost(postData));
+    } catch (error) { console.log(error) }
   }
 
   const classes = styles()
@@ -36,7 +35,7 @@ const PostForm = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            fetchNewPost(postData);
+            handleFetchNewPost(postData, auth.token);
             dispatch(overlay())
           }}
         >
