@@ -8,4 +8,6 @@ export const POST_URL = BASE_URL + "/posts";
 
 export const SIGNUP_URL = 'http://localhost:8080/auth/singup';
 
+export const LOGIN_URL = 'http://localhost:8080/auth/login';
+
 export const LOGOUT_URL = 'http://localhost:8080/auth/logout';

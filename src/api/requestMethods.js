@@ -54,7 +54,7 @@ export const fetchUser = async (url, token) => {
 export const fetchPosts = async (url, token) => {
     try {
         const responseData = await getApiResponse(url, 'GET', null, token);
-        console.log(responseData['content'][0])
+        console.log("FETCH POSTS RES: ", responseData['content'])
         return responseData['content'];
     } catch (err) { console.log(err) }
 }

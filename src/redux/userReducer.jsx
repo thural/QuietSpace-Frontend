@@ -6,7 +6,7 @@ export const userSlice = createSlice({
 
     reducers: {
         loadUser: (state, action) => {
-            return action.payload.user
+            return action.payload
         },
     }
 })

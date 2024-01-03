@@ -11,7 +11,6 @@ import Chat from "./Chat/Chat"
 import './App.css'
 
 import { fetchPosts, fetchUser } from "../api/requestMethods"
-
 import { useDispatch, useSelector } from 'react-redux'
 import { loadChat } from "../redux/chatReducer"
 import { loadUser } from "../redux/userReducer"
@@ -20,24 +19,35 @@ import { loadPosts } from "../redux/postReducer"
 const App = () => {
 
   const dispatch = useDispatch();
-  const auth = useSelector(state => state.auth);
+  const auth = useSelector(state => state.authReducer);
+  const user = useSelector(state => state.userReducer);
+
+  console.log("AUTH: ", auth);
+  console.log("USER: ", user);
 
   const handleFetchUser = async () => {
-    const userResponseData = await fetchUser(USER_PROFILE_URL, auth.token);
-    dispatch(loadUser({ userResponseData }));
+    if (auth.token != null) {
+      const userResponseData = await fetchUser(USER_PROFILE_URL, auth.token);
+      dispatch(loadUser(userResponseData));
+    } else {
+      dispatch(loadUser({}));
+    }
   }
 
   const handlefetchPosts = async () => {
-    const responseData = await fetchPosts(POST_URL, token);
-    dispatch(loadPosts({responseData}));
+    if(auth.token != null) {
+      const responseData = await fetchPosts(POST_URL, auth.token);
+      dispatch(loadPosts( responseData ));
+    } else {
+      dispatch(loadPosts([]));
+    }
   }
-
 
   const fetchChat = async () => {
     try {
       const data = await fetch('http://localhost:5000/api/chats')
       const chatData = await data.json()
-      dispatch(loadChat({ chatData }))
+      dispatch(loadChat( chatData ))
     } catch (err) { console.log(err) }
   }
 
@@ -47,7 +57,7 @@ const App = () => {
 
   useEffect(() => {
     handleFetchUser().then(handlefetchPosts())
-  }, [auth])
+  }, [auth]);
 
   const classes = styles()
 

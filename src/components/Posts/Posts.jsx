@@ -7,10 +7,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { post } from "../../redux/formViewReducer"
 
 const Posts = () => {
-  const formView = useSelector(state => state.formViewReducer)
-  const dispatch = useDispatch()
-  const user = useSelector(state => state.userReducer)
-  const posts = useSelector(state => state.postReducer)
+  const formView = useSelector(state => state.formViewReducer);
+  const user = useSelector(state => state.userReducer);
+  const posts = useSelector(state => state.postReducer);
+
+  console.log("POSTS FROM posts component: ", posts)
+
+  const dispatch = useDispatch();
 
   const classes = styles()
 
