@@ -7,6 +7,8 @@ import settingsIcon from "../../assets/settings.svg"
 import logoutIcon from "../../assets/log-out.svg"
 import menuIcon from "../../assets/menu-line.svg"
 import { useSelector } from "react-redux"
+import { fetchLogout } from "../../api/requestMethods"
+import { LOGOUT_URL } from "../../constants/ApiPath"
 
 
 
@@ -24,9 +26,8 @@ const Menu = () => {
 
   const handleLogout = (event) => {
     event.preventDefault();
-    fetch('http://localhost:5000/api/users/log-out', {
-      method: 'GET'
-    }).then(() => fetchUser())
+    const token = "token feature yet to be imlpemented";
+    fetchLogout(LOGOUT_URL, token).then(() => fetchUser());
   }
 
   return (

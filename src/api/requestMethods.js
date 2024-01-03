@@ -35,6 +35,14 @@ export const fetchLogin = async (url, body) => {
     } catch (error) { console.log(error) }
 }
 
+export const fetchLogout = async (url, token) => {
+    try {
+        const responseData = await getApiResponse(url, 'POST', null, token);
+        console.log(responseData)
+        return responseData;
+    } catch (error) { console.log(error) }
+}
+
 export const fetchPosts = async (url, token) => {
     try {
         const responseData = await getApiResponse(url, 'GET', null, token);
