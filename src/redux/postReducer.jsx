@@ -26,13 +26,13 @@ export const postSlice = createSlice({
             })
         },
         deletePost: (state, action) => {
-            return state.filter(post => post['_id'] !== action.payload._id)
+            return state.filter(post => post['id'] !== action.payload.postId)
         },
         addPost: (state, action) => {
             return [action.payload, ...state]
         },
         editPost: (state, action) => {
-            return state.map(post => post['_id'] == action.payload._id ? action.payload.data : post)
+            return state.map(post => post['_id'] === action.payload._id ? action.payload.data : post)
         },
         loadPosts: (state, action) => {
            return action.payload;
@@ -40,14 +40,14 @@ export const postSlice = createSlice({
         addComment: (state, action) => {
             const id = action.payload.data['_id']
             return state.map(post => {
-              if (post['_id'] == id) post = action.payload.data;
+              if (post['_id'] === id) post = action.payload.data;
               return post
             })
         },
         deleteComment: (state, action) => {
             const {postID, commentID} = action.payload;
             state = state.map(post => {
-                if (post['_id'] == postID) {
+                if (post['_id'] === postID) {
                   const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
                   if (indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
                 }

@@ -66,3 +66,10 @@ export const fetchEditPost = async (url, body, token, postId) => {
         return response;
     } catch (err) { console.log(err) }
 }
+
+export const fetchDeletePost = async (url, token, postId) => {
+    try {
+        const response = await getApiResponse(url + `/${postId}`, 'DELETE', null, token);
+        return response;
+    } catch (err) { console.log(err) }
+}
