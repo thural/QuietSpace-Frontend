@@ -23,7 +23,7 @@ const Post = ({post}) => {
     const handleDeletePost = async (postId) => {
         try {
             const response = await fetchDeletePost(POST_URL, auth.token, postId);
-            dispatch(deletePost({postID, user}));
+            if(response.ok) dispatch(deletePost({postId, user}));
         } catch (error) {
             console.log('error from delete post: ', error)
         }
