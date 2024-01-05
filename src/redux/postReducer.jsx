@@ -4,6 +4,7 @@ export const postSlice = createSlice({
     name: 'posts',
     initialState: [],
     reducers: {
+
         likePost: (state, action) => {
             const { _id, user } = action.payload;
             return state.map(post => {
@@ -15,6 +16,7 @@ export const postSlice = createSlice({
                 return post
             })
         },
+
         unlikePost: (state, action) => {
             const { _id, user } = action.payload
             return state.map(post => {
@@ -25,18 +27,23 @@ export const postSlice = createSlice({
                 return post
             })
         },
+
         deletePost: (state, action) => {
             return state.filter(post => post['id'] !== action.payload.postId)
         },
+
         addPost: (state, action) => {
             return [action.payload, ...state]
         },
+
         editPost: (state, action) => {
-            return state.map(post => post['_id'] === action.payload._id ? action.payload.data : post)
+            return state.map(post => post['id'] === action.payload.id ? action.payload : post)
         },
+
         loadPosts: (state, action) => {
            return action.payload;
         },
+
         addComment: (state, action) => {
             const id = action.payload.data['_id']
             return state.map(post => {
@@ -44,6 +51,7 @@ export const postSlice = createSlice({
               return post
             })
         },
+
         deleteComment: (state, action) => {
             const {postID, commentID} = action.payload;
             state = state.map(post => {
@@ -54,6 +62,7 @@ export const postSlice = createSlice({
                 return post
               })
         }
+
     }
 })
 

@@ -10,13 +10,13 @@ import { POST_URL } from "../../constants/ApiPath"
 const EditForm = () => {
 
   const dispatch = useDispatch();
-  const posts = useSelector(state => state.postReducer);
   const auth = useSelector(state => state.authReducer);
+  const posts = useSelector(state => state.postReducer);
   const { edit: editView } = useSelector(state => state.formViewReducer);
 
   const postId = editView["_id"];
-  const text = posts.find(post => post["id"] == postId)["text"];
-  const [postData, setPostData] = useState({ "text": text });
+  const editedPost = posts.find(post => post["id"] == postId);
+  const [postData, setPostData] = useState(editedPost);
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -26,11 +26,9 @@ const EditForm = () => {
     const handleEditPostFetch = async (postData, postId) => {
       try {
         const response = await fetchEditPost(POST_URL, postData, auth.token, postId);
-        console.log("PUT request response: ", response);
-        const responseData = await response.json();
-        if (response.ok) dispatch(editPost({ data: responseData, _id: postId }));
+        if (response.ok) dispatch(editPost(postData));
       } catch (error) {
-        console.log('error message from edit POST: ', error)
+        console.log('error message from edit POST: ', error);
       }
     }
 
