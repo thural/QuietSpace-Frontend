@@ -6,22 +6,22 @@ import emoji from 'react-easy-emoji'
 
 
 
-const Comment = ({ comment, postID }) => {
+const Comment = ({ comment, postId }) => {
   const user = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
-  const [liked, setLiked] = useState(comment.likes.includes(user._id))
+  const [liked, setLiked] = useState(comment.likes.includes(user.id))
 
-  const postDeleteComment = async () => {
-    await fetch(`http://localhost:5000/api/posts/${postID}/comments/delete/${commentID}`, {
+  const handleDeleteComment = async () => {
+    await fetch(`http://localhost:5000/api/posts/${postId}/comments/delete/${commentId}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ commentID })
+      body: JSON.stringify({ commentID: commentId })
     })
       .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-      .then(() => { dispatch(deleteComment({ postID, commentID })); console.log('comment deleted') })
+      .then(() => { dispatch(deleteComment({ postID: postId, commentID: commentId })); console.log('comment deleted') })
   }
 
-  const likeComment = async (commentID, postID) => {
+  const handleLikeComment = async (commentID, postID) => {
     await fetch(`http://localhost:5000/api/posts/${postID}/comments/like/${commentID}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -31,7 +31,7 @@ const Comment = ({ comment, postID }) => {
       .then(setLiked(true))
   }
 
-  const unlikeComment = async (commentID, postID) => {
+  const handleUnlikeComment = async (commentID, postID) => {
     await fetch(`http://localhost:5000/api/posts/${postID}/comments/unlike/${commentID}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
@@ -42,19 +42,19 @@ const Comment = ({ comment, postID }) => {
   }
 
   const handleLike = () => {
-    if (liked) unlikeComment(commentID, postID)
-    else likeComment(commentID, postID)
+    if (liked) handleUnlikeComment(commentId, postId)
+    else handleLikeComment(commentId, postId)
   }
 
   const classes = styles()
-  const commentID = comment['_id'].toString()
+  const commentId = comment['id'];
 
   return (
-    <div key={commentID} className={classes.comment}>
+    <div key={commentId} className={classes.comment}>
       <p className="comment-author">{comment.username}</p>
       {
-        emoji(comment.text).map(element => (
-          <p className="comment-text">
+        emoji(comment.text).map((element, index) => (
+          <p key={index} className="comment-text">
             {element}
           </p>
         ))
@@ -64,7 +64,7 @@ const Comment = ({ comment, postID }) => {
         <p className="comment-reply">reply</p>
         {
           comment.username == user.username &&
-          <p className="comment-delete" onClick={postDeleteComment}>delete</p>
+          <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
         }
       </div>
     </div>

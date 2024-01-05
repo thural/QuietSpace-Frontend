@@ -17,7 +17,7 @@ const Post = ({post}) => {
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
 
-    const {id: postID, username, text, likes, comments} = post;
+    const {id: postId, username, text, likes, comments} = post;
     const [active, setActive] = useState(false);
 
     const handleDeletePost = async (postId) => {
@@ -41,7 +41,7 @@ const Post = ({post}) => {
     const classes = styles()
 
     return (
-        <div id={postID} className={classes.wrapper}>
+        <div id={postId} className={classes.wrapper}>
             <div className="author">{username}</div>
             <div className="text"><p>{text}</p></div>
             <div className={classes.postinfo}>
@@ -57,26 +57,26 @@ const Post = ({post}) => {
                     <div className="panel">
                         {
                             post.username !== user.username &&
-                            <img src={likeIcon} onClick={() => handleLikePost(postID)}/>
+                            <img src={likeIcon} onClick={() => handleLikePost(postId)}/>
                         }
 
                         <img src={commentIcon} onClick={() => setActive(!active)}/>
 
                         {
                             post.username === user.username &&
-                            <img src={editIcon} onClick={() => dispatch(edit({view: true, _id: postID}))}/>
+                            <img src={editIcon} onClick={() => dispatch(edit({view: true, _id: postId}))}/>
                         }
 
                         <img src={shareIcon}/>
 
                         {
                             user.admin || post.username === user.username &&
-                            <img src={deleteIcon} onClick={() => handleDeletePost(postID)}/>
+                            <img src={deleteIcon} onClick={() => handleDeletePost(postId)}/>
                         }
                     </div>
                     {
                         active &&
-                        <CommentSection postID={postID} comments={comments}/>
+                        <CommentSection postId={postId} comments={comments}/>
                     }
                 </>
             }

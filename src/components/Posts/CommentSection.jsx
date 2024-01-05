@@ -8,10 +8,12 @@ import InputEmoji from 'react-input-emoji'
 
 
 
-const CommentSection = ({ postID, comments }) => {
+const CommentSection = ({ postId, comments }) => {
   const { user } = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
   const [commentData, setCommentData] = useState({ text: '' })
+
+  console.log(comments)
 
   const cursorPosition = useRef(commentData.text.length);
   const inputRef = useRef(null);
@@ -42,7 +44,7 @@ const CommentSection = ({ postID, comments }) => {
   }
 
   const handleSubmit = (event) => {
-    postComment(commentData, postID)
+    postComment(commentData, postId)
     dispatch(overlay())
   }
   
@@ -71,10 +73,10 @@ const CommentSection = ({ postID, comments }) => {
         comments &&
         comments.map(comment =>
           <Comment
-            key={comment['_id']}
+            key={comment["id"]}
             loggedUser={user}
             comment={comment}
-            postID={postID}
+            postId={postId}
           />
         )
       }
