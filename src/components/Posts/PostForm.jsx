@@ -4,7 +4,7 @@ import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../../redux/postReducer";
 import { overlay } from "../../redux/formViewReducer";
-import { fetchCreatePost } from "../../api/requestMethods";
+import { fetchCreatePost } from "../../api/postRequests";
 import { POST_URL } from "../../constants/ApiPath";
 
 const PostForm = () => {
@@ -21,8 +21,11 @@ const PostForm = () => {
     try {
       const response = await fetchCreatePost(POST_URL, postData, token);
       const responseData = await response.json();
-      console.log(responseData);
-      dispatch(addPost(postData));
+      responseData.likes = [];  // temporary fix for response null values
+      responseData.comments = []; // temporary fix for response null values
+      const postLocation = await response.headers.get('Location');
+      console.log(postLocation);
+      if(response.ok) dispatch(addPost(responseData));
     } catch (error) { console.log(error) }
   }
 

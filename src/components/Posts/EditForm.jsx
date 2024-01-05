@@ -4,38 +4,40 @@ import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux"
 import { editPost } from "../../redux/postReducer"
 import { edit } from "../../redux/formViewReducer"
-import { fetchEditPost } from "../../api/requestMethods"
+import { fetchEditPost } from "../../api/postRequests"
 import { POST_URL } from "../../constants/ApiPath"
 
 const EditForm = () => {
 
-  const dispatch = useDispatch()
-  const posts = useSelector(state => state.postReducer)
-  const { edit: editView } = useSelector(state => state.formViewReducer)
+  const dispatch = useDispatch();
+  const posts = useSelector(state => state.postReducer);
+  const auth = useSelector(state => state.authReducer);
+  const { edit: editView } = useSelector(state => state.formViewReducer);
 
-  const postId = editView["_id"]
-  const text = posts.find(post => post["_id"] == postId)["text"]
-  const [postData, setPostData] = useState({ "text": text })
+  const postId = editView["_id"];
+  const text = posts.find(post => post["id"] == postId)["text"];
+  const [postData, setPostData] = useState({ "text": text });
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setPostData({ ...postData, [name]: value })
   }
 
+    const handleEditPostFetch = async (postData, postId) => {
+      try {
+        const response = await fetchEditPost(POST_URL, postData, auth.token, postId);
+        console.log("PUT request response: ", response);
+        const responseData = await response.json();
+        if (response.ok) dispatch(editPost({ data: responseData, _id: postId }));
+      } catch (error) {
+        console.log('error message from edit POST: ', error)
+      }
+    }
+
   const handleSubmit = (event) => {
     event.preventDefault()
     handleEditPostFetch(postData, postId)
     dispatch(edit({ view: false, _id: postId }))
-  }
-
-  const handleEditPostFetch = async (postData, postId) => {
-    try {
-      const response = fetchEditPost(POST_URL, postData, auth.token, postId);
-      const responseData = response.json();
-      if (response.ok) dispatch(editPost({ data: responseData, _id: postId }));
-    } catch (error) {
-      console.log('error message from edit POST: ', err)
-    }
   }
 
   const classes = styles()

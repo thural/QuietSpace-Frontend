@@ -9,7 +9,7 @@ import CommentSection from "./CommentSection"
 import {useDispatch, useSelector} from "react-redux"
 import {deletePost, likePost} from "../../redux/postReducer"
 import {edit} from "../../redux/formViewReducer"
-import {fetchDeletePost} from "../../api/requestMethods";
+import {fetchDeletePost} from "../../api/postRequests";
 import {POST_URL} from "../../constants/ApiPath";
 
 const Post = ({post}) => {
@@ -29,11 +29,11 @@ const Post = ({post}) => {
         }
     }
 
-    const fetchLikePost = async (_id) => {
-        await fetch(`http://localhost:5000/api/posts/like/${_id}`, {method: 'POST'})
+    const handleLikePost = async (postId) => {
+        await fetch(`http://localhost:5000/api/posts/like/${postId}`, {method: 'POST'})
             .then(res => res.json())
             .then(() => {
-                dispatch(likePost({_id, user}))
+                dispatch(likePost({_id: postId, user}))
             })
             .catch(err => console.log('error from like post: ', err))
     }
@@ -57,10 +57,10 @@ const Post = ({post}) => {
                     <div className="panel">
                         {
                             post.username !== user.username &&
-                            <img src={likeIcon} onClick={() => fetchLikePost(postID)}/>
+                            <img src={likeIcon} onClick={() => handleLikePost(postID)}/>
                         }
 
-                        <img src={commentIcon} onClick={() => setActive(active ? false : true)}/>
+                        <img src={commentIcon} onClick={() => setActive(!active)}/>
 
                         {
                             post.username === user.username &&

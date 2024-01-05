@@ -3,45 +3,45 @@ import PostBoard from "./PostBoard"
 import PostForm from "./PostForm"
 import EditForm from "./EditForm"
 import styles from "./styles/postsStyles"
-import { useDispatch, useSelector } from "react-redux"
-import { post } from "../../redux/formViewReducer"
+import {useDispatch, useSelector} from "react-redux"
+import {post} from "../../redux/formViewReducer"
 
 const Posts = () => {
-  const formView = useSelector(state => state.formViewReducer);
-  const posts = useSelector(state => state.postReducer);
-  const user = useSelector(state => state.userReducer);
+    const formView = useSelector(state => state.formViewReducer);
+    const posts = useSelector(state => state.postReducer);
+    const user = useSelector(state => state.userReducer);
 
-  console.log("POSTS FROM posts component: ", posts)
+    console.log("POSTS FROM posts component: ", posts)
 
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const classes = styles()
+    const classes = styles()
 
-  return (
-    <>
-      <div className={classes.posts}>
-        {
-          user.username &&
-          <button className="add-post-btn" onClick={() => dispatch(post())}>
-            Add
-          </button>
-        }
+    return (
+        <>
+            <div className={classes.posts}>
+                {
+                    user.username &&
+                    <button className="add-post-btn" onClick={() => dispatch(post())}>
+                        Add
+                    </button>
+                }
 
-        {
-          user.username && formView.post &&
-          <PostForm />
-        }
+                {
+                    user.username && formView.post &&
+                    <PostForm/>
+                }
 
-        {
-          user.username && formView.edit.view &&
-          <EditForm />
-        }
+                {
+                    user.username && formView.edit.view &&
+                    <EditForm/>
+                }
 
-        <PostBoard posts={posts} />
+                <PostBoard posts={posts}/>
 
-      </div>
-    </>
-  )
+            </div>
+        </>
+    )
 }
 
 export default Posts

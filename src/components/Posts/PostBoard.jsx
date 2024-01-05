@@ -2,19 +2,19 @@ import Post from "./Post"
 import styles from "./styles/cardBoardStyles"
 import React from "react"
 
-const PostBoard = ({ posts }) => {
+const PostBoard = ({posts}) => {
 
-  const classes = styles()
+    const classes = styles()
 
-  return (
+    return (
 
-    <div className={classes.cardboard}>
-      {
-        posts.map((post) => (<Post key={post["id"]} post={post} />))
-      }
-    </div>
+        <div className={classes.cardboard}>
+            {
+                posts.map((post) => (<Post key={post["id"]} post={post}/>))
+            }
+        </div>
 
-  )
+    )
 }
 
 export default PostBoard
