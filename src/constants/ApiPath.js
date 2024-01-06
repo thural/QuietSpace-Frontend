@@ -11,3 +11,5 @@ export const SIGNUP_URL = 'http://localhost:8080/auth/singup';
 export const LOGIN_URL = 'http://localhost:8080/auth/login';
 
 export const LOGOUT_URL = 'http://localhost:8080/auth/logout';
+
+export const COMMENT_PATH = BASE_URL + "/comments";

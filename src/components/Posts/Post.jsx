@@ -23,7 +23,7 @@ const Post = ({post}) => {
     const handleDeletePost = async (postId) => {
         try {
             const response = await fetchDeletePost(POST_URL, auth.token, postId);
-            if(response.ok) dispatch(deletePost({postId, user}));
+            if (response.ok) dispatch(deletePost({postId, user}));
         } catch (error) {
             console.log('error from delete post: ', error)
         }
@@ -45,8 +45,8 @@ const Post = ({post}) => {
             <div className="author">{username}</div>
             <div className="text"><p>{text}</p></div>
             <div className={classes.postinfo}>
-                <p className="likes">{likes.length} likes</p>
-                <p>{comments.length} comments </p>
+                <p className="likes">{likes == null ? 0 : likes.length} likes</p>
+                <p>{comments == null ? 0 : comments.length} comments </p>
                 <p>0 shares</p>
             </div>
 

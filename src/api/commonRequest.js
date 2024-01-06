@@ -13,9 +13,7 @@ export async function getApiResponse(url, method, body, token) {
 
     if (body != null) options.body = JSON.stringify(body);
 
-    const response = await fetch(url, options);
-
-    return response;
+    return await fetch(url, options);
 
 }
 

@@ -61,7 +61,7 @@ const App = () => {
     // }, [])
 
     useEffect(() => {
-        handleFetchUser().then(handleFetchPosts())
+        handleFetchUser().then(handleFetchPosts().then(console.log("USER: ", user)))
     }, [auth]);
 
     const classes = styles()

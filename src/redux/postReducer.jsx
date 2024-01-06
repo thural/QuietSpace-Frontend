@@ -45,11 +45,13 @@ export const postSlice = createSlice({
         },
 
         addComment: (state, action) => {
-            const id = action.payload.data['_id']
-            return state.map(post => {
-              if (post['_id'] === id) post = action.payload.data;
-              return post
-            })
+            const comment = action.payload;
+            const postId = comment.postId;
+
+            state.map(post => {
+              if (post['id'] === postId) post.comments.unshift(comment);
+              return post;
+            });
         },
 
         deleteComment: (state, action) => {

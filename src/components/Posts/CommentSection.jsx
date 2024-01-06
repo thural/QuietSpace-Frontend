@@ -1,88 +1,93 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, {useState, useRef, useEffect} from "react"
 import Comment from "./Comment"
 import styles from "./styles/commentSectionStyles"
-import { useSelector, useDispatch } from "react-redux"
-import { overlay } from "../../redux/formViewReducer"
-import { addComment } from "../../redux/postReducer"
+import {useSelector, useDispatch} from "react-redux"
+import {overlay} from "../../redux/formViewReducer"
+import {addComment} from "../../redux/postReducer"
 import InputEmoji from 'react-input-emoji'
+import {getApiResponse} from "../../api/commonRequest";
+import {COMMENT_PATH} from "../../constants/ApiPath";
+import {fetchCreateComment} from "../../api/commentRequests";
+import authReducer from "../../redux/authReducer";
 
 
+const CommentSection = ({postId, comments}) => {
 
-const CommentSection = ({ postId, comments }) => {
-  const { user } = useSelector(state => state.userReducer)
-  const dispatch = useDispatch()
-  const [commentData, setCommentData] = useState({ text: '' })
+    const user = useSelector(state => state.userReducer);
+    const auth = useSelector(state => state.authReducer);
 
-  console.log(comments)
+    const dispatch = useDispatch();
 
-  const cursorPosition = useRef(commentData.text.length);
-  const inputRef = useRef(null);
+    const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
 
-  useEffect(() => {
-    if (inputRef === null) return;
-    if (inputRef.current === null) return;
+    console.log(comments)
 
-    inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
-  }, [commentData.text]);
+    const cursorPosition = useRef(commentData.text.length);
+    const inputRef = useRef(null);
 
-  const postComment = async (commentData, postID) => {
-    await fetch(`http://localhost:5000/api/posts/${postID}/comments`, {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(commentData)
-    })
-      .then(res => res.json(), err => console.log('error from add post: ', err))
-      .then(data => {
-        dispatch(addComment({ data }))
-      })
-  }
+    useEffect(() => {
+        if (inputRef === null) return;
+        if (inputRef.current === null) return;
 
-  const handleEmojiInput = (event) => {
-    setCommentData({ ...commentData, text: event })
-    console.log(event)
-    console.log(commentData.text)
-  }
+        inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
+    }, [commentData.text]);
 
-  const handleSubmit = (event) => {
-    postComment(commentData, postId)
-    dispatch(overlay())
-  }
-  
-  const classes = styles()
+    const handlePostComment = async (commentData) => {
+        try {
+            const response = await fetchCreateComment(COMMENT_PATH, commentData, auth.token);
+            const responseData = await response.json();
+            if (response.ok) dispatch(addComment(responseData));
+        } catch (error) {
+            console.log('error on creating new comment: ', error)
+        }
+    }
 
-  return (
-    <div className={classes.commentSection} >
-      <form onSubmit={handleSubmit}>
+    const handleEmojiInput = (event) => {
+        setCommentData({...commentData, text: event})
+        console.log(event)
+        console.log(commentData.text)
+    }
 
-        <InputEmoji
-          className={classes.commentInput}
-          value={commentData.text}
-          onChange={handleEmojiInput}
-          fontSize={15}
-          cleanOnEnter
-          buttonElement
-          borderColor="#FFFFFF"
-          onEnter={handleSubmit}
-          theme="light"
-          placeholder="Type a comment"
-        />
+    const handleSubmit = (event) => {
+        handlePostComment(commentData, postId)
+        dispatch(overlay())
+    }
 
-      </form>
+    const classes = styles()
 
-      {
-        comments &&
-        comments.map(comment =>
-          <Comment
-            key={comment["id"]}
-            loggedUser={user}
-            comment={comment}
-            postId={postId}
-          />
-        )
-      }
+    return (
+        <div className={classes.commentSection}>
+            <form onSubmit={handleSubmit}>
 
-    </div>
-  )
+                <InputEmoji
+                    className={classes.commentInput}
+                    value={commentData.text}
+                    onChange={handleEmojiInput}
+                    fontSize={15}
+                    cleanOnEnter
+                    buttonElement
+                    borderColor="#FFFFFF"
+                    onEnter={handleSubmit}
+                    theme="light"
+                    placeholder="Type a comment"
+                />
+
+            </form>
+
+            {
+                comments &&
+                comments.map(comment =>
+                    <Comment
+                        key={comment["id"]}
+                        loggedUser={user}
+                        comment={comment}
+                        postId={postId}
+                    />
+                )
+            }
+
+        </div>
+    )
 }
 
 export default CommentSection
