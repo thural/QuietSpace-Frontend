@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import styles from "./styles/postStyles"
 import likeIcon from "../../assets/thumbs.svg"
 import shareIcon from "../../assets/share.svg"
@@ -7,18 +7,21 @@ import commentIcon from "../../assets/comment-3-line.svg"
 import deleteIcon from "../../assets/delete-bin-line.svg"
 import CommentSection from "./CommentSection"
 import {useDispatch, useSelector} from "react-redux"
-import {deletePost, likePost} from "../../redux/postReducer"
+import {deletePost, likePost, loadComments} from "../../redux/postReducer"
 import {edit} from "../../redux/formViewReducer"
 import {fetchDeletePost} from "../../api/postRequests";
-import {POST_URL} from "../../constants/ApiPath";
+import {COMMENT_PATH, POST_URL} from "../../constants/ApiPath";
+import {fetchCommentsByPostId} from "../../api/commentRequests";
 
 const Post = ({post}) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
+    const posts = useSelector(state => state.postReducer);
 
-    const {id: postId, username, text, likes, comments} = post;
+    const {id: postId, username, text, likes} = post;
     const [active, setActive] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
 
     const handleDeletePost = async (postId) => {
         try {
@@ -37,6 +40,26 @@ const Post = ({post}) => {
             })
             .catch(err => console.log('error from like post: ', err))
     }
+
+    const handleLoadComments = async (postId, token) => {
+        try {
+            const response = await fetchCommentsByPostId(COMMENT_PATH + `/post/${postId}`, token);
+            const responseData = await response.json();
+            if (response.ok) dispatch(loadComments({comments: responseData.content, postId: postId}));
+        } catch (error) {
+            console.log(`error on loading comments for post with id ${postId}: `, error)
+        }
+    }
+
+    useEffect(() => {
+        handleLoadComments(postId, auth.token).then(() => {
+                setIsFetching(false);
+            }
+        )
+    }, []);
+
+    const comments = posts.find(post => post.id === postId).comments;
+    console.log("comments from reducer: ", comments);
 
     const classes = styles()
 
@@ -75,7 +98,7 @@ const Post = ({post}) => {
                         }
                     </div>
                     {
-                        active &&
+                        !isFetching && active &&
                         <CommentSection postId={postId} comments={comments}/>
                     }
                 </>

@@ -12,3 +12,9 @@ export const fetchDeleteComment = async (url, token) => {
         return await getApiResponse(url, 'DELETE', null, token);
     } catch (error) {console.log(error)}
 }
+
+export const fetchCommentsByPostId = async (url, token) => {
+    try {
+        return await getApiResponse(url, 'GET', null, token);
+    } catch (error) {console.log(error)}
+}
