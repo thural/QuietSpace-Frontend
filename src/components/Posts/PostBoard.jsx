@@ -4,7 +4,7 @@ import React from "react"
 
 const PostBoard = ({posts}) => {
 
-    const classes = styles()
+    const classes = styles();
 
     return (
 

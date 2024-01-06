@@ -8,6 +8,7 @@ const styles = createUseStyles({
     padding: '1rem',
     gap: '0.5rem',
     borderRadius: '1em',
+    zIndex: '3',
     color: 'black',
     margin: 'auto',
     position: 'fixed',

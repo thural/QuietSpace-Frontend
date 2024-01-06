@@ -11,8 +11,6 @@ const Posts = () => {
     const posts = useSelector(state => state.postReducer);
     const user = useSelector(state => state.userReducer);
 
-    console.log("POSTS FROM posts component: ", posts)
-
     const dispatch = useDispatch();
 
     const classes = styles()

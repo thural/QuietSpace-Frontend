@@ -18,3 +18,9 @@ export const fetchCommentsByPostId = async (url, token) => {
         return await getApiResponse(url, 'GET', null, token);
     } catch (error) {console.log(error)}
 }
+
+export const fetchLikeComment = async (url, body, token) => {
+    try {
+        return await getApiResponse(url, 'POST', body, token);
+    } catch (err) { console.log(err) }
+}

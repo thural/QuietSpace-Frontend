@@ -7,6 +7,7 @@ const styles = createUseStyles({
     left: '50%',
     color: 'black',
     width: '320px',
+    zIndex: '3',
     margin: 'auto',
     display: 'flex',
     padding: '1rem',

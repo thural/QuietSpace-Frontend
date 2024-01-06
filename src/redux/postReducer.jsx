@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import posts from "../components/Posts/Posts";
+import comment from "../components/Posts/Comment";
 
 export const postSlice = createSlice({
     name: 'posts',
@@ -75,6 +76,12 @@ export const postSlice = createSlice({
                 }
                 return post
               })
+        },
+
+        likeComment: (state, action) => {
+            commentId = action.payload.commentId;
+            userId = action.payload.userId;
+
         }
 
     }

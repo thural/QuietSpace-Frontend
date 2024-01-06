@@ -10,7 +10,7 @@ import { POST_URL } from "../../constants/ApiPath";
 const PostForm = () => {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.authReducer);
-  const [postData, setPostData] = useState({ text: '' })
+  const [postData, setPostData] = useState({ text: '' });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -23,7 +23,7 @@ const PostForm = () => {
       const responseData = await response.json();
       responseData.likes = [];  // temporary fix for response null values
       responseData.comments = []; // temporary fix for response null values
-      const postLocation = await response.headers.get('Location');
+      const postLocation = response.headers.get('Location');
       console.log(postLocation);
       if(response.ok) dispatch(addPost(responseData));
     } catch (error) { console.log(error) }

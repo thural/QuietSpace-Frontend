@@ -28,7 +28,7 @@ const Post = ({post}) => {
             const response = await fetchDeletePost(POST_URL, auth.token, postId);
             if (response.ok) dispatch(deletePost({postId, user}));
         } catch (error) {
-            console.log('error from delete post: ', error)
+            console.log('error from delete post: ', error);
         }
     }
 
@@ -59,9 +59,8 @@ const Post = ({post}) => {
     }, []);
 
     const comments = posts.find(post => post.id === postId).comments;
-    console.log("comments from reducer: ", comments);
 
-    const classes = styles()
+    const classes = styles();
 
     return (
         <div id={postId} className={classes.wrapper}>

@@ -15,7 +15,7 @@ const EditForm = () => {
   const { edit: editView } = useSelector(state => state.formViewReducer);
 
   const postId = editView["_id"];
-  const editedPost = posts.find(post => post["id"] == postId);
+  const editedPost = posts.find(post => post.id === postId);
   const [postData, setPostData] = useState(editedPost);
 
   const handleChange = (event) => {
@@ -33,8 +33,8 @@ const EditForm = () => {
     }
 
   const handleSubmit = (event) => {
-    event.preventDefault()
-    handleEditPostFetch(postData, postId)
+    event.preventDefault();
+    handleEditPostFetch(postData, postId);
     dispatch(edit({ view: false, _id: postId }))
   }
 

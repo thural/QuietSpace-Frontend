@@ -1,55 +1,49 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import styles from "./styles/commentStyles"
 import {useDispatch, useSelector} from "react-redux"
 import {deleteComment} from "../../redux/postReducer"
 import emoji from 'react-easy-emoji'
-import {fetchDeleteComment} from "../../api/commentRequests";
-import {COMMENT_PATH} from "../../constants/ApiPath";
+import {fetchDeleteComment, fetchLikeComment} from "../../api/commentRequests";
+import {COMMENT_LIKE_TOGGLE, COMMENT_PATH} from "../../constants/ApiPath";
 
 
 const Comment = ({comment, postId}) => {
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
-    const likes = comment.likes == null ? [] : comment.likes;
-    const [liked, setLiked] = useState(likes.includes(user.id));
+
+    console.log("COMMENT: ", comment);
+
+    console.log("USER: ", user);
+
+    const isLiked = comment.likes.findIndex(like => like.userId === user.id) !== -1;
+
+    console.log("isLiked: ", isLiked);
+
+    const [liked, setLiked] = useState(isLiked);
 
     const handleDeleteComment = async () => {
         try {
             const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, auth.token);
-            console.log("response from fetch delete comment: ", response);
             if (response.ok) dispatch(deleteComment({postId: postId, commentId: comment.id}));
         } catch (error) {
             console.log("error on comment delete: ", error)
         }
     }
 
-    const handleLikeComment = async (commentID, postID) => {
-        await fetch(`http://localhost:5000/api/posts/${postID}/comments/like/${commentID}`, {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify({commentID})
-        })
-            .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-            .then(setLiked(true))
+    const handleLikeToggle = async (commentId, userId, token) => {
+        try {
+            const likeBody = {commentId, userId};
+            const response = await fetchLikeComment(COMMENT_LIKE_TOGGLE, likeBody, token);
+            if (response.ok) console.log("like was toggled"); // TODO:  write a dispatch logic
+            setLiked(!liked);
+        } catch (error) {
+            console.log(`like toggle on comment with id: ${commentId} was failed`);
+        }
     }
 
-    const handleUnlikeComment = async (commentID, postID) => {
-        await fetch(`http://localhost:5000/api/posts/${postID}/comments/unlike/${commentID}`, {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify({commentID})
-        })
-            .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-            .then(setLiked(false))
-    }
 
-    const handleLike = () => {
-        if (liked) handleUnlikeComment(commentId, postId)
-        else handleLikeComment(commentId, postId)
-    }
-
-    const classes = styles()
+    const classes = styles();
 
     return (
         <div key={comment.id} className={classes.comment}>
@@ -63,7 +57,8 @@ const Comment = ({comment, postId}) => {
             }
 
             <div className="comment-options">
-                <p className="comment-like" onClick={handleLike}>{liked ? "unlike" : "like"}</p>
+                <p className="comment-like" onClick={() =>
+                    handleLikeToggle(comment.id, user.id, auth.token)}>{liked ? "unlike" : "like"}</p>
                 <p className="comment-reply">reply</p>
                 {
                     comment.username === user.username &&

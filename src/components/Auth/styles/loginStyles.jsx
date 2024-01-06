@@ -7,6 +7,7 @@ const styles = createUseStyles({
     backgroundColor: 'white',
     padding: '1rem',
     gap: '0.5rem',
+    zIndex: '3',
     minWidth:'230px',
     borderRadius: '1em',
     color: 'black',
