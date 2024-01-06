@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import posts from "../components/Posts/Posts";
 
 export const postSlice = createSlice({
     name: 'posts',
@@ -44,6 +45,17 @@ export const postSlice = createSlice({
            return action.payload;
         },
 
+        loadComments:(state, action ) => {
+            const comments = action.payload.comments;
+            const postId = action.payload.postId;
+
+            console.log("comments from load comment: ", comments);
+            state.map(post => {
+                if(post.id === postId) post["comments"] = comments;
+                return post;
+            })
+        },
+
         addComment: (state, action) => {
             const comment = action.payload;
             const postId = comment.postId;
@@ -55,10 +67,10 @@ export const postSlice = createSlice({
         },
 
         deleteComment: (state, action) => {
-            const {postID, commentID} = action.payload;
-            state = state.map(post => {
-                if (post['_id'] === postID) {
-                  const indexOfComment = post.comments.findIndex(comment => comment['_id'] == commentID)
+            const {postId, commentId} = action.payload;
+            state.map(post => {
+                if (post.id === postId) {
+                  const indexOfComment = post.comments.findIndex(comment => comment.id === commentId)
                   if (indexOfComment !== -1) post.comments.splice(indexOfComment, 1)
                 }
                 return post
@@ -68,6 +80,15 @@ export const postSlice = createSlice({
     }
 })
 
-export const {loadPosts, unlikePost, likePost, deletePost, addPost, addComment, deleteComment, editPost} = postSlice.actions
+export const {loadPosts,
+    unlikePost,
+    likePost,
+    deletePost,
+    addPost,
+    loadComments,
+    addComment,
+    deleteComment,
+    editPost
+} = postSlice.actions
 
 export default postSlice.reducer

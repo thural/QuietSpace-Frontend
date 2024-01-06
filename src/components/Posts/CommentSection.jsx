@@ -3,10 +3,10 @@ import Comment from "./Comment"
 import styles from "./styles/commentSectionStyles"
 import {useSelector, useDispatch} from "react-redux"
 import {overlay} from "../../redux/formViewReducer"
-import {addComment} from "../../redux/postReducer"
+import postReducer, {addComment, loadComments} from "../../redux/postReducer"
 import InputEmoji from 'react-input-emoji'
 import {COMMENT_PATH} from "../../constants/ApiPath";
-import {fetchCreateComment} from "../../api/commentRequests";
+import {fetchCommentsByPostId, fetchCreateComment} from "../../api/commentRequests";
 
 
 const CommentSection = ({postId, comments}) => {
@@ -14,7 +14,9 @@ const CommentSection = ({postId, comments}) => {
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
 
+
     const dispatch = useDispatch();
+
 
     const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
 
@@ -24,9 +26,9 @@ const CommentSection = ({postId, comments}) => {
     useEffect(() => {
         if (inputRef === null) return;
         if (inputRef.current === null) return;
-
         inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
     }, [commentData.text]);
+
 
     const handlePostComment = async (commentData) => {
         try {

@@ -23,9 +23,6 @@ const App = () => {
     const auth = useSelector(state => state.authReducer);
     const user = useSelector(state => state.userReducer);
 
-    console.log("AUTH: ", auth);
-    console.log("USER: ", user);
-
     const handleFetchUser = async () => {
         if (auth.token != null) {
             const userResponse = await fetchUser(USER_PROFILE_URL, auth.token)

@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import styles from "./styles/commentStyles"
 import {useDispatch, useSelector} from "react-redux"
-import postReducer, {deleteComment} from "../../redux/postReducer"
+import {deleteComment} from "../../redux/postReducer"
 import emoji from 'react-easy-emoji'
 import {fetchDeleteComment} from "../../api/commentRequests";
 import {COMMENT_PATH} from "../../constants/ApiPath";
@@ -14,14 +14,11 @@ const Comment = ({comment, postId}) => {
     const likes = comment.likes == null ? [] : comment.likes;
     const [liked, setLiked] = useState(likes.includes(user.id));
 
-    console.log("username of user from comment component: ", user.username);
-    console.log("username of comment from comment component: ", comment.username);
-
     const handleDeleteComment = async () => {
         try {
-            const response = await fetchDeleteComment(COMMENT_PATH + comment.id, auth.token);
+            const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, auth.token);
             console.log("response from fetch delete comment: ", response);
-            if (response.ok) dispatch(deleteComment({postID: postId, commentID: comment.id}));
+            if (response.ok) dispatch(deleteComment({postId: postId, commentId: comment.id}));
         } catch (error) {
             console.log("error on comment delete: ", error)
         }
