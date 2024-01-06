@@ -5,10 +5,8 @@ import {useSelector, useDispatch} from "react-redux"
 import {overlay} from "../../redux/formViewReducer"
 import {addComment} from "../../redux/postReducer"
 import InputEmoji from 'react-input-emoji'
-import {getApiResponse} from "../../api/commonRequest";
 import {COMMENT_PATH} from "../../constants/ApiPath";
 import {fetchCreateComment} from "../../api/commentRequests";
-import authReducer from "../../redux/authReducer";
 
 
 const CommentSection = ({postId, comments}) => {
@@ -19,8 +17,6 @@ const CommentSection = ({postId, comments}) => {
     const dispatch = useDispatch();
 
     const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
-
-    console.log(comments)
 
     const cursorPosition = useRef(commentData.text.length);
     const inputRef = useRef(null);
@@ -44,16 +40,14 @@ const CommentSection = ({postId, comments}) => {
 
     const handleEmojiInput = (event) => {
         setCommentData({...commentData, text: event})
-        console.log(event)
-        console.log(commentData.text)
     }
 
-    const handleSubmit = (event) => {
-        handlePostComment(commentData, postId)
+    const handleSubmit = async (event) => {
+        await handlePostComment(commentData)
         dispatch(overlay())
     }
 
-    const classes = styles()
+    const classes = styles();
 
     return (
         <div className={classes.commentSection}>
@@ -75,8 +69,7 @@ const CommentSection = ({postId, comments}) => {
             </form>
 
             {
-                comments &&
-                comments.map(comment =>
+                comments && comments.map(comment =>
                     <Comment
                         key={comment["id"]}
                         loggedUser={user}

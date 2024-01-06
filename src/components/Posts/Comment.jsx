@@ -1,30 +1,30 @@
 import React, {useState} from "react"
 import styles from "./styles/commentStyles"
 import {useDispatch, useSelector} from "react-redux"
-import {deleteComment} from "../../redux/postReducer"
+import postReducer, {deleteComment} from "../../redux/postReducer"
 import emoji from 'react-easy-emoji'
+import {fetchDeleteComment} from "../../api/commentRequests";
+import {COMMENT_PATH} from "../../constants/ApiPath";
 
 
 const Comment = ({comment, postId}) => {
-    const user = useSelector(state => state.userReducer)
-    const dispatch = useDispatch()
+    const user = useSelector(state => state.userReducer);
+    const auth = useSelector(state => state.authReducer);
+    const dispatch = useDispatch();
     const likes = comment.likes == null ? [] : comment.likes;
     const [liked, setLiked] = useState(likes.includes(user.id));
 
-    console.log("username of user from comment component: ", user.username)
-    console.log("username of comment from comment component: ", user.username)
+    console.log("username of user from comment component: ", user.username);
+    console.log("username of comment from comment component: ", comment.username);
 
     const handleDeleteComment = async () => {
-        await fetch(`http://localhost:5000/api/posts/${postId}/comments/delete/${commentId}`, {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify({commentID: commentId})
-        })
-            .then(res => res.json(), err => console.log('error message from edit POST: ', err))
-            .then(() => {
-                dispatch(deleteComment({postID: postId, commentID: commentId}));
-                console.log('comment deleted')
-            })
+        try {
+            const response = await fetchDeleteComment(COMMENT_PATH + comment.id, auth.token);
+            console.log("response from fetch delete comment: ", response);
+            if (response.ok) dispatch(deleteComment({postID: postId, commentID: comment.id}));
+        } catch (error) {
+            console.log("error on comment delete: ", error)
+        }
     }
 
     const handleLikeComment = async (commentID, postID) => {
