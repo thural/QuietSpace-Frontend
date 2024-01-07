@@ -1,13 +1,13 @@
-import {POST_URL, USER_URL, USER_PROFILE_URL} from "../constants/ApiPath"
+import {POST_URL, USER_PROFILE_URL} from "../constants/ApiPath"
 import {Route, Routes} from "react-router-dom"
 import styles from "../styles/appStyles"
 import MainContext from "./MainContext"
-import Contact from "./Contact/Contact"
+import ContactPage from "./Contact/ContactPage"
 import NavBar from "./Navbar/Navbar"
-import Posts from "./Posts/Posts"
+import PostPage from "./Posts/PostPage"
 import {useEffect} from "react"
-import Home from "./Home/Home"
-import Chat from "./Chat/Chat"
+import HomePage from "./Home/HomePage"
+import ChatPage from "./Chat/ChatPage"
 import './App.css'
 
 import {fetchUser} from "../api/userRequests"
@@ -25,7 +25,7 @@ const App = () => {
 
     const handleFetchUser = async () => {
         if (auth.token != null) {
-            const userResponse = await fetchUser(USER_PROFILE_URL, auth.token)
+            const userResponse = await fetchUser(USER_PROFILE_URL, auth.token);
             const userResponseData = await userResponse.json();
             dispatch(loadUser(userResponseData));
         } else {
@@ -46,8 +46,8 @@ const App = () => {
     const fetchChat = async () => {
         try {
             const data = await fetch('http://localhost:5000/api/chats')
-            const chatData = await data.json()
-            dispatch(loadChat(chatData))
+            const chatData = await data.json();
+            dispatch(loadChat(chatData));
         } catch (err) {
             console.log(err)
         }
@@ -58,7 +58,7 @@ const App = () => {
     // }, [])
 
     useEffect(() => {
-        handleFetchUser().then(handleFetchPosts().then(console.log("USER: ", user)))
+        handleFetchUser().then(handleFetchPosts().then(console.log("LOGGED USER: ", user)));
     }, [auth]);
 
     const classes = styles()
@@ -68,10 +68,10 @@ const App = () => {
             <MainContext.Provider value={{fetchUser: handleFetchUser, fetchPosts, fetchChat}}>
                 <NavBar/>
                 <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/posts" element={<Posts/>}/>
-                    <Route path="/chat" element={<Chat/>}/>
-                    <Route path="/contact" element={<Contact/>}/>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/posts" element={<PostPage/>}/>
+                    <Route path="/chat" element={<ChatPage/>}/>
+                    <Route path="/contact" element={<ContactPage/>}/>
                 </Routes>
             </MainContext.Provider>
         </div>

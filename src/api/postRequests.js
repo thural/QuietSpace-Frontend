@@ -23,3 +23,9 @@ export const fetchDeletePost = async (url, token, postId) => {
         return await getApiResponse(url + `/${postId}`, 'DELETE', null, token);
     } catch (err) { console.log(err) }
 }
+
+export const fetchLikePost = async (url, body, token) => {
+    try {
+        return await getApiResponse(url, 'POST', body, token);
+    } catch (err) { console.log(err) }
+}

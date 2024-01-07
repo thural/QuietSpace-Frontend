@@ -1,8 +1,8 @@
 import React from "react"
 import logo from "../../assets/github-svgrepo-com.svg"
-import styles from "./styles/contactStyles"
+import styles from "./styles/contactPageStyles"
 
-const Contact = () => {
+const ContactPage = () => {
 
   const classes = styles();
 
@@ -26,4 +26,4 @@ const Contact = () => {
   )
 }
 
-export default Contact
+export default ContactPage

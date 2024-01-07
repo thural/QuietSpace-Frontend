@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Overlay from "../Overlay";
-import styles from "./styles/signupStyles"
+import styles from "./styles/signupFormStyles"
 import {useDispatch} from "react-redux";
 import {login, overlay} from "../../redux/formViewReducer";
 import {fetchSignup} from "../../api/authRequests";

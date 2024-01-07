@@ -27,7 +27,7 @@ const CommentSection = ({postId, comments}) => {
         inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
     }, [commentData.text]);
 
-    const handlePostComment = async (commentData) => {
+    const handleCreateComment = async (commentData) => {
         try {
             const response = await fetchCreateComment(COMMENT_PATH, commentData, auth.token);
             const responseData = await response.json();
@@ -42,7 +42,7 @@ const CommentSection = ({postId, comments}) => {
     }
 
     const handleSubmit = async (event) => {
-        await handlePostComment(commentData)
+        await handleCreateComment(commentData)
         dispatch(overlay())
     }
 

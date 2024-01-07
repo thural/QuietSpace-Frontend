@@ -16,27 +16,34 @@ const NavBar = ({ children }) => {
   return (
     <div className={classes.navbar}>
       <h1>Quiet Space</h1>
+
       <nav>
         <div className="navbar-item">
           <Link to="/"><img src={homeIcon} /></Link>
         </div>
+
         <div className="navbar-item">
           <Link to="/posts"><img src={postsIcon} /></Link>
         </div>
+
         {
           user && user?.username &&
           <div className="navbar-item">
             <Link to="/chat"><img src={chatIcon} /></Link>
           </div>
         }
+
         <div className="navbar-item">
           <Link to="/contact"><img src={contactIcon} /></Link>
         </div>
+
         {children}
       </nav>
+
       <div className="navbar-item menu">
         <Menu />
       </div>
+
     </div>
   )
 }

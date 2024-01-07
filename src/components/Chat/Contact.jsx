@@ -1,9 +1,9 @@
 import { useContext } from "react"
-import styles from "./styles/chatContactStyles"
+import styles from "./styles/contactStyles"
 import ChatContext from "./ChatContext"
 import { useSelector } from "react-redux"
 
-const ChatContact = ({ contact }) => {
+const Contact = ({ contact }) => {
 
   const classes = styles()
   const user = useSelector(state => state.userReducer)
@@ -27,4 +27,4 @@ const ChatContact = ({ contact }) => {
   )
 }
 
-export default ChatContact
+export default Contact

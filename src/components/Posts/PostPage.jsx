@@ -1,12 +1,12 @@
 import React from "react"
-import PostBoard from "./PostBoard"
-import PostForm from "./PostForm"
-import EditForm from "./EditForm"
-import styles from "./styles/postsStyles"
+import PostContainer from "./PostContainer"
+import CreatePostForm from "./CreatePostForm"
+import EditPostForm from "./EditPostForm"
+import styles from "./styles/postPageStyles"
 import {useDispatch, useSelector} from "react-redux"
 import {post} from "../../redux/formViewReducer"
 
-const Posts = () => {
+const PostPage = () => {
     const formView = useSelector(state => state.formViewReducer);
     const posts = useSelector(state => state.postReducer);
     const user = useSelector(state => state.userReducer);
@@ -27,19 +27,19 @@ const Posts = () => {
 
                 {
                     user.username && formView.post &&
-                    <PostForm/>
+                    <CreatePostForm/>
                 }
 
                 {
                     user.username && formView.edit.view &&
-                    <EditForm/>
+                    <EditPostForm/>
                 }
 
-                <PostBoard posts={posts}/>
+                <PostContainer posts={posts}/>
 
             </div>
         </>
     )
 }
 
-export default Posts
+export default PostPage

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./styles/newPostStyles"
+import styles from "./styles/editPostStyles"
 import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../../redux/postReducer";
@@ -7,7 +7,7 @@ import { overlay } from "../../redux/formViewReducer";
 import { fetchCreatePost } from "../../api/postRequests";
 import { POST_URL } from "../../constants/ApiPath";
 
-const PostForm = () => {
+const CreatePostForm = () => {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.authReducer);
   const [postData, setPostData] = useState({ text: '' });
@@ -17,7 +17,7 @@ const PostForm = () => {
     setPostData({ ...postData, [name]: value });
   }
 
-  const handleFetchNewPost = async (postData, token) => {
+  const handleCreatePost = async (postData, token) => {
     try {
       const response = await fetchCreatePost(POST_URL, postData, token);
       const responseData = await response.json();
@@ -38,7 +38,7 @@ const PostForm = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            handleFetchNewPost(postData, auth.token);
+            handleCreatePost(postData, auth.token);
             dispatch(overlay())
           }}
         >
@@ -57,4 +57,4 @@ const PostForm = () => {
   )
 }
 
-export default PostForm
+export default CreatePostForm

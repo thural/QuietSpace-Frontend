@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import posts from "../components/Posts/Posts";
+import posts from "../components/Posts/PostPage";
 import comment from "../components/Posts/Comment";
 
 export const postSlice = createSlice({
@@ -50,7 +50,6 @@ export const postSlice = createSlice({
             const comments = action.payload.comments;
             const postId = action.payload.postId;
 
-            console.log("comments from load comment: ", comments);
             state.map(post => {
                 if(post.id === postId) post["comments"] = comments;
                 return post;

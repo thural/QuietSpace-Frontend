@@ -1,10 +1,10 @@
 import { useState } from "react"
 import Message from "./Message"
-import styles from "./styles/chatBoardStyles"
+import styles from "./styles/messageContainerStyles"
 import { useDispatch } from 'react-redux'
 import { addMessage } from "../../redux/chatReducer"
 
-const ChatBoard = ({ messages, currentChat }) => {
+const MessageContainer = ({ messages, currentChat }) => {
 
   const dispatch = useDispatch()
 
@@ -59,4 +59,4 @@ const ChatBoard = ({ messages, currentChat }) => {
   )
 }
 
-export default ChatBoard
+export default MessageContainer

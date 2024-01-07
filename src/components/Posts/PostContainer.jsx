@@ -1,8 +1,8 @@
 import Post from "./Post"
-import styles from "./styles/cardBoardStyles"
+import styles from "./styles/postContainerStyles"
 import React from "react"
 
-const PostBoard = ({posts}) => {
+const PostContainer = ({posts}) => {
 
     const classes = styles();
 
@@ -17,4 +17,4 @@ const PostBoard = ({posts}) => {
     )
 }
 
-export default PostBoard
+export default PostContainer

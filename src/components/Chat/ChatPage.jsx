@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import ChatBoard from "./ChatBoard"
-import ContactBoard from "./ContactBoard"
+import MessageContainer from "./MessageContainer"
+import ContactContainer from "./ContactContainer"
 import ChatContext from "./ChatContext"
-import styles from "./styles/chatStyles"
+import styles from "./styles/chatPageStyles"
 import { useSelector } from 'react-redux'
 
-const Chat = () => {
+const ChatPage = () => {
 
   const chat = useSelector(state => state.chatReducer)
 
@@ -18,11 +18,11 @@ const Chat = () => {
   return (
     <div className={classes.chat}>
       <ChatContext.Provider value={{ currentChat, setCurrentChat }} >
-        <ContactBoard contacts={contacts} />
-        <ChatBoard messages={reversedMessages} currentChat={currentChat}/>
+        <ContactContainer contacts={contacts} />
+        <MessageContainer messages={reversedMessages} currentChat={currentChat}/>
       </ChatContext.Provider>
     </div>
   )
 }
 
-export default Chat
+export default ChatPage

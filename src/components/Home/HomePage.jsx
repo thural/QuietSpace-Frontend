@@ -2,11 +2,11 @@ import React from "react"
 import { Link } from "react-router-dom"
 import SignupForm from "../Auth/SignupForm"
 import LoginForm from "../Auth/LoginForm"
-import styles from "./styles/homeStyles"
+import styles from "./styles/homePageStyles"
 import { useDispatch, useSelector } from "react-redux"
 import { login } from "../../redux/formViewReducer"
 
-const Home = () => {
+const HomePage = () => {
   const dispatch = useDispatch()
   const formView = useSelector(state => state.formViewReducer)
   const user = useSelector(state => state.userReducer)
@@ -33,4 +33,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default HomePage

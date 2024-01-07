@@ -9,8 +9,8 @@ import CommentSection from "./CommentSection"
 import {useDispatch, useSelector} from "react-redux"
 import {deletePost, likePost, loadComments} from "../../redux/postReducer"
 import {edit} from "../../redux/formViewReducer"
-import {fetchDeletePost} from "../../api/postRequests";
-import {COMMENT_PATH, POST_URL} from "../../constants/ApiPath";
+import {fetchDeletePost, fetchLikePost} from "../../api/postRequests";
+import {COMMENT_PATH, POST_LIKE_TOGGLE, POST_URL} from "../../constants/ApiPath";
 import {fetchCommentsByPostId} from "../../api/commentRequests";
 
 const Post = ({post}) => {
@@ -20,7 +20,7 @@ const Post = ({post}) => {
     const posts = useSelector(state => state.postReducer);
 
     const {id: postId, username, text, likes} = post;
-    const [active, setActive] = useState(false);
+    const [showComments, setShowComments] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
 
     const handleDeletePost = async (postId) => {
@@ -32,13 +32,15 @@ const Post = ({post}) => {
         }
     }
 
-    const handleLikePost = async (postId) => {
-        await fetch(`http://localhost:5000/api/posts/like/${postId}`, {method: 'POST'})
-            .then(res => res.json())
-            .then(() => {
-                dispatch(likePost({_id: postId, user}))
-            })
-            .catch(err => console.log('error from like post: ', err))
+    const handleLikeToggle = async (postId, userId, token) => {
+        try {
+            const likeBody = {postId, userId};
+            const response = await fetchLikePost(POST_LIKE_TOGGLE, likeBody, token);
+            if (response.ok) console.log("like was toggled"); // TODO:  write a dispatch logic
+            setLiked(!liked);
+        } catch (error) {
+            console.log(`like toggle on comment with id: ${postId} was failed`);
+        }
     }
 
     const handleLoadComments = async (postId, token) => {
@@ -76,28 +78,31 @@ const Post = ({post}) => {
                 user.username &&
                 <>
                     <hr></hr>
+
                     <div className="panel">
                         {
                             post.username !== user.username &&
-                            <img src={likeIcon} onClick={() => handleLikePost(postId)}/>
+                            <img src={likeIcon} onClick={() => handleLikeToggle(postId)} alt={"post like icon"}/>
                         }
 
-                        <img src={commentIcon} onClick={() => setActive(!active)}/>
+                        <img src={commentIcon} onClick={() => setShowComments(!showComments)} alt={"comment icon"}/>
 
                         {
                             post.username === user.username &&
-                            <img src={editIcon} onClick={() => dispatch(edit({view: true, _id: postId}))}/>
+                            <img src={editIcon} onClick={() => dispatch(edit({view: true, _id: postId}))}
+                                 alt={"edit icon"}/>
                         }
 
-                        <img src={shareIcon}/>
+                        <img src={shareIcon} alt={"share icon"}/>
 
                         {
                             user.admin || post.username === user.username &&
-                            <img src={deleteIcon} onClick={() => handleDeletePost(postId)}/>
+                            <img src={deleteIcon} onClick={() => handleDeletePost(postId)} alt={"delete post icon"}/>
                         }
                     </div>
+
                     {
-                        !isFetching && active &&
+                        !isFetching && showComments &&
                         <CommentSection postId={postId} comments={comments}/>
                     }
                 </>

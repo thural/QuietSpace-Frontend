@@ -8,3 +8,5 @@ export const LOGOUT_URL = 'http://localhost:8080/auth/logout';
 export const COMMENT_PATH = BASE_URL + "/comments";
 export const COMMENT_LIKE = BASE_URL + "/comment-like";
 export const COMMENT_LIKE_TOGGLE = COMMENT_LIKE + "/toggle-like";
+export const POST_LIKE = BASE_URL + "/post-like";
+export const POST_LIKE_TOGGLE = POST_LIKE + "/toggle-like";

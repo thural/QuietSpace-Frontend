@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import styles from "./styles/newPostStyles"
+import styles from "./styles/editPostStyles"
 import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux"
 import { editPost } from "../../redux/postReducer"
@@ -7,7 +7,7 @@ import { edit } from "../../redux/formViewReducer"
 import { fetchEditPost } from "../../api/postRequests"
 import { POST_URL } from "../../constants/ApiPath"
 
-const EditForm = () => {
+const EditPostForm = () => {
 
   const dispatch = useDispatch();
   const auth = useSelector(state => state.authReducer);
@@ -23,7 +23,7 @@ const EditForm = () => {
     setPostData({ ...postData, [name]: value })
   }
 
-    const handleEditPostFetch = async (postData, postId) => {
+    const handleEditPost = async (postData, postId) => {
       try {
         const response = await fetchEditPost(POST_URL, postData, auth.token, postId);
         if (response.ok) dispatch(editPost(postData));
@@ -34,11 +34,12 @@ const EditForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleEditPostFetch(postData, postId);
+    handleEditPost(postData, postId);
     dispatch(edit({ view: false, _id: postId }))
   }
 
-  const classes = styles()
+  const classes = styles();
+
   return (
     <>
       <Overlay />
@@ -61,4 +62,4 @@ const EditForm = () => {
   )
 }
 
-export default EditForm
+export default EditPostForm

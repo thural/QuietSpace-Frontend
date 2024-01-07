@@ -12,15 +12,8 @@ const Comment = ({comment, postId}) => {
     const auth = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
 
-    console.log("COMMENT: ", comment);
 
-    console.log("USER: ", user);
-
-    const isLiked = comment.likes.findIndex(like => like.userId === user.id) !== -1;
-
-    console.log("isLiked: ", isLiked);
-
-    const [liked, setLiked] = useState(isLiked);
+    const [liked, setLiked] = useState(false);
 
     const handleDeleteComment = async () => {
         try {
@@ -59,7 +52,9 @@ const Comment = ({comment, postId}) => {
             <div className="comment-options">
                 <p className="comment-like" onClick={() =>
                     handleLikeToggle(comment.id, user.id, auth.token)}>{liked ? "unlike" : "like"}</p>
+
                 <p className="comment-reply">reply</p>
+
                 {
                     comment.username === user.username &&
                     <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
