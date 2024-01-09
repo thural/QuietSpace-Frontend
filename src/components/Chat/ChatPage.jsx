@@ -1,28 +1,41 @@
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import MessageContainer from "./MessageContainer"
 import ContactContainer from "./ContactContainer"
-import ChatContext from "./ChatContext"
 import styles from "./styles/chatPageStyles"
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 
 const ChatPage = () => {
 
-  const chat = useSelector(state => state.chatReducer)
+    const chats = useSelector(state => state.chatReducer)
 
-  const contacts = chat.chat
-  const [currentChat, setCurrentChat] = useState(contacts[0]["_id"])
-  const messages = contacts.find(contact => contact._id == currentChat)['messages']
-  const reversedMessages = [...messages].reverse()
-  const classes = styles()
-  
-  return (
-    <div className={classes.chat}>
-      <ChatContext.Provider value={{ currentChat, setCurrentChat }} >
-        <ContactContainer contacts={contacts} />
-        <MessageContainer messages={reversedMessages} currentChat={currentChat}/>
-      </ChatContext.Provider>
-    </div>
-  )
+    const duoChats = chats.map(chat => chat.isGroupChat === false);
+    const groupChats = chats.map(chat => chat.isGroupChat === true);
+
+    const [currentChat, setCurrentChat] = useState(duoChats[0]);
+
+    const contacts = duoChats.map(chat => chat.members);
+    const messages = currentChat.messages;
+
+    const {currentContact, setCurrentContact} = useState(contacts[0]);
+
+    useEffect(() => {
+        setCurrentChat(chats.find(chat => chat.members[0].id === currentContact.id))
+    }, [currentContact]);
+
+    const reversedMessages = [...messages].reverse();
+
+    const classes = styles()
+
+    return (
+        <div className={classes.chat}>
+            <ContactContainer
+                contacts={contacts}
+                currentContact={currentContact}
+                setCurrentContact={setCurrentContact}
+            />
+            <MessageContainer messages={reversedMessages}/>
+        </div>
+    )
 }
 
 export default ChatPage
