@@ -1,10 +1,8 @@
-import {useSelector} from "react-redux"
 import styles from "./styles/contactStyles"
 
-const ContactSection = ({contact, recentText, currentContact, setCurrentContact}) => {
+const Contact = ({contact, recentText, currentContact, setCurrentContact}) => {
 
     const classes = styles()
-    const user = useSelector(state => state.userReducer)
 
     const backgroundColor = currentContact.id === contact.id ? '#e3e3e3' : 'white';
 
@@ -26,4 +24,4 @@ const ContactSection = ({contact, recentText, currentContact, setCurrentContact}
     )
 }
 
-export default ContactSection
+export default Contact
