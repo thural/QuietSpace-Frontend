@@ -1,9 +1,11 @@
 import Post from "./Post"
 import styles from "./styles/postContainerStyles"
 import React from "react"
+import {useSelector} from "react-redux";
 
-const PostContainer = ({posts}) => {
+const PostContainer = () => {
 
+    const posts = useSelector(state => state.postReducer);
     const classes = styles();
 
     return (

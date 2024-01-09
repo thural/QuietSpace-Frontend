@@ -10,3 +10,5 @@ export const COMMENT_LIKE = BASE_URL + "/comment-like";
 export const COMMENT_LIKE_TOGGLE = COMMENT_LIKE + "/toggle-like";
 export const POST_LIKE = BASE_URL + "/post-like";
 export const POST_LIKE_TOGGLE = POST_LIKE + "/toggle-like";
+export const CHAT_PATH = BASE_URL + "/chats";
+export const CHAT_PATH_BY_OWNER = CHAT_PATH + "/owner";

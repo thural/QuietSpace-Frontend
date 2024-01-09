@@ -7,7 +7,7 @@ import commentIcon from "../../assets/comment-3-line.svg"
 import deleteIcon from "../../assets/delete-bin-line.svg"
 import CommentSection from "./CommentSection"
 import {useDispatch, useSelector} from "react-redux"
-import {deletePost, likePost, loadComments} from "../../redux/postReducer"
+import {deletePost, loadComments} from "../../redux/postReducer"
 import {edit} from "../../redux/formViewReducer"
 import {fetchDeletePost, fetchLikePost} from "../../api/postRequests";
 import {COMMENT_PATH, POST_LIKE_TOGGLE, POST_URL} from "../../constants/ApiPath";
@@ -17,7 +17,6 @@ const Post = ({post}) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
-    const posts = useSelector(state => state.postReducer);
 
     const {id: postId, username, text, likes} = post;
     const [showComments, setShowComments] = useState(false);
@@ -32,12 +31,11 @@ const Post = ({post}) => {
         }
     }
 
-    const handleLikeToggle = async (postId, userId, token) => {
+    const handlePostLikeToggle = async (postId, userId, token) => {
         try {
             const likeBody = {postId, userId};
             const response = await fetchLikePost(POST_LIKE_TOGGLE, likeBody, token);
             if (response.ok) console.log("like was toggled"); // TODO:  write a dispatch logic
-            setLiked(!liked);
         } catch (error) {
             console.log(`like toggle on comment with id: ${postId} was failed`);
         }
@@ -60,14 +58,14 @@ const Post = ({post}) => {
         )
     }, []);
 
-    const comments = posts.find(post => post.id === postId).comments;
-
+    const comments = post.comments;
     const classes = styles();
 
     return (
         <div id={postId} className={classes.wrapper}>
             <div className="author">{username}</div>
             <div className="text"><p>{text}</p></div>
+
             <div className={classes.postinfo}>
                 <p className="likes">{likes == null ? 0 : likes.length} likes</p>
                 <p>{comments == null ? 0 : comments.length} comments </p>
@@ -82,7 +80,7 @@ const Post = ({post}) => {
                     <div className="panel">
                         {
                             post.username !== user.username &&
-                            <img src={likeIcon} onClick={() => handleLikeToggle(postId)} alt={"post like icon"}/>
+                            <img src={likeIcon} onClick={() => handlePostLikeToggle(postId)} alt={"post like icon"}/>
                         }
 
                         <img src={commentIcon} onClick={() => setShowComments(!showComments)} alt={"comment icon"}/>

@@ -4,7 +4,9 @@ import styles from "./styles/messageContainerStyles"
 import { useDispatch } from 'react-redux'
 import { addMessage } from "../../redux/chatReducer"
 
-const MessageContainer = ({ messages, currentChat }) => {
+const MessageContainer = ({ currentChat }) => {
+
+  const messages = currentChat.messages;
 
   const dispatch = useDispatch()
 

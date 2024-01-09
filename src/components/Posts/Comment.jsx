@@ -11,8 +11,6 @@ const Comment = ({comment, postId}) => {
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
-
-
     const [liked, setLiked] = useState(false);
 
     const handleDeleteComment = async () => {

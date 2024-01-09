@@ -13,9 +13,7 @@ const CommentSection = ({postId, comments}) => {
 
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
-
     const dispatch = useDispatch();
-
     const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
 
     const cursorPosition = useRef(commentData.text.length);
