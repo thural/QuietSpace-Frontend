@@ -6,28 +6,29 @@ import {addMessage} from "../../redux/chatReducer"
 import {fetchCreateMessage} from "../../api/chatRequests";
 import {MESSAGE_PATH} from "../../constants/ApiPath";
 
-const MessageContainer = () => {
-
-    const chats = useSelector(state => state.chatReducer);
+const MessageContainer = ({currentChat}) => {
     const auth = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
 
-    const messages = chats[0].messages;
-    const [messageData, setMessageData] = useState({text: ''});
+    const messages = currentChat.messages;
+    const chatId = currentChat.id;
+    const senderId = currentChat.users[0].id;
+
+    const [messageData, setMessageData] = useState({chatId, senderId, text: ''});
 
     const handleInputChange = (event) => {
         const {name, value} = event.target
         setMessageData({...messageData, [name]: value})
     }
 
-    const sendMessage = async (messageData) => {
-        const mockMessage = {
-            chatId: "77577489-0a18-4946-9d09-e9c70533d405",
-            senderId: "1dbaf467-3e21-4d0a-b1ad-d8ee2c766c4c",
-            text: messageData.text
-        }
+    const sendMessage = async () => {
+        // const mockMessage = {
+        //     chatId: "77577489-0a18-4946-9d09-e9c70533d405",
+        //     senderId: "1dbaf467-3e21-4d0a-b1ad-d8ee2c766c4c",
+        //     text: messageData.text
+        // }
 
-        const response = await fetchCreateMessage(MESSAGE_PATH, mockMessage, auth.token);
+        const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth.token);
     }
 
   const handleSubmit = (event) => {

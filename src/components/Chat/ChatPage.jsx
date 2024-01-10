@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import MessageContainer from "./MessageContainer"
-import ContactContainer from "./ContactContainer"
+import ContactContainer from "./ContactContainer";
 import styles from "./styles/chatPageStyles"
 import {useDispatch, useSelector} from 'react-redux'
 import {fetchChats} from "../../api/chatRequests";
@@ -10,49 +10,30 @@ import {loadChat} from "../../redux/chatReducer";
 const ChatPage = () => {
 
     const user = useSelector(state => state.userReducer);
-    const chats = useSelector(state => state.chatReducer);
     const auth = useSelector(state => state.authReducer);
+    const chats = useSelector(state => state.chatReducer);
+
+    const [currentChat, setCurrentChat] = useState(chats[0])
 
     const dispatch = useDispatch();
     const [isFetching, setIsFetching] = useState(true);
 
-    const [currentChat, setCurrentChat] = useState(null);
-    const [contacts, setContacts] = useState(null);
-    const [currentContact, setCurrentContact] = useState(null);
-
-
     const handleFetchChats = async () => {
         try {
             const response = await fetchChats(CHAT_PATH_BY_OWNER + `/${user.id}`, auth.token);
-            const responseData = await response.json();
-            dispatch(loadChat(responseData));
-            return responseData;
+            return await response.json();
         } catch (error) {
             console.log("error from chat fetch: ", error)
             return [];
         }
     }
 
-    let duoChats = null;
-
     useEffect(() => {
-
         handleFetchChats()
-            .then(() => {
-                duoChats = chats.map(chat => {
-                    if (chat.groupChat === false) return chat;
-                })
-            })
-            .then(() => setCurrentChat(duoChats[0]))
-            .then(() => setContacts(duoChats.map(chat => chat.members[0])))
-            .then(() => {
-                setCurrentChat(chats.find(chat => chat.members[0].id === currentContact.id));
-            })
-            .then(data => console.log("chat data: ", data))
+            .then(responseData => dispatch(loadChat(responseData)))
             .then(() => setIsFetching(false));
-    }, [user]);
+    }, []);
 
-    // const reversedMessages = [...messages].reverse();
 
     const classes = styles()
 
@@ -61,9 +42,9 @@ const ChatPage = () => {
             {
                 !isFetching &&
                 <ContactContainer
-                    contacts={contacts}
-                    currentContact={currentContact}
-                    setCurrentContact={setCurrentContact}
+                    currentChat={currentChat}
+                    setCurrentChat={setCurrentChat}
+                    chats={chats}
                 />
             }
             {

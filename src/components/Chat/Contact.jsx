@@ -1,12 +1,22 @@
 import styles from "./styles/contactStyles"
 
-const Contact = ({contact, recentText, currentContact, setCurrentContact}) => {
+const Contact = ({
+                     contact,
+                     chats,
+                     currentChat,
+                     setCurrentChat
+                 }) => {
 
     const classes = styles()
 
-    const backgroundColor = currentContact.id === contact.id ? '#e3e3e3' : 'white';
+    const chatOfThisContact = chats.find(chat => chat.users[0].id === contact.id);
 
-    console.log("CONTACT from contact component: ", contact);
+    // console.log("chat of this contact: ", chatOfThisContact)
+
+    const recentText = Array.from(chatOfThisContact.messages).pop().text;
+
+    const backgroundColor = currentChat.users[0].id === contact.id ? '#e3e3e3' : 'white';
+    // console.log("CONTACT from contact component: ", contact);
 
     return (
         <div
@@ -15,7 +25,7 @@ const Contact = ({contact, recentText, currentContact, setCurrentContact}) => {
             className={classes.contact}
 
             onClick={() => {
-                setCurrentContact(contact.id)
+                setCurrentChat(chatOfThisContact);
             }}
 
             style={{backgroundColor}}

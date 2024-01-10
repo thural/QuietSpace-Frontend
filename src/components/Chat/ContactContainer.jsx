@@ -1,10 +1,11 @@
 import Contact from "./Contact"
 import styles from "./styles/contactContainerStyles"
-import {useState} from "react";
 
-const ContactContainer = ({contacts, currentContact, setCurrentContact}) => {
+const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
+    const contacts = chats.map(chat => chat.users[0]);
+    const classes = styles();
 
-    const classes = styles()
+    console.log("chat users: ", contacts);
 
     return (
         <div className={classes.contacts}>
@@ -12,9 +13,10 @@ const ContactContainer = ({contacts, currentContact, setCurrentContact}) => {
                 contacts.map((contact, index) =>
                     <Contact
                         key={index}
+                        chats={chats}
                         contact={contact}
-                        currentContact={currentContact}
-                        setCurrentContact={setCurrentContact}
+                        currentChat={currentChat}
+                        setCurrentChat={setCurrentChat}
                     />
                 )
             }
