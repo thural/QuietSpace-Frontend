@@ -5,13 +5,13 @@ export const fetchChats = async (url, token) => {
         return await getApiResponse(url, 'GET', null, token);
     } catch (err) { console.log(err) }
 }
-//
-// export const fetchCreatePost = async (url, body, token) => {
-//     try {
-//         return await getApiResponse(url, 'POST', body, token);
-//     } catch (err) { console.log(err) }
-// }
-//
+
+export const fetchCreateMessage = async (url, body, token) => {
+    try {
+        return await getApiResponse(url, 'POST', body, token);
+    } catch (err) { console.log(err) }
+}
+
 // export const fetchEditPost = async (url, body, token, postId) => {
 //     try {
 //         return await getApiResponse(url + `/${postId}`, 'PUT', body, token);
