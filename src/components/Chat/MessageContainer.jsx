@@ -14,6 +14,8 @@ const MessageContainer = ({currentChat}) => {
     const chatId = currentChat.id;
     const senderId = currentChat["ownerId"];
 
+    console.log("current chat: ", currentChat);
+
     const [messageData, setMessageData] = useState({chatId, senderId, text: ''});
 
     const handleInputChange = (event) => {

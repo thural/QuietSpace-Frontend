@@ -6,7 +6,6 @@ export const chatSlice = createSlice({
     reducers:{
 
         loadChat: (state, action) => {
-            console.log("chats from loadChat reducer method: ", action.payload);
             return action.payload
         },
 
@@ -16,14 +15,25 @@ export const chatSlice = createSlice({
                 if (chat.id === currentChatId) chat.messages.push(messageData);
                 return chat
             })
-        }
+        },
+
+        removeMessage: (state, action) => {
+            const {currentChatId, deletedMessageId} = action.payload;
+            state.map(chat => {
+                if (chat.id === currentChatId){
+                    chat.messages = chat.messages.filter( message => message.id !== deletedMessageId);
+                    return chat;
+                } else return chat;
+            });
+        },
 
     }
 })
 
 export const {
     loadChat,
-    addMessage
+    addMessage,
+    removeMessage
 } = chatSlice.actions
 
 export default chatSlice.reducer
