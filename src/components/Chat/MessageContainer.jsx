@@ -12,7 +12,7 @@ const MessageContainer = ({currentChat}) => {
 
     const messages = currentChat.messages;
     const chatId = currentChat.id;
-    const senderId = currentChat.users[0].id;
+    const senderId = currentChat["ownerId"];
 
     const [messageData, setMessageData] = useState({chatId, senderId, text: ''});
 

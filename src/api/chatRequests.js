@@ -17,13 +17,13 @@ export const fetchCreateMessage = async (url, body, token) => {
 //         return await getApiResponse(url + `/${postId}`, 'PUT', body, token);
 //     } catch (err) { console.log(err) }
 // }
-//
-// export const fetchDeletePost = async (url, token, postId) => {
-//     try {
-//         return await getApiResponse(url + `/${postId}`, 'DELETE', null, token);
-//     } catch (err) { console.log(err) }
-// }
-//
+
+export const fetchDeleteMessage = async (url, token, messageId) => {
+    try {
+        return await getApiResponse(url + `/${messageId}`, 'DELETE', null, token);
+    } catch (err) { console.log(err) }
+}
+
 // export const fetchLikePost = async (url, body, token) => {
 //     try {
 //         return await getApiResponse(url, 'POST', body, token);

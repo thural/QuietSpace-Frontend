@@ -36,6 +36,15 @@ const styles = createUseStyles({
     position: 'absolute',
     top: '-1.3rem',
   },
+  delete: {
+    width: '100%',
+    fontSize: '.7rem',
+    fontWeight: '400',
+    marginBottom: '0.2rem',
+    color: '#404040',
+    position: 'absolute',
+    bottom: '-1.3rem',
+  },
   text: {
     margin: '0px',
     padding: '0',
