@@ -19,7 +19,7 @@ const PostPage = () => {
     const classes = styles();
 
     const handleFetchPosts = async () => {
-        if (auth.token != null) {
+        if (auth["token"] != null) {
             const response = await fetchPosts(POST_URL, auth.token);
             const responseData = await response.json();
             dispatch(loadPosts(responseData["content"]));

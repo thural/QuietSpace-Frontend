@@ -2,9 +2,9 @@ import {useState} from "react"
 import Message from "./Message"
 import styles from "./styles/messageContainerStyles"
 import {useDispatch, useSelector} from 'react-redux'
-import {addMessage} from "../../redux/chatReducer"
 import {fetchCreateMessage} from "../../api/chatRequests";
 import {MESSAGE_PATH} from "../../constants/ApiPath";
+import {addMessage} from "../../redux/chatReducer";
 
 const MessageContainer = ({currentChat}) => {
     const auth = useSelector(state => state.authReducer);
@@ -21,21 +21,18 @@ const MessageContainer = ({currentChat}) => {
         setMessageData({...messageData, [name]: value})
     }
 
-    const sendMessage = async () => {
-        // const mockMessage = {
-        //     chatId: "77577489-0a18-4946-9d09-e9c70533d405",
-        //     senderId: "1dbaf467-3e21-4d0a-b1ad-d8ee2c766c4c",
-        //     text: messageData.text
-        // }
-
-        const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth.token);
+    const handleSendMessage = async () => {
+        const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth["token"]);
+        let responseData = await response.json();
+        responseData = {...responseData, "sender": {"username": responseData.username}};
+        dispatch(addMessage({currentChatId: currentChat.id, messageData: responseData}));
     }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    sendMessage(messageData).then(() => console.log("message sent"));
-    setMessageData({...messageData, text: ''});
-  }
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        handleSendMessage(messageData).then(() => console.log("message sent"));
+        setMessageData({...messageData, text: ''});
+    }
 
     const classes = styles();
 

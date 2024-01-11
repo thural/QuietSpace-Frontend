@@ -5,8 +5,6 @@ const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
     const contacts = chats.map(chat => chat.users[0]);
     const classes = styles();
 
-    console.log("chat users: ", contacts);
-
     return (
         <div className={classes.contacts}>
             {

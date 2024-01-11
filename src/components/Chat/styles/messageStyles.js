@@ -5,7 +5,7 @@ const styles = createUseStyles({
     maxWidth: '200px',
     position: 'relative',
     border: '#a1a1a1 solid 1px',
-    margin: '.3rem 0',
+    margin: '.2rem 0',
     display: 'flex',
     padding: '0.8rem',
     flexFlow: 'column nowrap',
