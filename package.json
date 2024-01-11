@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/thural/Quiet-Space#readme",
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.4",
     "@reduxjs/toolkit": "^1.9.5",
     "@vitejs/plugin-react": "^4.0.0",
     "fetch-intercept": "^2.4.0",
