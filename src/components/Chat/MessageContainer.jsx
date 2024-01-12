@@ -8,9 +8,11 @@ import {addMessage} from "../../redux/chatReducer";
 
 const MessageContainer = ({currentChat}) => {
     const auth = useSelector(state => state.authReducer);
+    const chats = useSelector(state => state.chatReducer);
     const dispatch = useDispatch();
 
-    const messages = currentChat.messages;
+    const currentChatId = currentChat.id;
+    const messages = chats.find(chat => chat.id === currentChatId).messages;
 
     const chatId = currentChat.id;
     const senderId = auth["userId"];

@@ -42,10 +42,6 @@ const ChatPage = () => {
         setCurrentChat(chats[0])
     }, [isFetching]);
 
-    useEffect(() => {
-        setCurrentChat(chats.find(chat => chat.id === currentChat.id));
-    }, [chats]);
-
 
     const classes = styles();
 
@@ -65,7 +61,6 @@ const ChatPage = () => {
                 !isFetching && currentChat !== undefined &&
                 <MessageContainer currentChat={currentChat} setCurrentChat={setCurrentChat}/>
             }
-
         </div>
     )
 }
