@@ -11,15 +11,16 @@ const MessageContainer = ({currentChat}) => {
     const dispatch = useDispatch();
 
     const messages = currentChat.messages;
+
     const chatId = currentChat.id;
-    const senderId = currentChat["ownerId"];
+    const senderId = auth["userId"];
 
     console.log("current chat: ", currentChat);
 
     const [messageData, setMessageData] = useState({chatId, senderId, text: ''});
 
     const handleInputChange = (event) => {
-        const {name, value} = event.target
+        const {name, value} = event.target;
         setMessageData({...messageData, [name]: value})
     }
 
@@ -32,6 +33,7 @@ const MessageContainer = ({currentChat}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (messageData.text.length === 0) return;
         handleSendMessage(messageData).then(() => console.log("message sent"));
         setMessageData({...messageData, text: ''});
     }

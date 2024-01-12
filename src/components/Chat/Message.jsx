@@ -16,7 +16,7 @@ const Message = ({message, currentChatId}) => {
     const handleDeleteMessage = async () => {
         try {
             const response = await fetchDeleteMessage(MESSAGE_PATH, auth["token"], message.id);
-            if (response.ok) dispatch(removeMessage({currentChatId, deletedMessageId: id})) //TODO complete the reducer method
+            if (response.ok) dispatch(removeMessage({currentChatId, deletedMessageId: id}));
         } catch (error) {
             console.log("error deleting the message: ", error);
         }

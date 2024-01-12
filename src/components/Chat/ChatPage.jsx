@@ -40,14 +40,18 @@ const ChatPage = () => {
 
     useEffect(() => {
         setCurrentChat(chats[0])
+    }, [isFetching]);
+
+    useEffect(() => {
+        setCurrentChat(chats.find(chat => chat.id === currentChat.id));
     }, [chats]);
 
 
-    const classes = styles()
+    const classes = styles();
 
     return (
         <div className={classes.chat}>
-            {isFetching && <Loading />}
+            {isFetching && <Loading/>}
             {isError && <Error>{'Could not fetch chat data! 🔥'}</Error>}
             {
                 !isFetching && currentChat !== undefined &&
@@ -59,7 +63,7 @@ const ChatPage = () => {
             }
             {
                 !isFetching && currentChat !== undefined &&
-                <MessageContainer currentChat={currentChat}/>
+                <MessageContainer currentChat={currentChat} setCurrentChat={setCurrentChat}/>
             }
 
         </div>
