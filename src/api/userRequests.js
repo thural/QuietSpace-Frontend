@@ -5,3 +5,9 @@ export const fetchUser = async (url, token) => {
         return await getApiResponse(url, 'GET', null, token);
     } catch (err) { console.log(err) }
 }
+
+export const fetchUsersByQuery = async (url, token) => {
+    try {
+        return await getApiResponse(url, 'GET', null, token);
+    } catch (err) { console.log(err) }
+}

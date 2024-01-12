@@ -1,9 +1,13 @@
 import Contact from "./Contact"
 import styles from "./styles/contactContainerStyles"
 import {useState} from "react";
+import {fetchUsersByQuery} from "../../api/userRequests";
+import {USER_URL} from "../../constants/ApiPath";
+import {useSelector} from "react-redux";
 
 const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
     const contacts = chats.map(chat => chat.users[0]);
+    const auth = useSelector(state => state.authReducer);
     const classes = styles();
 
     const [queryText, setQueryText] = useState("");
@@ -14,9 +18,24 @@ const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
         setQueryText(value);
     }
 
-    const handleSubmit = (event) => {
-        //TODO: implement user search api
+    const handleFetchUserQuery = async () => {
+        try {
+            const response = await fetchUsersByQuery(
+                USER_URL + `/search?query=${queryText}`,auth["token"]);
+            const responseData = await response.json();
+            setQueryResult(responseData["content"]);
+
+        } catch (error) {
+            console.log("error on querying users: ", error);
+        }
     }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        handleFetchUserQuery();
+    }
+
+    const appliedStyle = queryResult.length === 0 ? {display: 'none'} : {display:'block'}
 
     return (
         <div className={classes.contacts}>
@@ -35,10 +54,10 @@ const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
                     <button className={classes.submitBtn} type='submit'>search</button>
                 </form>
 
-                <div className={classes.queryContainer}>
+                <div className={classes.queryContainer} style={appliedStyle}>
                     {
                         queryResult.map(user =>
-                            <div className={classes.queryItem}>
+                            <div key={user.id} className={classes.queryItem}>
                                 <p className="username">{user.username}</p>
                                 <p className="email">{user.email}</p>
                             </div>
