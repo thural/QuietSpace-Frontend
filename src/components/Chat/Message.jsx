@@ -5,7 +5,7 @@ import {fetchDeleteMessage} from "../../api/chatRequests";
 import {MESSAGE_PATH} from "../../constants/ApiPath";
 import {removeMessage} from "../../redux/chatReducer";
 
-const Message = ({message}) => {
+const Message = ({message, currentChatId}) => {
 
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
@@ -16,10 +16,9 @@ const Message = ({message}) => {
     const handleDeleteMessage = async () => {
         try {
             const response = await fetchDeleteMessage(MESSAGE_PATH, auth["token"], message.id);
-            if (response.ok)
-                dispatch(removeMessage({currentChatId: chatId, deletedMessageId: id})) //TODO complete the reducer method
+            if (response.ok) dispatch(removeMessage({currentChatId, deletedMessageId: id})) //TODO complete the reducer method
         } catch (error) {
-            console.log("error deleting the message: ", error)
+            console.log("error deleting the message: ", error);
         }
     }
 

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
 
 export const chatSlice = createSlice({
     name: 'chats',
@@ -19,9 +19,11 @@ export const chatSlice = createSlice({
 
         removeMessage: (state, action) => {
             const {currentChatId, deletedMessageId} = action.payload;
+            console.log("current chat id from delete message reducer: ", currentChatId);
             state.map(chat => {
                 if (chat.id === currentChatId){
-                    chat.messages = chat.messages.filter( message => message.id !== deletedMessageId);
+                    chat.messages = chat.messages.filter(message => message.id !== deletedMessageId);
+                    console.log("filtered messages: ", chat.messages);
                     return chat;
                 } else return chat;
             });

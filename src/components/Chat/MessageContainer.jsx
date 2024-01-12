@@ -43,7 +43,12 @@ const MessageContainer = ({currentChat}) => {
 
             <div className={classes.messages}>
                 {
-                    messages.map(message => <Message key={message.id} message={message}/>)
+                    messages.map(message =>
+                        <Message
+                            key={message.id}
+                            message={message}
+                            currentChatId={currentChat.id}
+                        />)
                 }
             </div>
 

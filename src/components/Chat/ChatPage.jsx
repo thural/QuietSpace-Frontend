@@ -6,7 +6,7 @@ import Loading from "../Misc/Loading";
 import styles from "./styles/chatPageStyles"
 import {useDispatch, useSelector} from 'react-redux'
 import {fetchChats} from "../../api/chatRequests";
-import {CHAT_PATH_BY_OWNER} from "../../constants/ApiPath";
+import {CHAT_PATH_BY_MEMBER} from "../../constants/ApiPath";
 import {loadChat} from "../../redux/chatReducer";
 
 const ChatPage = () => {
@@ -23,7 +23,7 @@ const ChatPage = () => {
 
     const handleFetchChats = async () => {
         try {
-            const response = await fetchChats(CHAT_PATH_BY_OWNER + `/${user.id}`, auth["token"]);
+            const response = await fetchChats(CHAT_PATH_BY_MEMBER + `/${user.id}`, auth["token"]);
             return await response.json();
         } catch (error) {
             console.log("error from chat fetch: ", error);
