@@ -52,6 +52,24 @@ const styles = createUseStyles({
       borderColor: '#a7abb1',
     }
   },
+  queryContainer:{
+    display:'none',
+    width:'100%',
+    height:'fit-content',
+    maxHeight:'500px',
+  },
+  queryItem:{
+    width:'100%',
+    height:'1rem',
+    '& .username':{
+      fontSize:'1rem',
+      fontWeight:'bold'
+    },
+    '& .email':{
+      fontSize:'0.5rem',
+      fontWeight:'300'
+    }
+  }
 });
 
 export default styles

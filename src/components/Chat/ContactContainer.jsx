@@ -7,9 +7,10 @@ const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
     const classes = styles();
 
     const [queryText, setQueryText] = useState("");
+    const [queryResult, setQueryResult] = useState([]);
 
     const handleInputChange = (event) => {
-        const value= event.target.value;
+        const value = event.target.value;
         setQueryText(value);
     }
 
@@ -20,6 +21,7 @@ const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
     return (
         <div className={classes.contacts}>
             <div className={classes.seacrhSection}>
+
                 <form className={classes.searchInput} onSubmit={handleSubmit}>
                     <input
                         className='input'
@@ -32,6 +34,18 @@ const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
                     />
                     <button className={classes.submitBtn} type='submit'>search</button>
                 </form>
+
+                <div className={classes.queryContainer}>
+                    {
+                        queryResult.map(user =>
+                            <div className={classes.queryItem}>
+                                <p className="username">{user.username}</p>
+                                <p className="email">{user.email}</p>
+                            </div>
+                        )
+                    }
+                </div>
+
             </div>
             {
                 contacts.map((contact, index) =>
