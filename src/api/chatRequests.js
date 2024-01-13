@@ -6,11 +6,30 @@ export const fetchChats = async (url, token) => {
     } catch (err) { console.log(err) }
 }
 
+export const fetchChatById = async (url, token) => {
+    try {
+        return await getApiResponse(url, 'GET', null, token);
+    } catch (err) { console.log(err) }
+}
+
+export const fetchCreateChat = async (url, body, token) => {
+    try {
+        return await getApiResponse(url, 'POST', body, token);
+    } catch (err) { console.log(err) }
+}
+
 export const fetchCreateMessage = async (url, body, token) => {
     try {
         return await getApiResponse(url, 'POST', body, token);
     } catch (err) { console.log(err) }
 }
+
+export const fetchAddMemberWithId = async (url, token) => {
+    try {
+        return await getApiResponse(url, 'PATCH', null, token);
+    } catch (err) { console.log(err) }
+}
+
 
 // export const fetchEditPost = async (url, body, token, postId) => {
 //     try {

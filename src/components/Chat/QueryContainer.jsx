@@ -1,8 +1,9 @@
 import styles from "./styles/queryContainerStyles"
 import {useState} from "react";
 import {fetchUsersByQuery} from "../../api/userRequests";
-import {USER_URL} from "../../constants/ApiPath";
+import {CHAT_PATH, USER_URL} from "../../constants/ApiPath";
 import {useDispatch, useSelector} from "react-redux";
+import {fetchAddMemberWithId, fetchChatById, fetchCreateChat} from "../../api/chatRequests";
 import {loadChat} from "../../redux/chatReducer";
 
 const QueryContainer = ({setCurrentChat}) => {
@@ -26,33 +27,50 @@ const QueryContainer = ({setCurrentChat}) => {
                 USER_URL + `/search?query=${queryText}`, auth["token"]);
             const responseData = await response.json();
             setQueryResult(responseData["content"]);
-
         } catch (error) {
             console.log("error on querying users: ", error);
         }
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        handleFetchUserQuery();
+    const handleCreateChatFetch = async (recipient) => {
+        const createChatRequestBody = {"ownerId": user.id, "isGroupChat": false}
+        try {
+            const createChatResponse = await fetchCreateChat(
+                CHAT_PATH, createChatRequestBody, auth["token"]);
+
+            const createdChatData = await createChatResponse.json();
+            const createdChatId = createdChatData.id;
+
+            await fetchAddMemberWithId(
+                CHAT_PATH + `/${createdChatId}/member/add/${user.id}`, auth["token"]);
+
+            await fetchAddMemberWithId(
+                CHAT_PATH + `/${createdChatId}/member/add/${recipient.id}`, auth["token"]);
+
+            const updatedChatResponse = await fetchChatById(
+                CHAT_PATH + `/${createdChatId}`, auth["token"]);
+
+            return updatedChatResponse.json();
+        } catch (error) {
+            console.log("error on fetching created chat: ", error);
+        }
     }
 
-    const handleUserClick = (event, clickedUser) => {
+    const handleQuerySubmit = (event) => {
         event.preventDefault();
-        const newEmptyChat = {
-            "id": crypto.randomUUID(),
-            "version": 2,
-            "ownerId": user.id,
-            "users": [
-                user,
-                clickedUser
-            ],
-            "messages": [],
-            "groupChat": false
-        };
-        setCurrentChat(newEmptyChat);
-        // dispatch(loadChat(newEmptyChat));
-        console.log("user query result: ", queryResult);
+        handleFetchUserQuery()
+            .then(() => console.log("query is finished"));
+    }
+
+    const handleUserClick = async (event, clickedUser) => {
+        event.preventDefault();
+        try {
+            const createdChat = await handleCreateChatFetch(clickedUser);
+            setCurrentChat(createdChat);
+            dispatch(loadChat(createdChat));
+        } catch (error) {
+            console.log("error on creating new chat: ", error)
+        }
     }
 
     const appliedStyle = queryResult.length === 0 ? {display: 'none'} : {display: 'block'}
@@ -63,7 +81,7 @@ const QueryContainer = ({setCurrentChat}) => {
     return (
         <>
             <div className={classes.seacrhSection}>
-                <form className={classes.searchInput} onSubmit={handleSubmit}>
+                <form className={classes.searchInput} onSubmit={handleQuerySubmit}>
                     <input
                         className='input'
                         type='text'
