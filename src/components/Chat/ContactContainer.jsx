@@ -1,9 +1,11 @@
 import Contact from "./Contact"
 import styles from "./styles/contactContainerStyles"
 import QueryContainer from "./QueryContainer";
+import {useSelector} from "react-redux";
 
 const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
-    const contacts = chats.map(chat => chat.users[0]);
+    const user = useSelector(state => state.userReducer);
+    const contacts = chats.map(chat => chat.users.find(member => member.id !== user.id));
     const classes = styles();
 
 

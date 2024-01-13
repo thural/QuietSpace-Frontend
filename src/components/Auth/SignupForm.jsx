@@ -11,7 +11,7 @@ const SignupForm = () => {
     const classes = styles()
 
     const dispatch = useDispatch()
-    const [formData, setFormData] = useState({email: '', password: '', confirmPassword: ''})
+    const [formData, setFormData] = useState({role:"user", username:'', email: '', password: '', confirmPassword: ''})
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -25,7 +25,8 @@ const SignupForm = () => {
             delete formData["confirmPassword"];
             event.preventDefault();
             const authResponse = await fetchSignup(SIGNUP_URL, formData);
-            dispatch(loadAuth(authResponse));
+            const authResponseData = authResponse.json();
+            dispatch(loadAuth(authResponseData));
             console.log(authResponse);
         }
     }
@@ -42,6 +43,13 @@ const SignupForm = () => {
 
                     }}>
                     <div className="signup input">
+                        <input
+                            type='text'
+                            name='username'
+                            placeholder="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                        />
                         <input
                             type='text'
                             name='email'

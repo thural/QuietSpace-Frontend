@@ -7,7 +7,7 @@ const Contact = ({
                      setCurrentChat
                  }) => {
 
-    const chatOfThisContact = chats.find(chat => chat.users[0].id === contact.id);
+    const chatOfThisContact = chats.find(chat => chat.users.some(user => user.id === contact.id));
     const recentText = Array.from(chatOfThisContact.messages).pop().text;
     const backgroundColor = currentChat.users[0].id === contact.id ? '#e3e3e3' : 'white';
 

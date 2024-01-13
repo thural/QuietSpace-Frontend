@@ -15,6 +15,8 @@ const ChatPage = () => {
     const auth = useSelector(state => state.authReducer);
     const chats = useSelector(state => state.chatReducer);
 
+    console.log("all chats: ", chats)
+
     const [currentChat, setCurrentChat] = useState(chats[0]);
 
     const dispatch = useDispatch();
