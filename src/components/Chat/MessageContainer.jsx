@@ -12,7 +12,9 @@ const MessageContainer = ({currentChat}) => {
     const dispatch = useDispatch();
 
     const currentChatId = currentChat.id;
-    const messages = chats.find(chat => chat.id === currentChatId).messages;
+    const messages = currentChat.messages.length > 0 ?
+        chats.find(chat => chat.id === currentChatId).messages
+        :[];
 
     const chatId = currentChat.id;
     const senderId = auth["userId"];

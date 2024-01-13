@@ -9,6 +9,10 @@ export const chatSlice = createSlice({
             return action.payload
         },
 
+        addChat: (state, action) => {
+            state.push(action.payload);
+        },
+
         addMessage: (state, action) => {
             const {currentChatId, messageData} = action.payload;
             state.map(chat => {
