@@ -26,7 +26,8 @@ const QueryContainer = ({setCurrentChat}) => {
             const response = await fetchUsersByQuery(
                 USER_URL + `/search?query=${queryText}`, auth["token"]);
             const responseData = await response.json();
-            setQueryResult(responseData["content"]);
+            const filteredQueryResult = responseData["content"].filter(contact => contact.id !== user.id);
+            setQueryResult(filteredQueryResult);
         } catch (error) {
             console.log("error on querying users: ", error);
         }
