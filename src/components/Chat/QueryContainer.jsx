@@ -1,9 +1,9 @@
 import styles from "./styles/queryContainerStyles"
 import {useState} from "react";
-import {fetchUsersByQuery} from "../../api/userRequests";
-import {CHAT_PATH, USER_URL} from "../../constants/ApiPath";
+import {fetchUserById, fetchUsersByQuery} from "../../api/userRequests";
+import {CHAT_PATH, USER_PATH} from "../../constants/ApiPath";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchAddMemberWithId, fetchChatById, fetchCreateChat} from "../../api/chatRequests";
+import {fetchCreateChat} from "../../api/chatRequests";
 import {loadChat} from "../../redux/chatReducer";
 
 const QueryContainer = ({setCurrentChat}) => {
@@ -24,7 +24,7 @@ const QueryContainer = ({setCurrentChat}) => {
     const handleFetchUserQuery = async () => {
         try {
             const response = await fetchUsersByQuery(
-                USER_URL + `/search?query=${queryText}`, auth["token"]);
+                USER_PATH + `/search?query=${queryText}`, auth["token"]);
             const responseData = await response.json();
             const filteredQueryResult = responseData["content"].filter(contact => contact.id !== user.id);
             setQueryResult(filteredQueryResult);
@@ -34,24 +34,20 @@ const QueryContainer = ({setCurrentChat}) => {
     }
 
     const handleCreateChatFetch = async (recipient) => {
-        const createChatRequestBody = {"ownerId": user.id, "isGroupChat": false}
+
         try {
+            const user1Response = await fetchUserById(USER_PATH + `/${user.id}`, auth["token"]);
+            const user2Response = await fetchUserById(USER_PATH + `/${recipient.id}`, auth["token"]);
+
+            const user1 = await user1Response.json();
+            const user2 = await user2Response.json();
+
+            const createChatRequestBody = {"users": [user1, user2]}
+
             const createChatResponse = await fetchCreateChat(
                 CHAT_PATH, createChatRequestBody, auth["token"]);
 
-            const createdChatData = await createChatResponse.json();
-            const createdChatId = createdChatData.id;
-
-            await fetchAddMemberWithId(
-                CHAT_PATH + `/${createdChatId}/member/add/${user.id}`, auth["token"]);
-
-            await fetchAddMemberWithId(
-                CHAT_PATH + `/${createdChatId}/member/add/${recipient.id}`, auth["token"]);
-
-            const updatedChatResponse = await fetchChatById(
-                CHAT_PATH + `/${createdChatId}`, auth["token"]);
-
-            return updatedChatResponse.json();
+            return await createChatResponse.json();
         } catch (error) {
             console.log("error on fetching created chat: ", error);
         }
