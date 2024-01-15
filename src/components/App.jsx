@@ -19,7 +19,7 @@ const App = () => {
     const auth = useSelector(state => state.authReducer);
 
     const handleFetchUser = async () => {
-        if (auth.token != null) {
+        if (auth["token"] != null) {
             const userResponse = await fetchUser(USER_PROFILE_URL, auth.token);
             const userResponseData = await userResponse.json();
             dispatch(loadUser(userResponseData));

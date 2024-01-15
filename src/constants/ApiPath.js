@@ -1,6 +1,6 @@
 const BASE_URL = "http://localhost:8080/api/v1";
-export const USER_URL = BASE_URL + "/users";
-export const USER_PROFILE_URL = USER_URL + "/profile";
+export const USER_PATH = BASE_URL + "/users";
+export const USER_PROFILE_URL = USER_PATH + "/profile";
 export const POST_URL = BASE_URL + "/posts";
 export const SIGNUP_URL = 'http://localhost:8080/auth/signup';
 export const LOGIN_URL = 'http://localhost:8080/auth/login';
