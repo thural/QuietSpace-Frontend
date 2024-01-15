@@ -25,9 +25,9 @@ const SignupForm = () => {
             delete formData["confirmPassword"];
             event.preventDefault();
             const authResponse = await fetchSignup(SIGNUP_URL, formData);
-            const authResponseData = authResponse.json();
+            const authResponseData = await authResponse.json();
             dispatch(loadAuth(authResponseData));
-            console.log(authResponse);
+            dispatch(overlay());
         }
     }
 
