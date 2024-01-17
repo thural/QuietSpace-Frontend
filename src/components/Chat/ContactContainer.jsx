@@ -3,25 +3,25 @@ import styles from "./styles/contactContainerStyles"
 import QueryContainer from "./QueryContainer";
 import {useSelector} from "react-redux";
 
-const ContactContainer = ({currentChat, setCurrentChat, chats}) => {
-    const user = useSelector(state => state.userReducer);
-    const contacts = chats.map(chat => chat.users.find(member => member.id !== user.id));
+const ContactContainer = ({currentChatId, setCurrentChatId}) => {
+    const users = useSelector(state => state.userReducer);
+    const chats = useSelector(state => state.chatReducer);
+    const contacts = chats.map(chat => chat.users.find(member => member.id !== users.id));
     const classes = styles();
 
 
     return (
         <div className={classes.contacts}>
 
-            <QueryContainer setCurrentChat={setCurrentChat}/>
+            <QueryContainer setCurrentChatId={setCurrentChatId}/>
 
             {
                 contacts.map((contact, index) =>
                     <Contact
                         key={index}
-                        chats={chats}
                         contact={contact}
-                        currentChat={currentChat}
-                        setCurrentChat={setCurrentChat}
+                        currentChatId={currentChatId}
+                        setCurrentChatId={setCurrentChatId}
                     />
                 )
             }

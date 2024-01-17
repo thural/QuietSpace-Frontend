@@ -1,18 +1,22 @@
 import styles from "./styles/contactStyles"
+import {useSelector} from "react-redux";
 
 const Contact = ({
                      contact,
-                     chats,
-                     currentChat,
-                     setCurrentChat
+                     currentChatId,
+                     setCurrentChatId
                  }) => {
 
+    const chats = useSelector(state => state.chatReducer);
+    const currentChat = chats.find(chat => chat.id === currentChatId);
     const chatOfThisContact = chats.find(chat => chat.users.some(user => user.id === contact.id));
-    const recentText = chatOfThisContact.messages.length > 0 ? Array.from(chatOfThisContact.messages).pop().text:"";
+    const isCurrentChatEmpty = chatOfThisContact.messages.length === 0;
+
+    const recentText = isCurrentChatEmpty ? "" : Array.from(chatOfThisContact.messages).pop().text;
     const backgroundColor = currentChat.users[0].id === contact.id ? '#e3e3e3' : 'white';
 
     const handleClick = () => {
-        setCurrentChat(chatOfThisContact);
+        setCurrentChatId(chatOfThisContact["id"]);
     }
 
     const classes = styles();

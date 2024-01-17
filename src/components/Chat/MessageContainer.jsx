@@ -6,22 +6,20 @@ import {fetchCreateMessage} from "../../api/chatRequests";
 import {MESSAGE_PATH} from "../../constants/ApiPath";
 import {addMessage} from "../../redux/chatReducer";
 
-const MessageContainer = ({currentChat}) => {
+const MessageContainer = ({currentChatId}) => {
     const auth = useSelector(state => state.authReducer);
     const chats = useSelector(state => state.chatReducer);
     const dispatch = useDispatch();
 
-    const currentChatId = currentChat.id;
-    const messages = currentChat.messages.length > 0 ?
+    const messages = chats.find(chat => chat.id === currentChatId).messages > 0 ?
         chats.find(chat => chat.id === currentChatId).messages
-        :[];
+        : [];
 
-    const chatId = currentChat.id;
     const senderId = auth["userId"];
 
-    console.log("current chat: ", currentChat);
+    console.log("current chat id: ", currentChatId);
 
-    const [messageData, setMessageData] = useState({chatId, senderId, text: ''});
+    const [messageData, setMessageData] = useState({currentChatId, senderId, text: ''});
 
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -32,7 +30,7 @@ const MessageContainer = ({currentChat}) => {
         const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth["token"]);
         let responseData = await response.json();
         responseData = {...responseData, "sender": {"username": responseData.username}};
-        dispatch(addMessage({currentChatId: currentChat.id, messageData: responseData}));
+        dispatch(addMessage({currentChatId, messageData: responseData}));
     }
 
     const handleSubmit = (event) => {
@@ -53,7 +51,7 @@ const MessageContainer = ({currentChat}) => {
                         <Message
                             key={message.id}
                             message={message}
-                            currentChatId={currentChat.id}
+                            currentChatId={currentChatId}
                         />)
                 }
             </div>

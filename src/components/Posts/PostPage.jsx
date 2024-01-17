@@ -12,25 +12,10 @@ import {loadPosts} from "../../redux/postReducer";
 const PostPage = () => {
     const formView = useSelector(state => state.formViewReducer);
     const user = useSelector(state => state.userReducer);
-    const auth = useSelector(state => state.authReducer);
 
 
     const dispatch = useDispatch();
     const classes = styles();
-
-    const handleFetchPosts = async () => {
-        if (auth["token"] != null) {
-            const response = await fetchPosts(POST_URL, auth.token);
-            const responseData = await response.json();
-            dispatch(loadPosts(responseData["content"]));
-        } else {
-            dispatch(loadPosts([]));
-        }
-    }
-
-    useEffect(() => {
-        handleFetchPosts().then(() => console.log("posts loaded"))
-    }, [user]);
 
     return (
         <>
