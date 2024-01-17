@@ -11,7 +11,8 @@ import {loadChat} from "../../redux/chatReducer";
 
 const ChatPage = ({isChatFetching, isChatError }) => {
     const chats = useSelector(state => state.chatReducer);
-    const [currentChatId, setCurrentChatId] = useState(chats[0]["id"]);
+    const initialState = chats.length>0? chats[0]["id"] : null
+    const [currentChatId, setCurrentChatId] = useState(initialState);
     const classes = styles();
 
     return (
@@ -19,14 +20,14 @@ const ChatPage = ({isChatFetching, isChatError }) => {
             {isChatFetching && <Loading/>}
             {isChatError && <Error>{'Could not fetch chat data! 🔥'}</Error>}
             {
-                chats.length > 0 &&
+                !isChatFetching && !isChatError &&
                 <ContactContainer
                     currentChatId={currentChatId}
                     setCurrentChatId={setCurrentChatId}
                 />
             }
             {
-                !isChatFetching && currentChatId !== undefined &&
+                chats.length > 0 &&
                 <MessageContainer
                     currentChatId={currentChatId}
                     setCurrentChatId={setCurrentChatId}

@@ -61,8 +61,9 @@ const QueryContainer = ({setCurrentChatId}) => {
         try {
             const createdChatResponse = await handleCreateChatFetch(clickedUser);
             if(createdChatResponse.ok){
-                setCurrentChatId(createdChatResponse["id"]);
-                dispatch(loadChat(createdChatResponse));
+                const createdChatData = await createdChatResponse.json();
+                setCurrentChatId(createdChatData["id"]);
+                dispatch(loadChat(createdChatData));
             }
         } catch (error) {
             console.log("error on creating new chat: ", error)

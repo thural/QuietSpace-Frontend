@@ -16,6 +16,7 @@ const ContactContainer = ({currentChatId, setCurrentChatId}) => {
             <QueryContainer setCurrentChatId={setCurrentChatId}/>
 
             {
+                chats.length > 0 &&
                 contacts.map((contact, index) =>
                     <Contact
                         key={index}

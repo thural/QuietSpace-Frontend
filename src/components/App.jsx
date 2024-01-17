@@ -66,14 +66,13 @@ const App = () => {
     }
 
 
+    useEffect(() => {
+        handleFetchUser().then(() => console.log("user fetched"));
+    }, [auth]);
 
     useEffect(() => {
         handleFetchPosts().then(() => console.log("posts loaded"))
     }, [user]);
-
-    useEffect(() => {
-        handleFetchUser().then(() => console.log("user fetched"));
-    }, [auth]);
 
     useEffect(() => {
         handleFetchChats()
