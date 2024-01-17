@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {fetchCreateChat} from "../../api/chatRequests";
 import {loadChat} from "../../redux/chatReducer";
 
-const QueryContainer = ({setCurrentChat}) => {
+const QueryContainer = ({setCurrentChatId}) => {
 
     const auth = useSelector(state => state.authReducer);
     const user = useSelector(state => state.userReducer);
@@ -23,11 +23,8 @@ const QueryContainer = ({setCurrentChat}) => {
 
     const handleFetchUserQuery = async () => {
         try {
-            const response = await fetchUsersByQuery(
+            return await fetchUsersByQuery(
                 USER_PATH + `/search?query=${queryText}`, auth["token"]);
-            const responseData = await response.json();
-            const filteredQueryResult = responseData["content"].filter(contact => contact.id !== user.id);
-            setQueryResult(filteredQueryResult);
         } catch (error) {
             console.log("error on querying users: ", error);
         }
@@ -44,27 +41,29 @@ const QueryContainer = ({setCurrentChat}) => {
 
             const createChatRequestBody = {"users": [user1, user2]}
 
-            const createChatResponse = await fetchCreateChat(
+            return await fetchCreateChat(
                 CHAT_PATH, createChatRequestBody, auth["token"]);
-
-            return await createChatResponse.json();
         } catch (error) {
             console.log("error on fetching created chat: ", error);
         }
     }
 
-    const handleQuerySubmit = (event) => {
+    const handleQuerySubmit = async (event) => {
         event.preventDefault();
-        handleFetchUserQuery()
-            .then(() => console.log("query is finished"));
+        const queryResponse = await handleFetchUserQuery();
+        const responseData = await queryResponse.json();
+        const filteredQueryResult = responseData["content"].filter(contact => contact.id !== user.id);
+        setQueryResult(filteredQueryResult);
     }
 
     const handleUserClick = async (event, clickedUser) => {
         event.preventDefault();
         try {
-            const createdChat = await handleCreateChatFetch(clickedUser);
-            setCurrentChat(createdChat);
-            dispatch(loadChat(createdChat));
+            const createdChatResponse = await handleCreateChatFetch(clickedUser);
+            if(createdChatResponse.ok){
+                setCurrentChatId(createdChatResponse["id"]);
+                dispatch(loadChat(createdChatResponse));
+            }
         } catch (error) {
             console.log("error on creating new chat: ", error)
         }
