@@ -2,20 +2,14 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   login: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    backgroundColor: 'white',
-    padding: '1rem',
     gap: '0.5rem',
-    zIndex: '3',
-    minWidth:'230px',
-    borderRadius: '1em',
     color: 'black',
     margin: 'auto',
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    display: 'flex',
+    padding: '1rem',
+    flexFlow: 'column nowrap',
+    borderRadius: '1em',
+    backgroundColor: 'white',
     '& button': {
       color: 'white',
       marginLeft: 'auto',

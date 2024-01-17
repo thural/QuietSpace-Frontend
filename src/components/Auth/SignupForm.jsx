@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import Overlay from "../Overlay";
 import styles from "./styles/signupFormStyles"
 import {useDispatch} from "react-redux";
-import {login, overlay} from "../../redux/formViewReducer";
+import {authenticate, login, overlay} from "../../redux/formViewReducer";
 import {fetchSignup} from "../../api/authRequests";
 import {SIGNUP_URL} from "../../constants/ApiPath";
 import {loadAuth} from "../../redux/authReducer";
@@ -10,8 +9,8 @@ import {loadAuth} from "../../redux/authReducer";
 const SignupForm = () => {
     const classes = styles()
 
-    const dispatch = useDispatch()
-    const [formData, setFormData] = useState({role:"user", username:'', email: '', password: '', confirmPassword: ''})
+    const dispatch = useDispatch();
+    const [formData, setFormData] = useState({role:"user", username:'', email: '', password: '', confirmPassword: ''});
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -28,12 +27,12 @@ const SignupForm = () => {
             const authResponseData = await authResponse.json();
             dispatch(loadAuth(authResponseData));
             dispatch(overlay());
+            dispatch(authenticate());
         }
     }
 
     return (
         <>
-            <Overlay/>
             <div className={classes.signup}>
                 <h1>Signup</h1>
                 <form

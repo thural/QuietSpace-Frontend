@@ -24,7 +24,7 @@ const Post = ({post}) => {
 
     const handleDeletePost = async (postId) => {
         try {
-            const response = await fetchDeletePost(POST_URL, auth.token, postId);
+            const response = await fetchDeletePost(POST_URL, auth["token"], postId);
             if (response.ok) dispatch(deletePost({postId, user}));
         } catch (error) {
             console.log('error from delete post: ', error);
@@ -52,7 +52,7 @@ const Post = ({post}) => {
     }
 
     useEffect(() => {
-        handleLoadComments(postId, auth.token).then(() => {
+        handleLoadComments(postId, auth["token"]).then(() => {
                 setIsFetching(false);
             }
         )
@@ -94,7 +94,7 @@ const Post = ({post}) => {
                         <img src={shareIcon} alt={"share icon"}/>
 
                         {
-                            user.admin || post.username === user.username &&
+                            user.role === "admin" || post.username === user.username &&
                             <img src={deleteIcon} onClick={() => handleDeletePost(postId)} alt={"delete post icon"}/>
                         }
                     </div>

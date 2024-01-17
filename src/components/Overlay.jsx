@@ -1,14 +1,18 @@
-import { overlay } from "../redux/formViewReducer"
+import {overlay} from "../redux/formViewReducer"
 import styles from "../styles/overlayStyles"
-import { useDispatch } from "react-redux"
+import {useDispatch} from "react-redux"
 import React from "react"
 
 
-const Overlay = () => {
-  const classes = styles()
-  const dispatch = useDispatch()
+const Overlay = ({closable}) => {
+  const classes = styles();
+  const dispatch = useDispatch();
+  const active = !(closable === undefined || closable === null);
   return (
-    <div className={classes.overlay} onClick={() => dispatch(overlay())}></div>
+      <div className={classes.overlay} onClick={() => {
+        if (active) dispatch(overlay());
+      }}>
+      </div>
   )
 }
 

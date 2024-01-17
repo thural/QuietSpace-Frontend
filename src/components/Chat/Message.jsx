@@ -10,7 +10,7 @@ const Message = ({message, currentChatId}) => {
     const user = useSelector(state => state.userReducer);
     const auth = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
-    const {id, sender, text, reactions} = message;
+    const {id, sender, text} = message;
     const senderName = sender.username;
 
     const handleDeleteMessage = async () => {

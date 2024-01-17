@@ -25,7 +25,7 @@ const EditPostForm = () => {
 
     const handleEditPost = async (postData, postId) => {
       try {
-        const response = await fetchEditPost(POST_URL, postData, auth.token, postId);
+        const response = await fetchEditPost(POST_URL, postData, auth["token"], postId);
         if (response.ok) dispatch(editPost(postData));
       } catch (error) {
         console.log('error message from edit POST: ', error);
@@ -34,7 +34,7 @@ const EditPostForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleEditPost(postData, postId);
+    handleEditPost(postData, postId).then(() => console.log("post has been edited"));
     dispatch(edit({ view: false, _id: postId }))
   }
 
@@ -48,7 +48,6 @@ const EditPostForm = () => {
         <form onSubmit={handleSubmit}>
           <textarea
             className='text input'
-            type='text'
             name='text'
             placeholder="text"
             maxLength="128"

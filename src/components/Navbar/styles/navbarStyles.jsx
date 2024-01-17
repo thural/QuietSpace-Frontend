@@ -9,7 +9,7 @@ const styles = createUseStyles(
 			margin: '0px',
 			display: 'flex',
 			padding: '0.5rem 1rem 0.5rem 1rem',
-			zIndex: '3',
+			zIndex: '2',
 			gridRow: '1 / 2',
 			position: 'sticky',
 			flexWrap: 'wrap',

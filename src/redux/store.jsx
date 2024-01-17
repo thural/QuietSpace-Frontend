@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit"
+import {configureStore, combineReducers} from "@reduxjs/toolkit"
 import chatReducer from "./chatReducer"
 import postReducer from "./postReducer"
 import userReducer from "./userReducer"

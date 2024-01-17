@@ -18,7 +18,7 @@ const ContactPage = () => {
       <div className={classes.footer}>
         <a href='https://github.com/thural'>
           <p>Copyright © 2022 thural</p>
-          <img src={logo}></img>
+          <img src={logo} alt={"logo icon"}></img>
         </a>
       </div>
 

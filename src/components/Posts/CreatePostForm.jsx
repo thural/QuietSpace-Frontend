@@ -33,7 +33,7 @@ const CreatePostForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        handleCreatePost(postData, auth.token);
+        handleCreatePost(postData, auth["token"]).then(() => console.log("post has been created"));
         dispatch(overlay());
     }
 
@@ -47,7 +47,7 @@ const CreatePostForm = () => {
                 >
           <textarea
               className='text area'
-              type='text' name='text'
+              name='text'
               placeholder="What's on your mind?"
               maxLength="128"
               value={postData.text}

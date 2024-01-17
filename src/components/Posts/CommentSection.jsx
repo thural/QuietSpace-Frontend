@@ -27,7 +27,7 @@ const CommentSection = ({postId, comments}) => {
 
     const handleCreateComment = async (commentData) => {
         try {
-            const response = await fetchCreateComment(COMMENT_PATH, commentData, auth.token);
+            const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
             const responseData = await response.json();
             if (response.ok) dispatch(addComment(responseData));
         } catch (error) {
@@ -39,7 +39,7 @@ const CommentSection = ({postId, comments}) => {
         setCommentData({...commentData, text: event})
     }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async () => {
         await handleCreateComment(commentData)
         dispatch(overlay())
     }

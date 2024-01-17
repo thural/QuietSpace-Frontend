@@ -2,19 +2,14 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   signup: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    backgroundColor: 'white',
-    padding: '1rem',
     gap: '0.5rem',
-    borderRadius: '1em',
-    zIndex: '3',
     color: 'black',
     margin: 'auto',
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    display: 'flex',
+    padding: '1rem',
+    flexFlow: 'column nowrap',
+    borderRadius: '1em',
+    backgroundColor: 'white',
     '& button': {
       marginTop: '1rem',
       marginLeft: 'auto',

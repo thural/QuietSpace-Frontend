@@ -1,11 +1,7 @@
 import styles from "./styles/contactStyles"
 import {useSelector} from "react-redux";
 
-const Contact = ({
-                     contact,
-                     currentChatId,
-                     setCurrentChatId
-                 }) => {
+const Contact = ({contact, currentChatId, setCurrentChatId}) => {
 
     const chats = useSelector(state => state.chatReducer);
     const currentChat = chats.find(chat => chat.id === currentChatId);

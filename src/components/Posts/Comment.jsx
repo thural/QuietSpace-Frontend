@@ -15,7 +15,7 @@ const Comment = ({comment, postId}) => {
 
     const handleDeleteComment = async () => {
         try {
-            const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, auth.token);
+            const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, auth["token"]);
             if (response.ok) dispatch(deleteComment({postId: postId, commentId: comment.id}));
         } catch (error) {
             console.log("error on comment delete: ", error)

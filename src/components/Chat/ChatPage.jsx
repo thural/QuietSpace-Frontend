@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import MessageContainer from "./MessageContainer";
 import ContactContainer from "./ContactContainer";
 import Error from "../Misc/Error";
 import Loading from "../Misc/Loading";
 import styles from "./styles/chatPageStyles";
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchChats} from "../../api/chatRequests";
-import {CHAT_PATH_BY_MEMBER} from "../../constants/ApiPath";
-import {loadChat} from "../../redux/chatReducer";
+import {useSelector} from 'react-redux';
 
-const ChatPage = ({isChatFetching, isChatError }) => {
+const ChatPage = ({isChatFetching, isChatError}) => {
     const chats = useSelector(state => state.chatReducer);
-    const initialState = chats.length>0? chats[0]["id"] : null
+    const initialState = chats.length > 0 ? chats[0]["id"] : null
     const [currentChatId, setCurrentChatId] = useState(initialState);
     const classes = styles();
 
