@@ -31,6 +31,19 @@ const styles = createUseStyles({
   inputSection: {
     zIndex: '1'
   },
+  messageInput: {
+    width: '100%',
+    border: 'none',
+    height: 'auto',
+    resize: 'none',
+    outline: 'none',
+    padding: '10px',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
+    maxHeight: '200px',
+    borderRadius: '4px',
+    backgroundColor: 'transparent'
+  },
   chatInput: {
     gap: '1rem',
     color: 'black',

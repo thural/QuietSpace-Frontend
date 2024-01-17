@@ -52,7 +52,6 @@ const styles = createUseStyles({
       boxSizing: 'border-box',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'transparent',
       borderRadius: '10px',
       backgroundColor: '#e2e8f0',
     },

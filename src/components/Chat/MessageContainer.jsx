@@ -1,10 +1,12 @@
-import {useState} from "react"
+import React, {useState} from "react"
 import Message from "./Message"
 import styles from "./styles/messageContainerStyles"
 import {useDispatch, useSelector} from 'react-redux'
 import {fetchCreateMessage} from "../../api/chatRequests";
 import {MESSAGE_PATH} from "../../constants/ApiPath";
 import {addMessage} from "../../redux/chatReducer";
+import InputEmoji from 'react-input-emoji'
+
 
 const MessageContainer = ({currentChatId}) => {
     const auth = useSelector(state => state.authReducer);
@@ -22,8 +24,7 @@ const MessageContainer = ({currentChatId}) => {
     const [messageData, setMessageData] = useState({currentChatId, senderId, text: ''});
 
     const handleInputChange = (event) => {
-        const {name, value} = event.target;
-        setMessageData({...messageData, [name]: value})
+        setMessageData({...messageData, text: event})
     }
 
     const handleSendMessage = async () => {
@@ -57,17 +58,20 @@ const MessageContainer = ({currentChatId}) => {
             </div>
 
             <div className={classes.inputSection}>
-                <form className={classes.chatInput} onSubmit={handleSubmit}>
-                    <input
-                        className='input'
-                        type='text'
-                        name='text'
-                        placeholder="Write a message ..."
-                        maxLength="128"
-                        value={messageData.message}
+                <form className={classes.chatInput}>
+                    <InputEmoji
+                        className={classes.messageInput}
+                        value={messageData.text}
                         onChange={handleInputChange}
+                        fontSize={15}
+                        maxLength="128"
+                        cleanOnEnter
+                        buttonElement
+                        borderColor="#FFFFFF"
+                        onEnter={handleSubmit}
+                        theme="light"
+                        placeholder="write a message"
                     />
-                    <button className={classes.submitBtn} type='submit'> send</button>
                 </form>
             </div>
         </div>

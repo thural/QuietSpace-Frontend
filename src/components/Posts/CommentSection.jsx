@@ -4,9 +4,9 @@ import styles from "./styles/commentSectionStyles"
 import {useSelector, useDispatch} from "react-redux"
 import {overlay} from "../../redux/formViewReducer"
 import {addComment} from "../../redux/postReducer"
-import InputEmoji from 'react-input-emoji'
 import {COMMENT_PATH} from "../../constants/ApiPath";
 import {fetchCreateComment} from "../../api/commentRequests";
+import InputEmoji from "react-input-emoji";
 
 
 const CommentSection = ({postId, comments}) => {
