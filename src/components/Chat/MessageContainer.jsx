@@ -29,15 +29,19 @@ const MessageContainer = ({currentChatId}) => {
 
     const handleSendMessage = async () => {
         const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth["token"]);
-        let responseData = await response.json();
-        responseData = {...responseData, "sender": {"username": responseData.username}};
-        dispatch(addMessage({currentChatId, messageData: responseData}));
+        if (response.ok) {
+            let responseData = await response.json();
+            return {...responseData, "sender": {"username": responseData.username}};
+        } else throw new Error("Message couldn't be send");
     }
 
     const handleSubmit = (event) => {
-        event.preventDefault();
         if (messageData.text.length === 0) return;
-        handleSendMessage(messageData).then(() => console.log("message sent"));
+        handleSendMessage(messageData).then((responseData) => {
+            dispatch(addMessage({currentChatId, messageData: responseData}));
+            console.log("message sent")
+        })
+            .catch(error => console.log(error));
         setMessageData({...messageData, text: ''});
     }
 
