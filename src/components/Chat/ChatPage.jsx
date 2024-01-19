@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 
 const ChatPage = ({isChatFetching, isChatError}) => {
     const chats = useSelector(state => state.chatReducer);
-    const initialState = chats.length > 0 ? chats[0]["id"] : null
+    const initialState = chats.length > 0 ? chats[0]["id"] : null;
     const [currentChatId, setCurrentChatId] = useState(initialState);
     const classes = styles();
 

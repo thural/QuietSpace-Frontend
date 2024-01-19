@@ -30,7 +30,7 @@ export const formViewSlice = createSlice({
             return {...state, edit: {view, id}}
         },
         overlay: (state) => {
-            return {...state, auth: true, signup: false, login: false, post: false, edit: false}
+            return {...state, signup: false, login: false, post: false, edit: false}
         }
     }
 })

@@ -21,58 +21,41 @@ const QueryContainer = ({setCurrentChatId}) => {
         setQueryText(value);
     }
 
-    const handleFetchUserQuery = async () => {
-        try {
-            return await fetchUsersByQuery(
-                USER_PATH + `/search?query=${queryText}`, auth["token"]);
-        } catch (error) {
-            console.log("error on querying users: ", error);
-        }
+    const handleQuerySubmit = async (event) => {
+        event.preventDefault();
+        await handleFetchUserQuery()
+            .then(responseData => setQueryResult(responseData["content"]))
+            .catch(error => console.log(error))
     }
 
     const handleCreateChatFetch = async (recipient) => {
+        const createChatRequestBody = {"userIds": [user.id, recipient.id]}
 
-        try {
-            const user1Response = await fetchUserById(USER_PATH + `/${user.id}`, auth["token"]);
-            const user2Response = await fetchUserById(USER_PATH + `/${recipient.id}`, auth["token"]);
+        const response = await fetchCreateChat(CHAT_PATH, createChatRequestBody, auth["token"]);
+        if (!response.ok) throw Error("error on fetching created chat");
 
-            const user1 = await user1Response.json();
-            const user2 = await user2Response.json();
-
-            const createChatRequestBody = {"users": [user1, user2]}
-
-            return await fetchCreateChat(
-                CHAT_PATH, createChatRequestBody, auth["token"]);
-        } catch (error) {
-            console.log("error on fetching created chat: ", error);
-        }
-    }
-
-    const handleQuerySubmit = async (event) => {
-        event.preventDefault();
-        const queryResponse = await handleFetchUserQuery();
-        const responseData = await queryResponse.json();
-        const filteredQueryResult = responseData["content"].filter(contact => contact.id !== user.id);
-        setQueryResult(filteredQueryResult);
+        return await response.json();
     }
 
     const handleUserClick = async (event, clickedUser) => {
         event.preventDefault();
-        try {
-            const createdChatResponse = await handleCreateChatFetch(clickedUser);
-            if(createdChatResponse.ok){
-                const createdChatData = await createdChatResponse.json();
-                setCurrentChatId(createdChatData["id"]);
-                dispatch(loadChat(createdChatData));
-            }
-        } catch (error) {
-            console.log("error on creating new chat: ", error)
-        }
+
+        handleCreateChatFetch(clickedUser).then(chatData => {
+            setCurrentChatId(chatData["id"]);
+            dispatch(loadChat(chatData));
+        })
+            .catch(error => console.log("error on creating new chat: ", error));
+    }
+
+    const handleFetchUserQuery = async () => {
+        const response = await fetchUsersByQuery(
+            USER_PATH + `/search?query=${queryText}`, auth["token"]);
+        if (response.ok) {
+            return await response.json();
+        } else throw new Error("error on querying users: ")
     }
 
     const appliedStyle = queryResult.length === 0 ? {display: 'none'} : {display: 'block'}
-
-
     const classes = styles();
 
     return (
