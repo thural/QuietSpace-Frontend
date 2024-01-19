@@ -1,12 +1,11 @@
-import React, {useState, useRef, useEffect} from "react"
-import Comment from "./Comment"
-import styles from "./styles/commentSectionStyles"
-import {useSelector, useDispatch} from "react-redux"
-import {overlay} from "../../redux/formViewReducer"
-import {addComment} from "../../redux/postReducer"
+import React, {useEffect, useRef, useState} from "react";
+import Comment from "./Comment";
+import styles from "./styles/commentSectionStyles";
+import {useDispatch, useSelector} from "react-redux";
 import {COMMENT_PATH} from "../../constants/ApiPath";
 import {fetchCreateComment} from "../../api/commentRequests";
 import InputEmoji from "react-input-emoji";
+import {addComment} from "../../redux/postReducer";
 
 
 const CommentSection = ({postId, comments}) => {
@@ -26,13 +25,10 @@ const CommentSection = ({postId, comments}) => {
     }, [commentData.text]);
 
     const handleCreateComment = async (commentData) => {
-        try {
-            const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
-            const responseData = await response.json();
-            if (response.ok) dispatch(addComment(responseData));
-        } catch (error) {
-            console.log('error on creating new comment: ', error)
-        }
+        const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
+        if (response.ok) {
+            return await response.json();
+        } else throw Error("error on creating the comment")
     }
 
     const handleEmojiInput = (event) => {
@@ -40,15 +36,18 @@ const CommentSection = ({postId, comments}) => {
     }
 
     const handleSubmit = async () => {
-        await handleCreateComment(commentData)
-        dispatch(overlay())
+        await handleCreateComment(commentData).then(responseData => {
+            dispatch(addComment(responseData));
+            console.log("comment was added")
+        })
+            .catch(error => console.log(error));
     }
 
     const classes = styles();
 
     return (
         <div className={classes.commentSection}>
-            <form onSubmit={handleSubmit}>
+            <form>
 
                 <InputEmoji
                     className={classes.commentInput}
