@@ -1,5 +1,5 @@
 import styles from "./styles/queryContainerStyles"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {fetchUserById, fetchUsersByQuery} from "../../api/userRequests";
 import {CHAT_PATH, USER_PATH} from "../../constants/ApiPath";
 import {useDispatch, useSelector} from "react-redux";
@@ -21,8 +21,14 @@ const QueryContainer = ({setCurrentChatId}) => {
         setQueryText(value);
     }
 
-    const handleQuerySubmit = async (event) => {
-        event.preventDefault();
+    useEffect(() => {
+        if(queryText.length > 0) {
+            console.log("query text: ", queryText);
+            handleQuerySubmit();
+        } else setQueryResult([]);
+    }, [queryText]);
+
+    const handleQuerySubmit = async () => {
         await handleFetchUserQuery()
             .then(responseData => setQueryResult(responseData["content"]))
             .catch(error => console.log(error))
@@ -61,7 +67,7 @@ const QueryContainer = ({setCurrentChatId}) => {
     return (
         <>
             <div className={classes.seacrhSection}>
-                <form className={classes.searchInput} onSubmit={handleQuerySubmit}>
+                <form className={classes.searchInput}>
                     <input
                         className='input'
                         type='text'
@@ -71,7 +77,6 @@ const QueryContainer = ({setCurrentChatId}) => {
                         value={queryText}
                         onChange={handleInputChange}
                     />
-                    <button className={classes.submitBtn} type='submit'>search</button>
                 </form>
             </div>
 
