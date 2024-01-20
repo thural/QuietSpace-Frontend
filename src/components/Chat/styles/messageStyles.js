@@ -5,9 +5,10 @@ const styles = createUseStyles({
     maxWidth: '200px',
     position: 'relative',
     border: '#a1a1a1 solid 1px',
-    margin: '.2rem 0',
+    margin: '.3rem 0',
     display: 'flex',
     padding: '0.8rem',
+    cursor: 'pointer',
     flexFlow: 'column nowrap',
     borderRadius: '1rem',
     justifyItems: 'center',
@@ -28,6 +29,7 @@ const styles = createUseStyles({
     }
   },
   sender: {
+    cursor: 'pointer',
     width: '100%',
     fontSize: '.7rem',
     fontWeight: '400',
@@ -37,13 +39,14 @@ const styles = createUseStyles({
     top: '-1.3rem',
   },
   delete: {
+    cursor: 'pointer',
+    color: '#404040',
     width: '100%',
+    right: '2.5rem',
+    position: 'absolute',
     fontSize: '.7rem',
     fontWeight: '400',
-    marginBottom: '0.2rem',
-    color: '#404040',
-    position: 'absolute',
-    bottom: '-1.3rem',
+    marginBottom: '0.2rem'
   },
   text: {
     margin: '0px',

@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState} from "react"
 import styles from "./styles/messageStyles"
 import {useDispatch, useSelector} from "react-redux"
 import {fetchDeleteMessage} from "../../api/chatRequests";
@@ -12,6 +12,16 @@ const Message = ({message, currentChatId}) => {
     const dispatch = useDispatch();
     const {id, sender, text} = message;
     const senderName = sender.username;
+
+    const [isHovering, setIsHovering] = useState(false);
+
+    const handleMouseOver = () => {
+        setIsHovering(true);
+    };
+
+    const handleMouseOut = () => {
+        setIsHovering(false);
+    };
 
     const handleDeleteMessage = async () => {
         try {
@@ -29,10 +39,13 @@ const Message = ({message, currentChatId}) => {
 
     const classes = styles();
     return (
-        <div id={id} className={classes.message} style={appliedStyle}>
-            <div className={classes.sender}>{senderName}</div>
+        <div id={id} className={classes.message}
+             style={appliedStyle}
+             onMouseOver={handleMouseOver}
+             onMouseOut={handleMouseOut}>
+            {/*<div className={classes.sender}>{senderName}</div>*/}
             {
-                sender.username === user.username &&
+                sender.username === user.username && isHovering &&
                 <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
             }
             <div className={classes.text}><p>{text}</p></div>
