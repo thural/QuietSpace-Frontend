@@ -13,7 +13,7 @@ const MessageContainer = ({currentChatId}) => {
     const chats = useSelector(state => state.chatReducer);
     const dispatch = useDispatch();
 
-    const messages = chats.find(chat => chat.id === currentChatId).messages > 0 ?
+    const messages = chats.find(chat => chat.id === currentChatId).messages.length > 0 ?
         chats.find(chat => chat.id === currentChatId).messages
         : [];
 
@@ -21,7 +21,7 @@ const MessageContainer = ({currentChatId}) => {
 
     console.log("current chat id: ", currentChatId);
 
-    const [messageData, setMessageData] = useState({currentChatId, senderId, text: ''});
+    const [messageData, setMessageData] = useState({chatId: currentChatId, senderId, text: ''});
 
     const handleInputChange = (event) => {
         setMessageData({...messageData, text: event})
