@@ -5,24 +5,18 @@ export const postSlice = createSlice({
     initialState: [],
     reducers: {
 
-        likePost: (state, action) => {
-            const {_id, user} = action.payload;
+        toggleLikePost: (state, action) => {
+            const {postId, userId} = action.payload;
             return state.map(post => {
-                if (post['_id'] === _id) {
-                    if (post.likes.includes(user['id'])) return post
-                    const postLikes = [...post.likes, user['id']]
-                    return {...post, likes: postLikes}
-                }
-                return post
-            })
-        },
-
-        unlikePost: (state, action) => {
-            const {_id, user} = action.payload
-            return state.map(post => {
-                if (post['_id'] === _id) {
-                    const reducedLikes = post.likes.filter(likeId => likeId !== user['id'])
-                    return {...post, likes: reducedLikes}
+                if (post['id'] === postId) {
+                    if (post.likes.includes(userId)) {
+                        const reducedLikes = post.likes
+                            .filter(likeId => likeId !== userId)
+                        return {...post, likes: reducedLikes}
+                    } else {
+                        const postLikes = [...post.likes, userId]
+                        return {...post, likes: postLikes}
+                    }
                 }
                 return post
             })
@@ -86,8 +80,7 @@ export const postSlice = createSlice({
 
 export const {
     loadPosts,
-    unlikePost,
-    likePost,
+    toggleLikePost,
     deletePost,
     addPost,
     loadComments,
