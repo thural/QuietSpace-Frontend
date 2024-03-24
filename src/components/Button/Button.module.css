@@ -1,0 +1,18 @@
+.button {
+    font: inherit;
+    color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    outline: inherit;
+    padding: 0.2rem 0.6rem;
+    font-size: 1rem;
+    border-radius: 1rem;
+    background-color: black;
+  }
+
+.add-post-btn {
+    composes: button;
+    width: fit-content;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
