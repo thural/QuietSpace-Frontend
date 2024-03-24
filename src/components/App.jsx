@@ -1,20 +1,23 @@
-import {CHAT_PATH_BY_MEMBER, POST_URL, USER_PROFILE_URL} from "../constants/ApiPath"
-import {Route, Routes} from "react-router-dom"
+import { CHAT_PATH_BY_MEMBER, POST_URL, USER_PROFILE_URL } from "../constants/ApiPath"
+import { Route, Routes } from "react-router-dom"
 import styles from "../styles/appStyles"
 import ContactPage from "./Contact/ContactPage"
 import NavBar from "./Navbar/Navbar"
 import PostPage from "./Posts/PostPage"
 import ChatPage from "./Chat/ChatPage";
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState } from "react"
+import '@mantine/core/styles.css';
+
+import { MantineProvider } from '@mantine/core';
 import './App.css'
 
-import {fetchUser} from "../api/userRequests"
-import {useDispatch, useSelector} from 'react-redux'
-import {loadUser} from "../redux/userReducer"
-import {fetchChats} from "../api/chatRequests";
-import {loadChat} from "../redux/chatReducer";
-import {fetchPosts} from "../api/postRequests";
-import {loadPosts} from "../redux/postReducer";
+import { fetchUser } from "../api/userRequests"
+import { useDispatch, useSelector } from 'react-redux'
+import { loadUser } from "../redux/userReducer"
+import { fetchChats } from "../api/chatRequests";
+import { loadChat } from "../redux/chatReducer";
+import { fetchPosts } from "../api/postRequests";
+import { loadPosts } from "../redux/postReducer";
 import AuthPage from "./Auth/AuthPage";
 
 const App = () => {
@@ -84,21 +87,23 @@ const App = () => {
 
     return (
         <div className={classes.app}>
-            {
-                formView.auth && <AuthPage/>
-            }
-            <NavBar/>
-            <Routes>
-                <Route path="/" element={<PostPage/>}/>
-                <Route path="/posts" element={<PostPage/>}/>
-                <Route path="/chat" element={
-                    <ChatPage
-                        isChatFetching={isChatFetching}
-                        isChatError={isChatError}
-                    />
-                }/>
-                <Route path="/contact" element={<ContactPage/>}/>
-            </Routes>
+            <MantineProvider>
+                {
+                    formView.auth && <AuthPage />
+                }
+                <NavBar />
+                <Routes>
+                    <Route path="/" element={<PostPage />} />
+                    <Route path="/posts" element={<PostPage />} />
+                    <Route path="/chat" element={
+                        <ChatPage
+                            isChatFetching={isChatFetching}
+                            isChatError={isChatError}
+                        />
+                    } />
+                    <Route path="/contact" element={<ContactPage />} />
+                </Routes>
+            </MantineProvider>
         </div>
     )
 }
