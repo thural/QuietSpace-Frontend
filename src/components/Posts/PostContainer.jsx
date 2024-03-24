@@ -1,20 +1,24 @@
 import Post from "./Post"
-import styles from "./styles/postContainerStyles"
 import React from "react"
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import { Container } from '@mantine/core';
 
 const PostContainer = () => {
 
     const posts = useSelector(state => state.postReducer);
-    const classes = styles();
+
+    const styleProps = {
+        bg: 'var(--mantine-color-blue-light)',
+        h: 50,
+        mt: 'md',
+    };
 
     return (
-
-        <div className={classes.cardboard}>
+        <Container size="xs" {...styleProps}>
             {
-                posts.map((post) => (<Post key={post["id"]} post={post}/>))
+                posts.map((post) => (<Post key={post["id"]} post={post} />))
             }
-        </div>
+        </Container>
 
     )
 }
