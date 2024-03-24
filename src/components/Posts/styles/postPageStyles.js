@@ -3,10 +3,7 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles({
   posts: {
     flexGrow: '1',
-    gridColumn: '1 / 3',
-    gridRow: '2 / 3',
     padding: '1vh 10vw',
-    overflow: 'auto',
     '& .add-post-btn': {
       marginTop: '1rem',
       width: 'fit-content',

@@ -10,7 +10,6 @@ const styles = createUseStyles(
 			display: 'flex',
 			padding: '0.5rem 1rem 0.5rem 1rem',
 			zIndex: '2',
-			gridRow: '1 / 2',
 			position: 'sticky',
 			flexWrap: 'wrap',
 			fontSize: '1.5rem',
@@ -18,7 +17,6 @@ const styles = createUseStyles(
 			boxSizing: 'border-box',
 			alignItems: 'center',
 			fontWeight: '400',
-			gridColumn: '1 / 3',
 			justifyContent: 'space-between',
 			backgroundColor: 'white',
 			'& .navbar-item>a>img': {
