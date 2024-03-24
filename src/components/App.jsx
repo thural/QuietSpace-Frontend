@@ -6,6 +6,8 @@ import Contact from "./Contact/Contact"
 import NavBar from "./Navbar/Navbar"
 import Posts from "./Posts/Posts"
 import { useEffect } from "react"
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core';
 import Home from "./Home/Home"
 import Chat from "./Chat/Chat"
 import './App.css'
@@ -65,6 +67,7 @@ const App = () => {
 
   return (
     <div className={classes.app}>
+      <MantineProvider>
       <MainContext.Provider value={{ fetchUser: handleFetchUser, fetchPosts, fetchChat }}>
         <NavBar />
         <Routes>
@@ -74,6 +77,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </MainContext.Provider>
+      </MantineProvider>
     </div>
   )
 }

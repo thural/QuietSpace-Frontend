@@ -19,8 +19,17 @@
   },
   "homepage": "https://github.com/thural/Quiet-Space#readme",
   "dependencies": {
+    "@mantine/core": "^7.6.2",
+    "@mantine/dates": "^7.6.2",
+    "@mantine/form": "^7.6.2",
+    "@mantine/hooks": "^7.6.2",
+    "@mantine/modals": "^7.6.2",
+    "@mantine/notifications": "^7.6.2",
+    "@mantine/nprogress": "^7.6.2",
+    "@mantine/spotlight": "^7.6.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@vitejs/plugin-react": "^4.0.0",
+    "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-emoji": "^1.8.1",
@@ -34,6 +43,9 @@
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
+    "postcss": "^8.4.38",
+    "postcss-preset-mantine": "^1.13.0",
+    "postcss-simple-vars": "^7.0.1",
     "vite": "^4.3.9"
   }
 }
