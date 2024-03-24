@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import MessageContainer from "./MessageContainer";
 import ContactContainer from "./ContactContainer";
-import Error from "../Misc/Error";
-import Loading from "../Misc/Loading";
 import styles from "./styles/chatPageStyles";
 import {useSelector} from 'react-redux';
 
@@ -14,8 +12,8 @@ const ChatPage = ({isChatFetching, isChatError}) => {
 
     return (
         <div className={classes.chat}>
-            {isChatFetching && <Loading/>}
-            {isChatError && <Error>{'Could not fetch chat data! 🔥'}</Error>}
+            {/* {isChatFetching && <Loading/>} */}
+            {/* {isChatError && <Error>{'Could not fetch chat data! 🔥'}</Error>} */}
             {
                 !isChatFetching && !isChatError &&
                 <ContactContainer

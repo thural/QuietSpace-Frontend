@@ -6,9 +6,7 @@ import NavBar from "./Navbar/Navbar"
 import PostPage from "./Posts/PostPage"
 import ChatPage from "./Chat/ChatPage";
 import React, { useEffect, useState } from "react"
-import '@mantine/core/styles.css';
 
-import { MantineProvider } from '@mantine/core';
 import './App.css'
 
 import { fetchUser } from "../api/userRequests"
@@ -87,7 +85,6 @@ const App = () => {
 
     return (
         <div className={classes.app}>
-            <MantineProvider>
                 {
                     formView.auth && <AuthPage />
                 }
@@ -103,7 +100,6 @@ const App = () => {
                     } />
                     <Route path="/contact" element={<ContactPage />} />
                 </Routes>
-            </MantineProvider>
         </div>
     )
 }
