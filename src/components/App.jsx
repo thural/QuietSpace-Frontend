@@ -1,16 +1,16 @@
-import { CHAT_PATH_BY_MEMBER, POST_URL, USER_PROFILE_URL } from "../constants/ApiPath"
-import { Route, Routes } from "react-router-dom"
-import styles from "../styles/appStyles"
-import ContactPage from "./Contact/ContactPage"
-import NavBar from "./Navbar/Navbar"
-import PostPage from "./Posts/PostPage"
+import { CHAT_PATH_BY_MEMBER, POST_URL, USER_PROFILE_URL } from "../constants/ApiPath";
+import { Route, Routes } from "react-router-dom";
+import styles from "../styles/appStyles";
+import ContactPage from "./Contact/ContactPage";
+import NavBar from "./Navbar/Navbar";
+import PostPage from "./Posts/PostPage";
 import ChatPage from "./Chat/ChatPage";
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
 import './App.css'
 
-import { fetchUser } from "../api/userRequests"
-import { useDispatch, useSelector } from 'react-redux'
+import { fetchUser } from "../api/userRequests";
+import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from "../redux/userReducer"
 import { fetchChats } from "../api/chatRequests";
 import { loadChat } from "../redux/chatReducer";
@@ -42,15 +42,15 @@ const App = () => {
         }
     }
 
-    const handleFetchPosts = async () => {
-        if (auth["token"] != null) {
-            const response = await fetchPosts(POST_URL, auth.token);
-            const responseData = await response.json();
-            dispatch(loadPosts(responseData["content"]));
-        } else {
-            dispatch(loadPosts([]));
-        }
-    }
+    // const handleFetchPosts = async () => {
+    //     if (auth["token"] != null) {
+    //         const response = await fetchPosts(POST_URL, auth.token);
+    //         const responseData = await response.json();
+    //         dispatch(loadPosts(responseData["content"]));
+    //     } else {
+    //         dispatch(loadPosts([]));
+    //     }
+    // }
 
     const handleFetchChats = async () => {
         try {
@@ -71,9 +71,9 @@ const App = () => {
         handleFetchUser().then(() => console.log("user fetched"));
     }, [auth]);
 
-    useEffect(() => {
-        handleFetchPosts().then(() => console.log("posts loaded"))
-    }, [user]);
+    // useEffect(() => {
+    //     handleFetchPosts().then(() => console.log("posts loaded"))
+    // }, [user]);
 
     useEffect(() => {
         handleFetchChats()
