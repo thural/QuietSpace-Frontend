@@ -1,11 +1,11 @@
-import {createSlice} from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     auth: true,
     login: false,
     signup: false,
     post: false,
-    edit: {view: false, id: null},
+    edit: { view: false, id: null },
     overlay: false
 }
 
@@ -14,23 +14,23 @@ export const formViewSlice = createSlice({
     initialState,
     reducers: {
         login: (state) => {
-            return {...state, login: true, signup: false}
+            return { ...state, login: true, signup: false }
         },
         signup: (state) => {
-            return {...state, signup: true, login: false}
+            return { ...state, signup: true, login: false }
         },
-        authenticate:(state) => {
+        authenticate: (state) => {
             state.auth = false;
         },
         post: (state) => {
-            return {...state, post: true}
+            return { ...state, post: true }
         },
         edit: (state, action) => {
-            const [view, id] = action.payload;
-            return {...state, edit: {view, id}}
+            const { view, id } = action.payload;
+            return { ...state, edit: { view, id } }
         },
         overlay: (state) => {
-            return {...state, signup: false, login: false, post: false, edit: false}
+            return { ...state, signup: false, login: false, post: false, edit: false }
         }
     }
 })
