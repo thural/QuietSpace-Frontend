@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styles from "./styles/editPostStyles"
 import Overlay from "../Overlay"
 import { useDispatch, useSelector } from "react-redux";
-// import { addPost } from "../../redux/postReducer";
 import { overlay } from "../../redux/formViewReducer";
 import { fetchCreatePost } from "../../api/postRequests";
 import { POST_URL } from "../../constants/ApiPath";
@@ -13,31 +12,34 @@ const CreatePostForm = () => {
     const auth = useSelector(state => state.authReducer);
     const [postData, setPostData] = useState({ text: '' });
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     const newPostMutation = useMutation({
         mutationFn: async (postData) => {
             const response = await fetchCreatePost(POST_URL, postData, auth["token"]);
             return response.json();
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["posts"]);
+        onSuccess: (data, variables, context) => {
+            queryClient.setQueryData(["posts", data.id], postData); // manually cache data before refetch
+            queryClient.invalidateQueries(["posts"], { exact: true });
+            console.log(context);
+        },
+        onError: (error, variables, context) => {
+            console.log("error on post: ", error.message)
+        },
+        onSettled: (data, error, variables, context) => { // optional for both error and success cases
+            if (error) {
+                console.error("Error adding new post:", error);
+                // Handle error (e.g., show an error message)
+            } else {
+                console.log("Post added successfully:", data);
+                // Perform any cleanup or additional actions
+            }
+        },
+        onMutate: () => { // do something before mutation
+            return { message: "added new post" } // create context
         },
     })
-
-    // const handleCreatePost = async (postData, token) => {
-    //     try {
-    //         const response = await fetchCreatePost(POST_URL, postData, token);
-    //         const responseData = await response.json();
-    //         responseData.likes = [];  // temporary fix for response null values
-    //         responseData.comments = []; // temporary fix for response null values
-    //         const postLocation = response.headers.get('Location');
-    //         console.log(postLocation);
-    //         if (response.ok) dispatch(addPost(responseData));
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -48,7 +50,6 @@ const CreatePostForm = () => {
         event.preventDefault();
         newPostMutation.mutate(postData);
         // todo: add dispatch
-        // handleCreatePost(postData, auth["token"]).then(() => console.log("post has been created"));
         dispatch(overlay());
     }
 
@@ -67,7 +68,12 @@ const CreatePostForm = () => {
                         value={postData.text}
                         onChange={handleChange}>
                     </textarea>
-                    <button disabled={newPostMutation.isPending} className="submit-btn" type='submit'> Post</button>
+                    <button
+                        disabled={newPostMutation.isPending}
+                        className="submit-btn" type='submit'
+                    >
+                        Post
+                    </button>
                 </form>
             </div>
         </>
