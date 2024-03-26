@@ -1,38 +1,54 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styles from "./styles/signupFormStyles"
-import {useDispatch} from "react-redux";
-import {authenticate, login, overlay} from "../../redux/formViewReducer";
-import {fetchSignup} from "../../api/authRequests";
-import {SIGNUP_URL} from "../../constants/ApiPath";
-import {loadAuth} from "../../redux/authReducer";
+import { useDispatch } from "react-redux";
+import { authenticate, login, overlay } from "../../redux/formViewReducer";
+import { fetchSignup } from "../../api/authRequests";
+import { SIGNUP_URL } from "../../constants/ApiPath";
+import { loadAuth } from "../../redux/authReducer";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const SignupForm = () => {
-    const classes = styles()
 
+    const queryClient = useQueryClient();
+    const classes = styles();
     const dispatch = useDispatch();
-    const [formData, setFormData] = useState({role:"user", username:'', email: '', password: '', confirmPassword: ''});
+    const [formData, setFormData] = useState({ role: "user", username: '', email: '', password: '', confirmPassword: '' });
 
     const handleChange = (event) => {
-        const {name, value} = event.target
-        setFormData({...formData, [name]: value});
+        const { name, value } = event.target
+        setFormData({ ...formData, [name]: value });
     }
 
+    const signupMutation = useMutation({
+        mutationFn: async (formData) => {
+            const response = await fetchSignup(SIGNUP_URL, formData);
+            return await response.json();
+        },
+        onSuccess: (data, variables, context) => {
+            queryClient.invalidateQueries(["posts", "user", "chat"]);
+            dispatch(loadAuth(data));
+            dispatch(overlay());
+            dispatch(authenticate());
+            console.log("user signup was success");
+        },
+        onError: (error, variables, context) => {
+            console.log("error on signup:", error.message)
+        }
+    });
+
     const handleSubmit = async (event) => {
-        const {password, confirmPassword} = formData;
-        if (password !== confirmPassword) alert("passwords does not match, try again!")
+        const { password, confirmPassword } = formData;
+        if (password !== confirmPassword) {
+            alert("passwords does not match, try again!")
+        }
         else {
             delete formData["confirmPassword"];
             event.preventDefault();
-            const authResponse = await fetchSignup(SIGNUP_URL, formData);
-            const authResponseData = await authResponse.json();
-            dispatch(loadAuth(authResponseData));
-            dispatch(overlay());
-            dispatch(authenticate());
+            signupMutation.mutate(formData);
         }
     }
 
     return (
-        <>
             <div className={classes.signup}>
                 <h1>Signup</h1>
                 <form
@@ -76,7 +92,6 @@ const SignupForm = () => {
                 <h3>already have an account?</h3>
                 <button type='button' onClick={() => dispatch(login())}>login</button>
             </div>
-        </>
     )
 }
 
