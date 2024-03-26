@@ -6,6 +6,7 @@ import {COMMENT_PATH} from "../../constants/ApiPath";
 import {fetchCreateComment} from "../../api/commentRequests";
 import InputEmoji from "react-input-emoji";
 import {addComment} from "../../redux/postReducer";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 const CommentSection = ({postId, comments}) => {
@@ -14,6 +15,7 @@ const CommentSection = ({postId, comments}) => {
     const auth = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
     const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
+    const queryClient = useQueryClient();
 
     const cursorPosition = useRef(commentData.text.length);
     const inputRef = useRef(null);
@@ -24,23 +26,44 @@ const CommentSection = ({postId, comments}) => {
         inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
     }, [commentData.text]);
 
+    const newCommentMutation = useMutation({
+        mutationFn: async (commentData) => {
+            const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
+            return response.json();
+        },
+        onSuccess: (data, variables, context) => {
+            queryClient.setQueryData(["comments", data.id], commentData); // manually cache data before refetch
+            queryClient.invalidateQueries(["comments"], { exact: true });
+            dispatch(addComment(data));
+            console.log(context);
+        },
+        onError: (error, variables, context) => {
+            console.log("error on adding comment: ", error.message)
+        },
+        onSettled: (data, error, variables, context) => { // optional for both error and success cases
+            if (error) {
+                console.error("error adding new comment:", error);
+                // Handle error (e.g., show an error message)
+            } else {
+                console.log("comment added successfully:", data);
+                // Perform any cleanup or additional actions
+            }
+        },
+        onMutate: () => { // do something before mutation
+            return { message: "adding new comment" } // create context
+        },
+    })
+
     const handleCreateComment = async (commentData) => {
-        const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
-        if (response.ok) {
-            return await response.json();
-        } else throw Error("error on creating the comment")
+        newCommentMutation.mutate(commentData);
     }
 
     const handleEmojiInput = (event) => {
         setCommentData({...commentData, text: event})
     }
 
-    const handleSubmit = async () => {
-        await handleCreateComment(commentData).then(responseData => {
-            dispatch(addComment(responseData));
-            console.log("comment was added")
-        })
-            .catch(error => console.log(error));
+    const handleSubmit = () => {
+        handleCreateComment(commentData);
     }
 
     const classes = styles();
@@ -48,7 +71,6 @@ const CommentSection = ({postId, comments}) => {
     return (
         <div className={classes.commentSection}>
             <form>
-
                 <InputEmoji
                     className={classes.commentInput}
                     value={commentData.text}
@@ -61,7 +83,6 @@ const CommentSection = ({postId, comments}) => {
                     theme="light"
                     placeholder="Type a comment"
                 />
-
             </form>
 
             {
@@ -74,7 +95,6 @@ const CommentSection = ({postId, comments}) => {
                     />
                 )
             }
-
         </div>
     )
 }

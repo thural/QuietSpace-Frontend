@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import styles from "./styles/editPostStyles"
-import Overlay from "../Overlay"
+import styles from "./styles/editPostStyles";
+import Overlay from "../Overlay";
 import { useDispatch, useSelector } from "react-redux";
 import { overlay } from "../../redux/formViewReducer";
 import { fetchCreatePost } from "../../api/postRequests";
