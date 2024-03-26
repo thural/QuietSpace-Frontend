@@ -14,8 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from "../redux/userReducer"
 import { fetchChats } from "../api/chatRequests";
 import { loadChat } from "../redux/chatReducer";
-import { fetchPosts } from "../api/postRequests";
-import { loadPosts } from "../redux/postReducer";
+import { useQuery } from "@tanstack/react-query";
 import AuthPage from "./Auth/AuthPage";
 
 const App = () => {
@@ -28,29 +27,26 @@ const App = () => {
     const [isChatError, setIsChatError] = useState(false);
     const [isChatFetching, setIsChatFetching] = useState(true);
 
+    const userQuery = useQuery({
+        queryKey: ["user"],
+        queryFn: async () => {
+            const response = await fetchUser(USER_PROFILE_URL, auth.token);
+            return await response.json();
+        },
+        enabled: auth["token"] != null,
+    })
 
     const handleFetchUser = async () => {
-        if (auth["token"] != null) {
-            const userResponse = await fetchUser(USER_PROFILE_URL, auth.token);
-            const userResponseData = await userResponse.json();
-            if (userResponse.ok) {
-                dispatch(loadUser(userResponseData));
-                console.log("user loaded: ", userResponseData);
-            }
-        } else {
+        if (auth["token"] == null) {
             dispatch(loadUser({}));
+            return;
+        }
+
+        if (userQuery.isFetched) {
+            dispatch(loadUser(userQuery.data));
+            console.log("user loaded: ", userResponseData);
         }
     }
-
-    // const handleFetchPosts = async () => {
-    //     if (auth["token"] != null) {
-    //         const response = await fetchPosts(POST_URL, auth.token);
-    //         const responseData = await response.json();
-    //         dispatch(loadPosts(responseData["content"]));
-    //     } else {
-    //         dispatch(loadPosts([]));
-    //     }
-    // }
 
     const handleFetchChats = async () => {
         try {
@@ -66,14 +62,9 @@ const App = () => {
         }
     }
 
-
     useEffect(() => {
         handleFetchUser().then(() => console.log("user fetched"));
     }, [auth]);
-
-    // useEffect(() => {
-    //     handleFetchPosts().then(() => console.log("posts loaded"))
-    // }, [user]);
 
     useEffect(() => {
         handleFetchChats()
@@ -85,21 +76,22 @@ const App = () => {
 
     return (
         <div className={classes.app}>
-                {
-                    formView.auth && <AuthPage />
-                }
-                <NavBar />
-                <Routes>
-                    <Route path="/" element={<PostPage />} />
-                    <Route path="/posts" element={<PostPage />} />
-                    <Route path="/chat" element={
-                        <ChatPage
-                            isChatFetching={isChatFetching}
-                            isChatError={isChatError}
-                        />
-                    } />
-                    <Route path="/contact" element={<ContactPage />} />
-                </Routes>
+            {formView.auth ? (<AuthPage />) : (
+                <>
+                    <NavBar />
+                    <Routes>
+                        <Route path="/" element={<PostPage />} />
+                        <Route path="/posts" element={<PostPage />} />
+                        <Route path="/chat" element={
+                            <ChatPage
+                                isChatFetching={isChatFetching}
+                                isChatError={isChatError}
+                            />
+                        } />
+                        <Route path="/contact" element={<ContactPage />} />
+                    </Routes>
+                </>
+            )}
         </div>
     )
 }
