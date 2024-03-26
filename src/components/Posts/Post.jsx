@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from "react"
-import styles from "./styles/postStyles"
-import likeIcon from "../../assets/thumbs.svg"
-import shareIcon from "../../assets/share.svg"
-import editIcon from "../../assets/edit.svg"
-import commentIcon from "../../assets/comment-3-line.svg"
-import deleteIcon from "../../assets/delete-bin-line.svg"
-import CommentSection from "./CommentSection"
-import { useDispatch, useSelector } from "react-redux"
-import { deletePost, loadComments } from "../../redux/postReducer"
-import { edit } from "../../redux/formViewReducer"
+import React, { useState } from "react";
+import styles from "./styles/postStyles";
+import likeIcon from "../../assets/thumbs.svg";
+import shareIcon from "../../assets/share.svg";
+import editIcon from "../../assets/edit.svg";
+import commentIcon from "../../assets/comment-3-line.svg";
+import deleteIcon from "../../assets/delete-bin-line.svg";
+import CommentSection from "./CommentSection";
 import { fetchDeletePost, fetchLikePost } from "../../api/postRequests";
 import { COMMENT_PATH, POST_LIKE_TOGGLE, POST_URL } from "../../constants/ApiPath";
 import { fetchCommentsByPostId } from "../../api/commentRequests";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import EditPostForm from "./EditPostForm";
 
 const Post = ({ post }) => {
-    const dispatch = useDispatch();
-    const user = useSelector(state => state.userReducer);
-    const auth = useSelector(state => state.authReducer);
+
+    const queryClient = useQueryClient();
+    const user = queryClient.getQueryData("user");
+    const auth = queryClient.getQueryData("auth");
 
     const { id: postId, username, text, likes } = post;
     const [showComments, setShowComments] = useState(false);
-    const queryClient = useQueryClient();
+    const [showEditForm, setShowEditForm] = useState(false);
 
 
     const deletePostMutation = useMutation({
@@ -31,7 +30,6 @@ const Post = ({ post }) => {
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts"], { exact: true });
-            dispatch(deletePost({ postId, user }));
             console.log("delete post sucess");
         },
         onError: (error, variables, context) => {
@@ -56,7 +54,7 @@ const Post = ({ post }) => {
             console.log("post like toggle sucess");
         },
         onError: (error, variables, context) => {
-            console.log("error on deleting post: ", error.message)
+            console.log("error on deleting post: ", error.message);
         },
     })
 
@@ -73,7 +71,7 @@ const Post = ({ post }) => {
             return await response.json();
         },
         onSuccess: (data) => {
-            dispatch(loadComments({ comments: data.content, postId: postId }));
+            console.log("comments fetch success");
         },
         onError: () => {
             console.log(`error on loading comments for post with id ${postId}: `, error);
@@ -97,6 +95,10 @@ const Post = ({ post }) => {
                 <p>0 shares</p>
             </div>
 
+            {
+                showEditForm && <EditPostForm />
+            }
+
             <hr></hr>
 
             <div className="panel">
@@ -109,7 +111,7 @@ const Post = ({ post }) => {
 
                 {
                     post.username === user.username &&
-                    <img src={editIcon} onClick={() => dispatch(edit({ view: true, id: postId }))}
+                    <img src={editIcon} onClick={() => setShowEditForm(true)}
                         alt={"edit icon"} />
                 }
 

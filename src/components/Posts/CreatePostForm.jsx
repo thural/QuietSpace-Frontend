@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import styles from "./styles/editPostStyles";
 import Overlay from "../Overlay";
-import { useDispatch, useSelector } from "react-redux";
-import { overlay } from "../../redux/formViewReducer";
 import { fetchCreatePost } from "../../api/postRequests";
 import { POST_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CreatePostForm = () => {
-    const dispatch = useDispatch();
-    const auth = useSelector(state => state.authReducer);
     const [postData, setPostData] = useState({ text: '' });
 
     const queryClient = useQueryClient();
+    const auth = queryClient.getQueryData(auth);
 
     const newPostMutation = useMutation({
         mutationFn: async (postData) => {
@@ -49,8 +46,7 @@ const CreatePostForm = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         newPostMutation.mutate(postData);
-        // todo: add dispatch
-        dispatch(overlay());
+        // TODO: add logic to close the form on submit
     }
 
     const classes = styles()

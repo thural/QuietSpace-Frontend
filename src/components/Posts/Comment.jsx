@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import styles from "./styles/commentStyles";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteComment } from "../../redux/postReducer";
 import emoji from "react-easy-emoji";
 import { fetchDeleteComment, fetchLikeComment } from "../../api/commentRequests";
 import { COMMENT_LIKE_TOGGLE, COMMENT_PATH } from "../../constants/ApiPath";
@@ -9,11 +7,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 const Comment = ({ comment, postId }) => {
-    const user = useSelector(state => state.userReducer);
-    const auth = useSelector(state => state.authReducer);
-    const dispatch = useDispatch();
-    const [liked, setLiked] = useState(false);
     const queryClient = useQueryClient();
+    const user = queryClient.getQueryData("user");
+    const auth = queryClient.getQueryData("auth");
+    const [liked, setLiked] = useState(false);
+
 
     const deleteCommentMutation = useMutation({
         mutationFn: async () => {
@@ -22,7 +20,6 @@ const Comment = ({ comment, postId }) => {
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["comments"], { exact: true });
-            dispatch(deleteComment({ postId: postId, commentId: comment.id }));
             console.log(context);
         },
         onError: (error, variables, context) => {

@@ -1,21 +1,20 @@
 import React, {useEffect, useRef, useState} from "react";
 import Comment from "./Comment";
 import styles from "./styles/commentSectionStyles";
-import {useDispatch, useSelector} from "react-redux";
 import {COMMENT_PATH} from "../../constants/ApiPath";
 import {fetchCreateComment} from "../../api/commentRequests";
 import InputEmoji from "react-input-emoji";
-import {addComment} from "../../redux/postReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 const CommentSection = ({postId, comments}) => {
 
-    const user = useSelector(state => state.userReducer);
-    const auth = useSelector(state => state.authReducer);
-    const dispatch = useDispatch();
-    const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
     const queryClient = useQueryClient();
+    const user = queryClient.getQueryData("user");
+    const auth = queryClient.getQueryData("autt");
+
+    const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
+
 
     const cursorPosition = useRef(commentData.text.length);
     const inputRef = useRef(null);
@@ -26,6 +25,7 @@ const CommentSection = ({postId, comments}) => {
         inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
     }, [commentData.text]);
 
+
     const newCommentMutation = useMutation({
         mutationFn: async (commentData) => {
             const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
@@ -34,7 +34,6 @@ const CommentSection = ({postId, comments}) => {
         onSuccess: (data, variables, context) => {
             queryClient.setQueryData(["comments", data.id], commentData); // manually cache data before refetch
             queryClient.invalidateQueries(["comments"], { exact: true });
-            dispatch(addComment(data));
             console.log(context);
         },
         onError: (error, variables, context) => {
@@ -53,6 +52,7 @@ const CommentSection = ({postId, comments}) => {
             return { message: "adding new comment" } // create context
         },
     })
+    
 
     const handleCreateComment = async (commentData) => {
         newCommentMutation.mutate(commentData);

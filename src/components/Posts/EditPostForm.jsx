@@ -1,20 +1,16 @@
-import React, { useState } from "react"
-import styles from "./styles/editPostStyles"
-import Overlay from "../Overlay"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchEditPost } from "../../api/postRequests"
-import { POST_URL } from "../../constants/ApiPath"
+import React, { useState } from "react";
+import styles from "./styles/editPostStyles";
+import Overlay from "../Overlay";
+import { fetchEditPost } from "../../api/postRequests";
+import { POST_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const EditPostForm = () => {
+const EditPostForm = ({ postId }) => {
 
   const queryClient = useQueryClient();
+  const auth = queryClient.getQueryData("auth");
+  const posts = queryClient.getQueryData("posts");
 
-  const auth = useSelector(state => state.authReducer);
-  const posts = useSelector(state => state.postReducer);
-  const { edit: editView } = useSelector(state => state.formViewReducer);
-
-  const postId = editView["id"];
   const editedPost = posts.find(post => post.id === postId);
   const [postData, setPostData] = useState(editedPost);
 
@@ -30,17 +26,17 @@ const EditPostForm = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["posts"]);
-      console.log("post edited was success")
+      console.log("post edited was success");
     },
     onError: (error, variables, context) => {
-      console.log("error on editing post:", error.message)
+      console.log("error on editing post:", error.message);
     }
   })
 
   const handleSubmit = (event) => {
     event.preventDefault();
     editPostMutation.mutate(postData);
-    dispatch(edit({ view: false, id: postId }));
+    // TODO: add logic to close form on submit
   }
 
   const classes = styles();
