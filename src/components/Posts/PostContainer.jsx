@@ -1,9 +1,9 @@
 import Post from "./Post";
 import React, { useState } from "react";
 import CreatePostForm from "./CreatePostForm";
-import { POST_URL } from "../../constants/ApiPath"
+import { POST_URL } from "../../constants/ApiPath";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPosts } from "../../api/postRequests"
+import { fetchPosts } from "../../api/postRequests";
 
 function PostContainer() {
 
@@ -19,7 +19,7 @@ function PostContainer() {
             return await response.json();
         },
         enabled: user.id !== null, // if userQuery could fetch the current user
-        staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
+        staleTime: 1000 * 60 * 3, // keep data fresh up to 3 minutes
         refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
     });
 

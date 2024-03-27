@@ -1,10 +1,13 @@
-const BASE_URL = "http://localhost:8080/api/v1";
+const HOST = "http://localhost:8080";
+const BASE_URL = HOST + "/api/v1";
+const AUTH_URL = HOST + "/auth";
+
 export const USER_PATH = BASE_URL + "/users";
 export const USER_PROFILE_URL = USER_PATH + "/profile";
 export const POST_URL = BASE_URL + "/posts";
-export const SIGNUP_URL = 'http://localhost:8080/auth/signup';
-export const LOGIN_URL = 'http://localhost:8080/auth/login';
-export const LOGOUT_URL = 'http://localhost:8080/auth/logout';
+export const SIGNUP_URL = AUTH_URL + "/signup";
+export const LOGIN_URL = AUTH_URL + "/login";
+export const LOGOUT_URL = AUTH_URL + "/logout";
 export const COMMENT_PATH = BASE_URL + "/comments";
 export const COMMENT_LIKE = BASE_URL + "/comment-like";
 export const COMMENT_LIKE_TOGGLE = COMMENT_LIKE + "/toggle-like";
