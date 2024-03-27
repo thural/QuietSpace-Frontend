@@ -16,9 +16,9 @@ export const fetchUserById = async (url, token) => {
     }
 }
 
-export const fetchUsersByQuery = async (url, token) => {
+export const fetchUsersByQuery = async (url, queryText, token) => {
     try {
-        return await getApiResponse(url, 'GET', null, token);
+        return await getApiResponse(url + `/search?query=${queryText}`, 'GET', null, token);
     } catch (err) {
         console.log(err)
     }
