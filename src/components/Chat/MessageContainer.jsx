@@ -1,65 +1,79 @@
-import React, {useState} from "react"
-import Message from "./Message"
-import styles from "./styles/messageContainerStyles"
-import {useDispatch, useSelector} from 'react-redux'
-import {fetchCreateMessage} from "../../api/chatRequests";
-import {MESSAGE_PATH} from "../../constants/ApiPath";
-import {addMessage} from "../../redux/chatReducer";
-import InputEmoji from 'react-input-emoji'
+import React, { useState } from "react";
+import Message from "./Message";
+import InputEmoji from "react-input-emoji";
+import styles from "./styles/messageContainerStyles";
+import { fetchMessages, fetchCreateMessage } from "../../api/messageRequests";
+import { MESSAGE_PATH } from "../../constants/ApiPath";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 
-const MessageContainer = ({currentChatId}) => {
-    const auth = useSelector(state => state.authReducer);
-    const chats = useSelector(state => state.chatReducer);
-    const dispatch = useDispatch();
-
-    const messages = chats.find(chat => chat.id === currentChatId).messages.length > 0 ?
-        chats.find(chat => chat.id === currentChatId).messages
-        : [];
-
+const MessageContainer = ({ currentChatId }) => {
+    const queryClient = useQueryClient();
+    const auth = queryClient.getQueryData("auth");
     const senderId = auth["userId"];
 
-    console.log("current chat id: ", currentChatId);
+    const [messageData, setMessageData] = useState({ chatId: currentChatId, senderId, text: '' });
 
-    const [messageData, setMessageData] = useState({chatId: currentChatId, senderId, text: ''});
+
+    const { data: messages, isError, isLoading, isSuccess } = useQuery({
+        queryKey: ["messages"],
+        queryFn: async () => {
+            const response = await fetchMessages(MESSAGE_PATH + `/${currentChatId}`, auth.token); // TODO: create fetchMessages()
+            return await response.json();
+        },
+        enabled: user.id !== null, // if userQuery could fetch the current user
+        staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
+        refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
+    });
 
     const handleInputChange = (event) => {
-        setMessageData({...messageData, text: event})
+        setMessageData({ ...messageData, text: event });
     }
 
-    const handleSendMessage = async () => {
-        const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth["token"]);
-        if (response.ok) {
-            let responseData = await response.json();
-            return {...responseData, "sender": {"username": responseData.username}};
-        } else throw new Error("Message couldn't be send");
+    const newMessageMutation = useMutation({
+        mutationFn: async () => {
+            const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth["token"]);
+            return response.json();
+        },
+        onSuccess: (data, variables, context) => {
+            queryClient.setQueryData(["messages", data.id], messageData); // manually cache data before refetch
+            setMessageData({ ...messageData, text: '' });
+            console.log("message sent successfully:", data);
+        },
+        onError: (error, variables, context) => {
+            console.log("error on sending message: ", error.message);
+        },
+    })
+
+    const handleSendMessage = () => {
+        newMessageMutation.mutate();
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = () => {
         if (messageData.text.length === 0) return;
-        handleSendMessage(messageData).then((responseData) => {
-            dispatch(addMessage({currentChatId, messageData: responseData}));
-            console.log("message sent")
-        })
-            .catch(error => console.log(error));
-        setMessageData({...messageData, text: ''});
+        handleSendMessage();
     }
 
     const classes = styles();
 
     return (
         <div className={classes.chatboard}>
-
-            <div className={classes.messages}>
-                {
-                    messages.map(message =>
-                        <Message
-                            key={message.id}
-                            message={message}
-                            currentChatId={currentChatId}
-                        />)
-                }
-            </div>
+            {isLoading ? (<h1>loading messages ...</h1>) :
+                isError ? (<h1>error loading messages</h1>) :
+                    (
+                        <div className={classes.messages}>
+                            {
+                                messages.map(message =>
+                                    <Message
+                                        key={message.id}
+                                        message={message}
+                                        currentChatId={currentChatId}
+                                    />
+                                )
+                            }
+                        </div>
+                    )
+            }
 
             <div className={classes.inputSection}>
                 <form className={classes.chatInput}>
@@ -75,11 +89,11 @@ const MessageContainer = ({currentChatId}) => {
                         onEnter={handleSubmit}
                         theme="light"
                         placeholder="write a message"
+                        enabled={isSuccess}
                     />
                 </form>
             </div>
         </div>
-
     )
 }
 
