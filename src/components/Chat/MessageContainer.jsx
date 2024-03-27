@@ -18,7 +18,7 @@ const MessageContainer = ({ currentChatId }) => {
     const { data: messages, isError, isLoading, isSuccess } = useQuery({
         queryKey: ["messages"],
         queryFn: async () => {
-            const response = await fetchMessages(MESSAGE_PATH + `/${currentChatId}`, auth.token); // TODO: create fetchMessages()
+            const response = await fetchMessages(MESSAGE_PATH + `/${currentChatId}`, auth.token);
             return await response.json();
         },
         enabled: user.id !== null, // if userQuery could fetch the current user

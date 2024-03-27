@@ -1,17 +1,16 @@
-import React, {useState} from "react"
-import styles from "./styles/messageStyles"
-import {useDispatch, useSelector} from "react-redux"
-import {fetchDeleteMessage} from "../../api/chatRequests";
-import {MESSAGE_PATH} from "../../constants/ApiPath";
-import {removeMessage} from "../../redux/chatReducer";
+import React, { useState } from "react";
+import styles from "./styles/messageStyles";
+import { fetchDeleteMessage } from "../../api/chatRequests";
+import { MESSAGE_PATH } from "../../constants/ApiPath";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
-const Message = ({message, currentChatId}) => {
+const Message = ({ message }) => {
 
-    const user = useSelector(state => state.userReducer);
-    const auth = useSelector(state => state.authReducer);
-    const dispatch = useDispatch();
-    const {id, sender, text} = message;
-    const senderName = sender.username;
+    const queryClient = useQueryClient();
+
+    const user = queryClient.getQueryData("user");
+    const auth = queryClient.getQueryData("auth");
+    const { id, sender, text } = message;
 
     const [isHovering, setIsHovering] = useState(false);
 
@@ -23,16 +22,26 @@ const Message = ({message, currentChatId}) => {
         setIsHovering(false);
     };
 
+
+    const deleteMessageMutation = useMutation({
+        mutationFn: async () => {
+            const response = await fetchDeleteMessage(MESSAGE_PATH, auth["token"], id);
+            return response.json();
+        },
+        onSuccess: (data, variables, context) => {
+            queryClient.invalidateQueries(["chats"], { id }, { exact: true });
+            console.log("delete message sucess");
+        },
+        onError: (error, variables, context) => {
+            console.log("error on deleting message: ", error.message);
+        },
+    })
+
     const handleDeleteMessage = async () => {
-        try {
-            const response = await fetchDeleteMessage(MESSAGE_PATH, auth["token"], message.id);
-            if (response.ok) dispatch(removeMessage({currentChatId, deletedMessageId: id}));
-        } catch (error) {
-            console.log("error deleting the message: ", error);
-        }
+        deleteMessageMutation.mutate();
     }
 
-    const appliedStyle = sender.username !== user.username ? {marginRight: "auto"} : {
+    const appliedStyle = sender.username !== user.username ? { marginRight: "auto" } : {
         marginLeft: "auto",
         backgroundColor: '#f1f1f1'
     };
@@ -40,13 +49,15 @@ const Message = ({message, currentChatId}) => {
     const classes = styles();
     return (
         <div id={id} className={classes.message}
-             style={appliedStyle}
-             onMouseOver={handleMouseOver}
-             onMouseOut={handleMouseOut}>
-            {/*<div className={classes.sender}>{senderName}</div>*/}
+            style={appliedStyle}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}>
             {
                 sender.username === user.username && isHovering &&
-                <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
+                <>
+                    <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
+                    <div className={classes.sender}>{senderName}</div>
+                </>
             }
             <div className={classes.text}><p>{text}</p></div>
         </div>
