@@ -23,15 +23,18 @@ const App = () => {
             const response = await fetchUser(USER_PROFILE_URL, auth.token);
             return await response.json();
         },
-        enabled: auth["token"] != null,
+        enabled: auth?.token === true,
     })
+
+    if(isLoading) console.log("user data is loading")
+    console.log("userdata: ",userData)
 
     const isNull = (value) => typeof value === "object" && !value;
 
     const classes = styles();
     return (
         <div className={classes.app}>
-            {!isNull(userData.id) ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
+            {!userData?.id ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
                 <>
                     <NavBar />
                     <Routes>

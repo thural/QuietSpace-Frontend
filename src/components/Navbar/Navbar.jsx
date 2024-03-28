@@ -1,15 +1,16 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import styles from "./styles/navbarStyles"
-import Menu from "./Menu"
-import postsIcon from "../../assets/compass-line.svg"
-import chatIcon from "../../assets/chat-line.svg"
-import contactIcon from "../../assets/question-circle-line.svg"
-import { useSelector } from "react-redux"
+import React from "react";
+import { Link } from "react-router-dom";
+import styles from "./styles/navbarStyles";
+import Menu from "./Menu";
+import postsIcon from "../../assets/compass-line.svg";
+import chatIcon from "../../assets/chat-line.svg";
+import contactIcon from "../../assets/question-circle-line.svg";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const NavBar = ({ children }) => {
-  const user = useSelector(state => state.userReducer);
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData("user");
   const classes = styles();
   
   return (
@@ -22,7 +23,7 @@ const NavBar = ({ children }) => {
         </div>
 
         {
-          user && user?.username &&
+          user?.username &&
           <div className="navbar-item">
             <Link to="/chat"><img src={chatIcon} /></Link>
           </div>

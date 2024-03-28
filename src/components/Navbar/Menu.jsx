@@ -7,24 +7,20 @@ import logoutIcon from "../../assets/log-out.svg";
 import menuIcon from "../../assets/menu-line.svg";
 import { fetchLogout } from "../../api/authRequests";
 import { LOGOUT_URL } from "../../constants/ApiPath";
-import { useDispatch, useSelector } from "react-redux";
-import { loadAuth } from "../../redux/authReducer";
-import { overlay } from "../../redux/formViewReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 const Menu = () => {
-    const user = useSelector(state => state.userReducer);
-    const auth = useSelector(state => state.authReducer);
 
     const queryClient = useQueryClient();
-    const dispatch = useDispatch();
+    const user = queryClient.getQueryData("user");
+    const auth = queryClient.getQueryData("auth");
 
     const classes = styles();
     const [display, setDisplay] = useState('none');
 
     const toggleDisplay = () => {
-        if (display === "none") setDisplay("block")
+        if (display === "none") setDisplay("block");
         else setDisplay("none");
     }
 
@@ -35,9 +31,7 @@ const Menu = () => {
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts", "user", "chat"]);
-            dispatch(loadAuth({ userId: null, token: null }));
-            dispatch(overlay());
-            dispatch(authenticate());
+            queryClient.setQueryData("auth", { userId: null, token: null })
             console.log("user logout was success");
         },
         onError: (error, variables, context) => {

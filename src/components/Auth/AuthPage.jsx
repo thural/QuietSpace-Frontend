@@ -1,18 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useState} from "react";
 import styles from "./styles/authStyles"
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
-import {useDispatch, useSelector} from "react-redux";
-import {login, signup} from "../../redux/formViewReducer";
 
 const AuthPage = () => {
-    const formView = useSelector(state => state.formViewReducer);
     const classes = styles();
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(login())
-    }, []);
+    const [authState, setAuthState] = useState("login");
 
     return (
         <>
@@ -23,7 +16,8 @@ const AuthPage = () => {
                     <h3 className="secondary-text">where free speech and privacy is our priority</h3>
                 </div>
                 {
-                    formView.signup ? <SignupForm/> : formView.login ? <LoginForm/> : null
+                    authState == "signup" ? <SignupForm setAuthState={setAuthState} /> :
+                    authState == "login" ? <LoginForm setAuthState={setAuthState}/> : null
                 }
             </div>
         </>

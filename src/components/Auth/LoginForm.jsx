@@ -1,17 +1,13 @@
 import { useState } from "react";
 import styles from "./styles/loginFormStyles";
-import { useDispatch } from "react-redux";
-import { authenticate, overlay, signup } from "../../redux/formViewReducer";
 import { LOGIN_URL } from "../../constants/ApiPath";
 import { fetchLogin } from "../../api/authRequests";
-import { loadAuth } from "../../redux/authReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
-const LoginForm = () => {
+const LoginForm = ({ setAuthState }) => {
 
     const queryClient = useQueryClient();
-    const dispatch = useDispatch();
     const classes = styles();
 
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -28,9 +24,6 @@ const LoginForm = () => {
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts", "user", "chat"]);
-            dispatch(loadAuth(data));
-            dispatch(overlay());
-            dispatch(authenticate());
             console.log("user login was success");
         },
         onError: (error, variables, context) => {
@@ -67,7 +60,7 @@ const LoginForm = () => {
                     <button type='button' onClick={handleLoginForm}>login</button>
                 </form>
                 <h3>don't have an account?</h3>
-                <button type='button' onClick={() => dispatch(signup())}>signup</button>
+                <button type='button' onClick={() => setAuthState("signup")}>signup</button>
             </div>
         </>
     )

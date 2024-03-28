@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/thural/Quiet-Space#readme",
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-query": "^5.28.8",
     "@tanstack/react-query-devtools": "^5.28.8",
     "@vitejs/plugin-react": "^4.0.0",
@@ -29,9 +28,7 @@
     "react-easy-emoji": "^1.8.1",
     "react-input-emoji": "^5.6.4",
     "react-jss": "^10.9.2",
-    "react-redux": "^8.0.5",
-    "react-router-dom": "^6.4.3",
-    "redux": "^4.2.1"
+    "react-router-dom": "^6.4.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

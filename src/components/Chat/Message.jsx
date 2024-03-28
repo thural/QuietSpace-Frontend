@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styles from "./styles/messageStyles";
-import { fetchDeleteMessage } from "../../api/chatRequests";
+
 import { MESSAGE_PATH } from "../../constants/ApiPath";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { fetchDeleteMessage } from "../../api/messageRequests";
 
 const Message = ({ message }) => {
 
