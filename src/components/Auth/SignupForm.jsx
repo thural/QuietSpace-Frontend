@@ -22,6 +22,7 @@ const SignupForm = ({ setAuthState }) => {
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts", "user", "chat"]);
+            queryClient.setQueryData("auth", data);
             console.log("user signup was success");
         },
         onError: (error, variables, context) => {

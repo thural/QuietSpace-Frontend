@@ -18,13 +18,16 @@ const LoginForm = ({ setAuthState }) => {
     }
 
     const loginMutation = useMutation({
+        mutationKey: ["auth"],
         mutationFn: async (formData) => {
             const response = await fetchLogin(LOGIN_URL, formData);
             return await response.json();
         },
         onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["posts", "user", "chat"]);
+            // queryClient.invalidateQueries(["posts", "user", "chat"]);
+            console.log("auth data on mutation: ", data);
             console.log("user login was success");
+            queryClient.setQueryData("auth", data);
         },
         onError: (error, variables, context) => {
             console.log("error on login:", error.message)

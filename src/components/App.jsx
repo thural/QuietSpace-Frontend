@@ -13,28 +13,29 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthPage from "./Auth/AuthPage";
 
 const App = () => {
-    
+
     const queryClient = useQueryClient();
     const auth = queryClient.getQueryData("auth");
 
-    const { data: userData, isLoading } = useQuery({
+    console.log("authData: ", auth);
+
+    const token = auth?.token;
+
+    const { data: userData, isLoading, isSuccess, refetch, isError } = useQuery({
         queryKey: ["user"],
         queryFn: async () => {
             const response = await fetchUser(USER_PROFILE_URL, auth.token);
             return await response.json();
         },
-        enabled: auth?.token === true,
+        enabled: true
     })
 
-    if(isLoading) console.log("user data is loading")
-    console.log("userdata: ",userData)
-
-    const isNull = (value) => typeof value === "object" && !value;
+    if (isSuccess) console.log("user load success: ", userData);
 
     const classes = styles();
     return (
         <div className={classes.app}>
-            {!userData?.id ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
+            {!isSuccess ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
                 <>
                     <NavBar />
                     <Routes>
