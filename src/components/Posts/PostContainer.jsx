@@ -18,7 +18,7 @@ function PostContainer() {
             const response = await fetchPosts(POST_URL, auth.token);
             return await response.json();
         },
-        enabled: user.id !== null, // if userQuery could fetch the current user
+        enabled: user?.id !== null, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 3 minutes
         refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
     });

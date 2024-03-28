@@ -103,14 +103,14 @@ const Post = ({ post }) => {
 
             <div className="panel">
                 {
-                    post.username !== user.username &&
+                    post?.username !== user?.username &&
                     <img src={likeIcon} onClick={() => handlePostLikeToggle()} alt={"post like icon"} />
                 }
 
                 <img src={commentIcon} onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
                 {
-                    post.username === user.username &&
+                    post?.username === user?.username &&
                     <img src={editIcon} onClick={() => setShowEditForm(true)}
                         alt={"edit icon"} />
                 }
@@ -118,7 +118,7 @@ const Post = ({ post }) => {
                 <img src={shareIcon} alt={"share icon"} />
 
                 {
-                    user.role === "admin" || post.username === user.username &&
+                    user?.role === "admin" || post?.username === user?.username &&
                     <img src={deleteIcon} onClick={() => handleDeletePost()} alt={"delete post icon"} />
                 }
             </div>

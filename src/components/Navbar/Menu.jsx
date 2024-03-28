@@ -31,7 +31,7 @@ const Menu = () => {
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts", "user", "chat"]);
-            queryClient.setQueryData("auth", { userId: null, token: null })
+            queryClient.resetQueries("auth");
             console.log("user logout was success");
         },
         onError: (error, variables, context) => {
@@ -45,7 +45,7 @@ const Menu = () => {
     }
 
     return (
-        <div style={{ display: user.username ? "block" : "none" }}>
+        <div style={{ display: user?.username ? "block" : "none" }}>
             <div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
                 <img src={menuIcon} />
             </div>
