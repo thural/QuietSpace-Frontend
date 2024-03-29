@@ -3,12 +3,21 @@ import styles from "./styles/signupFormStyles"
 import { fetchSignup } from "../../api/authRequests";
 import { SIGNUP_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authStore } from "../../hooks/zustand";
 
 const SignupForm = ({ setAuthState }) => {
 
     const queryClient = useQueryClient();
     const classes = styles();
-    const [formData, setFormData] = useState({ role: "user", username: '', email: '', password: '', confirmPassword: '' });
+    const [formData, setFormData] = useState({
+        role: "user",
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+
+    const { setAuthData } = authStore();
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -21,9 +30,9 @@ const SignupForm = ({ setAuthState }) => {
             return await response.json();
         },
         onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["posts", "user", "chat"]);
+            queryClient.invalidateQueries(["posts", "user", "chats"]);
             queryClient.setQueryData("auth", data);
-            console.log("user signup was success");
+            setAuthData(data);
         },
         onError: (error, variables, context) => {
             console.log("error on signup:", error.message)
@@ -32,12 +41,13 @@ const SignupForm = ({ setAuthState }) => {
 
     const handleSubmit = async (event) => {
         const { password, confirmPassword } = formData;
+        event.preventDefault();
+        
         if (password !== confirmPassword) {
             alert("passwords does not match, try again!")
         }
         else {
             delete formData["confirmPassword"];
-            event.preventDefault();
             signupMutation.mutate(formData);
         }
     }
@@ -83,7 +93,7 @@ const SignupForm = ({ setAuthState }) => {
                 <button type='button' onClick={handleSubmit}>submit</button>
             </form>
             <h3>already have an account?</h3>
-            <button type='button' onClick={() => setAuthState("signup")}>login</button>
+            <button type='button' onClick={() => setAuthState("login")}>login</button>
         </div>
     )
 }

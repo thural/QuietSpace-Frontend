@@ -26,9 +26,7 @@ const LoginForm = ({ setAuthState }) => {
             return await response.json();
         },
         onSuccess: (data, variables, context) => {
-            // queryClient.invalidateQueries(["posts", "user", "chat"]);
-            console.log("auth data on mutation: ", data);
-            console.log("user login was success");
+            queryClient.invalidateQueries(["posts", "user", "chats"]);
             queryClient.setQueryData("auth", data);
             setAuthData(data);
 
