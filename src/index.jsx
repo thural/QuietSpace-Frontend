@@ -4,11 +4,7 @@ import RouteSwitch from "./RouteSwitch";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 
-const queryCLient = new QueryClient({
-  defaultOptions: {
-    queries: { staleTime: 1000 * 60 * 5 } // fetched data will be refreshed after 5 minutes
-  }
-})
+const queryCLient = new QueryClient({});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

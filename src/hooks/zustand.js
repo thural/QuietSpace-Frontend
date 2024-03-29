@@ -10,9 +10,20 @@ export const bearStore = create((set) => ({
 export const authStore = create(set => ({
     data: { message: "", token: "", userId: "" },
     resetAuthData: () => set({
-        data:{ message: "", token: "", userId: "" }
+        data: { message: "", token: "", userId: "" }
     }),
     setAuthData: (authData) => set({
-        data:authData
-    })
+        data: authData
+    }),
+}))
+
+export const viewStore = create(set => ({
+    data: {
+        overlay: false,
+        createPost: false,
+        editPost: false
+    },
+    setViewData: (state, viewData) => set({
+        data: { ...state, ...viewData }
+    }),
 }))

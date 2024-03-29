@@ -3,11 +3,13 @@ import styles from "./styles/loginFormStyles";
 import { LOGIN_URL } from "../../constants/ApiPath";
 import { fetchLogin } from "../../api/authRequests";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authStore } from "../../hooks/zustand";
 
 
 const LoginForm = ({ setAuthState }) => {
 
     const queryClient = useQueryClient();
+    const { setAuthData } = authStore();
     const classes = styles();
 
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -28,6 +30,8 @@ const LoginForm = ({ setAuthState }) => {
             console.log("auth data on mutation: ", data);
             console.log("user login was success");
             queryClient.setQueryData("auth", data);
+            setAuthData(data);
+
         },
         onError: (error, variables, context) => {
             console.log("error on login:", error.message)
