@@ -4,12 +4,16 @@ import Overlay from "../Overlay";
 import { fetchCreatePost } from "../../api/postRequests";
 import { POST_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { viewStore } from "../../hooks/zustand";
 
 const CreatePostForm = () => {
     const [postData, setPostData] = useState({ text: '' });
 
+
     const queryClient = useQueryClient();
-    const auth = queryClient.getQueryData(auth);
+    const auth = queryClient.getQueryData("auth");
+    const { data, setViewData } = viewStore();
+    const { createPost } = data;
 
     const newPostMutation = useMutation({
         mutationFn: async (postData) => {
@@ -30,7 +34,7 @@ const CreatePostForm = () => {
                 // Handle error (e.g., show an error message)
             } else {
                 console.log("Post added successfully:", data);
-                // Perform any cleanup or additional actions
+                setViewData({ overlay: false, createPost: false })
             }
         },
         onMutate: () => { // do something before mutation
@@ -46,13 +50,12 @@ const CreatePostForm = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         newPostMutation.mutate(postData);
-        // TODO: add logic to close the form on submit
     }
 
     const classes = styles()
     return (
         <>
-            <Overlay />
+            <Overlay closable={{ createPost: false }} />
             <div className={classes.post}>
                 <h3>Create a post</h3>
                 <form onSubmit={handleSubmit}>

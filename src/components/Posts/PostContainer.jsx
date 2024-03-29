@@ -4,6 +4,7 @@ import CreatePostForm from "./CreatePostForm";
 import { POST_URL } from "../../constants/ApiPath";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPosts } from "../../api/postRequests";
+import { viewStore } from "../../hooks/zustand";
 
 function PostContainer() {
 
@@ -11,6 +12,12 @@ function PostContainer() {
     const auth = queryClient.getQueryData("auth");
     const user = queryClient.getQueryData("user");
     const [showForm, setShowForm] = useState(false);
+
+    const { data, setViewData } = viewStore();
+    const { createPost } = data;
+
+    console.log("create post data state: ", data)
+    console.log("create post vew state: ", createPost)
 
     const postsQuery = useQuery({
         queryKey: ["posts"],
@@ -31,11 +38,10 @@ function PostContainer() {
     return (
         <>
             <button onClick={postsQuery.refetch}>refresh feed</button>
-            <button onClick={() => setShowForm(true)}>add post</button>
-            {showForm && <CreatePostForm />}
+            <button onClick={() => setViewData({createPost:true})}>add post</button>
+            {createPost && <CreatePostForm />}
             {!postsQuery.isLoading && posts.map(post => (<Post key={post["id"]} post={post} />))}
         </>
-
     )
 }
 
