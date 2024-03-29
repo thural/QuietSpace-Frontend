@@ -11,15 +11,18 @@ import './App.css'
 import { fetchUser } from "../api/userRequests";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthPage from "./Auth/AuthPage";
+import { authStore } from "../hooks/zustand";
 
 const App = () => {
 
     const queryClient = useQueryClient();
     const auth = queryClient.getQueryData("auth");
 
-    console.log("authData: ", auth);
+    // console.log("authData: ", auth);
 
-    const token = auth?.token;
+    const { data: authData } = authStore();
+
+    // console.log("auth data from zustang", authData)
 
     const { data: userData, isLoading, isSuccess, refetch, isError } = useQuery({
         queryKey: ["user"],
@@ -27,10 +30,11 @@ const App = () => {
             const response = await fetchUser(USER_PROFILE_URL, auth.token);
             return await response.json();
         },
-        enabled: true
+        enabled: !!authData?.token
     })
 
-    if (isSuccess) console.log("user load success: ", userData);
+    // if (isSuccess) console.log("user load success: ", userData)
+    // else console.log("user load pending ..");
 
     const classes = styles();
     return (
