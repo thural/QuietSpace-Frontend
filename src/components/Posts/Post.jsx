@@ -8,25 +8,43 @@ import deleteIcon from "../../assets/delete-bin-line.svg";
 import CommentSection from "./CommentSection";
 import { fetchDeletePost, fetchLikePost } from "../../api/postRequests";
 import { COMMENT_PATH, POST_LIKE_TOGGLE, POST_URL } from "../../constants/ApiPath";
-import { fetchCommentsByPostId } from "../../api/commentRequests";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
+import { fetchCommentsByPostId } from "../../api/commentRequests";
+import { authStore } from "../../hooks/zustand";
 
 const Post = ({ post }) => {
 
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData("user");
-    const auth = queryClient.getQueryData("auth");
+    const user = queryClient.getQueryData(["user"]);
+    const { data: authData } = authStore();
+
 
     const { id: postId, username, text, likes } = post;
     const [showComments, setShowComments] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
 
+    const { data: commentData, status, error } = useQuery({
+        queryKey: ["comments", { id: postId }],
+        queryFn: async () => {
+            const response = await fetchCommentsByPostId(COMMENT_PATH + `/post/${postId}`, authData["token"]);
+            return await response.json();
+        },
+        onSuccess: (data) => {
+            console.log("comments fetch success");
+        },
+        onError: (error) => {
+            console.log(`error on loading comments for post with id ${postId}: `, error);
+        },
+        staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
+        refetchInterval: 1000 * 60 * 3 // refetch data after 3 minutes on idle
+    })
+
     const deletePostMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchDeletePost(POST_URL, auth["token"], postId);
-            return response.json();
+        mutationFn: () => {
+            fetchDeletePost(POST_URL, authData["token"], postId)
+                .then(response => response.data);
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts"], { exact: true });
@@ -37,17 +55,11 @@ const Post = ({ post }) => {
         },
     })
 
-
-    const handleDeletePost = async () => {
-        deletePostMutation.mutate();
-    }
-
-
     const toggleLikeMutation = useMutation({
-        mutationFn: async () => {
+        mutationFn: () => {
             const likeBody = { postId }; // TODO: provide user id
-            const response = await fetchLikePost(POST_LIKE_TOGGLE, likeBody, token);
-            return response.json();
+            fetchLikePost(POST_LIKE_TOGGLE, likeBody, token)
+                .then(response => response.data);
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries(["posts", { id: postId }]);
@@ -59,39 +71,28 @@ const Post = ({ post }) => {
     })
 
 
+    const handleDeletePost = async () => {
+        deletePostMutation.mutate();
+    }
+
     const handlePostLikeToggle = async () => {
         toggleLikeMutation.mutate();
     }
 
 
-    const commentsQuery = useQuery({
-        queryKey: ["posts"],
-        queryFn: async () => {
-            const response = await fetchCommentsByPostId(COMMENT_PATH + `/post/${postId}`, auth["token"]);
-            return await response.json();
-        },
-        onSuccess: (data) => {
-            console.log("comments fetch success");
-        },
-        onError: () => {
-            console.log(`error on loading comments for post with id ${postId}: `, error);
-        },
-        staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 60 * 3 // refetch data after 6 minutes on idle
-    })
-
-
-    const comments = commentsQuery.isFetched ? commentsQuery.data : [];
+    const comments = commentData?.content;
     const classes = styles();
 
+    
     return (
         <div id={postId} className={classes.wrapper}>
+
             <div className="author">{username}</div>
             <div className="text"><p>{text}</p></div>
 
             <div className={classes.postinfo}>
-                <p className="likes">{likes == null ? 0 : likes.length} likes</p>
-                <p>{comments == null ? 0 : comments.length} comments </p>
+                <p className="likes">{likes?.length} likes</p>
+                <p>{comments?.length} comments </p>
                 <p>0 shares</p>
             </div>
 
@@ -103,14 +104,14 @@ const Post = ({ post }) => {
 
             <div className="panel">
                 {
-                    post?.username !== user?.username &&
+                    post?.userId !== user?.userId &&
                     <img src={likeIcon} onClick={() => handlePostLikeToggle()} alt={"post like icon"} />
                 }
 
                 <img src={commentIcon} onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
                 {
-                    post?.username === user?.username &&
+                    post?.userId === user?.userId &&
                     <img src={editIcon} onClick={() => setShowEditForm(true)}
                         alt={"edit icon"} />
                 }
@@ -118,15 +119,15 @@ const Post = ({ post }) => {
                 <img src={shareIcon} alt={"share icon"} />
 
                 {
-                    user?.role === "admin" || post?.username === user?.username &&
+                    user?.role === "admin" || post?.userId === user?.userId &&
                     <img src={deleteIcon} onClick={() => handleDeletePost()} alt={"delete post icon"} />
                 }
             </div>
 
             {
-                commentsQuery.isFetched && showComments &&
-                <CommentSection postId={postId} comments={comments} />
+                showComments && <CommentSection postId={postId} />
             }
+
         </div>
     )
 }
