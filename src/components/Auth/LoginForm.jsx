@@ -10,14 +10,10 @@ const LoginForm = ({ setAuthState }) => {
 
     const queryClient = useQueryClient();
     const { setAuthData } = authStore();
-    const classes = styles();
+
 
     const [formData, setFormData] = useState({ email: "", password: "" });
 
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setFormData({ ...formData, [name]: value })
-    }
 
     const loginMutation = useMutation({
         mutationKey: ["auth"],
@@ -29,17 +25,26 @@ const LoginForm = ({ setAuthState }) => {
             queryClient.invalidateQueries(["posts", "user", "chats"]);
             queryClient.setQueryData("auth", data);
             setAuthData(data);
-
         },
         onError: (error, variables, context) => {
             console.log("error on login:", error.message)
-        }
+        },
     });
+
 
     const handleLoginForm = async (event) => {
         event.preventDefault();
         loginMutation.mutate(formData);
     }
+
+    const handleChange = (event) => {
+        const { name, value } = event.target
+        setFormData({ ...formData, [name]: value })
+    }
+
+
+    const classes = styles();
+
 
     return (
         <>

@@ -8,7 +8,11 @@ import { authStore } from "../../hooks/zustand";
 const SignupForm = ({ setAuthState }) => {
 
     const queryClient = useQueryClient();
-    const classes = styles();
+
+
+    const { setAuthData } = authStore();
+
+
     const [formData, setFormData] = useState({
         role: "user",
         username: '',
@@ -17,12 +21,6 @@ const SignupForm = ({ setAuthState }) => {
         confirmPassword: ''
     });
 
-    const { setAuthData } = authStore();
-
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setFormData({ ...formData, [name]: value });
-    }
 
     const signupMutation = useMutation({
         mutationFn: async (formData) => {
@@ -39,10 +37,11 @@ const SignupForm = ({ setAuthState }) => {
         }
     });
 
+
     const handleSubmit = async (event) => {
         const { password, confirmPassword } = formData;
         event.preventDefault();
-        
+
         if (password !== confirmPassword) {
             alert("passwords does not match, try again!")
         }
@@ -52,14 +51,19 @@ const SignupForm = ({ setAuthState }) => {
         }
     }
 
+    const handleChange = (event) => {
+        const { name, value } = event.target
+        setFormData({ ...formData, [name]: value });
+    }
+
+
+    const classes = styles();
+
+
     return (
         <div className={classes.signup}>
             <h1>Signup</h1>
-            <form
-                className='signup form'
-                onSubmit={e => {
-                    handleSubmit(e).then(() => console.log("overlay func is missing"))
-                }}>
+            <form className='signup form'>
                 <div className="signup input">
                     <input
                         type='text'

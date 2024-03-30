@@ -9,34 +9,28 @@ import ChatPage from "./Chat/ChatPage";
 import './App.css'
 
 import { fetchUser } from "../api/userRequests";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import AuthPage from "./Auth/AuthPage";
 import { authStore } from "../hooks/zustand";
 
 const App = () => {
 
-    const queryClient = useQueryClient();
-    const auth = queryClient.getQueryData("auth");
-
-    // console.log("authData: ", auth);
-
     const { data: authData } = authStore();
 
-    // console.log("auth data from zustang", authData)
 
     const { data: userData, isLoading, isSuccess, refetch, isError } = useQuery({
         queryKey: ["user"],
         queryFn: async () => {
-            const response = await fetchUser(USER_PROFILE_URL, auth.token);
+            const response = await fetchUser(USER_PROFILE_URL, authData.token)
             return await response.json();
         },
-        enabled: !!authData?.token
+        enabled: !!authData?.token,
     })
 
-    // if (isSuccess) console.log("user load success: ", userData)
-    // else console.log("user load pending ..");
 
     const classes = styles();
+
+    
     return (
         <div className={classes.app}>
             {!isSuccess ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (

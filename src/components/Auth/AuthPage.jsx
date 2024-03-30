@@ -4,8 +4,10 @@ import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
 const AuthPage = () => {
-    const classes = styles();
+
     const [authState, setAuthState] = useState("login");
+
+    const classes = styles();
 
     return (
         <>
