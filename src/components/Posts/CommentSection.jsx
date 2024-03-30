@@ -1,29 +1,30 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Comment from "./Comment";
 import styles from "./styles/commentSectionStyles";
-import {COMMENT_PATH} from "../../constants/ApiPath";
-import {fetchCreateComment} from "../../api/commentRequests";
+import { COMMENT_PATH } from "../../constants/ApiPath";
+import { fetchCreateComment } from "../../api/commentRequests";
 import InputEmoji from "react-input-emoji";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
-const CommentSection = ({postId, comments}) => {
+const CommentSection = ({ postId }) => {
 
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData("user");
-    const auth = queryClient.getQueryData("autt");
+    const user = queryClient.getQueryData(["user"]);
+    const auth = queryClient.getQueryData("auth");
+    const commentData = queryClient.getQueryData(["comments", { id: postId }]);
+    const comments = commentData.content;
 
-    const [commentData, setCommentData] = useState({postId: postId, userId: user.id, text: ''});
+    const [commentInput, setCommentData] = useState({ postId: postId, userId: user?.id, text: '' });
 
-
-    const cursorPosition = useRef(commentData.text.length);
+    const cursorPosition = useRef(commentInput.text.length);
     const inputRef = useRef(null);
 
     useEffect(() => {
         if (inputRef === null) return;
         if (inputRef.current === null) return;
         inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
-    }, [commentData.text]);
+    }, [commentInput.text]);
 
 
     const newCommentMutation = useMutation({
@@ -31,39 +32,26 @@ const CommentSection = ({postId, comments}) => {
             const response = await fetchCreateComment(COMMENT_PATH, commentData, auth["token"]);
             return response.json();
         },
-        onSuccess: (data, variables, context) => {
-            queryClient.setQueryData(["comments", data.id], commentData); // manually cache data before refetch
-            queryClient.invalidateQueries(["comments"], { exact: true });
-            console.log(context);
+        onSuccess: (data, variables) => {
+            queryClient.setQueryData(["comments", data.id], commentInput); // manually cache data before refetch
+            queryClient.invalidateQueries(["comments"], { id: postId });
         },
         onError: (error, variables, context) => {
             console.log("error on adding comment: ", error.message)
         },
-        onSettled: (data, error, variables, context) => { // optional for both error and success cases
-            if (error) {
-                console.error("error adding new comment:", error);
-                // Handle error (e.g., show an error message)
-            } else {
-                console.log("comment added successfully:", data);
-                // Perform any cleanup or additional actions
-            }
-        },
-        onMutate: () => { // do something before mutation
-            return { message: "adding new comment" } // create context
-        },
     })
-    
+
 
     const handleCreateComment = async (commentData) => {
         newCommentMutation.mutate(commentData);
     }
 
     const handleEmojiInput = (event) => {
-        setCommentData({...commentData, text: event})
+        setCommentData({ ...commentInput, text: event })
     }
 
     const handleSubmit = () => {
-        handleCreateComment(commentData);
+        handleCreateComment(commentInput);
     }
 
     const classes = styles();
@@ -73,7 +61,7 @@ const CommentSection = ({postId, comments}) => {
             <form>
                 <InputEmoji
                     className={classes.commentInput}
-                    value={commentData.text}
+                    value={commentInput.text}
                     onChange={handleEmojiInput}
                     fontSize={15}
                     cleanOnEnter
@@ -89,9 +77,7 @@ const CommentSection = ({postId, comments}) => {
                 comments && comments.map(comment =>
                     <Comment
                         key={comment["id"]}
-                        loggedUser={user}
                         comment={comment}
-                        postId={postId}
                     />
                 )
             }
