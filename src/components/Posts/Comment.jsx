@@ -1,85 +1,76 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./styles/commentStyles";
 import emoji from "react-easy-emoji";
 import { fetchDeleteComment, fetchLikeComment } from "../../api/commentRequests";
-import { COMMENT_LIKE_TOGGLE, COMMENT_PATH } from "../../constants/ApiPath";
+import { COMMENT_PATH } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authStore } from "../../hooks/zustand";
 
 
-const Comment = ({ comment, postId }) => {
+const Comment = ({ comment }) => {
+
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData("user");
-    const auth = queryClient.getQueryData("auth");
-    const [liked, setLiked] = useState(false);
+    const user = queryClient.getQueryData(["user"]);
+    const { data: authData } = authStore();
 
 
     const deleteCommentMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, auth["token"]);
-            return response.json();
+        mutationFn: () => {
+            fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, authData["token"])
+                .then(response => response.data);
         },
         onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["comments"], { exact: true });
-            console.log(context);
+            queryClient.invalidateQueries(["comments"], { id: comment.postId });
         },
         onError: (error, variables, context) => {
-            console.log("error on deleting comment: ", error.message)
-        },
-        onMutate: () => { // do something before mutation
-            return { message: "comment was deleted" } // create context
+            console.log("error on deleting comment: ", error.message);
         },
     })
+
+    const toggleLikeMutation = useMutation({
+        mutationFn: () => {
+            fetchLikeComment(COMMENT_PATH + `/${comment.id}/toggle-like`, authData["token"])
+                .then(response => response.data);
+        },
+        onSuccess: (data, variables, context) => {
+            queryClient.invalidateQueries(["comments"], { id: comment.postId });
+            console.log("comment like success");
+        },
+        onError: (error, variables, context) => {
+            console.log("error on like toggle: ", error.message)
+        },
+    })
+
 
     const handleDeleteComment = () => {
         deleteCommentMutation.mutate();
     }
 
-    const toggleLikeMutation = useMutation({
-        mutationFn: async (likeBody) => {
-            const response = await fetchLikeComment(COMMENT_LIKE_TOGGLE, likeBody, token);
-            return response.json();
-        },
-        onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["comments", { id: comment.id }], { exact: true });
-            // TODO: write a dispatch logic
-            setLiked(!liked);
-            console.log(context);
-        },
-        onError: (error, variables, context) => {
-            console.log("error on like toggle: ", error.message)
-        },
-        onMutate: () => { // do something before mutation
-            return { message: "like toggle success" } // create context
-        },
-    })
-
     const handleLikeToggle = () => {
-        toggleLikeMutation.mutate(likeBody);
+        toggleLikeMutation.mutate();
     }
 
 
+    const isLiked = comment.likes.includes(user.id);
     const classes = styles();
+
 
     return (
         <div key={comment.id} className={classes.comment}>
-
             <p className="comment-author">{comment.username}</p>
-
             {
                 emoji(comment.text).map((element, index) => (
                     <p key={index} className="comment-text">{element}</p>
                 ))
             }
-
             <div className="comment-options">
-                <p className="comment-like" onClick={handleLikeToggle}>{liked ? "unlike" : "like"}</p>
+                <p className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</p>
                 <p className="comment-reply">reply</p>
                 {
                     comment.username === user.username &&
                     <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
                 }
             </div>
-
         </div>
     )
 }
