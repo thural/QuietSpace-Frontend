@@ -2,19 +2,19 @@ import Post from "./Post";
 import React from "react";
 import CreatePostForm from "./CreatePostForm";
 import { viewStore } from "../../hooks/zustand";
-import { useFetchPosts } from "../../hooks/useFetchPosts";
+import { useGetPosts } from "../../hooks/useFetchData";
 
 function PostContainer() {
 
     const { data: viewData, setViewData } = viewStore();
     const { createPost: createPostView } = viewData;
-    const postsQuery = useFetchPosts()
+    const postsQuery = useGetPosts()
 
-
+    
     if (postsQuery.isLoading) return <h1>Loading</h1>;
     if (postsQuery.isError) return <h1>{postsQuery.error.message}</h1>;
 
-    
+
     return (
         <>
             <button onClick={postsQuery.refetch}>refresh feed</button>

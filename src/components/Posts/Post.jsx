@@ -6,85 +6,39 @@ import editIcon from "../../assets/edit.svg";
 import commentIcon from "../../assets/comment-3-line.svg";
 import deleteIcon from "../../assets/delete-bin-line.svg";
 import CommentSection from "./CommentSection";
-import { fetchDeletePost, fetchLikePost } from "../../api/postRequests";
-import { COMMENT_PATH, POST_URL } from "../../constants/ApiPath";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
-import { fetchCommentsByPostId } from "../../api/commentRequests";
-import { authStore, viewStore } from "../../hooks/zustand";
+import { viewStore } from "../../hooks/zustand";
+import { useDeletePost, useGetComments, useLikePost } from "../../hooks/useFetchData";
 
 const Post = ({ post }) => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-    const { data: authData } = authStore();
     const { data: viewData, setViewData } = viewStore();
     const { editPost: editPostView } = viewData;
 
 
     const { id: postId, username, text, likes } = post;
     const [showComments, setShowComments] = useState(false);
-    const [showEditForm, setShowEditForm] = useState(false);
 
 
-    const { data: commentData, status, error } = useQuery({
-        queryKey: ["comments", { id: postId }],
-        queryFn: async () => {
-            const response = await fetchCommentsByPostId(COMMENT_PATH, postId, authData["token"]);
-            return await response.json();
-        },
-        onSuccess: (data) => {
-            console.log("comments fetch success");
-        },
-        onError: (error) => {
-            console.log(`error on loading comments for post with id ${postId}: `, error);
-        },
-        staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 60 * 3 // refetch data after 3 minutes on idle
-    })
-
-    const deletePostMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchDeletePost(POST_URL, postId, authData["token"]);
-            return response;
-        },
-        onSuccess: (data, variables, context) => {
-            console.log("response data on post delete: ", data);
-            queryClient.invalidateQueries(["posts"], { exact: true });
-            console.log("delete post sucess");
-        },
-        onError: (error, variables, context) => {
-            console.log("error on deleting post: ", `postId: ${postId}, error message: `, error.message);
-        },
-    })
-
-    const toggleLikeMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchLikePost(POST_URL, postId, authData.token);
-            return response;
-        },
-        onSuccess: (data, variables, context) => {
-            console.log("response data on post like: ", data);
-            queryClient.invalidateQueries(["posts"], { id: postId });
-        },
-        onError: (error, variables, context) => {
-            console.log("error on liking post: ", error.message);
-        },
-    })
+    const { data: comments, status, error } = useGetComments(postId);
+    const deletePost = useDeletePost(postId);
+    const togglePostLike = useLikePost(postId);
 
 
     const handleDeletePost = async (event) => {
         event.preventDefault();
-        deletePostMutation.mutate();
+        deletePost.mutate();
     }
 
     const handlePostLike = async (event) => {
         event.preventDefault();
-        toggleLikeMutation.mutate();
+        togglePostLike.mutate();
     }
 
 
-    const comments = commentData?.content;
     const classes = styles();
 
 
@@ -100,9 +54,7 @@ const Post = ({ post }) => {
                 <p>0 shares</p>
             </div>
 
-            {
-                editPostView && <EditPostForm postId={postId} />
-            }
+            {editPostView && <EditPostForm postId={postId} />}
 
             <hr></hr>
 
@@ -128,9 +80,7 @@ const Post = ({ post }) => {
                 }
             </div>
 
-            {
-                showComments && <CommentSection postId={postId} />
-            }
+            {showComments && <CommentSection postId={postId} />}
 
         </div>
     )
