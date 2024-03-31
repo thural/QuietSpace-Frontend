@@ -30,13 +30,14 @@ const CommentSection = ({ postId }) => {
 
 
     const newCommentMutation = useMutation({
-        mutationFn: (commentData) => {
-            fetchCreateComment(COMMENT_PATH, commentData, authData["token"])
-                .then(response => response.data);
+        mutationFn: async (commentData) => {
+            const response = await fetchCreateComment(COMMENT_PATH, commentData, authData["token"]);
+            return await response.json();
         },
         onSuccess: (data, variables) => {
+            console.log("added comment response data: ", data);
             // queryClient.setQueryData(["comments", {id: postId}], commentInput); // manually cache data before refetch
-            queryClient.invalidateQueries(["comments"], { id: postId }); 
+            queryClient.invalidateQueries(["comments"], { id: postId });
             // queryClient.invalidateQueries({queryKey:["comments", {id: postId}]})
         },
         onError: (error, variables, context) => {
@@ -45,16 +46,12 @@ const CommentSection = ({ postId }) => {
     })
 
 
-    const handleCreateComment = async (commentData) => {
-        newCommentMutation.mutate(commentData);
-    }
-
     const handleEmojiInput = (event) => {
         setCommentData({ ...commentInput, text: event })
     }
 
     const handleSubmit = () => {
-        handleCreateComment(commentInput);
+        newCommentMutation.mutate(commentInput);
     }
 
 

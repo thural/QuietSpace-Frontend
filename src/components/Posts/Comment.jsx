@@ -15,11 +15,12 @@ const Comment = ({ comment }) => {
 
 
     const deleteCommentMutation = useMutation({
-        mutationFn: () => {
-            fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, authData["token"])
-                .then(response => response.data);
+        mutationFn: async () => {
+            const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, authData["token"]);
+            return response;
         },
         onSuccess: (data, variables, context) => {
+            console.log("response data on comment deletion: ", data);
             queryClient.invalidateQueries(["comments"], { id: comment.postId });
         },
         onError: (error, variables, context) => {
@@ -28,13 +29,13 @@ const Comment = ({ comment }) => {
     })
 
     const toggleLikeMutation = useMutation({
-        mutationFn: () => {
-            fetchLikeComment(COMMENT_PATH + `/${comment.id}/toggle-like`, authData["token"])
-                .then(response => response.data);
+        mutationFn: async () => {
+            const response = await fetchLikeComment(COMMENT_PATH, comment.id, authData["token"]);
+            return response;
         },
         onSuccess: (data, variables, context) => {
+            console.log("response data on like toggle: ", data);
             queryClient.invalidateQueries(["comments"], { id: comment.postId });
-            console.log("comment like success");
         },
         onError: (error, variables, context) => {
             console.log("error on like toggle: ", error.message)
@@ -51,7 +52,7 @@ const Comment = ({ comment }) => {
     }
 
 
-    const isLiked = comment.likes.includes(user.id);
+    const isLiked = comment.likes.some(likeObject => likeObject.userId === user.id);
     const classes = styles();
 
 
