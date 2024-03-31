@@ -4,26 +4,26 @@ import Overlay from "../Overlay";
 import { fetchCreatePost } from "../../api/postRequests";
 import { POST_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { viewStore } from "../../hooks/zustand";
+import { authStore, viewStore } from "../../hooks/zustand";
 
 const CreatePostForm = () => {
+
     const [postData, setPostData] = useState({ text: '' });
 
 
     const queryClient = useQueryClient();
-    const auth = queryClient.getQueryData("auth");
-    const { data, setViewData } = viewStore();
-    const { createPost } = data;
+    const { data: authData } = authStore();
+    const { setViewData } = viewStore();
+
 
     const newPostMutation = useMutation({
         mutationFn: async (postData) => {
-            const response = await fetchCreatePost(POST_URL, postData, auth["token"]);
+            const response = await fetchCreatePost(POST_URL, postData, authData.token);
             return response.json();
         },
         onSuccess: (data, variables, context) => {
-            queryClient.setQueryData(["posts", data.id], postData); // manually cache data before refetch
+            // queryClient.setQueryData(["posts", {id: data.id}], postData);
             queryClient.invalidateQueries(["posts"], { exact: true });
-            console.log(context);
         },
         onError: (error, variables, context) => {
             console.log("error on post: ", error.message)
@@ -31,16 +31,13 @@ const CreatePostForm = () => {
         onSettled: (data, error, variables, context) => { // optional for both error and success cases
             if (error) {
                 console.error("Error adding new post:", error);
-                // Handle error (e.g., show an error message)
             } else {
                 console.log("Post added successfully:", data);
                 setViewData({ overlay: false, createPost: false })
             }
         },
-        onMutate: () => { // do something before mutation
-            return { message: "added new post" } // create context
-        },
     })
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -52,13 +49,16 @@ const CreatePostForm = () => {
         newPostMutation.mutate(postData);
     }
 
-    const classes = styles()
+
+    const classes = styles();
+
+
     return (
         <>
             <Overlay closable={{ createPost: false }} />
             <div className={classes.post}>
                 <h3>Create a post</h3>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <textarea
                         className='text area'
                         name='text'
@@ -69,8 +69,9 @@ const CreatePostForm = () => {
                     </textarea>
                     <button
                         disabled={newPostMutation.isPending}
-                        className="submit-btn" type='submit'
-                    >
+                        className="submit-btn"
+                        onClick={handleSubmit}
+                        type="button">
                         Post
                     </button>
                 </form>

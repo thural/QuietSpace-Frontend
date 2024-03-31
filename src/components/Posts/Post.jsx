@@ -7,17 +7,19 @@ import commentIcon from "../../assets/comment-3-line.svg";
 import deleteIcon from "../../assets/delete-bin-line.svg";
 import CommentSection from "./CommentSection";
 import { fetchDeletePost, fetchLikePost } from "../../api/postRequests";
-import { COMMENT_PATH, POST_LIKE_TOGGLE, POST_URL } from "../../constants/ApiPath";
+import { COMMENT_PATH, POST_URL } from "../../constants/ApiPath";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
 import { fetchCommentsByPostId } from "../../api/commentRequests";
-import { authStore } from "../../hooks/zustand";
+import { authStore, viewStore } from "../../hooks/zustand";
 
 const Post = ({ post }) => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const { data: authData } = authStore();
+    const { data: viewData, setViewData } = viewStore();
+    const { editPost: editPostView } = viewData;
 
 
     const { id: postId, username, text, likes } = post;
@@ -28,7 +30,7 @@ const Post = ({ post }) => {
     const { data: commentData, status, error } = useQuery({
         queryKey: ["comments", { id: postId }],
         queryFn: async () => {
-            const response = await fetchCommentsByPostId(COMMENT_PATH + `/post/${postId}`, authData["token"]);
+            const response = await fetchCommentsByPostId(COMMENT_PATH, postId, authData["token"]);
             return await response.json();
         },
         onSuccess: (data) => {
@@ -42,40 +44,42 @@ const Post = ({ post }) => {
     })
 
     const deletePostMutation = useMutation({
-        mutationFn: () => {
-            fetchDeletePost(POST_URL, authData["token"], postId)
-                .then(response => response.data);
+        mutationFn: async () => {
+            const response = await fetchDeletePost(POST_URL, postId, authData["token"]);
+            return response;
         },
         onSuccess: (data, variables, context) => {
+            console.log("response data on post delete: ", data);
             queryClient.invalidateQueries(["posts"], { exact: true });
             console.log("delete post sucess");
         },
         onError: (error, variables, context) => {
-            console.log("error on deleting post: ", error.message)
+            console.log("error on deleting post: ", `postId: ${postId}, error message: `, error.message);
         },
     })
 
     const toggleLikeMutation = useMutation({
-        mutationFn: () => {
-            const likeBody = { postId }; // TODO: provide user id
-            fetchLikePost(POST_LIKE_TOGGLE, likeBody, token)
-                .then(response => response.data);
+        mutationFn: async () => {
+            const response = await fetchLikePost(POST_URL, postId, authData.token);
+            return response;
         },
         onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["posts", { id: postId }]);
-            console.log("post like toggle sucess");
+            console.log("response data on post like: ", data);
+            queryClient.invalidateQueries(["posts"], { id: postId });
         },
         onError: (error, variables, context) => {
-            console.log("error on deleting post: ", error.message);
+            console.log("error on liking post: ", error.message);
         },
     })
 
 
-    const handleDeletePost = async () => {
+    const handleDeletePost = async (event) => {
+        event.preventDefault();
         deletePostMutation.mutate();
     }
 
-    const handlePostLikeToggle = async () => {
+    const handlePostLike = async (event) => {
+        event.preventDefault();
         toggleLikeMutation.mutate();
     }
 
@@ -83,7 +87,7 @@ const Post = ({ post }) => {
     const comments = commentData?.content;
     const classes = styles();
 
-    
+
     return (
         <div id={postId} className={classes.wrapper}>
 
@@ -97,7 +101,7 @@ const Post = ({ post }) => {
             </div>
 
             {
-                showEditForm && <EditPostForm />
+                editPostView && <EditPostForm postId={postId} />
             }
 
             <hr></hr>
@@ -105,22 +109,22 @@ const Post = ({ post }) => {
             <div className="panel">
                 {
                     post?.userId !== user?.userId &&
-                    <img src={likeIcon} onClick={() => handlePostLikeToggle()} alt={"post like icon"} />
+                    <img src={likeIcon} onClick={handlePostLike} alt={"post like icon"} />
                 }
 
                 <img src={commentIcon} onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
                 {
-                    post?.userId === user?.userId &&
-                    <img src={editIcon} onClick={() => setShowEditForm(true)}
+                    post?.userId === user?.id &&
+                    <img src={editIcon} onClick={() => setViewData({ editPost: true })}
                         alt={"edit icon"} />
                 }
 
                 <img src={shareIcon} alt={"share icon"} />
 
                 {
-                    user?.role === "admin" || post?.userId === user?.userId &&
-                    <img src={deleteIcon} onClick={() => handleDeletePost()} alt={"delete post icon"} />
+                    user?.role === "admin" || post?.userId === user?.id &&
+                    <img src={deleteIcon} onClick={handleDeletePost} alt={"delete post icon"} />
                 }
             </div>
 

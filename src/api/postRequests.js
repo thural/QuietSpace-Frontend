@@ -1,4 +1,4 @@
-import {getApiResponse} from "./commonRequest";
+import { getApiResponse } from "./commonRequest";
 
 export const fetchPosts = async (url, token) => {
     try {
@@ -18,14 +18,14 @@ export const fetchEditPost = async (url, body, token, postId) => {
     } catch (err) { console.log(err) }
 }
 
-export const fetchDeletePost = async (url, token, postId) => {
+export const fetchDeletePost = async (url, postId, token) => {
     try {
         return await getApiResponse(url + `/${postId}`, 'DELETE', null, token);
     } catch (err) { console.log(err) }
 }
 
-export const fetchLikePost = async (url, body, token) => {
+export const fetchLikePost = async (url, postId, token) => {
     try {
-        return await getApiResponse(url, 'POST', body, token);
+        return await getApiResponse(url + `/${postId}/toggle-like`, 'POST', null, token);
     } catch (err) { console.log(err) }
 }
