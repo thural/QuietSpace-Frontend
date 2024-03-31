@@ -1,54 +1,24 @@
 import React from "react";
 import styles from "./styles/commentStyles";
 import emoji from "react-easy-emoji";
-import { fetchDeleteComment, fetchLikeComment } from "../../api/commentRequests";
-import { COMMENT_PATH } from "../../constants/ApiPath";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "../../hooks/zustand";
+import { useQueryClient } from "@tanstack/react-query";
+import { useToggleCommentLike, useDeleteComment } from "../../hooks/useFetchData";
 
 
 const Comment = ({ comment }) => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-    const { data: authData } = authStore();
-
-
-    const deleteCommentMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchDeleteComment(COMMENT_PATH + `/${comment.id}`, authData["token"]);
-            return response;
-        },
-        onSuccess: (data, variables, context) => {
-            console.log("response data on comment deletion: ", data);
-            queryClient.invalidateQueries(["comments"], { id: comment.postId });
-        },
-        onError: (error, variables, context) => {
-            console.log("error on deleting comment: ", error.message);
-        },
-    })
-
-    const toggleLikeMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchLikeComment(COMMENT_PATH, comment.id, authData["token"]);
-            return response;
-        },
-        onSuccess: (data, variables, context) => {
-            console.log("response data on like toggle: ", data);
-            queryClient.invalidateQueries(["comments"], { id: comment.postId });
-        },
-        onError: (error, variables, context) => {
-            console.log("error on like toggle: ", error.message)
-        },
-    })
+    const deleteComment = useDeleteComment(comment.postId);
+    const toggleLike = useToggleCommentLike(comment.postId);
 
 
     const handleDeleteComment = () => {
-        deleteCommentMutation.mutate();
+        deleteComment.mutate(comment.id);
     }
 
     const handleLikeToggle = () => {
-        toggleLikeMutation.mutate();
+        toggleLike.mutate(comment.id);
     }
 
 
