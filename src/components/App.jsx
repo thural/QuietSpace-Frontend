@@ -6,6 +6,10 @@ import NavBar from "./Navbar/Navbar";
 import PostPage from "./Posts/PostPage";
 import ChatPage from "./Chat/ChatPage";
 
+import '@mantine/core/styles.css';
+
+import { MantineProvider } from '@mantine/core';
+
 import './App.css'
 
 import { fetchUser } from "../api/userRequests";
@@ -28,23 +32,21 @@ const App = () => {
     })
 
 
-    const classes = styles();
 
-    
     return (
-        <div className={classes.app}>
-            {!isSuccess ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
-                <>
-                    <NavBar />
-                    <Routes>
-                        <Route path="/" element={<PostPage />} />
-                        <Route path="/posts" element={<PostPage />} />
-                        <Route path="/chat" element={<ChatPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                    </Routes>
-                </>
-            )}
-        </div>
+        <MantineProvider>
+                {!isSuccess ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
+                    <>
+                        <NavBar />
+                        <Routes>
+                            <Route path="/" element={<PostPage />} />
+                            <Route path="/posts" element={<PostPage />} />
+                            <Route path="/chat" element={<ChatPage />} />
+                            <Route path="/contact" element={<ContactPage />} />
+                        </Routes>
+                    </>
+                )}
+        </MantineProvider>
     )
 }
 

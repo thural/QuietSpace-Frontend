@@ -13,7 +13,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 const Menu = () => {
 
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData("user");
+    const user = queryClient.getQueryData(["user"]);
     const auth = queryClient.getQueryData("auth");
 
     const classes = styles();
@@ -45,7 +45,7 @@ const Menu = () => {
     }
 
     return (
-        <div style={{ display: user?.username ? "block" : "none" }}>
+        <div style={{ display: user?.id ? "block" : "none" }}>
             <div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
                 <img src={menuIcon} />
             </div>

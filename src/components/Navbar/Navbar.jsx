@@ -5,14 +5,11 @@ import Menu from "./Menu";
 import postsIcon from "../../assets/compass-line.svg";
 import chatIcon from "../../assets/chat-line.svg";
 import contactIcon from "../../assets/question-circle-line.svg";
-import { useQueryClient } from "@tanstack/react-query";
 
 
 const NavBar = ({ children }) => {
-  const queryClient = useQueryClient();
-  const user = queryClient.getQueryData("user");
   const classes = styles();
-  
+
   return (
     <div className={classes.navbar}>
       <h1>Quiet Space</h1>
@@ -23,7 +20,6 @@ const NavBar = ({ children }) => {
         </div>
 
         {
-          user?.username &&
           <div className="navbar-item">
             <Link to="/chat"><img src={chatIcon} /></Link>
           </div>

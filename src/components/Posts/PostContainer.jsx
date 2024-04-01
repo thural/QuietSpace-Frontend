@@ -3,6 +3,7 @@ import React from "react";
 import CreatePostForm from "./CreatePostForm";
 import { viewStore } from "../../hooks/zustand";
 import { useGetPosts } from "../../hooks/usePostData";
+import { Box, Button, Container, Flex, Input, Loader, LoadingOverlay } from "@mantine/core";
 
 function PostContainer() {
 
@@ -10,18 +11,33 @@ function PostContainer() {
     const { createPost: createPostView } = viewData;
     const postsQuery = useGetPosts()
 
-    
-    if (postsQuery.isLoading) return <h1>Loading</h1>;
+
+    if (postsQuery.isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (postsQuery.isError) return <h1>{postsQuery.error.message}</h1>;
 
 
     return (
-        <>
-            <button onClick={postsQuery.refetch}>refresh feed</button>
-            <button onClick={() => setViewData({ createPost: true })}>add post</button>
+        <Container size="xs">
+            <Box style={{ margin: "1rem 0" }}>
+                <Flex justify="space-between" gap="1rem">
+                    <Input 
+                    variant="unstyled" 
+                    style={{ width: "100%" }} 
+                    placeholder="start a topic..."
+                    onClick={() => setViewData({ createPost: true })}
+                     />
+                    <Button
+                        variant="light"
+                        color="rgba(32, 32, 32, 1)"
+                        radius="xl"
+                        size="sm"
+                        onClick={() => setViewData({ createPost: true })}
+                    >post</Button>
+                </Flex>
+            </Box>
             {createPostView && <CreatePostForm />}
             {!postsQuery.isLoading && postsQuery.data.map(post => (<Post key={post["id"]} post={post} />))}
-        </>
+        </Container>
     )
 }
 

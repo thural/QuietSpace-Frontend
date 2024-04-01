@@ -12,7 +12,6 @@ const styles = createUseStyles(
 			zIndex: '2',
 			position: 'sticky',
 			flexWrap: 'wrap',
-			fontSize: '1.5rem',
 			boxShadow: '0 4px 6px -4px rgba(72, 72, 72, 0.3)',
 			boxSizing: 'border-box',
 			alignItems: 'center',
@@ -28,7 +27,6 @@ const styles = createUseStyles(
 				margin: '0',
 				display: 'flex',
 				padding: '0',
-				fontSize: '1.5rem',
 				alignItems: 'center',
 				fontWeight: '500',
 				justifyContent: 'center'
