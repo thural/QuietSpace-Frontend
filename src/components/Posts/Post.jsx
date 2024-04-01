@@ -9,7 +9,9 @@ import CommentSection from "./CommentSection";
 import { useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
 import { viewStore } from "../../hooks/zustand";
-import { useDeletePost, useGetComments, useLikePost } from "../../hooks/useFetchData";
+import { useDeletePost, useLikePost } from "../../hooks/usePostData";
+import { useGetComments } from "../../hooks/useCommentData";
+
 
 const Post = ({ post }) => {
 

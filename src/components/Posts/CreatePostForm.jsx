@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./styles/editPostStyles";
 import Overlay from "../Overlay";
-import { useCreatePost } from "../../hooks/useFetchData";
+import { useCreatePost } from "../../hooks/usePostData";
 
 const CreatePostForm = () => {
 

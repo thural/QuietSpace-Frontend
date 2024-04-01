@@ -2,7 +2,7 @@ import Post from "./Post";
 import React from "react";
 import CreatePostForm from "./CreatePostForm";
 import { viewStore } from "../../hooks/zustand";
-import { useGetPosts } from "../../hooks/useFetchData";
+import { useGetPosts } from "../../hooks/usePostData";
 
 function PostContainer() {
 

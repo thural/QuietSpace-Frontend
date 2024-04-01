@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles/commentStyles";
 import emoji from "react-easy-emoji";
 import { useQueryClient } from "@tanstack/react-query";
-import { useToggleCommentLike, useDeleteComment } from "../../hooks/useFetchData";
+import { useToggleCommentLike, useDeleteComment } from "../../hooks/useCommentData";
 
 
 const Comment = ({ comment }) => {

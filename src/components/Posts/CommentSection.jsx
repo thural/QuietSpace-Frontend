@@ -3,7 +3,7 @@ import Comment from "./Comment";
 import styles from "./styles/commentSectionStyles";
 import InputEmoji from "react-input-emoji";
 import { useQueryClient } from "@tanstack/react-query";
-import { usePostComment } from "../../hooks/useFetchData";
+import { usePostComment } from "../../hooks/useCommentData";
 
 
 const CommentSection = ({ postId }) => {

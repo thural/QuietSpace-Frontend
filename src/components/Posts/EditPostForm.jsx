@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./styles/editPostStyles";
 import Overlay from "../Overlay";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEditPost } from "../../hooks/useFetchData";
+import { useEditPost } from "../../hooks/usePostData";
 
 const EditPostForm = ({ postId }) => {
 
