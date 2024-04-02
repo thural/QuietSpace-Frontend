@@ -35,6 +35,13 @@ const styles = createUseStyles(
 				width: '2.5rem',
 				margin: '0 1.8rem',
 			},
+			'& .navbar-item svg': {
+				display: 'block',
+				fontSize: '2rem',
+				width: '2.5rem',
+				margin: '0 1.8rem',
+				color: 'black'
+			},
 			'& .navbar-item.menu': {
 				margin: '0 1rem 0 0'
 			},

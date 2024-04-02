@@ -8,6 +8,7 @@ import menuIcon from "../../assets/menu-line.svg";
 import { fetchLogout } from "../../api/authRequests";
 import { LOGOUT_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { RiMenu3Fill } from "react-icons/ri";
 
 
 const Menu = () => {
@@ -47,7 +48,7 @@ const Menu = () => {
     return (
         <div style={{ display: user?.id ? "block" : "none" }}>
             <div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}>
-                <img src={menuIcon} />
+            <RiMenu3Fill />
             </div>
             <div className={classes.menuOverlay} style={{ display }} onClick={toggleDisplay}></div>
             <div className={classes.menu} style={{ display }}>

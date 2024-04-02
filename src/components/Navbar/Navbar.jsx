@@ -2,9 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./styles/navbarStyles";
 import Menu from "./Menu";
-import postsIcon from "../../assets/compass-line.svg";
-import chatIcon from "../../assets/chat-line.svg";
-import contactIcon from "../../assets/question-circle-line.svg";
+import { RiChat3Line, RiHome5Line, RiSearch2Line } from "react-icons/ri";
+import { RiHomeFill } from "react-icons/ri";
+import { IoPersonOutline } from "react-icons/io5";
+
+
+
+
 
 
 const NavBar = ({ children }) => {
@@ -16,17 +20,19 @@ const NavBar = ({ children }) => {
 
       <nav>
         <div className="navbar-item">
-          <Link to="/posts"><img src={postsIcon} /></Link>
+          <Link to="/posts"><RiHomeFill /></Link>
         </div>
 
-        {
-          <div className="navbar-item">
-            <Link to="/chat"><img src={chatIcon} /></Link>
-          </div>
-        }
+        <div className="navbar-item">
+          <Link to="/posts"><RiSearch2Line /></Link>
+        </div>
 
         <div className="navbar-item">
-          <Link to="/contact"><img src={contactIcon} /></Link>
+          <Link to="/chat"><RiChat3Line /></Link>
+        </div>
+
+        <div className="navbar-item">
+          <Link to="/contact"><IoPersonOutline/></Link>
         </div>
 
         {children}
