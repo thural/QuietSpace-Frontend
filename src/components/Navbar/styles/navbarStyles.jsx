@@ -34,10 +34,13 @@ const styles = createUseStyles(
 			'& .navbar-item': {
 				width: '2.5rem',
 				margin: '0 1.8rem',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center'
 			},
 			'& .navbar-item svg': {
 				display: 'block',
-				fontSize: '2rem',
+				fontSize: '1.8rem',
 				width: '2.5rem',
 				margin: '0 1.8rem',
 				color: 'black'
@@ -46,7 +49,7 @@ const styles = createUseStyles(
 				margin: '0 1rem 0 0'
 			},
 			'& h1': {
-				margin: '0',
+				margin: '0 0rem 0 1rem',
 				color: '#3e3e3e'
 			},
 			'& a, a:hover, a:focus, a:active': {

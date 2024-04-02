@@ -5,6 +5,7 @@ import Menu from "./Menu";
 import { RiChat3Line, RiHome5Line, RiSearch2Line } from "react-icons/ri";
 import { RiHomeFill } from "react-icons/ri";
 import { IoPersonOutline } from "react-icons/io5";
+import { PiBell, PiChatCircle, PiChatCircleBold, PiHouseFill, PiMagnifyingGlass, PiMagnifyingGlassBold, PiUser } from "react-icons/pi";
 
 
 
@@ -20,19 +21,23 @@ const NavBar = ({ children }) => {
 
       <nav>
         <div className="navbar-item">
-          <Link to="/posts"><RiHomeFill /></Link>
+          <Link to="/posts"><PiHouseFill /></Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/posts"><RiSearch2Line /></Link>
+          <Link to="/posts"><PiMagnifyingGlassBold /></Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/chat"><RiChat3Line /></Link>
+          <Link to="/chat"><PiChatCircleBold /></Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/contact"><IoPersonOutline/></Link>
+          <Link to="/contact"><PiUser /></Link>
+        </div>
+
+        <div className="navbar-item">
+          <Link to="/contact"><PiBell /></Link>
         </div>
 
         {children}
