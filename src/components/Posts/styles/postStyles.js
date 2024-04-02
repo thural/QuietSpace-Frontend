@@ -2,12 +2,8 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   wrapper: {
-    padding: '1.2rem',
+    padding: '1.2rem 0',
     fontSize: '1rem',
-    boxShadow: '1px 1px 5px 1px rgba(72, 72, 72, 0.3)',
-    borderRadius: '10px',
-    backgroundColor: 'white',
-    margin: '0 0 1.2rem 0',
     breakInside: 'avoid',
     pageBreakInside: 'avoid',
     '& .author': {
@@ -16,10 +12,23 @@ const styles = createUseStyles({
       fontWeight: '500'
     },
     '& .panel': {
-      display: 'flex',
+      gap: '1rem',
       height: '1.5rem',
+      display: 'flex',
       flexFlow: 'row nowrap',
-      justifyContent: 'space-around'
+      justifyContent: 'start',
+      alignItems: 'center',
+      fontSize: '1.2rem'
+    },
+    '& .iconbox':{
+      position: "relative"
+    },
+    '& .badge': {
+      position: "absolute",
+      maxHeight: "0.8rem",
+      maxWidth:"0.8rem",
+      left:"0.85rem",
+      bottom:"1.15rem"
     },
     '& .text': {
       fontSize: '1rem',
@@ -27,27 +36,11 @@ const styles = createUseStyles({
       padding: 0,
       margin: '0px'
     },
-    '& .buttons': {
-      display: 'flex',
-      flexFlow: 'row nowrap',
-      alignItems: 'center',
-      gap: '4px',
-      marginLeft: 'auto'
+    '& .text p':{
+      marginTop: '0.25rem'
     },
-    '& button': {
-      font: 'inherit',
-      color: 'black',
-      border: '1px solid black',
-      cursor: 'pointer',
-      outline: 'inherit',
-      padding: '0.2rem 0.6rem',
-      fontSize: '.85rem',
-      borderRadius: '1rem',
-      backgroundColor: 'white',
-      marginLeft: 'auto'
-    }
   },
-  postinfo : {
+  postinfo: {
     display: 'flex',
     justifyContent: 'flex-end',
     gap: '10px',

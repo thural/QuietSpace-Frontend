@@ -28,7 +28,7 @@ function PostContainer() {
                      />
                     <Button
                         variant="light"
-                        color="rgba(32, 32, 32, 1)"
+                        color="rgba(0, 0, 0, 1)"
                         radius="xl"
                         size="sm"
                         onClick={() => setViewData({ createPost: true })}

@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import styles from "./styles/postStyles";
-import likeIcon from "../../assets/thumbs.svg";
-import shareIcon from "../../assets/share.svg";
-import editIcon from "../../assets/edit.svg";
-import commentIcon from "../../assets/comment-3-line.svg";
-import deleteIcon from "../../assets/delete-bin-line.svg";
 import CommentSection from "./CommentSection";
 import { useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
 import { viewStore } from "../../hooks/zustand";
 import { useDeletePost, useLikePost } from "../../hooks/usePostData";
 import { useGetComments } from "../../hooks/useCommentData";
+import {
+    PiArrowFatDown,
+    PiArrowFatUp,
+    PiChatCircle,
+    PiPaperPlaneTilt,
+    PiPencilSimpleLine,
+    PiTrash
+} from "react-icons/pi";
+import { Badge } from "@mantine/core";
+
+
 
 
 const Post = ({ post }) => {
@@ -21,7 +27,7 @@ const Post = ({ post }) => {
     const { editPost: editPostView } = viewData;
 
 
-    const { id: postId, username, text, likes } = post;
+    const { id: postId, username, text, likes, dislikes } = post;
     const [showComments, setShowComments] = useState(false);
 
 
@@ -50,42 +56,45 @@ const Post = ({ post }) => {
             <div className="author">{username}</div>
             <div className="text"><p>{text}</p></div>
 
-            <div className={classes.postinfo}>
-                <p className="likes">{likes?.length} likes</p>
-                <p>{comments?.length} comments </p>
-                <p>0 shares</p>
-            </div>
-
             {editPostView && <EditPostForm postId={postId} />}
 
-            <hr></hr>
-
             <div className="panel">
-                {
-                    post?.userId !== user?.userId &&
-                    <img src={likeIcon} onClick={handlePostLike} alt={"post like icon"} />
-                }
 
-                <img src={commentIcon} onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
+                <div className="iconbox">
+                    <PiArrowFatUp className="posticon" onClick={handlePostLike} alt={"post like icon"}></PiArrowFatUp>
+                    {likes?.length > 0 && <Badge className="badge" color="rgba(0, 0, 0, 1)" size="xs" circle>{likes?.length}</Badge>}
+                </div>
+
+                <div className="iconbox">
+                    <PiArrowFatDown onClick={handlePostLike} alt={"post dislike icon"} />
+                    {comments?.length > 0 && <Badge className="badge" color="rgba(0, 0, 0, 1)" size="xs" circle>{comments?.length}</Badge>}
+                </div>
+
+                <div className="iconbox">
+                    <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
+                    {comments?.length > 0 && <Badge className="badge" color="rgba(0, 0, 0, 1)" size="xs" circle>{comments?.length}</Badge>}
+                </div>
+
 
                 {
                     post?.userId === user?.id &&
-                    <img src={editIcon} onClick={() => setViewData({ editPost: true })}
-                        alt={"edit icon"} />
+                    <PiPencilSimpleLine onClick={() => setViewData({ editPost: true })} alt={"edit icon"} />
                 }
 
-                <img src={shareIcon} alt={"share icon"} />
+                <PiPaperPlaneTilt />
 
                 {
                     user?.role === "admin" || post?.userId === user?.id &&
-                    <img src={deleteIcon} onClick={handleDeletePost} alt={"delete post icon"} />
+                    <PiTrash onClick={handleDeletePost} alt={"delete post icon"} />
                 }
             </div>
 
             {showComments && <CommentSection postId={postId} />}
 
+            <hr></hr>
+
         </div>
     )
 }
 
-export default Post
+export default Post 
