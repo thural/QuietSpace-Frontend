@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import MessageContainer from "./MessageContainer";
-import ContactContainer from "./ContactContainer";
+import MessageContainer from "../../components/Chat/MessageContainer";
+import ContactContainer from "../../components/Chat/ContactContainer";
 import styles from "./styles/chatPageStyles";
 import { CHAT_PATH_BY_MEMBER } from "../../constants/ApiPath";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

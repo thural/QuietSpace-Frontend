@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styles from "./styles/authStyles"
-import SignupForm from "./SignupForm";
-import LoginForm from "./LoginForm";
+import SignupForm from "../../components/Auth/SignupForm";
+import LoginForm from "../../components/Auth/LoginForm";
 
 const AuthPage = () => {
 
