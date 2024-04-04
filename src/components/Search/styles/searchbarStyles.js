@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 const styles = createUseStyles({
     searchbar: {
         display: 'flex',
+        margin: "1rem 0",
         position: 'relative',
         border: '1px solid rgb(188, 188, 188)',
         borderRadius: '2rem',

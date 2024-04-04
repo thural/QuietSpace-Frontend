@@ -4,6 +4,7 @@ import ContactPage from "./components/Contact/ContactPage";
 import NavBar from "./components/Navbar/Navbar";
 import PostPage from "./pages/feed/PostPage";
 import AuthPage from "./pages/auth/AuthPage";
+import ChatPage from "./pages/chat/ChatPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
@@ -13,6 +14,7 @@ import './App.css'
 import { fetchUser } from "./api/userRequests";
 import { useQuery } from "@tanstack/react-query";
 import { authStore } from "./hooks/zustand";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 const App = () => {
 
@@ -38,8 +40,9 @@ const App = () => {
                     <Routes>
                         <Route path="/" element={<PostPage />} />
                         <Route path="/posts" element={<PostPage />} />
-                        <Route path="/posts" element={<PostPage />} />
                         <Route path="/search" element={<SearchPage />} />
+                        <Route path="/chat" element={<ChatPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/contact" element={<ContactPage />} />
                     </Routes>
                 </>

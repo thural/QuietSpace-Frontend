@@ -10,7 +10,7 @@ function SearchContainer() {
 
     return (
         <Container size="600px" style={{ marginTop: "1rem" }}>
-            <Box className={classes.searchbar} style={{ margin: "1rem 0" }}>
+            <Box className={classes.searchbar}>
                 <PiMagnifyingGlassBold className={classes.searchIcon} />
                 <Input
                     variant="unstyled"

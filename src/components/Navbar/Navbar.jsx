@@ -6,8 +6,10 @@ import {
   PiBell,
   PiChatCircle,
   PiHouse,
+  PiMagnifyingGlass,
   PiMagnifyingGlassFill,
-  PiUser
+  PiUser,
+  PiUserFill
 } from "react-icons/pi";
 
 
@@ -26,7 +28,7 @@ const NavBar = ({ children }) => {
         </div>
 
         <div className="navbar-item">
-          <Link to="/search"><PiMagnifyingGlassFill /></Link>
+          <Link to="/search"><PiMagnifyingGlass /></Link>
         </div>
 
         <div className="navbar-item">
@@ -34,7 +36,7 @@ const NavBar = ({ children }) => {
         </div>
 
         <div className="navbar-item">
-          <Link to="/contact"><PiUser /></Link>
+          <Link to="/profile"><PiUserFill /></Link>
         </div>
 
         <div className="navbar-item">
