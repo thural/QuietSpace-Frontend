@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./styles/editPostStyles";
-import Overlay from "../Overlay";
+import Overlay from "../Overlay/Overlay";
 import { useCreatePost } from "../../hooks/usePostData";
 
 const CreatePostForm = () => {

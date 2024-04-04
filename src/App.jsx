@@ -1,10 +1,9 @@
 import { USER_PROFILE_URL } from "./constants/ApiPath";
 import { Route, Routes } from "react-router-dom";
-import styles from "./styles/appStyles";
 import ContactPage from "./components/Contact/ContactPage";
 import NavBar from "./components/Navbar/Navbar";
-import PostPage from "./components/Posts/PostPage";
-import ChatPage from "./components/Chat/ChatPage";
+import PostPage from "./pages/feed/PostPage";
+import ChatPage from "./pages/chat/ChatPage";
 
 import '@mantine/core/styles.css';
 
@@ -14,7 +13,7 @@ import './App.css'
 
 import { fetchUser } from "./api/userRequests";
 import { useQuery } from "@tanstack/react-query";
-import AuthPage from "./components/Auth/AuthPage";
+import AuthPage from "./pages/auth/AuthPage";
 import { authStore } from "./hooks/zustand";
 
 const App = () => {
