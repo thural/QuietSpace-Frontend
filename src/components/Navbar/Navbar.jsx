@@ -2,12 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./styles/navbarStyles";
 import Menu from "./Menu";
-import { RiChat3Line, RiHome5Line, RiSearch2Line } from "react-icons/ri";
-import { RiHomeFill } from "react-icons/ri";
-import { IoPersonOutline } from "react-icons/io5";
-import { PiBell, PiChatCircle, PiChatCircleBold, PiHouseFill, PiMagnifyingGlass, PiMagnifyingGlassBold, PiUser } from "react-icons/pi";
-
-
+import {
+  PiBell,
+  PiChatCircle,
+  PiHouse,
+  PiMagnifyingGlassFill,
+  PiUser
+} from "react-icons/pi";
 
 
 
@@ -21,15 +22,15 @@ const NavBar = ({ children }) => {
 
       <nav>
         <div className="navbar-item">
-          <Link to="/posts"><PiHouseFill /></Link>
+          <Link to="/posts"><PiHouse /></Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/posts"><PiMagnifyingGlassBold /></Link>
+          <Link to="/search"><PiMagnifyingGlassFill /></Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/chat"><PiChatCircleBold /></Link>
+          <Link to="/posts"><PiChatCircle /></Link>
         </div>
 
         <div className="navbar-item">

@@ -17,15 +17,15 @@ function PostContainer() {
 
 
     return (
-        <Container size="xs">
+        <Container size="600px" style={{ marginTop: "1rem" }}>
             <Box style={{ margin: "1rem 0" }}>
                 <Flex justify="space-between" gap="1rem">
-                    <Input 
-                    variant="unstyled" 
-                    style={{ width: "100%" }} 
-                    placeholder="start a topic..."
-                    onClick={() => setViewData({ createPost: true })}
-                     />
+                    <Input
+                        variant="unstyled"
+                        style={{ width: "100%" }}
+                        placeholder="start a topic..."
+                        onClick={() => setViewData({ createPost: true })}
+                    />
                     <Button
                         variant="light"
                         color="rgba(0, 0, 0, 1)"

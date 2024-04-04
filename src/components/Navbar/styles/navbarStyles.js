@@ -12,7 +12,7 @@ const styles = createUseStyles(
 			zIndex: '2',
 			position: 'sticky',
 			flexWrap: 'nowrap',
-			boxShadow: '0 4px 6px -4px rgba(72, 72, 72, 0.3)',
+			// boxShadow: '0 4px 6px -4px rgba(72, 72, 72, 0.3)',
 			boxSizing: 'border-box',
 			alignItems: 'center',
 			fontWeight: '400',
