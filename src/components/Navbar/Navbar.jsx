@@ -4,10 +4,10 @@ import styles from "./styles/navbarStyles";
 import Menu from "./Menu";
 import {
   PiBell,
+  PiBellFill,
   PiChatCircle,
   PiHouse,
   PiMagnifyingGlass,
-  PiMagnifyingGlassFill,
   PiUser,
   PiUserFill
 } from "react-icons/pi";
@@ -20,6 +20,7 @@ const NavBar = ({ children }) => {
 
   return (
     <div className={classes.navbar}>
+
       <h1>QS</h1>
 
       <nav>
@@ -36,11 +37,11 @@ const NavBar = ({ children }) => {
         </div>
 
         <div className="navbar-item">
-          <Link to="/profile"><PiUserFill /></Link>
+          <Link to="/profile"><PiUser /></Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/contact"><PiBell /></Link>
+          <Link to="/notification"><PiBellFill /></Link>
         </div>
 
         {children}
