@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 
-import { Avatar, Box, Button, Container, Flex, Image, Input, Loader, LoadingOverlay, SegmentedControl, Tabs, Text } from "@mantine/core";
-import { PiClockClockwise, PiGear, PiImage, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
+import { Container, SegmentedControl } from "@mantine/core";
 
 import styles from "./styles/notificationContainerStyles";
-import AllNotifications from "../../pages/notification/AllNotifications";
-import RequestNotifications from "../../pages/notification/RequestNotifications";
-import ReplyNotifications from "../../pages/notification/ReplyNotifications";
-import RepostNotifications from "../../pages/notification/RepostNotifications";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
 function NotificationContainer() {
 
@@ -40,13 +35,7 @@ function NotificationContainer() {
                 ]}
             />
 
-            <Routes>
-                <Route path="/notification/all" element={<AllNotifications />} />
-                <Route path="/notification/requests" element={<RequestNotifications />} />
-                <Route path="/notification/replies" element={<ReplyNotifications />} />
-                <Route path="/notification/reposts" element={<RepostNotifications />} />
-            </Routes>
-
+            <Outlet />
         </Container>
     )
 }

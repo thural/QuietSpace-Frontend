@@ -15,6 +15,10 @@ import { useQuery } from "@tanstack/react-query";
 import { authStore } from "./hooks/zustand";
 import ProfilePage from "./pages/profile/ProfilePage";
 import NotificationPage from "./pages/notification/NotifiactionPage";
+import AllNotifications from "./pages/notification/AllNotifications";
+import RequestNotifications from "./pages/notification/RequestNotifications";
+import ReplyNotifications from "./pages/notification/ReplyNotifications";
+import RepostNotifications from "./pages/notification/RepostNotifications";
 
 const App = () => {
 
@@ -43,7 +47,12 @@ const App = () => {
                         <Route path="/search/*" element={<SearchPage />} />
                         <Route path="/chat/*" element={<ChatPage />} />
                         <Route path="/profile/*" element={<ProfilePage />} />
-                        <Route path="/notification/*" element={<NotificationPage />} />
+                        <Route path="/notification/*" element={<NotificationPage />}>
+                            <Route path="all" element={<AllNotifications />} />
+                            <Route path="requests" element={<RequestNotifications />} />
+                            <Route path="replies" element={<ReplyNotifications />} />
+                            <Route path="reposts" element={<RepostNotifications />} />
+                        </Route>
                     </Routes>
                 </>
             )}
