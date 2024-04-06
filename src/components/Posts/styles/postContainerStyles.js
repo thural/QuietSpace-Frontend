@@ -1,12 +1,13 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-  cardboard: {
-    columnGap: '1.2rem',
-    columnCount: '2',
-    columnWidth: '300px',
-    marginTop: '1rem'
-  }
+  wrapper: {
+    '& hr': {
+      border: 'none',
+      height: '0.5px',
+      backgroundColor: 'rgb(204 204 204)'
+    }
+  },
 });
 
 export default styles
