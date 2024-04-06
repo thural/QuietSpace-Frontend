@@ -19,6 +19,7 @@ import AllNotifications from "./pages/notification/AllNotifications";
 import RequestNotifications from "./pages/notification/RequestNotifications";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
+import SettingsPage from "./pages/settings/SettingsPage";
 
 const App = () => {
 
@@ -53,6 +54,7 @@ const App = () => {
                             <Route path="replies" element={<ReplyNotifications />} />
                             <Route path="reposts" element={<RepostNotifications />} />
                         </Route>
+                        <Route path="/settings/*" element={<SettingsPage />} />
                     </Routes>
                 </>
             )}

@@ -32,7 +32,13 @@ const styles = createUseStyles(
 			boxSizing: 'border-box',
 			borderRadius: '0.3rem',
 			backgroundColor: 'white',
+			'& .clickable': {
+				display: 'flex',
+				width: '100%',
+				justifyContent: 'space-between'
+			},
 			'& a, a:hover, a:focus, a:active': {
+				display: 'contents',
 				textDecoration: 'none',
 				color: 'inherit',
 			},
