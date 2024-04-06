@@ -23,6 +23,7 @@ function NotificationContainer() {
         <Container size="600px" style={{ marginTop: "1rem" }}>
 
             <SegmentedControl
+                style={{ zIndex: 1 }}
                 fullWidth
                 color="rgba(32, 32, 32, 1)"
                 value={value}

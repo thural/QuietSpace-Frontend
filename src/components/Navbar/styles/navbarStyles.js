@@ -38,7 +38,7 @@ const styles = createUseStyles(
 				alignItems: 'center',
 				justifyContent: 'center'
 			},
-			'& .navbar-item svg': {
+			'& .navbar-item > a > svg': {
 				display: 'block',
 				fontSize: '1.8rem',
 				width: '2.5rem',

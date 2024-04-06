@@ -12,113 +12,54 @@ const styles = createUseStyles(
 			display: 'none',
 		},
 		icon: {
-			'& img': {
-				width: '100%',
+			'& svg': {
 				display: 'block',
-				texAlign: 'center'
-			},
+				fontSize: '1.8rem',
+				width: '2.5rem',
+				margin: '0 1.8rem',
+				color: 'black'
+			}
 		},
-		menu: {
+		menuList: {
 			top: '1rem',
 			color: 'black',
 			right: '1rem',
 			width: '12rem',
-			margin: '0px',
+			margin: '0',
 			display: 'none',
 			zIndex: '1',
 			position: 'fixed',
 			fontSize: '1.4rem',
-			boxShadow: 'rgb(0 0 0 / 25%) 0px 0px 96px 16px',
+			boxShadow: 'rgb(0 0 0 / 25%) 0px 0px 32px -4px',
 			boxSizing: 'border-box',
-			borderRadius: '0.3rem',
+			borderRadius: '1rem',
 			backgroundColor: 'white',
+			padding: '.5rem',
+			'& .clickable:hover': {
+				margin: '0rem',
+				background: 'var(--mantine-color-gray-1)',
+				borderRadius: '1rem',
+				padding: '.5rem',
+				boxSizing: 'border-box'
+			},
 			'& .clickable': {
+				padding: '.5rem',
 				display: 'flex',
-				width: '100%',
+				fontSize: '1.8rem',
+				alignItems: 'center',
 				justifyContent: 'space-between'
 			},
 			'& a, a:hover, a:focus, a:active': {
-				display: 'contents',
 				textDecoration: 'none',
 				color: 'inherit',
-			},
-			'& li': {
-				listStyle: "none",
-			},
-			'& .items': {
-				padding: '1rem',
-				width: '100%',
-				margin: 'auto',
-				overflow: 'auto',
-				borderRadius: '1rem',
-				backgroundColor: 'whitesmoke'
-			},
-			'& .item': {
-				margin: '0',
-				display: 'grid',
-				alignItems: 'center',
-				alignContent: 'center',
-				justifyContent: 'center',
-				gridTemplateColumns: '1fr 2fr'
-			},
-			'& .menu-item': {
-				display: 'flex',
-				flexFlow: 'row nowrap',
-				justifyContent: 'space-between',
-				padding: '.5rem 1rem'
-			},
-			'& .menu-item:not(:last-child)': {
-				borderBottom: '#c5c5c5 solid 1px'
-			},
-			'& .image': {
-				minWidth: '64px',
-				minHeight: '64px',
-				display: 'flex',
-			},
-			'& .details': {
-				display: 'flex',
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				gap: '1rem',
-				whiteSpace: 'nowrap',
-				overflow: 'hidden',
-				textOverflow: 'ellipsis',
-				'& *': {
-					marginTop: '0px',
-					marginBottom: '0px',
-				}
-			},
-			'& .counter': {
-				display: 'flex',
-				alignItems: 'center',
-				flexDirection: 'row',
-				justifyContent: 'center',
-				gap: '1rem'
 			},
 			'& p': {
 				margin: '0',
 				padding: '0',
 				alignSelf: 'center',
 				fontWeight: '300',
-			},
-			'& h3': {
-				fontSize: '2rem',
-				marginTop: '1rem',
-			},
-			'& .buttons': {
-				gap: '1rem',
-				width: '100%',
-				padding: '1rem 0',
-				marginTop: 'auto'
-			},
-			'& .buttons button': {
-				border: '1px solid lightgrey',
-				padding: '1em',
-				fontSize: '1rem',
-				fontWeight: '600',
-				borderRadius: '0.5rem',
-				backgroundColor: 'lightsalmon'
-			},
+				lineHeight: '0'
+			}
 		}
 	}
 );

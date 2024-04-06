@@ -2,6 +2,12 @@ import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
 
+    constols: {
+        '& *': {
+            zIndex: '1',
+        }
+    },
+
     identitySection: {
         display: 'flex',
         justifyContent: 'space-between',
