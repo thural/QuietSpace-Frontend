@@ -1,13 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./styles/navbarStyles";
 import Menu from "./Menu";
 import {
   PiBell,
   PiBellFill,
   PiChatCircle,
+  PiChatCircleFill,
   PiHouse,
+  PiHouseFill,
   PiMagnifyingGlass,
+  PiMagnifyingGlassFill,
   PiUser,
   PiUserFill
 } from "react-icons/pi";
@@ -16,6 +19,9 @@ import {
 
 
 const NavBar = ({ children }) => {
+
+  const pathName = useLocation().pathname;
+
   const classes = styles();
 
   return (
@@ -25,23 +31,33 @@ const NavBar = ({ children }) => {
 
       <nav>
         <div className="navbar-item">
-          <Link to="/posts"><PiHouse /></Link>
+          <Link to="/posts">
+            {pathName === "/posts" ? <PiHouseFill /> : <PiHouse />}
+          </Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/search"><PiMagnifyingGlass /></Link>
+          <Link to="/search">
+            {pathName === "/search" ? <PiMagnifyingGlassFill /> : <PiMagnifyingGlass />}
+          </Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/posts"><PiChatCircle /></Link>
+          <Link to="/chat">
+            {pathName === "/chat" ? <PiChatCircleFill /> : <PiChatCircle />}
+          </Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/profile"><PiUser /></Link>
+          <Link to="/profile">
+            {pathName === "/profile" ? <PiUserFill /> : <PiUser />}
+          </Link>
         </div>
 
         <div className="navbar-item">
-          <Link to="/notification"><PiBellFill /></Link>
+          <Link to="/notification">
+            {pathName === "/notification" ? <PiBellFill /> : <PiBell />}
+          </Link>
         </div>
 
         {children}
