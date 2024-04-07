@@ -2,43 +2,58 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   auth: {
-    width: '100vw',
-    height: '100vh',
     display: 'flex',
-    zIndex: '6',
-    position: 'fixed',
     flexFlow: 'row nowrap',
     background: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+    height: '100vh',
     '& .greeting-text': {
       display: 'flex',
-      padding:'3rem',
+      padding: '2rem',
       flexFlow: 'column nowrap',
       minWidth: 'min-content',
-      textAlign: 'center',
-      alignItems: 'center',
+      // textAlign: 'center',
+      alignItems: 'flex-start',
       alignSelf: 'flex-start',
       justifyContent: 'flex-start',
-      marginBottom: '50%',
-      fontSize: '3.2rem'
+      fontSize: '3.2rem',
+      alignSelf: 'center',
+      gap: '3rem',
+      height:'360px',
+      textWrap: 'nowrap'
     },
     '& .brand': {
       marginBottom: '50%',
-      alignSelf: 'flex-start',
-      fontSize: '3.2rem'
+      marginTop: '0',
+      minWidth: 'max-content',
+      marginBottom: 'auto'
     },
     '& .primary-text': {
-      fontWeight: '500',
-      fontSize:'1.8rem'
     },
     '& .secondary-text': {
-      fontStyle: 'italic',
-      fontWeight: '300',
-      marginBottom: '6rem',
-      fontSize: '1.2rem'
+      fontSize: '1.2rem',
+      fontWeight: '300'
     },
-  }
+  },
+  '@media (max-width: 720px)': {
+    auth: {
+      background: 'white',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+      '& .greeting-text':{
+        alignItems: 'center',
+        height: 'fit-content',
+      },
+      '& .brand': {
+        fontSize: "2.5rem",
+        marginBottom: '1rem'
+      },
+      '& .secondary-text': {
+        display: 'none'
+      },
+    },
+  },
 })
 
 

@@ -4,6 +4,7 @@ import { LOGIN_URL } from "../../constants/ApiPath";
 import { fetchLogin } from "../../api/authRequests";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authStore } from "../../hooks/zustand";
+import { Button, Text, Title } from "@mantine/core";
 
 
 const LoginForm = ({ setAuthState }) => {
@@ -49,7 +50,7 @@ const LoginForm = ({ setAuthState }) => {
     return (
         <>
             <div className={classes.login}>
-                <h1>Login</h1>
+                <Title order={2}>Login</Title>
                 <form className='login form'>
                     <div className="login input">
                         <input
@@ -67,10 +68,18 @@ const LoginForm = ({ setAuthState }) => {
                             onChange={handleChange}
                         />
                     </div>
-                    <button type='button' onClick={handleLoginForm}>login</button>
+                    <Button
+                        className="button"
+                        fullWidth
+                        radius="md"
+                        variant="gradient"
+                        gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+                        onClick={handleLoginForm}>
+                        submit
+                    </Button>
                 </form>
-                <h3>don't have an account?</h3>
-                <button type='button' onClick={() => setAuthState("signup")}>signup</button>
+                <Text className="signup-prompt">don't have an account?</Text>
+                <Button className="button" variant="outline" onClick={() => setAuthState("signup")}>signup</Button>
             </div>
         </>
     )

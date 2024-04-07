@@ -4,12 +4,11 @@ import { fetchSignup } from "../../api/authRequests";
 import { SIGNUP_URL } from "../../constants/ApiPath";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authStore } from "../../hooks/zustand";
+import { Button, Text, Title } from "@mantine/core";
 
 const SignupForm = ({ setAuthState }) => {
 
     const queryClient = useQueryClient();
-
-
     const { setAuthData } = authStore();
 
 
@@ -62,8 +61,8 @@ const SignupForm = ({ setAuthState }) => {
 
     return (
         <div className={classes.signup}>
-            <h1>Signup</h1>
-            <form className='signup form'>
+            <Title order={2}>Signup</Title>
+            <form className='signup-form'>
                 <div className="signup input">
                     <input
                         type='text'
@@ -94,10 +93,22 @@ const SignupForm = ({ setAuthState }) => {
                         onChange={handleChange}
                     />
                 </div>
-                <button type='button' onClick={handleSubmit}>submit</button>
             </form>
-            <h3>already have an account?</h3>
-            <button type='button' onClick={() => setAuthState("login")}>login</button>
+            <Button
+                className="submit-button"
+                fullWidth
+                radius="md"
+                variant="gradient"
+                gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+                onClick={handleSubmit}>
+                submit
+            </Button>
+            <Text className="login-prompt">already have account?</Text>
+            <Button
+                variant="outline"
+                onClick={() => setAuthState("login")}>
+                login
+            </Button>
         </div>
     )
 }
