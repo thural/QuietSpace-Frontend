@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import Message from "./Message";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
-import { fetchMessages, fetchCreateMessage } from "../../api/messageRequests";
-import { MESSAGE_PATH } from "../../constants/ApiPath";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Text } from "@mantine/core";
+import { useGetMessagesByChatId, usePostNewMessage } from "../../hooks/useChatData";
 
 
 const MessageContainer = ({ currentChatId }) => {
@@ -24,49 +23,17 @@ const MessageContainer = ({ currentChatId }) => {
 
     const [messageData, setMessageData] = useState({ chatId: currentChatId, senderId, text: '' });
 
-
-    const { data: messages, isError, isLoading, isSuccess } = useQuery({
-        queryKey: ["messages"],
-        queryFn: async () => {
-            const response = await fetchMessages(MESSAGE_PATH, currentChatId, auth.token);
-            return await response.json();
-        },
-        retry: 3,
-        retryDelay: 1000,
-        select: (data) => data.content,
-        enabled: !!user.id && !!currentChatId, // if userQuery could fetch the current user
-        staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
-    });
+    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(currentChatId);
 
     const handleInputChange = (event) => {
         setMessageData({ ...messageData, text: event });
     }
 
-    console.log("messages in message container: ", messages);
-
-    const newMessageMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchCreateMessage(MESSAGE_PATH, messageData, auth["token"]);
-            return response.json();
-        },
-        onSuccess: (data, variables, context) => {
-            queryClient.setQueryData(["messages", data.id], messageData); // manually cache data before refetch
-            setMessageData({ ...messageData, text: '' });
-            console.log("message sent successfully:", data);
-        },
-        onError: (error, variables, context) => {
-            console.log("error on sending message: ", error.message);
-        },
-    })
-
-    const handleSendMessage = () => {
-        newMessageMutation.mutate();
-    }
+    const newMessageMutation = usePostNewMessage(messageData, setMessageData);
 
     const handleSubmit = () => {
         if (messageData.text.length === 0) return;
-        handleSendMessage();
+        newMessageMutation.mutate();
     }
 
     const classes = styles();
