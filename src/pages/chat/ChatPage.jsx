@@ -28,21 +28,13 @@ const ChatPage = () => {
         refetchInterval: 1000 * 3, // refetch data after 3 minutes on idle
     });
 
-    // useEffect(() => {
-    //     return async () => {
-    //         try {
-    //             const response = await fetchChats(CHAT_PATH_BY_MEMBER, user.id, auth["token"]);
-    //             const data = await response.json();
-    //             console.log("fetched data: ", data);
-    //         } catch (error) { console.log("error: ", error) }
-
-    //     }
-    // }, []);
+    console.log("chat data: ", chatsQuery.data);
 
     const chats = chatsQuery.data;
 
     const initialState = chats?.length > 0 ? chats[0]["id"] : null;
     const [currentChatId, setCurrentChatId] = useState(initialState);
+
     const classes = styles();
 
     return (

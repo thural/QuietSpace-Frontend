@@ -9,7 +9,9 @@ const QueryContainer = ({ setCurrentChatId }) => {
 
     const queryClient = useQueryClient();
     const auth = queryClient.getQueryData("auth");
-    const user = queryClient.getQueryData("user");
+    const user = queryClient.getQueryData(["user"]);
+
+    console.log("user data in query container: ", user);
 
     const [queryText, setQueryText] = useState("");
     const [queryResult, setQueryResult] = useState([]);

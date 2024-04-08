@@ -2,7 +2,7 @@ import { getApiResponse } from "./commonRequest";
 
 export const fetchMessages = async (url, chatId, token) => {
     try {
-        return await getApiResponse(url + `/${chatId}`, 'GET', null, token)
+        return await getApiResponse(url + `/chat/${chatId}`, 'GET', null, token)
     } catch (err) { console.log(err) }
 }
 

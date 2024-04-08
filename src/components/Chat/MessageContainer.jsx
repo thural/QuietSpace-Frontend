@@ -12,9 +12,15 @@ const MessageContainer = ({ currentChatId }) => {
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const auth = queryClient.getQueryData("auth");
+    const chats = queryClient.getQueryData(["chats"]);
     const senderId = auth["userId"];
 
+    const currentChat = chats?.find(chat => chat.id === currentChatId);
+
     console.log("user in message container: ", user);
+    console.log("chats in message container: ", chats);
+    console.log("currentchat in message container: ", currentChat);
+    console.log("is mesages query enabled?: ", !!user.id && !!currentChatId);
 
     const [messageData, setMessageData] = useState({ chatId: currentChatId, senderId, text: '' });
 
@@ -22,12 +28,13 @@ const MessageContainer = ({ currentChatId }) => {
     const { data: messages, isError, isLoading, isSuccess } = useQuery({
         queryKey: ["messages"],
         queryFn: async () => {
-            const response = await fetchMessages(MESSAGE_PATH + `/${currentChatId}`, auth.token);
+            const response = await fetchMessages(MESSAGE_PATH, currentChatId, auth.token);
             return await response.json();
         },
         retry: 3,
         retryDelay: 1000,
-        enabled: user.id !== null, // if userQuery could fetch the current user
+        select: (data) => data.content,
+        enabled: !!user.id && !!currentChatId, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
         refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
     });
@@ -35,6 +42,8 @@ const MessageContainer = ({ currentChatId }) => {
     const handleInputChange = (event) => {
         setMessageData({ ...messageData, text: event });
     }
+
+    console.log("messages in message container: ", messages);
 
     const newMessageMutation = useMutation({
         mutationFn: async () => {
@@ -66,19 +75,22 @@ const MessageContainer = ({ currentChatId }) => {
         <div className={classes.chatboard}>
             {isLoading ? (<Text className="system-message" ta="center">loading messages ...</Text>) :
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
-                    (
-                        <div className={classes.messages}>
-                            {
-                                messages.map(message =>
-                                    <Message
-                                        key={message.id}
-                                        message={message}
-                                        currentChatId={currentChatId}
-                                    />
-                                )
-                            }
-                        </div>
-                    )
+                    currentChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
+                        messages.length === 0 ? (
+                        <Text className="system-message" ta="center">{`send your first message to ${currentChat.users[1].username}`}</Text>) :
+                            (
+                                <div className={classes.messages}>
+                                    {
+                                        messages?.map(message =>
+                                            <Message
+                                                key={message.id}
+                                                message={message}
+                                                currentChatId={currentChatId}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            )
             }
 
             <div className={classes.inputSection}>
