@@ -10,7 +10,8 @@
     "build": "vite build",
     "watch": "vite build --watch",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest",
+    "serve-json": "json-server --watch db.json --port 4000"
   },
   "author": "thural",
   "license": "ISC",
@@ -30,6 +31,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "dayjs": "^1.11.10",
     "fetch-intercept": "^2.4.0",
+    "json-server": "^1.0.0-alpha.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-emoji": "^1.8.1",

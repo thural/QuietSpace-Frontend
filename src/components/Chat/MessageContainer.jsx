@@ -5,12 +5,16 @@ import styles from "./styles/messageContainerStyles";
 import { fetchMessages, fetchCreateMessage } from "../../api/messageRequests";
 import { MESSAGE_PATH } from "../../constants/ApiPath";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { Text } from "@mantine/core";
 
 
 const MessageContainer = ({ currentChatId }) => {
     const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"]);
     const auth = queryClient.getQueryData("auth");
     const senderId = auth["userId"];
+
+    console.log("user in message container: ", user);
 
     const [messageData, setMessageData] = useState({ chatId: currentChatId, senderId, text: '' });
 
@@ -21,6 +25,8 @@ const MessageContainer = ({ currentChatId }) => {
             const response = await fetchMessages(MESSAGE_PATH + `/${currentChatId}`, auth.token);
             return await response.json();
         },
+        retry: 3,
+        retryDelay: 1000,
         enabled: user.id !== null, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
         refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
@@ -58,8 +64,8 @@ const MessageContainer = ({ currentChatId }) => {
 
     return (
         <div className={classes.chatboard}>
-            {isLoading ? (<h1>loading messages ...</h1>) :
-                isError ? (<h1>error loading messages</h1>) :
+            {isLoading ? (<Text className="system-message" ta="center">loading messages ...</Text>) :
+                isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
                     (
                         <div className={classes.messages}>
                             {

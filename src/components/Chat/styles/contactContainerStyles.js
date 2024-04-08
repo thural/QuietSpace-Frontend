@@ -3,9 +3,10 @@ import {createUseStyles} from "react-jss"
 const styles = createUseStyles({
     contacts: {
         display: 'flex',
+        width: '24rem',
         flexFlow: 'column nowrap',
-        borderRight: '1px solid',
-        gridColumn: '1/2',
+        borderRight: '1px solid #e8e8e8',
+        overflowY: 'overlay'
     },
     searchSection: {
         zIndex: '1'

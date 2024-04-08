@@ -57,10 +57,10 @@ const Message = ({ message }) => {
                 sender.username === user.username && isHovering &&
                 <>
                     <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
-                    <div className={classes.sender}>{senderName}</div>
+                    <div className={classes.sender}>{"sender name"}</div>
                 </>
             }
-            <div className={classes.text}><p>{text}</p></div>
+            <div className={classes.text}><p>{"sample message text for testing messages section"}</p></div>
         </div>
     )
 

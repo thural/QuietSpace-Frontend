@@ -2,13 +2,14 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   container: {
-    height: "100%"
-  },
-  chat: {
-    display: 'grid',
-    gridRow: '2 / 4',
-    gridColumn: '1 / 3',
-    gridTemplateColumns: '3fr 7fr'
+    top: '0',
+    left: '50%',
+    height: '100%',
+    display: 'flex',
+    position: 'absolute',
+    flexFlow: 'row nowrap',
+    transform: 'translateX(-50%)',
+    paddingTop: '66px',
   },
   contacts: {
     display: 'flex',

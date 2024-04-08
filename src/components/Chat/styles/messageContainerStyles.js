@@ -2,12 +2,10 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   chatboard: {
-    display: 'grid',
+    display: 'flex',
     overflow: 'hidden',
-    marginTop: '0',
-    gridColumn: '2/3',
-    marginBottom: '0',
-    gridTemplateRows: '7fr 1fr',
+    flexFlow: 'column nowrap',
+    width: '100%',
     '& .add-post-btn': {
       marginTop: '1rem',
       width: 'fit-content',
@@ -19,6 +17,9 @@ const styles = createUseStyles({
       fontSize: '1rem',
       fontWeight: '500',
       marginBottom: '1rem'
+    },
+    '& .system-message':{
+      marginTop: '100%'
     }
   },
   messages: {
@@ -29,7 +30,8 @@ const styles = createUseStyles({
     flexDirection: 'column-reverse',
   },
   inputSection: {
-    zIndex: '1'
+    zIndex: '1',
+    marginTop: 'auto'
   },
   messageInput: {
     width: '100%',
@@ -53,19 +55,18 @@ const styles = createUseStyles({
     display: 'flex',
     padding: '1rem',
     flexFlow: 'row nowrap',
-    boxShadow: 'rgb(0 0 0 / 50%) 0px 0px 16px -4px',
+    // boxShadow: 'rgb(0 0 0 / 50%) 0px 0px 16px -4px',
     boxSizing: 'border-box',
     alignItems: 'center',
     backgroundColor: 'white',
     '& button': {
       color: 'white',
       width: 'fit-content',
-      border: '1px solid black',
       padding: '4px 8px',
       fontSize: '1rem',
       fontWeight: '500',
-      borderRadius: '1rem',
-      backgroundColor: 'black'
+      display: 'flex',
+      padding: '0'
     },
     '& .input': {
       display: 'flex',
