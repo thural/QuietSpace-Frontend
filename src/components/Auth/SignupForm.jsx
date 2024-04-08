@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import styles from "./styles/signupFormStyles"
-import { fetchSignup } from "../../api/authRequests";
-import { SIGNUP_URL } from "../../constants/ApiPath";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "../../hooks/zustand";
 import { Button, Text, Title } from "@mantine/core";
+import { usePostSignup } from "../../hooks/useAuthData";
 
 const SignupForm = ({ setAuthState }) => {
-
-    const queryClient = useQueryClient();
-    const { setAuthData } = authStore();
 
 
     const [formData, setFormData] = useState({
@@ -21,20 +15,7 @@ const SignupForm = ({ setAuthState }) => {
     });
 
 
-    const signupMutation = useMutation({
-        mutationFn: async (formData) => {
-            const response = await fetchSignup(SIGNUP_URL, formData);
-            return await response.json();
-        },
-        onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["posts", "user", "chats"]);
-            queryClient.setQueryData("auth", data);
-            setAuthData(data);
-        },
-        onError: (error, variables, context) => {
-            console.log("error on signup:", error.message)
-        }
-    });
+    const signupMutation = usePostSignup();
 
 
     const handleSubmit = async (event) => {
@@ -57,7 +38,7 @@ const SignupForm = ({ setAuthState }) => {
 
 
     const classes = styles();
-
+    
 
     return (
         <div className={classes.signup}>

@@ -24,11 +24,18 @@ export const usePostLogin = () => {
             return await response.json();
         },
         onSuccess,
-        onError
+        onError,
+        staleTime: false,
+        refetchInterval: false,
+        gcTime: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchIntervalInBackground: false,
+        select: (data) => data.content
     });
 }
 
-export const useLogoutPost = () => {
+export const usePostLogout = () => {
 
     const queryClient = useQueryClient();
     const { setAuthData } = authStore();

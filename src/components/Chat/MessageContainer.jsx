@@ -1,25 +1,21 @@
 import React, { useState } from "react";
 import Message from "./Message";
+import { Text } from "@mantine/core";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
 import { useQueryClient } from "@tanstack/react-query";
-import { Text } from "@mantine/core";
 import { useGetMessagesByChatId, usePostNewMessage } from "../../hooks/useChatData";
+import { authStore } from "../../hooks/zustand";
 
 
 const MessageContainer = ({ currentChatId }) => {
+
+    const { data: authData } = authStore();
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
-    const auth = queryClient.getQueryData("auth");
     const chats = queryClient.getQueryData(["chats"]);
-    const senderId = auth["userId"];
 
+    const senderId = authData.userId;
     const currentChat = chats?.find(chat => chat.id === currentChatId);
-
-    console.log("user in message container: ", user);
-    console.log("chats in message container: ", chats);
-    console.log("currentchat in message container: ", currentChat);
-    console.log("is mesages query enabled?: ", !!user.id && !!currentChatId);
 
     const [messageData, setMessageData] = useState({ chatId: currentChatId, senderId, text: '' });
 
@@ -44,7 +40,7 @@ const MessageContainer = ({ currentChatId }) => {
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
                     currentChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
                         messages.length === 0 ? (
-                        <Text className="system-message" ta="center">{`send your first message to ${currentChat.users[1].username}`}</Text>) :
+                            <Text className="system-message" ta="center">{`send your first message to ${currentChat.users[1].username}`}</Text>) :
                             (
                                 <div className={classes.messages}>
                                     {

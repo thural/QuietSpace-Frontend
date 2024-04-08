@@ -1,49 +1,20 @@
 import styles from "./styles/queryContainerStyles";
 import { useEffect, useState } from "react";
-import { fetchUsersByQuery } from "../../api/userRequests";
-import { CHAT_PATH, USER_PATH } from "../../constants/ApiPath";
-import { fetchCreateChat } from "../../api/chatRequests";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQueryUsers } from "../../hooks/useUserData";
+import { useCreateChat } from "../../hooks/useChatData";
 
 const QueryContainer = ({ setCurrentChatId }) => {
 
     const queryClient = useQueryClient();
-    const auth = queryClient.getQueryData("auth");
     const user = queryClient.getQueryData(["user"]);
-
-    console.log("user data in query container: ", user);
 
     const [queryText, setQueryText] = useState("");
     const [queryResult, setQueryResult] = useState([]);
 
-    const makeQueryMutation = useMutation({
-        mutationFn: async () => {
-            const response = await fetchUsersByQuery(USER_PATH, queryText, auth["token"]);
-            return response.json();
-        },
-        onSuccess: (data, variables, context) => {
-            setQueryResult(data["content"])
-            console.log("user query success:", data);
-        },
-        onError: (error, variables, context) => {
-            console.log("error on querying users: ", error.message);
-        },
-    })
+    const createChatMutation = useCreateChat(setCurrentChatId);
+    const makeQueryMutation = useQueryUsers(queryText, setQueryResult);
 
-    const createChatMutation = useMutation({
-        mutationFn: async (chatBody) => {
-            const response = await fetchCreateChat(CHAT_PATH, chatBody, auth["token"]);
-            return response.json();
-        },
-        onSuccess: (data, variables, context) => {
-            queryClient.setQueryData(["chats", data.id], chatBody); // manually cache data
-            setCurrentChatId(chatData["id"]);
-            console.log("chat created successfully:", data);
-        },
-        onError: (error, variables, context) => {
-            console.log("error on fetching created chat: ", error.message);
-        },
-    })
 
     const handleUserClick = async (event, clickedUser) => {
         event.preventDefault();
@@ -60,13 +31,16 @@ const QueryContainer = ({ setCurrentChatId }) => {
         makeQueryMutation.mutate();
     }
 
+
     useEffect(() => {
         if (queryText.length > 0) handleQuerySubmit();
         else setQueryResult([]);
     }, [queryText]);
 
+
     const appliedStyle = queryResult.length === 0 ? { display: 'none' } : { display: 'block' }
     const classes = styles();
+
 
     return (
         <>

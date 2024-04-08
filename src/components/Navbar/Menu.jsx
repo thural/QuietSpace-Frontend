@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import styles from "./styles/menuStyles";
-import { useQueryClient } from "@tanstack/react-query";
 import { RiMenu3Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
 
 
 const Menu = () => {
-
-    const queryClient = useQueryClient();
 
     const classes = styles();
     const [display, setDisplay] = useState('none');

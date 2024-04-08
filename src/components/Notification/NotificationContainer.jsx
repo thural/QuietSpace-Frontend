@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-
 import { Container, SegmentedControl } from "@mantine/core";
-
 import styles from "./styles/notificationContainerStyles";
 import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 

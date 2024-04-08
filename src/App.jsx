@@ -1,4 +1,3 @@
-import { USER_PROFILE_URL } from "./constants/ApiPath";
 import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/Navbar/Navbar";
 import PostPage from "./pages/feed/PostPage";
@@ -10,8 +9,6 @@ import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 import './App.css'
 
-import { fetchUser } from "./api/userRequests";
-import { useQuery } from "@tanstack/react-query";
 import { authStore } from "./hooks/zustand";
 import ProfilePage from "./pages/profile/ProfilePage";
 import NotificationPage from "./pages/notification/NotifiactionPage";
@@ -20,20 +17,14 @@ import RequestNotifications from "./pages/notification/RequestNotifications";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
+import { useGetCurrentUser } from "./hooks/useUserData";
 
 const App = () => {
 
     const { data: authData } = authStore();
 
 
-    const { data: userData, isLoading, isSuccess, refetch, isError } = useQuery({
-        queryKey: ["user"],
-        queryFn: async () => {
-            const response = await fetchUser(USER_PROFILE_URL, authData.token)
-            return await response.json();
-        },
-        enabled: !!authData?.token,
-    })
+    const { data, isLoading, isSuccess, refetch, isError } = useGetCurrentUser();
 
 
 

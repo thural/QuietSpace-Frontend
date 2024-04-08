@@ -1,36 +1,14 @@
 import { useState } from "react";
 import styles from "./styles/loginFormStyles";
-import { LOGIN_URL } from "../../constants/ApiPath";
-import { fetchLogin } from "../../api/authRequests";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "../../hooks/zustand";
 import { Button, Text, Title } from "@mantine/core";
+import { usePostLogin } from "../../hooks/useAuthData";
 
 
 const LoginForm = ({ setAuthState }) => {
 
-    const queryClient = useQueryClient();
-    const { setAuthData } = authStore();
-
-
     const [formData, setFormData] = useState({ email: "", password: "" });
 
-
-    const loginMutation = useMutation({
-        mutationKey: ["auth"],
-        mutationFn: async (formData) => {
-            const response = await fetchLogin(LOGIN_URL, formData);
-            return await response.json();
-        },
-        onSuccess: (data, variables, context) => {
-            queryClient.invalidateQueries(["posts", "user", "chats"]);
-            queryClient.setQueryData("auth", data);
-            setAuthData(data);
-        },
-        onError: (error, variables, context) => {
-            console.log("error on login:", error.message)
-        },
-    });
+    const loginMutation = usePostLogin();
 
 
     const handleLoginForm = async (event) => {
@@ -45,7 +23,7 @@ const LoginForm = ({ setAuthState }) => {
 
 
     const classes = styles();
-
+    
 
     return (
         <>

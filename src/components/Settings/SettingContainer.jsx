@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Tabs, Text, Title } from "@mantine/core";
-import { PiArrowBendDoubleUpLeft, PiArrowClockwise, PiArrowsClockwise, PiLock, PiLockBold, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
+import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 
 import styles from "./styles/settingContainerStyles";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -24,9 +24,11 @@ function SettingsContainer() {
 
     return (
         <Container size="600px" style={{ marginTop: "1rem" }}>
+            
             <Title>Settings</Title>
 
             <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile" style={{ margin: '1rem 0' }}>
+
                 <Tabs.List justify="center" grow>
                     <Tabs.Tab value="profile" leftSection={<PiUserCircle size={24} />}>
                         Profile
@@ -67,6 +69,7 @@ function SettingsContainer() {
                 <Tabs.Panel value="blocking">
                     <Text ta="center">blocking settings</Text>
                 </Tabs.Panel>
+
             </Tabs>
         </Container>
     )
