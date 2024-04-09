@@ -29,7 +29,7 @@ const Message = ({ message }) => {
     };
 
     const handleDeleteMessage = async () => {
-        deleteMessageMutation.mutate();
+        deleteMessageMutation.mutate(id);
     }
 
 
@@ -47,10 +47,9 @@ const Message = ({ message }) => {
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}>
             {
-                senderId.username === user.username && isHovering &&
+                senderId === user.id && isHovering &&
                 <>
                     <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
-                    <div className={classes.sender}>{"sender name"}</div>
                 </>
             }
             <div className={classes.text}><p>{text}</p></div>

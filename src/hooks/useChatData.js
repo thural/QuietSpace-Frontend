@@ -96,7 +96,7 @@ export const usePostNewMessage = (setMessageData) => {
     });
 }
 
-export const useDeleteMessage = (chatId) => {
+export const useDeleteMessage = () => {
 
     const { data: authData } = authStore();
     const queryClient = useQueryClient();
@@ -111,9 +111,9 @@ export const useDeleteMessage = (chatId) => {
     }
 
     return useMutation({
-        mutationFn: async () => {
-            const response = await fetchDeleteMessage(MESSAGE_PATH, authData["token"], id);
-            return response.json();
+        mutationFn: async (messageId) => {
+            const response = await fetchDeleteMessage(MESSAGE_PATH, authData["token"], messageId);
+            return response;
         },
         onSuccess,
         onError,
