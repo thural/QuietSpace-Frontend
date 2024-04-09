@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Message from "./Message";
 import { Text } from "@mantine/core";
 import InputEmoji from "react-input-emoji";
@@ -10,29 +10,31 @@ import { authStore, useChatStore } from "../../hooks/zustand";
 
 const MessageContainer = () => {
 
-    const { data: authData } = authStore();
+    const { data: storeAuthData } = authStore();
     const { data: storeChatData } = useChatStore();
     const activeChatId = storeChatData.activeChatId;
+
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
 
-
-
-    const senderId = authData.userId;
+    const senderId = storeAuthData.userId;
     const currentChat = chats?.find(chat => chat.id === activeChatId); //TODO: optimize by acessing cache
 
-    const [messageData, setMessageData] = useState({ chatId: activeChatId, senderId, text: '' });
-    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
+    const [messageInputData, setMessageInputData] = useState({ chatId: activeChatId, senderId, text: '' });
 
-    const newMessageMutation = usePostNewMessage(setMessageData);
+    const { data: messages, isError, isLoading, isSuccess, refetch } = useGetMessagesByChatId(activeChatId);
+
+    const newMessageMutation = usePostNewMessage(setMessageInputData);
 
     const handleInputChange = (event) => {
-        setMessageData({ ...messageData, text: event });
+        setMessageInputData({ ...messageInputData, text: event });
     }
 
     const handleSubmit = () => {
-        if (messageData.text.length === 0) return;
-        newMessageMutation.mutate(messageData);
+        console.log("message data on submit: ", messageInputData);
+        if (messageInputData.text.length === 0) return;
+        messageInputData.chatId = activeChatId;
+        newMessageMutation.mutate(messageInputData);
     }
 
     const classes = styles();
@@ -62,7 +64,7 @@ const MessageContainer = () => {
                 <form className={classes.chatInput}>
                     <InputEmoji
                         className={classes.messageInput}
-                        value={messageData.text}
+                        value={messageInputData.text}
                         onChange={handleInputChange}
                         fontSize={15}
                         maxLength="128"

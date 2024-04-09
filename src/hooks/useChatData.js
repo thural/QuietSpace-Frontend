@@ -28,7 +28,7 @@ export const useCreateChat = (setCurrentChatId) => {
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.setQueryData(["chats", data.id], chatBody); // manually cache data
+        queryClient.invalidateQueries(["chats"], { exact: true })
         setCurrentChatId(chatData["id"]);
         console.log("chat created successfully:", data);
     }
@@ -54,10 +54,12 @@ export const useGetMessagesByChatId = (chatId) => {
     const user = queryClient.getQueryData(["user"]);
 
     return useQuery({
-        queryKey: ["messages"],
+        queryKey: ["messages", chatId],
         queryFn: async () => {
             const response = await fetchMessages(MESSAGE_PATH, chatId, authData.token);
-            return await response.json();
+            const responseData = await response.json();
+            console.log("messages response data: ", responseData);
+            return responseData;
         },
         retry: 3,
         retryDelay: 1000,
@@ -74,7 +76,7 @@ export const usePostNewMessage = (setMessageData) => {
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context, messageData) => {
-        queryClient.setQueryData(["messages", data.id], messageData); // manually cache data before refetch
+        queryClient.invalidateQueries(["messages"], { exact: true });
         setMessageData({ ...messageData, text: '' });
         console.log("message sent successfully:", data);
     }
@@ -82,7 +84,6 @@ export const usePostNewMessage = (setMessageData) => {
     const onError = (error, variables, context) => {
         console.log("error on sending message: ", error.message);
     }
-
 
     return useMutation({
         mutationFn: async (messageData) => {
@@ -101,7 +102,7 @@ export const useDeleteMessage = (chatId) => {
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["chats"], { id: chatId }, { exact: true });
+        queryClient.invalidateQueries(["messages"], { exact: true });
         console.log("delete message sucess");
     }
 
