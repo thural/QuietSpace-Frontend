@@ -3,31 +3,34 @@ import Contact from "./Contact";
 import styles from "./styles/contactContainerStyles";
 import QueryContainer from "./QueryContainer";
 import { useQueryClient } from "@tanstack/react-query";
+import { useChatStore } from "../../hooks/zustand";
 
-const ContactContainer = ({ currentChatId, setCurrentChatId }) => {
+const ContactContainer = () => {
+
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const chats = queryClient.getQueryData(["chats"]);
 
-    console.log("user in contact contaienr: ", user);
-    console.log("chats in contact container: ", chats);
+    const { data: storeChatData } = useChatStore();
+    const activeChatId = storeChatData.activeChatId;
+    const { setActiveChatId } = useChatStore();
+
 
     const contacts = chats?.map(chat => chat.users.find(member => member.id !== user.id));
-    const hasChat = chats?.length > 0;
 
 
     const classes = styles();
     return (
         <div className={classes.contacts}>
-            <QueryContainer setCurrentChatId={setCurrentChatId} />
+            <QueryContainer setCurrentChatId={setActiveChatId} />
             {
-                hasChat ?
+                (chats?.length > 0) ?
                     contacts.map((contact, index) =>
                         <Contact
                             key={index}
                             contact={contact}
-                            currentChatId={currentChatId}
-                            setCurrentChatId={setCurrentChatId}
+                            currentChatId={activeChatId}
+                            setCurrentChatId={setActiveChatId}
                         />)
                     : <Text ta="center">there's no chat yet</Text>
             }

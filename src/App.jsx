@@ -9,7 +9,6 @@ import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 import './App.css'
 
-import { authStore } from "./hooks/zustand";
 import ProfilePage from "./pages/profile/ProfilePage";
 import NotificationPage from "./pages/notification/NotifiactionPage";
 import AllNotifications from "./pages/notification/AllNotifications";
@@ -21,16 +20,18 @@ import { useGetCurrentUser } from "./hooks/useUserData";
 
 const App = () => {
 
-    const { data: authData } = authStore();
+    const { data: userData,
+        isLoading: isUserLoading,
+        isSuccess: isUserSuccess,
+        refetch: refetchUser,
+        isError: isUserError
+    } = useGetCurrentUser();
 
 
-    const { data, isLoading, isSuccess, refetch, isError } = useGetCurrentUser();
-
-
-
+    
     return (
         <MantineProvider>
-            {!isSuccess ? (<AuthPage />) : isLoading ? (<h1>Loading ..</h1>) : (
+            {!isUserSuccess ? (<AuthPage />) : isUserLoading ? (<h1>Loading ..</h1>) : (
                 <>
                     <NavBar />
                     <Routes>

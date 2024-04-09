@@ -68,12 +68,12 @@ export const useGetMessagesByChatId = (chatId) => {
     });
 }
 
-export const usePostNewMessage = (messageData, setMessageData) => {
+export const usePostNewMessage = (setMessageData) => {
 
     const { data: authData } = authStore();
     const queryClient = useQueryClient();
 
-    const onSuccess = (data, variables, context) => {
+    const onSuccess = (data, variables, context, messageData) => {
         queryClient.setQueryData(["messages", data.id], messageData); // manually cache data before refetch
         setMessageData({ ...messageData, text: '' });
         console.log("message sent successfully:", data);
@@ -85,7 +85,8 @@ export const usePostNewMessage = (messageData, setMessageData) => {
 
 
     return useMutation({
-        mutationFn: async () => {
+        mutationFn: async (messageData) => {
+            console.log("current chat id on sending: ", messageData.chatId);
             const response = await fetchCreateMessage(MESSAGE_PATH, messageData, authData["token"]);
             return response.json();
         },

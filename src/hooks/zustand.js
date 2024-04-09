@@ -5,7 +5,7 @@ export const bearStore = create((set) => ({
     increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
     removeAllBears: () => set({ bears: 0 }),
     updateBears: (newBears) => set({ bears: newBears }),
-}))
+}));
 
 export const authStore = create(set => ({
     data: { message: "", token: "", userId: "" },
@@ -15,7 +15,7 @@ export const authStore = create(set => ({
     setAuthData: (authData) => set({
         data: authData
     }),
-}))
+}));
 
 export const viewStore = create(set => ({
     data: {
@@ -26,4 +26,19 @@ export const viewStore = create(set => ({
     setViewData: (state, viewData) => set({
         data: { ...state, ...viewData }
     }),
-}))
+}));
+
+export const useChatStore = create(set => ({
+    data: {activeChatId: null, messageInput:{}},
+    setActiveChatId: (activeChatId) => {
+        set(state => ({
+            data: {...state, activeChatId}
+        }));
+    },
+
+    setMessageInput: (messageInput) => {
+        set(state => ({
+            data: {...state, messageInput}
+        }))
+    }
+}));

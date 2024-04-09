@@ -5,31 +5,34 @@ import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetMessagesByChatId, usePostNewMessage } from "../../hooks/useChatData";
-import { authStore } from "../../hooks/zustand";
+import { authStore, useChatStore } from "../../hooks/zustand";
 
 
-const MessageContainer = ({ currentChatId }) => {
+const MessageContainer = () => {
 
     const { data: authData } = authStore();
+    const { data: storeChatData } = useChatStore();
+    const activeChatId = storeChatData.activeChatId;
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
 
+
+
     const senderId = authData.userId;
-    const currentChat = chats?.find(chat => chat.id === currentChatId);
+    const currentChat = chats?.find(chat => chat.id === activeChatId); //TODO: optimize by acessing cache
 
-    const [messageData, setMessageData] = useState({ chatId: currentChatId, senderId, text: '' });
+    const [messageData, setMessageData] = useState({ chatId: activeChatId, senderId, text: '' });
+    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
 
-    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(currentChatId);
+    const newMessageMutation = usePostNewMessage(setMessageData);
 
     const handleInputChange = (event) => {
         setMessageData({ ...messageData, text: event });
     }
 
-    const newMessageMutation = usePostNewMessage(messageData, setMessageData);
-
     const handleSubmit = () => {
         if (messageData.text.length === 0) return;
-        newMessageMutation.mutate();
+        newMessageMutation.mutate(messageData);
     }
 
     const classes = styles();
@@ -38,7 +41,7 @@ const MessageContainer = ({ currentChatId }) => {
         <div className={classes.chatboard}>
             {isLoading ? (<Text className="system-message" ta="center">loading messages ...</Text>) :
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
-                    currentChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
+                    activeChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
                         messages.length === 0 ? (
                             <Text className="system-message" ta="center">{`send your first message to ${currentChat.users[1].username}`}</Text>) :
                             (
@@ -48,7 +51,6 @@ const MessageContainer = ({ currentChatId }) => {
                                             <Message
                                                 key={message.id}
                                                 message={message}
-                                                currentChatId={currentChatId}
                                             />
                                         )
                                     }

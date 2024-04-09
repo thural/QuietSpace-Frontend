@@ -5,34 +5,40 @@ import styles from "./styles/chatPageStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { Container } from "@mantine/core";
 import { useGetChats } from "../../hooks/useChatData";
+import { useChatStore } from "../../hooks/zustand";
 
 const ChatPage = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-    const chatsQuery = useGetChats(user.id);
+    const { data: chats, isLoading, isError, isSuccess } = useGetChats(user.id);
 
-    const chats = chatsQuery.data;
+    const { data: chatDataFromStore } = useChatStore();
+    const activeChatId = chatDataFromStore.activeChatId;
+    const { setActiveChatId } = useChatStore();
 
-    const initialState = chats?.length > 0 ? chats[0]["id"] : null;
-    const [currentChatId, setCurrentChatId] = useState(initialState);
+
+    useEffect(
+        () => {
+            console.log("chat state on useEffect: ", chats);
+            const initialState = chats?.length > 0 ? chats[0]["id"] : null;
+            setActiveChatId(initialState);
+            console.log("activeChatId on initial state setup: ", activeChatId);
+        }, [isLoading]
+    )
+
 
     const classes = styles();
 
+
     return (
         <Container className={classes.container} size="600px" >
-            {chatsQuery.isLoading && <h1>Loading...</h1>}
-            {chatsQuery.isError && <h1>{'Could not fetch chat data! 🔥'}</h1>}
-            {chatsQuery.isSuccess &&
+            {isLoading && <h1>Loading...</h1>}
+            {isError && <h1>{'Could not fetch chat data! 🔥'}</h1>}
+            {isSuccess &&
                 <>
-                    <ContactContainer
-                        currentChatId={currentChatId}
-                        setCurrentChatId={setCurrentChatId}
-                    />
-                    <MessageContainer
-                        currentChatId={currentChatId}
-                        setCurrentChatId={setCurrentChatId}
-                    />
+                    <ContactContainer />
+                    <MessageContainer />
                 </>
             }
         </Container>
