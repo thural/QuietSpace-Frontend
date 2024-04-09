@@ -18,13 +18,13 @@ const styles = createUseStyles({
       fontWeight: '500',
       marginBottom: '1rem'
     },
-    '& .system-message':{
+    '& .system-message': {
       marginTop: '100%'
     }
   },
   messages: {
     display: 'flex',
-    padding: '0 12%',
+    padding: '0 4%',
     gridRow: '1/2',
     overflow: 'auto',
     flexDirection: 'column-reverse',
@@ -53,12 +53,22 @@ const styles = createUseStyles({
     height: '100%',
     margin: 'auto',
     display: 'flex',
-    padding: '1rem',
     flexFlow: 'row nowrap',
     // boxShadow: 'rgb(0 0 0 / 50%) 0px 0px 16px -4px',
     boxSizing: 'border-box',
     alignItems: 'center',
     backgroundColor: 'white',
+    '& .react-input-emoji--button': {
+      color: 'white',
+      right: '0rem',
+      width: 'fit-content',
+      display: 'flex',
+      padding: '.95rem',
+      position: 'absolute',
+      fontSize: '1rem',
+      fontWeight: '500',
+      zIndex: '1'
+    },
     '& button': {
       color: 'white',
       width: 'fit-content',

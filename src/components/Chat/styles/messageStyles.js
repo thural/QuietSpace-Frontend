@@ -13,7 +13,7 @@ const styles = createUseStyles({
     borderRadius: '1rem',
     justifyItems: 'center',
     backgroundColor: 'white',
-    boxShadow: '1px 1px 16px -12px',
+    boxShadow: '0px 0px 16px -16px',
     '& .buttons': {
       display: 'flex',
       flexFlow: 'row nowrap',

@@ -3,13 +3,10 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles({
   container: {
     top: '0',
-    left: '50%',
     height: '100%',
     display: 'flex',
-    position: 'absolute',
-    flexFlow: 'row nowrap',
-    transform: 'translateX(-50%)',
-    paddingTop: '66px',
+    paddingTop: '0.5rem',
+    paddingBottom: '64px'
   },
   contacts: {
     display: 'flex',

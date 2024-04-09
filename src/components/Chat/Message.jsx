@@ -33,14 +33,19 @@ const Message = ({ message }) => {
     }
 
 
-    const appliedStyle = senderId !== user.id ? { marginRight: "auto" } : {
+    const appliedStyle = senderId !== user.id ? { marginRight: "auto",
+     borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
+     } : {
         marginLeft: "auto",
-        backgroundColor: '#f1f1f1'
+        color: "white",
+        borderColor: "blue",
+        backgroundColor: "#3c3cff",
+        borderRadius: '1rem 1rem 0rem 1rem'
     };
 
 
     const classes = styles();
-    
+
     return (
         <div id={id} className={classes.message}
             style={appliedStyle}

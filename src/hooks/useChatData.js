@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authStore } from "./zustand";
-import { CHAT_PATH_BY_MEMBER, MESSAGE_PATH } from "../constants/ApiPath";
+import { CHAT_PATH, CHAT_PATH_BY_MEMBER, MESSAGE_PATH } from "../constants/ApiPath";
 import { fetchChats, fetchCreateChat } from "../api/chatRequests";
 import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../api/messageRequests";
 

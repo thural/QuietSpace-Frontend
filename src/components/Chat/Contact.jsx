@@ -25,7 +25,7 @@ const Contact = ({ contact }) => {
     const classes = styles();
 
     return (
-        <div id={contact.id} className={classes.contact} onClick={handleClick} style={{ backgroundColor: "white" }}>
+        <div id={contact.id} className={classes.contact} onClick={handleClick} >
             <Avatar color="black" size="2.5rem" radius="10rem">{contact.username[0].toUpperCase()}</Avatar>
             <div className={classes.text}>
                 <Text size="sm" lineClamp={1}>{recentText ? recentText : "chat is empty"}</Text>
