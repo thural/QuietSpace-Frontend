@@ -6,6 +6,7 @@ import { useGetPosts } from "../../hooks/usePostData";
 import { Avatar, Box, Button, Container, Flex, Input, LoadingOverlay } from "@mantine/core";
 
 import styles from './styles/postContainerStyles'
+import { generatePfp } from "../../utils/randomPfp";
 
 function PostContainer() {
 
@@ -22,7 +23,7 @@ function PostContainer() {
         <Container className={classes.container} size="600px">
             <Box style={{ margin: "1rem 0" }}>
                 <Flex justify="space-between" gap="1rem">
-                    <Avatar color="black"  radius="10rem">T</Avatar>
+                    <Avatar color="black" radius="10rem" src={generatePfp("beam")}>T</Avatar>
                     <Input
                         variant="unstyled"
                         style={{ width: "100%" }}

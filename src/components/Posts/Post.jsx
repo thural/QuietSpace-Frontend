@@ -16,6 +16,7 @@ import {
     PiTrashSimple
 } from "react-icons/pi";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
+import { generatePfp, pfpSourceLinkBeam } from "../../utils/randomPfp";
 
 
 
@@ -75,6 +76,7 @@ const Post = ({ post }) => {
 
     // console.log("is like by user? : ", isLikedByUser );
 
+    const randomPfpUrl = generatePfp("beam");
 
     const classes = styles();
 
@@ -83,7 +85,7 @@ const Post = ({ post }) => {
         <Box id={postId} className={classes.wrapper}>
 
             <Flex className={classes.postHeadline}>
-                <Avatar color="black" radius="10rem">{username.charAt(0).toUpperCase()}</Avatar>
+                <Avatar color="black" radius="10rem" src={randomPfpUrl}>{username.charAt(0).toUpperCase()}</Avatar>
                 <Title className="title" order={5}>{getFirstThreeWords(text)}</Title>
             </Flex>
 

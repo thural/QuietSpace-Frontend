@@ -2,6 +2,7 @@ import { Avatar, Text } from "@mantine/core";
 import styles from "./styles/contactStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "../../hooks/zustand";
+import { generatePfp } from "../../utils/randomPfp";
 
 const Contact = ({ contact }) => {
 
@@ -26,7 +27,7 @@ const Contact = ({ contact }) => {
 
     return (
         <div id={contact.id} className={classes.contact} onClick={handleClick} >
-            <Avatar color="black" size="2.5rem" radius="10rem">{contact.username[0].toUpperCase()}</Avatar>
+            <Avatar color="black" size="2.5rem" radius="10rem" src={generatePfp("beam")}>{contact.username[0].toUpperCase()}</Avatar>
             <div className={classes.text}>
                 <Text size="sm" lineClamp={1}>{recentText ? recentText : "chat is empty"}</Text>
                 <Text size="xs" lineClamp={1}>seen 1 day ago</Text>
