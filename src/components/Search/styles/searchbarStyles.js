@@ -1,6 +1,10 @@
 import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
+    container:{
+        paddingTop:'4rem'
+    },
+    
     searchbar: {
         display: 'flex',
         margin: "1rem 0",

@@ -18,7 +18,7 @@ function NotificationContainer() {
     };
 
     return (
-        <Container size="600px" style={{ marginTop: "1rem" }}>
+        <Container size="600px" className={classes.container}>
 
             <SegmentedControl
                 style={{ zIndex: 1 }}

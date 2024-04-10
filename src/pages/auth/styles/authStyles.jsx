@@ -15,7 +15,7 @@ const styles = createUseStyles({
       minWidth: 'min-content',
       // textAlign: 'center',
       alignItems: 'flex-start',
-      alignSelf: 'flex-start',
+      // alignSelf: 'flex-start',
       justifyContent: 'flex-start',
       fontSize: '3.2rem',
       alignSelf: 'center',
@@ -24,7 +24,6 @@ const styles = createUseStyles({
       textWrap: 'nowrap'
     },
     '& .brand': {
-      marginBottom: '50%',
       marginTop: '0',
       minWidth: 'max-content',
       marginBottom: 'auto'

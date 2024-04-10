@@ -27,7 +27,7 @@ const NavBar = ({ children }) => {
   return (
     <div className={classes.navbar}>
 
-      <h1>QS</h1>
+      <h1 className="title">QS</h1>
 
       <nav>
         <div className="navbar-item">

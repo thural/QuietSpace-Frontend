@@ -19,7 +19,7 @@ function PostContainer() {
     if (postsQuery.isError) return <h1>{postsQuery.error.message}</h1>;
 
     return (
-        <Container className={classes.wrapper} size="600px" style={{ marginTop: "1rem" }}>
+        <Container className={classes.container} size="600px">
             <Box style={{ margin: "1rem 0" }}>
                 <Flex justify="space-between" gap="1rem">
                     <Avatar color="black"  radius="10rem">T</Avatar>

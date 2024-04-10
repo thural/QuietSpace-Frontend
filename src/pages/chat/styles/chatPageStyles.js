@@ -2,11 +2,9 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   container: {
-    top: '0',
     height: '100%',
     display: 'flex',
-    paddingTop: '0.5rem',
-    paddingBottom: '64px'
+    paddingTop: '4rem'
   },
   contacts: {
     display: 'flex',

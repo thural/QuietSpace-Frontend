@@ -6,18 +6,20 @@ const styles = createUseStyles(
 			top: '0',
 			color: 'white',
 			width: '100%',
+			height: '4rem',
 			margin: '0px',
 			display: 'flex',
 			padding: '0.5rem 1rem 0.5rem 1rem',
 			zIndex: '2',
-			position: 'sticky',
+			position: 'fixed',
 			flexWrap: 'nowrap',
-			// boxShadow: '0 4px 6px -4px rgba(72, 72, 72, 0.3)',
 			boxSizing: 'border-box',
 			alignItems: 'center',
 			fontWeight: '400',
 			justifyContent: 'space-between',
-			backgroundColor: 'white',
+			backgroundColor: 'rgba(255, 255,255,0.5)',
+			backdropFilter: 'blur(8px)',
+			WebkitBackdropFilter: 'blur(10px)',
 			'& .navbar-item>a>img': {
 				width: '100%',
 				display: 'block',
@@ -46,11 +48,11 @@ const styles = createUseStyles(
 				color: 'black'
 			},
 			'& .navbar-item.menu': {
-				margin: '0 1rem 0 0'
+				margin: 'auto'
 			},
-			'& h1': {
-				margin: '0 0rem 0 1rem',
-				color: '#3e3e3e'
+			'& .title': {
+				color: '#3e3e3e',
+				margin: 'auto'
 			},
 			'& a, a:hover, a:focus, a:active': {
 				textDecoration: 'none',

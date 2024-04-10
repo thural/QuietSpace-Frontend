@@ -9,7 +9,7 @@ function ProfileContainer() {
     const classes = styles();
 
     return (
-        <Container size="600px" style={{ marginTop: "1rem" }}>
+        <Container size="600px" className={classes.container}>
             <Flex className={classes.identitySection}>
                 <Box className="profileName">
                     <Text fw={700}>thuralll</Text>

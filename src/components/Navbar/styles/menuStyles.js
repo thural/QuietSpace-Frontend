@@ -3,13 +3,15 @@ import { createUseStyles } from "react-jss"
 const styles = createUseStyles(
 	{
 		menuOverlay: {
-			position: "fixed",
 			top: '0',
+			left: '0',
 			right: '0',
 			bottom: '0',
-			left: '0',
-			zIndex: '0',
 			display: 'none',
+			zIndex: '0',
+			position: 'fixed',
+			width: '100vw',
+			height: '100vh'
 		},
 		icon: {
 			'& svg': {

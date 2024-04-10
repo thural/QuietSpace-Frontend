@@ -9,7 +9,7 @@ function SearchContainer() {
     const classes = styles();
 
     return (
-        <Container size="600px" style={{ marginTop: "1rem" }}>
+        <Container size="600px" className={classes.container}>
             <Box className={classes.searchbar}>
                 <PiMagnifyingGlassBold className={classes.searchIcon} />
                 <Input

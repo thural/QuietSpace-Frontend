@@ -23,9 +23,9 @@ function SettingsContainer() {
     const classes = styles();
 
     return (
-        <Container size="600px" style={{ marginTop: "1rem" }}>
+        <Container size="600px" className={classes.container}>
             
-            <Title>Settings</Title>
+            <Title>settings</Title>
 
             <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile" style={{ margin: '1rem 0' }}>
 
