@@ -6,7 +6,8 @@ const styles = createUseStyles({
     '& hr': {
       border: 'none',
       height: '0.5px',
-      backgroundColor: 'rgb(204 204 204)'
+      backgroundColor: 'rgb(216 216 216)',
+      marginTop:'1rem'
     }
   }
 });

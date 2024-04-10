@@ -9,12 +9,13 @@ import { useGetComments } from "../../hooks/useCommentData";
 import {
     PiArrowFatDown,
     PiArrowFatUp,
+    PiArrowsClockwise,
     PiChatCircle,
     PiPaperPlaneTilt,
-    PiPencilSimpleLine,
-    PiTrash
+    PiPencilSimple,
+    PiTrashSimple
 } from "react-icons/pi";
-import { Badge } from "@mantine/core";
+import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 
 
 
@@ -46,54 +47,85 @@ const Post = ({ post }) => {
         togglePostLike.mutate();
     }
 
+    const parseCount = (number) => {
+        if (number < 1000) {
+            return number;
+        } else if (number >= 1000 && number < 1_000_000) {
+            return (number / 1000).toFixed(1) + "K";
+        } else if (number >= 1_000_000 && number < 1_000_000_000) {
+            return (number / 1_000_000).toFixed(1) + "M";
+        } else if (number >= 1_000_000_000 && number < 1_000_000_000_000) {
+            return (number / 1_000_000_000).toFixed(1) + "B";
+        } else if (number >= 1_000_000_000_000 && number < 1_000_000_000_000_000) {
+            return (number / 1_000_000_000_000).toFixed(1) + "T";
+        }
+    }
+
+    function getFirstThreeWords(str) {
+        if (!str.trim() || str.split(/\s+/).length < 3) {
+            return str.trim();
+        }
+
+        return str.split(/\s+/, 3).join(" ");
+    }
+
+    // console.log("post likes: ", likes);
+
+    // const isLikedByUser = likes.some( like => like.id === user.id);
+
+    // console.log("is like by user? : ", isLikedByUser );
+
 
     const classes = styles();
 
 
     return (
-        <div id={postId} className={classes.wrapper}>
+        <Box id={postId} className={classes.wrapper}>
 
-            <div className="author">{username}</div>
-            <div className="text"><p>{text}</p></div>
+            <Flex className={classes.postHeadline}>
+                <Avatar color="black" radius="10rem">{username.charAt(0).toUpperCase()}</Avatar>
+                <Title className="title" order={5}>{getFirstThreeWords(text)}</Title>
+            </Flex>
 
-            {editPostView && <EditPostForm postId={postId} />}
+            <Box className="content">
+                <Text className="text">{text}</Text>
+                {editPostView && <EditPostForm postId={postId} />}
+            </Box>
 
-            <div className="panel">
+            <Box className="panel">
 
-                <div className="iconbox">
-                    <PiArrowFatUp className="posticon" onClick={handlePostLike} alt={"post like icon"}></PiArrowFatUp>
-                    {likes?.length > 0 && <Badge className="badge" color="rgba(0, 0, 0, 1)" size="xs" circle>{likes?.length}</Badge>}
-                </div>
+                <PiArrowFatUp className="posticon" onClick={handlePostLike} alt={"post like icon"}></PiArrowFatUp>
 
-                <div className="iconbox">
-                    <PiArrowFatDown onClick={handlePostLike} alt={"post dislike icon"} />
-                    {comments?.length > 0 && <Badge className="badge" color="rgba(0, 0, 0, 1)" size="xs" circle>{comments?.length}</Badge>}
-                </div>
+                <PiArrowFatDown onClick={handlePostLike} alt={"post dislike icon"} />
 
-                <div className="iconbox">
-                    <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
-                    {comments?.length > 0 && <Badge className="badge" color="rgba(0, 0, 0, 1)" size="xs" circle>{comments?.length}</Badge>}
-                </div>
-
-
-                {
-                    post?.userId === user?.id &&
-                    <PiPencilSimpleLine onClick={() => setViewData({ editPost: true })} alt={"edit icon"} />
-                }
+                <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
                 <PiPaperPlaneTilt />
 
+                <PiArrowsClockwise />
+
+                {
+                    post?.userId === user?.id &&
+                    <PiPencilSimple onClick={() => setViewData({ editPost: true })} alt={"edit icon"} />
+                }
+
                 {
                     user?.role === "admin" || post?.userId === user?.id &&
-                    <PiTrash onClick={handleDeletePost} alt={"delete post icon"} />
+                    <PiTrashSimple onClick={handleDeletePost} alt={"delete post icon"} />
                 }
-            </div>
+
+                <Flex className={classes.postinfo}>
+                    {!!likes?.length && <Text>{parseCount(likes?.length)} likes</Text>}
+                    {!!comments?.length && <Text>{parseCount(comments?.length)} comments</Text>}
+                </Flex>
+
+            </Box>
 
             {showComments && <CommentSection postId={postId} />}
 
             <hr></hr>
 
-        </div>
+        </Box>
     )
 }
 

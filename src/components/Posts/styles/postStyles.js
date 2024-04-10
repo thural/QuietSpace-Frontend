@@ -2,17 +2,17 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
   wrapper: {
-    padding: '1.2rem 0',
+    padding: '0',
     fontSize: '1rem',
-    breakInside: 'avoid',
-    pageBreakInside: 'avoid',
-    '& .author': {
+    margin: '1rem 0',
+    '& .title': {
       width: '100%',
-      fontSize: '1.2rem',
-      fontWeight: '500'
+      fontSize: '1rem',
+      fontWeight: '500',
+      lineHeight: '1rem'
     },
     '& .panel': {
-      gap: '1rem',
+      gap: '.5rem',
       height: '1.5rem',
       display: 'flex',
       flexFlow: 'row nowrap',
@@ -20,27 +20,32 @@ const styles = createUseStyles({
       alignItems: 'center',
       fontSize: '1.2rem'
     },
-    '& .iconbox':{
+    '& .iconbox': {
       position: "relative"
     },
     '& .badge': {
-      position: "absolute",
-      maxHeight: "0.8rem",
-      maxWidth:"0.8rem",
-      left:"0.85rem",
-      bottom:"1.15rem"
+      left: '0.85rem',
+      bottom: '1.15rem',
+      position: 'absolute',
+      minWidth: '.8rem',
+      maxHeight: '.8rem'
     },
     '& .text': {
+      margin: '1rem 0',
+      marginTop: '.5rem',
+      padding: '0',
       fontSize: '1rem',
-      fontStyle: 'italic',
-      padding: 0,
-      margin: '0px'
-    },
-    '& .text p':{
-      marginTop: '0.25rem'
+      fontStyle: 'italic'
     },
   },
+
+  postHeadline: {
+    gap: '.8rem'
+  },
+
   postinfo: {
+    opacity: '0.7',
+    marginLeft: 'auto',
     display: 'flex',
     justifyContent: 'flex-end',
     gap: '10px',
@@ -49,6 +54,14 @@ const styles = createUseStyles({
       marginRight: "auto"
     }
   },
+
+  '& hr': {
+    border: 'none',
+    height: '0.5px',
+    marginTop: '1rem',
+    marginBottom: '0',
+    backgroundColor: 'rgb(204 204 204)'
+  }
 })
 
 
