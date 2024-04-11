@@ -16,12 +16,12 @@ import {
     PiTrashSimple
 } from "react-icons/pi";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
-import { generatePfp, pfpSourceLinkBeam } from "../../utils/randomPfp";
+import { getFirstThreeWords } from "../../utils/stringUtils";
 
 
 
 
-const Post = ({ post }) => {
+const Post = ({ post, avatarUrl }) => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
@@ -62,22 +62,13 @@ const Post = ({ post }) => {
         }
     }
 
-    function getFirstThreeWords(str) {
-        if (!str.trim() || str.split(/\s+/).length < 3) {
-            return str.trim();
-        }
-
-        return str.split(/\s+/, 3).join(" ");
-    }
-
     // console.log("post likes: ", likes);
 
     // const isLikedByUser = likes.some( like => like.id === user.id);
 
     // console.log("is like by user? : ", isLikedByUser );
 
-    const randomPfpUrl = generatePfp("beam");
-
+    
     const classes = styles();
 
 
@@ -85,7 +76,7 @@ const Post = ({ post }) => {
         <Box id={postId} className={classes.wrapper}>
 
             <Flex className={classes.postHeadline}>
-                <Avatar color="black" radius="10rem" src={randomPfpUrl}>{username.charAt(0).toUpperCase()}</Avatar>
+                <Avatar color="black" radius="10rem" src={avatarUrl}>{username.charAt(0).toUpperCase()}</Avatar>
                 <Title className="title" order={5}>{getFirstThreeWords(text)}</Title>
             </Flex>
 
