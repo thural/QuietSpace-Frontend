@@ -11,12 +11,11 @@ import {
     PiArrowFatDown,
     PiArrowFatUp,
     PiChatCircle,
-    PiPencilSimple,
-    PiTrashSimple
 } from "react-icons/pi";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 import { getFirstThreeWords, parseCount } from "../../utils/stringUtils";
 import Poll from "./Poll";
+import PostMenu from "./PostMenu";
 
 
 
@@ -57,6 +56,8 @@ const Post = ({ post, avatarUrl }) => {
         setIsHovering(false);
     };
 
+    const isMutable = user?.role === "admin" || post?.userId === user?.id;
+
     // console.log("post likes: ", likes);
 
     // const isLikedByUser = likes.some( like => like.id === user.id);
@@ -76,6 +77,7 @@ const Post = ({ post, avatarUrl }) => {
             <Flex className={classes.postHeadline}>
                 <Avatar color="black" radius="10rem" src={avatarUrl}>{username.charAt(0).toUpperCase()}</Avatar>
                 <Title className="title" order={5}>{getFirstThreeWords(text)}</Title>
+                <PostMenu handleDeletePost={handleDeletePost} setViewData={setViewData} isMutable={isMutable} />
             </Flex>
 
             <Box className="content">
@@ -92,16 +94,6 @@ const Post = ({ post, avatarUrl }) => {
                 <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
                 <ShareMenu />
-
-                {
-                    post?.userId === user?.id && isHovering &&
-                    <PiPencilSimple onClick={() => setViewData({ editPost: true })} alt={"edit icon"} />
-                }
-
-                {
-                    (user?.role === "admin" || post?.userId === user?.id) && isHovering &&
-                    <PiTrashSimple onClick={handleDeletePost} alt={"delete post icon"} />
-                }
 
                 <Flex className={classes.postinfo}>
                     {!!likes?.length && <Text>{parseCount(likes?.length)} likes</Text>}
