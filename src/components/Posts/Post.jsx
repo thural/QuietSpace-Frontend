@@ -3,20 +3,20 @@ import styles from "./styles/postStyles";
 import CommentSection from "./CommentSection";
 import { useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
+import ShareMenu from "./ShareMenu"
 import { viewStore } from "../../hooks/zustand";
 import { useDeletePost, useLikePost } from "../../hooks/usePostData";
 import { useGetComments } from "../../hooks/useCommentData";
 import {
     PiArrowFatDown,
     PiArrowFatUp,
-    PiArrowsClockwise,
     PiChatCircle,
-    PiPaperPlaneTilt,
     PiPencilSimple,
     PiTrashSimple
 } from "react-icons/pi";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
-import { getFirstThreeWords } from "../../utils/stringUtils";
+import { getFirstThreeWords, parseCount } from "../../utils/stringUtils";
+import Poll from "./Poll";
 
 
 
@@ -28,6 +28,7 @@ const Post = ({ post, avatarUrl }) => {
     const { data: viewData, setViewData } = viewStore();
     const { editPost: editPostView } = viewData;
 
+    const [isHovering, setIsHovering] = useState(false);
 
     const { id: postId, username, text, likes, dislikes } = post;
     const [showComments, setShowComments] = useState(false);
@@ -48,19 +49,13 @@ const Post = ({ post, avatarUrl }) => {
         togglePostLike.mutate();
     }
 
-    const parseCount = (number) => {
-        if (number < 1000) {
-            return number;
-        } else if (number >= 1000 && number < 1_000_000) {
-            return (number / 1000).toFixed(1) + "K";
-        } else if (number >= 1_000_000 && number < 1_000_000_000) {
-            return (number / 1_000_000).toFixed(1) + "M";
-        } else if (number >= 1_000_000_000 && number < 1_000_000_000_000) {
-            return (number / 1_000_000_000).toFixed(1) + "B";
-        } else if (number >= 1_000_000_000_000 && number < 1_000_000_000_000_000) {
-            return (number / 1_000_000_000_000).toFixed(1) + "T";
-        }
-    }
+    const handleMouseOver = () => {
+        setIsHovering(true);
+    };
+
+    const handleMouseOut = () => {
+        setIsHovering(false);
+    };
 
     // console.log("post likes: ", likes);
 
@@ -68,12 +63,15 @@ const Post = ({ post, avatarUrl }) => {
 
     // console.log("is like by user? : ", isLikedByUser );
 
-    
+
     const classes = styles();
 
 
     return (
-        <Box id={postId} className={classes.wrapper}>
+        <Box id={postId} className={classes.wrapper}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+        >
 
             <Flex className={classes.postHeadline}>
                 <Avatar color="black" radius="10rem" src={avatarUrl}>{username.charAt(0).toUpperCase()}</Avatar>
@@ -82,7 +80,7 @@ const Post = ({ post, avatarUrl }) => {
 
             <Box className="content">
                 <Text className="text">{text}</Text>
-                {editPostView && <EditPostForm postId={postId} />}
+                {post.isPoll && <Poll pollData={post.pollData} />}
             </Box>
 
             <Box className="panel">
@@ -93,17 +91,15 @@ const Post = ({ post, avatarUrl }) => {
 
                 <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
-                <PiPaperPlaneTilt />
-
-                <PiArrowsClockwise />
+                <ShareMenu />
 
                 {
-                    post?.userId === user?.id &&
+                    post?.userId === user?.id && isHovering &&
                     <PiPencilSimple onClick={() => setViewData({ editPost: true })} alt={"edit icon"} />
                 }
 
                 {
-                    user?.role === "admin" || post?.userId === user?.id &&
+                    (user?.role === "admin" || post?.userId === user?.id) && isHovering &&
                     <PiTrashSimple onClick={handleDeletePost} alt={"delete post icon"} />
                 }
 
@@ -113,6 +109,8 @@ const Post = ({ post, avatarUrl }) => {
                 </Flex>
 
             </Box>
+
+            {editPostView && <EditPostForm postId={postId} />}
 
             {showComments && <CommentSection postId={postId} />}
 
