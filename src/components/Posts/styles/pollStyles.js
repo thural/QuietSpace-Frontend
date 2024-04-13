@@ -48,6 +48,19 @@ const styles = createUseStyles({
     zIndex: '1'
   },
 
+  pollStatus: {
+    opacity: '0.7',
+    marginLeft: 'auto',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '10px',
+    fontSize: '14px',
+    '& .votes': {
+      fontSize: '.8rem',
+      marginRight: "auto"
+    }
+  },
+
 });
 
 
