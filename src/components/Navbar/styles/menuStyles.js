@@ -23,20 +23,20 @@ const styles = createUseStyles(
 			}
 		},
 		menuList: {
-			top: '1rem',
+			top: '0',
 			color: 'black',
-			right: '1rem',
+			right: '0',
 			width: '12rem',
 			margin: '0',
 			display: 'none',
+			padding: '.5rem',
 			zIndex: '1',
-			position: 'fixed',
-			fontSize: '1.4rem',
-			boxShadow: 'rgb(0 0 0 / 25%) 0px 0px 32px -4px',
+			position: 'absolute',
+			fontSize: '1.75rem',
+			boxShadow: 'rgb(0 0 0 / 16%) 0px 0px 32px -4px',
 			boxSizing: 'border-box',
 			borderRadius: '1rem',
 			backgroundColor: 'white',
-			padding: '.5rem',
 			'& .clickable:hover': {
 				margin: '0rem',
 				background: 'var(--mantine-color-gray-1)',
@@ -47,7 +47,6 @@ const styles = createUseStyles(
 			'& .clickable': {
 				padding: '.5rem',
 				display: 'flex',
-				fontSize: '1.8rem',
 				alignItems: 'center',
 				justifyContent: 'space-between'
 			},

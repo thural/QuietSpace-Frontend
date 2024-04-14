@@ -5,9 +5,8 @@ const styles = createUseStyles({
     fontSize: '1rem',
     marginTop: '12px',
     '& .react-input-emoji--container': {
-      borderRadius: '21px',
-      borderColor: 'rgb(255, 255, 255)',
-      fontSize: '15px',
+      // borderColor: 'rgb(255, 255, 255)',
+      fontSize: '1rem',
       fontFamily: 'sans-serif',
       padding: '0',
       margin: '8px'
@@ -16,8 +15,6 @@ const styles = createUseStyles({
       display: "flex",
       font: 'inherit',
       cursor: 'pointer',
-      margin: '8px',
-      padding: '8px 8px',
       fontSize: '1rem',
       marginLeft: '0',
       borderColor: 'white',
@@ -25,6 +22,8 @@ const styles = createUseStyles({
       backgroundColor: 'white'
     },
     '& .react-input-emoji--input': {
+      margin: '0',
+      padding: '0',
       fontWeight: '400',
       maxHeight: '100px',
       minHeight: '20px',
@@ -37,8 +36,11 @@ const styles = createUseStyles({
       zIndex: '1',
       width: '100%',
       userSelect: 'text',
-      padding: '10px 16px',
       textAlign: 'left'
+    },
+    '& .react-input-emoji--placeholder': {
+      left: '0',
+      zIndex: '1'
     },
     '& .author': {
       width: '100%',
@@ -52,8 +54,6 @@ const styles = createUseStyles({
       boxSizing: 'border-box',
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: '10px',
-      backgroundColor: '#e2e8f0',
     },
     '& .submit-btn': {
       color: 'white',

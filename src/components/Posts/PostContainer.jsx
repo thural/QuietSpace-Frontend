@@ -7,6 +7,7 @@ import { Avatar, Box, Button, Container, Flex, Input, LoadingOverlay } from "@ma
 
 import styles from './styles/postContainerStyles'
 import { generatePfpUrls } from "../../utils/randomPfp";
+import { pollData } from "../../utils/mockData";
 
 function PostContainer() {
 
@@ -22,9 +23,14 @@ function PostContainer() {
     }, [numOfPosts]);
 
 
-
     if (postsQuery.isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (postsQuery.isError) return <h1>{postsQuery.error.message}</h1>;
+
+
+    const pollPost = postsQuery.data[0];
+    pollPost.isPoll = true;
+    pollPost.pollData = pollData;
+    console.log("poll post mock:", pollPost)
 
     return (
         <Container className={classes.container} size="600px">
@@ -50,6 +56,8 @@ function PostContainer() {
             {createPostView && <CreatePostForm />}
             {!postsQuery.isLoading &&
                 postsQuery.data.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={randomPfpUrls[index]} />))}
+                <Post key={crypto.randomUUID()} post={pollPost} avatarUrl={randomPfpUrls[0]} />
+                
         </Container>
     )
 }

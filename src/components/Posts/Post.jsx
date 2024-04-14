@@ -27,8 +27,6 @@ const Post = ({ post, avatarUrl }) => {
     const { data: viewData, setViewData } = viewStore();
     const { editPost: editPostView } = viewData;
 
-    const [isHovering, setIsHovering] = useState(false);
-
     const { id: postId, username, text, likes, dislikes } = post;
     const [showComments, setShowComments] = useState(false);
 
@@ -48,14 +46,6 @@ const Post = ({ post, avatarUrl }) => {
         togglePostLike.mutate();
     }
 
-    const handleMouseOver = () => {
-        setIsHovering(true);
-    };
-
-    const handleMouseOut = () => {
-        setIsHovering(false);
-    };
-
     const isMutable = user?.role === "admin" || post?.userId === user?.id;
 
     // console.log("post likes: ", likes);
@@ -69,10 +59,7 @@ const Post = ({ post, avatarUrl }) => {
 
 
     return (
-        <Box id={postId} className={classes.wrapper}
-            onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}
-        >
+        <Box id={postId} className={classes.wrapper}>
 
             <Flex className={classes.postHeadline}>
                 <Avatar color="black" radius="10rem" src={avatarUrl}>{username.charAt(0).toUpperCase()}</Avatar>

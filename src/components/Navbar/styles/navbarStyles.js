@@ -37,6 +37,7 @@ const styles = createUseStyles(
 				width: '2.5rem',
 				margin: '0 1.8rem',
 				display: 'flex',
+				position: 'relative',
 				alignItems: 'center',
 				justifyContent: 'center'
 			},

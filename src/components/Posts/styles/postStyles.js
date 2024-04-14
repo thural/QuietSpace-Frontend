@@ -1,16 +1,21 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
+  
   wrapper: {
+    position: 'relative',
     padding: '0',
     fontSize: '1rem',
     margin: '1rem 0',
+
     '& .title': {
       width: '100%',
+      position: 'relative',
       fontSize: '1rem',
       fontWeight: '500',
       lineHeight: '1rem'
     },
+
     '& .panel': {
       gap: '.5rem',
       height: '1.5rem',
@@ -20,9 +25,11 @@ const styles = createUseStyles({
       alignItems: 'center',
       fontSize: '1.2rem'
     },
+
     '& .iconbox': {
       position: "relative"
     },
+
     '& .badge': {
       left: '0.85rem',
       bottom: '1.15rem',
@@ -30,6 +37,7 @@ const styles = createUseStyles({
       minWidth: '.8rem',
       maxHeight: '.8rem'
     },
+    
     '& .text': {
       margin: '1rem 0',
       marginTop: '.5rem',
@@ -40,6 +48,7 @@ const styles = createUseStyles({
   },
 
   postHeadline: {
+    position: 'relative',
     gap: '.8rem'
   },
 

@@ -1,0 +1,98 @@
+.commentSection {
+  font-size: 1rem;
+  margin-top: 12px;
+}
+
+.commentSection .author {
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.commentSection form {
+  width: 100%;
+  display: flex;
+  padding: 0;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border-radius: 10px;
+  background-color: #e2e8f0;
+}
+
+.commentSection button {
+  color: white;
+  border: 1px solid black;
+  display: block;
+  padding: 4px 8px;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-left: auto;
+  border-radius: 1rem;
+  background-color: black;
+  margin-right: 10px;
+}
+
+.commentSection .container::before {
+  content: "";
+  position: absolute;
+  background-color: transparent;
+  bottom: -50px;
+  height: 50px;
+  width: 25px;
+  border-top-left-radius: 25px;
+  box-shadow: 0 -25px 0 0 #F66969;
+}
+
+.container {
+  margin: 0.8rem 0 1.6rem 0;
+  gap: 0.5rem;
+}
+
+.comment {
+  width: fit-content;
+  padding: 10px 10px;
+  position: relative;
+  box-sizing: border-box;
+  background-color: #e2e8f0;
+  border-radius: 1rem 1rem 1rem 0rem;
+}
+
+.comment .comment-text {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.comment .comment-author {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.comment .comment-options {
+  width: 100%;
+  gap: 10px;
+  color: #303030;
+  left: 4px;
+  bottom: -2rem;
+  display: flex;
+  position: absolute;
+  flex-flow: row nowrap;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.comment .comment-options > * {
+  cursor: pointer;
+}
+
+.comment::before {
+  content: "";
+  position: absolute;
+  background-color: transparent;
+  bottom: -50px;
+  height: 50px;
+  width: /* Specify the missing value */;
+}

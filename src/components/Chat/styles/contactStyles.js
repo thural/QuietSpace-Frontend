@@ -8,8 +8,15 @@ const styles = createUseStyles({
     justifyItems: 'flex-start',
     alignItems: 'center',
     gap: '.5rem',
-    backgroundColor: 'rgb(227, 227, 227)',
+    backgroundColor: 'white',
     borderRadius: '1rem 0 0 1rem'
+  },
+  contactAlt: {
+    backgroundColor: '#e8e8e8',
+    paddingLeft: '0',
+    marginLeft: '.5rem',
+    borderRadius: '5rem 0 0 5rem',
+    padding: '.25rem 0'
   },
   author: {
     marginLeft: '0',
@@ -18,7 +25,7 @@ const styles = createUseStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: '.3rem',
-    '& p':{
+    '& p': {
       lineHeight: '1rem',
     }
   }
