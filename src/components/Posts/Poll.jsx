@@ -30,8 +30,8 @@ const Poll = ({ pollData }) => {
     return (
         <Flex className={classes.pollContainer}>
             {
-                pollData.options.map(option => (
-                    <Flex className={classes.progressContainer} style={getStyle(option)}>
+                pollData.options.map((option, index) => (
+                    <Flex key={index} className={classes.progressContainer} style={getStyle(option)}>
                         <Text className={classes.optionDesc}>{option.label}</Text>
                         <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
                         <Text className={classes.optionPerc}>{getText(option)}</Text>

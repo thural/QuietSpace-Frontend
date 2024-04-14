@@ -19,9 +19,27 @@ const styles = createUseStyles({
 
   },
 
-  container:{
+  container: {
     margin: '.8rem 0 1.2rem 0',
     gap: '.5rem',
+  },
+
+  replyCard: {
+    alignItems: 'center',
+    '& .reply-card-indicator': {
+      width: '.35rem',
+      height: '2rem',
+      borderRadius: '1rem 0rem 0rem 1rem',
+      backgroundColor: 'orange'
+    },
+
+    '& .reply-card-text': {
+      height: '2rem',
+      borderRadius: '0 .5rem .5rem .0',
+      backgroundColor: '#c5d3df',
+      padding: '0 0.5rem'
+    }
+
   },
 
   comment: {
@@ -55,6 +73,7 @@ const styles = createUseStyles({
       cursor: 'pointer',
     },
   },
+
   commentInput: {
     width: '100%',
     border: 'none',
