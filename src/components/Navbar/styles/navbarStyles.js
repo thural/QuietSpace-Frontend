@@ -17,7 +17,7 @@ const styles = createUseStyles(
 			alignItems: 'center',
 			fontWeight: '400',
 			justifyContent: 'space-between',
-			backgroundColor: 'rgba(255, 255,255,0.5)',
+			backgroundColor: 'rgba(255, 255,255,0.85)',
 			backdropFilter: 'blur(8px)',
 			WebkitBackdropFilter: 'blur(10px)',
 			'& .navbar-item>a>img': {

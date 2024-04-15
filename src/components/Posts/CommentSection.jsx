@@ -15,11 +15,15 @@ const CommentSection = ({ postId }) => {
 
     const classes = styles();
 
-    const repliedCommentSample = comments[1];
-    repliedCommentSample.repliedCommentId = comments[0]["id"];
-    repliedCommentSample.text = "a sample reply text to the first comment";
-    repliedCommentSample.id = crypto.randomUUID();
-    comments.push(repliedCommentSample);
+    useEffect(() => {
+        if (!comments[comments.length - 1].repliedCommentId) {
+            const repliedCommentSample = comments[1];
+            repliedCommentSample.repliedCommentId = comments[0]["id"];
+            repliedCommentSample.text = "a sample reply text to the first comment";
+            repliedCommentSample.id = crypto.randomUUID();
+            comments.push(repliedCommentSample);
+        }
+    }, [commentData])
 
     console.log("comments after mutation: ", comments)
 

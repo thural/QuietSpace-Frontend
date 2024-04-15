@@ -1,5 +1,5 @@
 export const pollData = {
-    votedOption: "",
+    votedOption: "Chrome",
     voteCount: 24,
     isEnded: false,
     options: [
