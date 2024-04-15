@@ -7,6 +7,7 @@ const styles = createUseStyles({
         flexFlow: 'column nowrap',
         borderRight: '1px solid #e8e8e8',
         overflowY: 'overlay',
+        overflowX: 'hidden',
         position: 'relative'
     },
     searchSection: {
