@@ -6,7 +6,8 @@ const styles = createUseStyles({
         width: '24rem',
         flexFlow: 'column nowrap',
         borderRight: '1px solid #e8e8e8',
-        overflowY: 'overlay'
+        overflowY: 'overlay',
+        position: 'relative'
     },
     searchSection: {
         zIndex: '1'

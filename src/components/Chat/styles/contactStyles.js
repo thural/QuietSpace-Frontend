@@ -9,7 +9,7 @@ const styles = createUseStyles({
     alignItems: 'center',
     gap: '.5rem',
     backgroundColor: 'white',
-    borderRadius: '1rem 0 0 1rem'
+    borderRadius: '1rem 0 0 1rem',
   },
   contactAlt: {
     backgroundColor: '#e8e8e8',

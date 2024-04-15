@@ -1,11 +1,15 @@
-import {createUseStyles} from "react-jss"
+import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
+    searchContainer: {
+
+    },
     contacts: {
         display: 'flex',
         flexFlow: 'column nowrap',
         borderRight: '1px solid',
         gridColumn: '1/2',
+        position: 'relative'
     },
     searchSection: {
         zIndex: '1'
@@ -51,31 +55,44 @@ const styles = createUseStyles({
             borderColor: '#a7abb1',
         }
     },
-    queryContainer: {
+    resultContainer: {
+        width: '100%',
         display: 'none',
-        minHeight: '10rem',
-        maxHeight: '50%',
         padding: '4px',
         zIndex: '3',
-        position: 'relative',
-        boxSizing: 'border-box'
+        position: 'absolute',
+        // boxShadow: '0 4px 6px -4px rgba(72, 72, 72, 0.3)',
+        borderBottom: '1px solid gainsboro',
+        boxSizing: 'border-box',
+        minHeight: '16rem',
+        backgroundColor: 'white'
+    },
+    recentQueries: {
+        width: '100%',
+        padding: '0 .5rem',
+        background: 'white',
+        boxSizing: 'border-box',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    queryCard: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
     },
     queryItem: {
         width: '100%',
-        border: '.2rem solid #3e3e3e',
-        margin: '4px 0',
-        boxSizing: 'border-box',
-        borderRadius: '.8rem',
         background: 'white',
+        boxSizing: 'border-box',
         '& .username': {
-            margin: '0.5rem 1rem',
-            fontSize: '1.2rem',
-            fontWeight: 'bold'
+            margin: '0.25rem 0.5rem',
         },
         '& .email': {
-            margin: '0.5rem 1rem',
+            margin: '0.25rem 0.5rem',
             fontSize: '1rem',
-            fontWeight: '300'
+            fontWeight: '300',
+            maxWidth: '10em'
         }
     }
 });
