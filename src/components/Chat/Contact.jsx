@@ -3,21 +3,25 @@ import styles from "./styles/contactStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "../../hooks/zustand";
 import { generatePfp } from "../../utils/randomPfp";
+import { useMemo } from "react";
 
 const Contact = ({ contact }) => {
 
-    const { data: storeChatData } = useChatStore();
     const { setActiveChatId } = useChatStore();
-    const activeChatId = storeChatData.activeChatId;
-
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
 
-    const chatOfThisContact = chats?.find(chat => chat.users.some(user => user.id === contact.id));
-    const recentText = Array.from(chatOfThisContact.messages).pop()?.text;
+    const chatOfThisContact = useMemo(() => {
+        console.log("chat of this contact was computed");
+        return chats?.find(chat => chat.users.some(user => user.id === contact.id))
+    }, [chats]);
 
-    // const userIdOfActiveChat = chats.find(chat => chat.id === activeChatId).users[1].id;
-    // const backgroundColor = userIdOfActiveChat === contact.id ? '#e3e3e3' : 'white';
+    const recentText = useMemo(() => {
+        console.log("chat of this text was computed");
+        return Array.from(chatOfThisContact.messages).pop()?.text;
+    }, [chats]);
+
+    const genratedPfpLink = useMemo(() => generatePfp("beam"), [chats]);
 
     const handleClick = () => {
         setActiveChatId(chatOfThisContact.id);
@@ -27,7 +31,13 @@ const Contact = ({ contact }) => {
 
     return (
         <div id={contact.id} className={classes.contact} onClick={handleClick} >
-            <Avatar color="black" size="2.5rem" radius="10rem" src={generatePfp("beam")}>{contact.username[0].toUpperCase()}</Avatar>
+            <Avatar
+                color="black"
+                size="2.5rem"
+                radius="10rem"
+                src={genratedPfpLink}>
+                {contact.username[0].toUpperCase()}
+            </Avatar>
             <div className={classes.text}>
                 <Text size="sm" lineClamp={1}>{recentText ? recentText : "chat is empty"}</Text>
                 <Text size="xs" lineClamp={1}>seen 1 day ago</Text>

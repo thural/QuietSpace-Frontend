@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MessageContainer from "../../components/Chat/MessageContainer";
 import ContactContainer from "../../components/Chat/ContactContainer";
 import styles from "./styles/chatPageStyles";
 import { useQueryClient } from "@tanstack/react-query";
-import { Container } from "@mantine/core";
+import { Container, LoadingOverlay } from "@mantine/core";
 import { useGetChats } from "../../hooks/useChatData";
 import { useChatStore } from "../../hooks/zustand";
 
@@ -33,7 +33,7 @@ const ChatPage = () => {
 
     return (
         <Container className={classes.container} size="600px" >
-            {isLoading && <h1>Loading...</h1>}
+            {isLoading && <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />}
             {isError && <h1>{'Could not fetch chat data! 🔥'}</h1>}
             {isSuccess &&
                 <>
