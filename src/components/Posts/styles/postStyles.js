@@ -43,7 +43,6 @@ const styles = createUseStyles({
       marginTop: '.5rem',
       padding: '0',
       fontSize: '1rem',
-      fontStyle: 'italic'
     },
   },
 
