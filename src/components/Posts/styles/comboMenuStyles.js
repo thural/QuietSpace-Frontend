@@ -7,8 +7,6 @@ const styles = createUseStyles(
 			'& .selected-option': {
 				margin: '0',
 				lineHeight: '1rem',
-				padding: '.25rem',
-				border: '1px dashed #848484'
 			}
 		},
 		menu: {

@@ -4,6 +4,7 @@ import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi
 
 import styles from "./styles/profileContainerStyles";
 import { generatePfpUrls } from "../../utils/randomPfp";
+import { Link } from "react-router-dom";
 
 
 function ProfileContainer() {
@@ -32,14 +33,16 @@ function ProfileContainer() {
                 <Box className="signout-icon"><PiSignOut /></Box>
             </Flex>
 
-            <Flex className={classes.profileEditSection}>
-                <Button
-                    variant="outline"
-                    color="rgba(32, 32, 32, 1)"
-                    radius="md"
-                    fullWidth>Edit Profile
-                </Button>
-            </Flex>
+            <Link to="/settings" >
+                <Flex className={classes.profileEditSection}>
+                    <Button
+                        variant="outline"
+                        color="rgba(32, 32, 32, 1)"
+                        radius="md"
+                        fullWidth>Edit Profile
+                    </Button>
+                </Flex>
+            </Link>
 
             <Tabs color="black" defaultValue="timeline" style={{ margin: '1rem 0' }}>
                 <Tabs.List justify="center" grow>

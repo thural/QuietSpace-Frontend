@@ -64,7 +64,10 @@ const styles = createUseStyles({
     '& .control-area': {
       display: 'flex',
       alignItems: 'center',
-      gap: '1rem'
+      gap: '1.25rem'
+    },
+    '& .control-area svg': {
+      fontSize: '1.5rem'
     },
     '& .access-controls': {
       display: 'flex',
@@ -73,6 +76,38 @@ const styles = createUseStyles({
       color: 'gray'
     },
   },
+
+  '@media (max-width: 720px)': {
+    wrapper: {
+      gap: '.5rem',
+      color: 'black',
+      width: '100%',
+      border: 'none',
+      height: '100%',
+      margin: 'auto',
+      display: 'flex',
+      padding: '1rem',
+      zIndex: '3',
+      position: 'fixed',
+      flexFlow: 'row nowrap',
+      borderRadius: 'unset',
+      backgroundColor: 'white',
+      '& form':{
+        display: 'flex',
+        flexFlow: 'column nowrap'
+      },
+      '& textarea':{
+        height: '100%'
+      },
+      '& .control-area': {
+        gap: '1.25rem',
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: 'auto'
+      },
+    }
+  },
+
 });
 
 

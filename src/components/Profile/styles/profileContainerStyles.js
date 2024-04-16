@@ -3,7 +3,11 @@ import { createUseStyles } from "react-jss";
 const styles = createUseStyles({
     
     container:{
-        paddingTop:'4rem'
+        paddingTop:'4rem',
+        '& a': {
+            all: 'unset',
+            textDecoration: 'none'
+        }
     },
 
     identitySection: {
@@ -36,7 +40,7 @@ const styles = createUseStyles({
     profileEditSection: {
         '& button': {
             borderColor: "rgba(150, 150, 150, 1)"
-        }
+        },
     },
 
     avatarGroup: {

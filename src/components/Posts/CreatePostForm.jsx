@@ -5,6 +5,7 @@ import { useCreatePost } from "../../hooks/usePostData";
 import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
 import { useQueryClient } from "@tanstack/react-query";
+import { PiChartBarHorizontalFill } from "react-icons/pi";
 import ComboMenu from "./ComboMenu";
 
 const CreatePostForm = () => {
@@ -17,6 +18,8 @@ const CreatePostForm = () => {
         viewAccess: 'friends',
         replyAccess: 'friends'
     });
+
+    console.log("post data: ", postData);
 
     const addPost = useCreatePost();
 
@@ -42,7 +45,7 @@ const CreatePostForm = () => {
     }
 
     const handleReplySelect = (option) => {
-        setPostData({ ...postData, viewAccess: option });
+        setPostData({ ...postData, replyAccess: option });
     }
 
 
@@ -58,14 +61,16 @@ const CreatePostForm = () => {
                     <input
                         type="text"
                         name="title"
-                        required minlength="1"
-                        maxlength="32"
+                        required
+                        minLength="1"
+                        maxLength="32"
                         placeholder="type a title"
                     />
                     <textarea
                         className='text area'
                         name='text'
                         placeholder="what's on your mind?"
+                        minLength="1"
                         maxLength="1000"
                         value={postData.text}
                         onChange={handleChange}>
@@ -76,11 +81,7 @@ const CreatePostForm = () => {
                             handleSelect={handleViewSelect}
                             textContent={"can view"}
                         />
-                        <ComboMenu options={replyAccessOptons}
-                            selectedOption={postData.replyAccess}
-                            handleSelect={handleViewSelect}
-                            textContent={"can reply"}
-                        />
+                        <PiChartBarHorizontalFill />
                         <Button
                             disabled={addPost.isPending}
                             onClick={handleSubmit}

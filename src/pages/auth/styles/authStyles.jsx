@@ -20,7 +20,7 @@ const styles = createUseStyles({
       fontSize: '3.2rem',
       alignSelf: 'center',
       gap: '3rem',
-      height:'360px',
+      height: '360px',
       textWrap: 'nowrap'
     },
     '& .brand': {
@@ -40,7 +40,7 @@ const styles = createUseStyles({
       background: 'white',
       flexDirection: 'column',
       justifyContent: 'space-around',
-      '& .greeting-text':{
+      '& .greeting-text': {
         alignItems: 'center',
         height: 'fit-content',
       },
