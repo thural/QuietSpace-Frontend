@@ -14,10 +14,10 @@ const CreatePostForm = () => {
     const user = queryClient.getQueryData(["user"]);
 
     const [postData, setPostData] = useState({
-        text: '',
-        viewAccess: 'friends',
-        replyAccess: 'friends'
+        viewAccess: 'friends'
     });
+
+    const [pollView, setPollview] = useState({ enabled: false, extraOption: false });
 
     console.log("post data: ", postData);
 
@@ -27,6 +27,7 @@ const CreatePostForm = () => {
     const handleChange = (event) => {
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
+        console.log("psot data", postData);
     }
 
     const handleSubmit = (event) => {
@@ -38,7 +39,6 @@ const CreatePostForm = () => {
     const avatarPlaceholder = user.username.charAt(0).toUpperCase();
 
     const viewAccessOptions = ["friends", "anyone"];
-    const replyAccessOptons = ["friends", "anyone"];
 
     const handleViewSelect = (option) => {
         setPostData({ ...postData, viewAccess: option });
@@ -46,6 +46,10 @@ const CreatePostForm = () => {
 
     const handleReplySelect = (option) => {
         setPostData({ ...postData, replyAccess: option });
+    }
+
+    const togglePoll = () => {
+        setPollview({ ...pollView, enabled: !pollView.enabled });
     }
 
 
@@ -57,7 +61,7 @@ const CreatePostForm = () => {
             <Overlay closable={{ createPost: false }} />
             <Flex className={classes.wrapper}>
                 <Avatar color="black" radius="10rem" src={avatarUrl}>{avatarPlaceholder}</Avatar>
-                <form>
+                <form onChange={handleChange}>
                     <input
                         type="text"
                         name="title"
@@ -66,6 +70,7 @@ const CreatePostForm = () => {
                         maxLength="32"
                         placeholder="type a title"
                     />
+
                     <textarea
                         className='text area'
                         name='text'
@@ -73,15 +78,45 @@ const CreatePostForm = () => {
                         minLength="1"
                         maxLength="1000"
                         value={postData.text}
-                        onChange={handleChange}>
+                    >
                     </textarea>
+
+                    <Flex
+                        className={classes.pollView}
+                        style={{ display: pollView.enabled ? "flex" : "none" }}>
+
+                        <input
+                            name="option1"
+                            className="poll-input"
+                            placeholder="yes" />
+
+                        <input
+                            name="option2"
+                            className="poll-input"
+                            placeholder="no" />
+
+                        <input
+                            name="option3"
+                            className="poll-input"
+                            placeholder="add another option" />
+
+                        <input
+                            name="option4"
+                            className="poll-input"
+                            placeholder="add another option"
+                            hidden={!postData.option3 && !postData.option4} />
+
+                        <p className="close-poll" onClick={togglePoll} >remove poll</p>
+
+                    </Flex>
+
                     <Flex className="control-area">
                         <ComboMenu options={viewAccessOptions}
                             selectedOption={postData.viewAccess}
                             handleSelect={handleViewSelect}
                             textContent={"can view"}
                         />
-                        <PiChartBarHorizontalFill />
+                        <PiChartBarHorizontalFill className="poll-toggle" onClick={togglePoll} />
                         <Button
                             disabled={addPost.isPending}
                             onClick={handleSubmit}

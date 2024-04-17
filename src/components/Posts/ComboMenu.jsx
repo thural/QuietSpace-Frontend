@@ -20,19 +20,28 @@ const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
 
     return (
         <Box className={classes.comboWrapper}>
+
             <div onClick={toggleDisplay} className={classes.menu}>
                 <p className="selected-option">{selectedOption.concat(" ").concat(textContent)}</p>
             </div>
 
-            <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
+            <div className={classes.menuOverlay}
+                style={{ display }}
+                onClick={() => setDisplay('none')}
+            />
 
             <div className={classes.menuList} style={{ display }}>
-                {options.map((option, index) => <div key={index} className="clickable" alt={"save post icon"}>
-                    <p onClick={() => handleClick(option)}>{option}</p>
-                </div>
+                {options.map((option, index) =>
+                    <div key={index}
+                        onClick={() => handleClick(option)}
+                        className="clickable"
+                        alt={"option"}
+                    >
+                        <p>{option}</p>
+                    </div>
                 )}
-
             </div>
+
         </Box>
     )
 }
