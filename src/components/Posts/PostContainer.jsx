@@ -27,10 +27,10 @@ function PostContainer() {
     if (postsQuery.isError) return <h1>{postsQuery.error.message}</h1>;
 
 
-    const pollPost = postsQuery.data[0];
-    pollPost.isPoll = true;
-    pollPost.pollData = pollData;
-    console.log("poll post mock:", pollPost)
+    // const pollPost = postsQuery.data[0];
+    // pollPost.isPoll = true;
+    // pollPost.pollData = pollData;
+    // console.log("poll post mock:", pollPost)
 
     return (
         <Container className={classes.container} size="600px">
@@ -56,7 +56,7 @@ function PostContainer() {
             {createPostView && <CreatePostForm />}
             {!postsQuery.isLoading &&
                 postsQuery.data.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={randomPfpUrls[index]} />))}
-                <Post key={crypto.randomUUID()} post={pollPost} avatarUrl={randomPfpUrls[0]} />
+                {/* <Post key={crypto.randomUUID()} post={pollPost} avatarUrl={randomPfpUrls[0]} /> */}
                 
         </Container>
     )
