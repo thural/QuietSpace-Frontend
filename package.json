@@ -6,7 +6,7 @@
   "description": "Social media without the distraction",
   "main": "server.js",
   "scripts": {
-    "dev": "vite --port 5001",
+    "dev": "vite --port 5000",
     "build": "vite build",
     "watch": "vite build --watch",
     "preview": "vite preview",
