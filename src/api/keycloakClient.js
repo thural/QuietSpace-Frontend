@@ -2,9 +2,9 @@ import { UserManager } from "oidc-client";
 import { getApiResponse } from "./commonRequest"
 
 const settings = {
-    authority: "http://backend-keycloak-auth:8080/auth/realms/quietspace-realm",
+    authority: "http://localhost:8181/auth/realms/quietspace-realm",
     client_id: "quietspcae-client",
-    redirect_uri: "https://loaclhost:5000/signin-callback.html",
+    redirect_uri: "https://localhost:5000/signin-callback.html",
     response_type: "code",
     scope: "openid profile GLOBAL_READ_WRITE"
 }
