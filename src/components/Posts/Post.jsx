@@ -13,7 +13,7 @@ import {
     PiChatCircle,
 } from "react-icons/pi";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
-import { getFirstThreeWords, parseCount } from "../../utils/stringUtils";
+import { parseCount } from "../../utils/stringUtils";
 import Poll from "./Poll";
 import PostMenu from "./PostMenu";
 
@@ -21,6 +21,8 @@ import PostMenu from "./PostMenu";
 
 
 const Post = ({ post, avatarUrl }) => {
+
+    console.log("post data: ", post);
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
@@ -63,7 +65,7 @@ const Post = ({ post, avatarUrl }) => {
 
             <Flex className={classes.postHeadline}>
                 <Avatar color="black" radius="10rem" src={avatarUrl}>{username.charAt(0).toUpperCase()}</Avatar>
-                <Title className="title" order={5}>{getFirstThreeWords(text)}</Title>
+                <Title className="title" order={5}>{post.title}</Title>
                 <PostMenu handleDeletePost={handleDeletePost} setViewData={setViewData} isMutable={isMutable} />
             </Flex>
 
@@ -71,6 +73,8 @@ const Post = ({ post, avatarUrl }) => {
                 <Text className="text">{text}</Text>
                 {post.isPoll && <Poll pollData={post.pollData} />}
             </Box>
+
+            {post.poll && <Poll pollData={post.poll} />}
 
             <Box className="panel">
 

@@ -12,17 +12,14 @@ const CreatePostForm = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
+    const addPost = useCreatePost();
 
     const [postData, setPostData] = useState({
+        userId: user.id,
         viewAccess: 'friends'
     });
 
     const [pollView, setPollview] = useState({ enabled: false, extraOption: false });
-
-    console.log("post data: ", postData);
-
-    const addPost = useCreatePost();
-
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -32,11 +29,20 @@ const CreatePostForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        addPost.mutate(postData);
-    }
 
-    const avatarUrl = generatePfp("beam");
-    const avatarPlaceholder = user.username.charAt(0).toUpperCase();
+        const poll = {
+            dueDate: null,
+            options:[]
+        }
+
+        Object.entries(postData).forEach(([key, value]) => {
+            if(key.includes("option")) poll.options.push(value)
+        });
+
+        const requestBody = {...postData, poll};
+
+        addPost.mutate(requestBody);
+    }
 
     const viewAccessOptions = ["friends", "anyone"];
 
@@ -52,6 +58,8 @@ const CreatePostForm = () => {
         setPollview({ ...pollView, enabled: !pollView.enabled });
     }
 
+    const avatarUrl = generatePfp("beam");
+    const avatarPlaceholder = user.username.charAt(0).toUpperCase();
 
     const classes = styles();
 
