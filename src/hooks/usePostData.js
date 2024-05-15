@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     fetchCreatePost,
     fetchDeletePost,
@@ -7,9 +7,8 @@ import {
     fetchPosts,
     fetchVotePoll
 } from "../api/postRequests";
-import { authStore, viewStore } from "./zustand";
-import { POST_URL } from "../constants/ApiPath";
-
+import {authStore, viewStore} from "./zustand";
+import {POST_URL} from "../constants/ApiPath";
 
 
 export const useGetPosts = () => {
@@ -42,22 +41,31 @@ export const useCreatePost = () => {
     const { data: authData } = authStore();
     const { setViewData } = viewStore();
 
+    const handleSubmitSuccess = () => {
+        setViewData({ createPost: false })
+    }
+
+    const handleSubmitError = () => {
+    alert("error on posting, try again later");
+    }
+
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts"], { exact: true });
         setViewData({ overlay: false, createPost: false });
+        handleSubmitSuccess();
         console.log("post added successfully:", data);
     }
 
     const onError = (error, variables, context) => {
         console.log("error on post: ", error.message);
+        handleSubmitError();
     }
 
 
     return useMutation({
         mutationFn: async (postData) => {
-            const response = await fetchCreatePost(POST_URL, postData, authData.token);
-            return response.json();
+            return await fetchCreatePost(POST_URL, postData, authData.token)
         },
         onSuccess,
         onError
