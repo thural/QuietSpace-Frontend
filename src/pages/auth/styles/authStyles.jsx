@@ -8,6 +8,7 @@ const styles = createUseStyles({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
+    fontFamily: 'inherit',
     '& .greeting-text': {
       display: 'flex',
       padding: '2rem',
@@ -26,7 +27,8 @@ const styles = createUseStyles({
     '& .brand': {
       marginTop: '0',
       minWidth: 'max-content',
-      marginBottom: 'auto'
+      marginBottom: 'auto',
+      fontFamily: 'inherit',
     },
     '& .primary-text': {
     },

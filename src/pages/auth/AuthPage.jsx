@@ -11,11 +11,10 @@ const AuthPage = () => {
     const classes = styles();
 
     return (
-        <>
             <div className={classes.auth}>
                 <div className="greeting-text">
-                    <Title size="2.5rem" order={1}>Quiet Space</Title>
-                    <Text size="1.5rem" >social media without distraction</Text>
+                    <Title className="brand" size="2.5rem" order={1}>Quiet Space</Title>
+                    <Text className="primary-text" size="1.5rem" >social media without distraction</Text>
                     <Text className="secondary-text">where free speech and privacy is priority</Text>
                 </div>
                 {
@@ -23,7 +22,6 @@ const AuthPage = () => {
                     authState == "login" ? <LoginForm setAuthState={setAuthState}/> : null
                 }
             </div>
-        </>
     )
 }
 

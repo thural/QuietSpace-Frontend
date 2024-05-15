@@ -14,6 +14,8 @@ const Comment = ({ comment }) => {
     const deleteComment = useDeleteComment(comment.postId);
     const toggleLike = useToggleCommentLike(comment.postId);
 
+    console.log("comment data: ", comment);
+
 
     const handleDeleteComment = () => {
         deleteComment.mutate(comment.id);
@@ -24,7 +26,9 @@ const Comment = ({ comment }) => {
     }
 
 
-    const isLiked = comment.likes.some(likeObject => likeObject.userId === user.id);
+    const likeCount = 0; // TODO: write backend code to return like counts
+    const isLiked = true; // TODO: write backend code to return the value
+    
     const classes = styles();
 
 

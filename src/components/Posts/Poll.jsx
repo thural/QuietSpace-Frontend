@@ -21,7 +21,7 @@ const Poll = ({ pollData }) => {
 
     const getText = (option) => {
         if (pollData.votedOption)
-            return option.voteShare + "%";
+            return option.voteShare;
         else return "";
     }
 

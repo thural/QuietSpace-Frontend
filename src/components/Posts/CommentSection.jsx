@@ -15,22 +15,22 @@ const CommentSection = ({ postId }) => {
 
     const classes = styles();
 
-    useEffect(() => {
-        if (!comments[comments.length - 1].repliedCommentId) {
-            const repliedCommentSample = comments[1];
-            repliedCommentSample.repliedCommentId = comments[0]["id"];
-            repliedCommentSample.text = "a sample reply text to the first comment";
-            repliedCommentSample.id = crypto.randomUUID();
-            comments.push(repliedCommentSample);
-        }
-    }, [commentData])
+    // useEffect(() => {
+    //     if (!comments[comments.length - 1].repliedCommentId) {
+    //         const repliedCommentSample = comments[1];
+    //         repliedCommentSample.repliedCommentId = comments[0]["id"];
+    //         repliedCommentSample.text = "a sample reply text to the first comment";
+    //         repliedCommentSample.id = crypto.randomUUID();
+    //         comments.push(repliedCommentSample);
+    //     }
+    // }, [commentData])
 
-    console.log("comments after mutation: ", comments)
+    // console.log("comments after mutation: ", comments)
 
 
     return (
         <div className={classes.commentSection}>
-            <CommentForm />
+            <CommentForm postId={postId} />
             {
                 !!comments &&
                 comments.map((comment, index) => {
@@ -38,7 +38,7 @@ const CommentSection = ({ postId }) => {
                         const repliedComment = comments.find(c => c.id === comment.repliedCommentId)
                         return <RepliedComment key={index} comment={comment} repliedComment={repliedComment} />
                     }
-                    else return <Comment key={index} comment={comment} />
+                    else return <Comment key={index} postId={postId} comment={comment} />
                 })
             }
         </div>
