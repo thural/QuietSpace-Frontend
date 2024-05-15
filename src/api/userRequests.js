@@ -1,25 +1,13 @@
 import {getApiResponse} from "./commonRequest";
 
 export const fetchUser = async (url, token) => {
-    try {
-        return await getApiResponse(url, 'GET', null, token);
-    } catch (err) {
-        console.log(err)
-    }
+    return await getApiResponse(url, 'GET', null, token);
 }
 
 export const fetchUserById = async (url, token) => {
-    try {
-        return await getApiResponse(url, 'GET', null, token);
-    } catch (err) {
-        console.log(err)
-    }
+    return await getApiResponse(url, 'GET', null, token);
 }
 
 export const fetchUsersByQuery = async (url, queryText, token) => {
-    try {
-        return await getApiResponse(url + `/search?query=${queryText}`, 'GET', null, token);
-    } catch (err) {
-        console.log(err)
-    }
+    return await getApiResponse(url + `/search?query=${queryText}`, 'GET', null, token);
 }
