@@ -2,14 +2,20 @@ import React from "react";
 import styles from "./styles/pollStyles";
 import { Flex, Progress, Text } from "@mantine/core";
 import { parseCount } from "../../utils/stringUtils";
+import {useQueryClient} from "@tanstack/react-query";
+import {useVotePoll} from "../../hooks/usePostData";
 
 const Poll = ({ pollData }) => {
+
+    const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"]);
+    const postVote = useVotePoll();
 
     const parsedVoteCounts = parseCount(pollData.voteCount);
 
     const getStyle = (option) => {
         if (pollData.votedOption)
-            return option.label == pollData.votedOption ? {} : { filter: "opacity(0.3)" };
+            return option.label === pollData.votedOption ? {} : { filter: "opacity(0.3)" };
         else return {}
     }
 
@@ -25,13 +31,24 @@ const Poll = ({ pollData }) => {
         else return "";
     }
 
+    const handleVote = async (option) => {
+        const voteBody = {
+            userId: user.id,
+            postId: pollData.postId,
+            option: option.label
+        }
+        console.log("handle vote was clicked");
+        // TODO: create the vote mutation hook
+        postVote.mutate(voteBody);
+    }
+
     const classes = styles();
 
     return (
         <Flex className={classes.pollContainer}>
             {
                 pollData.options.map((option, index) => (
-                    <Flex key={index} className={classes.progressContainer} style={getStyle(option)}>
+                    <Flex key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
                         <Text className={classes.optionDesc}>{option.label}</Text>
                         <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
                         <Text className={classes.optionPerc}>{getText(option)}</Text>

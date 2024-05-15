@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCreatePost, fetchDeletePost, fetchEditPost, fetchLikePost, fetchPosts } from "../api/postRequests";
+import {
+    fetchCreatePost,
+    fetchDeletePost,
+    fetchEditPost,
+    fetchLikePost,
+    fetchPosts,
+    fetchVotePoll
+} from "../api/postRequests";
 import { authStore, viewStore } from "./zustand";
 import { POST_URL } from "../constants/ApiPath";
 
@@ -118,7 +125,7 @@ export const useDeletePost = (postId) => {
     const onSuccess = (data, variables, context) => {
         console.log("response data on post delete: ", data);
         queryClient.invalidateQueries(["posts"], { exact: true });
-        console.log("delete post sucess");
+        console.log("delete post success");
     }
 
     const onError = (error, variables, context) => {
@@ -128,6 +135,30 @@ export const useDeletePost = (postId) => {
     return useMutation({
         mutationFn: async () => {
             const response = await fetchDeletePost(POST_URL, postId, authData.token);
+            return response;
+        },
+        onSuccess,
+        onError
+    })
+}
+
+export const useVotePoll = () => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = authStore();
+
+    const onSuccess = (data, variables, context) => {
+        console.log("response data on poll vote success: ", data);
+        queryClient.invalidateQueries(["posts"], { exact: true });
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on voting poll: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (voteData) => {
+            const response = await fetchVotePoll(POST_URL, voteData, authData.token);
             return response;
         },
         onSuccess,
