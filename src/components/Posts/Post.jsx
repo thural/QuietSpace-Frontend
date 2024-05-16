@@ -81,7 +81,7 @@ const Post = ({ post, avatarUrl }) => {
                 {post.isPoll && <Poll pollData={post.pollData} />}
             </Box>
 
-            {post.poll && <Poll pollData={post.poll} />}
+            {post.poll && <Poll pollData={post.poll} postId={postId}/>}
 
             <Box className="panel">
 

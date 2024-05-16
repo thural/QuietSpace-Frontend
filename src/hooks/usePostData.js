@@ -166,8 +166,7 @@ export const useVotePoll = () => {
 
     return useMutation({
         mutationFn: async (voteData) => {
-            const response = await fetchVotePoll(POST_URL, voteData, authData.token);
-            return response;
+            return await fetchVotePoll(POST_URL, voteData, authData.token);
         },
         onSuccess,
         onError
