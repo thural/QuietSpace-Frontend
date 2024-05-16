@@ -22,8 +22,6 @@ import PostMenu from "./PostMenu";
 
 const Post = ({ post, avatarUrl }) => {
 
-    console.log("post data: ", post);
-
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const { data: viewData, setViewData } = viewStore();

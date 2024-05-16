@@ -19,7 +19,8 @@ const CreatePostForm = () => {
 
     const [postData, setPostData] = useState({
         userId: user.id,
-        viewAccess: 'friends'
+        viewAccess: 'friends',
+        poll: null
     });
 
     const [pollView, setPollView] = useState({ enabled: false, extraOption: false });
@@ -42,7 +43,7 @@ const CreatePostForm = () => {
             if(key.includes("option")) poll.options.push(value)
         });
 
-        const requestBody = {...postData, poll};
+        const requestBody = poll.options.length ? {...postData, poll} : postData;
 
         await addPost.mutate(requestBody);
     }
