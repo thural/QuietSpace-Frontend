@@ -3,8 +3,8 @@ import {
     fetchCreatePost,
     fetchDeletePost,
     fetchEditPost,
-    fetchLikePost,
     fetchPosts,
+    fetchReaction,
     fetchVotePoll
 } from "../api/postRequests";
 import {authStore, viewStore} from "./zustand";
@@ -73,24 +73,24 @@ export const useCreatePost = () => {
 }
 
 
-export const useLikePost = (postId) => {
+export const useToggleReaction = (postId) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = authStore();
 
     const onSuccess = (data, variables, context) => {
-        console.log("response data on post like: ", data);
+        console.log("response data on reaction: ", data);
         queryClient.invalidateQueries(["posts"], { id: postId });
     }
 
     const onError = (error, variables, context) => {
-        console.log("error on liking post: ", error.message);
+        console.log("error on reacting post: ", error.message);
     }
 
     return useMutation({
-        mutationFn: async () => {
-            const response = await fetchLikePost(POST_URL, postId, authData.token);
-            return response;
+        mutationFn: async (reactionBody) => {
+            console.log("REACTION BODY ON LIKE: ", reactionBody)
+            return await fetchReaction(POST_URL, reactionBody, authData.token);
         },
         onSuccess,
         onError

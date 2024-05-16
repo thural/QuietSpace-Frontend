@@ -17,8 +17,8 @@ export const fetchDeletePost = async (url, postId, token) => {
     return await getApiResponse(url + `/${postId}`, 'DELETE', null, token);
 }
 
-export const fetchLikePost = async (url, postId, token) => {
-    return await getApiResponse(url + `/${postId}/toggle-like`, 'POST', null, token);
+export const fetchReaction = async (url, reaction, token) => {
+    return await getApiResponse(url + "/toggle-reaction", 'POST', reaction, token);
 }
 
 export const fetchVotePoll = async (url, voteBody, token) => {
