@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./styles/commentStyles";
+import styles from "./styles/repliedCommentStyles";
 import emoji from "react-easy-emoji";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggleCommentLike, useDeleteComment } from "../../hooks/useCommentData";
@@ -11,8 +11,8 @@ const RepliedComment = ({ comment, repliedComment }) => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-    const deleteComment = useDeleteComment(comment.postId);
-    const toggleLike = useToggleCommentLike(comment.postId);
+    const deleteComment = useDeleteComment(comment.id);
+    const toggleLike = useToggleCommentLike(comment.id);
 
 
     const handleDeleteComment = () => {
@@ -24,11 +24,11 @@ const RepliedComment = ({ comment, repliedComment }) => {
     }
 
 
-    const isLiked = comment.likes.some(likeObject => likeObject.userId === user.id);
+    // const isLiked = comment.likes.some(likeObject => likeObject.userId === user.id);
     const classes = styles();
 
     const appliedStyle = {
-        borderRadius: '1rem 1rem 0rem 1rem',
+        borderRadius: '1rem 0rem 1rem 1rem',
         marginLeft: 'auto'
     }
 

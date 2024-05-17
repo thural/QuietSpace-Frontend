@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Comment from "./Comment";
 import styles from "./styles/commentSectionStyles";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,18 +15,6 @@ const CommentSection = ({ postId }) => {
 
     const classes = styles();
 
-    // useEffect(() => {
-    //     if (!comments[comments.length - 1].repliedCommentId) {
-    //         const repliedCommentSample = comments[1];
-    //         repliedCommentSample.repliedCommentId = comments[0]["id"];
-    //         repliedCommentSample.text = "a sample reply text to the first comment";
-    //         repliedCommentSample.id = crypto.randomUUID();
-    //         comments.push(repliedCommentSample);
-    //     }
-    // }, [commentData])
-
-    // console.log("comments after mutation: ", comments)
-
 
     return (
         <div className={classes.commentSection}>
@@ -34,8 +22,8 @@ const CommentSection = ({ postId }) => {
             {
                 !!comments &&
                 comments.map((comment, index) => {
-                    if (comment.repliedCommentId) {
-                        const repliedComment = comments.find(c => c.id === comment.repliedCommentId)
+                    if (comment.parentId) {
+                        const repliedComment = comments.find(c => c.id === comment.parentId)
                         return <RepliedComment key={index} comment={comment} repliedComment={repliedComment} />
                     }
                     else return <Comment key={index} postId={postId} comment={comment} />

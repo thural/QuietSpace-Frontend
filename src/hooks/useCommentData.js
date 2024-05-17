@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authStore } from "./zustand";
-import { COMMENT_PATH } from "../constants/ApiPath";
+import {COMMENT_PATH, POST_URL} from "../constants/ApiPath";
 import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment } from "../api/commentRequests";
+import {fetchReaction} from "../api/postRequests";
 
 
 export const useGetComments = (postId) => {
@@ -102,6 +103,30 @@ export const useToggleCommentLike = (postId) => {
         },
         onSuccess,
         onError,
+    })
+}
+
+export const useToggleReaction = (commentId) => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = authStore();
+
+    const onSuccess = (data, variables, context) => {
+        console.log("response data on reaction: ", data);
+        queryClient.invalidateQueries(["posts"], { id: commentId });
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on reacting post: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (reactionBody) => {
+            console.log("REACTION BODY ON LIKE: ", reactionBody)
+            return await fetchReaction(COMMENT_PATH, reactionBody, authData.token);
+        },
+        onSuccess,
+        onError
     })
 }
 

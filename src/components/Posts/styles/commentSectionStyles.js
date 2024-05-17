@@ -5,7 +5,6 @@ const styles = createUseStyles({
     fontSize: '1rem',
     marginTop: '12px',
     '& .react-input-emoji--container': {
-      // borderColor: 'rgb(255, 255, 255)',
       fontSize: '1rem',
       fontFamily: 'sans-serif',
       padding: '0',
@@ -46,14 +45,6 @@ const styles = createUseStyles({
       width: '100%',
       fontSize: '1.2rem',
       fontWeight: '500'
-    },
-    '& form': {
-      width: '100%',
-      display: 'flex',
-      padding: '0',
-      boxSizing: 'border-box',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     '& .submit-btn': {
       color: 'white',
@@ -104,29 +95,6 @@ const styles = createUseStyles({
       top: '37%',
       left: '0%'
     }
-    // '& .comment-like': {
-    // 	position: 'absolute',
-    // 	bottom: '-2rem',
-    // 	fontSize: '.85rem',
-    // 	fontWeight: '500',
-    // 	color: '#303030'
-    // },
-    // '& .comment-reply': {
-    // 	position: 'absolute',
-    // 	bottom: '-2rem',
-    // 	left: '3rem',
-    // 	fontSize: '.85rem',
-    // 	fontWeight: '500',
-    // 	color: '#303030'
-    // },
-    // '& .comment-delete': {
-    // 	position: 'absolute',
-    // 	bottom: '-2rem',
-    // 	right: '0',
-    // 	fontSize: '.85rem',
-    // 	fontWeight: '500',
-    // 	color: '#303030'
-    // }
   },
   commentInput: {
     width: '100%',
