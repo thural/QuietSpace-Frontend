@@ -101,9 +101,9 @@ const Post = ({ post, avatarUrl }) => {
                 <ShareMenu />
 
                 <Flex className={classes.postinfo}>
-                    {likeCount > 0 && <Text>{parseCount(likeCount)} likes</Text>}
-                    {dislikeCount > 0 && <Text>{parseCount(dislikeCount)} dislikes</Text>}
-                    {!!comments?.length && <Text>{parseCount(comments?.length)} comments</Text>}
+                    {likeCount > 0 && <p>{parseCount(likeCount)} likes</p>}
+                    {dislikeCount > 0 && <p>{parseCount(dislikeCount)} dislikes</p>}
+                    {!!comments?.length && <p>{parseCount(comments?.length)} comments</p>}
                 </Flex>
 
             </Box>

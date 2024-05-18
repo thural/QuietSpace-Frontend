@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import MessageContainer from "../../components/Chat/MessageContainer";
-import ContactContainer from "../../components/Chat/ContactContainer";
+import ChatContainer from "../../components/Chat/ChatContainer";
 import styles from "./styles/chatPageStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { Container, LoadingOverlay } from "@mantine/core";
@@ -17,6 +17,8 @@ const ChatPage = () => {
     const activeChatId = chatDataFromStore.activeChatId;
     const { setActiveChatId } = useChatStore();
 
+    console.log("CHATS: ", chats);
+
 
     useEffect(
         () => {
@@ -24,7 +26,7 @@ const ChatPage = () => {
             const initialState = chats?.length > 0 ? chats[0]["id"] : null;
             setActiveChatId(initialState);
             console.log("activeChatId on initial state setup: ", activeChatId);
-        }, [isLoading]
+        }, [chats]
     )
 
 
@@ -37,7 +39,7 @@ const ChatPage = () => {
             {isError && <h1>{'Could not fetch chat data! 🔥'}</h1>}
             {isSuccess &&
                 <>
-                    <ContactContainer />
+                    <ChatContainer />
                     <MessageContainer />
                 </>
             }

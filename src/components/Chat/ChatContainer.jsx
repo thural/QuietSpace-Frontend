@@ -1,19 +1,15 @@
 import { Text } from "@mantine/core";
-import Contact from "./Contact";
+import Chat from "./Chat";
 import styles from "./styles/contactContainerStyles";
 import QueryContainer from "./QueryContainer";
 import { useQueryClient } from "@tanstack/react-query"; 
 import {useMemo} from "react";
 
-const ContactContainer = () => {
+const ChatContainer = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const chats = queryClient.getQueryData(["chats"]);
-
-
-
-    const contactIds = useMemo(() => chats?.map(chat => chat.userIds.find(memberId => memberId !== user.id)), [chats]);
 
 
 
@@ -27,10 +23,10 @@ const ContactContainer = () => {
             <QueryContainer />
             {
                 (chats?.length > 0) ?
-                    contactIds.map((contactId, index) =>
-                        <Contact
+                    chats.map((chat, index) =>
+                        <Chat
                             key={index}
-                            contactId={contactId}
+                            chat={chat}
                         />)
                     : <Text ta="center">there's no chat yet</Text>
             }
@@ -38,4 +34,4 @@ const ContactContainer = () => {
     )
 }
 
-export default ContactContainer
+export default ChatContainer

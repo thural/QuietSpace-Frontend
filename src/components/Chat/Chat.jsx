@@ -5,36 +5,42 @@ import { useChatStore } from "../../hooks/zustand";
 import { generatePfp } from "../../utils/randomPfp";
 import { useMemo } from "react";
 import {useGetUserById} from "../../hooks/useUserData";
-import {useGetChatById} from "../../hooks/useChatData";
+import {useGetMessagesByChatId} from "../../hooks/useChatData";
 
-const Contact = ({ contact: contactId }) => {
+const Chat = ({ chat }) => {
 
     const { setActiveChatId } = useChatStore();
     const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"])
     const chats = queryClient.getQueryData(["chats"]);
 
-    const { data: userData,
-        isLoading: isUserLoading,
-        isSuccess: isUserSuccess,
-        refetch: refetchUser,
-        isError: isUserError
-    } = useGetUserById(contactId)
+    const contactId = chat.userIds.find(userId => userId !== user.id);
 
-    const chatOfThisContact = useMemo(async () => {
-        console.log("chat of this contact was computed");
-        const foundChat = chats?.find(chat => chat.userIds.some(userId => userId === contactId));
-        return await useGetChatById(foundChat.id).data;
-    }, [chats]);
+    const { data: userData,
+            isLoading: isUserLoading,
+            isSuccess: isUserSuccess,
+            refetch: refetchUser,
+            isError: isUserError
+    } = useGetUserById(contactId);
+
+    const messages = useGetMessagesByChatId(chat.id).data;
+
+    // const chatOfThisContact = useMemo(async () => {
+    //     console.log("chat of this contact was computed");
+    //     const foundChat = chats?.find(chat => chat.userIds.some(userId => userId === contactId));
+    //     return await useGetChatById(foundChat.id).data;
+    // }, [chats]);
 
     const recentText = useMemo(() => {
+        if(!messages) return "";
         console.log("chat of this text was computed");
-        return Array.from(chatOfThisContact.messages).pop()?.text;
-    }, [chats]);
+        return Array.from(messages).pop()?.text;
+    }, [messages]);
 
     const generatedPfpLink = useMemo(() => generatePfp("beam"), [chats]);
 
     const handleClick = () => {
-        setActiveChatId(chatOfThisContact.id);
+        setActiveChatId(chat.id);
     }
 
     const classes = styles();
@@ -58,4 +64,4 @@ const Contact = ({ contact: contactId }) => {
     )
 }
 
-export default Contact
+export default Chat

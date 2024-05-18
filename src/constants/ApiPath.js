@@ -15,5 +15,5 @@ export const POST_LIKE = BASE_URL + "/post-like";
 export const POST_LIKE_TOGGLE = POST_LIKE + "/toggle-like";
 export const CHAT_PATH = BASE_URL + "/chats";
 export const CHAT_PATH_BY_OWNER = CHAT_PATH + "/owner";
-export const CHAT_PATH_BY_MEMBER = CHAT_PATH + "/member";
+export const CHAT_PATH_BY_MEMBER = CHAT_PATH + "/members";
 export const MESSAGE_PATH = BASE_URL + "/messages";

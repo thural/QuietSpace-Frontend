@@ -13,12 +13,20 @@ const MessageContainer = () => {
     const { data: storeAuthData } = authStore();
     const { data: storeChatData } = useChatStore();
     const activeChatId = storeChatData.activeChatId;
-
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
+    const selectedChatId = activeChatId === null ? chats[0]["id"] : activeChatId;
+
+    console.log("ACTIVE CHAT ID: ", activeChatId)
 
     const senderId = storeAuthData.userId;
-    const currentChat = chats?.find(chat => chat.id === activeChatId); //TODO: optimize by acessing cache
+    const currentChat = chats?.find(chat => chat.id === selectedChatId); //TODO: optimize by accessing cache
+
+    const receiverId = currentChat.userIds.find(userId => userId !== senderId);
+
+    const receiverUser = queryClient.getQueryData(["users", {id:receiverId}])
+
+    console.log("receiver user: ", receiverUser);
 
     const [messageInputData, setMessageInputData] = useState({ chatId: activeChatId, senderId, text: '' });
 
@@ -45,7 +53,7 @@ const MessageContainer = () => {
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
                     activeChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
                         messages.length === 0 ? (
-                            <Text className="system-message" ta="center">{`send your first message to ${currentChat.users[1].username}`}</Text>) :
+                            <Text className="system-message" ta="center">{`send your first message to ${receiverUser.username}`}</Text>) :
                             (
                                 <div className={classes.messages}>
                                     {

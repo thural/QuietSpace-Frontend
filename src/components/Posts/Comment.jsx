@@ -16,8 +16,6 @@ const Comment = ({ comment }) => {
     const deleteComment = useDeleteComment(comment.postId);
     const toggleLike = useToggleReaction(comment.id);
 
-    console.log("comment data: ", comment);
-
     const [replyFormView, setReplyFormView] = useState(false);
 
     const handleReaction = async (event, likeType) => {
@@ -66,6 +64,7 @@ const Comment = ({ comment }) => {
                         <Box className={classes.commentOptions}>
                             <p className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</p>
                             <p className="comment-reply" onClick={handleCommentReply}>reply</p>
+                            <p className="comment-reply-count">{comment.replyCount}</p>
                             {
                                 comment.username === user.username &&
                                 <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
