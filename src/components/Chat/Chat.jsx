@@ -1,19 +1,29 @@
-import { Avatar, Text } from "@mantine/core";
+import {Avatar, Box, Text} from "@mantine/core";
 import styles from "./styles/contactStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "../../hooks/zustand";
 import { generatePfp } from "../../utils/randomPfp";
 import { useMemo } from "react";
+import {useGetUserById} from "../../hooks/useUserData";
+import {useGetChatById} from "../../hooks/useChatData";
 
-const Contact = ({ contact }) => {
+const Contact = ({ contact: contactId }) => {
 
     const { setActiveChatId } = useChatStore();
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
 
-    const chatOfThisContact = useMemo(() => {
+    const { data: userData,
+        isLoading: isUserLoading,
+        isSuccess: isUserSuccess,
+        refetch: refetchUser,
+        isError: isUserError
+    } = useGetUserById(contactId)
+
+    const chatOfThisContact = useMemo(async () => {
         console.log("chat of this contact was computed");
-        return chats?.find(chat => chat.users.some(user => user.id === contact.id))
+        const foundChat = chats?.find(chat => chat.userIds.some(userId => userId === contactId));
+        return await useGetChatById(foundChat.id).data;
     }, [chats]);
 
     const recentText = useMemo(() => {
@@ -21,7 +31,7 @@ const Contact = ({ contact }) => {
         return Array.from(chatOfThisContact.messages).pop()?.text;
     }, [chats]);
 
-    const genratedPfpLink = useMemo(() => generatePfp("beam"), [chats]);
+    const generatedPfpLink = useMemo(() => generatePfp("beam"), [chats]);
 
     const handleClick = () => {
         setActiveChatId(chatOfThisContact.id);
@@ -29,20 +39,22 @@ const Contact = ({ contact }) => {
 
     const classes = styles();
 
+    if (isUserLoading) return <p>user is loading ...</p>
+
     return (
-        <div id={contact.id} className={classes.contact} onClick={handleClick} >
+        <Box id={contactId} className={classes.contact} onClick={handleClick} >
             <Avatar
                 color="black"
                 size="2.5rem"
                 radius="10rem"
-                src={genratedPfpLink}>
-                {contact.username[0].toUpperCase()}
+                src={generatedPfpLink}>
+                {userData.username[0].toUpperCase()}
             </Avatar>
-            <div className={classes.text}>
+            <Box className={classes.text}>
                 <Text size="sm" lineClamp={1}>{recentText ? recentText : "chat is empty"}</Text>
                 <Text size="xs" lineClamp={1}>seen 1 day ago</Text>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }
 

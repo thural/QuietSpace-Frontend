@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authStore } from "./zustand";
 import { CHAT_PATH, CHAT_PATH_BY_MEMBER, MESSAGE_PATH } from "../constants/ApiPath";
-import { fetchChats, fetchCreateChat } from "../api/chatRequests";
+import {fetchChatById, fetchChats, fetchCreateChat} from "../api/chatRequests";
 import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../api/messageRequests";
 
 export const useGetChats = (userId) => {
@@ -19,6 +19,24 @@ export const useGetChats = (userId) => {
         enabled: !!userId, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
         refetchInterval: 1000 * 3, // refetch data after 3 minutes on idle
+    });
+}
+
+export const useGetChatById = (chatId) => {
+
+    const { data: authData } = authStore();
+
+    return useQuery({
+        queryKey: ["chats"],
+        queryFn: async () => {
+            const response = await fetchChatById(chatId, authData["token"]);
+            return await response.json();
+        },
+        retry: 3,
+        retryDelay: 1000,
+        staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
+        refetchInterval: 1000 * 3, // refetch data after 3 minutes on idle
+        select: data => data.content
     });
 }
 
@@ -54,7 +72,7 @@ export const useGetMessagesByChatId = (chatId) => {
     const user = queryClient.getQueryData(["user"]);
 
     return useQuery({
-        queryKey: ["messages", chatId],
+        queryKey: ["messages", {id:chatId}],
         queryFn: async () => {
             const response = await fetchMessages(MESSAGE_PATH, chatId, authData.token);
             const responseData = await response.json();
@@ -66,7 +84,7 @@ export const useGetMessagesByChatId = (chatId) => {
         select: (data) => data.content,
         enabled: !!user.id && !!chatId, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
+        refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle,
     });
 }
 

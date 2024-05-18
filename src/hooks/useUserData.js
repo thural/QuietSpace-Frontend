@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { authStore } from "./zustand";
 import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
-import { fetchUser, fetchUsersByQuery } from "../api/userRequests";
+import {fetchUser, fetchUserById, fetchUsersByQuery} from "../api/userRequests";
 
 
 
@@ -47,4 +47,21 @@ export const useQueryUsers = (queryText, setQueryResult) => {
         onSuccess,
         onError,
     });
+}
+
+export const useGetUserById = (userId) => {
+
+    const { data: authData } = authStore();
+
+    return useQuery({
+        queryKey: ["users", {id: userId}],
+        queryFn: async () => {
+            const response = await fetchUserById(userId, authData.token);
+            return await response.json();
+        },
+        staleTime: Infinity,
+        gcTime: Infinity,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    })
 }
