@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "./zustand";
+import { useAuthStore } from "./zustand";
 import {COMMENT_PATH, POST_URL} from "../constants/ApiPath";
 import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment } from "../api/commentRequests";
 import {fetchReaction} from "../api/postRequests";
@@ -7,7 +7,7 @@ import {fetchReaction} from "../api/postRequests";
 
 export const useGetComments = (postId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data) => {
         console.log("comments fetch success");
@@ -35,7 +35,7 @@ export const useGetComments = (postId) => {
 export const usePostComment = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables) => {
         console.log("added comment response data: ", data);
@@ -60,7 +60,7 @@ export const usePostComment = (postId) => {
 export const useDeleteComment = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on comment deletion: ", data);
@@ -85,7 +85,7 @@ export const useDeleteComment = (postId) => {
 export const useToggleCommentLike = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on like toggle: ", data);
@@ -109,7 +109,7 @@ export const useToggleCommentLike = (postId) => {
 export const useToggleReaction = (commentId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on reaction: ", data);

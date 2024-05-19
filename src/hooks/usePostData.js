@@ -7,7 +7,7 @@ import {
     fetchReaction,
     fetchVotePoll
 } from "../api/postRequests";
-import {authStore, viewStore} from "./zustand";
+import {useAuthStore, viewStore} from "./zustand";
 import {POST_URL} from "../constants/ApiPath";
 
 
@@ -15,7 +15,7 @@ export const useGetPosts = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["posts"],
@@ -38,7 +38,7 @@ export const useGetPosts = () => {
 export const useCreatePost = () => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const { setViewData } = viewStore();
 
     const handleSubmitSuccess = () => {
@@ -76,7 +76,7 @@ export const useCreatePost = () => {
 export const useToggleReaction = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on reaction: ", data);
@@ -101,7 +101,7 @@ export const useToggleReaction = (postId) => {
 export const useEditPost = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const { setViewData } = viewStore();
 
     const onSuccess = () => {
@@ -128,7 +128,7 @@ export const useEditPost = (postId) => {
 export const useDeletePost = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on post delete: ", data);
@@ -153,7 +153,7 @@ export const useDeletePost = (postId) => {
 export const useVotePoll = () => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on poll vote success: ", data);

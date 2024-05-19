@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "./zustand";
+import { useAuthStore } from "./zustand";
 import { CHAT_PATH, CHAT_PATH_BY_MEMBER, MESSAGE_PATH } from "../constants/ApiPath";
 import {fetchChatById, fetchChats, fetchCreateChat} from "../api/chatRequests";
 import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../api/messageRequests";
 
-export const useGetChats = (userId) => {
+export const useGetChatsByUserId = (userId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["chats"],
@@ -24,10 +24,10 @@ export const useGetChats = (userId) => {
 
 export const useGetChatById = (chatId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
-        queryKey: ["chats"],
+        queryKey: ["chats", {id: chatId}],
         queryFn: async () => {
             const response = await fetchChatById(chatId, authData["token"]);
             return await response.json();
@@ -42,7 +42,7 @@ export const useGetChatById = (chatId) => {
 
 export const useCreateChat = (setCurrentChatId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
@@ -67,7 +67,7 @@ export const useCreateChat = (setCurrentChatId) => {
 
 export const useGetMessagesByChatId = (chatId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
 
@@ -90,7 +90,7 @@ export const useGetMessagesByChatId = (chatId) => {
 
 export const usePostNewMessage = (setMessageData) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context, messageData) => {
@@ -116,12 +116,12 @@ export const usePostNewMessage = (setMessageData) => {
 
 export const useDeleteMessage = () => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["messages"], { exact: true });
-        console.log("delete message sucess");
+        console.log("delete message success");
     }
 
     const onError = (error, variables, context) => {

@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { authStore } from "./zustand";
+import { useAuthStore } from "./zustand";
 import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
 import {fetchUser, fetchUserById, fetchUsersByQuery} from "../api/userRequests";
 
@@ -7,7 +7,7 @@ import {fetchUser, fetchUserById, fetchUsersByQuery} from "../api/userRequests";
 
 export const useGetCurrentUser = () => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["user"],
@@ -28,7 +28,7 @@ export const useGetCurrentUser = () => {
 
 export const useQueryUsers = (queryText, setQueryResult) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         setQueryResult(data["content"]);
@@ -51,7 +51,7 @@ export const useQueryUsers = (queryText, setQueryResult) => {
 
 export const useGetUserById = (userId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["users", {id: userId}],

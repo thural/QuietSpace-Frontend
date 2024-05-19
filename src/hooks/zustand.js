@@ -7,7 +7,7 @@ export const bearStore = create((set) => ({
     updateBears: (newBears) => set({ bears: newBears }),
 }));
 
-export const authStore = create(set => ({
+export const useAuthStore = create(set => ({
     data: { message: "", token: "", userId: "" },
     resetAuthData: () => set({
         data: { message: "", token: "", userId: "" }
