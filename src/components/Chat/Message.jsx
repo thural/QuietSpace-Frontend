@@ -20,6 +20,7 @@ const Message = ({ message }) => {
     const [isHovering, setIsHovering] = useState(false);
 
 
+
     const handleMouseOver = () => {
         setIsHovering(true);
     };
@@ -33,6 +34,7 @@ const Message = ({ message }) => {
     }
 
 
+
     const appliedStyle = senderId !== user.id ? { marginRight: "auto",
      borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
      } : {
@@ -43,7 +45,6 @@ const Message = ({ message }) => {
         borderRadius: '1rem 1rem 0rem 1rem'
     };
 
-
     const classes = styles();
 
     return (
@@ -53,9 +54,7 @@ const Message = ({ message }) => {
             onMouseOut={handleMouseOut}>
             {
                 senderId === user.id && isHovering &&
-                <>
-                    <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
-                </>
+                <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
             }
             <div className={classes.text}><p>{text}</p></div>
         </div>
