@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQueryUsers } from "../../hooks/useUserData";
 import { useCreateChat } from "../../hooks/useChatData";
-import { useChatStore } from "../../hooks/zustand";
 import { Anchor, Box, Flex, LoadingOverlay, Title } from "@mantine/core";
 import QueryItem from "./QueryItem";
 import QueryInput from "./QueryInput";
@@ -19,8 +18,7 @@ const QueryContainer = () => {
     const [queryResult, setQueryResult] = useState([]);
 
 
-    const { setActiveChatId } = useChatStore();
-    const createChatMutation = useCreateChat(setActiveChatId);
+    const createChatMutation = useCreateChat();
     const makeQueryMutation = useQueryUsers(queryText, setQueryResult);
 
 

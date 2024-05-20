@@ -15,6 +15,7 @@ const Chat = ({ chat }) => {
     const recentText = chat.recentMessage ? chat.recentMessage.text : "chat is empty";
 
     const handleClick = () => {
+        console.log("ACTIVE CHAT ID is set to: ", chat.id);
         setActiveChatId(chat.id);
     }
 
@@ -31,8 +32,8 @@ const Chat = ({ chat }) => {
                 {username.toUpperCase()}
             </Avatar>
             <Box className={classes.text}>
-                <Text size="sm" lineClamp={1}>{recentText}</Text>
-                <Text size="xs" lineClamp={1}>seen 1 day ago</Text>
+                <Text size="sm" lineClamp={1}>{username}</Text>
+                <Text size="xs" lineClamp={1}>{recentText}</Text>
             </Box>
         </Box>
     )

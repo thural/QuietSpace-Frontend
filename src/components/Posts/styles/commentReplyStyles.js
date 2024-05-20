@@ -5,7 +5,7 @@ const styles = createUseStyles({
   wrapper: {
     position: 'relative',
     width: '16rem',
-    background: '#F0F2F4',
+    background: '#edeeef',
     borderRadius: '1rem',
     minHeight: '4rem',
 
@@ -28,7 +28,7 @@ const styles = createUseStyles({
     },
 
     '& .react-input-emoji--wrapper':{
-      background: '#F0F2F4'
+      background: '#edeeef'
     }
   },
 

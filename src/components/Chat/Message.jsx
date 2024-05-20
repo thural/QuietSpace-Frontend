@@ -2,22 +2,16 @@ import React, { useState } from "react";
 import styles from "./styles/messageStyles";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useDeleteMessage } from "../../hooks/useChatData";
-import { useChatStore } from "../../hooks/zustand";
+import {useDeleteChat, useDeleteMessage} from "../../hooks/useChatData";
 
 const Message = ({ message }) => {
 
     const { id, senderId, text } = message;
-
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-
-    const { data: storeChatData } = useChatStore();
-    const activeChatId = storeChatData.activeChatId;
-
-    const deleteMessageMutation = useDeleteMessage(activeChatId);
-
     const [isHovering, setIsHovering] = useState(false);
+
+    const deleteMessageMutation = useDeleteMessage(id);
 
 
 

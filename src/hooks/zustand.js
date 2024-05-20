@@ -30,6 +30,7 @@ export const viewStore = create(set => ({
 
 export const useChatStore = create(set => ({
     data: {activeChatId: null, messageInput:{}},
+
     setActiveChatId: (activeChatId) => {
         set(state => ({
             data: {...state, activeChatId}

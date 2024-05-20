@@ -3,18 +3,12 @@ import Chat from "./Chat";
 import styles from "./styles/contactContainerStyles";
 import QueryContainer from "./QueryContainer";
 import { useQueryClient } from "@tanstack/react-query";
-import {useChatStore} from "../../hooks/zustand";
-import {useEffect} from "react";
 
 const ChatContainer = () => {
 
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
-    const { setActiveChatId } = useChatStore();
 
-    useEffect(() => {
-        setActiveChatId(chats[0]["id"]);
-    }, [chats]);
 
 
     const classes = styles();

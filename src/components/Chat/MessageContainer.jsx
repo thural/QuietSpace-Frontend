@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Message from "./Message";
-import { Text } from "@mantine/core";
+import {Avatar, Flex, Text, Title} from "@mantine/core";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
 import { useQueryClient } from "@tanstack/react-query";
-import { useGetMessagesByChatId, usePostNewMessage } from "../../hooks/useChatData";
+import {useDeleteChat, useGetChatById, useGetMessagesByChatId, usePostNewMessage} from "../../hooks/useChatData";
 import {useAuthStore, useChatStore} from "../../hooks/zustand";
+import ChatMenu from "./ChatMenu";
+import {generatePfp} from "../../utils/randomPfp";
 
 
 const MessageContainer = () => {
 
-    const { data: storeChatData } = useChatStore();
+    const { data: { activeChatId }, setActiveChatId } = useChatStore();
     const { data: storeUserData} = useAuthStore();
 
-    const activeChatId = storeChatData.activeChatId;
+    console.log("ACTIVE CHAT ID: ", activeChatId);
 
     const queryClient = useQueryClient();
-    const currentChat = queryClient.getQueryData(["chats"], {id: activeChatId})[0];
-    const receiverUser = currentChat.members[0];
+    const chats = queryClient.getQueryData(["chats"]);
+    const currentChat = queryClient.getQueryData(["chats"], {id:activeChatId}).find(chat => chat.id === activeChatId);
+    // TODO: optimize current chat retrieval
+    const receiverName = currentChat?.members[0].username;
+    console.log("CURRENT CHAT in message container: ", receiverName);
+
+    useEffect(() => {
+        setActiveChatId(chats[0]["id"]);
+    }, []);
 
     const [inputData, setInputData] = useState({
         chatId: activeChatId,
@@ -27,6 +36,12 @@ const MessageContainer = () => {
 
     const handleInputChange = (event) => {
         setInputData({ ...inputData, text: event });
+    }
+
+    const handleDeleteChat = (event) => {
+        event.preventDefault();
+        console.log("delete chat was clicked");
+        useDeleteChat(activeChatId).mutate();
     }
 
     const sendMessage = usePostNewMessage(setInputData);
@@ -44,11 +59,16 @@ const MessageContainer = () => {
 
     return (
         <div className={classes.chatboard}>
+            <Flex className={classes.chatHeadline}>
+                <Avatar color="black" radius="10rem" src={generatePfp("marble")}>receiverUsername.charAt(0).toUpperCase()</Avatar>
+                <Title className="title" order={5}>{receiverName}</Title>
+                <ChatMenu handleDeletePost={handleDeleteChat} isMutable={true} />
+            </Flex>
             {isLoading ? (<Text className="system-message" ta="center">loading messages ...</Text>) :
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
                     activeChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
                         messages.length === 0 ? (
-                            <Text className="system-message" ta="center">{`send your first message to ${receiverUser.username}`}</Text>) :
+                            <Text className="system-message" ta="center">{`send your first message`}</Text>) :
                             (
                                 <div className={classes.messages}>
                                     {

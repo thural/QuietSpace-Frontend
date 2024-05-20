@@ -34,7 +34,7 @@ const styles = createUseStyles({
     padding: '10px 10px',
     position: 'relative',
     boxSizing: 'border-box',
-    backgroundColor: '#F0F2F4',
+    backgroundColor: '#edeeef',
     borderRadius: '0rem 1rem 1rem 1rem',
     '& .comment-text': {
       display: 'inline-block',
