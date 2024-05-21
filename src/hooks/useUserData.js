@@ -26,7 +26,7 @@ export const useGetCurrentUser = () => {
 
 
 
-export const useQueryUsers = (queryText, setQueryResult) => {
+export const useQueryUsers = (setQueryResult) => {
 
     const { data: authData } = useAuthStore();
 
@@ -40,8 +40,8 @@ export const useQueryUsers = (queryText, setQueryResult) => {
     }
 
     return useMutation({
-        mutationFn: async () => {
-            const response = await fetchUsersByQuery(USER_PATH, queryText, authData.token);
+        mutationFn: async (inputText) => {
+            const response = await fetchUsersByQuery(USER_PATH, inputText, authData.token);
             return response.json();
         },
         onSuccess,

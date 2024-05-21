@@ -28,7 +28,6 @@ const QueryInput = ({
                 name='text'
                 placeholder="search a user ..."
                 maxLength="128"
-                value={queryText}
                 onChange={handleInputChange}
             />
         </form>

@@ -1,5 +1,5 @@
 import styles from "./styles/queryContainerStyles";
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQueryUsers } from "../../hooks/useUserData";
 import { useCreateChat } from "../../hooks/useChatData";
@@ -14,12 +14,12 @@ const QueryContainer = () => {
 
 
     const [focused, setFocused] = useState(false);
-    const [queryText, setQueryText] = useState("");
     const [queryResult, setQueryResult] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     const createChatMutation = useCreateChat();
-    const makeQueryMutation = useQueryUsers(queryText, setQueryResult);
+    const makeQueryMutation = useQueryUsers(setQueryResult);
 
 
     const handleItemClick = async (event, clickedUser) => {
@@ -32,11 +32,17 @@ const QueryContainer = () => {
     const handleInputChange = (event) => {
         const value = event.target.value;
         setFocused(true);
-        setQueryText(value);
+        if (value.length) handleQuerySubmit(value);
+        else setQueryResult([]);
     }
 
-    const handleQuerySubmit = async () => {
-        makeQueryMutation.mutate();
+    const handleQuerySubmit = async (value) => {
+        if(isSubmitting) return;
+        setIsSubmitting(true);
+        await makeQueryMutation.mutate(value);
+        setTimeout(() => {
+            setIsSubmitting(false);
+        }, 1000);
     }
 
     const handleKeyDown = (event) => {
@@ -52,14 +58,8 @@ const QueryContainer = () => {
     }
 
 
-    useEffect(() => {
-        if (queryText.length > 0) handleQuerySubmit();
-        else setQueryResult([]);
-    }, [queryText]);
-
-
     const appliedStyle = (!focused) ? { display: 'none' } : { display: 'block' }
-    const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, queryText, handleInputChange }
+    const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, handleInputChange }
     const classes = styles();
 
 
