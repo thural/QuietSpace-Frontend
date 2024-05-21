@@ -68,7 +68,7 @@ const MessageContainer = () => {
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
                     activeChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
                         messages.length === 0 ? (
-                            <Text className="system-message" ta="center">{`send your first message`}</Text>) :
+                            <Text className="system-message" ta="center">{`send your first message to `}<strong>{receiverName}</strong></Text>) :
                             (
                                 <div className={classes.messages}>
                                     {

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "../hooks/zustand";
+import { useAuthStore } from "./zustand";
 import { LOGIN_URL, SIGNUP_URL } from "../constants/ApiPath";
 import { fetchLogin, fetchSignup } from "../api/authRequests";
 

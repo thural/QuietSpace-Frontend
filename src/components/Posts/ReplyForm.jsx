@@ -3,6 +3,8 @@ import styles from "./styles/commentReplyStyles";
 import InputEmoji from "react-input-emoji";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePostComment } from "../../hooks/useCommentData";
+import {Avatar, Flex} from "@mantine/core";
+import {generatePfp} from "../../utils/randomPfp";
 
 
 const ReplyForm = ({ postId, parentId, toggleView }) => {
@@ -43,7 +45,10 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
     const classes = styles();
 
     return (
-            <form className={classes.wrapper}>
+        <Flex className={classes.container}>
+            <Avatar className={classes.avatar} size="1.5rem"
+                    src={generatePfp("beam")}>{user.username[0].toUpperCase()}</Avatar>
+            <form className={classes.inputWrapper}>
                 <InputEmoji
                     className={classes.commentInput}
                     value={commentInput.text}
@@ -58,6 +63,7 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
                     placeholder="Type a comment"
                 />
             </form>
+        </Flex>
     )
 }
 

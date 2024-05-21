@@ -2,7 +2,13 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 
-  wrapper: {
+  container:{
+    display: 'flex',
+    flexFlow: 'row no-wrap',
+    gap: '.3rem'
+  },
+
+  inputWrapper: {
     position: 'relative',
     width: '16rem',
     background: '#edeeef',
