@@ -2,13 +2,12 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     fetchCreatePost,
     fetchDeletePost,
-    fetchEditPost,
+    fetchEditPost, fetchPostQuery,
     fetchPosts,
     fetchReaction,
     fetchVotePoll
 } from "../api/postRequests";
 import {useAuthStore, viewStore} from "./zustand";
-import {POST_URL} from "../constants/ApiPath";
 
 
 export const useGetPosts = () => {
@@ -20,7 +19,7 @@ export const useGetPosts = () => {
     return useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
-            const response = await fetchPosts(POST_URL, authData.token);
+            const response = await fetchPosts(authData.token);
             return await response.json();
         },
         enabled: !!user?.id, // if userQuery could fetch the current user
@@ -46,9 +45,8 @@ export const useCreatePost = () => {
     }
 
     const handleSubmitError = () => {
-    alert("error on posting, try again later");
+        alert("error on posting, try again later");
     }
-
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts"], { exact: true });
@@ -62,10 +60,9 @@ export const useCreatePost = () => {
         handleSubmitError();
     }
 
-
     return useMutation({
         mutationFn: async (postData) => {
-            return await fetchCreatePost(POST_URL, postData, authData.token)
+            return await fetchCreatePost(postData, authData.token)
         },
         onSuccess,
         onError
@@ -90,7 +87,7 @@ export const useToggleReaction = (postId) => {
     return useMutation({
         mutationFn: async (reactionBody) => {
             console.log("REACTION BODY ON LIKE: ", reactionBody)
-            return await fetchReaction(POST_URL, reactionBody, authData.token);
+            return await fetchReaction(reactionBody, authData.token);
         },
         onSuccess,
         onError
@@ -115,9 +112,32 @@ export const useEditPost = (postId) => {
     }
 
     return useMutation({
-        mutationFn: async (postData) => {
-            const response = await fetchEditPost(POST_URL, postData, authData.token, postId);
-            return response;
+        mutationFn: async (queryText) => {
+            return await fetchEditPost(queryText, authData.token, postId);
+        },
+        onSuccess,
+        onError
+    })
+}
+
+export const useQueryPosts = (setPostQueryResult) => {
+
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data, variable, context) => {
+        console.log("post query result: ", data["content"]);
+        setPostQueryResult(data["content"]);
+        console.log("post query was success");
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on querying post:", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (queryText) => {
+            const response = await fetchPostQuery(queryText, authData.token);
+            return await response.json();
         },
         onSuccess,
         onError
@@ -142,8 +162,7 @@ export const useDeletePost = (postId) => {
 
     return useMutation({
         mutationFn: async () => {
-            const response = await fetchDeletePost(POST_URL, postId, authData.token);
-            return response;
+            return await fetchDeletePost(postId, authData.token);
         },
         onSuccess,
         onError
@@ -166,7 +185,7 @@ export const useVotePoll = () => {
 
     return useMutation({
         mutationFn: async (voteData) => {
-            return await fetchVotePoll(POST_URL, voteData, authData.token);
+            return await fetchVotePoll(voteData, authData.token);
         },
         onSuccess,
         onError

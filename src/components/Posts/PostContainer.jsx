@@ -1,5 +1,5 @@
 import Post from "./Post";
-import React, { useMemo } from "react";
+import React, {useMemo, useState} from "react";
 import CreatePostForm from "./CreatePostForm";
 import { viewStore } from "../../hooks/zustand";
 import { useGetPosts } from "../../hooks/usePostData";
@@ -7,12 +7,12 @@ import { Avatar, Box, Button, Container, Flex, Input, LoadingOverlay } from "@ma
 
 import styles from './styles/postContainerStyles'
 import { generatePfpUrls } from "../../utils/randomPfp";
-import { pollData } from "../../utils/mockData";
 
 function PostContainer() {
 
     const { data: viewData, setViewData } = viewStore();
     const { createPost: createPostView } = viewData;
+    const [postQueryResult, setPostQueryResult] = useState([])
     const postsQuery = useGetPosts();
     const classes = styles();
 
@@ -26,11 +26,6 @@ function PostContainer() {
     if (postsQuery.isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (postsQuery.isError) return <h1>{postsQuery.error.message}</h1>;
 
-
-    // const pollPost = postsQuery.data[0];
-    // pollPost.isPoll = true;
-    // pollPost.pollData = pollData;
-    // console.log("poll post mock:", pollPost)
 
     return (
         <Container className={classes.container} size="600px">
@@ -55,9 +50,8 @@ function PostContainer() {
             <hr></hr>
             {createPostView && <CreatePostForm />}
             {!postsQuery.isLoading &&
-                postsQuery.data.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={randomPfpUrls[index]} />))}
-                {/* <Post key={crypto.randomUUID()} post={pollPost} avatarUrl={randomPfpUrls[0]} /> */}
-                
+                postsQuery.data.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={randomPfpUrls[index]} />))
+            }
         </Container>
     )
 }

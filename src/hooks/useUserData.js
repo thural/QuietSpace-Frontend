@@ -24,8 +24,6 @@ export const useGetCurrentUser = () => {
     })
 }
 
-
-
 export const useQueryUsers = (setQueryResult) => {
 
     const { data: authData } = useAuthStore();

@@ -1,26 +1,30 @@
 import { getApiResponse } from "./commonRequest";
-import post from "../components/Posts/Post";
+import {POST_URL} from "../constants/ApiPath";
 
-export const fetchPosts = async (url, token) => {
-    return await getApiResponse(url, 'GET', null, token);
+export const fetchPosts = async (token) => {
+    return await getApiResponse(POST_URL, 'GET', null, token);
 }
 
-export const fetchCreatePost = async (url, body, token) => {
-    return await getApiResponse(url, 'POST', body, token);
+export const fetchCreatePost = async (body, token) => {
+    return await getApiResponse(POST_URL, 'POST', body, token);
 }
 
-export const fetchEditPost = async (url, body, token, postId) => {
-    return await getApiResponse(url + `/${postId}`, 'PUT', body, token);
+export const fetchEditPost = async (body, token, postId) => {
+    return await getApiResponse(POST_URL + `/${postId}`, 'PUT', body, token);
 }
 
-export const fetchDeletePost = async (url, postId, token) => {
-    return await getApiResponse(url + `/${postId}`, 'DELETE', null, token);
+export const fetchPostQuery = async (queryText, token) => {
+    return await getApiResponse(POST_URL + `/search?query=${queryText}`, 'GET',null,  token);
 }
 
-export const fetchReaction = async (url, reaction, token) => {
-    return await getApiResponse(url + "/toggle-reaction", 'POST', reaction, token);
+export const fetchDeletePost = async (postId, token) => {
+    return await getApiResponse(POST_URL + `/${postId}`, 'DELETE', null, token);
 }
 
-export const fetchVotePoll = async (url, voteBody, token) => {
-    return await getApiResponse(url + "/vote-poll", 'POST', voteBody, token);
+export const fetchReaction = async (reaction, token) => {
+    return await getApiResponse(POST_URL + "/toggle-reaction", 'POST', reaction, token);
+}
+
+export const fetchVotePoll = async (voteBody, token) => {
+    return await getApiResponse(POST_URL + "/vote-poll", 'POST', voteBody, token);
 }
