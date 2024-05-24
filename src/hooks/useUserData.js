@@ -1,8 +1,7 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useAuthStore } from "./zustand";
-import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
-import {fetchUser, fetchUserById, fetchUsersByQuery} from "../api/userRequests";
-
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useAuthStore} from "./zustand";
+import {USER_PATH, USER_PROFILE_URL} from "../constants/ApiPath";
+import {fetchFollowers, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery} from "../api/userRequests";
 
 
 export const useGetCurrentUser = () => {
@@ -62,4 +61,45 @@ export const useGetUserById = (userId) => {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
     })
+}
+
+export const useGetFollows = () => {
+
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["follows"],
+        queryFn: async () => {
+            const response = await fetchFollowers(authData.token);
+            return await response.json();
+        },
+        staleTime: Infinity,
+        gcTime: Infinity,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        select: (data) => data.content
+    })
+}
+
+export const useToggleFollow = () => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data, variables, context) => {
+        queryClient.invalidateQueries(["followers"])
+        console.log("toggle follow success:", data);
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on toggling follow: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (userId) => {
+            return await fetchToggleFollow(userId, authData.token);
+        },
+        onSuccess,
+        onError,
+    });
 }
