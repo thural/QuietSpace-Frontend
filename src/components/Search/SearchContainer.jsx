@@ -6,7 +6,7 @@ import styles from "./styles/searchbarStyles";
 import Post from "../Posts/Post";
 import {useQueryPosts} from "../../hooks/usePostData";
 import {generatePfp} from "../../utils/randomPfp";
-import {useQueryUsers} from "../../hooks/useUserData";
+import {useGetFollows, useQueryUsers} from "../../hooks/useUserData";
 import UserQueryItem from "./UserQueryItem";
 
 function SearchContainer() {
@@ -16,6 +16,8 @@ function SearchContainer() {
     const [userQueryResult, setUserQueryResult] = useState([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
 
+    const fetchFollows = useGetFollows();
+    console.log("followings data: ", fetchFollows.data);
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
 
@@ -57,7 +59,7 @@ function SearchContainer() {
     }
 
     const handleInputBlur = () => {
-        setFocused(false);
+        // setFocused(false);
     }
 
     const resultAppliedStyle = focused ? { display: 'block' } : { display: 'none' };
