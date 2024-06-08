@@ -1,4 +1,4 @@
-const HOST = "http://localhost:8080";
+const HOST = "http://localhost:8765";
 const BASE_URL = HOST + "/api/v1";
 const AUTH_URL = HOST + "/auth";
 
