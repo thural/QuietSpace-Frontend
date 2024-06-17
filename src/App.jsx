@@ -5,7 +5,7 @@ import ChatPage from "./pages/chat/ChatPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
-import { MantineProvider } from '@mantine/core';
+import {LoadingOverlay} from '@mantine/core';
 import './App.css'
 
 import ProfilePage from "./pages/profile/ProfilePage";
@@ -17,6 +17,7 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
 import useAuth from "./hooks/useAuth";
+import React from "react";
 
 const App = () => {
 
@@ -29,10 +30,9 @@ const App = () => {
         isError: isUserError
     } = useGetCurrentUser();
 
-    if(!isAuthenticated) return <h1>User has not signed in yet ...</h1>
+    if(!isAuthenticated) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     
     return (
-        <MantineProvider>
             <>
                 <NavBar />
                 <Routes>
@@ -50,7 +50,6 @@ const App = () => {
                     <Route path="/settings/*" element={<SettingsPage />} />
                 </Routes>
             </>
-        </MantineProvider>
     )
 }
 
