@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/Navbar/Navbar";
 import PostPage from "./pages/feed/PostPage";
-import AuthPage from "./pages/auth/AuthPage";
 import ChatPage from "./pages/chat/ChatPage";
 import SearchPage from "./pages/search/SearchPage";
 
@@ -17,10 +16,11 @@ import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
-import {useEffect, useState} from "react";
-import {getUser, login} from "./api/keycloakClient";
+import useAuth from "./hooks/useAuth";
 
 const App = () => {
+
+    const isAuthenticated = useAuth();
 
     const { data: userData,
         isLoading: isUserLoading,
@@ -29,15 +29,7 @@ const App = () => {
         isError: isUserError
     } = useGetCurrentUser();
 
-    const [user, setUser] = useState(null);
-
-
-    getUser().then(user => {
-        if(user === null) login().then(() => console.log("singing the user..."))
-        else setUser(user)
-    });
-
-    if(user === null) return <h1>User has not signed in yet ...</h1>
+    if(!isAuthenticated) return <h1>User has not signed in yet ...</h1>
     
     return (
         <MantineProvider>

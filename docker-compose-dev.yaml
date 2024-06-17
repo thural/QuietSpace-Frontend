@@ -7,7 +7,7 @@ services:
     image: thural/quietspace:frontend-dev
     container_name: quietspace_frontend_container
     ports:
-      - 5000:5000
+      - "5000:5000"
     volumes:
       - ./:/app
       - /node_modules
