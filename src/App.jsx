@@ -18,10 +18,9 @@ import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
 import useAuth from "./hooks/useAuth";
 import React from "react";
+import UserService from "./hooks/UserService";
 
 const App = () => {
-
-    const isAuthenticated = useAuth();
 
     const { data: userData,
         isLoading: isUserLoading,
@@ -30,7 +29,7 @@ const App = () => {
         isError: isUserError
     } = useGetCurrentUser();
 
-    if(!isAuthenticated) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if(!UserService.isLoggedIn()) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     
     return (
             <>

@@ -4,12 +4,14 @@ import RouteSwitch from "./RouteSwitch";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import {MantineProvider} from "@mantine/core";
+import UserService from "./hooks/UserService";
 
 
 const queryCLient = new QueryClient({});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+
+const renderApp = () => root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryCLient}>
         <MantineProvider>
@@ -19,3 +21,5 @@ root.render(
     </QueryClientProvider>
   </React.StrictMode>
 )
+
+UserService.initKeycloak(renderApp)
