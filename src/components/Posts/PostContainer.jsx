@@ -50,7 +50,7 @@ function PostContainer() {
             <hr></hr>
             {createPostView && <CreatePostForm />}
             {!postsQuery.isLoading &&
-                postsQuery.data.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={randomPfpUrls[index]} />))
+                postsQuery.data?.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={randomPfpUrls[index]} />))
             }
         </Container>
     )

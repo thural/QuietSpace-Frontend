@@ -14,15 +14,14 @@ const _kc =  new Keycloak({
 const initKeycloak = (onAuthenticatedCallback) => {
   _kc.init({
     onLoad: 'check-sso',
-    silentCheckSsoRedirectUri: window.location.origin,
+    // silentCheckSsoRedirectUri: window.location.origin,
     pkceMethod: 'S256',
   })
     .then((authenticated) => {
       if (!authenticated) {
         console.log("user is not authenticated..!");
         UserService.doLogin();
-      }
-      onAuthenticatedCallback();
+      } else onAuthenticatedCallback();
     })
     .catch(console.error);
 };
@@ -44,7 +43,11 @@ const updateToken = (successCallback) =>
 
 const getUsername = () => _kc.tokenParsed?.preferred_username;
 
-const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
+const getFirstName = () => _kc.tokenParsed?.given_name;
+
+const hasRealmRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
+
+const hasRole = (roles) => roles.some((role) => _kc.hasRole(role));
 
 const UserService = {
   initKeycloak,
@@ -55,6 +58,8 @@ const UserService = {
   getTokenParsed,
   updateToken,
   getUsername,
+  getFirstName,
+  hasRealmRole,
   hasRole,
 };
 

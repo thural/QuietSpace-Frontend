@@ -25,4 +25,17 @@ class LikeType {
     }
 }
 
-export { ContentType, LikeType };
+class UserRole {
+    static USER = new UserRole('USER');
+    static ADMIN= new UserRole('ADMIN');
+
+    constructor(name) {
+        this.name = name;
+    }
+
+    toString() {
+        return this.name;
+    }
+}
+
+export { ContentType, LikeType, UserRole };
