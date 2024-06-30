@@ -1,6 +1,9 @@
-const HOST = "http://localhost:8765";
-const BASE_URL = HOST + "/api/v1";
-const AUTH_URL = HOST + "/auth";
+const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST
+const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT
+
+const BACKEND_URL = `http://${BACKEND_HOST}:${BACKEND_PORT}`;
+const BASE_URL = BACKEND_URL + "/api/v1";
+const AUTH_URL = BACKEND_URL + "/auth";
 
 export const USER_PATH = BASE_URL + "/users";
 export const USER_PROFILE_URL = USER_PATH + "/profile";

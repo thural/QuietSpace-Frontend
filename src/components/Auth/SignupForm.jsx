@@ -9,6 +9,8 @@ const SignupForm = ({ setAuthState }) => {
     const [formData, setFormData] = useState({
         role: "user",
         username: '',
+        firstname: '',
+        lastname:'',
         email: '',
         password: '',
         confirmPassword: ''
@@ -54,6 +56,20 @@ const SignupForm = ({ setAuthState }) => {
                     />
                     <input
                         type='text'
+                        name='firstname'
+                        placeholder="firstname"
+                        value={formData.firstname}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type='text'
+                        name='lastname'
+                        placeholder="lastname"
+                        value={formData.lastname}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type='text'
                         name='email'
                         placeholder="email"
                         value={formData.email}
@@ -80,7 +96,7 @@ const SignupForm = ({ setAuthState }) => {
                 fullWidth
                 radius="md"
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+                gradient={{from: 'blue', to: 'cyan', deg: 90}}
                 onClick={handleSubmit}>
                 submit
             </Button>
