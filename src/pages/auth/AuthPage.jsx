@@ -18,8 +18,8 @@ const AuthPage = () => {
                     <Text className="secondary-text">where free speech and privacy is priority</Text>
                 </div>
                 {
-                    authState == "signup" ? <SignupForm setAuthState={setAuthState} /> :
-                    authState == "login" ? <LoginForm setAuthState={setAuthState}/> : null
+                    authState === "signup" ? <SignupForm setAuthState={setAuthState} /> :
+                    authState === "login" ? <LoginForm setAuthState={setAuthState}/> : null
                 }
             </div>
     )
