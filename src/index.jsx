@@ -3,23 +3,39 @@ import ReactDOM from "react-dom/client";
 import RouteSwitch from "./RouteSwitch";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import {MantineProvider} from "@mantine/core";
-import UserService from "./hooks/UserService";
 
 
-const queryCLient = new QueryClient({});
+const queryClient = new QueryClient({});
+
+//TODO: remove after kubernetes service tests
+
+fetch("http://locahost:8080/hello")
+    .then(response => response.json())
+    .then(data => {
+        // Handle the data here
+        console.log( "http://locahost:8080/hello",data);
+    }).catch(err => console.log(err));
+
+fetch("http://backend-service:8080/hello")
+    .then(response => response.json())
+    .then(data => {
+        // Handle the data here
+        console.log( "http://backend-service:8080/hello",data);
+    }).catch(err => console.log(err));
+
+fetch("http://backend-service/hello")
+    .then(response => response.json())
+    .then(data => {
+        // Handle the data here
+        console.log( "http://backend-service/hello",data);
+    }).catch(err => console.log(err));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-const renderApp = () => root.render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryCLient}>
-        <MantineProvider>
-      <RouteSwitch />
-        </MantineProvider>
-      <ReactQueryDevtools initialIsOpen={false} position="buttom-right"/>
-    </QueryClientProvider>
-  </React.StrictMode>
+root.render(
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <RouteSwitch />
+            <ReactQueryDevtools initialIsOpen={false} position="buttom-right"/>
+        </QueryClientProvider>
+    </React.StrictMode>
 )
-
-UserService.initKeycloak(renderApp)

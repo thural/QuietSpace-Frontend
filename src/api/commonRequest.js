@@ -1,13 +1,6 @@
-import UserService from "../hooks/UserService";
 
 
-export async function getApiResponse(url, method, body) {
-
-    if (!UserService.isLoggedIn()) return UserService.doLogin();
-
-    const token = UserService.getToken();
-
-    console.log("token: ", token);
+export async function getApiResponse(url, method, body, token) {
 
     const headers = new Headers({ 'content-type': 'application/json' });
     headers.append("Access-Control-Allow-Headers", "Location");
@@ -20,10 +13,9 @@ export async function getApiResponse(url, method, body) {
 
     if (body != null) options.body = JSON.stringify(body);
 
-    return await UserService.updateToken(fetch(url, options));
+    return await fetch(url, options);
 
 }
-
 
 
 

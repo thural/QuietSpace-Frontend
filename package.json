@@ -18,9 +18,6 @@
   "bugs": {
     "url": "https://github.com/thural/Quiet-Space/issues"
   },
-  "compilerOptions": {
-    "baseUrl": "src"
-  },
   "homepage": "https://github.com/thural/Quiet-Space#readme",
   "dependencies": {
     "@mantine/core": "^7.7.1",
@@ -35,7 +32,7 @@
     "dayjs": "^1.11.10",
     "fetch-intercept": "^2.4.0",
     "json-server": "^1.0.0-alpha.23",
-    "keycloak-js": "^25.0.0",
+    "oidc-client": "^1.11.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-emoji": "^1.8.1",
@@ -49,7 +46,6 @@
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
-    "dotenv": "^16.4.5",
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "^1.13.0",
     "postcss-simple-vars": "^7.0.1",
