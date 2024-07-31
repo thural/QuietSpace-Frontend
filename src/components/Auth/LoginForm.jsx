@@ -12,6 +12,7 @@ const LoginForm = ({ setAuthState }) => {
 
 
     const handleLoginForm = async (event) => {
+        console.log("form data on login submit: ", formData);
         event.preventDefault();
         loginMutation.mutate(formData);
     }

@@ -1,12 +1,9 @@
-export const pfpSourceLinkBeam = "https://source.boringavatars.com/beam/";
-export const pfpSourceLinkBeamMarble = "https://source.boringavatars.com/marble/";
+export const pfpSourceLinkBeam = "https://api.boringavatars.dev/api/avatar?variant=beam";
+export const pfpSourceLinkBeamMarble = "https://api.boringavatars.dev/api/avatar?variant=marble";
 export const pfpSourceLinkEmoji = "https://api.dicebear.com/8.x/fun-emoji/svg/";
-
-import { Image } from '@mantine/core';
 
 export const generatePfp = (pfpType) => {
 
-    const randomId = Math.floor(Math.random() * 999);
 
     const getBaseUrl = (pfpType) => {
         switch (pfpType) {
@@ -19,7 +16,7 @@ export const generatePfp = (pfpType) => {
         }
     }
 
-    return getBaseUrl(pfpType) + randomId;
+    return getBaseUrl(pfpType);
 }
 
 export const generatePfpUrls = (numOfUrls, type) => {

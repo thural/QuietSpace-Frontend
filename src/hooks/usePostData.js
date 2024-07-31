@@ -19,7 +19,7 @@ export const useGetPosts = () => {
     return useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
-            const response = await fetchPosts(authData.token);
+            const response = await fetchPosts(authData.accessToken);
             return await response.json();
         },
         enabled: !!user?.id, // if userQuery could fetch the current user
@@ -62,7 +62,7 @@ export const useCreatePost = () => {
 
     return useMutation({
         mutationFn: async (postData) => {
-            return await fetchCreatePost(postData, authData.token)
+            return await fetchCreatePost(postData, authData.accessToken)
         },
         onSuccess,
         onError
@@ -87,7 +87,7 @@ export const useToggleReaction = (postId) => {
     return useMutation({
         mutationFn: async (reactionBody) => {
             console.log("REACTION BODY ON LIKE: ", reactionBody)
-            return await fetchReaction(reactionBody, authData.token);
+            return await fetchReaction(reactionBody, authData.accessToken);
         },
         onSuccess,
         onError
@@ -113,7 +113,7 @@ export const useEditPost = (postId) => {
 
     return useMutation({
         mutationFn: async (queryText) => {
-            return await fetchEditPost(queryText, authData.token, postId);
+            return await fetchEditPost(queryText, authData.accessToken, postId);
         },
         onSuccess,
         onError
@@ -136,7 +136,7 @@ export const useQueryPosts = (setPostQueryResult) => {
 
     return useMutation({
         mutationFn: async (queryText) => {
-            const response = await fetchPostQuery(queryText, authData.token);
+            const response = await fetchPostQuery(queryText, authData.accessToken);
             return await response.json();
         },
         onSuccess,
@@ -162,7 +162,7 @@ export const useDeletePost = (postId) => {
 
     return useMutation({
         mutationFn: async () => {
-            return await fetchDeletePost(postId, authData.token);
+            return await fetchDeletePost(postId, authData.accessToken);
         },
         onSuccess,
         onError
@@ -185,7 +185,7 @@ export const useVotePoll = () => {
 
     return useMutation({
         mutationFn: async (voteData) => {
-            return await fetchVotePoll(voteData, authData.token);
+            return await fetchVotePoll(voteData, authData.accessToken);
         },
         onSuccess,
         onError

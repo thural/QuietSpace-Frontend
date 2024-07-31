@@ -1,26 +1,27 @@
+import { COMMENT_PATH } from "../constants/ApiPath";
 import { getApiResponse } from "./commonRequest";
 
 
-export const fetchCreateComment = async (url, body, token) => {
+export const fetchCreateComment = async (body, token) => {
     try {
-        return await getApiResponse(url, 'POST', body, token);
+        return await getApiResponse(COMMENT_PATH, 'POST', body, token);
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchDeleteComment = async (url, token) => {
+export const fetchDeleteComment = async (commentId, token) => {
     try {
-        return await getApiResponse(url, 'DELETE', null, token);
+        return await getApiResponse(COMMENT_PATH + `/${commentId}`, 'DELETE', null, token);
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchCommentsByPostId = async (url, postId, token) => {
+export const fetchCommentsByPostId = async (postId, token) => {
     try {
-        return await getApiResponse(url + `/post/${postId}`, 'GET', null, token);
+        return await getApiResponse(COMMENT_PATH + `/post/${postId}`, 'GET', null, token);
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchLikeComment = async (url, commentId, token) => {
+export const fetchLikeComment = async (reactionBody, token) => {
     try {
-        return await getApiResponse(url + `/${commentId}/toggle-like`, 'POST', null, token);
+        return await getApiResponse(COMMENT_PATH + "/toggle-reaction", 'POST', reactionBody, token);
     } catch (error) { throw Error(error.message) }
 }

@@ -20,7 +20,7 @@ export const useGetComments = (postId) => {
     return useQuery({
         queryKey: ["comments", { id: postId }],
         queryFn: async () => {
-            const response = await fetchCommentsByPostId(COMMENT_PATH, postId, authData.token);
+            const response = await fetchCommentsByPostId(postId, authData.accessToken);
             return await response.json();
         },
         onSuccess,
@@ -49,7 +49,7 @@ export const usePostComment = (postId) => {
 
     return useMutation({
         mutationFn: async (commentData) => {
-            const response = await fetchCreateComment(COMMENT_PATH, commentData, authData.token);
+            const response = await fetchCreateComment(commentData, authData.accessToken);
             return await response.json();
         },
         onSuccess,
@@ -75,7 +75,7 @@ export const useDeleteComment = (postId) => {
 
     return useMutation({
         mutationFn: async (commentId) => {
-            return await fetchDeleteComment(COMMENT_PATH + `/${commentId}`, authData.token);
+            return await fetchDeleteComment(commentId, authData.accessToken);
         },
         onSuccess,
         onError,
@@ -99,7 +99,7 @@ export const useToggleCommentLike = (postId) => {
 
     return useMutation({
         mutationFn: async (commentId) => {
-            return await fetchLikeComment(COMMENT_PATH, commentId, authData.token);
+            return await fetchLikeComment(commentId, authData.accessToken);
         },
         onSuccess,
         onError,
@@ -124,7 +124,7 @@ export const useToggleReaction = (commentId) => {
     return useMutation({
         mutationFn: async (reactionBody) => {
             console.log("REACTION BODY ON LIKE: ", reactionBody)
-            return await fetchReaction(COMMENT_PATH, reactionBody, authData.token);
+            return await fetchLikeComment(reactionBody, authData.accessToken);
         },
         onSuccess,
         onError

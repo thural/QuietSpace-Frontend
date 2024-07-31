@@ -1,8 +1,9 @@
+import { CHAT_PATH_BY_MEMBER } from "../constants/ApiPath";
 import {getApiResponse} from "./commonRequest";
 
-export const fetchChats = async (url, userId, token) => {
+export const fetchChats = async (userId, token) => {
     try {
-        return await getApiResponse(url + `/${userId}`, 'GET', null, token);
+        return await getApiResponse(CHAT_PATH_BY_MEMBER + `/${userId}`, 'GET', null, token);
     } catch (error) { throw Error(error.message) }
 }
 

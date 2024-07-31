@@ -45,17 +45,17 @@ export const usePostLogout = () => {
         queryClient.invalidateQueries(["posts", "user", "chat"]);
         queryClient.resetQueries("auth");
         console.log("user logout was success");
-        setAuthData({ message: "", token: "", userId: "" });
+        setAuthData({ message: "", accessToken: "", userId: "" });
     }
 
     const onError = (error, variables, context) => {
         console.log("error on logout:", error.message);
-        setAuthData({ message: "", token: "", userId: "" });
+        setAuthData({ message: "", accessToken: "", userId: "" });
     }
 
     return useMutation({
         mutationFn: async () => {
-            const response = await fetchLogout(LOGOUT_URL, auth["token"]);
+            const response = await fetchLogout(LOGOUT_URL, auth["accessToken"]);
             return await response.json();
         },
         onSuccess,

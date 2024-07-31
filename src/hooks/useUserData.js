@@ -11,10 +11,10 @@ export const useGetCurrentUser = () => {
     return useQuery({
         queryKey: ["user"],
         queryFn: async () => {
-            const response = await fetchUser(USER_PROFILE_URL, authData.token);
+            const response = await fetchUser(USER_PROFILE_URL, authData.accessToken);
             return await response.json();
         },
-        enabled: !!authData?.token,
+        enabled: !!authData?.accessToken,
         staleTime: Infinity,
         gcTime: Infinity,
         refetchOnMount: false,
@@ -38,7 +38,7 @@ export const useQueryUsers = (setQueryResult) => {
 
     return useMutation({
         mutationFn: async (inputText) => {
-            const response = await fetchUsersByQuery(USER_PATH, inputText, authData.token);
+            const response = await fetchUsersByQuery(USER_PATH, inputText, authData.accessToken);
             return response.json();
         },
         onSuccess,
@@ -53,7 +53,7 @@ export const useGetUserById = (userId) => {
     return useQuery({
         queryKey: ["users", {id: userId}],
         queryFn: async () => {
-            const response = await fetchUserById(userId, authData.token);
+            const response = await fetchUserById(userId, authData.accessToken);
             return await response.json();
         },
         staleTime: Infinity,
@@ -70,7 +70,7 @@ export const useGetFollows = () => {
     return useQuery({
         queryKey: ["follows"],
         queryFn: async () => {
-            const response = await fetchFollowers(authData.token);
+            const response = await fetchFollowers(authData.accessToken);
             return await response.json();
         },
         staleTime: Infinity,
@@ -97,7 +97,7 @@ export const useToggleFollow = () => {
 
     return useMutation({
         mutationFn: async (userId) => {
-            return await fetchToggleFollow(userId, authData.token);
+            return await fetchToggleFollow(userId, authData.accessToken);
         },
         onSuccess,
         onError,

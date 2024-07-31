@@ -11,14 +11,14 @@ export const useGetChatsByUserId = (userId) => {
     return useQuery({
         queryKey: ["chats"],
         queryFn: async () => {
-            const response = await fetchChats(CHAT_PATH_BY_MEMBER, userId, authData["token"]);
+            const response = await fetchChats(userId, authData["accessToken"]);
             return await response.json();
         },
         retry: 3,
         retryDelay: 1000,
         enabled: !!userId, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 3, // refetch data after 3 minutes on idle
+        refetchInterval: 1000 * 60 * 3, // refetch data after 3 minutes on idle
     });
 }
 
@@ -29,13 +29,13 @@ export const useGetChatById = (chatId) => {
     return useQuery({
         queryKey: ["chats", {id: chatId}],
         queryFn: async () => {
-            const response = await fetchChatById(chatId, authData["token"]);
+            const response = await fetchChatById(chatId, authData["accessToken"]);
             return await response.json();
         },
         retry: 3,
         retryDelay: 1000,
         staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 3, // refetch data after 3 minutes on idle
+        refetchInterval: 1000 * 60 * 3, // refetch data after 3 minutes on idle
         select: data => data.content
     });
 }
@@ -58,7 +58,7 @@ export const useCreateChat = () => {
 
     return useMutation({
         mutationFn: async (chatBody) => {
-            const response = await fetchCreateChat(CHAT_PATH, chatBody, authData.token);
+            const response = await fetchCreateChat(CHAT_PATH, chatBody, authData.accessToken);
             return await response.json();
         },
         onSuccess,
@@ -75,7 +75,7 @@ export const useGetMessagesByChatId = (chatId) => {
     return useQuery({
         queryKey: ["messages", {id:chatId}],
         queryFn: async () => {
-            const response = await fetchMessages(MESSAGE_PATH, chatId, authData.token);
+            const response = await fetchMessages(MESSAGE_PATH, chatId, authData.accessToken);
             const responseData = await response.json();
             console.log("messages response data: ", responseData);
             return responseData;
@@ -107,7 +107,7 @@ export const usePostNewMessage = (setMessageData) => {
     return useMutation({
         mutationFn: async (messageData) => {
             console.log("current chat id on sending: ", messageData.chatId);
-            const response = await fetchCreateMessage(MESSAGE_PATH, messageData, authData["token"]);
+            const response = await fetchCreateMessage(MESSAGE_PATH, messageData, authData["accessToken"]);
             return response.json();
         },
         onSuccess,
@@ -131,7 +131,7 @@ export const useDeleteMessage = (messageId) => {
 
     return useMutation({
         mutationFn: async (messageId) => {
-            return await fetchDeleteMessage(MESSAGE_PATH, authData["token"], messageId);
+            return await fetchDeleteMessage(MESSAGE_PATH, authData["accessToken"], messageId);
         },
         onSuccess,
         onError,
@@ -156,7 +156,7 @@ export const useDeleteChat = chatId => {
 
     return useMutation({
         mutationFn: async () => {
-            return await fetchDeleteChat(CHAT_PATH, chatId, authData["token"]);
+            return await fetchDeleteChat(CHAT_PATH, chatId, authData["accessToken"]);
         },
         onSuccess,
         onError,

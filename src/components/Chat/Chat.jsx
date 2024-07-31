@@ -8,7 +8,7 @@ const Chat = ({ chat }) => {
 
     const { setActiveChatId } = useChatStore();
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"])
+    const user = queryClient.getQueryData(["user"]);
 
     const contactId = chat.userIds.find(userId => userId !== user.id);
     const username = chat.members[0]["username"];

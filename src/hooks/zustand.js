@@ -8,9 +8,9 @@ export const bearStore = create((set) => ({
 }));
 
 export const useAuthStore = create(set => ({
-    data: { message: "", token: "", userId: "" },
+    data: { message: "", accessToken: "", refreshToken: "", userId: "" },
     resetAuthData: () => set({
-        data: { message: "", token: "", userId: "" }
+        data: { message: "", accessToken: "",refreshToken: "", userId: "" }
     }),
     setAuthData: (authData) => set({
         data: authData

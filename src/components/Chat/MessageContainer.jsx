@@ -24,6 +24,8 @@ const MessageContainer = () => {
     const receiverName = currentChat?.members[0].username;
     console.log("CURRENT CHAT in message container: ", receiverName);
 
+    if (!chats.length) return <Text style={{margin:"1rem"}} ta="center">there's no messages yet</Text>
+
     useEffect(() => {
         setActiveChatId(chats[0]["id"]);
     }, []);

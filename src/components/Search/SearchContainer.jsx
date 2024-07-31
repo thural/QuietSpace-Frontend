@@ -16,8 +16,8 @@ function SearchContainer() {
     const [userQueryResult, setUserQueryResult] = useState([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
 
-    const fetchFollows = useGetFollows();
-    console.log("followings data: ", fetchFollows.data);
+    const fetchedFollows = useGetFollows();
+    console.log("followings data: ", fetchedFollows.data);
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
 
