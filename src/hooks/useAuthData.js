@@ -12,6 +12,8 @@ export const usePostLogin = () => {
         console.log("login response from backend was success");
         queryClient.invalidateQueries(["posts", "user", "chats"]);
         queryClient.setQueryData("auth", data);
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
     }
 
@@ -45,6 +47,8 @@ export const usePostLogout = () => {
         queryClient.invalidateQueries(["posts", "user", "chat"]);
         queryClient.resetQueries("auth");
         console.log("user logout was success");
+        localStorage.removeItem("accessToken");
+        localStorage.setItem("refreshToken");
         setAuthData({ message: "", accessToken: "", userId: "" });
     }
 
