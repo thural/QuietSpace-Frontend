@@ -16,7 +16,6 @@
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
-  background-color: transparent;
   border-radius: 10px;
   background-color: #e2e8f0;
 }
@@ -56,7 +55,7 @@
   position: relative;
   box-sizing: border-box;
   background-color: #e2e8f0;
-  border-radius: 1rem 1rem 1rem 0rem;
+  border-radius: 1rem 1rem 1rem 0;
 }
 
 .comment .comment-text {
@@ -94,5 +93,4 @@
   background-color: transparent;
   bottom: -50px;
   height: 50px;
-  width: /* Specify the missing value */;
 }

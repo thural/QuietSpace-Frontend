@@ -39,7 +39,7 @@ const App = () => {
     //   }, []);
 
 
-    
+
     return (
         <MantineProvider>
             {!isUserSuccess ? (<AuthPage />) : isUserLoading ? (<h1>Loading ..</h1>) : (

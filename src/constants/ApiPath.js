@@ -4,7 +4,11 @@ const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT
 // const BACKEND_URL = `http://${BACKEND_HOST}:${BACKEND_PORT}`;
 const BACKEND_URL = `http://localhost:8080`;
 const BASE_URL = BACKEND_URL + "/api/v1";
+<<<<<<< HEAD
 const AUTH_URL = BASE_URL + "/auth";
+=======
+const AUTH_URL = BACKEND_URL + "/auth";
+>>>>>>> 7e469b86cdc40cb26b907bc643ed624f3476e83b
 
 export const USER_PATH = BASE_URL + "/users";
 export const USER_PROFILE_URL = USER_PATH + "/profile";
@@ -12,7 +16,10 @@ export const POST_URL = BASE_URL + "/posts";
 export const SIGNUP_URL = AUTH_URL + "/register";
 export const LOGIN_URL = AUTH_URL + "/authenticate";
 export const LOGOUT_URL = AUTH_URL + "/signout";
+<<<<<<< HEAD
 export const REFRESH_TOKEN= AUTH_URL + "/refresh-token";
+=======
+>>>>>>> 7e469b86cdc40cb26b907bc643ed624f3476e83b
 export const COMMENT_PATH = BASE_URL + "/comments";
 export const COMMENT_LIKE = BASE_URL + "/comment-like";
 export const COMMENT_LIKE_TOGGLE = COMMENT_LIKE + "/toggle-like";

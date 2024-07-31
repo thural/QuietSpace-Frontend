@@ -7,27 +7,31 @@ import { generatePfp } from "../../utils/randomPfp";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
 import ComboMenu from "./ComboMenu";
+import {viewStore} from "../../hooks/zustand";
 
 const CreatePostForm = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const addPost = useCreatePost();
+    const { data: viewData, setViewData } = viewStore();
+    const { createPost: createPostView } = viewData;
 
     const [postData, setPostData] = useState({
         userId: user.id,
-        viewAccess: 'friends'
+        viewAccess: 'friends',
+        poll: null
     });
 
-    const [pollView, setPollview] = useState({ enabled: false, extraOption: false });
+    const [pollView, setPollView] = useState({ enabled: false, extraOption: false });
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
-        console.log("psot data", postData);
+        console.log("post data", postData);
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const poll = {
@@ -39,9 +43,9 @@ const CreatePostForm = () => {
             if(key.includes("option")) poll.options.push(value)
         });
 
-        const requestBody = {...postData, poll};
+        const requestBody = poll.options.length ? {...postData, poll} : postData;
 
-        addPost.mutate(requestBody);
+        await addPost.mutate(requestBody);
     }
 
     const viewAccessOptions = ["friends", "anyone"];
@@ -55,7 +59,7 @@ const CreatePostForm = () => {
     }
 
     const togglePoll = () => {
-        setPollview({ ...pollView, enabled: !pollView.enabled });
+        setPollView({ ...pollView, enabled: !pollView.enabled });
     }
 
     const avatarUrl = generatePfp("beam");
@@ -126,7 +130,7 @@ const CreatePostForm = () => {
                         />
                         <PiChartBarHorizontalFill className="poll-toggle" onClick={togglePoll} />
                         <Button
-                            disabled={addPost.isPending}
+                            loading={addPost.isPending}
                             onClick={handleSubmit}
                         >
                             post

@@ -35,7 +35,7 @@ jobs:
           file: docker/prod/Dockerfile
           push: true
           platforms: linux/amd64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/quietspace:frontend-latest,${{ secrets.DOCKERHUB_USERNAME }}/quietspace:frontend-${{ steps.extract_version.outputs.VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/quietspace:frontend,${{ secrets.DOCKERHUB_USERNAME }}/quietspace:frontend-${{ steps.extract_version.outputs.VERSION }}
 
   deploy:
     name: Deploy Frontend

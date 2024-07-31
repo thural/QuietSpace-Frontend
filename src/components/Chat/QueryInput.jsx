@@ -21,14 +21,13 @@ const QueryInput = ({
         <form className={classes.searchInput}>
             <input ref={searchInput}
                 onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
+                // onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 className='input'
                 type='text'
                 name='text'
                 placeholder="search a user ..."
                 maxLength="128"
-                value={queryText}
                 onChange={handleInputChange}
             />
         </form>

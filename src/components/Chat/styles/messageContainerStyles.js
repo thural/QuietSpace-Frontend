@@ -22,6 +22,18 @@ const styles = createUseStyles({
       marginTop: '100%'
     }
   },
+  chatHeadline:{
+    gap: '.8rem',
+    position: 'relative',
+    paddingLeft: '0.5rem',
+    '& .title': {
+      width: '100%',
+      position: 'relative',
+      fontSize: '1rem',
+      fontWeight: '600',
+      lineHeight: '1rem'
+    },
+  },
   messages: {
     display: 'flex',
     padding: '0 4%',

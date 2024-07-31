@@ -12,7 +12,7 @@ const styles = createUseStyles({
       width: '100%',
       position: 'relative',
       fontSize: '1rem',
-      fontWeight: '500',
+      fontWeight: '600',
       lineHeight: '1rem'
     },
 
@@ -23,7 +23,7 @@ const styles = createUseStyles({
       flexFlow: 'row nowrap',
       justifyContent: 'start',
       alignItems: 'center',
-      fontSize: '1.2rem'
+      fontSize: '1.3rem'
     },
 
     '& .iconbox': {

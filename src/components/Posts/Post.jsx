@@ -5,37 +5,36 @@ import { useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
 import ShareMenu from "./ShareMenu"
 import { viewStore } from "../../hooks/zustand";
-import { useDeletePost, useLikePost } from "../../hooks/usePostData";
+import { useDeletePost, useToggleReaction } from "../../hooks/usePostData";
 import { useGetComments } from "../../hooks/useCommentData";
 import {
-    PiArrowFatDown,
-    PiArrowFatUp,
+    PiArrowFatDown, PiArrowFatDownFill,
+    PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 import { parseCount } from "../../utils/stringUtils";
 import Poll from "./Poll";
 import PostMenu from "./PostMenu";
+import {ContentType, LikeType} from "../../utils/enumClasses";
 
 
 
 
 const Post = ({ post, avatarUrl }) => {
 
-    console.log("post data: ", post);
-
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const { data: viewData, setViewData } = viewStore();
     const { editPost: editPostView } = viewData;
 
-    const { id: postId, username, text, likes, dislikes } = post;
+    const { id: postId, username, userReaction, text, likeCount, dislikeCount } = post;
     const [showComments, setShowComments] = useState(false);
 
 
     const { data: comments, status, error } = useGetComments(postId);
     const deletePost = useDeletePost(postId);
-    const togglePostLike = useLikePost(postId);
+    const togglePostLike = useToggleReaction(postId);
 
 
     const handleDeletePost = async (event) => {
@@ -43,18 +42,26 @@ const Post = ({ post, avatarUrl }) => {
         deletePost.mutate();
     }
 
-    const handlePostLike = async (event) => {
+    const handleReaction = async (event, likeType) => {
         event.preventDefault();
-        togglePostLike.mutate();
+        const reactionBody = {
+            userId: user.id,
+            contentId: postId,
+            likeType: likeType,
+            contentType: ContentType.POST.toString(),
+        }
+        togglePostLike.mutate(reactionBody);
+    }
+
+    const handleLike = (event) => {
+        handleReaction(event, LikeType.LIKE.toString())
+    }
+
+    const handleDislike = (event) => {
+        handleReaction(event, LikeType.DISLIKE.toString())
     }
 
     const isMutable = user?.role === "admin" || post?.userId === user?.id;
-
-    // console.log("post likes: ", likes);
-
-    // const isLikedByUser = likes.some( like => like.id === user.id);
-
-    // console.log("is like by user? : ", isLikedByUser );
 
 
     const classes = styles();
@@ -74,21 +81,29 @@ const Post = ({ post, avatarUrl }) => {
                 {post.isPoll && <Poll pollData={post.pollData} />}
             </Box>
 
-            {post.poll && <Poll pollData={post.poll} />}
+            {post.poll && <Poll pollData={post.poll} postId={postId}/>}
 
             <Box className="panel">
 
-                <PiArrowFatUp className="posticon" onClick={handlePostLike} alt={"post like icon"}></PiArrowFatUp>
-
-                <PiArrowFatDown onClick={handlePostLike} alt={"post dislike icon"} />
+                {
+                    userReaction?.likeType === LikeType.LIKE.toString() ?
+                        <PiArrowFatUpFill className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUpFill> :
+                        <PiArrowFatUp className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUp>
+                }
+                {
+                    userReaction?.likeType === LikeType.DISLIKE.toString() ?
+                        <PiArrowFatDownFill className="posticon" onClick={handleDislike} alt={"post like icon"}></PiArrowFatDownFill> :
+                        <PiArrowFatDown className="posticon" onClick={handleDislike} alt={"post like icon"}></PiArrowFatDown>
+                }
 
                 <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
 
                 <ShareMenu />
 
                 <Flex className={classes.postinfo}>
-                    {!!likes?.length && <Text>{parseCount(likes?.length)} likes</Text>}
-                    {!!comments?.length && <Text>{parseCount(comments?.length)} comments</Text>}
+                    {likeCount > 0 && <p>{parseCount(likeCount)} likes</p>}
+                    {dislikeCount > 0 && <p>{parseCount(dislikeCount)} dislikes</p>}
+                    {!!comments?.length && <p>{parseCount(comments?.length)} comments</p>}
                 </Flex>
 
             </Box>

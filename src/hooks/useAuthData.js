@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "../hooks/zustand";
+import { useAuthStore } from "./zustand";
 import { LOGIN_URL, SIGNUP_URL } from "../constants/ApiPath";
 import { fetchLogin, fetchSignup } from "../api/authRequests";
 
 export const usePostLogin = () => {
 
     const queryClient = useQueryClient();
-    const { setAuthData } = authStore();
+    const { setAuthData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("login response from backend was success");
@@ -39,7 +39,7 @@ export const usePostLogin = () => {
 export const usePostLogout = () => {
 
     const queryClient = useQueryClient();
-    const { setAuthData } = authStore();
+    const { setAuthData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts", "user", "chat"]);
@@ -66,7 +66,7 @@ export const usePostLogout = () => {
 export const usePostSignup = () => {
 
     const queryClient = useQueryClient();
-    const { setAuthData } = authStore();
+    const { setAuthData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts", "user", "chats"]);

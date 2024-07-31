@@ -105,12 +105,9 @@ const styles = createUseStyles({
       height: '2.5rem',
       fontWeight: '500',
       padding: '0 0.75rem',
-      borderRadius: '10px',
       boxSizing: 'border-box',
       border: '1px solid #e5e5e5',
       backgroundColor: '#fbfbfb',
-      boxSizing: 'border-box',
-      boxSizing: 'border-box',
       borderRadius: '10px',
     },
 

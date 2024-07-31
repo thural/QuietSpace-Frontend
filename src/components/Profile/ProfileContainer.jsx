@@ -17,7 +17,7 @@ function ProfileContainer() {
         <Container size="600px" className={classes.container}>
             <Flex className={classes.identitySection}>
                 <Box className="profileName">
-                    <Text fw={700}>thuralll</Text>
+                    <Text fw={700}>username</Text>
                 </Box>
                 <Avatar color="black" size="4.8rem" radius="10rem" src={generatedPfpUrls.getUrl()}>T</Avatar>
             </Flex>
@@ -30,7 +30,7 @@ function ProfileContainer() {
                     <Avatar>+5</Avatar>
                     <Text ta="center" fw="400">followers</Text>
                 </Avatar.Group>
-                <Box className="signout-icon"><PiSignOut /></Box>
+                <Box className="signout-icon" onClick={() => console.log("implement logout function")}><PiSignOut /></Box>
             </Flex>
 
             <Link to="/settings" >

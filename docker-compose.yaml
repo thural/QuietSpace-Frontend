@@ -5,6 +5,15 @@ services:
       context: .
       dockerfile: ./docker/prod/Dockerfile
     image: thural/quietspace:frontend
-    container_name: quietspace_frontend_container
+    networks:
+      - monolith-network
+    env_file:
+      - ./.env
     ports:
-      - 5000:80
+      - "5000:80"
+
+networks:
+  monolith-network:
+    name: monolith-network
+    driver: bridge
+    external: true

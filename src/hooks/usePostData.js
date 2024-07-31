@@ -1,20 +1,25 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCreatePost, fetchDeletePost, fetchEditPost, fetchLikePost, fetchPosts } from "../api/postRequests";
-import { authStore, viewStore } from "./zustand";
-import { POST_URL } from "../constants/ApiPath";
-
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {
+    fetchCreatePost,
+    fetchDeletePost,
+    fetchEditPost, fetchPostQuery,
+    fetchPosts,
+    fetchReaction,
+    fetchVotePoll
+} from "../api/postRequests";
+import {useAuthStore, viewStore} from "./zustand";
 
 
 export const useGetPosts = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
-            const response = await fetchPosts(POST_URL, authData.token);
+            const response = await fetchPosts(authData.token);
             return await response.json();
         },
         enabled: !!user?.id, // if userQuery could fetch the current user
@@ -32,25 +37,32 @@ export const useGetPosts = () => {
 export const useCreatePost = () => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const { setViewData } = viewStore();
 
+    const handleSubmitSuccess = () => {
+        setViewData({ createPost: false })
+    }
+
+    const handleSubmitError = () => {
+        alert("error on posting, try again later");
+    }
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts"], { exact: true });
         setViewData({ overlay: false, createPost: false });
+        handleSubmitSuccess();
         console.log("post added successfully:", data);
     }
 
     const onError = (error, variables, context) => {
         console.log("error on post: ", error.message);
+        handleSubmitError();
     }
-
 
     return useMutation({
         mutationFn: async (postData) => {
-            const response = await fetchCreatePost(POST_URL, postData, authData.token);
-            return response.json();
+            return await fetchCreatePost(postData, authData.token)
         },
         onSuccess,
         onError
@@ -58,24 +70,24 @@ export const useCreatePost = () => {
 }
 
 
-export const useLikePost = (postId) => {
+export const useToggleReaction = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
-        console.log("response data on post like: ", data);
+        console.log("response data on reaction: ", data);
         queryClient.invalidateQueries(["posts"], { id: postId });
     }
 
     const onError = (error, variables, context) => {
-        console.log("error on liking post: ", error.message);
+        console.log("error on reacting post: ", error.message);
     }
 
     return useMutation({
-        mutationFn: async () => {
-            const response = await fetchLikePost(POST_URL, postId, authData.token);
-            return response;
+        mutationFn: async (reactionBody) => {
+            console.log("REACTION BODY ON LIKE: ", reactionBody)
+            return await fetchReaction(reactionBody, authData.token);
         },
         onSuccess,
         onError
@@ -86,7 +98,7 @@ export const useLikePost = (postId) => {
 export const useEditPost = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const { setViewData } = viewStore();
 
     const onSuccess = () => {
@@ -100,9 +112,32 @@ export const useEditPost = (postId) => {
     }
 
     return useMutation({
-        mutationFn: async (postData) => {
-            const response = await fetchEditPost(POST_URL, postData, authData.token, postId);
-            return response;
+        mutationFn: async (queryText) => {
+            return await fetchEditPost(queryText, authData.token, postId);
+        },
+        onSuccess,
+        onError
+    })
+}
+
+export const useQueryPosts = (setPostQueryResult) => {
+
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data, variable, context) => {
+        console.log("post query result: ", data["content"]);
+        setPostQueryResult(data["content"]);
+        console.log("post query was success");
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on querying post:", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (queryText) => {
+            const response = await fetchPostQuery(queryText, authData.token);
+            return await response.json();
         },
         onSuccess,
         onError
@@ -113,12 +148,12 @@ export const useEditPost = (postId) => {
 export const useDeletePost = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on post delete: ", data);
         queryClient.invalidateQueries(["posts"], { exact: true });
-        console.log("delete post sucess");
+        console.log("delete post success");
     }
 
     const onError = (error, variables, context) => {
@@ -127,8 +162,30 @@ export const useDeletePost = (postId) => {
 
     return useMutation({
         mutationFn: async () => {
-            const response = await fetchDeletePost(POST_URL, postId, authData.token);
-            return response;
+            return await fetchDeletePost(postId, authData.token);
+        },
+        onSuccess,
+        onError
+    })
+}
+
+export const useVotePoll = () => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data, variables, context) => {
+        console.log("response data on poll vote success: ", data);
+        queryClient.invalidateQueries(["posts"], { exact: true });
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on voting poll: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (voteData) => {
+            return await fetchVotePoll(voteData, authData.token);
         },
         onSuccess,
         onError

@@ -1,12 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "./zustand";
-import { CHAT_PATH, CHAT_PATH_BY_MEMBER, MESSAGE_PATH } from "../constants/ApiPath";
-import { fetchChats, fetchCreateChat } from "../api/chatRequests";
-import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../api/messageRequests";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useAuthStore, useChatStore} from "./zustand";
+import {CHAT_PATH, CHAT_PATH_BY_MEMBER, MESSAGE_PATH} from "../constants/ApiPath";
+import {fetchChatById, fetchChats, fetchCreateChat, fetchDeleteChat} from "../api/chatRequests";
+import {fetchCreateMessage, fetchDeleteMessage, fetchMessages} from "../api/messageRequests";
 
-export const useGetChats = (userId) => {
+export const useGetChatsByUserId = (userId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["chats"],
@@ -22,14 +22,33 @@ export const useGetChats = (userId) => {
     });
 }
 
-export const useCreateChat = (setCurrentChatId) => {
+export const useGetChatById = (chatId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["chats", {id: chatId}],
+        queryFn: async () => {
+            const response = await fetchChatById(chatId, authData["token"]);
+            return await response.json();
+        },
+        retry: 3,
+        retryDelay: 1000,
+        staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
+        refetchInterval: 1000 * 3, // refetch data after 3 minutes on idle
+        select: data => data.content
+    });
+}
+
+export const useCreateChat = () => {
+
+    const { data: authData } = useAuthStore();
+    const { setActiveChatId } = useChatStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["chats"], { exact: true })
-        setCurrentChatId(chatData["id"]);
+        queryClient.invalidateQueries(["chats"],);
+        setActiveChatId(data.id);
         console.log("chat created successfully:", data);
     }
 
@@ -49,12 +68,12 @@ export const useCreateChat = (setCurrentChatId) => {
 
 export const useGetMessagesByChatId = (chatId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
 
     return useQuery({
-        queryKey: ["messages", chatId],
+        queryKey: ["messages", {id:chatId}],
         queryFn: async () => {
             const response = await fetchMessages(MESSAGE_PATH, chatId, authData.token);
             const responseData = await response.json();
@@ -66,17 +85,17 @@ export const useGetMessagesByChatId = (chatId) => {
         select: (data) => data.content,
         enabled: !!user.id && !!chatId, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 6 minutes
-        refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle
+        refetchInterval: 1000 * 60 * 6 // refetch data after 6 minutes on idle,
     });
 }
 
 export const usePostNewMessage = (setMessageData) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context, messageData) => {
-        queryClient.invalidateQueries(["messages"], { exact: true });
+        queryClient.invalidateQueries(["messages"], {id: data.id});
         setMessageData({ ...messageData, text: '' });
         console.log("message sent successfully:", data);
     }
@@ -96,14 +115,14 @@ export const usePostNewMessage = (setMessageData) => {
     });
 }
 
-export const useDeleteMessage = () => {
+export const useDeleteMessage = (messageId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["messages"], { exact: true });
-        console.log("delete message sucess");
+        queryClient.invalidateQueries(["messages"], { id: messageId });
+        console.log("delete message success");
     }
 
     const onError = (error, variables, context) => {
@@ -112,10 +131,35 @@ export const useDeleteMessage = () => {
 
     return useMutation({
         mutationFn: async (messageId) => {
-            const response = await fetchDeleteMessage(MESSAGE_PATH, authData["token"], messageId);
-            return response;
+            return await fetchDeleteMessage(MESSAGE_PATH, authData["token"], messageId);
         },
         onSuccess,
         onError,
     });
+
+}
+
+export const useDeleteChat = chatId => {
+
+    const { data: authData } = useAuthStore();
+    const queryClient = useQueryClient();
+
+    const onSuccess = (data, variables, context) => {
+        queryClient.invalidateQueries(["chats"], { id: chatId })
+            .then(() =>  console.log("chat cache was invalidated"));
+        console.log("chat cache was invalidated");
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on deleting chat: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async () => {
+            return await fetchDeleteChat(CHAT_PATH, chatId, authData["token"]);
+        },
+        onSuccess,
+        onError,
+    });
+
 }

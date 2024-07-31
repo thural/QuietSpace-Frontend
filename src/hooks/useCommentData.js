@@ -1,12 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authStore } from "./zustand";
-import { COMMENT_PATH } from "../constants/ApiPath";
-import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment } from "../api/commentRequests";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useAuthStore} from "./zustand";
+import {COMMENT_PATH} from "../constants/ApiPath";
+import {fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment} from "../api/commentRequests";
+import {fetchReaction} from "../api/postRequests";
 
 
 export const useGetComments = (postId) => {
 
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data) => {
         console.log("comments fetch success");
@@ -34,11 +35,12 @@ export const useGetComments = (postId) => {
 export const usePostComment = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables) => {
         console.log("added comment response data: ", data);
-        queryClient.invalidateQueries(["comments"], { id: postId });
+        queryClient.invalidateQueries(["comments"], { id: postId })
+            .then(() => console.log("post comments were invalidated"));
     }
 
     const onError = (error, variables, context) => {
@@ -59,11 +61,12 @@ export const usePostComment = (postId) => {
 export const useDeleteComment = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on comment deletion: ", data);
-        queryClient.invalidateQueries(["comments"], { id: postId });
+        queryClient.invalidateQueries(["comments"], { id: postId })
+            .then(() => console.log("post comments were invalidated"));
     }
 
     const onError = (error, variables, context) => {
@@ -72,8 +75,7 @@ export const useDeleteComment = (postId) => {
 
     return useMutation({
         mutationFn: async (commentId) => {
-            const response = await fetchDeleteComment(COMMENT_PATH + `/${commentId}`, authData.token);
-            return response;
+            return await fetchDeleteComment(COMMENT_PATH + `/${commentId}`, authData.token);
         },
         onSuccess,
         onError,
@@ -84,7 +86,7 @@ export const useDeleteComment = (postId) => {
 export const useToggleCommentLike = (postId) => {
 
     const queryClient = useQueryClient();
-    const { data: authData } = authStore();
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("response data on like toggle: ", data);
@@ -97,11 +99,35 @@ export const useToggleCommentLike = (postId) => {
 
     return useMutation({
         mutationFn: async (commentId) => {
-            const response = await fetchLikeComment(COMMENT_PATH, commentId, authData.token);
-            return response;
+            return await fetchLikeComment(COMMENT_PATH, commentId, authData.token);
         },
         onSuccess,
         onError,
+    })
+}
+
+export const useToggleReaction = (commentId) => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data, variables, context) => {
+        console.log("response data on reaction: ", data);
+        queryClient.invalidateQueries(["posts"], { id: commentId })
+            .then(() => console.log("post comments were invalidated"));;
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on reacting post: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (reactionBody) => {
+            console.log("REACTION BODY ON LIKE: ", reactionBody)
+            return await fetchReaction(COMMENT_PATH, reactionBody, authData.token);
+        },
+        onSuccess,
+        onError
     })
 }
 

@@ -5,9 +5,10 @@ services:
       context: .
       dockerfile: ./docker/dev/Dockerfile
     image: thural/quietspace:frontend-dev
-    container_name: quietspace_frontend_container
+    env_file:
+      - ./.env
     ports:
-      - 5000:5000
+      - "5000:5000"
     volumes:
       - ./:/app
       - /node_modules

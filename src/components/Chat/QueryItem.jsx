@@ -8,8 +8,14 @@ const QueryItem = ({ user, handleItemClick }) => {
 
     const classes = styles();
 
+    const handleClick = (event) => {
+        event.preventDefault();
+        handleItemClick(event, user);
+        console.log("QUERY ITEM WAS CLICKED");
+    }
+
     return (
-        <Flex className={classes.queryCard}>
+        <Flex className={classes.queryCard} onClick={handleClick}>
             <Avatar
                 color="black"
                 size="2.5rem"
@@ -19,7 +25,6 @@ const QueryItem = ({ user, handleItemClick }) => {
             </Avatar>
             <div key={user.id}
                 className={classes.queryItem}
-                onClick={handleItemClick}
             >
                 <Title order={5} className="username">{user.username}</Title>
                 <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>
