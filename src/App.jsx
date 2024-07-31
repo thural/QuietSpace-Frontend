@@ -17,6 +17,8 @@ import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
+import { useEffect } from "react";
+import { getApiResponse } from "./api/commonRequest";
 
 const App = () => {
 
@@ -26,6 +28,15 @@ const App = () => {
         refetch: refetchUser,
         isError: isUserError
     } = useGetCurrentUser();
+
+    // useEffect(async () => {
+    //     async function getHello(){
+    //         const response = await getApiResponse("http://localhost:8080/hello", "GET", null, null);
+    //         const message = await response.text();
+    //         console.log("message: ", message);
+    //     }
+    //     getHello();
+    //   }, []);
 
 
     

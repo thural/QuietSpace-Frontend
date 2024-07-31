@@ -13,7 +13,9 @@ export async function getApiResponse(url, method, body, token) {
 
     if (body != null) options.body = JSON.stringify(body);
 
-    return await fetch(url, options);
+    const response = await fetch(url, options);
+    if(response.ok) return response;
+    else return Promise.reject(response);
 
 }
 

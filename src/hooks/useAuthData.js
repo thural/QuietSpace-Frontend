@@ -9,6 +9,7 @@ export const usePostLogin = () => {
     const { setAuthData } = authStore();
 
     const onSuccess = (data, variables, context) => {
+        console.log("login response from backend was success");
         queryClient.invalidateQueries(["posts", "user", "chats"]);
         queryClient.setQueryData("auth", data);
         setAuthData(data);
