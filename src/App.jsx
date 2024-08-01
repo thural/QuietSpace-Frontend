@@ -18,6 +18,7 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
 import { useAuthStore } from "./hooks/zustand";
+import SignoutPage from "./pages/signout/SignoutPage";
 
 const App = () => {
 
@@ -50,6 +51,8 @@ const App = () => {
                             <Route path="reposts" element={<RepostNotifications />} />
                         </Route>
                         <Route path="/settings/*" element={<SettingsPage />} />
+                        <Route path="/signin" element = {<AuthPage />} />
+                        <Route path="/signout" element={<SignoutPage />} />
                     </Routes>
                 </>
             )}

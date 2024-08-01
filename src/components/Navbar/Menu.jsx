@@ -45,7 +45,7 @@ const Menu = () => {
                     </div>
                 </Link>
 
-                <Link to="/logout">
+                <Link to="/signout">
                     <div className="clickable">
                         <p>Logout</p>
                         <PiSignOut />

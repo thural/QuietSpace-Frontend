@@ -6,7 +6,7 @@ import { fetchLogin, fetchSignup } from "../api/authRequests";
 export const usePostLogin = () => {
 
     const queryClient = useQueryClient();
-    const { setAuthData } = useAuthStore();
+    const { setAuthData, setForceLogin } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
         console.log("login response from backend was success");
@@ -15,6 +15,7 @@ export const usePostLogin = () => {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
+        setForceLogin(false);
     }
 
     const onError = (error, variables, context) => {

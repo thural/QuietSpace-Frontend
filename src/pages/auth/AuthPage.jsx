@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./styles/authStyles"
 import SignupForm from "../../components/Auth/SignupForm";
 import LoginForm from "../../components/Auth/LoginForm";
-import { Text, Title } from "@mantine/core";
+import { LoadingOverlay, Text, Title } from "@mantine/core";
 import { loadAccessToken } from "../../hooks/useToken";
 import { useAuthStore } from "../../hooks/zustand";
+import { redirect } from "react-router-dom";
 
 const AuthPage = () => {
 
