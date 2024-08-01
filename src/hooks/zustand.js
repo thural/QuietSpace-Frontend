@@ -9,12 +9,16 @@ export const bearStore = create((set) => ({
 
 export const useAuthStore = create(set => ({
     data: { message: "", accessToken: "", refreshToken: "", userId: "" },
+    forceLogin: false,
     resetAuthData: () => set({
         data: { message: "", accessToken: "",refreshToken: "", userId: "" }
     }),
     setAuthData: (authData) => set({
         data: authData
     }),
+    setForceLogin: (value) => set({
+        forceLogin: value
+    })
 }));
 
 export const viewStore = create(set => ({

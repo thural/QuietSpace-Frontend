@@ -17,6 +17,7 @@ import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
+import { useAuthStore } from "./hooks/zustand";
 
 const App = () => {
 
@@ -27,11 +28,13 @@ const App = () => {
         isError: isUserError
     } = useGetCurrentUser();
 
+    const {forceLogin} = useAuthStore();
+
 
 
     return (
         <MantineProvider>
-            {!isUserSuccess ? (<AuthPage />) : isUserLoading ? (<h1>Loading ..</h1>) : (
+            {forceLogin || !isUserSuccess ? (<AuthPage />) : isUserLoading ? (<h1>Loading ..</h1>) : (
                 <>
                     <NavBar />
                     <Routes>
