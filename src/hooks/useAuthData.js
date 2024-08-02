@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "./zustand";
-import { LOGIN_URL, SIGNUP_URL } from "../constants/ApiPath";
-import { fetchAccessToken, fetchLogin, fetchSignup } from "../api/authRequests";
+import { fetchAccessToken, fetchActivation, fetchLogin, fetchSignup } from "../api/authRequests";
 import { useNavigate } from "react-router-dom";
 
 export const usePostLogin = () => {
@@ -23,7 +22,7 @@ export const usePostLogin = () => {
 
     return useMutation({
         mutationFn: async (formData) => {
-            const response = await fetchLogin(LOGIN_URL, formData);
+            const response = await fetchLogin(formData);
             return await response.json();
         },
         onSuccess,
@@ -58,7 +57,7 @@ export const usePostLogout = () => {
 
     return useMutation({
         mutationFn: async () => {
-            const response = await fetchLogout(LOGOUT_URL, auth["accessToken"]);
+            const response = await fetchLogout(auth["accessToken"]);
             return await response.json();
         },
         onSuccess,
@@ -68,22 +67,24 @@ export const usePostLogout = () => {
 
 export const usePostSignup = () => {
 
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { setAuthData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["posts", "user", "chats"]);
-        setAuthData(data);
+        console.log("email in useSignup context: ", context.email);
+        navigate("/activation", { state: { email: context.email } })
     }
 
     const onError = (error, variables, context) => {
+        console.log("email in useSignup context: ", context.email);
         console.log("error on signup:", error.message)
     }
 
     return useMutation({
         mutationFn: async (formData) => {
-            const response = await fetchSignup(SIGNUP_URL, formData);
-            return await response.json();
+            console.log("form data on signup mutation: ", formData);
+            const response = await fetchSignup(formData);
+            return { email: formData.email };
         },
         onSuccess,
         onError
@@ -123,5 +124,25 @@ export const useRefreshToken = () => {
         refetchOnWindowFocus: false,
         refetchIntervalInBackground: false,
         select: (data) => data.accessToken
+    });
+}
+
+export const useActivation = () => {
+
+    const onSuccess = (data, variables, context) => {
+        console.log("account activation success")
+    }
+
+    const onError = (error, variables, context) => {
+        console.log("error on account activation:", error.message)
+    }
+
+    return useMutation({
+        mutationFn: async (code) => {
+            const response = await fetchActivation(code);
+            return await response.json();
+        },
+        onSuccess,
+        onError
     });
 }

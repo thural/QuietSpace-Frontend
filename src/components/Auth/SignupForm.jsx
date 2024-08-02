@@ -25,10 +25,10 @@ const SignupForm = ({ setAuthState }) => {
         event.preventDefault();
 
         if (password !== confirmPassword) {
-            alert("passwords does not match, try again!")
+            alert("passwords does not match, try again!");
+            delete formData["confirmPassword"];
         }
         else {
-            delete formData["confirmPassword"];
             signupMutation.mutate(formData);
         }
     }

@@ -20,6 +20,7 @@ import SignoutPage from "./pages/signout/SignoutPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
 import { useAuthStore } from "./hooks/zustand";
 import { loadAccessToken } from "./hooks/useToken";
+import ActivationPage from "./pages/auth/ActivationPage";
 
 const App = () => {
 
@@ -56,6 +57,7 @@ const App = () => {
                         <Route path="/settings/*" element={<SettingsPage />} />
                         <Route path="/signin" element={<AuthPage />} />
                         <Route path="/signout" element={<SignoutPage />} />
+                        <Route path="/activation" element={<ActivationPage />} />
                     </Routes>
                 </>
             )}
