@@ -1,8 +1,8 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {useAuthStore} from "./zustand";
-import {COMMENT_PATH} from "../constants/ApiPath";
-import {fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment} from "../api/commentRequests";
-import {fetchReaction} from "../api/postRequests";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "./zustand";
+import { COMMENT_PATH } from "../constants/ApiPath";
+import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment } from "../api/commentRequests";
+import { fetchReaction } from "../api/postRequests";
 
 
 export const useGetComments = (postId) => {

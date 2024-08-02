@@ -1,5 +1,5 @@
 import styles from "./styles/queryContainerStyles";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQueryUsers } from "../../hooks/useUserData";
 import { useCreateChat } from "../../hooks/useChatData";
@@ -37,7 +37,7 @@ const QueryContainer = () => {
     }
 
     const handleQuerySubmit = async (value) => {
-        if(isSubmitting) return;
+        if (isSubmitting) return;
         setIsSubmitting(true);
         await makeQueryMutation.mutate(value);
         setTimeout(() => {

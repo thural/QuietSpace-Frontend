@@ -17,7 +17,7 @@ const ChatContainer = () => {
             <QueryContainer />
             {
                 (chats?.length > 0) ?
-                    chats.map((chat, index) => <Chat key={index} chat={chat}/>)
+                    chats.map((chat, index) => <Chat key={index} chat={chat} />)
                     : <Text ta="center">there's no chat yet</Text>
             }
         </div>

@@ -85,7 +85,7 @@ const styles = createUseStyles({
       gap: '.3em',
       color: 'gray'
     },
-    '& .poll-toggle':{
+    '& .poll-toggle': {
       cursor: 'pointer',
     }
   },

@@ -1,5 +1,5 @@
 import { LOGOUT_URL, REFRESH_TOKEN } from "../constants/ApiPath";
-import {getApiResponse} from "./commonRequest";
+import { getApiResponse } from "./commonRequest";
 
 export const fetchSignup = async (url, body) => {
     try {

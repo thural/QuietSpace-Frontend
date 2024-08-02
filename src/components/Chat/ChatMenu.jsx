@@ -21,7 +21,7 @@ const ChatMenu = ({ handleDeleteChat, isMutable }) => {
 
             <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
 
-            <div onClick={() => setDisplay('none')} className={classes.menuList} style={{display}}>
+            <div onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
 
                 {isMutable &&
                     <>

@@ -83,7 +83,7 @@
   font-weight: 500;
 }
 
-.comment .comment-options > * {
+.comment .comment-options>* {
   cursor: pointer;
 }
 

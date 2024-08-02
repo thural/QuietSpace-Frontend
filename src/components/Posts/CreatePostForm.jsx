@@ -7,7 +7,7 @@ import { generatePfp } from "../../utils/randomPfp";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
 import ComboMenu from "./ComboMenu";
-import {viewStore} from "../../hooks/zustand";
+import { viewStore } from "../../hooks/zustand";
 
 const CreatePostForm = () => {
 
@@ -36,14 +36,14 @@ const CreatePostForm = () => {
 
         const poll = {
             dueDate: null,
-            options:[]
+            options: []
         }
 
         Object.entries(postData).forEach(([key, value]) => {
-            if(key.includes("option")) poll.options.push(value)
+            if (key.includes("option")) poll.options.push(value)
         });
 
-        const requestBody = poll.options.length ? {...postData, poll} : postData;
+        const requestBody = poll.options.length ? { ...postData, poll } : postData;
 
         await addPost.mutate(requestBody);
     }

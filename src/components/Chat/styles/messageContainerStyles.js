@@ -22,7 +22,7 @@ const styles = createUseStyles({
       marginTop: '100%'
     }
   },
-  chatHeadline:{
+  chatHeadline: {
     gap: '.8rem',
     position: 'relative',
     paddingLeft: '0.5rem',

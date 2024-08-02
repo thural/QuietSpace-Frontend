@@ -2,8 +2,8 @@ import React from "react";
 import styles from "./styles/pollStyles";
 import { Flex, Progress, Text } from "@mantine/core";
 import { parseCount } from "../../utils/stringUtils";
-import {useQueryClient} from "@tanstack/react-query";
-import {useVotePoll} from "../../hooks/usePostData";
+import { useQueryClient } from "@tanstack/react-query";
+import { useVotePoll } from "../../hooks/usePostData";
 
 const Poll = ({ pollData, postId }) => {
 

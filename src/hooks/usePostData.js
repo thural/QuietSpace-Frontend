@@ -1,4 +1,4 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchCreatePost,
     fetchDeletePost,
@@ -7,7 +7,7 @@ import {
     fetchReaction,
     fetchVotePoll
 } from "../api/postRequests";
-import {useAuthStore, viewStore} from "./zustand";
+import { useAuthStore, viewStore } from "./zustand";
 
 
 export const useGetPosts = () => {

@@ -1,5 +1,5 @@
 import { FOLLOW_PATH, USER_PATH } from "../constants/ApiPath";
-import {getApiResponse} from "./commonRequest";
+import { getApiResponse } from "./commonRequest";
 
 export const fetchUser = async (url, token) => {
     try {

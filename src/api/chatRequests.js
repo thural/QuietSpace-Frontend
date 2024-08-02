@@ -1,5 +1,5 @@
 import { CHAT_PATH_BY_MEMBER } from "../constants/ApiPath";
-import {getApiResponse} from "./commonRequest";
+import { getApiResponse } from "./commonRequest";
 
 export const fetchChats = async (userId, token) => {
     try {

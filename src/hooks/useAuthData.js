@@ -1,21 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "./zustand";
 import { LOGIN_URL, SIGNUP_URL } from "../constants/ApiPath";
-import { fetchLogin, fetchSignup } from "../api/authRequests";
+import { fetchAccessToken, fetchLogin, fetchSignup } from "../api/authRequests";
+import { useNavigate } from "react-router-dom";
 
 export const usePostLogin = () => {
 
-    const queryClient = useQueryClient();
     const { setAuthData, setForceLogin } = useAuthStore();
+    const navigate = useNavigate();
 
     const onSuccess = (data, variables, context) => {
         console.log("login response from backend was success");
-        queryClient.invalidateQueries(["posts", "user", "chats"]);
-        queryClient.setQueryData("auth", data);
-        localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
         setForceLogin(false);
+        navigate("/");
     }
 
     const onError = (error, variables, context) => {
@@ -35,27 +34,26 @@ export const usePostLogin = () => {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchIntervalInBackground: false,
-        select: (data) => data.content
     });
 }
 
 export const usePostLogout = () => {
 
     const queryClient = useQueryClient();
-    const { setAuthData } = useAuthStore();
+    const { setAuthData, resetAuthData } = useAuthStore();
+
+    queryClient.removeQueries()
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts", "user", "chat"]);
-        queryClient.resetQueries("auth");
         console.log("user logout was success");
-        localStorage.removeItem("accessToken");
-        localStorage.setItem("refreshToken");
-        setAuthData({ message: "", accessToken: "", userId: "" });
+        localStorage.clear();
+        resetAuthData();
     }
 
     const onError = (error, variables, context) => {
         console.log("error on logout:", error.message);
-        setAuthData({ message: "", accessToken: "", userId: "" });
+        resetAuthData();
     }
 
     return useMutation({
@@ -75,7 +73,6 @@ export const usePostSignup = () => {
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts", "user", "chats"]);
-        queryClient.setQueryData("auth", data);
         setAuthData(data);
     }
 
@@ -90,5 +87,41 @@ export const usePostSignup = () => {
         },
         onSuccess,
         onError
+    });
+}
+
+
+export const useRefreshToken = () => {
+
+    const { setAuthData, setForceLogin } = useAuthStore();
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    const onSuccess = (data, variables, context) => {
+        console.log("access token refresh was success");
+        setAuthData({ message: "", accessToken: data, refreshToken, userId: "" })
+        setForceLogin(false);
+    }
+
+    const onError = (error, variables, context) => {
+        setForceLogin(true);
+        setAuthState("login");
+        console.log("error on fetching access token: ", error);
+    }
+
+    return useMutation({
+        mutationFn: async () => {
+            console.log("useRefreshToken was called")
+            const response = await fetchAccessToken(refreshToken);
+            return await response.json();
+        },
+        onSuccess,
+        onError,
+        staleTime: false,
+        refetchInterval: 540000,
+        gcTime: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchIntervalInBackground: false,
+        select: (data) => data.accessToken
     });
 }

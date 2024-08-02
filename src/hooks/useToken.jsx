@@ -1,43 +1,55 @@
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from './zustand';
 import { fetchAccessToken, fetchLogout } from '../api/authRequests';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 export const loadAccessToken = async () => {
 
-    const { data: authData, setAuthData } = useAuthStore();
+    const { setAuthData, setForceLogin } = useAuthStore();
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState(null);
     const [accessToken, setAccessToken] = useState("");
-
     const refreshToken = localStorage.getItem("refreshToken");
-      
 
-    useEffect(() => {
-        setInterval(() => {
-            setIsLoading(true);
-            fetchAccessToken(refreshToken)
+    const loadData = () => {
+
+        setIsLoading(true);
+        fetchAccessToken(refreshToken)
             .then((response) => {
                 console.log("response: ", response);
                 return response.json();
             })
-            .then(data => setAccessToken(data.accessToken))
+            .then(data => {
+                console.log("access token: ", data.accessToken);
+                setAccessToken(data.accessToken);
+            })
             .catch(error => {
+                console.log("error on fetching access token: ", error);
                 setError(error);
                 setIsError(true);
-                console.log("error on fetching access token: ", error);
+                setForceLogin(true);
             });
-            setIsLoading(false);
+        setIsLoading(false);
+
+    }
+
+    useEffect(() => {
+
+        loadData();
+        const timer = setInterval(() => {
+            loadData();
         }, 540000);
+        return () => clearInterval(timer);
+
     }, [])
 
     useEffect(() => {
-        console.log("setting auth data...");
         setAuthData({ message: "", accessToken, refreshToken, userId: "" })
     }, [accessToken]);
 
-    return {isSuccess: !!accessToken, isLoading, isError, error}
+    return { isSuccess: !!accessToken, isLoading, isError, error }
 
 }
 
@@ -46,40 +58,43 @@ export const getAccessToken = async (refreshToken) => {
 }
 
 export const unloadTokens = () => {
+
+    const { resetAuthData, setForceLogin } = useAuthStore();
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState(null);
-
     const queryClient = useQueryClient();
-    queryClient.invalidateQueries(["user"]);
-
     const refreshToken = localStorage.getItem("refreshToken");
-
+    const navigate = useNavigate();
     const hasRun = useRef(false);
 
     useEffect(() => {
+
         if (hasRun.current) return;
         hasRun.current = true;
 
         setIsLoading(true);
 
         fetchLogout(refreshToken)
-        .then((response) => {
-            console.log("response on signing out: ", response);
-            setIsSuccess(true);
-        })
-        .catch(error => {
-            setError(error);
-            setIsError(true);
-            console.log("error on signing out: ", error);
-        });
+            .then((response) => {
+                console.log("response on signing out: ", response);
+                setIsSuccess(true);
+            })
+            .catch(error => {
+                setError(error);
+                setIsError(true);
+                console.log("error on signing out: ", error);
+            });
 
-        localStorage.clear();
         setIsLoading(false);
+        localStorage.clear();
+        resetAuthData();
+        queryClient.clear();
+        setForceLogin(true);
+        navigate("/signin");
+
     }, [])
 
-    console.log("isSuccess: ", isSuccess)
-
-    return {isSuccess, isLoading, isError, error}
+    return { isSuccess, isLoading, isError, error }
 }

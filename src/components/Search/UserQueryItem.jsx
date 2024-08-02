@@ -1,18 +1,16 @@
 import React from "react";
 import styles from "./styles/userQueryItemStyles";
 
-import {Avatar, Box, Button, Flex, Text, Title} from "@mantine/core";
+import { Avatar, Box, Button, Flex, Text, Title } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
-import {useQueryClient} from "@tanstack/react-query";
-import {useToggleFollow} from "../../hooks/useUserData";
+import { useQueryClient } from "@tanstack/react-query";
+import { useToggleFollow } from "../../hooks/useUserData";
 
 const QueryItem = ({ user, handleItemClick }) => {
 
     const queryClient = useQueryClient();
     const follows = queryClient.getQueryData(["follows"]);
     const toggleFollow = useToggleFollow();
-
-    console.log("follows in user query item: ", follows);
 
     const isFollowing = follows?.content?.some(follow => follow.followingId === user.id);
 

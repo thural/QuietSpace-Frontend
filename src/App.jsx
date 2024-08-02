@@ -6,7 +6,7 @@ import ChatPage from "./pages/chat/ChatPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
-import { MantineProvider } from '@mantine/core';
+import { LoadingOverlay, MantineProvider } from '@mantine/core';
 import './App.css'
 
 import ProfilePage from "./pages/profile/ProfilePage";
@@ -16,9 +16,10 @@ import RequestNotifications from "./pages/notification/RequestNotifications";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
+import SignoutPage from "./pages/signout/SignoutPage";
 import { useGetCurrentUser } from "./hooks/useUserData";
 import { useAuthStore } from "./hooks/zustand";
-import SignoutPage from "./pages/signout/SignoutPage";
+import { loadAccessToken } from "./hooks/useToken";
 
 const App = () => {
 
@@ -29,13 +30,15 @@ const App = () => {
         isError: isUserError
     } = useGetCurrentUser();
 
-    const {forceLogin} = useAuthStore();
+    const { forceLogin } = useAuthStore();
+    const { isSuccess, isLoading, isError, error } = loadAccessToken();
 
+    if (isLoading || isUserLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
 
 
     return (
-        <MantineProvider>
-            {forceLogin || !isUserSuccess ? (<AuthPage />) : isUserLoading ? (<h1>Loading ..</h1>) : (
+        <>
+            {(forceLogin || !isUserSuccess) ? (<AuthPage />) : (
                 <>
                     <NavBar />
                     <Routes>
@@ -51,12 +54,12 @@ const App = () => {
                             <Route path="reposts" element={<RepostNotifications />} />
                         </Route>
                         <Route path="/settings/*" element={<SettingsPage />} />
-                        <Route path="/signin" element = {<AuthPage />} />
+                        <Route path="/signin" element={<AuthPage />} />
                         <Route path="/signout" element={<SignoutPage />} />
                     </Routes>
                 </>
             )}
-        </MantineProvider>
+        </>
     )
 }
 

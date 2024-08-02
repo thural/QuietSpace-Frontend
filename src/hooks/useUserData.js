@@ -1,7 +1,7 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {useAuthStore} from "./zustand";
-import {USER_PATH, USER_PROFILE_URL} from "../constants/ApiPath";
-import {fetchFollowers, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery} from "../api/userRequests";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "./zustand";
+import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
+import { fetchFollowers, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
 
 
 export const useGetCurrentUser = () => {
@@ -51,7 +51,7 @@ export const useGetUserById = (userId) => {
     const { data: authData } = useAuthStore();
 
     return useQuery({
-        queryKey: ["users", {id: userId}],
+        queryKey: ["users", { id: userId }],
         queryFn: async () => {
             const response = await fetchUserById(userId, authData.accessToken);
             return await response.json();

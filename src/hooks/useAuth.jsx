@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Keycloak from "keycloak-js";
 
 const useAuth = () => {
@@ -14,7 +14,7 @@ const useAuth = () => {
             clientId: import.meta.env.VITE_KEYCLOAK_CLIENT,
         })
 
-        client.init({onLoad:"login-required"})
+        client.init({ onLoad: "login-required" })
             .then(response => setIsAuthenticated(response));
 
     }, []);

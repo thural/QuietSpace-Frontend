@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Anchor, Box, Container, Flex, Input, Loader, LoadingOverlay, Title} from "@mantine/core";
+import React, { useEffect, useRef, useState } from "react";
+import { Anchor, Box, Container, Flex, Input, Loader, LoadingOverlay, Title } from "@mantine/core";
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
 
 import styles from "./styles/searchbarStyles";
 import Post from "../Posts/Post";
-import {useQueryPosts} from "../../hooks/usePostData";
-import {generatePfp} from "../../utils/randomPfp";
-import {useGetFollows, useQueryUsers} from "../../hooks/useUserData";
+import { useQueryPosts } from "../../hooks/usePostData";
+import { generatePfp } from "../../utils/randomPfp";
+import { useGetFollows, useQueryUsers } from "../../hooks/useUserData";
 import UserQueryItem from "./UserQueryItem";
 
 function SearchContainer() {
@@ -17,25 +17,22 @@ function SearchContainer() {
     const [postQueryResult, setPostQueryResult] = useState([]);
 
     const fetchedFollows = useGetFollows();
-    console.log("followings data: ", fetchedFollows.data);
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
 
-    console.log("USER QUERY IN SEARCHBAR", userQueryResult);
-    console.log("POSTS QUERY IN SEARCHBAR", postQueryResult);
 
     useEffect(() => {
         fetchUserQuery.mutate(".");
     }, []);
 
     useEffect(() => {
-        if(!userQueryResult.length) setFocused(false);
+        if (!userQueryResult.length) setFocused(false);
     }, [userQueryResult])
 
     const handleInputChange = (event) => {
         event.preventDefault();
         const value = event.target.value;
-        if(value.length) {
+        if (value.length) {
             setFocused(true);
             fetchUserQuery.mutate(value);
         } else {
@@ -55,7 +52,7 @@ function SearchContainer() {
     }
 
     const handleInputFocus = (event) => {
-        if(event.target.value.length) setFocused(true);
+        if (event.target.value.length) setFocused(true);
     }
 
     const handleInputBlur = () => {
@@ -63,7 +60,7 @@ function SearchContainer() {
     }
 
     const resultAppliedStyle = focused ? { display: 'block' } : { display: 'none' };
-    const searchAppliedStyle = focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)'} : {};
+    const searchAppliedStyle = focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};
     const classes = styles();
 
     return (
@@ -86,7 +83,7 @@ function SearchContainer() {
                 {
                     fetchUserQuery.isPending ? <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} /> :
                         fetchUserQuery.isError ? <h1>{fetchPostQuery.error.message}</h1> :
-                             userQueryResult.map((user, index) =>
+                            userQueryResult.map((user, index) =>
                                 <UserQueryItem key={index} user={user} handleItemClick={handleItemClick} />)
                 }
             </Box>

@@ -1,9 +1,9 @@
 import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
-    
-    container:{
-        paddingTop:'4rem',
+
+    container: {
+        paddingTop: '4rem',
         '& a': {
             all: 'unset',
             textDecoration: 'none'

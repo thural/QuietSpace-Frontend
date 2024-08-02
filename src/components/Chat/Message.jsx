@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./styles/messageStyles";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {useDeleteChat, useDeleteMessage} from "../../hooks/useChatData";
+import { useDeleteChat, useDeleteMessage } from "../../hooks/useChatData";
 
 const Message = ({ message }) => {
 
@@ -29,9 +29,10 @@ const Message = ({ message }) => {
 
 
 
-    const appliedStyle = senderId !== user.id ? { marginRight: "auto",
-     borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
-     } : {
+    const appliedStyle = senderId !== user.id ? {
+        marginRight: "auto",
+        borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
+    } : {
         marginLeft: "auto",
         color: "white",
         borderColor: "blue",

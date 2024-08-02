@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-  message: {		
+  message: {
     maxWidth: '200px',
     position: 'relative',
     border: '#a1a1a1 solid 1px',

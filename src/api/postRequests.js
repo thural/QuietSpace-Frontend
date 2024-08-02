@@ -27,7 +27,7 @@ export const fetchDeletePost = async (url, postId, token) => {
 
 export const fetchPostQuery = async (queryText, token) => {
     try {
-        return await getApiResponse(POST_URL + `/search?query=${queryText}`, 'GET',null,  token);
+        return await getApiResponse(POST_URL + `/search?query=${queryText}`, 'GET', null, token);
     } catch (error) { throw Error(error.message) }
 }
 

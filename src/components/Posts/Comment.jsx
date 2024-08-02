@@ -1,12 +1,12 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styles from "./styles/commentStyles";
 import emoji from "react-easy-emoji";
 import { useQueryClient } from "@tanstack/react-query";
-import {useDeleteComment, useToggleReaction} from "../../hooks/useCommentData";
+import { useDeleteComment, useToggleReaction } from "../../hooks/useCommentData";
 import { Avatar, Box, Flex } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
 import ReplyForm from "./ReplyForm";
-import {ContentType, LikeType} from "../../utils/enumClasses";
+import { ContentType, LikeType } from "../../utils/enumClasses";
 
 
 const Comment = ({ comment }) => {
@@ -44,38 +44,38 @@ const Comment = ({ comment }) => {
 
     const likeCount = 0; // TODO: write backend code to return like counts
     const isLiked = comment.userReaction?.likeType === LikeType.LIKE.toString();
-    
+
     const classes = styles();
 
 
     return (
         <Box className={classes.container}>
-                <Flex className={classes.mainElement}>
-                    <Avatar className={classes.avatar} size="1.75rem"
-                            src={generatePfp("beam")}>{user.username[0].toUpperCase()}</Avatar>
-                    <Flex className={classes.commentElement}>
-                        <Box key={comment.id} className={classes.textBody}>
-                            {
-                                emoji(comment.text).map((element, index) => (
-                                    <p key={index} className="comment-text">{element}</p>
-                                ))
-                            }
-                        </Box>
-                        <Box className={classes.commentOptions}>
-                            <p className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</p>
-                            <p className="comment-reply" onClick={handleCommentReply}>reply</p>
-                            <p className="comment-reply-count">{comment.replyCount}</p>
-                            {
-                                comment.username === user.username &&
-                                <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
-                            }
-                        </Box>
+            <Flex className={classes.mainElement}>
+                <Avatar className={classes.avatar} size="1.75rem"
+                    src={generatePfp("beam")}>{user.username[0].toUpperCase()}</Avatar>
+                <Flex className={classes.commentElement}>
+                    <Box key={comment.id} className={classes.textBody}>
                         {
-                            replyFormView &&
-                            <ReplyForm postId={comment.postId} parentId={comment.id} toggleView={setReplyFormView}/>
+                            emoji(comment.text).map((element, index) => (
+                                <p key={index} className="comment-text">{element}</p>
+                            ))
                         }
-                    </Flex>
+                    </Box>
+                    <Box className={classes.commentOptions}>
+                        <p className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</p>
+                        <p className="comment-reply" onClick={handleCommentReply}>reply</p>
+                        <p className="comment-reply-count">{comment.replyCount}</p>
+                        {
+                            comment.username === user.username &&
+                            <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
+                        }
+                    </Box>
+                    {
+                        replyFormView &&
+                        <ReplyForm postId={comment.postId} parentId={comment.id} toggleView={setReplyFormView} />
+                    }
                 </Flex>
+            </Flex>
         </Box>
     )
 }

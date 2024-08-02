@@ -11,7 +11,7 @@ export const useAuthStore = create(set => ({
     data: { message: "", accessToken: "", refreshToken: "", userId: "" },
     forceLogin: false,
     resetAuthData: () => set({
-        data: { message: "", accessToken: "",refreshToken: "", userId: "" }
+        data: { message: "", accessToken: "", refreshToken: "", userId: "" }
     }),
     setAuthData: (authData) => set({
         data: authData
@@ -33,17 +33,17 @@ export const viewStore = create(set => ({
 }));
 
 export const useChatStore = create(set => ({
-    data: {activeChatId: null, messageInput:{}},
+    data: { activeChatId: null, messageInput: {} },
 
     setActiveChatId: (activeChatId) => {
         set(state => ({
-            data: {...state, activeChatId}
+            data: { ...state, activeChatId }
         }));
     },
 
     setMessageInput: (messageInput) => {
         set(state => ({
-            data: {...state, messageInput}
+            data: { ...state, messageInput }
         }))
     }
 }));

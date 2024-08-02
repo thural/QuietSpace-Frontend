@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 
-  container:{
+  container: {
     display: 'flex',
     flexFlow: 'row no-wrap',
     gap: '.3rem'
@@ -15,11 +15,11 @@ const styles = createUseStyles({
     borderRadius: '1rem',
     minHeight: '4rem',
 
-    '& .react-emoji':{
+    '& .react-emoji': {
       alignItems: 'normal',
     },
 
-    '& .react-input-emoji--button':{
+    '& .react-input-emoji--button': {
       width: '2.5rem',
       height: '2.5rem',
       margin: '.5rem 0',
@@ -27,13 +27,13 @@ const styles = createUseStyles({
       background: '#F0F2F4 !important'
     },
 
-    '& .react-input-emoji--container':{
+    '& .react-input-emoji--container': {
       background: '#F0F2F4 !important',
       margin: '.25rem .75rem',
       border: 0
     },
 
-    '& .react-input-emoji--wrapper':{
+    '& .react-input-emoji--wrapper': {
       background: '#edeeef'
     }
   },

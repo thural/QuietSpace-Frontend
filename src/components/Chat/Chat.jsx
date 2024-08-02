@@ -1,4 +1,4 @@
-import {Avatar, Box, Text} from "@mantine/core";
+import { Avatar, Box, Text } from "@mantine/core";
 import styles from "./styles/contactStyles";
 import { useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "../../hooks/zustand";

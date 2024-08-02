@@ -17,7 +17,7 @@ const styles = createUseStyles({
     borderRadius: '1em',
     backgroundColor: 'white',
     border: '1px solid gray',
-    '& h3':{
+    '& h3': {
       marginTop: '0',
       marginBottom: '1.2rem'
     },

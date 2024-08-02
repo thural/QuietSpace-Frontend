@@ -1,5 +1,5 @@
 import Post from "./Post";
-import React, {useMemo, useState} from "react";
+import React, { useMemo, useState } from "react";
 import CreatePostForm from "./CreatePostForm";
 import { viewStore } from "../../hooks/zustand";
 import { useGetPosts } from "../../hooks/usePostData";

@@ -7,7 +7,7 @@ const styles = createUseStyles({
       border: 'none',
       height: '0.5px',
       backgroundColor: 'rgb(216 216 216)',
-      marginTop:'1rem'
+      marginTop: '1rem'
     }
   }
 });

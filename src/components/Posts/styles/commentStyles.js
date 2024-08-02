@@ -6,18 +6,18 @@ const styles = createUseStyles({
     fontSize: '.9rem',
     margin: '.8rem 0 1.2rem 0',
     gap: '.5rem',
-    '& .right-section':{
+    '& .right-section': {
       flexDirection: 'column',
       gap: '1.2rem'
     }
   },
 
-  mainElement:{
+  mainElement: {
     display: 'flex',
     gap: '.5rem'
   },
 
-  commentElement:{
+  commentElement: {
     display: 'flex',
     flexFlow: 'column nowrap',
     gap: '.5rem'
@@ -58,7 +58,7 @@ const styles = createUseStyles({
     '& > *': {
       cursor: 'pointer',
     },
-    '& p':{
+    '& p': {
       margin: '0',
       fontSize: '.8rem',
       color: '#4d4d4d'

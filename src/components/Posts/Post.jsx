@@ -16,7 +16,7 @@ import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 import { parseCount } from "../../utils/stringUtils";
 import Poll from "./Poll";
 import PostMenu from "./PostMenu";
-import {ContentType, LikeType} from "../../utils/enumClasses";
+import { ContentType, LikeType } from "../../utils/enumClasses";
 
 
 
@@ -81,7 +81,7 @@ const Post = ({ post, avatarUrl }) => {
                 {post.isPoll && <Poll pollData={post.pollData} />}
             </Box>
 
-            {post.poll && <Poll pollData={post.poll} postId={postId}/>}
+            {post.poll && <Poll pollData={post.poll} postId={postId} />}
 
             <Box className="panel">
 

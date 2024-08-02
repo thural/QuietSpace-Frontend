@@ -24,8 +24,8 @@ const styles = createUseStyles({
       borderRadius: '1rem',
       backgroundColor: 'black'
     },
-    '& .button':{
-      fontSize:'medium'
+    '& .button': {
+      fontSize: 'medium'
     },
     '& form': {
       gap: '1rem',
@@ -57,7 +57,7 @@ const styles = createUseStyles({
     '& h3': {
       marginBottom: '0'
     },
-    '& .signup-prompt':{
+    '& .signup-prompt': {
       fontWeight: '500',
       fontSize: '1.1rem'
     }

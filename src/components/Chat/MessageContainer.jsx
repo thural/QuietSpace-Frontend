@@ -1,30 +1,30 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Message from "./Message";
-import {Avatar, Flex, Text, Title} from "@mantine/core";
+import { Avatar, Flex, Text, Title } from "@mantine/core";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
 import { useQueryClient } from "@tanstack/react-query";
-import {useDeleteChat, useGetChatById, useGetMessagesByChatId, usePostNewMessage} from "../../hooks/useChatData";
-import {useAuthStore, useChatStore} from "../../hooks/zustand";
+import { useDeleteChat, useGetChatById, useGetMessagesByChatId, usePostNewMessage } from "../../hooks/useChatData";
+import { useAuthStore, useChatStore } from "../../hooks/zustand";
 import ChatMenu from "./ChatMenu";
-import {generatePfp} from "../../utils/randomPfp";
+import { generatePfp } from "../../utils/randomPfp";
 
 
 const MessageContainer = () => {
 
     const { data: { activeChatId }, setActiveChatId } = useChatStore();
-    const { data: storeUserData} = useAuthStore();
+    const { data: storeUserData } = useAuthStore();
 
     console.log("ACTIVE CHAT ID: ", activeChatId);
 
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
-    const currentChat = queryClient.getQueryData(["chats"], {id:activeChatId}).find(chat => chat.id === activeChatId);
+    const currentChat = queryClient.getQueryData(["chats"], { id: activeChatId }).find(chat => chat.id === activeChatId);
     // TODO: optimize current chat retrieval
     const receiverName = currentChat?.members[0].username;
     console.log("CURRENT CHAT in message container: ", receiverName);
 
-    if (!chats.length) return <Text style={{margin:"1rem"}} ta="center">there's no messages yet</Text>
+    if (!chats.length) return <Text style={{ margin: "1rem" }} ta="center">there's no messages yet</Text>
 
     useEffect(() => {
         setActiveChatId(chats[0]["id"]);

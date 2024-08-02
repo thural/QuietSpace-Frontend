@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-  
+
   wrapper: {
     position: 'relative',
     padding: '0',
@@ -37,7 +37,7 @@ const styles = createUseStyles({
       minWidth: '.8rem',
       maxHeight: '.8rem'
     },
-    
+
     '& .text': {
       margin: '1rem 0',
       marginTop: '.5rem',

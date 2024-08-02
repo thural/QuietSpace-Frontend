@@ -10,7 +10,7 @@ const SignupForm = ({ setAuthState }) => {
         role: "user",
         username: '',
         firstname: '',
-        lastname:'',
+        lastname: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -40,7 +40,7 @@ const SignupForm = ({ setAuthState }) => {
 
 
     const classes = styles();
-    
+
 
     return (
         <div className={classes.signup}>
@@ -96,7 +96,7 @@ const SignupForm = ({ setAuthState }) => {
                 fullWidth
                 radius="md"
                 variant="gradient"
-                gradient={{from: 'blue', to: 'cyan', deg: 90}}
+                gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
                 onClick={handleSubmit}>
                 submit
             </Button>

@@ -24,7 +24,7 @@ function SettingsContainer() {
 
     return (
         <Container size="600px" className={classes.container}>
-            
+
             <Title>settings</Title>
 
             <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile" style={{ margin: '1rem 0' }}>

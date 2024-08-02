@@ -2,13 +2,16 @@ import { useState } from "react";
 import styles from "./styles/loginFormStyles";
 import { Button, Text, Title } from "@mantine/core";
 import { usePostLogin } from "../../hooks/useAuthData";
+import { useNavigate } from "react-router-dom";
 
 
 const LoginForm = ({ setAuthState }) => {
 
     const [formData, setFormData] = useState({ email: "", password: "" });
-
+    const navigate = useNavigate();
     const loginMutation = usePostLogin();
+
+    if (loginMutation.isSuccess) navigate("/posts");
 
 
     const handleLoginForm = async (event) => {
@@ -24,7 +27,7 @@ const LoginForm = ({ setAuthState }) => {
 
 
     const classes = styles();
-    
+
 
     return (
         <>

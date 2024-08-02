@@ -27,7 +27,7 @@ class LikeType {
 
 class UserRole {
     static USER = new UserRole('USER');
-    static ADMIN= new UserRole('ADMIN');
+    static ADMIN = new UserRole('ADMIN');
 
     constructor(name) {
         this.name = name;
