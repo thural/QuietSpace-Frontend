@@ -11,6 +11,7 @@ const ActivationForm = ({ setAuthState, authState }) => {
     const activationNotice = (message) => alert(message);
     const activation = useActivation(authState, setAuthState, activationNotice);
 
+
     const handleResendCode = () => {
         console.log("email on activation state: ", authState.formData.email);
         fetchResendCode(authState.formData.email);
@@ -33,10 +34,11 @@ const ActivationForm = ({ setAuthState, authState }) => {
 
     return (
         <>
-            <div className={classes.login}>
+            <div className={classes.activation}>
                 <Title order={2}>Account Activation</Title>
-                <Title order={3}>{"activation code has been sent your email: " + authState.formData.email}</Title>
-                <form className='activation form'>
+                <Text size="md">{"enter code sent to your email: "}</Text>
+                <Text size="md">{authState.formData.email}</Text>
+                <form className='activation-form'>
                     <div className="otp-input">
                         <PinInput
                             length={6}
@@ -56,7 +58,7 @@ const ActivationForm = ({ setAuthState, authState }) => {
                         submit
                     </Button>
                 </form>
-                <Text className="resend-prompt">have not received the code?</Text>
+                <Text size="md">haven't received a code?</Text>
                 <Button className="button" variant="outline" onClick={handleResendCode}>resend code</Button>
             </div>
         </>

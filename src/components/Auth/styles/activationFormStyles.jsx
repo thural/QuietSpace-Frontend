@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-  login: {
+  activation: {
     gap: '0.5rem',
     color: 'black',
     display: 'flex',
@@ -57,7 +57,7 @@ const styles = createUseStyles({
     '& h3': {
       marginBottom: '0'
     },
-    '& .signup-prompt': {
+    '& .resend-prompt': {
       fontWeight: '500',
       fontSize: '1.1rem'
     }
