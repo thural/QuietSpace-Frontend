@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, PinInput, Text, Title } from "@mantine/core";
 import { useActivation } from "../../hooks/useAuthData";
 import { fetchResendCode } from "../../api/authRequests";
+import { displayCountdown } from "../../hooks/useTimer";
 
 
 const ActivationForm = ({ setAuthState, authState }) => {
@@ -10,6 +11,7 @@ const ActivationForm = ({ setAuthState, authState }) => {
     const [formData, setFormData] = useState({ activationCode: "" });
     const activationNotice = (message) => alert(message);
     const activation = useActivation(authState, setAuthState, activationNotice);
+    const tokenTimer = displayCountdown(15 * 60 * 1000, "token has expired"); // 15 minutes matching token expiration
 
 
     const handleResendCode = () => {
@@ -47,6 +49,10 @@ const ActivationForm = ({ setAuthState, authState }) => {
                             value={formData.activationCode}
                             onChange={handleChange}
                         />
+                    </div>
+                    <div className="timer">
+                        <Text>{"code will be expired in:"}</Text>
+                        {tokenTimer.component}
                     </div>
                     <Button
                         className="button"
