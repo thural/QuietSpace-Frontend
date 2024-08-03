@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./styles/authStyles"
 import SignupForm from "../../components/Auth/SignupForm";
 import LoginForm from "../../components/Auth/LoginForm";
+import ActivationForm from "../../components/Auth/ActivationForm";
 import { Text, Title } from "@mantine/core";
 import { loadAccessToken } from "../../hooks/useToken";
 
 const AuthPage = () => {
 
-    const [authState, setAuthState] = useState("login");
+    const [authState, setAuthState] = useState({ page: "login", formData: null });
     const { isLoading, isError, error } = loadAccessToken();
 
     const classes = styles();
@@ -20,8 +21,9 @@ const AuthPage = () => {
                 <Text className="secondary-text">where free speech and privacy is the priority</Text>
             </div>
             {
-                authState === "signup" ? <SignupForm setAuthState={setAuthState} /> :
-                    authState === "login" ? <LoginForm setAuthState={setAuthState} /> : null
+                authState.page === "signup" ? <SignupForm setAuthState={setAuthState} authState={authState} /> :
+                    authState.page === "login" ? <LoginForm setAuthState={setAuthState} authState={authState} /> :
+                        authState.page === "activation" ? <ActivationForm setAuthState={setAuthState} authState={authState} /> : null
             }
         </div>
     )

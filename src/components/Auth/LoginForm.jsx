@@ -1,18 +1,18 @@
-import { useState } from "react";
 import styles from "./styles/loginFormStyles";
+import { useEffect, useState } from "react";
 import { Button, Text, Title } from "@mantine/core";
 import { usePostLogin } from "../../hooks/useAuthData";
-import { useNavigate } from "react-router-dom";
 
 
-const LoginForm = ({ setAuthState }) => {
+const LoginForm = ({ setAuthState, authState }) => {
 
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const navigate = useNavigate();
-    const loginMutation = usePostLogin();
+    const authenticationNotice = (message) => alert(message);
+    const loginMutation = usePostLogin(authenticationNotice);
 
-    if (loginMutation.isSuccess) navigate("/posts");
-
+    useEffect(() => {
+        setFormData({ ...formData, ...authState.formData })
+    }, [])
 
     const handleLoginForm = async (event) => {
         console.log("form data on login submit: ", formData);
@@ -61,7 +61,7 @@ const LoginForm = ({ setAuthState }) => {
                     </Button>
                 </form>
                 <Text className="signup-prompt">don't have an account?</Text>
-                <Button className="button" variant="outline" onClick={() => setAuthState("signup")}>signup</Button>
+                <Button className="button" variant="outline" onClick={() => setAuthState({ page: "signup", formData })}>signup</Button>
             </div>
         </>
     )

@@ -9,15 +9,19 @@ export const bearStore = create((set) => ({
 
 export const useAuthStore = create(set => ({
     data: { message: "", accessToken: "", refreshToken: "", userId: "" },
-    forceLogin: false,
+    isAuthenticated: false,
+    isActivationStage: false,
     resetAuthData: () => set({
         data: { message: "", accessToken: "", refreshToken: "", userId: "" }
     }),
     setAuthData: (authData) => set({
         data: authData
     }),
-    setForceLogin: (value) => set({
-        forceLogin: value
+    setIsAuthenticated: (value) => set({
+        isAuthenticated: value
+    }),
+    setIsActivationStage: (value) => set({
+        isActivationStage: value
     })
 }));
 

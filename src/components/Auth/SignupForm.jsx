@@ -1,10 +1,11 @@
-import React, { useState } from "react";
 import styles from "./styles/signupFormStyles"
+import React, { useEffect, useState } from "react";
 import { Button, Text, Title } from "@mantine/core";
 import { usePostSignup } from "../../hooks/useAuthData";
 
-const SignupForm = ({ setAuthState }) => {
+const SignupForm = ({ setAuthState, authState }) => {
 
+    const signupMutation = usePostSignup(setAuthState);
 
     const [formData, setFormData] = useState({
         role: "user",
@@ -16,16 +17,16 @@ const SignupForm = ({ setAuthState }) => {
         confirmPassword: ''
     });
 
-
-    const signupMutation = usePostSignup();
-
+    useEffect(() => {
+        setFormData({ ...formData, ...authState.formData })
+    }, [])
 
     const handleSubmit = async (event) => {
         const { password, confirmPassword } = formData;
         event.preventDefault();
 
         if (password !== confirmPassword) {
-            alert("passwords does not match, try again!");
+            alert("passwords don't match, please try again");
             delete formData["confirmPassword"];
         }
         else {
@@ -34,7 +35,7 @@ const SignupForm = ({ setAuthState }) => {
     }
 
     const handleChange = (event) => {
-        const { name, value } = event.target
+        const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     }
 
@@ -103,7 +104,7 @@ const SignupForm = ({ setAuthState }) => {
             <Text className="login-prompt">already have account?</Text>
             <Button
                 variant="outline"
-                onClick={() => setAuthState("login")}>
+                onClick={() => setAuthState({ page: "login", formData })}>
                 login
             </Button>
         </div>

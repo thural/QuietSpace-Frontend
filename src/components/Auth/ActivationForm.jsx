@@ -1,33 +1,30 @@
+import styles from "./styles/activationFormStyles";
 import { useState } from "react";
-import styles from "./styles/activationPageStyles";
-import { Button, Text, Title } from "@mantine/core";
-import { useActivation, usePostLogin } from "../../hooks/useAuthData";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Button, PinInput, Text, Title } from "@mantine/core";
+import { useActivation } from "../../hooks/useAuthData";
 import { fetchResendCode } from "../../api/authRequests";
 
 
-const ActivationPage = ({ setAuthState }) => {
+const ActivationForm = ({ setAuthState, authState }) => {
 
     const [formData, setFormData] = useState({ activationCode: "" });
-    const navigate = useNavigate();
-    const activation = useActivation();
-    const { state } = useLocation();
-
-    if (activation.isSuccess) navigate("/signin");
+    const activationNotice = (message) => alert(message);
+    const activation = useActivation(authState, setAuthState, activationNotice);
 
     const handleResendCode = () => {
-        fetchResendCode(state.email);
+        console.log("email on activation state: ", authState.formData.email);
+        fetchResendCode(authState.formData.email);
     }
 
     const handleSubmit = async (event) => {
-        console.log("form data on login submit: ", formData);
+        console.log("form data on activation submit: ", formData);
         event.preventDefault();
         activation.mutate(formData.activationCode);
     }
 
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setFormData({ ...formData, [name]: value })
+    const handleChange = (value) => {
+        console.log("form data: ", formData);
+        setFormData({ ...formData, activationCode: value });
     }
 
 
@@ -38,7 +35,7 @@ const ActivationPage = ({ setAuthState }) => {
         <>
             <div className={classes.login}>
                 <Title order={2}>Account Activation</Title>
-                <Title order={3}>{"activation code has been sent your email: " + state.email}</Title>
+                <Title order={3}>{"activation code has been sent your email: " + authState.formData.email}</Title>
                 <form className='activation form'>
                     <div className="otp-input">
                         <PinInput
@@ -66,4 +63,4 @@ const ActivationPage = ({ setAuthState }) => {
     )
 }
 
-export default ActivationPage
+export default ActivationForm

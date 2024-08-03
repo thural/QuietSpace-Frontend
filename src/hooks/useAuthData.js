@@ -1,23 +1,24 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "./zustand";
 import { fetchAccessToken, fetchActivation, fetchLogin, fetchSignup } from "../api/authRequests";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "./zustand";
 
-export const usePostLogin = () => {
+export const usePostLogin = (authenticationNotice) => {
 
-    const { setAuthData, setForceLogin } = useAuthStore();
+    const { setAuthData, setIsAuthenticated } = useAuthStore();
     const navigate = useNavigate();
 
     const onSuccess = (data, variables, context) => {
         console.log("login response from backend was success");
         localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
-        setForceLogin(false);
+        setIsAuthenticated(true);
         navigate("/");
     }
 
     const onError = (error, variables, context) => {
         console.log("error on login:", error.message);
+        authenticationNotice("failed to authenticate, eror: ", error.message);
     }
 
     return useMutation({
@@ -39,9 +40,9 @@ export const usePostLogin = () => {
 export const usePostLogout = () => {
 
     const queryClient = useQueryClient();
-    const { setAuthData, resetAuthData } = useAuthStore();
+    const { resetAuthData } = useAuthStore();
 
-    queryClient.removeQueries()
+    queryClient.removeQueries();
 
     const onSuccess = (data, variables, context) => {
         queryClient.invalidateQueries(["posts", "user", "chat"]);
@@ -65,26 +66,24 @@ export const usePostLogout = () => {
     });
 }
 
-export const usePostSignup = () => {
-
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
+export const usePostSignup = (setAuthState) => {
 
     const onSuccess = (data, variables, context) => {
-        console.log("email in useSignup context: ", context.email);
-        navigate("/activation", { state: { email: context.email } })
+        console.log("signup was success");
+        console.log("useSignup context on success: ", variables);
+        setAuthState({ page: "activation", formData: variables });
     }
 
     const onError = (error, variables, context) => {
-        console.log("email in useSignup context: ", context.email);
-        console.log("error on signup:", error.message)
+        console.log("email in useSignup context on error: ", variables);
+        console.log("error on signup:", error.message);
     }
 
     return useMutation({
+        mutationKey: "signupMutation",
         mutationFn: async (formData) => {
             console.log("form data on signup mutation: ", formData);
-            const response = await fetchSignup(formData);
-            return { email: formData.email };
+            await fetchSignup(formData);
         },
         onSuccess,
         onError
@@ -94,24 +93,24 @@ export const usePostSignup = () => {
 
 export const useRefreshToken = () => {
 
-    const { setAuthData, setForceLogin } = useAuthStore();
+    const { setAuthData, setIsAuthenticated } = useAuthStore();
     const refreshToken = localStorage.getItem("refreshToken");
 
     const onSuccess = (data, variables, context) => {
         console.log("access token refresh was success");
         setAuthData({ message: "", accessToken: data, refreshToken, userId: "" })
-        setForceLogin(false);
+        setIsAuthenticated(true);
     }
 
     const onError = (error, variables, context) => {
-        setForceLogin(true);
+        setIsAuthenticated(false);
         setAuthState("login");
         console.log("error on fetching access token: ", error);
     }
 
     return useMutation({
         mutationFn: async () => {
-            console.log("useRefreshToken was called")
+            console.log("useRefreshToken was called");
             const response = await fetchAccessToken(refreshToken);
             return await response.json();
         },
@@ -127,20 +126,21 @@ export const useRefreshToken = () => {
     });
 }
 
-export const useActivation = () => {
+export const useActivation = (authState, setAuthState, activationNotice) => {
 
     const onSuccess = (data, variables, context) => {
-        console.log("account activation success")
+        console.log("account activation success");
+        activationNotice("account has been activated, please login to continue");
+        setAuthState({ ...authState, page: "login" });
     }
 
     const onError = (error, variables, context) => {
-        console.log("error on account activation:", error.message)
+        console.log("error on account activation:", error.message);
     }
 
     return useMutation({
         mutationFn: async (code) => {
-            const response = await fetchActivation(code);
-            return await response.json();
+            await fetchActivation(code);
         },
         onSuccess,
         onError
