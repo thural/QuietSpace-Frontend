@@ -1,27 +1,28 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 export const calculateTimeLeft = (expireDate) => {
-    let year = new Date().getFullYear();
     const difference = expireDate - +new Date();
-    let timeLeft = {};
 
-    if (difference > 0) {
-        timeLeft = {
-            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-            minutes: Math.floor((difference / 1000 / 60) % 60),
-            seconds: Math.floor((difference / 1000) % 60),
-        };
-    }
+    if (difference > 0) return {
+        hasTimeOut: false,
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+    };
 
-    return timeLeft;
+    return { hasTimeOut: true };
 };
 
+const processExpireDate = (interval) => (interval + +new Date());
 
-export const displayCountdown = (interval = 900000, timeUpMessage = "Time's up!") => {
+let hasReset = false;
+const resetTimer = () => { hasReset = !hasReset; }
 
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-    const expireDate = useMemo(() => { return interval + +new Date() }, [interval]);
+export const displayCountdown = (interval = 900000, timeUpMessage = "time's up!") => {
+
+    const expireDate = useMemo(() => processExpireDate(interval), [interval, hasReset]);
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(expireDate));
 
     useEffect(() => {
         setTimeout(() => {
@@ -32,9 +33,7 @@ export const displayCountdown = (interval = 900000, timeUpMessage = "Time's up!"
     const timerComponents = [];
 
     Object.keys(timeLeft).forEach((interval) => {
-        if (!timeLeft[interval]) {
-            return;
-        }
+        if (!timeLeft[interval]) return;
 
         timerComponents.push(
             <span>
@@ -44,7 +43,8 @@ export const displayCountdown = (interval = 900000, timeUpMessage = "Time's up!"
     });
 
     return {
-        hasTimeOut: false,
+        hasTimeOut: timeLeft.hasTimeOut,
+        resetTimer,
         component: (
             <div>{timerComponents.length ? timerComponents : <span>{timeUpMessage}</span>}</div>)
     };

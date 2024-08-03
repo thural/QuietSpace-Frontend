@@ -11,12 +11,13 @@ const ActivationForm = ({ setAuthState, authState }) => {
     const [formData, setFormData] = useState({ activationCode: "" });
     const activationNotice = (message) => alert(message);
     const activation = useActivation(authState, setAuthState, activationNotice);
-    const tokenTimer = displayCountdown(15 * 60 * 1000, "token has expired"); // 15 minutes matching token expiration
+    const tokenTimer = displayCountdown(15 * 60 * 1000, "code has expired");
 
 
     const handleResendCode = () => {
         console.log("email on activation state: ", authState.formData.email);
         fetchResendCode(authState.formData.email);
+        tokenTimer.resetTimer(16 * 60 * 1000);
     }
 
     const handleSubmit = async (event) => {
@@ -51,8 +52,9 @@ const ActivationForm = ({ setAuthState, authState }) => {
                         />
                     </div>
                     <div className="timer">
-                        <Text>{"code will be expired in:"}</Text>
-                        {tokenTimer.component}
+                        {!tokenTimer.hasTimeOut ? <Text>{"code will be expired in:"}</Text> :
+                            <Text>{"code has expired, get a new code"}</Text>}
+                        {!tokenTimer.hasTimeOut && tokenTimer.component}
                     </div>
                     <Button
                         className="button"
