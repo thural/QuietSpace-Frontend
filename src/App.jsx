@@ -21,8 +21,18 @@ import { useAuthStore } from "./hooks/zustand";
 import { LoadingOverlay } from '@mantine/core';
 import { useGetCurrentUser } from "./hooks/useUserData";
 import { loadAccessToken } from "./hooks/useToken";
+import { useEffect, useRef } from "react";
+import { useSocket } from "./hooks/useSocket";
+import sockjs from "sockjs-client/dist/sockjs"
+import { over } from "stompjs";
 
 const App = () => {
+
+    const { createSubscription, sendMessage } = useSocket();
+
+    const hasRun = useRef(false);
+
+
 
     const { data: userData,
         isLoading: isUserLoading,
@@ -33,6 +43,29 @@ const App = () => {
 
     const { isAuthenticated, isActivationStage } = useAuthStore();
     const { isSuccess, isLoading, isError, error } = loadAccessToken();
+
+    useEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
+
+        // const globalSubscription = createSubscription('/all/messages', alert);
+        // const privateSubscription = createSubscription("/user/specific", alert);
+
+        // sendMessage(globalSubscription, "/app/public", {
+        //     chatId: crypto.randomUUID(),
+        //     senderId: crypto.randomUUID(),
+        //     recipientId: crypto.randomUUID(),
+        //     text: "hi all"
+        // });
+
+        // sendMessage(privateSubscription, "/app/private", {
+        //     chatId: crypto.randomUUID(),
+        //     senderId: crypto.randomUUID(),
+        //     recipientId: crypto.randomUUID(),
+        //     text: "hi all"
+        // });
+
+    }, [])
 
 
     if (isLoading || isUserLoading) {

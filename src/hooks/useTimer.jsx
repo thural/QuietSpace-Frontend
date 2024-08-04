@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-export const calculateTimeLeft = (expireDate) => {
-    const difference = expireDate - +new Date();
+export const calculateTimeLeft = (period) => {
+    const difference = period - +new Date();
 
     if (difference > 0) return {
         hasTimeOut: false,
@@ -19,9 +19,9 @@ const processExpireDate = (interval) => (interval + +new Date());
 let hasReset = false;
 const resetTimer = () => { hasReset = !hasReset; }
 
-export const displayCountdown = (interval = 900000, timeUpMessage = "time's up!") => {
+export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") => {
 
-    const expireDate = useMemo(() => processExpireDate(interval), [interval, hasReset]);
+    const expireDate = useMemo(() => processExpireDate(period), [period, hasReset]);
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(expireDate));
 
     useEffect(() => {
