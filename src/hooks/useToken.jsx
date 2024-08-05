@@ -16,11 +16,9 @@ export const loadAccessToken = async () => {
         setIsLoading(true);
         fetchAccessToken(refreshToken)
             .then((response) => {
-                console.log("response: ", response);
                 return response.json();
             })
             .then(data => {
-                console.log("access token: ", data.accessToken);
                 setAccessToken(data.accessToken);
             })
             .catch(error => {

@@ -3,28 +3,90 @@ import { over } from "stompjs";
 
 export const useSocket = () => {
 
-    const createSubscription = (path, callbackFn) => {
-        const socket = new sockjs('/ws');
+    const createClient = () => {
+        const socket = new sockjs('http://localhost:8080/ws');
+        const client = over(socket);
+        return client;
+    }
 
-        const stompClient = over(socket);
+    const setAutoReconnect = (delay = 5000) => {
+        client.reconnect_delay = delay;
+    }
 
-        stompClient.connect({}, function (frame) {
-            console.log(frame);
+    const onConnect = (frame, callbackFn) => {
+        if (callbackFn) return callbackFn(frame);
+        console.log("frame on connect: ", frame);
+    }
 
-            stompClient.subscribe(path, function (result) {
-                callbackFn(JSON.parse(result.body));
-            });
+    const onError = (error, callbackFn) => {
+        if (callbackFn) return callbackFn(error);
+        console.log("error on connect: ", error, error.headers.message);
+    };
 
+    const onClose = (callbackFn) => {
+        if (callbackFn) return callbackFn();
+        console.log("connection has been closed");
+    }
+
+    const openConnection = (client, headers, onConnect) => {
+        console.log("STOMP client is being connected...");
+        client.connect(
+            headers,
+            (frame) => onConnect(frame),
+        );
+    }
+
+    const openConnectionWithLogin = (client, headers, onConnect, onError, closeEventCallback) => {
+        console.log("STOMP client is being connected...");
+
+        client.connect(
+            headers,
+            (frame) => onConnect(frame),
+            onError,
+            closeEventCallback
+        );
+    }
+
+    const disconnect = (client, callbackFn) => {
+        console.log("STOMP client is being disconnected...");
+        client.disconnect(callbackFn);
+    }
+
+    const sendMessage = (client, destination, body, headers = {}) => {
+        client.send(destination, headers, JSON.stringify(body));
+    }
+
+    const subscribe = (client, destination, callbackFn) => {
+        client.subscribe(destination, (message) => {
+            callbackFn(JSON.parse(message.body))
         });
-
-        return stompClient;
     }
 
-
-    const sendMessage = (subscription, destination, body) => {
-        subscription.send(destination, {}, JSON.stringify(body));
+    const unSubscribe = (client, destination, callbackFn) => {
+        client.subscribe(destination, (message) => {
+            callbackFn(JSON.parse(message.body))
+        });
     }
 
+    const subscribeWithId = (client, destination, callbackFn, subscribtionId) => {
+        client.subscribe(
+            destination,
+            (result) => callbackFn(JSON.parse(result.body)),
+            { id: subscribtionId }
+        );
+    }
 
-    return { createSubscription, sendMessage };
+    return {
+        createClient,
+        openConnection,
+        disconnect,
+        onConnect,
+        onError,
+        onClose,
+        subscribe,
+        subscribeWithId,
+        unSubscribe,
+        sendMessage,
+        setAutoReconnect
+    };
 }

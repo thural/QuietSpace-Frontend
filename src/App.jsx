@@ -21,18 +21,10 @@ import { useAuthStore } from "./hooks/zustand";
 import { LoadingOverlay } from '@mantine/core';
 import { useGetCurrentUser } from "./hooks/useUserData";
 import { loadAccessToken } from "./hooks/useToken";
-import { useEffect, useRef } from "react";
-import { useSocket } from "./hooks/useSocket";
-import sockjs from "sockjs-client/dist/sockjs"
-import { over } from "stompjs";
+import { useEffect, useRef, useState } from "react";
+import { useStompClient } from "./hooks/useStompClient";
 
 const App = () => {
-
-    const { createSubscription, sendMessage } = useSocket();
-
-    const hasRun = useRef(false);
-
-
 
     const { data: userData,
         isLoading: isUserLoading,
@@ -42,30 +34,36 @@ const App = () => {
     } = useGetCurrentUser();
 
     const { isAuthenticated, isActivationStage } = useAuthStore();
-    const { isSuccess, isLoading, isError, error } = loadAccessToken();
+    const { isSuccess, isLoading } = loadAccessToken();
+
+    const {
+        disconnect,
+        subscribe,
+        subscribeWithId,
+        unSubscribe,
+        sendMessage,
+        setAutoReconnect,
+        isClientConnected,
+        isConnecting,
+        isDisconnected,
+        isError,
+        error
+    } = useStompClient({});
+
 
     useEffect(() => {
-        if (hasRun.current) return;
-        hasRun.current = true;
+        if (!isClientConnected) return;
 
-        // const globalSubscription = createSubscription('/all/messages', alert);
-        // const privateSubscription = createSubscription("/user/specific", alert);
+        const body = {
+            chatId: crypto.randomUUID(),
+            senderId: crypto.randomUUID(),
+            recipientId: crypto.randomUUID(),
+            text: "hi all"
+        }
 
-        // sendMessage(globalSubscription, "/app/public", {
-        //     chatId: crypto.randomUUID(),
-        //     senderId: crypto.randomUUID(),
-        //     recipientId: crypto.randomUUID(),
-        //     text: "hi all"
-        // });
-
-        // sendMessage(privateSubscription, "/app/private", {
-        //     chatId: crypto.randomUUID(),
-        //     senderId: crypto.randomUUID(),
-        //     recipientId: crypto.randomUUID(),
-        //     text: "hi all"
-        // });
-
-    }, [])
+        subscribe("/all/messages");
+        sendMessage("/app/public", body);
+    }, [isClientConnected]);
 
 
     if (isLoading || isUserLoading) {
