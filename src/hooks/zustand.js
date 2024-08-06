@@ -8,8 +8,11 @@ export const bearStore = create((set) => ({
 }));
 
 export const useAuthStore = create(set => ({
-    data: { message: "", accessToken: "", refreshToken: "", userId: "" },
     isAuthenticated: false,
+    isLoading: false,
+    isError: false,
+    error: null,
+    data: { message: "", accessToken: "", refreshToken: "", userId: "" },
     isActivationStage: false,
     resetAuthData: () => set({
         data: { message: "", accessToken: "", refreshToken: "", userId: "" }
@@ -17,11 +20,20 @@ export const useAuthStore = create(set => ({
     setAuthData: (authData) => set({
         data: authData
     }),
+    setIsActivationStage: (value) => set({
+        isActivationStage: value
+    }),
     setIsAuthenticated: (value) => set({
         isAuthenticated: value
     }),
-    setIsActivationStage: (value) => set({
-        isActivationStage: value
+    setIsLoading: (value) => set({
+        isLoading: value
+    }),
+    setIsError: (value) => set({
+        isError: value
+    }),
+    setError: (value) => set({
+        error: value
     })
 }));
 

@@ -14,6 +14,7 @@ export const useGetCurrentUser = () => {
             const response = await fetchUser(USER_PROFILE_URL, authData.accessToken);
             return await response.json();
         },
+        onSuccess: (data) => console.log("user: ", data),
         enabled: !!authData?.accessToken,
         staleTime: Infinity,
         gcTime: Infinity,

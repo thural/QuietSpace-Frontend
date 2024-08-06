@@ -17,56 +17,61 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import SignoutPage from "./pages/signout/SignoutPage";
 import ActivationForm from "./components/Auth/ActivationForm";
-import { useAuthStore } from "./hooks/zustand";
-import { LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay, Title } from '@mantine/core';
 import { useGetCurrentUser } from "./hooks/useUserData";
-import { loadAccessToken } from "./hooks/useToken";
-import { useEffect, useRef, useState } from "react";
 import { useStompClient } from "./hooks/useStompClient";
+import useJwtAuth from "./hooks/useJwtAuth";
+import { useEffect } from "react";
+import { useAuthStore } from "./hooks/zustand";
 
 const App = () => {
 
-    const { data: userData,
-        isLoading: isUserLoading,
-        isSuccess: isUserSuccess,
-        refetch: refetchUser,
-        isError: isUserError
-    } = useGetCurrentUser();
 
-    const { isAuthenticated, isActivationStage } = useAuthStore();
-    const { isSuccess, isLoading } = loadAccessToken();
+    const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
 
-    const {
-        disconnect,
-        subscribe,
-        subscribeWithId,
-        unSubscribe,
-        sendMessage,
-        setAutoReconnect,
-        isClientConnected,
-        isConnecting,
-        isDisconnected,
-        isError,
-        error
-    } = useStompClient({});
+    const onSuccessFn = (data) => {
+        console.log("auth data in App...... ", data);
+        setAuthData(data);
+        setIsAuthenticated(true);
+    }
+
+    const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
+    const { loadAccessToken } = useJwtAuth({ onSuccessFn });
+    useEffect(loadAccessToken, []);
 
 
-    useEffect(() => {
-        if (!isClientConnected) return;
 
-        const body = {
-            chatId: crypto.randomUUID(),
-            senderId: crypto.randomUUID(),
-            recipientId: crypto.randomUUID(),
-            text: "hi all"
-        }
+    // const {
+    //     disconnect,
+    //     subscribe,
+    //     subscribeWithId,
+    //     unSubscribe,
+    //     sendMessage,
+    //     setAutoReconnect,
+    //     isClientConnected,
+    //     isConnecting,
+    //     isDisconnected,
+    //     isError,
+    //     error
+    // } = useStompClient({});
 
-        subscribe("/all/messages");
-        sendMessage("/app/public", body);
-    }, [isClientConnected]);
+
+    // useEffect(() => {
+    //     if (!isClientConnected) return;
+
+    //     const body = {
+    //         chatId: crypto.randomUUID(),
+    //         senderId: crypto.randomUUID(),
+    //         recipientId: crypto.randomUUID(),
+    //         text: "hi all"
+    //     }
+
+    //     subscribe("/all/messages");
+    //     sendMessage("/app/public", body);
+    // }, [isClientConnected]);
 
 
-    if (isLoading || isUserLoading) {
+    if (isUserLoading) {
         return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     }
 

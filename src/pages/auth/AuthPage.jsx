@@ -4,14 +4,13 @@ import SignupForm from "../../components/Auth/SignupForm";
 import LoginForm from "../../components/Auth/LoginForm";
 import ActivationForm from "../../components/Auth/ActivationForm";
 import { Text, Title } from "@mantine/core";
-import { loadAccessToken } from "../../hooks/useToken";
 
 const AuthPage = () => {
 
     const [authState, setAuthState] = useState({ page: "login", formData: null });
-    const { isLoading, isError, error } = loadAccessToken();
 
     const classes = styles();
+
 
     return (
         <div className={classes.auth}>

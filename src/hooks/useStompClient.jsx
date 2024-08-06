@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import sockjs from "sockjs-client/dist/sockjs"
 import { over } from "stompjs";
 
@@ -13,7 +13,7 @@ export const useStompClient = ({
 
     const [stompClient, setStompClient] = useState(null);
     const [isClientConnected, setIsClientConnected] = useState(false);
-    const [isConnecting, setisconnecting] = useState(true);
+    const [isConnecting, setIsConnecting] = useState(true);
     const [isDisconnected, setIsDisconnected] = useState(false);
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState(null);
@@ -41,7 +41,7 @@ export const useStompClient = ({
         stompClient.connect(
             headers,
             (frame) => {
-                setisconnecting(false);
+                setIsConnecting(false);
                 setIsClientConnected(true);
                 onConnect(frame);
             }
@@ -49,14 +49,14 @@ export const useStompClient = ({
     }
 
 
-    const openConnectionWithLogin = (headers) => {
+    const openConnectionWithLogin = (headers = {}) => {
         if (!onConnect) onConnect = (frame) => console.log("stomp client has been connected: ", frame);
         if (!onClose) onClose = () => console.log("stomp client has been closed");
         if (!onError) onError = (error) => console.log("error on connecting to client: ", error);
         stompClient.connect(
             headers,
             (frame) => {
-                setisconnecting(false);
+                setIsConnecting(false);
                 setIsClientConnected(true);
                 onConnect(frame);
             },
@@ -69,7 +69,7 @@ export const useStompClient = ({
     }
 
 
-    const disconnect = async () => {
+    const disconnect = () => {
         if (!isClientConnected) {
             console.log("error, client is already disconnected");
             return;
@@ -84,7 +84,7 @@ export const useStompClient = ({
     }
 
 
-    const sendMessage = async (destination, body, headers = {}) => {
+    const sendMessage = (destination, body, headers = {}) => {
         if (stompClient === null) {
             console.log("error on sending message, client is not ready");
             return;
@@ -99,14 +99,13 @@ export const useStompClient = ({
             return;
         }
         if (!onSubscribe) onSubscribe = (message) => {
-            const messageBody = JSON.parse(message.body);
-            console.log(`received message at ${destination}, ${messageBody}`)
+            console.log(`received message at ${destination}, ${message}`)
         };
         stompClient.subscribe(destination, onSubscribe);
     }
 
 
-    const subscribeWithId = async (destination, subscribtionId) => {
+    const subscribeWithId = (destination, subscribtionId) => {
         if (stompClient === null) {
             console.log("error on subscribing, client is not ready");
             return;
@@ -119,7 +118,7 @@ export const useStompClient = ({
     }
 
 
-    const unSubscribe = async (destination, callbackFn) => {
+    const unSubscribe = (destination) => {
         if (stompClient === null) {
             console.log("error on unsubsbcribing, client is not ready");
             return;
@@ -142,7 +141,7 @@ export const useStompClient = ({
         console.log("STOMP CLIENT is created: ", !!stompClient);
         if (!stompClient) return;
         if (reconnectDelay) setAutoReconnect(reconnectDelay);
-        setisconnecting(true);
+        setIsConnecting(true);
         openConnection();
     }, [stompClient])
 

@@ -5,14 +5,13 @@ import { useAuthStore } from "./zustand";
 
 export const usePostLogin = (authenticationNotice) => {
 
-    const { setAuthData, setIsAuthenticated } = useAuthStore();
+    const { setAuthData } = useAuthStore();
     const navigate = useNavigate();
 
     const onSuccess = (data, variables, context) => {
         console.log("login response from backend was success");
         localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
-        setIsAuthenticated(true);
         navigate("/");
     }
 
@@ -93,17 +92,15 @@ export const usePostSignup = (setAuthState) => {
 
 export const useRefreshToken = () => {
 
-    const { setAuthData, setIsAuthenticated } = useAuthStore();
+    const { setAuthData } = useAuthStore();
     const refreshToken = localStorage.getItem("refreshToken");
 
     const onSuccess = (data, variables, context) => {
         console.log("access token refresh was success");
         setAuthData({ message: "", accessToken: data, refreshToken, userId: "" })
-        setIsAuthenticated(true);
     }
 
     const onError = (error, variables, context) => {
-        setIsAuthenticated(false);
         setAuthState("login");
         console.log("error on fetching access token: ", error);
     }

@@ -1,11 +1,13 @@
 import styles from "./styles/signupFormStyles"
 import React, { useEffect, useState } from "react";
-import { Button, Text, Title } from "@mantine/core";
-import { usePostSignup } from "../../hooks/useAuthData";
+import { Button, LoadingOverlay, Text, Title } from "@mantine/core";
+import useJwtAuth from "../../hooks/useJwtAuth";
 
 const SignupForm = ({ setAuthState, authState }) => {
 
-    const signupMutation = usePostSignup(setAuthState);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [error, setError] = useState(null);
 
     const [formData, setFormData] = useState({
         role: "user",
@@ -16,6 +18,28 @@ const SignupForm = ({ setAuthState, authState }) => {
         password: '',
         confirmPassword: ''
     });
+
+
+
+    const onLoadFn = () => {
+        setIsLoading(true);
+    }
+
+    const onSuccessFn = () => {
+        setIsLoading(false);
+        setAuthState({ page: "activation", formData });
+    }
+
+    const onErrorFn = (error) => {
+        setIsLoading(false);
+        resetAuthData();
+        setError(error);
+        setIsError(true);
+    }
+
+    const { signup } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
+
+
 
     useEffect(() => {
         setFormData({ ...formData, ...authState.formData })
@@ -30,7 +54,7 @@ const SignupForm = ({ setAuthState, authState }) => {
             delete formData["confirmPassword"];
         }
         else {
-            signupMutation.mutate(formData);
+            signup(formData, setAuthState);
         }
     }
 
@@ -40,8 +64,11 @@ const SignupForm = ({ setAuthState, authState }) => {
     }
 
 
+
     const classes = styles();
 
+    if (isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if (isError) return <h1>{`could not authenticate! 🔥 error: ${error}`}</h1>
 
     return (
         <div className={classes.signup}>
