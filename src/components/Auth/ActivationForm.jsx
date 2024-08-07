@@ -34,7 +34,6 @@ const ActivationForm = ({ setAuthState, authState }) => {
 
     const classes = styles();
 
-
     return (
         <>
             <div className={classes.activation}>

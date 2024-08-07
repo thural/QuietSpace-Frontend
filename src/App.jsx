@@ -26,8 +26,9 @@ import { useAuthStore } from "./hooks/zustand";
 
 const App = () => {
 
-
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
+    const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
+
 
     const onSuccessFn = (data) => {
         console.log("auth data in App...... ", data);
@@ -35,7 +36,7 @@ const App = () => {
         setIsAuthenticated(true);
     }
 
-    const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
+
     const { loadAccessToken } = useJwtAuth({ onSuccessFn });
     useEffect(loadAccessToken, []);
 

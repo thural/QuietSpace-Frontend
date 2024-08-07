@@ -37,13 +37,14 @@ const SignupForm = ({ setAuthState, authState }) => {
         setIsError(true);
     }
 
-    const { signup } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
 
+    const { signup } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
 
 
     useEffect(() => {
         setFormData({ ...formData, ...authState.formData })
     }, [])
+
 
     const handleSubmit = async (event) => {
         const { password, confirmPassword } = formData;
@@ -62,7 +63,6 @@ const SignupForm = ({ setAuthState, authState }) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     }
-
 
 
     const classes = styles();

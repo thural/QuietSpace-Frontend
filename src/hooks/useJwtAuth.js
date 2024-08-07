@@ -1,20 +1,17 @@
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
-import { useQueryClient } from '@tanstack/react-query';
 
+var refreshIntervalId = null;
 const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn, onLoadFn }) => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    const queryClient = useQueryClient();
-
-
 
     const register = (setAuthState, formData) => {
+
         const onSuccess = () => {
-            console.log("signup was success");
             setAuthState({ page: "activation", formData });
+            onSuccessFn();
         }
 
         const onError = (error) => {
-            console.log("error on signup:", error.message);
+            onErrorFn(error);
         }
 
         fetchSignup(formData)
@@ -27,13 +24,11 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn, onLoadFn
         onLoadFn();
 
         const onSuccess = (data) => {
-            console.log("login response from backend was success: ", data);
             localStorage.setItem("refreshToken", data.refreshToken);
             onSuccessFn(data);
         }
 
         const onError = (error) => {
-            console.log("error on login:", error.message);
             onErrorFn(error);
         }
 
@@ -45,16 +40,14 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn, onLoadFn
 
 
     const getAccessToken = () => {
+        const refreshToken = localStorage.getItem("refreshToken");
 
         const onSuccess = (data) => {
-            console.log("refresh token: ", refreshToken);
-            console.log("fetched token: ", data.accessToken);
             onSuccessFn(data);
-
         }
 
         const onError = (error) => {
-            console.log("error on fetching access token: ", error);
+            onErrorFn(error);
         }
 
         fetchAccessToken(refreshToken)
@@ -66,23 +59,26 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn, onLoadFn
 
     const loadAccessToken = () => {
         getAccessToken();
-        setInterval(() => {
-            getAccessToken();
-        }, refreshInterval);
+        refreshIntervalId = setInterval(getAccessToken, refreshInterval);
+    }
+
+
+    const stopTokenAutoRefresh = () => {
+        clearInterval(refreshIntervalId);
     }
 
 
     const signout = () => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        stopTokenAutoRefresh();
         onLoadFn();
         const onSignout = (response) => {
-            console.log("response on signing out: ", response);
-            localStorage.clear();
-            queryClient.clear();
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("accessToken");
             onSuccessFn(response);
         }
 
         const onError = (error) => {
-            console.log("error on signing out: ", error);
             onErrorFn();
         }
 
@@ -96,12 +92,10 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn, onLoadFn
         onLoadFn();
 
         const onSuccess = () => {
-            console.log("signup was success");
             onSuccessFn();
         }
 
         const onError = (error) => {
-            console.log("error on signup:", error.message);
             onErrorFn(error);
         }
 

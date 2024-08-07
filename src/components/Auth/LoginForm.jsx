@@ -7,6 +7,7 @@ import { useAuthStore } from "../../hooks/zustand";
 
 
 const LoginForm = ({ setAuthState, authState }) => {
+
     const { setAuthData, resetAuthData, setIsAuthenticated } = useAuthStore();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -24,7 +25,6 @@ const LoginForm = ({ setAuthState, authState }) => {
         setIsAuthenticating(false);
         setIsAuthenticated(true);
         setAuthData(data);
-        console.log("auth data has been set");
         navigate("/");
     }
 
@@ -35,14 +35,13 @@ const LoginForm = ({ setAuthState, authState }) => {
         setIsError(true);
     }
 
-    const { authenticate } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
 
+    const { authenticate } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
 
 
     useEffect(() => {
         setFormData({ ...formData, ...authState.formData })
     }, []);
-
 
 
     const handleLoginForm = async (event) => {
