@@ -24,4 +24,4 @@ export const CHAT_PATH = BASE_URL + "/chats";
 export const CHAT_PATH_BY_OWNER = CHAT_PATH + "/owner";
 export const CHAT_PATH_BY_MEMBER = CHAT_PATH + "/members";
 export const MESSAGE_PATH = BASE_URL + "/messages";
-export const FOLLOW_PATH = BASE_URL + "/follows";
+export const FOLLOW_PATH = BASE_URL + "/followers";

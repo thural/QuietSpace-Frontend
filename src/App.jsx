@@ -18,7 +18,7 @@ import SettingsPage from "./pages/settings/SettingsPage";
 import SignoutPage from "./pages/signout/SignoutPage";
 import ActivationForm from "./components/Auth/ActivationForm";
 import { LoadingOverlay, Title } from '@mantine/core';
-import { useGetCurrentUser } from "./hooks/useUserData";
+import { useGetFollowers, useGetFollowings, useGetCurrentUser } from "./hooks/useUserData";
 import { useStompClient } from "./hooks/useStompClient";
 import useJwtAuth from "./hooks/useJwtAuth";
 import { useEffect } from "react";
@@ -27,6 +27,8 @@ import { useAuthStore } from "./hooks/zustand";
 const App = () => {
 
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
+    const { data: followers } = useGetFollowers();
+    const { data: followings } = useGetFollowings();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
 
@@ -42,34 +44,36 @@ const App = () => {
 
 
 
-    // const {
-    //     disconnect,
-    //     subscribe,
-    //     subscribeWithId,
-    //     unSubscribe,
-    //     sendMessage,
-    //     setAutoReconnect,
-    //     isClientConnected,
-    //     isConnecting,
-    //     isDisconnected,
-    //     isError,
-    //     error
-    // } = useStompClient({});
+    const {
+        disconnect,
+        subscribe,
+        subscribeWithId,
+        unSubscribe,
+        sendMessage,
+        setAutoReconnect,
+        isClientConnected,
+        isConnecting,
+        isDisconnected,
+        isError,
+        error
+    } = useStompClient({});
 
 
-    // useEffect(() => {
-    //     if (!isClientConnected) return;
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        if (!isClientConnected) return;
 
-    //     const body = {
-    //         chatId: crypto.randomUUID(),
-    //         senderId: crypto.randomUUID(),
-    //         recipientId: crypto.randomUUID(),
-    //         text: "hi all"
-    //     }
+        const body = {
+            chatId: crypto.randomUUID(),
+            senderId: crypto.randomUUID(),
+            recipientId: crypto.randomUUID(),
+            text: "hi all"
+        }
 
-    //     subscribe("/all/messages");
-    //     sendMessage("/app/public", body);
-    // }, [isClientConnected]);
+        subscribe("/public/chat");
+        // subscribe("/public");
+        sendMessage("/app/public/chat", body);
+    }, [isClientConnected]);
 
 
     if (isUserLoading) {

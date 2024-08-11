@@ -11,8 +11,8 @@ const Overlay = ({ closable }) => {
   return (
     <div className={classes.overlay} onClick={() => {
       if (active) setViewData({ overlay: false, ...closable });
-    }}
-    ></div>
+    }}>
+    </div>
   )
 }
 

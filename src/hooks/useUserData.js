@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "./zustand";
 import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
-import { fetchFollowers, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
+import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
 
 
 export const useGetCurrentUser = () => {
@@ -26,10 +26,12 @@ export const useGetCurrentUser = () => {
 
 export const useQueryUsers = (setQueryResult) => {
 
+    const queryClient = useQueryClient();
+    const signedUser = queryClient.getQueryData(["user"]);
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
-        setQueryResult(data["content"]);
+        setQueryResult(data["content"].filter(user => user.id !== signedUser.id));
         console.log("user query success:", data);
     }
 
@@ -64,16 +66,36 @@ export const useGetUserById = (userId) => {
     })
 }
 
-export const useGetFollows = () => {
+export const useGetFollowers = () => {
 
     const { data: authData } = useAuthStore();
 
     return useQuery({
-        queryKey: ["follows"],
+        queryKey: ["followers"],
         queryFn: async () => {
             const response = await fetchFollowers(authData.accessToken);
             return await response.json();
         },
+        enabled: !!authData?.accessToken,
+        staleTime: Infinity,
+        gcTime: Infinity,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        select: (data) => data.content
+    })
+}
+
+export const useGetFollowings = () => {
+
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["followings"],
+        queryFn: async () => {
+            const response = await fetchFollowings(authData.accessToken);
+            return await response.json();
+        },
+        enabled: !!authData?.accessToken,
         staleTime: Infinity,
         gcTime: Infinity,
         refetchOnMount: false,
@@ -88,7 +110,7 @@ export const useToggleFollow = () => {
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["followers"])
+        queryClient.invalidateQueries(["followings"], ["followers"])
         console.log("toggle follow success:", data);
     }
 

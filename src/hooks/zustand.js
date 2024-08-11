@@ -41,7 +41,9 @@ export const viewStore = create(set => ({
     data: {
         overlay: false,
         createPost: false,
-        editPost: false
+        editPost: false,
+        followings: false,
+        followers: false,
     },
     setViewData: (state, viewData) => set({
         data: { ...state, ...viewData }

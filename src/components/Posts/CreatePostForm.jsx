@@ -7,15 +7,12 @@ import { generatePfp } from "../../utils/randomPfp";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
 import ComboMenu from "./ComboMenu";
-import { viewStore } from "../../hooks/zustand";
 
 const CreatePostForm = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const addPost = useCreatePost();
-    const { data: viewData, setViewData } = viewStore();
-    const { createPost: createPostView } = viewData;
 
     const [postData, setPostData] = useState({
         userId: user.id,

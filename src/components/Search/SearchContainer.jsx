@@ -6,7 +6,7 @@ import styles from "./styles/searchbarStyles";
 import Post from "../Posts/Post";
 import { useQueryPosts } from "../../hooks/usePostData";
 import { generatePfp } from "../../utils/randomPfp";
-import { useGetFollows, useQueryUsers } from "../../hooks/useUserData";
+import { useQueryUsers } from "../../hooks/useUserData";
 import UserQueryItem from "./UserQueryItem";
 
 function SearchContainer() {
@@ -16,7 +16,6 @@ function SearchContainer() {
     const [userQueryResult, setUserQueryResult] = useState([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
 
-    const fetchedFollows = useGetFollows();
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
 
