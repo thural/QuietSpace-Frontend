@@ -7,29 +7,27 @@ import { useGetFollowings, useQueryUsers } from "../../hooks/useUserData";
 import UserQueryItem from "./UserQueryItem";
 import Overlay from "../Overlay/Overlay";
 
-function FollowContainer() {
+function Followings() {
 
     const queryInputRef = useRef();
-    const [userQueryResult, setUserQueryResult] = useState([]);
-
-    console.log("user query result at followings ", userQueryResult);
-
-    const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const followings = useGetFollowings();
+    const [followingsResult, setFollowingsResult] = useState(followings.data);
 
 
-    useEffect(() => {
-        fetchUserQuery.mutate(".");
-    }, []);
+
+    const filterByQuery = (value) => {
+        return followings.data
+            .filter(f => (f.username.includes(value) || f.email.includes(value)));
+    }
 
     const handleInputChange = (event) => {
         event.preventDefault();
         const value = event.target.value;
         console.log("value at input change at follow container", value)
         if (value.length) {
-            fetchUserQuery.mutate(value);
+            setFollowingsResult(filterByQuery(value));
         } else {
-            fetchUserQuery.mutate(".");
+            setFollowingsResult(followings.data);
         }
     }
 
@@ -65,9 +63,9 @@ function FollowContainer() {
                 </Box>
                 <Box className={classes.resultContainer} >
                     {
-                        fetchUserQuery.isPending ? <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} /> :
-                            fetchUserQuery.isError ? <h1>{fetchUserQuery.error.message}</h1> :
-                                userQueryResult.map((user, index) =>
+                        followings.isPending ? <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} /> :
+                            followings.isError ? <h1>{fetchUserQuery.error.message}</h1> :
+                                followingsResult?.map((user, index) =>
                                     <UserQueryItem key={index} user={user} handleItemClick={handleItemClick} />)
                     }
                 </Box>
@@ -76,4 +74,4 @@ function FollowContainer() {
     )
 }
 
-export default FollowContainer
+export default Followings

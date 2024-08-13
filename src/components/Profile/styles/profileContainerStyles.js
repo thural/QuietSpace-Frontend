@@ -18,7 +18,7 @@ const styles = createUseStyles({
         }
     },
 
-    followingSection: {
+    followSection: {
         margin: '1.5rem 0',
         justifyContent: 'space-between',
         alignItems: 'center',

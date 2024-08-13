@@ -29,7 +29,7 @@ const Chat = ({ chat }) => {
                 size="2.5rem"
                 radius="10rem"
                 src={generatedPfpLink}>
-                {username.toUpperCase()}
+                {username.charAt(0).toUpperCase()}
             </Avatar>
             <Box className={classes.text}>
                 <Text size="sm" lineClamp={1}>{username}</Text>

@@ -23,6 +23,7 @@ import { useStompClient } from "./hooks/useStompClient";
 import useJwtAuth from "./hooks/useJwtAuth";
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
+import { useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
 
@@ -30,6 +31,9 @@ const App = () => {
     const { data: followers } = useGetFollowers();
     const { data: followings } = useGetFollowings();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
+
+    const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"]);
 
 
     const onSuccessFn = (data) => {
@@ -42,6 +46,9 @@ const App = () => {
     const { loadAccessToken } = useJwtAuth({ onSuccessFn });
     useEffect(loadAccessToken, []);
 
+    const onSubscribe = (message) => {
+        alert(message);
+    }
 
 
     const {
@@ -56,23 +63,31 @@ const App = () => {
         isDisconnected,
         isError,
         error
-    } = useStompClient({});
+    } = useStompClient({ onSubscribe });
 
 
     useEffect(() => {
         if (!isAuthenticated) return;
         if (!isClientConnected) return;
+        if (!user) return;
 
         const body = {
-            chatId: crypto.randomUUID(),
-            senderId: crypto.randomUUID(),
-            recipientId: crypto.randomUUID(),
-            text: "hi all"
+            chatId: "9f7c963c-d28b-42c1-8212-b699465bea12",
+            senderId: user.id,
+            recipientId: "93425b43-3dd4-4703-81c8-7b9c21aaea92",
+            text: "hiii tommy"
         }
 
+
+        console.log("username on app page: ", user.username);
+        console.log("user-id on app page: ", user.id);
         subscribe("/public/chat");
+        subscribe(`/user/${user.id}/private/chat`);
+        subscribe(`/user/private/chat`);
+        subscribe(`/user/${user.id}/queue/messages`);
         // subscribe("/public");
-        sendMessage("/app/public/chat", body);
+        // sendMessage("/app/public/chat", body);
+        if (user.id !== "93425b43-3dd4-4703-81c8-7b9c21aaea92") sendMessage("/app/private/chat", body);
     }, [isClientConnected]);
 
 

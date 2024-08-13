@@ -62,7 +62,7 @@ const MessageContainer = () => {
     return (
         <div className={classes.chatboard}>
             <Flex className={classes.chatHeadline}>
-                <Avatar color="black" radius="10rem" src={generatePfp("marble")}>receiverUsername.charAt(0).toUpperCase()</Avatar>
+                <Avatar color="black" radius="10rem" src={generatePfp("marble")}>{receiverName?.charAt(0).toUpperCase()}</Avatar>
                 <Title className="title" order={5}>{receiverName}</Title>
                 <ChatMenu handleDeletePost={handleDeleteChat} isMutable={true} />
             </Flex>
