@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import sockjs from "sockjs-client/dist/sockjs"
 import { over } from "stompjs";
+import { useAuthStore } from "./zustand";
 
 export const useStompClient = ({
     onConnect,
@@ -10,6 +11,8 @@ export const useStompClient = ({
     onDisconnect,
     reconnectDelay
 }) => {
+
+    const { isAuthenticated, data } = useAuthStore();
 
     const [stompClient, setStompClient] = useState(null);
     const [isClientConnected, setIsClientConnected] = useState(false);
@@ -31,7 +34,7 @@ export const useStompClient = ({
     }
 
 
-    const openConnection = (headers = {}) => {
+    const openConnection = (headers = { "Authorization": "Bearer " + data.accessToken }) => {
         if (stompClient === null) {
             console.log("error on opening connection, client is not ready");
             return;
@@ -132,9 +135,10 @@ export const useStompClient = ({
 
 
     useEffect(() => {
+        if (!isAuthenticated) return;
         const newclient = createStompClient();
         setStompClient(newclient);
-    }, [])
+    }, [isAuthenticated])
 
 
     useEffect(() => {

@@ -17,23 +17,17 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import SettingsPage from "./pages/settings/SettingsPage";
 import SignoutPage from "./pages/signout/SignoutPage";
 import ActivationForm from "./components/Auth/ActivationForm";
-import { LoadingOverlay, Title } from '@mantine/core';
-import { useGetFollowers, useGetFollowings, useGetCurrentUser } from "./hooks/useUserData";
-import { useStompClient } from "./hooks/useStompClient";
 import useJwtAuth from "./hooks/useJwtAuth";
+import { LoadingOverlay } from '@mantine/core';
+import { useGetCurrentUser } from "./hooks/useUserData";
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
-import { useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
 
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
-    const { data: followers } = useGetFollowers();
-    const { data: followings } = useGetFollowings();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
 
 
     const onSuccessFn = (data) => {
@@ -42,53 +36,9 @@ const App = () => {
         setIsAuthenticated(true);
     }
 
-
     const { loadAccessToken } = useJwtAuth({ onSuccessFn });
     useEffect(loadAccessToken, []);
 
-    const onSubscribe = (message) => {
-        alert(message);
-    }
-
-
-    const {
-        disconnect,
-        subscribe,
-        subscribeWithId,
-        unSubscribe,
-        sendMessage,
-        setAutoReconnect,
-        isClientConnected,
-        isConnecting,
-        isDisconnected,
-        isError,
-        error
-    } = useStompClient({ onSubscribe });
-
-
-    useEffect(() => {
-        if (!isAuthenticated) return;
-        if (!isClientConnected) return;
-        if (!user) return;
-
-        const body = {
-            chatId: "9f7c963c-d28b-42c1-8212-b699465bea12",
-            senderId: user.id,
-            recipientId: "93425b43-3dd4-4703-81c8-7b9c21aaea92",
-            text: "hiii tommy"
-        }
-
-
-        console.log("username on app page: ", user.username);
-        console.log("user-id on app page: ", user.id);
-        subscribe("/public/chat");
-        subscribe(`/user/${user.id}/private/chat`);
-        subscribe(`/user/private/chat`);
-        subscribe(`/user/${user.id}/queue/messages`);
-        // subscribe("/public");
-        // sendMessage("/app/public/chat", body);
-        if (user.id !== "93425b43-3dd4-4703-81c8-7b9c21aaea92") sendMessage("/app/private/chat", body);
-    }, [isClientConnected]);
 
 
     if (isUserLoading) {

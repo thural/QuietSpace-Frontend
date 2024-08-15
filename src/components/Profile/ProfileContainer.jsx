@@ -9,6 +9,7 @@ import Followings from "./Followings";
 import { viewStore } from "../../hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import Followers from "./Followers";
+import { useGetFollowers, useGetFollowings } from "../../hooks/useUserData";
 
 
 function ProfileContainer() {
@@ -17,10 +18,9 @@ function ProfileContainer() {
     const queryClient = useQueryClient();
     const { data: viewData, setViewData } = viewStore();
     const signedUser = queryClient.getQueryData(["user"]);
-    const { content: followers } = queryClient.getQueryData(["followers"]);
-    const { content: followings } = queryClient.getQueryData(["followings"]);
 
-    console.log("followings: ", followings)
+    const { data: followers } = useGetFollowers();
+    const { data: followings } = useGetFollowings();
 
 
     const toggleFollowings = () => {
@@ -79,9 +79,7 @@ function ProfileContainer() {
                 </Tabs.List>
 
                 <Tabs.Panel value="timeline"></Tabs.Panel>
-
                 <Tabs.Panel value="interests"></Tabs.Panel>
-
                 <Tabs.Panel value="saved"></Tabs.Panel>
             </Tabs>
         </Container>

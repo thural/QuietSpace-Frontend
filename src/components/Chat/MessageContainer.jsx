@@ -1,38 +1,58 @@
 import React, { useEffect, useState } from "react";
 import Message from "./Message";
-import { Avatar, Flex, Text, Title } from "@mantine/core";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
-import { useQueryClient } from "@tanstack/react-query";
-import { useDeleteChat, useGetChatById, useGetMessagesByChatId, usePostNewMessage } from "../../hooks/useChatData";
-import { useAuthStore, useChatStore } from "../../hooks/zustand";
 import ChatMenu from "./ChatMenu";
+
+import { Avatar, Flex, Text, Title } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
+import { useDeleteChat, useGetMessagesByChatId } from "../../hooks/useChatData";
+import { useAuthStore, useChatStore } from "../../hooks/zustand";
 import { generatePfp } from "../../utils/randomPfp";
+import { useStompClient } from "../../hooks/useStompClient";
+import { ChatEventType } from "../../utils/enumClasses";
+
+import {
+    handleChatDelete,
+    handleChatException,
+    handleDeleteMessage,
+    handleLeftChat,
+    handleOnlineUser,
+    handleSeenMessage
+} from "./misc/messageHandler";
 
 
 const MessageContainer = () => {
 
-    const { data: { activeChatId }, setActiveChatId } = useChatStore();
-    const { data: storeUserData } = useAuthStore();
-
-    console.log("ACTIVE CHAT ID: ", activeChatId);
-
     const queryClient = useQueryClient();
+
+
+
+    const { data: { activeChatId } } = useChatStore();
+    console.log("active chat id: ", activeChatId);
+    const { data: { userId } } = useAuthStore();
+    const user = queryClient.getQueryData(["user"]);
+    console.log("current user", user);
     const chats = queryClient.getQueryData(["chats"]);
-    const currentChat = queryClient.getQueryData(["chats"], { id: activeChatId }).find(chat => chat.id === activeChatId);
-    // TODO: optimize current chat retrieval
-    const receiverName = currentChat?.members[0].username;
-    console.log("CURRENT CHAT in message container: ", receiverName);
+    console.log("loaded chats: ", chats);
 
-    if (!chats.length) return <Text style={{ margin: "1rem" }} ta="center">there's no messages yet</Text>
 
-    useEffect(() => {
-        setActiveChatId(chats[0]["id"]);
-    }, []);
+
+    if (activeChatId === null) return (<Text className="system-message" ta="center">loading messages ...</Text>)
+    const { data: messages, isError, isLoading, isSuccess, refetch } = useGetMessagesByChatId(activeChatId);
+    const currentChat = chats.find(chat => chat.id === activeChatId);
+    console.log("current chat: ", currentChat);
+    const chatMembers = currentChat?.members[0];
+    console.log("chat members: ", chatMembers);
+    const { username: recipientName, id: recipientId } = currentChat?.members[0];
+    console.log("CURRENT CHAT in message container: ", recipientName);
+
+
 
     const [inputData, setInputData] = useState({
         chatId: activeChatId,
-        senderId: storeUserData.userId,
+        senderId: userId,
+        recipientId,
         text: ''
     });
 
@@ -46,31 +66,99 @@ const MessageContainer = () => {
         useDeleteChat(activeChatId).mutate();
     }
 
-    const sendMessage = usePostNewMessage(setInputData);
+    const handleReceivedMessage = (message) => {
+        const messageBody = JSON.parse(message.body);
+
+        queryClient.setQueryData(['messages', { id: activeChatId }], (oldData) => {
+            return { ...oldData, content: [messageBody, ...oldData.content] };
+        });
+    }
+
+
+
+    const onSubscribe = (message) => {
+        console.log("message on subscription:", message);
+
+        const {
+            EXCEPTION,
+            CONNECT,
+            DISCONNECT,
+            DELETE,
+            DELETE_MESSAGE,
+            SEEN_MESSAGE,
+            LEFT_CHAT
+        } = ChatEventType;
+
+        switch (message.type) {
+            case CONNECT:
+                return handleOnlineUser(message);
+            case DISCONNECT:
+                return handleOnlineUser(message);
+            case DELETE:
+                return handleChatDelete(message);
+            case DELETE_MESSAGE:
+                return handleDeleteMessage(message);
+            case SEEN_MESSAGE:
+                return handleSeenMessage(message);
+            case LEFT_CHAT:
+                return handleLeftChat(message);
+            case EXCEPTION:
+                return handleChatException(message);
+            default:
+                return handleReceivedMessage(message);
+        }
+    }
+
+
+
+    const {
+        disconnect,
+        subscribe,
+        subscribeWithId,
+        unSubscribe,
+        sendMessage,
+        setAutoReconnect,
+        isClientConnected,
+        isConnecting,
+        isDisconnected,
+        isError: isSocketError,
+        error
+    } = useStompClient({ onSubscribe });
+
+    useEffect(() => {
+        if (isClientConnected) {
+            subscribe(`/user/${user.username}/private/chat/event`);
+            subscribe(`/user/${user.username}/private/chat`);
+        }
+    }, [isClientConnected]);
+
+
 
     const handleSubmit = () => {
         console.log("message data on submit: ", inputData);
         if (inputData.text.length === 0) return;
         inputData.chatId = activeChatId;
-        sendMessage.mutate(inputData);
+        sendMessage("/app/private/chat", inputData);
     }
 
-    const { data: messages, isError, isLoading, isSuccess, refetch } = useGetMessagesByChatId(activeChatId);
+
 
     const classes = styles();
+
+    if (!chats.length) return <Text style={{ margin: "1rem" }} ta="center">there's no messages yet</Text>
 
     return (
         <div className={classes.chatboard}>
             <Flex className={classes.chatHeadline}>
-                <Avatar color="black" radius="10rem" src={generatePfp("marble")}>{receiverName?.charAt(0).toUpperCase()}</Avatar>
-                <Title className="title" order={5}>{receiverName}</Title>
+                <Avatar color="black" radius="10rem" src={generatePfp("marble")}>{recipientName?.charAt(0).toUpperCase()}</Avatar>
+                <Title className="title" order={5}>{recipientName}</Title>
                 <ChatMenu handleDeletePost={handleDeleteChat} isMutable={true} />
             </Flex>
             {isLoading ? (<Text className="system-message" ta="center">loading messages ...</Text>) :
                 isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
                     activeChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
                         messages.length === 0 ? (
-                            <Text className="system-message" ta="center">{`send your first message to `}<strong>{receiverName}</strong></Text>) :
+                            <Text className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Text>) :
                             (
                                 <div className={classes.messages}>
                                     {
