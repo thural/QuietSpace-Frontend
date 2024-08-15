@@ -25,3 +25,4 @@ export const CHAT_PATH_BY_OWNER = CHAT_PATH + "/owner";
 export const CHAT_PATH_BY_MEMBER = CHAT_PATH + "/members";
 export const MESSAGE_PATH = BASE_URL + "/messages";
 export const FOLLOW_PATH = BASE_URL + "/followers";
+export const NOTIFICATION_PATH = BASE_URL + "/notifications";

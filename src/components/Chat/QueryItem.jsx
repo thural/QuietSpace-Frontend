@@ -23,9 +23,7 @@ const QueryItem = ({ user, handleItemClick }) => {
                 src={generatePfp("beam")}>
                 {user.username[0].toUpperCase()}
             </Avatar>
-            <div key={user.id}
-                className={classes.queryItem}
-            >
+            <div key={user.id} className={classes.queryItem}>
                 <Title order={5} className="username">{user.username}</Title>
                 <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>
             </div>
