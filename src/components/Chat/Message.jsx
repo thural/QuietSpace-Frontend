@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import styles from "./styles/messageStyles";
-
 import { useQueryClient } from "@tanstack/react-query";
-import { useDeleteChat, useDeleteMessage } from "../../hooks/useChatData";
 
-const Message = ({ message }) => {
+const Message = ({ message, handleDeleteMessage }) => {
 
     const { id, senderId, text } = message;
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const [isHovering, setIsHovering] = useState(false);
-
-    const deleteMessageMutation = useDeleteMessage(id);
 
 
 
@@ -22,10 +18,6 @@ const Message = ({ message }) => {
     const handleMouseOut = () => {
         setIsHovering(false);
     };
-
-    const handleDeleteMessage = async () => {
-        deleteMessageMutation.mutate(id);
-    }
 
 
 

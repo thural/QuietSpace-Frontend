@@ -15,7 +15,6 @@ import { ChatEventType } from "../../utils/enumClasses";
 import {
     handleChatDelete,
     handleChatException,
-    handleDeleteMessage,
     handleLeftChat,
     handleOnlineUser,
     handleSeenMessage
@@ -74,10 +73,24 @@ const MessageContainer = () => {
         });
     }
 
+    const handleDeleteMessage = (message) => {
+
+        const messageBody = JSON.parse(message.body);
+        const messageId = messageBody.messageId;
+
+        queryClient.setQueryData(['messages', { id: activeChatId }], (oldData) => {
+            const updatedMessages = oldData.content.filter(m => m.id !== messageId);
+            return { ...oldData, content: updatedMessages };
+        });
+    }
+
 
 
     const onSubscribe = (message) => {
-        console.log("message on subscription:", message);
+
+        const messageBody = JSON.parse(message.body)
+
+
 
         const {
             EXCEPTION,
@@ -89,20 +102,20 @@ const MessageContainer = () => {
             LEFT_CHAT
         } = ChatEventType;
 
-        switch (message.type) {
-            case CONNECT:
+        switch (messageBody.type) {
+            case CONNECT.name:
                 return handleOnlineUser(message);
-            case DISCONNECT:
+            case DISCONNECT.name:
                 return handleOnlineUser(message);
-            case DELETE:
+            case DELETE.name:
                 return handleChatDelete(message);
-            case DELETE_MESSAGE:
+            case DELETE_MESSAGE.name:
                 return handleDeleteMessage(message);
-            case SEEN_MESSAGE:
+            case SEEN_MESSAGE.name:
                 return handleSeenMessage(message);
-            case LEFT_CHAT:
+            case LEFT_CHAT.name:
                 return handleLeftChat(message);
-            case EXCEPTION:
+            case EXCEPTION.name:
                 return handleChatException(message);
             default:
                 return handleReceivedMessage(message);
@@ -127,8 +140,8 @@ const MessageContainer = () => {
 
     useEffect(() => {
         if (isClientConnected) {
-            subscribe(`/user/${user.username}/private/chat/event`);
-            subscribe(`/user/${user.username}/private/chat`);
+            subscribe(`/user/${user.id}/private/chat/event`);
+            subscribe(`/user/${user.id}/private/chat`);
         }
     }, [isClientConnected]);
 
@@ -139,6 +152,10 @@ const MessageContainer = () => {
         if (inputData.text.length === 0) return;
         inputData.chatId = activeChatId;
         sendMessage("/app/private/chat", inputData);
+    }
+
+    const deleteMessage = (messageId) => {
+        sendMessage(`/app/private/chat/delete/${messageId}`);
     }
 
 
@@ -154,23 +171,24 @@ const MessageContainer = () => {
                 <Title className="title" order={5}>{recipientName}</Title>
                 <ChatMenu handleDeletePost={handleDeleteChat} isMutable={true} />
             </Flex>
-            {isLoading ? (<Text className="system-message" ta="center">loading messages ...</Text>) :
-                isError ? (<Text className="system-message" ta="center">error loading messages</Text>) :
-                    activeChatId === null ? (<Text className="system-message" ta="center">you have no messages yet</Text>) :
-                        messages.length === 0 ? (
-                            <Text className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Text>) :
-                            (
-                                <div className={classes.messages}>
-                                    {
-                                        messages?.map(message =>
-                                            <Message
-                                                key={message.id}
-                                                message={message}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            )
+            {isLoading ? <Text className="system-message" ta="center">loading messages ...</Text>
+                : isError ? <Text className="system-message" ta="center">error loading messages</Text>
+                    : activeChatId === null ? <Text className="system-message" ta="center">you have no messages yet</Text>
+                        : messages.length === 0 ? <Text className="system-message" ta="center">
+                            {`send your first message to `}<strong>{recipientName}</strong>
+                        </Text>
+                            : <div className={classes.messages}>
+                                {
+                                    messages?.map(message =>
+                                        <Message
+                                            key={message.id}
+                                            message={message}
+                                            handleDeleteMessage={() => deleteMessage(message.id)}
+                                        />
+                                    )
+                                }
+                            </div>
+
             }
 
             <div className={classes.inputSection}>

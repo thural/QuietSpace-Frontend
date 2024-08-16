@@ -41,7 +41,7 @@ export const useQueryUsers = (setQueryResult) => {
 
     return useMutation({
         mutationFn: async (inputText) => {
-            const response = await fetchUsersByQuery(USER_PATH, inputText, authData.accessToken);
+            const response = await fetchUsersByQuery(inputText, authData.accessToken);
             return response.json();
         },
         onSuccess,

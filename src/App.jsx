@@ -19,7 +19,7 @@ import SignoutPage from "./pages/signout/SignoutPage";
 import ActivationForm from "./components/Auth/ActivationForm";
 import useJwtAuth from "./hooks/useJwtAuth";
 import { LoadingOverlay } from '@mantine/core';
-import { useGetCurrentUser } from "./hooks/useUserData";
+import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
 
@@ -27,6 +27,8 @@ const App = () => {
 
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
+    useGetFollowings();
+    useGetFollowers();
 
 
 

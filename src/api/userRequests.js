@@ -1,4 +1,4 @@
-import { FOLLOW_PATH, USER_PATH } from "../constants/ApiPath";
+import { USER_PATH } from "../constants/ApiPath";
 import { getApiResponse } from "./commonRequest";
 
 export const fetchUser = async (url, token) => {
@@ -7,15 +7,15 @@ export const fetchUser = async (url, token) => {
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchUserById = async (url, token) => {
+export const fetchUserById = async (userId, token) => {
     try {
-        return await getApiResponse(url, 'GET', null, token);
+        return await getApiResponse(USER_PATH + `${userId}`, 'GET', null, token);
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchUsersByQuery = async (url, queryText, token) => {
+export const fetchUsersByQuery = async (queryText, token) => {
     try {
-        return await getApiResponse(url + `/search?query=${queryText}`, 'GET', null, token);
+        return await getApiResponse(USER_PATH + `/search?query=${queryText}`, 'GET', null, token);
     } catch (error) { throw Error(error.message) }
 }
 
@@ -34,5 +34,11 @@ export const fetchFollowers = async (token) => {
 export const fetchFollowings = async (token) => {
     try {
         return await getApiResponse(USER_PATH + `/followings`, 'GET', null, token);
+    } catch (error) { throw Error(error.message) }
+}
+
+export const fetchRemoveFollower = async (token, userId) => {
+    try {
+        return await getApiResponse(USER_PATH + `followers/remove/${userId}`, 'POST', null, token);
     } catch (error) { throw Error(error.message) }
 }

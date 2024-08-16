@@ -22,6 +22,8 @@ const FollowNotification = ({ notification }) => {
 
     const isFollowing = followings?.content?.some(follow => follow.id === actorId);
 
+    console.log("followings: ", followings);
+
 
 
     const handleClick = (event) => {
@@ -31,7 +33,7 @@ const FollowNotification = ({ notification }) => {
 
     const handleFollowToggle = (event) => {
         event.preventDefault();
-        toggleFollow.mutate(userId);
+        toggleFollow.mutate(actorId);
     }
 
 

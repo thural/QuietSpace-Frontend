@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styles from "./styles/userQueryItemStyles";
 
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";

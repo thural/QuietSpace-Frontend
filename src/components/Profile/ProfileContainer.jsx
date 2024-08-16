@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Avatar, Box, Button, Container, Flex, Tabs, Text, Title } from "@mantine/core";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
 
@@ -9,7 +9,6 @@ import Followings from "./Followings";
 import { viewStore } from "../../hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import Followers from "./Followers";
-import { useGetFollowers, useGetFollowings } from "../../hooks/useUserData";
 
 
 function ProfileContainer() {
@@ -19,8 +18,8 @@ function ProfileContainer() {
     const { data: viewData, setViewData } = viewStore();
     const signedUser = queryClient.getQueryData(["user"]);
 
-    const { data: followers } = useGetFollowers();
-    const { data: followings } = useGetFollowings();
+    const followers = queryClient.getQueryData(["followers"]);
+    const followings = queryClient.getQueryData(["followings"]);
 
 
     const toggleFollowings = () => {
