@@ -1,9 +1,18 @@
-import { Text } from "@mantine/core";
 import React from "react";
+import NotificationList from "../../components/Notification/NotificationList";
+import { NotificationType } from "../../utils/enumClasses";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const ReplyNotifications = () => {
-    return <Text ta="center">You have no Replies yet</Text>
+    const queryClient = useQueryClient();
+    const { content } = queryClient.getQueryData(["notifications"]);
+    const notifications = content.filter(n => n.type === NotificationType.COMMENT_REPLY.name)
+    console.log("notifications on ReplyNotifications: ", notifications);
+
+    return (
+        <NotificationList notifications={notifications} />
+    )
 }
 
 export default ReplyNotifications

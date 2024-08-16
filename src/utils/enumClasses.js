@@ -57,4 +57,22 @@ class ChatEventType {
     }
 }
 
-export { ContentType, LikeType, UserRole, ChatEventType };
+class NotificationType {
+    static FOLLOW_REQUEST = new NotificationType("FOLLOW_REQUEST");
+    static POST_REACTION = new NotificationType("POST_REACTION");
+    static MENTION = new NotificationType("MENTION");
+    static COMMENT = new NotificationType("COMMENT");
+    static COMMENT_REACTION = new NotificationType("COMMENT_REACTION");
+    static COMMENT_REPLY = new NotificationType("COMMENT_REPLY");
+    static REPOST = new NotificationType("REPOST");
+
+    constructor(name) {
+        this.name = name;
+    }
+
+    toString() {
+        return this.name;
+    }
+}
+
+export { ContentType, LikeType, UserRole, ChatEventType, NotificationType };

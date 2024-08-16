@@ -55,8 +55,8 @@ const NavBar = ({ children }) => {
         </div>
 
         <div className="navbar-item">
-          <Link to="/notification">
-            {pathName === "/notification" ? <PiBellFill /> : <PiBell />}
+          <Link to="/notification/all">
+            {pathName === "/notification/all" ? <PiBellFill /> : <PiBell />}
           </Link>
         </div>
 

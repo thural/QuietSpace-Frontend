@@ -1,9 +1,18 @@
-import { Text } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { NotificationType } from "../../utils/enumClasses";
+import NotificationList from "../../components/Notification/NotificationList";
 
 
 const RequestNotifications = () => {
-    return <Text ta="center">You have no follow Requests yet</Text>
+    const queryClient = useQueryClient();
+    const { content } = queryClient.getQueryData(["notifications"]);
+    const notifications = content.filter(n => n.type === NotificationType.FOLLOW_REQUEST.name)
+    console.log("notifications on RequestNotifications: ", notifications);
+
+    return (
+        <NotificationList notifications={notifications} />
+    )
 }
 
 export default RequestNotifications

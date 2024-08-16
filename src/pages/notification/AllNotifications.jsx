@@ -1,9 +1,16 @@
-import { Text } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import NotificationList from "../../components/Notification/NotificationList";
 
 
 const AllNotifications = () => {
-    return <Text ta="center">You have no Notifications yet</Text>
+
+    const queryClient = useQueryClient();
+    const { content: notifications } = queryClient.getQueryData(["notifications"]);
+
+    return (
+        <NotificationList notifications={notifications} />
+    )
 }
 
 export default AllNotifications
