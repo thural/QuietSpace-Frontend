@@ -11,7 +11,6 @@ const QueryItem = ({ user, handleItemClick }) => {
     const handleClick = (event) => {
         event.preventDefault();
         handleItemClick(event, user);
-        console.log("QUERY ITEM WAS CLICKED");
     }
 
     return (

@@ -11,8 +11,6 @@ const Poll = ({ pollData, postId }) => {
     const user = queryClient.getQueryData(["user"]);
     const postVote = useVotePoll();
 
-    console.log("POLL DATA:", pollData);
-
     const parsedVoteCounts = parseCount(pollData.voteCount);
 
     const getStyle = (option) => {

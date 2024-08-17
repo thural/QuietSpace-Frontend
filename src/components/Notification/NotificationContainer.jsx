@@ -7,12 +7,8 @@ import { useGetNotifications } from "../../hooks/useNotificationData";
 function NotificationContainer() {
 
     const navigate = useNavigate();
-
     const [value, setValue] = useState('/notification/all');
-
     const { data, isLoading, isError } = useGetNotifications();
-
-    console.log("notifications: ", data);
 
 
     const navigateToPage = (buttonValue) => {
@@ -45,9 +41,6 @@ function NotificationContainer() {
                         <Outlet />
                     </>
             }
-
-
-
         </Container>
     )
 }

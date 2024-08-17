@@ -13,8 +13,8 @@ const CommentSection = ({ postId }) => {
     const comments = commentData.content;
 
 
-    const classes = styles();
 
+    const classes = styles();
 
     return (
         <div className={classes.commentSection}>

@@ -8,7 +8,6 @@ const ReplyNotifications = () => {
     const queryClient = useQueryClient();
     const { content } = queryClient.getQueryData(["notifications"]);
     const notifications = content.filter(n => n.type === NotificationType.COMMENT_REPLY.name)
-    console.log("notifications on ReplyNotifications: ", notifications);
 
     return (
         <NotificationList notifications={notifications} />

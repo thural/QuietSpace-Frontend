@@ -15,7 +15,6 @@ function SearchContainer() {
     const [focused, setFocused] = useState(false);
     const [userQueryResult, setUserQueryResult] = useState([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
-
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
 
@@ -27,6 +26,7 @@ function SearchContainer() {
     useEffect(() => {
         if (!userQueryResult.length) setFocused(false);
     }, [userQueryResult])
+
 
     const handleInputChange = (event) => {
         event.preventDefault();
@@ -57,6 +57,8 @@ function SearchContainer() {
     const handleInputBlur = () => {
         // setFocused(false);
     }
+
+
 
     const resultAppliedStyle = focused ? { display: 'block' } : { display: 'none' };
     const searchAppliedStyle = focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};

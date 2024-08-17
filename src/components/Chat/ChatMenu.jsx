@@ -15,12 +15,8 @@ const ChatMenu = ({ handleDeleteChat, isMutable }) => {
 
     return (
         <>
-            <div onClick={toggleDisplay} className={classes.menu}>
-                <PiDotsThreeVertical />
-            </div>
-
+            <div onClick={toggleDisplay} className={classes.menu}><PiDotsThreeVertical /></div>
             <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
-
             <div onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
 
                 {isMutable &&
@@ -28,15 +24,12 @@ const ChatMenu = ({ handleDeleteChat, isMutable }) => {
                         <div className="clickable" alt={"mute chat icon"}>
                             <p>mute</p>
                         </div>
-
                         <div className="clickable" onClick={handleDeleteChat} alt={"delete chat icon"}>
                             <p>remove</p>
                         </div>
-
                         <div className="clickable" alt={"block post icon"}>
                             <p>block</p>
                         </div>
-
                         <div className="clickable" alt={"report post icon"}>
                             <p>report</p>
                         </div>

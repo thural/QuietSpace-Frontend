@@ -1,23 +1,22 @@
 import React from "react";
-import { Avatar, Box, Button, Container, Flex, Tabs, Text, Title } from "@mantine/core";
+import { Avatar, Box, Button, Container, Flex, Tabs, Text } from "@mantine/core";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
 
-import styles from "./styles/profileContainerStyles";
 import { generatePfpUrls } from "../../utils/randomPfp";
-import { Link } from "react-router-dom";
-import Followings from "./Followings";
+import { Link, useNavigate } from "react-router-dom";
 import { viewStore } from "../../hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
+import styles from "./styles/profileContainerStyles";
+import Followings from "./Followings";
 import Followers from "./Followers";
 
 
 function ProfileContainer() {
 
-    const classes = styles();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { data: viewData, setViewData } = viewStore();
+    const { data: viewState, setViewData } = viewStore();
     const signedUser = queryClient.getQueryData(["user"]);
-
     const followers = queryClient.getQueryData(["followers"]);
     const followings = queryClient.getQueryData(["followings"]);
 
@@ -30,7 +29,15 @@ function ProfileContainer() {
         setViewData({ followers: true });
     }
 
+    const handleSignout = () => {
+        navigate("/signout");
+    }
+
     const generatedPfpUrls = generatePfpUrls(4, "beam");
+
+
+
+    const classes = styles();
 
     return (
         <Container size="600px" className={classes.container}>
@@ -47,11 +54,11 @@ function ProfileContainer() {
                     <Text ta="center" style={{ cursor: "pointer" }} fw="400" onClick={toggleFollowings}>{followings?.length} followings</Text>
                     <Text ta="center" style={{ cursor: "pointer" }} fw="400" onClick={toggleFollowers}>{followers?.length} followers</Text>
                 </Flex>
-                <Box className="signout-icon" onClick={() => console.log("implement logout function")}><PiSignOut /></Box>
+                <Box className="signout-icon" onClick={handleSignout}><PiSignOut /></Box>
             </Flex>
 
-            {viewData.followings && <Followings />}
-            {viewData.followers && <Followers />}
+            {viewState.followings && <Followings />}
+            {viewState.followers && <Followers />}
 
             <Link to="/settings" >
                 <Flex className={classes.profileEditSection}>

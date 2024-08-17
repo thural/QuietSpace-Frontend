@@ -8,7 +8,6 @@ const MentionNotifications = () => {
     const queryClient = useQueryClient();
     const { content } = queryClient.getQueryData(["notifications"]);
     const notifications = content.filter(n => n.type === NotificationType.MENTION.name)
-    console.log("notifications on MentionNotifications: ", notifications);
 
     return (
         <NotificationList notifications={notifications} />

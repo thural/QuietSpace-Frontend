@@ -32,7 +32,6 @@ const ShareMenu = () => {
                     <p>Repost</p>
                     <PiArrowsClockwise />
                 </div>
-
             </div>
         </>
     )

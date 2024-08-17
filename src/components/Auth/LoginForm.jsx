@@ -9,8 +9,8 @@ import { useAuthStore } from "../../hooks/zustand";
 const LoginForm = ({ setAuthState, authState }) => {
 
     const { setAuthData, resetAuthData, setIsAuthenticated } = useAuthStore();
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
+    const navigate = useNavigate();
 
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [isError, setIsError] = useState(false);

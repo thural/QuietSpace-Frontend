@@ -34,8 +34,8 @@ const CommentForm = ({ postId }) => {
     }
 
 
-    const classes = styles();
 
+    const classes = styles();
 
     return (
         <div>

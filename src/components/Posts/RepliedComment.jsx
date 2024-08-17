@@ -23,14 +23,14 @@ const RepliedComment = ({ comment, repliedComment }) => {
         toggleLike.mutate(comment.id);
     }
 
-
-    // const isLiked = comment.likes.some(likeObject => likeObject.userId === user.id);
-    const classes = styles();
-
     const appliedStyle = {
         borderRadius: '1rem 0rem 1rem 1rem',
         marginLeft: 'auto'
     }
+
+
+
+    const classes = styles();
 
     return (
         <Flex className={classes.container}>

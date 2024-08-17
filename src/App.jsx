@@ -6,7 +6,7 @@ import ChatPage from "./pages/chat/ChatPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
-import './App.css'
+import './App.css';
 
 import ProfilePage from "./pages/profile/ProfilePage";
 import NotificationPage from "./pages/notification/NotifiactionPage";
@@ -33,7 +33,6 @@ const App = () => {
 
 
     const onSuccessFn = (data) => {
-        console.log("auth data in App...... ", data);
         setAuthData(data);
         setIsAuthenticated(true);
     }

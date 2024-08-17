@@ -64,8 +64,8 @@ const Post = ({ post, avatarUrl }) => {
     const isMutable = user?.role === "admin" || post?.userId === user?.id;
 
 
-    const classes = styles();
 
+    const classes = styles();
 
     return (
         <Box id={postId} className={classes.wrapper}>
@@ -84,7 +84,6 @@ const Post = ({ post, avatarUrl }) => {
             {post.poll && <Poll pollData={post.poll} postId={postId} />}
 
             <Box className="panel">
-
                 {
                     userReaction?.likeType === LikeType.LIKE.toString() ?
                         <PiArrowFatUpFill className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUpFill> :
@@ -105,15 +104,11 @@ const Post = ({ post, avatarUrl }) => {
                     {dislikeCount > 0 && <p>{parseCount(dislikeCount)} dislikes</p>}
                     {!!comments?.length && <p>{parseCount(comments?.length)} comments</p>}
                 </Flex>
-
             </Box>
 
             {editPostView && <EditPostForm postId={postId} />}
-
             {showComments && <CommentSection postId={postId} />}
-
             <hr></hr>
-
         </Box>
     )
 }

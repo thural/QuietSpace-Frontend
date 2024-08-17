@@ -18,6 +18,7 @@ const Comment = ({ comment }) => {
 
     const [replyFormView, setReplyFormView] = useState(false);
 
+
     const handleReaction = async (event, likeType) => {
         event.preventDefault();
         const reactionBody = {
@@ -41,12 +42,11 @@ const Comment = ({ comment }) => {
         setReplyFormView(!replyFormView);
     }
 
+    const isLiked = comment.userReaction?.likeType === LikeType.LIKE.name;
 
-    const likeCount = 0; // TODO: write backend code to return like counts
-    const isLiked = comment.userReaction?.likeType === LikeType.LIKE.toString();
+
 
     const classes = styles();
-
 
     return (
         <Box className={classes.container}>

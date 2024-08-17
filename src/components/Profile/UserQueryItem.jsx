@@ -9,10 +9,9 @@ import { useToggleFollow } from "../../hooks/useUserData";
 const QueryItem = ({ user, handleItemClick }) => {
 
     const queryClient = useQueryClient();
-    const followings = queryClient.getQueryData(["followings"]);
     const toggleFollow = useToggleFollow();
-
-    const isFollowing = followings?.content?.some(follow => follow.id === user.id)
+    const followings = queryClient.getQueryData(["followings"]);
+    const isFollowing = followings?.content?.some(follow => follow.id === user.id);
 
 
     const handleClick = (event) => {
@@ -23,6 +22,10 @@ const QueryItem = ({ user, handleItemClick }) => {
     const handleFollowToggle = (event) => {
         event.preventDefault();
         toggleFollow.mutate(user.id);
+    }
+
+    const followStatus = () => {
+        return isFollowing ? "unfollow" : "follow";
     }
 
 
@@ -41,7 +44,7 @@ const QueryItem = ({ user, handleItemClick }) => {
                 <Title order={5} className="username">{user.username}</Title>
                 <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>
             </Box>
-            <button type="button" onClick={handleFollowToggle}>{isFollowing ? "unfollow" : "follow"}</button>
+            <button type="button" onClick={handleFollowToggle}>{followStatus()}</button>
         </Flex>
     )
 }

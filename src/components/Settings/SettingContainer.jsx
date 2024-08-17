@@ -17,7 +17,6 @@ function SettingsContainer() {
     const redirectToPage = (buttonValue) => {
         setValue(buttonValue);
         navigate(buttonValue);
-        console.log("pathName: ", pathName);
     };
 
     const classes = styles();

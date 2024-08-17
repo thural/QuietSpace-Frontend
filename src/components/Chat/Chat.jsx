@@ -15,9 +15,10 @@ const Chat = ({ chat }) => {
     const recentText = chat.recentMessage ? chat.recentMessage.text : "chat is empty";
 
     const handleClick = () => {
-        console.log("ACTIVE CHAT ID is set to: ", chat.id);
         setActiveChatId(chat.id);
     }
+
+
 
     const generatedPfpLink = generatePfp("beam");
     const classes = styles();

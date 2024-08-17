@@ -6,8 +6,6 @@ import { NotificationType } from "../../utils/enumClasses";
 
 const NotificationList = ({ notifications }) => {
 
-
-
     if (!notifications.length) return <Text ta="center">You have no Notifications yet</Text>
 
     const getNotificationCard = (notification) => {

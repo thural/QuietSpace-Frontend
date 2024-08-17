@@ -8,7 +8,6 @@ const SignupForm = ({ setAuthState, authState }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState(null);
-
     const [formData, setFormData] = useState({
         role: "user",
         username: '',

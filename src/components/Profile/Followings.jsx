@@ -17,13 +17,12 @@ function Followings() {
 
     const filterByQuery = (value) => {
         return followings.data
-            .filter(f => (f.username.includes(value) || f.email.includes(value)));
+            .filter((username, email) => (username.includes(value) || email.includes(value)));
     }
 
     const handleInputChange = (event) => {
         event.preventDefault();
         const value = event.target.value;
-        console.log("value at input change at follow container", value)
         if (value.length) {
             setFollowingsResult(filterByQuery(value));
         } else {
@@ -41,6 +40,8 @@ function Followings() {
     const handleInputBlur = () => {
         // setFocused(false);
     }
+
+
 
     const classes = styles();
 

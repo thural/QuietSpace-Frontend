@@ -25,10 +25,9 @@ const CreatePostForm = () => {
     const handleChange = (event) => {
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
-        console.log("post data", postData);
     }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
 
         const poll = {
@@ -42,7 +41,7 @@ const CreatePostForm = () => {
 
         const requestBody = poll.options.length ? { ...postData, poll } : postData;
 
-        await addPost.mutate(requestBody);
+        addPost.mutate(requestBody);
     }
 
     const viewAccessOptions = ["friends", "anyone"];
@@ -62,8 +61,9 @@ const CreatePostForm = () => {
     const avatarUrl = generatePfp("beam");
     const avatarPlaceholder = user.username.charAt(0).toUpperCase();
 
-    const classes = styles();
 
+
+    const classes = styles();
 
     return (
         <Box>
@@ -133,7 +133,6 @@ const CreatePostForm = () => {
                             post
                         </Button>
                     </Flex>
-
                 </form>
             </Flex>
         </Box>

@@ -22,8 +22,6 @@ const FollowNotification = ({ notification }) => {
 
     const isFollowing = followings?.content?.some(follow => follow.id === actorId);
 
-    console.log("followings: ", followings);
-
 
 
     const handleClick = (event) => {
@@ -34,6 +32,10 @@ const FollowNotification = ({ notification }) => {
     const handleFollowToggle = (event) => {
         event.preventDefault();
         toggleFollow.mutate(actorId);
+    }
+
+    const followingStatus = () => {
+        return isFollowing ? "unfollow" : "follow";
     }
 
 
@@ -53,7 +55,7 @@ const FollowNotification = ({ notification }) => {
                 <Title order={5} className="username">{username}</Title>
                 <Text size="1rem" lineClamp={5} className="message">{"followed you"}</Text>
             </Box>
-            <button type="button" disabled={false} onClick={handleFollowToggle}>{isFollowing ? "unfollow" : "follow"}</button>
+            <button type="button" disabled={false} onClick={handleFollowToggle}>{followingStatus()}</button>
         </Flex>
     )
 }

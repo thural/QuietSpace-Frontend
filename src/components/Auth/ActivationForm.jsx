@@ -8,26 +8,23 @@ import { displayCountdown } from "../../hooks/useTimer";
 
 const ActivationForm = ({ setAuthState, authState }) => {
 
-    const [formData, setFormData] = useState({ activationCode: "" });
     const activationNotice = (message) => alert(message);
-    const activation = useActivation(authState, setAuthState, activationNotice);
+    const [formData, setFormData] = useState({ activationCode: "" });
     const tokenTimer = displayCountdown(15 * 60 * 1000, "code has expired");
+    const activation = useActivation(authState, setAuthState, activationNotice);
 
 
     const handleResendCode = () => {
-        console.log("email on activation state: ", authState.formData.email);
         fetchResendCode(authState.formData.email);
         tokenTimer.resetTimer(16 * 60 * 1000);
     }
 
     const handleSubmit = async (event) => {
-        console.log("form data on activation submit: ", formData);
         event.preventDefault();
         activation.mutate(formData.activationCode);
     }
 
     const handleChange = (value) => {
-        console.log("form data: ", formData);
         setFormData({ ...formData, activationCode: value });
     }
 
@@ -51,8 +48,8 @@ const ActivationForm = ({ setAuthState, authState }) => {
                         />
                     </div>
                     <div className="timer">
-                        {!tokenTimer.hasTimeOut ? <Text>{"code will be expired in:"}</Text> :
-                            <Text>{"code has expired, get a new code"}</Text>}
+                        {!tokenTimer.hasTimeOut ? <Text>{"code will be expired in:"}</Text>
+                            : <Text>{"code has expired, get a new code"}</Text>}
                         {!tokenTimer.hasTimeOut && tokenTimer.component}
                     </div>
                     <Button

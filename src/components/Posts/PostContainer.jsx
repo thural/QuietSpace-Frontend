@@ -12,7 +12,6 @@ function PostContainer() {
 
     const { data: viewData, setViewData } = viewStore();
     const { createPost: createPostView } = viewData;
-    const [postQueryResult, setPostQueryResult] = useState([])
     const postsQuery = useGetPosts();
     const classes = styles();
 

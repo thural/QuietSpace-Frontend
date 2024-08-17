@@ -25,26 +25,13 @@ const MessageContainer = () => {
 
     const queryClient = useQueryClient();
 
-
-
-    const { data: { activeChatId } } = useChatStore();
-    console.log("active chat id: ", activeChatId);
     const { data: { userId } } = useAuthStore();
     const user = queryClient.getQueryData(["user"]);
-    console.log("current user", user);
     const chats = queryClient.getQueryData(["chats"]);
-    console.log("loaded chats: ", chats);
-
-
-
-    if (activeChatId === null) return (<Text className="system-message" ta="center">loading messages ...</Text>)
-    const { data: messages, isError, isLoading, isSuccess, refetch } = useGetMessagesByChatId(activeChatId);
+    const { data: { activeChatId } } = useChatStore();
     const currentChat = chats.find(chat => chat.id === activeChatId);
-    console.log("current chat: ", currentChat);
-    const chatMembers = currentChat?.members[0];
-    console.log("chat members: ", chatMembers);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
-    console.log("CURRENT CHAT in message container: ", recipientName);
+    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
 
 
 
@@ -61,7 +48,6 @@ const MessageContainer = () => {
 
     const handleDeleteChat = (event) => {
         event.preventDefault();
-        console.log("delete chat was clicked");
         useDeleteChat(activeChatId).mutate();
     }
 
@@ -89,8 +75,6 @@ const MessageContainer = () => {
     const onSubscribe = (message) => {
 
         const messageBody = JSON.parse(message.body)
-
-
 
         const {
             EXCEPTION,
@@ -123,7 +107,6 @@ const MessageContainer = () => {
     }
 
 
-
     const {
         disconnect,
         subscribe,
@@ -148,7 +131,6 @@ const MessageContainer = () => {
 
 
     const handleSubmit = () => {
-        console.log("message data on submit: ", inputData);
         if (inputData.text.length === 0) return;
         inputData.chatId = activeChatId;
         sendMessage("/app/private/chat", inputData);

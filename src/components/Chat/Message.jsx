@@ -32,6 +32,8 @@ const Message = ({ message, handleDeleteMessage }) => {
         borderRadius: '1rem 1rem 0rem 1rem'
     };
 
+
+
     const classes = styles();
 
     return (

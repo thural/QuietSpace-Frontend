@@ -25,23 +25,19 @@ const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
                 <p className="selected-option">{selectedOption.concat(" ").concat(textContent)}</p>
             </div>
 
-            <div className={classes.menuOverlay}
-                style={{ display }}
-                onClick={() => setDisplay('none')}
-            />
+            <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')} />
 
             <div className={classes.menuList} style={{ display }}>
                 {options.map((option, index) =>
-                    <div key={index}
+                    <div
+                        key={index}
                         onClick={() => handleClick(option)}
                         className="clickable"
-                        alt={"option"}
-                    >
+                        alt={"option"}>
                         <p>{option}</p>
                     </div>
                 )}
             </div>
-
         </Box>
     )
 }

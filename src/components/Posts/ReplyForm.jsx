@@ -42,6 +42,8 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
         addNewComment.mutate(commentInput);
     }
 
+
+
     const classes = styles();
 
     return (
@@ -60,7 +62,7 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
                     borderColor="#FFFFFF"
                     onEnter={handleSubmit}
                     theme="light"
-                    placeholder="Type a comment"
+                    placeholder="type a comment"
                 />
             </form>
         </Flex>

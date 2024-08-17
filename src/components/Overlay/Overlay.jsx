@@ -8,11 +8,12 @@ const Overlay = ({ closable }) => {
   const classes = styles();
   const active = !(closable === undefined || closable === null);
 
+  const handleClick = () => {
+    if (active) setViewData({ overlay: false, ...closable });
+  }
+
   return (
-    <div className={classes.overlay} onClick={() => {
-      if (active) setViewData({ overlay: false, ...closable });
-    }}>
-    </div>
+    <div className={classes.overlay} onClick={handleClick}></div>
   )
 }
 

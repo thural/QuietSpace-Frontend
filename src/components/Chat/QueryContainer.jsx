@@ -9,22 +9,20 @@ import QueryInput from "./QueryInput";
 
 const QueryContainer = () => {
 
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
-
 
     const [focused, setFocused] = useState(false);
     const [queryResult, setQueryResult] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
+    const queryClient = useQueryClient();
     const createChatMutation = useCreateChat();
+    const user = queryClient.getQueryData(["user"]);
     const makeQueryMutation = useQueryUsers(setQueryResult);
 
 
     const handleItemClick = async (event, clickedUser) => {
         event.preventDefault();
-        console.log("clicked user on query item: ", clickedUser);
         const createdChatRequestBody = { "userIds": [user.id, clickedUser.id] }
         createChatMutation.mutate(createdChatRequestBody);
     }
@@ -39,10 +37,8 @@ const QueryContainer = () => {
     const handleQuerySubmit = async (value) => {
         if (isSubmitting) return;
         setIsSubmitting(true);
-        await makeQueryMutation.mutate(value);
-        setTimeout(() => {
-            setIsSubmitting(false);
-        }, 1000);
+        makeQueryMutation.mutate(value);
+        setTimeout(() => { setIsSubmitting(false) }, 1000);
     }
 
     const handleKeyDown = (event) => {
@@ -65,30 +61,26 @@ const QueryContainer = () => {
 
     return (
         <Box className={classes.searchContainer} >
-
             <QueryInput  {...inputProps} />
-
             <Box className={classes.resultContainer} style={appliedStyle} >
                 {makeQueryMutation.isPending ?
-                    (<LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />) :
-                    (queryResult.length === 0) ?
-                        (
-                            <Flex className={classes.recentQueries}>
-                                <Title order={4}>recent</Title>
-                                <Anchor
-                                    fw={400}
-                                    fz="1rem"
-                                    href=""
-                                    target="_blank"
-                                    underline="never">
-                                    clear all
-                                </Anchor>
-                            </Flex>) :
-                        (queryResult.map((user, index) =>
+                    <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />
+                    : queryResult.length === 0 ?
+                        <Flex className={classes.recentQueries}>
+                            <Title order={4}>recent</Title>
+                            <Anchor
+                                fw={400}
+                                fz="1rem"
+                                href=""
+                                target="_blank"
+                                underline="never">
+                                clear all
+                            </Anchor>
+                        </Flex>
+                        : queryResult.map((user, index) =>
                             <QueryItem key={index} user={user} handleItemClick={handleItemClick} />
-                        ))}
+                        )}
             </Box>
-
         </Box>
     )
 }

@@ -12,7 +12,6 @@ const QueryInput = ({
 
     const searchInput = React.useRef(null);
     if (document.activeElement === searchInput.current) {
-        console.log("search is focused");
     }
 
     const classes = styles();
