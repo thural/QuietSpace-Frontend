@@ -2,9 +2,10 @@ import React from "react";
 import styles from "./styles/repliedCommentStyles";
 import emoji from "react-easy-emoji";
 import { useQueryClient } from "@tanstack/react-query";
-import { useToggleCommentLike, useDeleteComment } from "../../hooks/useCommentData";
+import { useDeleteComment } from "../../hooks/useCommentData";
 import { Avatar, Box, Flex, Text } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
+import { useToggleReaction } from "../../hooks/useReactionData";
 
 
 const RepliedComment = ({ comment, repliedComment }) => {
@@ -12,15 +13,22 @@ const RepliedComment = ({ comment, repliedComment }) => {
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const deleteComment = useDeleteComment(comment.id);
-    const toggleLike = useToggleCommentLike(comment.id);
+    const toggleLike = useToggleReaction(comment.id);
 
 
     const handleDeleteComment = () => {
         deleteComment.mutate(comment.id);
     }
 
-    const handleLikeToggle = () => {
-        toggleLike.mutate(comment.id);
+    const handleReaction = async (event, type) => {
+        event.preventDefault();
+        const reactionBody = {
+            userId: user.id,
+            contentId: comment.id,
+            reactionType: type,
+            contentType: ContentType.COMMENT.toString()
+        }
+        toggleLike.mutate(reactionBody);
     }
 
     const appliedStyle = {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Message from "./Message";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
@@ -9,28 +9,18 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteChat, useGetMessagesByChatId } from "../../hooks/useChatData";
 import { useAuthStore, useChatStore } from "../../hooks/zustand";
 import { generatePfp } from "../../utils/randomPfp";
-import { useStompClient } from "../../hooks/useStompClient";
-import { ChatEventType } from "../../utils/enumClasses";
-
-import {
-    handleChatDelete,
-    handleChatException,
-    handleLeftChat,
-    handleOnlineUser,
-    handleSeenMessage
-} from "./misc/messageHandler";
-
+import useChatSocket from "../../hooks/useChatSocket";
 
 const MessageContainer = () => {
 
     const queryClient = useQueryClient();
 
     const { data: { userId } } = useAuthStore();
-    const user = queryClient.getQueryData(["user"]);
     const chats = queryClient.getQueryData(["chats"]);
     if (!chats?.length) return null;
     const { data: { activeChatId } } = useChatStore();
     const deleteChat = useDeleteChat(activeChatId);
+    const { sendChatMessage, deleteChatMessage } = useChatSocket();
     const currentChat = chats.find(chat => chat.id === activeChatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
@@ -52,95 +42,6 @@ const MessageContainer = () => {
         console.log("chat is being removed ...");
         event.preventDefault();
         deleteChat.mutate();
-    }
-
-    const handleReceivedMessage = (message) => {
-        const messageBody = JSON.parse(message.body);
-
-        queryClient.setQueryData(['messages', { id: activeChatId }], (oldData) => {
-            return { ...oldData, content: [messageBody, ...oldData.content] };
-        });
-    }
-
-    const handleDeleteMessage = (message) => {
-
-        const messageBody = JSON.parse(message.body);
-        const messageId = messageBody.messageId;
-
-        queryClient.setQueryData(['messages', { id: activeChatId }], (oldData) => {
-            const updatedMessages = oldData.content.filter(m => m.id !== messageId);
-            return { ...oldData, content: updatedMessages };
-        });
-    }
-
-
-
-    const onSubscribe = (message) => {
-
-        const messageBody = JSON.parse(message.body)
-
-        const {
-            EXCEPTION,
-            CONNECT,
-            DISCONNECT,
-            DELETE,
-            DELETE_MESSAGE,
-            SEEN_MESSAGE,
-            LEFT_CHAT
-        } = ChatEventType;
-
-        switch (messageBody.type) {
-            case CONNECT.name:
-                return handleOnlineUser(message);
-            case DISCONNECT.name:
-                return handleOnlineUser(message);
-            case DELETE.name:
-                return handleChatDelete(message);
-            case DELETE_MESSAGE.name:
-                return handleDeleteMessage(message);
-            case SEEN_MESSAGE.name:
-                return handleSeenMessage(message);
-            case LEFT_CHAT.name:
-                return handleLeftChat(message);
-            case EXCEPTION.name:
-                return handleChatException(message);
-            default:
-                return handleReceivedMessage(message);
-        }
-    }
-
-
-    const {
-        disconnect,
-        subscribe,
-        subscribeWithId,
-        unSubscribe,
-        sendMessage,
-        setAutoReconnect,
-        isClientConnected,
-        isConnecting,
-        isDisconnected,
-        isError: isSocketError,
-        error
-    } = useStompClient({ onSubscribe });
-
-    useEffect(() => {
-        if (isClientConnected) {
-            subscribe(`/user/${user.id}/private/chat/event`);
-            subscribe(`/user/${user.id}/private/chat`);
-        }
-    }, [isClientConnected]);
-
-
-
-    const handleSubmit = () => {
-        if (inputData.text.length === 0) return;
-        inputData.chatId = activeChatId;
-        sendMessage("/app/private/chat", inputData);
-    }
-
-    const deleteMessage = (messageId) => {
-        sendMessage(`/app/private/chat/delete/${messageId}`);
     }
 
 
@@ -168,7 +69,7 @@ const MessageContainer = () => {
                                         <Message
                                             key={message.id}
                                             message={message}
-                                            handleDeleteMessage={() => deleteMessage(message.id)}
+                                            handleDeleteMessage={() => deleteChatMessage(message.id)}
                                         />
                                     )
                                 }
@@ -187,7 +88,7 @@ const MessageContainer = () => {
                         cleanOnEnter
                         buttonElement
                         borderColor="#FFFFFF"
-                        onEnter={handleSubmit}
+                        onEnter={() => sendChatMessage(inputData)}
                         theme="light"
                         placeholder="write a message"
                         enabled={isSuccess}
