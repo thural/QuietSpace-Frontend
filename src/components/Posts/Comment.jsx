@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import styles from "./styles/commentStyles";
 import emoji from "react-easy-emoji";
 import { useQueryClient } from "@tanstack/react-query";
-import { useDeleteComment, useToggleReaction } from "../../hooks/useCommentData";
+import { useDeleteComment } from "../../hooks/useCommentData";
 import { Avatar, Box, Flex } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
 import ReplyForm from "./ReplyForm";
 import { ContentType, LikeType } from "../../utils/enumClasses";
+import { useToggleReaction } from "../../hooks/useReactionData";
 
 
 const Comment = ({ comment }) => {
@@ -19,13 +20,13 @@ const Comment = ({ comment }) => {
     const [replyFormView, setReplyFormView] = useState(false);
 
 
-    const handleReaction = async (event, likeType) => {
+    const handleReaction = async (event, type) => {
         event.preventDefault();
         const reactionBody = {
             userId: user.id,
             contentId: comment.id,
-            likeType: likeType,
-            contentType: ContentType.COMMENT.toString(),
+            reactionType: type,
+            contentType: ContentType.COMMENT.toString()
         }
         toggleLike.mutate(reactionBody);
     }
@@ -42,7 +43,7 @@ const Comment = ({ comment }) => {
         setReplyFormView(!replyFormView);
     }
 
-    const isLiked = comment.userReaction?.likeType === LikeType.LIKE.name;
+    const isLiked = comment.userReaction?.reactionType === LikeType.LIKE.name;
 
 
 

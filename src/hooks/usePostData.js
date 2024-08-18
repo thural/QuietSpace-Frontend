@@ -4,7 +4,6 @@ import {
     fetchDeletePost,
     fetchEditPost, fetchPostQuery,
     fetchPosts,
-    fetchReaction,
     fetchVotePoll
 } from "../api/postRequests";
 import { useAuthStore, viewStore } from "./zustand";
@@ -63,31 +62,6 @@ export const useCreatePost = () => {
     return useMutation({
         mutationFn: async (postData) => {
             return await fetchCreatePost(postData, authData.accessToken)
-        },
-        onSuccess,
-        onError
-    })
-}
-
-
-export const useToggleReaction = (postId) => {
-
-    const queryClient = useQueryClient();
-    const { data: authData } = useAuthStore();
-
-    const onSuccess = (data, variables, context) => {
-        console.log("response data on reaction: ", data);
-        queryClient.invalidateQueries(["posts"], { id: postId });
-    }
-
-    const onError = (error, variables, context) => {
-        console.log("error on reacting post: ", error.message);
-    }
-
-    return useMutation({
-        mutationFn: async (reactionBody) => {
-            console.log("REACTION BODY ON LIKE: ", reactionBody)
-            return await fetchReaction(reactionBody, authData.accessToken);
         },
         onSuccess,
         onError

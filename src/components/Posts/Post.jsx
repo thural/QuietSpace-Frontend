@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import EditPostForm from "./EditPostForm";
 import ShareMenu from "./ShareMenu"
 import { viewStore } from "../../hooks/zustand";
-import { useDeletePost, useToggleReaction } from "../../hooks/usePostData";
+import { useDeletePost } from "../../hooks/usePostData";
 import { useGetComments } from "../../hooks/useCommentData";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
@@ -17,11 +17,13 @@ import { parseCount } from "../../utils/stringUtils";
 import Poll from "./Poll";
 import PostMenu from "./PostMenu";
 import { ContentType, LikeType } from "../../utils/enumClasses";
+import { useToggleReaction } from "../../hooks/useReactionData";
 
 
 
 
 const Post = ({ post, avatarUrl }) => {
+
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
@@ -47,7 +49,7 @@ const Post = ({ post, avatarUrl }) => {
         const reactionBody = {
             userId: user.id,
             contentId: postId,
-            likeType: likeType,
+            reactionType: likeType,
             contentType: ContentType.POST.toString(),
         }
         togglePostLike.mutate(reactionBody);
@@ -85,12 +87,12 @@ const Post = ({ post, avatarUrl }) => {
 
             <Box className="panel">
                 {
-                    userReaction?.likeType === LikeType.LIKE.toString() ?
+                    userReaction?.reactionType === LikeType.LIKE.toString() ?
                         <PiArrowFatUpFill className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUpFill> :
                         <PiArrowFatUp className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUp>
                 }
                 {
-                    userReaction?.likeType === LikeType.DISLIKE.toString() ?
+                    userReaction?.reactionType === LikeType.DISLIKE.toString() ?
                         <PiArrowFatDownFill className="posticon" onClick={handleDislike} alt={"post like icon"}></PiArrowFatDownFill> :
                         <PiArrowFatDown className="posticon" onClick={handleDislike} alt={"post like icon"}></PiArrowFatDown>
                 }

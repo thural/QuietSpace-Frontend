@@ -1,9 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "./zustand";
-import { COMMENT_PATH } from "../constants/ApiPath";
-import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLikeComment } from "../api/commentRequests";
-import { fetchReaction } from "../api/postRequests";
-
+import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment } from "../api/commentRequests";
 
 export const useGetComments = (postId) => {
 
@@ -79,55 +76,6 @@ export const useDeleteComment = (postId) => {
         },
         onSuccess,
         onError,
-    })
-}
-
-
-export const useToggleCommentLike = (postId) => {
-
-    const queryClient = useQueryClient();
-    const { data: authData } = useAuthStore();
-
-    const onSuccess = (data, variables, context) => {
-        console.log("response data on like toggle: ", data);
-        queryClient.invalidateQueries(["comments"], { id: postId });
-    }
-
-    const onError = (error, variables, context) => {
-        console.log("error on like toggle: ", error.message)
-    }
-
-    return useMutation({
-        mutationFn: async (commentId) => {
-            return await fetchLikeComment(commentId, authData.accessToken);
-        },
-        onSuccess,
-        onError,
-    })
-}
-
-export const useToggleReaction = (commentId) => {
-
-    const queryClient = useQueryClient();
-    const { data: authData } = useAuthStore();
-
-    const onSuccess = (data, variables, context) => {
-        console.log("response data on reaction: ", data);
-        queryClient.invalidateQueries(["posts"], { id: commentId })
-            .then(() => console.log("post comments were invalidated"));;
-    }
-
-    const onError = (error, variables, context) => {
-        console.log("error on reacting post: ", error.message);
-    }
-
-    return useMutation({
-        mutationFn: async (reactionBody) => {
-            console.log("REACTION BODY ON LIKE: ", reactionBody)
-            return await fetchLikeComment(reactionBody, authData.accessToken);
-        },
-        onSuccess,
-        onError
     })
 }
 

@@ -1,4 +1,4 @@
-import { CHAT_PATH_BY_MEMBER } from "../constants/ApiPath";
+import { CHAT_PATH, CHAT_PATH_BY_MEMBER } from "../constants/ApiPath";
 import { getApiResponse } from "./commonRequest";
 
 export const fetchChats = async (userId, token) => {
@@ -25,8 +25,8 @@ export const fetchAddMemberWithId = async (url, token) => {
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchDeleteChat = async (url, chatId, token) => {
+export const fetchDeleteChat = async (chatId, token) => {
     try {
-        return await getApiResponse(url + `/${chatId}`, 'DELETE', null, token);
+        return await getApiResponse(CHAT_PATH + `/${chatId}`, 'DELETE', null, token);
     } catch (error) { throw Error(error.message) }
 }

@@ -1,4 +1,4 @@
-import { POST_URL } from "../constants/ApiPath";
+import { POST_URL, REACTION_PATH } from "../constants/ApiPath";
 import { getApiResponse } from "./commonRequest";
 
 export const fetchPosts = async (token) => {
@@ -7,9 +7,9 @@ export const fetchPosts = async (token) => {
     } catch (error) { throw Error(error.message) }
 }
 
-export const fetchCreatePost = async (url, body, token) => {
+export const fetchCreatePost = async (body, token) => {
     try {
-        return await getApiResponse(url, 'POST', body, token);
+        return await getApiResponse(POST_URL, 'POST', body, token);
     } catch (error) { throw Error(error.message) }
 }
 
@@ -39,7 +39,7 @@ export const fetchLikePost = async (url, postId, token) => {
 
 export const fetchReaction = async (reaction, token) => {
     try {
-        return await getApiResponse(POST_URL + "/toggle-reaction", 'POST', reaction, token);
+        return await getApiResponse(REACTION_PATH + "/toggle-reaction", 'POST', reaction, token);
     } catch (error) { throw Error(error.message) }
 }
 

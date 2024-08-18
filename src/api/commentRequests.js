@@ -19,9 +19,3 @@ export const fetchCommentsByPostId = async (postId, token) => {
         return await getApiResponse(COMMENT_PATH + `/post/${postId}`, 'GET', null, token);
     } catch (error) { throw Error(error.message) }
 }
-
-export const fetchLikeComment = async (reactionBody, token) => {
-    try {
-        return await getApiResponse(COMMENT_PATH + "/toggle-reaction", 'POST', reactionBody, token);
-    } catch (error) { throw Error(error.message) }
-}

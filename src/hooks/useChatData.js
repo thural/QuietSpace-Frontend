@@ -43,12 +43,10 @@ export const useGetChatById = (chatId) => {
 export const useCreateChat = () => {
 
     const { data: authData } = useAuthStore();
-    const { setActiveChatId } = useChatStore();
     const queryClient = useQueryClient();
 
     const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["chats"],);
-        setActiveChatId(data.id);
+        queryClient.invalidateQueries(["chats"]);
         console.log("chat created successfully:", data);
     }
 
@@ -156,7 +154,7 @@ export const useDeleteChat = chatId => {
 
     return useMutation({
         mutationFn: async () => {
-            return await fetchDeleteChat(CHAT_PATH, chatId, authData["accessToken"]);
+            return await fetchDeleteChat(chatId, authData["accessToken"]);
         },
         onSuccess,
         onError,

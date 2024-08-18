@@ -17,6 +17,7 @@ const ChatPage = () => {
 
 
     useEffect(() => {
+        console.log("use effect was triggered in page...");
         if (!isSuccess || activeChatId !== null) return;
         const firstChatId = chats[0]?.id;
         setActiveChatId(firstChatId);
@@ -28,7 +29,7 @@ const ChatPage = () => {
 
     return (
         <Container className={classes.container} size="600px" >
-            {(isLoading || activeChatId === null) && <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />}
+            {(isLoading) && <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />}
             {isError && <h1>{'Could not fetch chat data! 🔥'}</h1>}
             {(isSuccess && activeChatId !== null) &&
                 <>

@@ -28,7 +28,9 @@ const MessageContainer = () => {
     const { data: { userId } } = useAuthStore();
     const user = queryClient.getQueryData(["user"]);
     const chats = queryClient.getQueryData(["chats"]);
+    if (!chats?.length) return null;
     const { data: { activeChatId } } = useChatStore();
+    const deleteChat = useDeleteChat(activeChatId);
     const currentChat = chats.find(chat => chat.id === activeChatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
@@ -47,8 +49,9 @@ const MessageContainer = () => {
     }
 
     const handleDeleteChat = (event) => {
+        console.log("chat is being removed ...");
         event.preventDefault();
-        useDeleteChat(activeChatId).mutate();
+        deleteChat.mutate();
     }
 
     const handleReceivedMessage = (message) => {
@@ -151,7 +154,7 @@ const MessageContainer = () => {
             <Flex className={classes.chatHeadline}>
                 <Avatar color="black" radius="10rem" src={generatePfp("marble")}>{recipientName?.charAt(0).toUpperCase()}</Avatar>
                 <Title className="title" order={5}>{recipientName}</Title>
-                <ChatMenu handleDeletePost={handleDeleteChat} isMutable={true} />
+                <ChatMenu handleDeleteChat={handleDeleteChat} isMutable={true} />
             </Flex>
             {isLoading ? <Text className="system-message" ta="center">loading messages ...</Text>
                 : isError ? <Text className="system-message" ta="center">error loading messages</Text>
