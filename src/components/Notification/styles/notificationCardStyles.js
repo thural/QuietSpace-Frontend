@@ -6,6 +6,8 @@ const styles = createUseStyles({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
+        borderBottom: ".1rem solid #e3e3e3",
+        padding: ".5rem",
 
         '& button': {
             color: 'black',

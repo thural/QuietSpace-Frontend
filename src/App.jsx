@@ -22,6 +22,7 @@ import { LoadingOverlay } from '@mantine/core';
 import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
+import useNotificationSocket from "./hooks/useNotificationSocket";
 
 const App = () => {
 
@@ -29,6 +30,7 @@ const App = () => {
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
     useGetFollowings();
     useGetFollowers();
+    useNotificationSocket();
 
 
 

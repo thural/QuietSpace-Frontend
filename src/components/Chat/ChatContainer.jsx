@@ -9,8 +9,6 @@ const ChatContainer = () => {
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
 
-    console.log("chats in chat container was refresed");
-
 
 
     const classes = styles();

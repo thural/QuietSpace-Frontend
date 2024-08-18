@@ -7,9 +7,12 @@ import { Avatar, Box, Button, Container, Flex, Input, LoadingOverlay } from "@ma
 
 import styles from './styles/postContainerStyles'
 import { generatePfpUrls } from "../../utils/randomPfp";
+import { useQueryClient } from "@tanstack/react-query";
 
 function PostContainer() {
 
+    const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"]);
     const { data: viewData, setViewData } = viewStore();
     const { createPost: createPostView } = viewData;
     const postsQuery = useGetPosts();
@@ -30,7 +33,7 @@ function PostContainer() {
         <Container className={classes.container} size="600px">
             <Box style={{ margin: "1rem 0" }}>
                 <Flex justify="space-between" gap="1rem">
-                    <Avatar color="black" radius="10rem" src={randomPfpUrls[0]}>T</Avatar>
+                    <Avatar color="black" radius="10rem" src={randomPfpUrls[0]}>{user.username[0].toUpperCase()}</Avatar>
                     <Input
                         variant="unstyled"
                         style={{ width: "100%" }}

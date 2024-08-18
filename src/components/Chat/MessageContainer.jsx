@@ -39,7 +39,6 @@ const MessageContainer = () => {
     }
 
     const handleDeleteChat = (event) => {
-        console.log("chat is being removed ...");
         event.preventDefault();
         deleteChat.mutate();
     }

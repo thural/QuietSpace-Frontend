@@ -2,6 +2,8 @@ import { Text } from "@mantine/core";
 import React from "react";
 import FollowNotification from "./FollowNotification";
 import { NotificationType } from "../../utils/enumClasses";
+import PostNotification from "./PostNotification";
+import CommentNotification from "./CommentNotification";
 
 
 const NotificationList = ({ notifications }) => {
@@ -22,22 +24,23 @@ const NotificationList = ({ notifications }) => {
         } = NotificationType
 
         switch (type) {
+
+            case COMMENT_REACTION.name:
+                return <CommentNotification key={id} notification={notification} />;
+            case COMMENT_REPLY.name:
+                return <CommentNotification key={id} notification={notification} />;
             case FOLLOW_REQUEST.name:
                 return <FollowNotification key={id} notification={notification} />;
             case POST_REACTION.name:
-                return "reacted your post";
+                return <PostNotification key={id} notification={notification} />;
             case COMMENT.name:
-                return "commented your post";
-            case COMMENT_REACTION.name:
-                return "reacted your comment";
-            case COMMENT_REPLY.name:
-                return "replied your comment";
+                return <PostNotification key={id} notification={notification} />;
             case REPOST.name:
-                return "reposted your post";
+                return <PostNotification key={id} notification={notification} />;
             case MENTION:
-                return "mentioned you"
+                return <PostNotification key={id} notification={notification} />;
             default:
-                return "invalid notification type";
+                throw new Error("invallid notification type");
         }
     }
 

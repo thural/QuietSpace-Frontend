@@ -17,7 +17,6 @@ const ChatPage = () => {
 
 
     useEffect(() => {
-        console.log("use effect was triggered in page...");
         if (!isSuccess || activeChatId !== null) return;
         const firstChatId = chats[0]?.id;
         setActiveChatId(firstChatId);
