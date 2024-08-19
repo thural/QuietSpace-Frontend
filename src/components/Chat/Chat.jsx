@@ -20,6 +20,7 @@ const Chat = ({ chat }) => {
 
 
 
+    const appliedStyle = chat.recentMessage.isSeen ? {} : { fontWeight: 500 }
     const generatedPfpLink = generatePfp("beam");
     const classes = styles();
 
@@ -32,7 +33,7 @@ const Chat = ({ chat }) => {
                 src={generatedPfpLink}>
                 {username.charAt(0).toUpperCase()}
             </Avatar>
-            <Box className={classes.text}>
+            <Box className={classes.text} style={appliedStyle}>
                 <Text size="sm" lineClamp={1}>{username}</Text>
                 <Text size="xs" lineClamp={1}>{recentText}</Text>
             </Box>

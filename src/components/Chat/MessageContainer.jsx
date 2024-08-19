@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Message from "./Message";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
@@ -20,7 +20,7 @@ const MessageContainer = () => {
     if (!chats?.length) return null;
     const { data: { activeChatId } } = useChatStore();
     const deleteChat = useDeleteChat(activeChatId);
-    const { sendChatMessage, deleteChatMessage } = useChatSocket();
+    const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = useChatSocket();
     const currentChat = chats.find(chat => chat.id === activeChatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
@@ -43,6 +43,8 @@ const MessageContainer = () => {
         deleteChat.mutate();
     }
 
+    const enabled = useMemo(() => (isSuccess && isClientConnected), [isSuccess, isClientConnected]);
+
 
 
     const classes = styles();
@@ -59,9 +61,7 @@ const MessageContainer = () => {
             {isLoading ? <Text className="system-message" ta="center">loading messages ...</Text>
                 : isError ? <Text className="system-message" ta="center">error loading messages</Text>
                     : activeChatId === null ? <Text className="system-message" ta="center">you have no messages yet</Text>
-                        : messages.length === 0 ? <Text className="system-message" ta="center">
-                            {`send your first message to `}<strong>{recipientName}</strong>
-                        </Text>
+                        : messages.length === 0 ? <Text className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Text>
                             : <div className={classes.messages}>
                                 {
                                     messages?.map(message =>
@@ -69,6 +69,8 @@ const MessageContainer = () => {
                                             key={message.id}
                                             message={message}
                                             handleDeleteMessage={() => deleteChatMessage(message.id)}
+                                            setMessageSeen={setMessageSeen}
+                                            isClientConnected={isClientConnected}
                                         />
                                     )
                                 }
@@ -90,7 +92,7 @@ const MessageContainer = () => {
                         onEnter={() => sendChatMessage(inputData)}
                         theme="light"
                         placeholder="write a message"
-                        enabled={isSuccess}
+                        enabled={enabled}
                     />
                 </form>
             </div>

@@ -14,7 +14,6 @@ const ChatMenu = ({ handleDeleteChat, isMutable }) => {
     }
 
     const handleDelete = (event) => {
-        console.log("handle delete was clicked");
         handleDeleteChat(event);
         setDisplay('none');
     }

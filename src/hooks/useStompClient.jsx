@@ -88,7 +88,7 @@ export const useStompClient = ({
 
 
     const sendMessage = (destination, body, headers = {}) => {
-        if (stompClient === null) {
+        if (!isClientConnected) {
             console.log("error on sending message, client is not ready");
             return;
         }

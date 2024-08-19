@@ -8,7 +8,6 @@ import {
     handleChatException,
     handleLeftChat,
     handleOnlineUser,
-    handleSeenMessage
 } from "../components/Chat/misc/messageHandler";
 
 import { useChatStore } from "./zustand";
@@ -36,10 +35,21 @@ const useChatSocket = () => {
         });
     }
 
+    const handleSeenMessage = ({ messageId, chatId }) => {
+        queryClient.setQueryData(['messages', { id: chatId }], (oldData) => {
+            const updatedMessages = oldData.content.map(m => {
+                if (m.id !== messageId) return m;
+                m.isSeen = true;
+                return m;
+            });
+            return { ...oldData, content: updatedMessages };
+        });
+    }
+
 
 
     const onSubscribe = (message) => {
-        const messageBody = JSON.parse(message.body)
+        const messageBody = JSON.parse(message.body);
 
         const {
             EXCEPTION,
@@ -61,7 +71,7 @@ const useChatSocket = () => {
             case DELETE_MESSAGE.name:
                 return handleDeletedMessage(messageBody);
             case SEEN_MESSAGE.name:
-                return handleSeenMessage(message);
+                return handleSeenMessage(messageBody);
             case LEFT_CHAT.name:
                 return handleLeftChat(message);
             case EXCEPTION.name:
@@ -86,12 +96,14 @@ const useChatSocket = () => {
     } = useStompClient({ onSubscribe });
 
 
-    useEffect(() => {
-        if (isClientConnected) {
-            subscribe(`/user/${user.id}/private/chat/event`);
-            subscribe(`/user/${user.id}/private/chat`);
-        }
-    }, [isClientConnected]);
+
+    const setup = () => {
+        if (!isClientConnected || !user) return
+        subscribe(`/user/${user.id}/private/chat/event`);
+        subscribe(`/user/${user.id}/private/chat`);
+    }
+
+    useEffect(setup, [isClientConnected, user]);
 
 
 
@@ -105,11 +117,17 @@ const useChatSocket = () => {
         sendMessage(`/app/private/chat/delete/${messageId}`);
     }
 
+    const setMessageSeen = (messageId) => {
+        sendMessage(`/app/private/chat/seen/${messageId}`);
+    }
+
 
 
     return {
         sendChatMessage,
-        deleteChatMessage
+        deleteChatMessage,
+        setMessageSeen,
+        isClientConnected
     }
 
 }

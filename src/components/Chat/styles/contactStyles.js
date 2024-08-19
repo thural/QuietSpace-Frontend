@@ -26,6 +26,7 @@ const styles = createUseStyles({
     flexDirection: 'column',
     gap: '.3rem',
     '& p': {
+      fontWeight: "inherit",
       lineHeight: '1rem',
     }
   }
