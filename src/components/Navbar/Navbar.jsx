@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./styles/navbarStyles";
 import Menu from "./Menu";
@@ -14,13 +14,30 @@ import {
   PiUser,
   PiUserFill
 } from "react-icons/pi";
+import { useQueryClient } from "@tanstack/react-query";
+import { Badge } from "@mantine/core";
 
 
 
 
 const NavBar = ({ children }) => {
 
+  const queryClient = useQueryClient();
   const pathName = useLocation().pathname;
+  const chats = queryClient.getQueryData(["chats"]);
+  const notifications = queryClient.getQueryData(["notifications"]);
+
+
+
+  var hasUnreadChat = useMemo(() => {
+    if (!chats) return false;
+    return chats.some(chat => !chat.recentMessage.isSeen);
+  }, [chats]);
+
+  var hasPendingNotification = useMemo(() => {
+    if (!notifications) return false;
+    return notifications.content.some(n => !n.isSeen);
+  }, [chats]);
 
 
 
@@ -43,6 +60,7 @@ const NavBar = ({ children }) => {
         <div className="navbar-item">
           <Link to="/chat">
             {pathName === "/chat" ? <PiChatCircleFill /> : <PiChatCircle />}
+            {hasUnreadChat && <Badge className="badge" circle />}
           </Link>
         </div>
         <div className="navbar-item">
@@ -53,6 +71,7 @@ const NavBar = ({ children }) => {
         <div className="navbar-item">
           <Link to="/notification/all">
             {pathName === "/notification/all" ? <PiBellFill /> : <PiBell />}
+            {hasPendingNotification && <Badge className="badge" circle />}
           </Link>
         </div>
         {children}

@@ -43,6 +43,7 @@ class ChatEventType {
     static DISCONNECT = new ChatEventType("DISCONNECT");
     static DELETE = new ChatEventType("DELETE");
     static DELETE_MESSAGE = new ChatEventType("DELETE_MESSAGE");
+    static SEEN_NOTIFICATION = new ChatEventType("SEEN_NOTIFICATION");
     static SEEN_MESSAGE = new ChatEventType("SEEN_MESSAGE");
     static JOINED_CHAT = new ChatEventType("JOINED_CHAT");
     static LEFT_CHAT = new ChatEventType("LEFT_CHAT");

@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./styles/notificationCardStyles";
 
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
 import { NotificationType } from "../../utils/enumClasses";
+import useWasSeen from "../../hooks/useWasSeen";
+import useNotificationSocket from "../../hooks/useNotificationSocket";
 
 const PostNotification = ({ notification }) => {
 
-    const {
-        id,
-        actorId,
-        contentId,
-        username,
-        type
-    } = notification
+    const [wasSeen, ref] = useWasSeen();
+    const { id, username, type } = notification;
+    const { isClientConnected, setNotificationSeen } = useNotificationSocket();
+
+
+    const handleSeenNotification = () => {
+        if (!isClientConnected || notification.isSeen || !wasSeen) return;
+        setNotificationSeen(id);
+    };
+
+    useEffect(handleSeenNotification, [wasSeen, isClientConnected]);
 
 
 
@@ -40,7 +46,7 @@ const PostNotification = ({ notification }) => {
     const classes = styles();
 
     return (
-        <Flex className={classes.notificationCard} onClick={handleClick}>
+        <Flex ref={ref} className={classes.notificationCard} onClick={handleClick}>
             <Avatar
                 color="black"
                 size="2.5rem"

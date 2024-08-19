@@ -18,12 +18,27 @@ const useChatSocket = () => {
     const user = queryClient.getQueryData(["user"]);
     const { data: { activeChatId } } = useChatStore();
 
+    const updateChatData = (message) => {
+        queryClient.setQueryData(['chats'], (oldData) => {
+            console.log("old chat data: ", oldData);
+            const updatedChats = oldData.map(chat => {
+                if (chat.id !== message.chatId) return chat;
+                chat.lastMessgae = message;
+                return chat;
+            });
+            console.log("updated chats: ", updatedChats);
+            return updatedChats;
+        });
+    }
+
 
 
     const handleReceivedMessage = (messageBody) => {
         queryClient.setQueryData(['messages', { id: activeChatId }], (oldData) => {
             return { ...oldData, content: [messageBody, ...oldData.content] };;
         });
+
+        queryClient.invalidateQueries(["chats"]);
     }
 
     const handleDeletedMessage = (messageBody) => {
@@ -33,6 +48,8 @@ const useChatSocket = () => {
             const updatedMessages = oldData.content.filter(m => m.id !== messageId);
             return { ...oldData, content: updatedMessages };
         });
+
+        queryClient.invalidateQueries(["chats"]);
     }
 
     const handleSeenMessage = ({ messageId, chatId }) => {
@@ -44,6 +61,8 @@ const useChatSocket = () => {
             });
             return { ...oldData, content: updatedMessages };
         });
+
+        queryClient.invalidateQueries(["chats"]);
     }
 
 

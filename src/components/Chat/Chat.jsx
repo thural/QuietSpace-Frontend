@@ -10,6 +10,7 @@ const Chat = ({ chat }) => {
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
 
+
     const contactId = chat.userIds.find(userId => userId !== user.id);
     const username = chat.members[0]["username"];
     const recentText = chat.recentMessage ? chat.recentMessage.text : "chat is empty";

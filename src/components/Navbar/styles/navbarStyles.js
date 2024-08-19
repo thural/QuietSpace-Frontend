@@ -20,6 +20,14 @@ const styles = createUseStyles(
 			backgroundColor: 'rgba(255, 255,255,0.85)',
 			backdropFilter: 'blur(8px)',
 			WebkitBackdropFilter: 'blur(10px)',
+			'& .badge': {
+				height: '.8rem',
+				width: '.8rem',
+				position: 'absolute',
+				left: '1.5rem',
+				bottom: '1rem',
+				backgroundColor: '#ff4848'
+			},
 			'& .navbar-item>a>img': {
 				width: '100%',
 				display: 'block',

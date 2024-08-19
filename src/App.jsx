@@ -23,6 +23,7 @@ import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/us
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
 import useNotificationSocket from "./hooks/useNotificationSocket";
+import { useGetNotifications } from "./hooks/useNotificationData";
 
 const App = () => {
 
@@ -31,6 +32,7 @@ const App = () => {
     useGetFollowings();
     useGetFollowers();
     useNotificationSocket();
+    useGetNotifications();
 
 
 
