@@ -25,6 +25,7 @@ import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/us
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
 import { useGetNotifications } from "./hooks/useNotificationData";
+import { useStompClient } from "./hooks/useStompClient";
 
 const App = () => {
 
@@ -33,6 +34,7 @@ const App = () => {
 
 
 
+    useStompClient({});
     useChatSocket();
     useGetFollowers();
     useGetFollowings();

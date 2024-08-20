@@ -48,7 +48,6 @@ export const useStompClient = ({
                 setIsConnecting(false);
                 setIsClientConnected(true);
                 onConnect(frame);
-                setContext();
             }
         );
     }
@@ -135,21 +134,21 @@ export const useStompClient = ({
         stompClient.unSubscribe(destination, onSubscribe);
     }
 
-    const context = {
-        disconnect,
-        subscribe,
-        subscribeWithId,
-        unSubscribe,
-        sendMessage,
-        setAutoReconnect,
-        isClientConnected,
-        isConnecting,
-        isDisconnected,
-        isError,
-        error
+
+    const methods = {
+        subscribe, disconnect,
+        unSubscribe, sendMessage,
+        subscribeWithId, setAutoReconnect
     };
 
-    const setContext = () => {
+    const recentContext = {
+        isClientConnected, isDisconnected,
+        isConnecting, isError, error
+    }
+
+
+    const setContext = (recentContext) => {
+        const context = { ...methods, ...recentContext }
         setClientContext(context);
     }
 
@@ -158,19 +157,19 @@ export const useStompClient = ({
         if (!isAuthenticated) return;
         const newclient = createStompClient();
         setStompClient(newclient);
-        console.log("STOMP CLIENT is created: ", !!stompClient);
+        setContext(recentContext);
     }, [isAuthenticated])
-
 
     useEffect(() => {
         if (!stompClient) return;
         if (reconnectDelay) setAutoReconnect(reconnectDelay);
         setIsConnecting(true);
         openConnection({ setContext });
-        console.log("connection has opened");
+        setContext(recentContext);
     }, [stompClient])
 
-
-
-    return context;
+    useEffect(() => {
+        if (!isClientConnected) return;
+        setContext(recentContext);
+    }, [isClientConnected]);
 }

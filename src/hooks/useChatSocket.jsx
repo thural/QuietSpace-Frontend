@@ -16,8 +16,7 @@ const useChatSocket = () => {
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const { data: { activeChatId }, setClientMethods } = useChatStore();
-    const { clientContext } = useStompStore();
-    const { subscribe, sendMessage, isClientConnected } = clientContext;
+    const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
 
 
 
@@ -110,6 +109,7 @@ const useChatSocket = () => {
         if (!isClientConnected || !user) return
         subscribe(`/user/${user.id}/private/chat/event`, onSubscribe);
         subscribe(`/user/${user.id}/private/chat`, onSubscribe);
+        console.log("setting chat socket context...");
         setClientMethods(clientMethods);
     }
 

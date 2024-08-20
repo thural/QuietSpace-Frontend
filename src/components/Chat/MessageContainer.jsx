@@ -16,9 +16,8 @@ const MessageContainer = () => {
     const { data: { userId } } = useAuthStore();
     const chats = queryClient.getQueryData(["chats"]);
     if (!chats?.length) return null;
-    const { data: { activeChatId } } = useChatStore();
+    const { data: { activeChatId }, clientMethods } = useChatStore();
     const deleteChat = useDeleteChat(activeChatId);
-    const { clientMethods } = useChatStore();
 
     const currentChat = chats.find(chat => chat.id === activeChatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
