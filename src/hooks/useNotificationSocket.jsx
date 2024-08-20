@@ -20,6 +20,8 @@ const useNotificationSocket = () => {
             const updatedContent = [...oldContent, notification];
             return { content: updatedContent, ...oldData };
         });
+
+        queryClient.invalidateQueries(["notifications"]);
     }
 
     const handleSeenNotification = (event) => {
@@ -29,8 +31,10 @@ const useNotificationSocket = () => {
                 if (n.id !== event.notificationId) return n;
                 n.isSeen = true; return n;
             });
-            return { content: updatedContent, ...oldData };
+            return { content: updatedContent, ...oldData }
         });
+
+        queryClient.invalidateQueries(["notifications"]);
     }
 
     const onSubscribe = (message) => {
@@ -41,7 +45,7 @@ const useNotificationSocket = () => {
     }
 
     const setNotificationSeen = (notificationId) => {
-        sendMessage(`/private/notifications/seen/${notificationId}`)
+        sendMessage(`/app/private/notifications/seen/${notificationId}`)
     }
 
     const clientMethods = { setNotificationSeen, isClientConnected };

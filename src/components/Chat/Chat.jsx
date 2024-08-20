@@ -21,7 +21,8 @@ const Chat = ({ chat }) => {
 
 
 
-    const appliedStyle = chat.recentMessage.isSeen ? {} : { fontWeight: 500 }
+    const isUnseen = !chat.recentMessage.isSeen && chat.recentMessage.senderId !== user.id;
+    const appliedStyle = isUnseen ? { fontWeight: 500 } : {}
     const generatedPfpLink = generatePfp("beam");
     const classes = styles();
 

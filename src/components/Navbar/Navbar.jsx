@@ -25,19 +25,22 @@ const NavBar = ({ children }) => {
   const queryClient = useQueryClient();
   const pathName = useLocation().pathname;
   const chats = queryClient.getQueryData(["chats"]);
+  const user = queryClient.getQueryData(["user"]);
   const notifications = queryClient.getQueryData(["notifications"]);
 
 
 
   var hasUnreadChat = useMemo(() => {
     if (!chats) return false;
-    return chats.some(chat => !chat.recentMessage.isSeen);
+    return chats.some(({ recentMessage }) => {
+      !recentMessage.isSeen && recentMessage.senderId !== user.id
+    });
   }, [chats]);
 
   var hasPendingNotification = useMemo(() => {
     if (!notifications) return false;
-    return notifications.content.some(n => !n.isSeen);
-  }, [chats]);
+    return notifications.content.some(({ isSeen }) => !isSeen);
+  }, [notifications]);
 
 
 
