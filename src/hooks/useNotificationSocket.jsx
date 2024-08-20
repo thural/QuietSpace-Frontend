@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useStompClient } from "./useStompClient";
 import { ChatEventType } from "../utils/enumClasses";
+import { useNotificationStore, useStompStore } from "./zustand";
 
 
 const useNotificationSocket = () => {
 
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
+    const { setClientMethods } = useNotificationStore();
+    const { clientContext } = useStompStore();
+    const { subscribe, sendMessage, isClientConnected } = clientContext;
 
 
 
@@ -41,32 +44,19 @@ const useNotificationSocket = () => {
         sendMessage(`/private/notifications/seen/${notificationId}`)
     }
 
-
-    const {
-        disconnect,
-        subscribe,
-        sendMessage,
-        setAutoReconnect,
-        isClientConnected,
-        isConnecting,
-        isDisconnected,
-        isError,
-        error
-    } = useStompClient({ onSubscribe });
+    const clientMethods = { setNotificationSeen, isClientConnected };
 
     const setup = () => {
         if (!isClientConnected || !user) return;
-        subscribe(`/user/${user.id}/private/notifications`);
-        subscribe(`/user/${user.id}/private/notifications/event`);
+        subscribe(`/user/${user.id}/private/notifications`, onSubscribe);
+        subscribe(`/user/${user.id}/private/notifications/event`, onSubscribe);
+        setClientMethods(clientMethods);
     }
-
 
     useEffect(setup, [isClientConnected, user]);
 
 
-
-
-    return { setNotificationSeen, isClientConnected };
+    return clientMethods;
 }
 
 export default useNotificationSocket

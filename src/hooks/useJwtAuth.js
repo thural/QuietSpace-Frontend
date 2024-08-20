@@ -1,7 +1,7 @@
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
 
 var refreshIntervalId = null;
-const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn, onLoadFn }) => {
+const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn = (e) => { console.log("error on stomp client: ", e) }, onLoadFn }) => {
 
     const register = (setAuthState, formData) => {
 

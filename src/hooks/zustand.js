@@ -17,24 +17,23 @@ export const useAuthStore = create(set => ({
     resetAuthData: () => set({
         data: { message: "", accessToken: "", refreshToken: "", userId: "" }
     }),
-    setAuthData: (authData) => set({
-        data: authData
-    }),
-    setIsActivationStage: (value) => set({
-        isActivationStage: value
-    }),
-    setIsAuthenticated: (value) => set({
-        isAuthenticated: value
-    }),
-    setIsLoading: (value) => set({
-        isLoading: value
-    }),
-    setIsError: (value) => set({
-        isError: value
-    }),
-    setError: (value) => set({
-        error: value
-    })
+    setAuthData: (authData) => set({ data: authData }),
+    setIsActivationStage: (value) => set({ isActivationStage: value }),
+    setIsAuthenticated: (value) => set({ isAuthenticated: value }),
+    setIsLoading: (value) => set({ isLoading: value }),
+    setIsError: (value) => set({ isError: value }),
+    setError: (value) => set({ error: value })
+}));
+
+export const useNotificationStore = create(set => ({
+    clientMethods: {},
+    isLoading: false,
+    isError: false,
+    error: null,
+    setClientMethods: (methods) => set({ clientMethods: methods }),
+    setIsLoading: (value) => set({ isLoading: value }),
+    setIsError: (value) => set({ isError: value }),
+    setError: (value) => set({ error: value })
 }));
 
 export const viewStore = create(set => ({
@@ -52,16 +51,30 @@ export const viewStore = create(set => ({
 
 export const useChatStore = create(set => ({
     data: { activeChatId: null, messageInput: {} },
-
+    clientMethods: {},
+    isLoading: false,
+    isError: false,
+    error: null,
     setActiveChatId: (activeChatId) => {
         set(state => ({
             data: { ...state, activeChatId }
         }));
     },
-
     setMessageInput: (messageInput) => {
         set(state => ({
             data: { ...state, messageInput }
         }))
-    }
+    },
+    setClientMethods: (methods) => set({ clientMethods: methods }),
+    setIsLoading: (value) => set({ isLoading: value }),
+    setIsError: (value) => set({ isError: value }),
+    setError: (value) => set({ error: value })
+}));
+
+
+export const useStompStore = create(set => ({
+    clientContext: {},
+    setClientContext: (methods) => set({
+        clientContext: methods
+    }),
 }));

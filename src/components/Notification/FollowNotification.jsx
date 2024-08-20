@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import styles from "./styles/notificationCardStyles";
 
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
@@ -6,31 +6,30 @@ import { generatePfp } from "../../utils/randomPfp";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggleFollow } from "../../hooks/useUserData";
 import useWasSeen from "../../hooks/useWasSeen";
-import useNotificationSocket from "../../hooks/useNotificationSocket";
+import { useNotificationStore } from "../../hooks/zustand";
 
 const FollowNotification = ({ notification }) => {
 
-    const { id, actorId, username } = notification
-
+    const { id, actorId, username, isSeen } = notification;
     const queryClient = useQueryClient();
     const followings = queryClient.getQueryData(["followings"]);
     const toggleFollow = useToggleFollow();
-
-    const isFollowing = followings?.content?.some(follow => follow.id === actorId);
-
-
-
     const [wasSeen, ref] = useWasSeen();
-    const { isClientConnected, setNotificationSeen } = useNotificationSocket();
+    const { clientMethods } = useNotificationStore();
+    const { isClientConnected, setNotificationSeen } = clientMethods;
 
+
+
+    const isFollowing = useMemo(() => {
+        followings?.content?.some(follow => follow.id === actorId)
+    }, [followings]);
 
     const handleSeenNotification = () => {
-        if (!isClientConnected || notification.isSeen || !wasSeen) return;
+        if (!isClientConnected || isSeen || !wasSeen) return;
         setNotificationSeen(id);
     };
 
     useEffect(handleSeenNotification, [wasSeen, isClientConnected]);
-
 
     const handleClick = (event) => {
         event.preventDefault();

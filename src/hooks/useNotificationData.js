@@ -8,8 +8,6 @@ export const useGetNotifications = () => {
 
     const { data: authData } = useAuthStore();
 
-    console.log("authData in getNotifications: ", authData);
-
     const onSuccess = (data, variables, context) => {
         console.log("fetched notifications successfully:", data);
     }

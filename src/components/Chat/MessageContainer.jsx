@@ -9,21 +9,21 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteChat, useGetMessagesByChatId } from "../../hooks/useChatData";
 import { useAuthStore, useChatStore } from "../../hooks/zustand";
 import { generatePfp } from "../../utils/randomPfp";
-import useChatSocket from "../../hooks/useChatSocket";
 
 const MessageContainer = () => {
 
     const queryClient = useQueryClient();
-
     const { data: { userId } } = useAuthStore();
     const chats = queryClient.getQueryData(["chats"]);
     if (!chats?.length) return null;
     const { data: { activeChatId } } = useChatStore();
     const deleteChat = useDeleteChat(activeChatId);
-    const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = useChatSocket();
+    const { clientMethods } = useChatStore();
+
     const currentChat = chats.find(chat => chat.id === activeChatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
+    const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
 
 
 

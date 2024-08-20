@@ -5,14 +5,14 @@ import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 import { generatePfp } from "../../utils/randomPfp";
 import { NotificationType } from "../../utils/enumClasses";
 import useWasSeen from "../../hooks/useWasSeen";
-import useNotificationSocket from "../../hooks/useNotificationSocket";
+import { useNotificationStore } from "../../hooks/zustand";
 
 const CommentNotification = ({ notification }) => {
 
-
     const [wasSeen, ref] = useWasSeen();
     const { id, username, type } = notification
-    const { isClientConnected, setNotificationSeen } = useNotificationSocket();
+    const { clientMethods } = useNotificationStore();
+    const { isClientConnected, setNotificationSeen } = clientMethods;
 
 
 
@@ -22,8 +22,6 @@ const CommentNotification = ({ notification }) => {
     };
 
     useEffect(handleSeenNotification, [wasSeen, isClientConnected]);
-
-
 
     const handleClick = (event) => {
         event.preventDefault();

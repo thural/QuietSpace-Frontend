@@ -18,21 +18,26 @@ import SettingsPage from "./pages/settings/SettingsPage";
 import SignoutPage from "./pages/signout/SignoutPage";
 import ActivationForm from "./components/Auth/ActivationForm";
 import useJwtAuth from "./hooks/useJwtAuth";
+import useNotificationSocket from "./hooks/useNotificationSocket";
+import useChatSocket from "./hooks/useChatSocket";
 import { LoadingOverlay } from '@mantine/core';
 import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
-import useNotificationSocket from "./hooks/useNotificationSocket";
 import { useGetNotifications } from "./hooks/useNotificationData";
 
 const App = () => {
 
-    const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
+    const { isLoading: isUserLoading, isError: isUserError, data: userData } = useGetCurrentUser();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
-    useGetFollowings();
+
+
+
+    useChatSocket();
     useGetFollowers();
-    useNotificationSocket();
+    useGetFollowings();
     useGetNotifications();
+    useNotificationSocket();
 
 
 

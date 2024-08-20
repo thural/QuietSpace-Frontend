@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import sockjs from "sockjs-client/dist/sockjs"
 import { over } from "stompjs";
-import { useAuthStore } from "./zustand";
+import { useAuthStore, useStompStore } from "./zustand";
 
 export const useStompClient = ({
     onConnect,
@@ -12,6 +12,7 @@ export const useStompClient = ({
     reconnectDelay
 }) => {
 
+    const { setClientContext } = useStompStore();
     const { isAuthenticated, data } = useAuthStore();
 
     const [stompClient, setStompClient] = useState(null);
@@ -34,7 +35,7 @@ export const useStompClient = ({
     }
 
 
-    const openConnection = (headers = { "Authorization": "Bearer " + data.accessToken }) => {
+    const openConnection = ({ headers = { "Authorization": "Bearer " + data.accessToken }, setContext }) => {
         if (stompClient === null) {
             console.log("error on opening connection, client is not ready");
             return;
@@ -47,6 +48,7 @@ export const useStompClient = ({
                 setIsConnecting(false);
                 setIsClientConnected(true);
                 onConnect(frame);
+                setContext();
             }
         );
     }
@@ -96,7 +98,7 @@ export const useStompClient = ({
     }
 
 
-    const subscribe = (destination) => {
+    const subscribe = (destination, onSubscribe) => {
         if (stompClient === null) {
             console.log("error on subsbcribing, client is not ready");
             return;
@@ -133,25 +135,7 @@ export const useStompClient = ({
         stompClient.unSubscribe(destination, onSubscribe);
     }
 
-
-    useEffect(() => {
-        if (!isAuthenticated) return;
-        const newclient = createStompClient();
-        setStompClient(newclient);
-    }, [isAuthenticated])
-
-
-    useEffect(() => {
-        console.log("STOMP CLIENT is created: ", !!stompClient);
-        if (!stompClient) return;
-        if (reconnectDelay) setAutoReconnect(reconnectDelay);
-        setIsConnecting(true);
-        openConnection();
-    }, [stompClient])
-
-
-
-    return {
+    const context = {
         disconnect,
         subscribe,
         subscribeWithId,
@@ -164,4 +148,29 @@ export const useStompClient = ({
         isError,
         error
     };
+
+    const setContext = () => {
+        setClientContext(context);
+    }
+
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        const newclient = createStompClient();
+        setStompClient(newclient);
+        console.log("STOMP CLIENT is created: ", !!stompClient);
+    }, [isAuthenticated])
+
+
+    useEffect(() => {
+        if (!stompClient) return;
+        if (reconnectDelay) setAutoReconnect(reconnectDelay);
+        setIsConnecting(true);
+        openConnection({ setContext });
+        console.log("connection has opened");
+    }, [stompClient])
+
+
+
+    return context;
 }
