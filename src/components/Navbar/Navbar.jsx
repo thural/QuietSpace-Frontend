@@ -31,9 +31,8 @@ const NavBar = ({ children }) => {
 
 
   var hasUnreadChat = useMemo(() => {
-    if (!chats) return false;
-    return chats.some(({ recentMessage }) => {
-      !recentMessage.isSeen && recentMessage.senderId !== user.id
+    return chats?.some(({ recentMessage }) => {
+      !recentMessage?.isSeen && recentMessage?.senderId !== user.id
     });
   }, [chats]);
 

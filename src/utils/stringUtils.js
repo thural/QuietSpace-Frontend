@@ -19,3 +19,7 @@ export const parseCount = (number) => {
         return (number / 1_000_000_000_000).toFixed(1) + "T";
     }
 }
+
+export const toUpperFirstChar = (name) => {
+    return name?.charAt(0).toUpperCase();
+}
