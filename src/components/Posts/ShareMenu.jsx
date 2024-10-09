@@ -6,6 +6,7 @@ import { PiArrowsClockwise, PiPaperPlaneTilt, PiShareFat } from "react-icons/pi"
 const ShareMenu = () => {
 
     const classes = styles();
+
     const [display, setDisplay] = useState('none');
 
     const toggleDisplay = () => {
@@ -15,12 +16,8 @@ const ShareMenu = () => {
 
     return (
         <>
-            <div onClick={toggleDisplay} className={classes.menu}>
-                <PiShareFat />
-            </div>
-
+            <div onClick={toggleDisplay} className={classes.menu}><PiShareFat /></div>
             <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
-
             <div onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
 
                 <div className="clickable">

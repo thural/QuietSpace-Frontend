@@ -7,10 +7,11 @@ import { usePostComment } from "../../hooks/useCommentData";
 
 const CommentForm = ({ postId }) => {
 
+    const classes = styles();
+
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const addNewComment = usePostComment(postId);
-
 
     const [commentInput, setCommentData] = useState({ postId: postId, userId: user?.id, text: '' });
     const cursorPosition = useRef(commentInput.text.length);
@@ -24,7 +25,6 @@ const CommentForm = ({ postId }) => {
     }, [commentInput.text]);
 
 
-
     const handleEmojiInput = (event) => {
         setCommentData({ ...commentInput, text: event })
     }
@@ -33,9 +33,6 @@ const CommentForm = ({ postId }) => {
         addNewComment.mutate(commentInput);
     }
 
-
-
-    const classes = styles();
 
     return (
         <div>

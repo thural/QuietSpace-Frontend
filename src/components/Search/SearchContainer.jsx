@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Anchor, Box, Container, Flex, Input, Loader, LoadingOverlay, Title } from "@mantine/core";
+import { Box, Container, Flex, Input, Loader, LoadingOverlay, Title } from "@mantine/core";
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
 
 import styles from "./styles/searchbarStyles";
 import Post from "../Posts/Post";
 import { useQueryPosts } from "../../hooks/usePostData";
-import { generatePfp } from "../../utils/randomPfp";
 import { useQueryUsers } from "../../hooks/useUserData";
-import UserQueryItem from "./UserQueryItem";
+import UserQueryItem from "../Shared/UserQueryItem";
 
 function SearchContainer() {
 
+    const classes = styles();
+
     const queryInputRef = useRef();
     const [focused, setFocused] = useState(false);
-    const [userQueryResult, setUserQueryResult] = useState([]);
+    const [userQueryList, setUserQueryResult] = useState([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
@@ -24,8 +25,8 @@ function SearchContainer() {
     }, []);
 
     useEffect(() => {
-        if (!userQueryResult.length) setFocused(false);
-    }, [userQueryResult])
+        if (!userQueryList.length) setFocused(false);
+    }, [userQueryList])
 
 
     const handleInputChange = (event) => {
@@ -60,39 +61,58 @@ function SearchContainer() {
 
 
 
+
     const resultAppliedStyle = focused ? { display: 'block' } : { display: 'none' };
     const searchAppliedStyle = focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};
-    const classes = styles();
+
+    const UserList = ({ resultList }) => (
+        resultList.map((user, index) =>
+            <UserQueryItem key={index} user={user} handleItemClick={handleItemClick} />)
+    );
+
+    const UserQuery = () => {
+        const RenderResult = () => {
+            if (fetchUserQuery.isPending)
+                return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+            else if (fetchUserQuery.isError) return <h1>{fetchPostQuery.error.message}</h1>;
+            return <UserList resultList={userQueryList} />;
+        }
+
+        return <Box className={classes.resultContainer} style={resultAppliedStyle} >
+            <RenderResult />
+        </Box>;
+    };
+
+    const PostQuery = () => {
+        if (fetchPostQuery.isPending)
+            return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+        else if (fetchPostQuery.isError) return <h1>{fetchPostQuery.error.message}</h1>;
+        return postQueryResult?.map((post, index) => (<Post key={index} post={post} />));
+    }
+
+    const SearchBar = () => (
+        <Box className={classes.searchbar} style={searchAppliedStyle}>
+            <PiMagnifyingGlassBold className={classes.searchIcon} />
+            <Input
+                variant="unstyled"
+                className={classes.searchInput}
+                placeholder="search a topic"
+                onKeyDown={handleKeyDown}
+                onFocus={handleInputFocus}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+                ref={queryInputRef}
+            />
+            <PiMicrophone className={classes.searchIcon} />
+        </Box>
+    );
+
 
     return (
         <Container size="600px" className={classes.container}>
-            <Box className={classes.searchbar} style={searchAppliedStyle}>
-                <PiMagnifyingGlassBold className={classes.searchIcon} />
-                <Input
-                    variant="unstyled"
-                    className={classes.searchInput}
-                    placeholder="search a topic..."
-                    onKeyDown={handleKeyDown}
-                    onFocus={handleInputFocus}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    ref={queryInputRef}
-                />
-                <PiMicrophone className={classes.searchIcon} />
-            </Box>
-            <Box className={classes.resultContainer} style={resultAppliedStyle} >
-                {
-                    fetchUserQuery.isPending ? <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} /> :
-                        fetchUserQuery.isError ? <h1>{fetchPostQuery.error.message}</h1> :
-                            userQueryResult.map((user, index) =>
-                                <UserQueryItem key={index} user={user} handleItemClick={handleItemClick} />)
-                }
-            </Box>
-            {
-                fetchPostQuery.isPending ? <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} /> :
-                    fetchPostQuery.isError ? <h1>{fetchPostQuery.error.message}</h1> :
-                        postQueryResult?.map((post, index) => (<Post key={post["id"]} post={post} avatarUrl={generatePfp("beam")} />))
-            }
+            <SearchBar />
+            <UserQuery />
+            <PostQuery />
         </Container>
     )
 }

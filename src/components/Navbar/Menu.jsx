@@ -8,6 +8,7 @@ import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from 
 const Menu = () => {
 
     const classes = styles();
+
     const [display, setDisplay] = useState('none');
 
     const toggleDisplay = () => {

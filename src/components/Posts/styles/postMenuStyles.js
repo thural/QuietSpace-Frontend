@@ -8,7 +8,7 @@ const styles = createUseStyles(
 			alignItems: 'center',
 			display: 'flex',
 			margin: '0',
-			padding: '0'
+			padding: '0',
 		},
 
 		menuOverlay: {

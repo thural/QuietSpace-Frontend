@@ -10,6 +10,8 @@ import { useNotificationStore } from "../../hooks/zustand";
 
 const FollowNotification = ({ notification }) => {
 
+    const classes = styles();
+
     const { id, actorId, username, isSeen } = notification;
     const queryClient = useQueryClient();
     const followings = queryClient.getQueryData(["followings"]);
@@ -17,7 +19,6 @@ const FollowNotification = ({ notification }) => {
     const [wasSeen, ref] = useWasSeen();
     const { clientMethods } = useNotificationStore();
     const { isClientConnected, setNotificationSeen } = clientMethods;
-
 
 
     const isFollowing = useMemo(() => {
@@ -45,9 +46,6 @@ const FollowNotification = ({ notification }) => {
         return isFollowing ? "unfollow" : "follow";
     }
 
-
-
-    const classes = styles();
 
     return (
         <Flex ref={ref} className={classes.notificationCard} onClick={handleClick}>

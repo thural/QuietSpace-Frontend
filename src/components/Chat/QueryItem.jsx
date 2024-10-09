@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles/queryContainerStyles";
 
 import { Avatar, Flex, Text, Title } from "@mantine/core";
-import { generatePfp } from "../../utils/randomPfp";
+import { toUpperFirstChar } from "../../utils/stringUtils";
 
 const QueryItem = ({ user, handleItemClick }) => {
 
@@ -15,13 +15,7 @@ const QueryItem = ({ user, handleItemClick }) => {
 
     return (
         <Flex className={classes.queryCard} onClick={handleClick}>
-            <Avatar
-                color="black"
-                size="2.5rem"
-                radius="10rem"
-                src={generatePfp("beam")}>
-                {user.username[0].toUpperCase()}
-            </Avatar>
+            <Avatar color="black" size="2.5rem" radius="10rem">{toUpperFirstChar(user.username)}</Avatar>
             <div key={user.id} className={classes.queryItem}>
                 <Title order={5} className="username">{user.username}</Title>
                 <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>

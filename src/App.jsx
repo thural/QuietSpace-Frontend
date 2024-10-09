@@ -33,14 +33,12 @@ const App = () => {
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
 
-
     useStompClient({});
     useChatSocket();
     useGetFollowers();
     useGetFollowings();
     useGetNotifications();
     useNotificationSocket();
-
 
 
     const onSuccessFn = (data) => {
@@ -52,12 +50,12 @@ const App = () => {
     useEffect(loadAccessToken, []);
 
 
-
     if (isUserLoading) {
         return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     }
 
     if (!isAuthenticated || isUserError) return <AuthPage />;
+
 
     return (
         <>

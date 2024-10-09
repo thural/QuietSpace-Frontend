@@ -6,6 +6,8 @@ import { useGetNotifications } from "../../hooks/useNotificationData";
 
 function NotificationContainer() {
 
+    const classes = styles();
+
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
     const { data, isLoading, isError } = useGetNotifications();
@@ -16,9 +18,6 @@ function NotificationContainer() {
         navigate(buttonValue);
     };
 
-
-
-    const classes = styles();
 
     return (
         <Container size="600px" className={classes.container}>

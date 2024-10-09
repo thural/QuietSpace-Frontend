@@ -9,6 +9,8 @@ import { useChatStore } from "../../hooks/zustand";
 
 const ChatPage = () => {
 
+    const classes = styles();
+
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const chats = queryClient.getQueryData(["chats"]);
@@ -23,19 +25,15 @@ const ChatPage = () => {
     }, [chats]);
 
 
+    if (isLoading) return <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if (isError) return <h1>{'Could not fetch chat data! 🔥'}</h1>
+    if ((!isSuccess || activeChatId == null)) return null;
 
-    const classes = styles();
 
     return (
         <Container className={classes.container} size="600px" >
-            {(isLoading) && <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />}
-            {isError && <h1>{'Could not fetch chat data! 🔥'}</h1>}
-            {(isSuccess && activeChatId !== null) &&
-                <>
-                    <ChatContainer />
-                    <MessageContainer />
-                </>
-            }
+            <ChatContainer />
+            <MessageContainer />
         </Container>
     )
 }

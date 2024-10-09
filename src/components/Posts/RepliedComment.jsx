@@ -10,6 +10,8 @@ import { useToggleReaction } from "../../hooks/useReactionData";
 
 const RepliedComment = ({ comment, repliedComment }) => {
 
+    const classes = styles();
+
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const deleteComment = useDeleteComment(comment.id);
@@ -37,29 +39,25 @@ const RepliedComment = ({ comment, repliedComment }) => {
     }
 
 
-
-    const classes = styles();
+    const CommentBody = () => (
+        <Box key={comment.id} className={classes.comment} style={appliedStyle}>
+            <Flex className={classes.replyCard}>
+                <div className="reply-card-indicator"></div>
+                <Text className="reply-card-text" lineClamp={1}>
+                    {repliedComment.text}
+                </Text>
+            </Flex>
+            {
+                emoji(comment.text).map((element, index) => (
+                    <p key={index} className="comment-text">{element}</p>
+                ))
+            }
+        </Box>
+    );
 
     return (
         <Flex className={classes.container}>
-
-
-            <Box key={comment.id} className={classes.comment} style={appliedStyle}>
-
-                <Flex className={classes.replyCard}>
-                    <div className="reply-card-indicator"></div>
-                    <Text className="reply-card-text" lineClamp={1}>
-                        {repliedComment.text}
-                    </Text>
-                </Flex>
-
-                {
-                    emoji(comment.text).map((element, index) => (
-                        <p key={index} className="comment-text">{element}</p>
-                    ))
-                }
-
-            </Box>
+            <CommentBody />
             <Avatar
                 className={classes.avatar}
                 size="1.75rem"

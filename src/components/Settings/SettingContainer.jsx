@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 function SettingsContainer() {
 
+    const classes = styles();
 
     const [value, setValue] = useState('profile');
 
@@ -19,7 +20,6 @@ function SettingsContainer() {
         navigate(buttonValue);
     };
 
-    const classes = styles();
 
     return (
         <Container size="600px" className={classes.container}>

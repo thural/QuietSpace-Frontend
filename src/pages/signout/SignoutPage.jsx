@@ -39,7 +39,8 @@ const SignoutPage = () => {
 
 
     const { signout } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
-    useEffect(signout, [])
+
+    useEffect(signout, []);
 
 
     if (isError) return <h1>{`error in signout! 🔥 error: ${error}`}</h1>

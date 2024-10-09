@@ -7,9 +7,9 @@ import { Text, Title } from "@mantine/core";
 
 const AuthPage = () => {
 
-    const [authState, setAuthState] = useState({ page: "login", formData: null });
-
     const classes = styles();
+
+    const [authState, setAuthState] = useState({ page: "login", formData: null });
 
 
     return (

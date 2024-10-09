@@ -8,6 +8,8 @@ import { useAuthStore } from "../../hooks/zustand";
 
 const LoginForm = ({ setAuthState, authState }) => {
 
+    const classes = styles();
+
     const { setAuthData, resetAuthData, setIsAuthenticated } = useAuthStore();
     const [formData, setFormData] = useState({ email: "", password: "" });
     const navigate = useNavigate();
@@ -57,51 +59,48 @@ const LoginForm = ({ setAuthState, authState }) => {
     const handleSignupBtn = () => setAuthState({ page: "signup", formData });
 
 
-    const classes = styles();
-
     if (isAuthenticating) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (isError) return <h1>{`could not authenticate! 🔥 error: ${error}`}</h1>
 
+
     return (
-        <>
-            <div className={classes.login}>
-                <Title order={2}>Login</Title>
-                <form className='login form'>
-                    <div className="login input">
-                        <input
-                            type='text'
-                            name='email'
-                            placeholder="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                        />
-                        <input
-                            type='password'
-                            name='password'
-                            placeholder="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <Button
-                        className="button"
-                        fullWidth
-                        radius="md"
-                        variant="gradient"
-                        gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-                        onClick={handleLoginForm}>
-                        submit
-                    </Button>
-                </form>
-                <Text className="signup-prompt">don't have an account?</Text>
+        <div className={classes.login}>
+            <Title order={2}>Login</Title>
+            <form className='login form'>
+                <div className="login input">
+                    <input
+                        type='text'
+                        name='email'
+                        placeholder="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type='password'
+                        name='password'
+                        placeholder="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+                </div>
                 <Button
                     className="button"
-                    variant="outline"
-                    onClick={handleSignupBtn}>
-                    signup
+                    fullWidth
+                    radius="md"
+                    variant="gradient"
+                    gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+                    onClick={handleLoginForm}>
+                    submit
                 </Button>
-            </div>
-        </>
+            </form>
+            <Text className="signup-prompt">don't have an account?</Text>
+            <Button
+                className="button"
+                variant="outline"
+                onClick={handleSignupBtn}>
+                signup
+            </Button>
+        </div>
     )
 }
 

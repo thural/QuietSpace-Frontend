@@ -22,12 +22,13 @@ import { Badge } from "@mantine/core";
 
 const NavBar = ({ children }) => {
 
+  const classes = styles();
+
   const queryClient = useQueryClient();
   const pathName = useLocation().pathname;
   const chats = queryClient.getQueryData(["chats"]);
   const user = queryClient.getQueryData(["user"]);
   const notifications = queryClient.getQueryData(["notifications"]);
-
 
 
   var hasUnreadChat = useMemo(() => {
@@ -41,9 +42,6 @@ const NavBar = ({ children }) => {
     return notifications.content.some(({ isSeen }) => !isSeen);
   }, [notifications]);
 
-
-
-  const classes = styles();
 
   return (
     <div className={classes.navbar}>

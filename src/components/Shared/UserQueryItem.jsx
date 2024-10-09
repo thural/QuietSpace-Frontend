@@ -2,11 +2,13 @@ import React from "react";
 import styles from "./styles/userQueryItemStyles";
 
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
-import { generatePfp } from "../../utils/randomPfp";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggleFollow } from "../../hooks/useUserData";
+import { toUpperFirstChar } from "../../utils/stringUtils";
 
-const QueryItem = ({ user, handleItemClick }) => {
+const UserQueryItem = ({ user, handleItemClick }) => {
+
+    const classes = styles();
 
     const queryClient = useQueryClient();
     const toggleFollow = useToggleFollow();
@@ -29,24 +31,29 @@ const QueryItem = ({ user, handleItemClick }) => {
     }
 
 
-    const classes = styles();
+    const UserAvatar = () => (
+        <Avatar color="black" size="2.5rem" radius="10rem"> {toUpperFirstChar(user.username)} </Avatar>
+    );
+
+    const UserDetails = () => (
+        <Box key={user.id} className={classes.queryItem}>
+            <Title order={5} className="username">{user.username}</Title>
+            <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>
+        </Box>
+    );
+
+    const FollowToggle = () => (
+        <button type="button" onClick={handleFollowToggle}>{followStatus()}</button>
+    );
+
 
     return (
         <Flex className={classes.queryCard} onClick={handleClick}>
-            <Avatar
-                color="black"
-                size="2.5rem"
-                radius="10rem"
-                src={generatePfp("beam")}>
-                {user.username[0].toUpperCase()}
-            </Avatar>
-            <Box key={user.id} className={classes.queryItem}>
-                <Title order={5} className="username">{user.username}</Title>
-                <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>
-            </Box>
-            <button type="button" onClick={handleFollowToggle}>{followStatus()}</button>
+            <UserAvatar />
+            <UserDetails />
+            <FollowToggle />
         </Flex>
     )
 }
 
-export default QueryItem
+export default UserQueryItem

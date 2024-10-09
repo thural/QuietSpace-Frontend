@@ -9,11 +9,12 @@ import { useNotificationStore } from "../../hooks/zustand";
 
 const CommentNotification = ({ notification }) => {
 
+    const classes = styles();
+
     const [wasSeen, ref] = useWasSeen();
     const { id, username, type } = notification
     const { clientMethods } = useNotificationStore();
     const { isClientConnected, setNotificationSeen } = clientMethods;
-
 
 
     const handleSeenNotification = () => {
@@ -35,9 +36,6 @@ const CommentNotification = ({ notification }) => {
             return "replied your comment";
     }
 
-
-
-    const classes = styles();
 
     return (
         <Flex ref={ref} className={classes.notificationCard} onClick={handleClick}>

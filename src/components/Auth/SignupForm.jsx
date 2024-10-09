@@ -5,6 +5,8 @@ import useJwtAuth from "../../hooks/useJwtAuth";
 
 const SignupForm = ({ setAuthState, authState }) => {
 
+    const classes = styles();
+
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState(null);
@@ -42,7 +44,7 @@ const SignupForm = ({ setAuthState, authState }) => {
 
     useEffect(() => {
         setFormData({ ...formData, ...authState.formData })
-    }, [])
+    }, []);
 
 
     const handleSubmit = async (event) => {
@@ -52,8 +54,7 @@ const SignupForm = ({ setAuthState, authState }) => {
         if (password !== confirmPassword) {
             alert("passwords don't match, please try again");
             delete formData["confirmPassword"];
-        }
-        else {
+        } else {
             signup(formData, setAuthState);
         }
     }
@@ -63,8 +64,26 @@ const SignupForm = ({ setAuthState, authState }) => {
         setFormData({ ...formData, [name]: value });
     }
 
+    const TextInput = ({ name, value }) => (
+        <input
+            type='text'
+            name={name}
+            placeholder={name}
+            value={value}
+            onChange={handleChange}
+        />
+    );
 
-    const classes = styles();
+    const PassInput = ({ name, value }) => (
+        <input
+            type='password'
+            name={name}
+            placeholder={name}
+            value={value}
+            onChange={handleChange}
+        />
+    );
+
 
     if (isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (isError) return <h1>{`could not authenticate! 🔥 error: ${error}`}</h1>
@@ -74,48 +93,12 @@ const SignupForm = ({ setAuthState, authState }) => {
             <Title order={2}>Signup</Title>
             <form className='signup-form'>
                 <div className="signup input">
-                    <input
-                        type='text'
-                        name='username'
-                        placeholder="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type='text'
-                        name='firstname'
-                        placeholder="firstname"
-                        value={formData.firstname}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type='text'
-                        name='lastname'
-                        placeholder="lastname"
-                        value={formData.lastname}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type='text'
-                        name='email'
-                        placeholder="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type='password'
-                        name='password'
-                        placeholder="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type='password'
-                        name='confirmPassword'
-                        placeholder="confirm password"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                    />
+                    <TextInput name='username' value={formData.username} />
+                    <TextInput name='firstname' value={formData.firstname} />
+                    <TextInput name='lastname' value={formData.lastname} />
+                    <TextInput name='email' value={formData.email} />
+                    <PassInput name='password' value={formData.password} />
+                    <PassInput name='confirmPassword' value={formData.confirmPassword} />
                 </div>
             </form>
             <Button

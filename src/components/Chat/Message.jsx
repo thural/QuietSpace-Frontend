@@ -5,13 +5,13 @@ import useWasSeen from "../../hooks/useWasSeen";
 
 const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnected }) => {
 
+    const classes = styles();
+
     const { id, senderId, text } = message;
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const [isHovering, setIsHovering] = useState(false);
     const [wasSeen, ref] = useWasSeen();
-
-
 
     const appliedStyle = senderId !== user.id ? {
         marginRight: "auto",
@@ -23,8 +23,6 @@ const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnect
         backgroundColor: "#3c3cff",
         borderRadius: '1rem 1rem 0rem 1rem'
     };
-
-
 
     const handleMouseOver = () => {
         setIsHovering(true);
@@ -42,9 +40,6 @@ const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnect
 
     useEffect(handleSeenMessage, [wasSeen, isClientConnected]);
 
-
-
-    const classes = styles();
 
     return (
         <div id={id} ref={ref} className={classes.message}

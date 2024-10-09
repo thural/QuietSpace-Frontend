@@ -12,6 +12,8 @@ import { toUpperFirstChar } from "../../utils/stringUtils";
 
 const MessageContainer = () => {
 
+    const classes = styles();
+
     const queryClient = useQueryClient();
     const { data: { userId } } = useAuthStore();
     const chats = queryClient.getQueryData(["chats"]);
@@ -19,13 +21,10 @@ const MessageContainer = () => {
     const { data: { activeChatId }, clientMethods } = useChatStore();
     const deleteChat = useDeleteChat(activeChatId);
 
-
     const currentChat = chats.find(chat => chat.id === activeChatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0];
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
     const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
-
-
 
     const [inputData, setInputData] = useState({
         chatId: activeChatId,
@@ -44,10 +43,6 @@ const MessageContainer = () => {
     }
 
     const enabled = useMemo(() => (isSuccess && isClientConnected), [isSuccess, isClientConnected]);
-
-
-
-    const classes = styles();
 
     const MessagesList = ({ messages, deleteChatMessage, setMessageSeen, isClientConnected }) => (
         <div className={classes.messages}>

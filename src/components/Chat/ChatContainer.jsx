@@ -6,19 +6,18 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const ChatContainer = () => {
 
+    const classes = styles();
+
     const queryClient = useQueryClient();
     const chats = queryClient.getQueryData(["chats"]);
 
-
-
-    const classes = styles();
     return (
         <div className={classes.contacts}>
             <QueryContainer />
             {
                 (chats?.length > 0) ?
-                    chats.map((chat, index) => <Chat key={index} chat={chat} />)
-                    : <Text ta="center">there's no chat yet</Text>
+                    chats.map((chat, index) => <Chat key={index} chat={chat} />) :
+                    <Text ta="center">there's no chat yet</Text>
             }
         </div>
     )

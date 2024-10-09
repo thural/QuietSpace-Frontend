@@ -7,6 +7,8 @@ import { useVotePoll } from "../../hooks/usePostData";
 
 const Poll = ({ pollData, postId }) => {
 
+    const classes = styles();
+
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["user"]);
     const postVote = useVotePoll();
@@ -40,23 +42,29 @@ const Poll = ({ pollData, postId }) => {
         postVote.mutate(voteBody);
     }
 
-    const classes = styles();
+
+    const PollOptionList = () => {
+        return pollData.options.map((option, index) => (
+            <Flex key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
+                <Text className={classes.optionDesc}>{option.label}</Text>
+                <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
+                <Text className={classes.optionPerc}>{getText(option)}</Text>
+            </Flex>
+        ))
+    }
+
+    const PollStatus = () => (
+        <Flex className={classes.pollStatus}>
+            {!pollData.isEnded && <Text className="votes">{parsedVoteCounts} votes</Text>}
+            {pollData.isEnded && <Text className="votes">poll has ended</Text>}
+        </Flex>
+    );
+
 
     return (
         <Flex className={classes.pollContainer}>
-            {
-                pollData.options.map((option, index) => (
-                    <Flex key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
-                        <Text className={classes.optionDesc}>{option.label}</Text>
-                        <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
-                        <Text className={classes.optionPerc}>{getText(option)}</Text>
-                    </Flex>
-                ))
-            }
-            <Flex className={classes.pollStatus}>
-                {!pollData.isEnded && <Text className="votes">{parsedVoteCounts} votes</Text>}
-                {pollData.isEnded && <Text className="votes">poll has ended</Text>}
-            </Flex>
+            <PollOptionList />
+            <PollStatus />
         </Flex>
     )
 }
