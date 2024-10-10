@@ -23,18 +23,7 @@ const styles = createUseStyles(
 			height: '100vh'
 		},
 
-		icon: {
-			'& svg': {
-				// display: 'block',
-				// fontSize: '1.8rem',
-				// width: '2.5rem',
-				// margin: '0 1.8rem',
-				// color: 'black'
-			}
-		},
-
 		menuList: {
-
 			height: 'fit-content',
 			top: '0',
 			color: 'black',

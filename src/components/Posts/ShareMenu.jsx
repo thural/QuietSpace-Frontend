@@ -1,36 +1,28 @@
-import React, { useState } from "react";
-import styles from "./styles/shareMenuStyles";
+import React from "react";
 import { PiArrowsClockwise, PiPaperPlaneTilt, PiShareFat } from "react-icons/pi";
+import Clickable from "../Shared/Clickable";
+import ListMenu from "../Shared/ListMenu";
 
 
 const ShareMenu = () => {
 
-    const classes = styles();
+    const handleSendPost = () => {
+        // TODO: handle send post
+    }
 
-    const [display, setDisplay] = useState('none');
-
-    const toggleDisplay = () => {
-        if (display === "none") setDisplay("block");
-        else setDisplay("none");
+    const handleRepost = () => {
+        // TODO: handle repost
     }
 
     return (
-        <>
-            <div onClick={toggleDisplay} className={classes.menu}><PiShareFat /></div>
-            <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
-            <div onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
-
-                <div className="clickable">
-                    <p>Send</p>
-                    <PiPaperPlaneTilt />
-                </div>
-
-                <div className="clickable">
-                    <p>Repost</p>
-                    <PiArrowsClockwise />
-                </div>
-            </div>
-        </>
+        <ListMenu position={"relative"} menuIcon={<PiShareFat />}>
+            <Clickable text="Send" handleClick={handleSendPost} >
+                <PiPaperPlaneTilt />
+            </Clickable>
+            <Clickable text="Repost" handleClick={handleRepost} >
+                <PiArrowsClockwise />
+            </Clickable>
+        </ListMenu>
     )
 }
 

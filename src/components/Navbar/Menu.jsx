@@ -3,6 +3,7 @@ import styles from "./styles/menuStyles";
 import { RiMenu3Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
+import Clickable from "../Shared/Clickable";
 
 
 const Menu = () => {
@@ -22,28 +23,24 @@ const Menu = () => {
             <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
             <div onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
                 <Link to="/saved">
-                    <div className="clickable">
-                        <p>Saved</p>
+                    <Clickable text="Saved" >
                         <PiBookmarkSimple />
-                    </div>
+                    </Clickable>
                 </Link>
                 <Link to="/activity">
-                    <div className="clickable">
-                        <p>Activity</p>
+                    <Clickable text="Activity" >
                         <PiClockCounterClockwise />
-                    </div>
+                    </Clickable>
                 </Link>
                 <Link to="/settings">
-                    <div className="clickable">
-                        <p>Settings</p>
+                    <Clickable text="Settings" >
                         <PiGearSix />
-                    </div>
+                    </Clickable>
                 </Link>
                 <Link to="/signout">
-                    <div className="clickable">
-                        <p>Logout</p>
+                    <Clickable text="Logout" >
                         <PiSignOut />
-                    </div>
+                    </Clickable>
                 </Link>
             </div>
         </>

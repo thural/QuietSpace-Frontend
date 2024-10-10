@@ -3,8 +3,9 @@ import styles from "./styles/commentReplyStyles";
 import InputEmoji from "react-input-emoji";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePostComment } from "../../hooks/useCommentData";
-import { Avatar, Flex } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import UserAvatar from "../Shared/UserAvatar";
 
 
 const ReplyForm = ({ postId, parentId, toggleView }) => {
@@ -47,7 +48,7 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
 
     return (
         <Flex className={classes.container}>
-            <Avatar className={classes.avatar} size="1.5rem">{toUpperFirstChar(user.username)}</Avatar>
+            <UserAvatar size="1.5rem" chars={toUpperFirstChar(user.username)} />
             <form className={classes.inputWrapper}>
                 <InputEmoji
                     className={classes.commentInput}

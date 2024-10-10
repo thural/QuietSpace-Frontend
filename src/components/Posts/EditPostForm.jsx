@@ -32,7 +32,7 @@ const EditPostForm = ({ postId }) => {
     <>
       <Overlay closable={{ editPost: false }} />
       <div className={classes.post}>
-        <h3>Edit post</h3>
+        <h3>edit post</h3>
         <form>
           <textarea
             className='text input'

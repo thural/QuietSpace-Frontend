@@ -1,48 +1,37 @@
-import React, { useState } from "react";
-import styles from "./styles/chatMenuStyles";
+import React from "react";
+import Conditional from "../Shared/Conditional";
+import ListMenu from "../Shared/ListMenu";
+import Clickable from "../Shared/Clickable";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
 
-const ChatMenu = ({ handleDeleteChat, isMutable }) => {
+const ChatMenu = ({ isMutable }) => {
 
-    const classes = styles();
-    const [display, setDisplay] = useState('none');
-
-    const toggleDisplay = () => {
-        if (display === "none") setDisplay("block");
-        else setDisplay("none");
+    const handleChatMute = () => {
+        // TODO: handle chat mute
     }
 
-    const handleDelete = (event) => {
-        handleDeleteChat(event);
-        setDisplay('none');
+    const handleChatRemove = () => {
+        // TODO: handle chat remove
+    }
+
+    const handleChatBlock = () => {
+        // TODO: handle chat block
+    }
+
+    const handleChatReport = () => {
+        // TODO: handle chat report
     }
 
     return (
-        <>
-            <div onClick={toggleDisplay} className={classes.menu}><PiDotsThreeVertical /></div>
-            <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
-            <div className={classes.menuList} style={{ display }}>
-
-                {isMutable &&
-                    <>
-                        <div className="clickable" alt={"mute chat icon"}>
-                            <p>mute</p>
-                        </div>
-                        <div className="clickable" onClick={handleDelete} alt={"delete chat icon"}>
-                            <p>remove</p>
-                        </div>
-                        <div className="clickable" alt={"block post icon"}>
-                            <p>block</p>
-                        </div>
-                        <div className="clickable" alt={"report post icon"}>
-                            <p>report</p>
-                        </div>
-                    </>
-                }
-
-            </div>
-        </>
+        <ListMenu menuIcon={<PiDotsThreeVertical />}>
+            <Conditional isEnabled={isMutable}>
+                <Clickable handleClick={handleChatMute} alt="mute chat" text="mute" />
+                <Clickable handleClick={handleChatRemove} alt="remove chat" text="remove" />
+                <Clickable handleClick={handleChatBlock} alt="block chat" text="block" />
+                <Clickable handleClick={handleChatReport} alt="report chat" text="report" />
+            </Conditional>
+        </ListMenu>
     )
 }
 

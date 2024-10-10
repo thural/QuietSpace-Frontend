@@ -10,9 +10,7 @@ function SettingsContainer() {
     const classes = styles();
 
     const [value, setValue] = useState('profile');
-
     const navigate = useNavigate();
-
     const pathName = useLocation().pathname;
 
     const redirectToPage = (buttonValue) => {

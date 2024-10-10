@@ -16,11 +16,12 @@ import {
 } from "react-icons/pi";
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@mantine/core";
+import NavbarItem from "./NavbarItem";
 
 
 
 
-const NavBar = ({ children }) => {
+const NavBar = () => {
 
   const classes = styles();
 
@@ -47,34 +48,38 @@ const NavBar = ({ children }) => {
     <div className={classes.navbar}>
       <h1 className="title">QS</h1>
       <nav>
-        <div className="navbar-item">
-          <Link to="/posts">
-            {pathName === "/posts" ? <PiHouseFill /> : <PiHouse />}
-          </Link>
-        </div>
-        <div className="navbar-item">
-          <Link to="/search">
-            {pathName === "/search" ? <PiMagnifyingGlassFill /> : <PiMagnifyingGlass />}
-          </Link>
-        </div>
-        <div className="navbar-item">
-          <Link to="/chat">
-            {pathName === "/chat" ? <PiChatCircleFill /> : <PiChatCircle />}
-            {hasUnreadChat && <Badge className="badge" circle />}
-          </Link>
-        </div>
-        <div className="navbar-item">
-          <Link to="/profile">
-            {pathName === "/profile" ? <PiUserFill /> : <PiUser />}
-          </Link>
-        </div>
-        <div className="navbar-item">
-          <Link to="/notification/all">
-            {pathName === "/notification/all" ? <PiBellFill /> : <PiBell />}
-            {hasPendingNotification && <Badge className="badge" circle />}
-          </Link>
-        </div>
-        {children}
+        <NavbarItem
+          linkTo="/posts"
+          pathName={pathName}
+          icon={<PiHouse />}
+          iconFill={<PiHouseFill />}
+        />
+        <NavbarItem
+          linkTo="/search"
+          pathName={pathName}
+          icon={<PiMagnifyingGlass />}
+          iconFill={<PiMagnifyingGlassFill />}
+        />
+        <NavbarItem
+          linkTo="/chat"
+          pathName={pathName}
+          icon={<PiChatCircle />}
+          iconFill={<PiChatCircleFill />}
+        />
+        <NavbarItem
+          linkTo="/profile"
+          pathName={pathName}
+          icon={<PiUser />}
+          iconFill={<PiUserFill />}
+        />
+        <NavbarItem
+          linkTo="/notification/all"
+          pathName={pathName}
+          icon={<PiBell />}
+          iconFill={<PiBellFill />}
+        >
+          {hasPendingNotification && <Badge className="badge" circle />}
+        </NavbarItem>
       </nav>
       <div className="navbar-item menu">
         <Menu />

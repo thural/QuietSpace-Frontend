@@ -1,7 +1,11 @@
 import styles from "./styles/signupFormStyles"
 import React, { useEffect, useState } from "react";
-import { Button, LoadingOverlay, Text, Title } from "@mantine/core";
+import { LoadingOverlay, Text, Title } from "@mantine/core";
 import useJwtAuth from "../../hooks/useJwtAuth";
+import TextInput from "../Shared/TextInput";
+import PassInput from "../Shared/PassInput";
+import FillGradientBtn from "../Shared/FillGradientBtn";
+import FillOutlineBtn from "../Shared/FillOutlineBtn";
 
 const SignupForm = ({ setAuthState, authState }) => {
 
@@ -19,7 +23,6 @@ const SignupForm = ({ setAuthState, authState }) => {
         password: '',
         confirmPassword: ''
     });
-
 
 
     const onLoadFn = () => {
@@ -40,11 +43,7 @@ const SignupForm = ({ setAuthState, authState }) => {
 
 
     const { signup } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
-
-
-    useEffect(() => {
-        setFormData({ ...formData, ...authState.formData })
-    }, []);
+    useEffect(() => { setFormData({ ...formData, ...authState.formData }) }, []);
 
 
     const handleSubmit = async (event) => {
@@ -64,26 +63,6 @@ const SignupForm = ({ setAuthState, authState }) => {
         setFormData({ ...formData, [name]: value });
     }
 
-    const TextInput = ({ name, value }) => (
-        <input
-            type='text'
-            name={name}
-            placeholder={name}
-            value={value}
-            onChange={handleChange}
-        />
-    );
-
-    const PassInput = ({ name, value }) => (
-        <input
-            type='password'
-            name={name}
-            placeholder={name}
-            value={value}
-            onChange={handleChange}
-        />
-    );
-
 
     if (isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (isError) return <h1>{`could not authenticate! 🔥 error: ${error}`}</h1>
@@ -93,29 +72,17 @@ const SignupForm = ({ setAuthState, authState }) => {
             <Title order={2}>Signup</Title>
             <form className='signup-form'>
                 <div className="signup input">
-                    <TextInput name='username' value={formData.username} />
-                    <TextInput name='firstname' value={formData.firstname} />
-                    <TextInput name='lastname' value={formData.lastname} />
-                    <TextInput name='email' value={formData.email} />
-                    <PassInput name='password' value={formData.password} />
-                    <PassInput name='confirmPassword' value={formData.confirmPassword} />
+                    <TextInput name='username' value={formData.username} handleChange={handleChange} />
+                    <TextInput name='firstname' value={formData.firstname} handleChange={handleChange} />
+                    <TextInput name='lastname' value={formData.lastname} handleChange={handleChange} />
+                    <TextInput name='email' value={formData.email} handleChange={handleChange} />
+                    <PassInput name='password' value={formData.password} handleChange={handleChange} />
+                    <PassInput name='confirmPassword' value={formData.confirmPassword} handleChange={handleChange} />
                 </div>
             </form>
-            <Button
-                className="submit-button"
-                fullWidth
-                radius="md"
-                variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-                onClick={handleSubmit}>
-                submit
-            </Button>
+            <FillGradientBtn onClick={handleSubmit} />
             <Text className="login-prompt">already have account?</Text>
-            <Button
-                variant="outline"
-                onClick={() => setAuthState({ page: "login", formData })}>
-                login
-            </Button>
+            <FillOutlineBtn onClick={() => setAuthState({ page: "login", formData })} name="login" />
         </div>
     )
 }

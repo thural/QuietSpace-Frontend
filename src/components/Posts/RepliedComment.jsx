@@ -3,9 +3,10 @@ import styles from "./styles/repliedCommentStyles";
 import emoji from "react-easy-emoji";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteComment } from "../../hooks/useCommentData";
-import { Avatar, Box, Flex, Text } from "@mantine/core";
-import { generatePfp } from "../../utils/randomPfp";
+import { Box, Flex, Text } from "@mantine/core";
 import { useToggleReaction } from "../../hooks/useReactionData";
+import { toUpperFirstChar } from "../../utils/stringUtils";
+import UserAvatar from "../Shared/UserAvatar";
 
 
 const RepliedComment = ({ comment, repliedComment }) => {
@@ -58,12 +59,7 @@ const RepliedComment = ({ comment, repliedComment }) => {
     return (
         <Flex className={classes.container}>
             <CommentBody />
-            <Avatar
-                className={classes.avatar}
-                size="1.75rem"
-                src={generatePfp("beam")}>
-                {user.username[0].toUpperCase()}
-            </Avatar>
+            <UserAvatar chars={toUpperFirstChar(user.username)} />
         </Flex>
     )
 }

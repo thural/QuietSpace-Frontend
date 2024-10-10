@@ -1,13 +1,15 @@
 import Post from "./Post";
-import React, { useMemo, useState } from "react";
+import React from "react";
 import CreatePostForm from "./CreatePostForm";
 import { viewStore } from "../../hooks/zustand";
 import { useGetPosts } from "../../hooks/usePostData";
-import { Avatar, Box, Button, Container, Flex, Input, LoadingOverlay } from "@mantine/core";
+import { Box, Container, Flex, Input, LoadingOverlay } from "@mantine/core";
 
 import styles from './styles/postContainerStyles'
 import { useQueryClient } from "@tanstack/react-query";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import UserAvatar from "../Shared/UserAvatar";
+import LightBtn from "../Shared/LightBtn ";
 
 function PostContainer() {
 
@@ -18,6 +20,10 @@ function PostContainer() {
     const posts = useGetPosts();
     const classes = styles();
 
+    const showCreatePostForm = () => {
+        setViewData({ createPost: true })
+    }
+
 
     if (posts.isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
     if (posts.isError) return <h1>{posts.error.message}</h1>;
@@ -25,20 +31,14 @@ function PostContainer() {
     const CreatePostSection = () => (
         <Box style={{ margin: "1rem 0" }}>
             <Flex justify="space-between" gap="1rem">
-                <Avatar color="black" radius="10rem">{toUpperFirstChar(user.username)}</Avatar>
+                <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
                 <Input
                     variant="unstyled"
                     style={{ width: "100%" }}
                     placeholder="start a topic..."
-                    onClick={() => setViewData({ createPost: true })}
+                    onClick={showCreatePostForm}
                 />
-                <Button
-                    variant="light"
-                    color="rgba(0, 0, 0, 1)"
-                    radius="xl"
-                    size="sm"
-                    onClick={() => setViewData({ createPost: true })}
-                >post</Button>
+                <LightBtn name="post" handleClick={showCreatePostForm} />
             </Flex>
         </Box>
     );

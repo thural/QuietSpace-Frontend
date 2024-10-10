@@ -1,10 +1,11 @@
 import React from "react";
 import styles from "./styles/userQueryItemStyles";
 
-import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
+import { Box, Flex, Text, Title } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggleFollow } from "../../hooks/useUserData";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import UserAvatar from "./UserAvatar";
 
 const UserQueryItem = ({ user, handleItemClick }) => {
 
@@ -30,11 +31,6 @@ const UserQueryItem = ({ user, handleItemClick }) => {
         return isFollowing ? "unfollow" : "follow";
     }
 
-
-    const UserAvatar = () => (
-        <Avatar color="black" size="2.5rem" radius="10rem"> {toUpperFirstChar(user.username)} </Avatar>
-    );
-
     const UserDetails = () => (
         <Box key={user.id} className={classes.queryItem}>
             <Title order={5} className="username">{user.username}</Title>
@@ -49,7 +45,7 @@ const UserQueryItem = ({ user, handleItemClick }) => {
 
     return (
         <Flex className={classes.queryCard} onClick={handleClick}>
-            <UserAvatar />
+            <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
             <UserDetails />
             <FollowToggle />
         </Flex>

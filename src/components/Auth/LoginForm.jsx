@@ -1,9 +1,13 @@
 import styles from "./styles/loginFormStyles";
-import { useEffect, useState } from "react";
-import { Button, LoadingOverlay, Text, Title } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
 import useJwtAuth from "../../hooks/useJwtAuth";
+import TextInput from "../Shared/TextInput";
+import PassInput from "../Shared/PassInput";
+import { useEffect, useState } from "react";
+import { Box, LoadingOverlay, Text, Title } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../hooks/zustand";
+import FillGradientBtn from "../Shared/FillGradientBtn";
+import FillOutlineBtn from "../Shared/FillOutlineBtn";
 
 
 const LoginForm = ({ setAuthState, authState }) => {
@@ -67,39 +71,14 @@ const LoginForm = ({ setAuthState, authState }) => {
         <div className={classes.login}>
             <Title order={2}>Login</Title>
             <form className='login form'>
-                <div className="login input">
-                    <input
-                        type='text'
-                        name='email'
-                        placeholder="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type='password'
-                        name='password'
-                        placeholder="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                </div>
-                <Button
-                    className="button"
-                    fullWidth
-                    radius="md"
-                    variant="gradient"
-                    gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-                    onClick={handleLoginForm}>
-                    submit
-                </Button>
+                <Box className="login input">
+                    <TextInput name='email' value={formData.email} handleChange={handleChange} />
+                    <PassInput name='password' value={formData.password} handleChange={handleChange} />
+                </Box>
+                <FillGradientBtn onClick={handleLoginForm} />
             </form>
             <Text className="signup-prompt">don't have an account?</Text>
-            <Button
-                className="button"
-                variant="outline"
-                onClick={handleSignupBtn}>
-                signup
-            </Button>
+            <FillOutlineBtn name="signup" onClick={handleSignupBtn} />
         </div>
     )
 }

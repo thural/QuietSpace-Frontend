@@ -18,9 +18,9 @@ const CommentSection = ({ postId }) => {
     const CommentList = ({ comments }) => {
         if (!comments) return null;
         return comments.map((comment, index) => {
-            if (!comment.parentId) return <Comment key={index} postId={postId} comment={comment} />
-            const repliedComment = comments.find(c => c.id === comment.parentId)
-            return <RepliedComment key={index} comment={comment} repliedComment={repliedComment} />
+            if (!comment.parentId) return <Comment key={index} postId={postId} comment={comment} />;
+            const repliedComment = comments.find(c => c.id === comment.parentId);
+            return <RepliedComment key={index} comment={comment} repliedComment={repliedComment} />;
         })
     }
 

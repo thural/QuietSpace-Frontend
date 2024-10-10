@@ -1,38 +1,34 @@
-import React, { useState } from "react";
-import styles from "./styles/postMenuStyles";
-import { PiDotsThreeVertical } from "react-icons/pi";
+import React from "react";
+import Conditional from "../Shared/Conditional";
+import ListMenu from "../Shared/ListMenu";
+import Clickable from "../Shared/Clickable";
 
 
 const PostMenu = ({ handleDeletePost, setViewData, isMutable }) => {
 
-    const classes = styles();
-
-    const [display, setDisplay] = useState('none');
-
-    const toggleDisplay = () => {
-        setDisplay(display === "none" ? "block" : "none");
+    const handleEditPost = () => {
+        setViewData({ editPost: true })
     }
 
-    const AuthorClickable = () => {
-        if (isMutable) return <>
-            <div className="clickable" onClick={() => setViewData({ editPost: true })} alt={"edit icon"}><p>edit</p></div>
-            <div className="clickable" onClick={handleDeletePost} alt={"delete post icon"}><p>remove</p></div>
-        </>
-        else return null;
+    const handleSavePost = () => {
+        // TODO: handle save post
+    }
+
+    const handleReportPost = () => {
+        // TODO: handle report post
     }
 
 
     return (
-        <>
-            <div onClick={toggleDisplay} className={classes.menu}><PiDotsThreeVertical /></div>
-            <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
-            <div className={classes.menuList} style={{ display }} onClick={() => setDisplay('none')}>
-                <AuthorClickable />
-                <div className="clickable" alt={"save post icon"}><p>save</p></div>
-                <div className="clickable" alt={"block post icon"}><p>block</p></div>
-                <div className="clickable" alt={"report post icon"}><p>report</p></div>
-            </div>
-        </>
+        <ListMenu>
+            <Conditional isEnabled={isMutable} >
+                <Clickable handleClick={handleEditPost} alt="edit post" text="edit" />
+                <Clickable handleClick={handleDeletePost} alt="remove post" text="remove" />
+            </Conditional>
+            <Clickable handleClick={handleDeletePost} alt="remove post" text="remove" />
+            <Clickable handleClick={handleSavePost} alt="save post" text="save" />
+            <Clickable handleClick={handleReportPost} alt="report post" text="report" />
+        </ListMenu>
     )
 }
 

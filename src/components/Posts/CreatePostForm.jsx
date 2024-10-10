@@ -7,6 +7,8 @@ import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import TextInput from "../Shared/TextInput";
+import PollSection from "./PollSection";
 
 const CreatePostForm = () => {
 
@@ -26,6 +28,7 @@ const CreatePostForm = () => {
     const [pollView, setPollView] = useState({ enabled: false, extraOption: false });
 
     const handleChange = (event) => {
+        console.log("post form data: ", postData);
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
     }
@@ -57,73 +60,12 @@ const CreatePostForm = () => {
     const avatarPlaceholder = toUpperFirstChar(user.username);
 
 
-    const PollSection = () => (
-        <Flex
-            className={classes.pollView}
-            style={{ display: pollView.enabled ? "flex" : "none" }}>
-
-            <input
-                name="option1"
-                className="poll-input"
-                placeholder="yes"
-                onChange={handleChange}
-            />
-
-            <input
-                name="option2"
-                className="poll-input"
-                placeholder="no"
-                onChange={handleChange}
-            />
-
-            <input
-                name="option3"
-                className="poll-input"
-                placeholder="add another option"
-                onChange={handleChange}
-            />
-
-            <input
-                name="option4"
-                className="poll-input"
-                placeholder="add another option"
-                onChange={handleChange}
-                hidden={!postData.option3 && !postData.option4}
-            />
-
-            <p className="close-poll" onClick={togglePoll} >remove poll</p>
-
-        </Flex>
-    );
 
     const UserAvatar = () => (
         <Avatar color="black" radius="10rem">{avatarPlaceholder}</Avatar>
     )
 
-    const TitleInput = () => (
-        <input
-            type="text"
-            name="title"
-            required
-            minLength="1"
-            maxLength="32"
-            placeholder="type a title"
-            onChange={handleChange}
-        />
-    )
 
-    const TextInput = () => (
-        <textarea
-            className='text area'
-            name='text'
-            placeholder="what's on your mind?"
-            minLength="1"
-            maxLength="1000"
-            value={postData.text}
-            onChange={handleChange}
-        >
-        </textarea>
-    )
 
     const ControlSection = () => (
         <Flex className="control-area">
@@ -149,9 +91,28 @@ const CreatePostForm = () => {
             <Flex className={classes.wrapper}>
                 <UserAvatar />
                 <form>
-                    <TitleInput />
-                    <TextInput />
-                    <PollSection />
+                    <TextInput
+                        name="title"
+                        minLength="1"
+                        maxLength="32"
+                        placeholder="type a title"
+                        handleChange={handleChange}
+                    />
+                    <textarea
+                        className='text area'
+                        name="text"
+                        value={postData.text}
+                        onChange={handleChange}
+                        placeholder="what's on your mind?"
+                        maxLength="999"
+                        minLength="1"
+                    />
+                    <PollSection
+                        postData={postData}
+                        handleChange={handleChange}
+                        togglePoll={togglePoll}
+                        pollView={pollView}
+                    />
                     <ControlSection />
                 </form>
             </Flex>
