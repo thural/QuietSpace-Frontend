@@ -1,60 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./styles/postStyles";
 import CommentSection from "./CommentSection";
 import EditPostForm from "./EditPostForm";
 import ShareMenu from "./ShareMenu";
 import Poll from "./Poll";
 import PostMenu from "./PostMenu";
-import { useQueryClient } from "@tanstack/react-query";
-import { viewStore } from "../../hooks/zustand";
-import { useDeletePost } from "../../hooks/usePostData";
-import { useGetComments } from "../../hooks/useCommentData";
 import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
 import { parseCount, toUpperFirstChar } from "../../utils/stringUtils";
-import { ContentType, LikeType } from "../../utils/enumClasses";
-import { useToggleReaction } from "../../hooks/useReactionData";
+import { LikeType } from "../../utils/enumClasses";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
-
+import { usePost } from "./hooks/usePost";
 
 const Post = ({ post }) => {
-
     const classes = styles();
-
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
-    const { data: viewData, setViewData } = viewStore();
-    const { editPost: editPostView } = viewData;
-
-    const { id: postId, username, userReaction, text, likeCount, dislikeCount } = post;
-    const [showComments, setShowComments] = useState(false);
-
-    const { data: comments, status, error } = useGetComments(postId);
-    const deletePost = useDeletePost(postId);
-    const togglePostLike = useToggleReaction(postId);
-
-    const handleDeletePost = async (event) => {
-        event.preventDefault();
-        deletePost.mutate();
-    }
-
-    const handleReaction = async (event, likeType) => {
-        event.preventDefault();
-        const reactionBody = {
-            userId: user.id,
-            contentId: postId,
-            reactionType: likeType,
-            contentType: ContentType.POST.toString(),
-        }
-        togglePostLike.mutate(reactionBody);
-    }
-
-    const handleLike = (event) => handleReaction(event, LikeType.LIKE.toString());
-    const handleDislike = (event) => handleReaction(event, LikeType.DISLIKE.toString());
-    const isMutable = user?.role === "admin" || post?.userId === user?.id;
+    const {
+        user,
+        viewData,
+        setViewData,
+        editPostView,
+        postId,
+        username,
+        userReaction,
+        text,
+        likeCount,
+        dislikeCount,
+        showComments,
+        comments,
+        handleDeletePost,
+        handleLike,
+        handleDislike,
+        isMutable,
+        toggleComments,
+    } = usePost(post);
 
     const PostHeadLine = () => (
         <Flex className={classes.postHeadline}>
@@ -72,8 +53,8 @@ const Post = ({ post }) => {
     );
 
     const PollContent = () => {
-        if (!post.poll) return;
-        return <Poll pollData={post.poll} postId={postId} />
+        if (!post.poll) return null;
+        return <Poll pollData={post.poll} postId={postId} />;
     };
 
     const PostStats = () => (
@@ -84,30 +65,27 @@ const Post = ({ post }) => {
         </Flex>
     );
 
-    const LikeToggle = () => {
-        if (userReaction?.reactionType === LikeType.LIKE.toString())
-            return <PiArrowFatUpFill className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUpFill>
-        return <PiArrowFatUp className="posticon" onClick={handleLike} alt={"post like icon"}></PiArrowFatUp>
-    }
-
-    const DislikeToggle = () => {
-        if (userReaction?.reactionType === LikeType.DISLIKE.toString())
-            return <PiArrowFatDownFill className="posticon" onClick={handleDislike} alt={"post like icon"}></PiArrowFatDownFill>
-        return <PiArrowFatDown className="posticon" onClick={handleDislike} alt={"post like icon"}></PiArrowFatDown>
-    }
-
-    const CommentToggle = () => (
-        <PiChatCircle onClick={() => setShowComments(!showComments)} alt={"comment icon"} />
+    const LikeToggle = () => (
+        userReaction?.reactionType === LikeType.LIKE.toString()
+            ? <PiArrowFatUpFill className="posticon" onClick={handleLike} alt="post like icon" />
+            : <PiArrowFatUp className="posticon" onClick={handleLike} alt="post like icon" />
     );
 
+    const DislikeToggle = () => (
+        userReaction?.reactionType === LikeType.DISLIKE.toString()
+            ? <PiArrowFatDownFill className="posticon" onClick={handleDislike} alt="post dislike icon" />
+            : <PiArrowFatDown className="posticon" onClick={handleDislike} alt="post dislike icon" />
+    );
+
+    const CommentToggle = () => (
+        <PiChatCircle onClick={toggleComments} alt="comment icon" />
+    );
 
     return (
         <Box id={postId} className={classes.wrapper}>
-
             <PostHeadLine />
             <PostContent />
             <PollContent />
-
             <Box className="panel">
                 <LikeToggle />
                 <DislikeToggle />
@@ -115,13 +93,11 @@ const Post = ({ post }) => {
                 <ShareMenu />
                 <PostStats />
             </Box>
-
             {editPostView && <EditPostForm postId={postId} />}
             {showComments && <CommentSection postId={postId} />}
-            <hr></hr>
-
+            <hr />
         </Box>
-    )
-}
+    );
+};
 
-export default Post 
+export default Post;

@@ -1,44 +1,19 @@
 import React from "react";
 import styles from "./styles/repliedCommentStyles";
 import emoji from "react-easy-emoji";
-import { useQueryClient } from "@tanstack/react-query";
-import { useDeleteComment } from "../../hooks/useCommentData";
 import { Box, Flex, Text } from "@mantine/core";
-import { useToggleReaction } from "../../hooks/useReactionData";
-import { toUpperFirstChar } from "../../utils/stringUtils";
 import UserAvatar from "../Shared/UserAvatar";
-
+import { toUpperFirstChar } from "../../utils/stringUtils";
+import useRepliedComment from "./hooks/useRepliedComment";
 
 const RepliedComment = ({ comment, repliedComment }) => {
-
     const classes = styles();
-
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
-    const deleteComment = useDeleteComment(comment.id);
-    const toggleLike = useToggleReaction(comment.id);
-
-
-    const handleDeleteComment = () => {
-        deleteComment.mutate(comment.id);
-    }
-
-    const handleReaction = async (event, type) => {
-        event.preventDefault();
-        const reactionBody = {
-            userId: user.id,
-            contentId: comment.id,
-            reactionType: type,
-            contentType: ContentType.COMMENT.toString()
-        }
-        toggleLike.mutate(reactionBody);
-    }
+    const { user, handleDeleteComment, handleReaction } = useRepliedComment(comment);
 
     const appliedStyle = {
         borderRadius: '1rem 0rem 1rem 1rem',
         marginLeft: 'auto'
-    }
-
+    };
 
     const CommentBody = () => (
         <Box key={comment.id} className={classes.comment} style={appliedStyle}>
@@ -61,7 +36,7 @@ const RepliedComment = ({ comment, repliedComment }) => {
             <CommentBody />
             <UserAvatar chars={toUpperFirstChar(user.username)} />
         </Flex>
-    )
-}
+    );
+};
 
-export default RepliedComment
+export default RepliedComment;

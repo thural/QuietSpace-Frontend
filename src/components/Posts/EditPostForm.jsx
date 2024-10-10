@@ -1,32 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./styles/editPostStyles";
 import Overlay from "../Overlay/Overlay";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEditPost } from "../../hooks/usePostData";
+import useEditPostForm from "./hooks/useEditPostForm";
 
 const EditPostForm = ({ postId }) => {
-
-  const queryClient = useQueryClient();
-  const posts = queryClient.getQueryData(["posts"]);
-  const editedPostData = posts.content.find(post => post.id === postId);
-
-  const [postData, setPostData] = useState(editedPostData);
-  const editCurrentPost = useEditPost(postId);
-
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    editCurrentPost.mutate(postData);
-  }
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setPostData({ ...postData, [name]: value });
-  }
-
-
-
   const classes = styles();
+  const {
+    postData,
+    handleSubmit,
+    handleChange,
+  } = useEditPostForm(postId);
 
   return (
     <>
@@ -46,7 +29,7 @@ const EditPostForm = ({ postId }) => {
         </form>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default EditPostForm
+export default EditPostForm;

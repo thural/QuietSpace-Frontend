@@ -1,71 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./styles/createPostStyles";
 import Overlay from "../Overlay/Overlay";
 import ComboMenu from "./ComboMenu";
-import { useCreatePost } from "../../hooks/usePostData";
-import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
-import { useQueryClient } from "@tanstack/react-query";
+import { Avatar, Box, Button, Flex } from "@mantine/core";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
-import { toUpperFirstChar } from "../../utils/stringUtils";
 import TextInput from "../Shared/TextInput";
 import PollSection from "./PollSection";
+import UserAvatar from "../Shared/UserAvatar";
+import useCreatePostForm from "./hooks/useCreatePostForm";
 
 const CreatePostForm = () => {
-
     const classes = styles();
-
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
-    const addPost = useCreatePost();
-
-    const [postData, setPostData] = useState({
-        text: "",
-        userId: user.id,
-        viewAccess: 'friends',
-        poll: null
-    });
-
-    const [pollView, setPollView] = useState({ enabled: false, extraOption: false });
-
-    const handleChange = (event) => {
-        console.log("post form data: ", postData);
-        const { name, value } = event.target;
-        setPostData({ ...postData, [name]: value });
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const poll = { dueDate: null, options: [] }
-        Object.entries(postData).forEach(([key, value]) => {
-            if (key.includes("option")) poll.options.push(value)
-        });
-        const requestBody = poll.options.length ? { ...postData, poll } : postData;
-        addPost.mutate(requestBody);
-    }
-
-    const viewAccessOptions = ["friends", "anyone"];
-
-    const handleViewSelect = (option) => {
-        setPostData({ ...postData, viewAccess: option });
-    }
-
-    const handleReplySelect = (option) => {
-        setPostData({ ...postData, replyAccess: option });
-    }
-
-    const togglePoll = () => {
-        setPollView({ ...pollView, enabled: !pollView.enabled });
-    }
-
-    const avatarPlaceholder = toUpperFirstChar(user.username);
-
-
-
-    const UserAvatar = () => (
-        <Avatar color="black" radius="10rem">{avatarPlaceholder}</Avatar>
-    )
-
-
+    const {
+        postData,
+        pollView,
+        handleChange,
+        handleSubmit,
+        handleViewSelect,
+        handleReplySelect,
+        togglePoll,
+        avatarPlaceholder,
+        addPost,
+        viewAccessOptions,
+    } = useCreatePostForm();
 
     const ControlSection = () => (
         <Flex className="control-area">
@@ -84,12 +41,11 @@ const CreatePostForm = () => {
         </Flex>
     );
 
-
     return (
         <Box>
             <Overlay closable={{ createPost: false }} />
             <Flex className={classes.wrapper}>
-                <UserAvatar />
+                <UserAvatar radius="10rem" chars={avatarPlaceholder} />
                 <form>
                     <TextInput
                         name="title"
@@ -117,7 +73,7 @@ const CreatePostForm = () => {
                 </form>
             </Flex>
         </Box>
-    )
-}
+    );
+};
 
-export default CreatePostForm
+export default CreatePostForm;
