@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./styles/messageStyles";
 import useMessage from "./hooks/useMessage";
+import Conditional from "../Shared/Conditional";
 
 const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnected }) => {
 
@@ -22,10 +23,9 @@ const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnect
             style={appliedStyle}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}>
-            {
-                message.senderId === user.id && isHovering &&
+            <Conditional isEnabled={message.senderId === user.id && isHovering}>
                 <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
-            }
+            </Conditional>
             <div className={classes.text}><p>{message.text}</p></div>
         </div>
     );

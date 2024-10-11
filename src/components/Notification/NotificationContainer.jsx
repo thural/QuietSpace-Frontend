@@ -3,6 +3,7 @@ import { Container, LoadingOverlay, SegmentedControl } from "@mantine/core";
 import styles from "./styles/notificationContainerStyles";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useGetNotifications } from "../../hooks/useNotificationData";
+import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
 
 function NotificationContainer() {
 
@@ -21,7 +22,7 @@ function NotificationContainer() {
 
     return (
         <Container size="600px" className={classes.container}>
-            {isLoading ? <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+            {isLoading ? <FullLoadingOverlay />
                 : isError ? <h1>{postsQuery.error.message}</h1>
                     : <>
                         <SegmentedControl

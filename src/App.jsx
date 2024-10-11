@@ -20,7 +20,7 @@ import ActivationForm from "./components/Auth/ActivationForm";
 import useJwtAuth from "./hooks/useJwtAuth";
 import useNotificationSocket from "./hooks/useNotificationSocket";
 import useChatSocket from "./hooks/useChatSocket";
-import { LoadingOverlay } from '@mantine/core';
+import FullLoadingOverlay from "./components/Shared/FillLoadingOverlay";
 import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
 import { useEffect } from "react";
 import { useAuthStore } from "./hooks/zustand";
@@ -50,10 +50,7 @@ const App = () => {
     useEffect(loadAccessToken, []);
 
 
-    if (isUserLoading) {
-        return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
-    }
-
+    if (isUserLoading) return <FullLoadingOverlay />;
     if (!isAuthenticated || isUserError) return <AuthPage />;
 
 

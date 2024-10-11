@@ -8,7 +8,8 @@ const TextInput = ({
     placeholder = "",
     maxLength = "999",
     minLength = "0",
-    hidden = false }) => {
+    hidden = false
+}) => {
 
     const inputRef = useRef(null);
 

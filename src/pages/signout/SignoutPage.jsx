@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { LoadingOverlay } from "@mantine/core";
 import useJwtAuth from "../../hooks/useJwtAuth";
+import FullLoadingOverlay from "../../components/Shared/FillLoadingOverlay";
 import { useAuthStore } from "../../hooks/zustand";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -44,7 +44,7 @@ const SignoutPage = () => {
 
 
     if (isError) return <h1>{`error in signout! 🔥 error: ${error}`}</h1>
-    if (isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if (isLoading) return <FullLoadingOverlay />;
 }
 
 export default SignoutPage

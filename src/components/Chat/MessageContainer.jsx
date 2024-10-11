@@ -3,7 +3,8 @@ import Message from "./Message";
 import InputEmoji from "react-input-emoji";
 import styles from "./styles/messageContainerStyles";
 import ChatMenu from "./ChatMenu";
-import { Avatar, Flex, Text, Title } from "@mantine/core";
+import UserAvatar from "../Shared/UserAvatar";
+import { Flex, Text, Title } from "@mantine/core";
 import { toUpperFirstChar } from "../../utils/stringUtils";
 import { useMessageContainer } from "./hooks/useMessageContainer";
 
@@ -43,7 +44,7 @@ const MessageContainer = () => {
         enabled
     } = useMessageContainer();
 
-    if (!chats?.length) return <Text style={{ margin: "1rem" }} ta="center">there's no messages yet</Text>
+    if (!chats?.length) return <Text style={{ margin: "1rem" }} ta="center">there's no messages yet</Text>;
     if (isLoading) return <Text className="system-message" ta="center">loading messages ...</Text>;
     if (isError) return <Text className="system-message" ta="center">error loading messages</Text>;
     if (activeChatId === null) return <Text className="system-message" ta="center">you have no messages yet</Text>;
@@ -54,7 +55,7 @@ const MessageContainer = () => {
     return (
         <div className={classes.chatboard}>
             <Flex className={classes.chatHeadline}>
-                <Avatar color="black" radius="10rem">{toUpperFirstChar(recipientName)}</Avatar>
+                <UserAvatar radius="10rem" chars={toUpperFirstChar(recipientName)} />
                 <Title className="title" order={5}>{recipientName}</Title>
                 <ChatMenu handleDeleteChat={handleDeleteChat} isMutable={true} />
             </Flex>

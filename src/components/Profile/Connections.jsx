@@ -1,19 +1,20 @@
-import React, { useState } from "react";
 import { Box, Center, Title } from "@mantine/core";
+import React, { useState } from "react";
 
-import styles from "./styles/searchbarStyles";
 import Overlay from "../Overlay/Overlay";
-import UserList from "./UserList";
 import SearchBar from "./SearchBar";
+import styles from "./styles/searchbarStyles";
+import UserList from "./UserList";
 
-function Connections({ userList, title }) {
+function Connections({ userFetch, title }) {
 
     const classes = styles();
-    const [followersResult, setFollowersResult] = useState(userList.data);
+
+    const [queryResult, setQueryResult] = useState(userFetch.data);
 
 
     const filterByQuery = (value) => {
-        return userList.data
+        return userFetch.data
             .filter(f => (f.username.includes(value) || f.email.includes(value)));
     }
 
@@ -21,9 +22,9 @@ function Connections({ userList, title }) {
         event.preventDefault();
         const value = event.target.value;
         if (value.length) {
-            setFollowersResult(filterByQuery(value));
+            setQueryResult(filterByQuery(value));
         } else {
-            setFollowersResult(userList.data);
+            setQueryResult(userFetch.data);
         }
     }
 
@@ -32,6 +33,7 @@ function Connections({ userList, title }) {
     }
 
     const handleInputFocus = (event) => {
+        // TODO: handle query input focus
     }
 
     const handleInputBlur = () => {
@@ -49,7 +51,7 @@ function Connections({ userList, title }) {
                     handleInputChange={handleInputChange}
                     handleInputFocus={handleInputFocus}
                 />
-                <UserList users={userList} handleItemClick={handleItemClick} followersResult={followersResult} />
+                <UserList userFetch={userFetch} queryResult={queryResult} handleItemClick={handleItemClick} />
             </Box>
         </>
     )

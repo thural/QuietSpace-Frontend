@@ -4,8 +4,9 @@ import TextInput from "../Shared/TextInput";
 import PassInput from "../Shared/PassInput";
 import FillGradientBtn from "../Shared/FillGradientBtn";
 import FillOutlineBtn from "../Shared/FillOutlineBtn";
-import { Box, LoadingOverlay, Text, Title } from "@mantine/core";
+import { Box, Text, Title } from "@mantine/core";
 import { useLoginForm } from "./hooks/useLoginForm";
+import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
 
 const LoginForm = ({ setAuthState, authState }) => {
     const classes = styles();
@@ -19,7 +20,7 @@ const LoginForm = ({ setAuthState, authState }) => {
         handleSignupBtn,
     } = useLoginForm(setAuthState, authState);
 
-    if (isAuthenticating) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if (isAuthenticating) return <FullLoadingOverlay />;
     if (isError) return <h1>{`could not authenticate! 🔥 error: ${error}`}</h1>;
 
     return (

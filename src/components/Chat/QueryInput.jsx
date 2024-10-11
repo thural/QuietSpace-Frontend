@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styles from "./styles/queryContainerStyles";
 
 
@@ -10,7 +10,7 @@ const QueryInput = ({
     handleInputChange
 }) => {
 
-    const searchInput = React.useRef(null);
+    const searchInput = useRef(null);
     if (document.activeElement === searchInput.current) {
     }
 

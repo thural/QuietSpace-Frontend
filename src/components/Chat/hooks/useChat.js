@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useChatStore } from "../../hooks/zustand";
+import { useChatStore } from "../../../hooks/zustand";
 
 const useChat = (chat) => {
     const queryClient = useQueryClient();

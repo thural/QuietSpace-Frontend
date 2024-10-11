@@ -30,17 +30,14 @@ const styles = createUseStyles({
   },
 
   textBody: {
+    display: 'inline-block',
+    margin: '0',
+    padding: '0 10px',
     width: 'fit-content',
-    padding: '10px 10px',
     position: 'relative',
     boxSizing: 'border-box',
     backgroundColor: '#edeeef',
-    borderRadius: '0rem 1rem 1rem 1rem',
-    '& .comment-text': {
-      display: 'inline-block',
-      margin: '0',
-      padding: '0'
-    },
+    borderRadius: '0rem 1rem 1rem 1rem'
   },
 
   commentWrapper: {

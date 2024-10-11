@@ -1,52 +1,26 @@
 import React, { useState } from "react";
 import styles from "./styles/comboMenuStyles";
 import { Box } from "@mantine/core";
+import Clickable from "../Shared/Clickable";
+import ListMenu from "../Shared/ListMenu";
 
 
 const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
 
     const classes = styles();
 
-    const [display, setDisplay] = useState('none');
-
-    const toggleDisplay = () => {
-        setDisplay(display === "none" ? "block" : "none");
-    }
-
-    const handleClick = (option) => {
-        handleSelect(option);
-        setDisplay('none');
-    }
-
-    const MenuList = ({ options, display }) => (
-        <div className={classes.menuList} style={{ display }}>
-            {options.map((option, index) =>
-                <div
-                    key={index}
-                    onClick={() => handleClick(option)}
-                    className="clickable"
-                    alt={"option"}>
-                    <p>{option}</p>
-                </div>
-            )}
-        </div>
-    );
-
-    const MenuToggle = ({ toggleDisplay, option }) => (
-        <div onClick={toggleDisplay} className={classes.menu}>
-            <p className="selected-option">{option.concat(" ").concat(textContent)}</p>
-        </div>
-    );
-
-    const Overlay = ({ display, setDisplay }) => (
-        <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')} />
-    );
-
     return (
         <Box className={classes.comboWrapper}>
-            <MenuToggle toggleDisplay={toggleDisplay} option={selectedOption} />
-            <Overlay display={display} setDisplay={setDisplay} />
-            <MenuList options={options} display={display} />
+            <ListMenu menuIcon={selectedOption.concat(" ").concat(textContent)}>
+                {options.map((option, index) =>
+                    <Clickable
+                        key={index}
+                        handleClick={() => handleSelect(option)}
+                        alt={"option"}
+                        text={option}
+                    />
+                )}
+            </ListMenu>
         </Box>
     )
 }

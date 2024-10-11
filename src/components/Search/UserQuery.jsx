@@ -1,6 +1,7 @@
 import { Box, LoadingOverlay } from "@mantine/core";
 import UserQueryItem from "../Shared/UserQueryItem";
 import styles from "./styles/userQueryStyles";
+import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
 
 const UserQuery = ({ handleItemClick, fetchUserQuery, userQueryList, style }) => {
 
@@ -13,15 +14,13 @@ const UserQuery = ({ handleItemClick, fetchUserQuery, userQueryList, style }) =>
 
     const RenderResult = () => {
         if (fetchUserQuery.isPending)
-            return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+            return <FullLoadingOverlay />;
         else if (fetchUserQuery.isError) return <h1>{fetchUserQuery.error.message}</h1>;
         return <UserList resultList={userQueryList} />;
     }
 
     return (
-        <Box className={classes.resultContainer} style={style} >
-            <RenderResult />
-        </Box>
+        <Box className={classes.resultContainer} style={style} ><RenderResult /></Box>
     )
 };
 

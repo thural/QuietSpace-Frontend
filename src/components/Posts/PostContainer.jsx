@@ -7,12 +7,13 @@ import { toUpperFirstChar } from "../../utils/stringUtils";
 import UserAvatar from "../Shared/UserAvatar";
 import LightBtn from "../Shared/LightBtn ";
 import { usePostContainer } from "./hooks/usePostContainer";
+import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
 
 function PostContainer() {
     const classes = styles();
     const { user, createPostView, posts, showCreatePostForm } = usePostContainer();
 
-    if (posts.isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if (posts.isLoading) return <FullLoadingOverlay />;
     if (posts.isError) return <h1>{posts.error.message}</h1>;
 
     const CreatePostSection = () => (

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styles from "./styles/navbarStyles";
 import Menu from "./Menu";
 import {

@@ -19,6 +19,7 @@ const styles = createUseStyles({
             marginTop: '1rem',
             fontWeight: '500',
             marginLeft: 'auto',
+            alignSelf: 'baseline',
             borderRadius: '.75rem',
             backgroundColor: 'rgb(250, 250, 250)'
         },
@@ -26,7 +27,6 @@ const styles = createUseStyles({
 
     queryItem: {
         width: '100%',
-        backgroundColor: 'rgb(250, 250, 250)',
         boxSizing: 'border-box',
         '& .username': {
             margin: '0.25rem 0.5rem',

@@ -1,10 +1,11 @@
 import React from "react";
-import { LoadingOverlay, Text, Title } from "@mantine/core";
+import { Text, Title } from "@mantine/core";
 import styles from "./styles/signupFormStyles";
 import TextInput from "../Shared/TextInput";
 import PassInput from "../Shared/PassInput";
 import FillGradientBtn from "../Shared/FillGradientBtn";
 import FillOutlineBtn from "../Shared/FillOutlineBtn";
+import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
 import { useSignupForm } from "./hooks/useSignupForm";
 
 const SignupForm = ({ setAuthState, authState }) => {
@@ -19,7 +20,7 @@ const SignupForm = ({ setAuthState, authState }) => {
         handleLoginClick
     } = useSignupForm(setAuthState, authState);
 
-    if (isLoading) return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+    if (isLoading) return <FullLoadingOverlay />;
     if (isError) return <h1>{`could not authenticate! 🔥 error: ${error}`}</h1>;
 
     return (

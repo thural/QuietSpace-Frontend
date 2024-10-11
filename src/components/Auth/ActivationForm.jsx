@@ -1,9 +1,9 @@
+import { PinInput, Text, Title } from "@mantine/core";
 import React from "react";
-import styles from "./styles/activationFormStyles";
 import FillGradientBtn from "../Shared/FillGradientBtn";
 import FillOutlineBtn from "../Shared/FillOutlineBtn";
-import { PinInput, Text, Title } from "@mantine/core";
 import { useActivationForm } from "./hooks/useActivationForm";
+import styles from "./styles/activationFormStyles";
 
 const Timer = ({ tokenTimer }) => (
     <div className="timer">
@@ -14,7 +14,9 @@ const Timer = ({ tokenTimer }) => (
 );
 
 const ActivationForm = ({ setAuthState, authState }) => {
+
     const classes = styles();
+
     const {
         formData,
         tokenTimer,

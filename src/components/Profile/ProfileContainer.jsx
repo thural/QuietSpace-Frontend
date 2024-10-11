@@ -1,13 +1,13 @@
 import React from "react";
-import styles from "./styles/profileContainerStyles";
 import Connections from "./Connections";
+import styles from "./styles/profileContainerStyles";
 
 import { Avatar, Box, Button, Container, Flex, Tabs, Text } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
-import { viewStore } from "../../hooks/zustand";
-import { useQueryClient } from "@tanstack/react-query";
 import { useGetFollowers, useGetFollowings } from "../../hooks/useUserData";
+import { viewStore } from "../../hooks/zustand";
 import { toUpperFirstChar } from "../../utils/stringUtils";
 
 
@@ -59,8 +59,18 @@ function ProfileContainer() {
         <Flex className={classes.followSection}>
             <Text style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{0} posts</Text>
             <Flex style={{ justifyContent: "space-around", gap: "2rem" }}>
-                <Text ta="center" style={{ cursor: "pointer" }} fw="400" onClick={toggleFollowings}>{followings?.length} followings</Text>
-                <Text ta="center" style={{ cursor: "pointer" }} fw="400" onClick={toggleFollowers}>{followers?.length} followers</Text>
+                <Text
+                    ta="center"
+                    style={{ cursor: "pointer" }}
+                    fw="400" onClick={toggleFollowings}>
+                    {followings?.length} followings
+                </Text>
+                <Text
+                    ta="center"
+                    style={{ cursor: "pointer" }}
+                    fw="400" onClick={toggleFollowers}>
+                    {followers?.length} followers
+                </Text>
             </Flex>
             <Box className="signout-icon" onClick={handleSignout}><PiSignOut /></Box>
         </Flex>
@@ -79,7 +89,7 @@ function ProfileContainer() {
         </Link>
     );
 
-    const IdentitySection = () => (
+    const UserDetailsSection = () => (
         <Flex className={classes.identitySection}>
             <Box className="profileName"><Text fw={700}>{signedUser.username}</Text></Box>
             <Avatar color="black" size="4.8rem" radius="10rem">{toUpperFirstChar(signedUser.username)}</Avatar>
@@ -89,10 +99,10 @@ function ProfileContainer() {
 
     return (
         <Container size="600px" className={classes.container}>
-            <IdentitySection />
+            <UserDetailsSection />
             <FollowSection />
-            {viewState.followings && <Connections userList={followings} title="followings" />}
-            {viewState.followers && <Connections userList={followers} title="followers" />}
+            {viewState.followings && <Connections userFetch={followings} title="followings" />}
+            {viewState.followers && <Connections userFetch={followers} title="followers" />}
             <EditSection />
             <ProfileTabs />
         </Container>
