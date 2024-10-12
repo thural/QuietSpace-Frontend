@@ -1,7 +1,7 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
-  login: {
+  wrapper: {
     gap: '0.5rem',
     color: 'black',
     display: 'flex',
@@ -14,6 +14,8 @@ const styles = createUseStyles({
     backgroundColor: 'white',
     '& .button-custom': {
       color: 'white',
+      fontSize: 'medium',
+      marginTop: '.25rem',
       marginLeft: 'auto',
       width: 'fit-content',
       border: '1px solid black',
@@ -24,16 +26,13 @@ const styles = createUseStyles({
       borderRadius: '1rem',
       backgroundColor: 'black'
     },
-    '& .button': {
-      fontSize: 'medium'
-    },
     '& form': {
       gap: '1rem',
-      display: 'flex',
-      flexFlow: 'column nowrap',
       margin: '1rem 0',
+      display: 'flex',
+      flexFlow: 'column nowrap'
     },
-    '& .input': {
+    '& .input-box': {
       display: 'flex',
       flexFlow: 'column nowrap',
       gap: '0.5rem',
@@ -57,17 +56,12 @@ const styles = createUseStyles({
     '& h3': {
       marginBottom: '0'
     },
-    '& .signup-prompt': {
+    '& .prompt': {
+      marginTop: '.5rem',
       fontWeight: '500',
       fontSize: '1.1rem'
     }
   },
-  '@media (max-width: 630px)': {
-    login: {
-      marginBottom: '10rem'
-    },
-  },
 });
-
 
 export default styles
