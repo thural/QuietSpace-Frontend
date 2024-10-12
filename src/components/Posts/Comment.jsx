@@ -1,12 +1,14 @@
 import React from "react";
-import styles from "./styles/commentStyles";
-import emoji from "react-easy-emoji";
-import ReplyForm from "./ReplyForm";
-import { Box, Flex } from "@mantine/core";
 import { toUpperFirstChar } from "../../utils/stringUtils";
-import useComment from "./hooks/useComment";
+import BoxStyled from "../Shared/BoxStyled";
 import Conditional from "../Shared/Conditional";
+import EmojiText from "../Shared/EmojiText";
+import FlexStyled from "../Shared/FlexStyled";
+import Typography from "../Shared/Typography";
 import UserAvatar from "../Shared/UserAvatar";
+import useComment from "./hooks/useComment";
+import ReplyForm from "./ReplyForm";
+import styles from "./styles/commentStyles";
 
 const Comment = ({ comment }) => {
     const classes = styles();
@@ -20,38 +22,34 @@ const Comment = ({ comment }) => {
         isLiked,
     } = useComment(comment);
 
-    const EmojiText = ({ text }) => {
-        return emoji(text).map((element, index) => (
-            <p key={index}>{element}</p>
-        ))
-    }
+
 
     const CommentElem = ({ comment }) => (
-        <Flex className={classes.commentElement}>
-            <Box key={comment.id} className={classes.textBody}>
+        <FlexStyled className={classes.commentElement}>
+            <BoxStyled key={comment.id} className={classes.textBody}>
                 <EmojiText text={comment.text} />
-            </Box>
-            <Box className={classes.commentOptions}>
-                <p className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</p>
-                <p className="comment-reply" onClick={handleCommentReply}>reply</p>
-                <p className="comment-reply-count">{comment.replyCount}</p>
+            </BoxStyled>
+            <BoxStyled className={classes.commentOptions}>
+                <Typography className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</Typography>
+                <Typography className="comment-reply" onClick={handleCommentReply}>reply</Typography>
+                <Typography className="comment-reply-count">{comment.replyCount}</Typography>
                 <Conditional isEnabled={comment.username === user.username}>
-                    <p className="comment-delete" onClick={handleDeleteComment}>delete</p>
+                    <Typography className="comment-delete" onClick={handleDeleteComment}>delete</Typography>
                 </Conditional>
-            </Box>
+            </BoxStyled>
             <Conditional isEnabled={replyFormView} >
                 <ReplyForm postId={comment.postId} parentId={comment.id} toggleView={setReplyFormView} />
             </Conditional>
-        </Flex>
+        </FlexStyled>
     );
 
     return (
-        <Box className={classes.container}>
-            <Flex className={classes.mainElement}>
+        <BoxStyled className={classes.container}>
+            <FlexStyled className={classes.mainElement}>
                 <UserAvatar size="1.75rem" chars={toUpperFirstChar(comment.username)} />
                 <CommentElem comment={comment} />
-            </Flex>
-        </Box>
+            </FlexStyled>
+        </BoxStyled>
     );
 };
 

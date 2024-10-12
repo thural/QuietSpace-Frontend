@@ -1,10 +1,8 @@
 import React from "react";
-import NotificationCard from "../Shared/NotificationCard";
 import { NotificationType } from "../../utils/enumClasses";
+import NotificationCard from "../Shared/NotificationCard";
 
 const CommentNotification = ({ notification }) => {
-
-
 
     const handleClick = (event) => {
         event.preventDefault();
@@ -17,7 +15,6 @@ const CommentNotification = ({ notification }) => {
         if (type === NotificationType.COMMENT_REPLY.name)
             return "replied your comment";
     }
-
 
 
     return (

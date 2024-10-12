@@ -1,7 +1,9 @@
-import { Box, Center, Title } from "@mantine/core";
+import { Center } from "@mantine/core";
 import React, { useState } from "react";
 
 import Overlay from "../Overlay/Overlay";
+import BoxStyled from "../Shared/BoxStyled";
+import Typography from "../Shared/Typography";
 import SearchBar from "./SearchBar";
 import styles from "./styles/searchbarStyles";
 import UserList from "./UserList";
@@ -44,15 +46,15 @@ function Connections({ userFetch, title }) {
     return (
         <>
             <Overlay closable={{ followers: false }} />
-            <Box className={classes.container} >
-                <Center><Title order={3}>{title}</Title></Center>
+            <BoxStyled className={classes.container} >
+                <Center><Typography type="h3">{title}</Typography></Center>
                 <SearchBar
                     handleInputBlur={handleInputBlur}
                     handleInputChange={handleInputChange}
                     handleInputFocus={handleInputFocus}
                 />
                 <UserList userFetch={userFetch} queryResult={queryResult} handleItemClick={handleItemClick} />
-            </Box>
+            </BoxStyled>
         </>
     )
 }

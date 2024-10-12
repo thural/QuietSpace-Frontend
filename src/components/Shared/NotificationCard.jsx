@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import styles from "./styles/notificationCardStyles";
 
-import UserAvatar from "./UserAvatar";
+import { Text, Title } from "@mantine/core";
 import useWasSeen from "../../hooks/useWasSeen";
-import { Box, Flex, Text, Title } from "@mantine/core";
-import { toUpperFirstChar } from "../../utils/stringUtils";
 import { useNotificationStore } from "../../hooks/zustand";
+import { toUpperFirstChar } from "../../utils/stringUtils";
+import BoxStyled from "./BoxStyled";
+import FlexStyled from "./FlexStyled";
+import UserAvatar from "./UserAvatar";
 
 const NotificationCard = ({ notification, onClick, children, text }) => {
 
@@ -26,14 +28,14 @@ const NotificationCard = ({ notification, onClick, children, text }) => {
 
 
     return (
-        <Flex ref={ref} className={classes.notificationCard} onClick={onClick}>
+        <FlexStyled ref={ref} className={classes.notificationCard} onClick={onClick}>
             <UserAvatar chars={toUpperFirstChar(username)} />
-            <Box className={classes.notificationItem}>
+            <BoxStyled className={classes.notificationItem}>
                 <Title order={5} className="username">{username}</Title>
                 <Text size="1rem" lineClamp={5} className="message">{text}</Text>
-            </Box>
+            </BoxStyled>
             {children}
-        </Flex>
+        </FlexStyled>
     )
 }
 

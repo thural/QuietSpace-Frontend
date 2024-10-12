@@ -1,7 +1,8 @@
 import React from "react";
-import styles from "./styles/messageStyles";
-import useMessage from "./hooks/useMessage";
+import BoxStyled from "../Shared/BoxStyled";
 import Conditional from "../Shared/Conditional";
+import useMessage from "./hooks/useMessage";
+import styles from "./styles/messageStyles";
 
 const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnected }) => {
 
@@ -19,15 +20,16 @@ const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnect
     } = useMessage(message, setMessageSeen, isClientConnected);
 
     return (
-        <div id={message.id} ref={ref} className={classes.message}
+        <BoxStyled id={message.id} ref={ref} className={classes.message}
             style={appliedStyle}
             onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}>
+            onMouseOut={handleMouseOut}
+        >
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
-                <div className={classes.delete} onClick={handleDeleteMessage}>delete</div>
+                <BoxStyled className={classes.delete} onClick={handleDeleteMessage}>delete</BoxStyled>
             </Conditional>
-            <div className={classes.text}><p>{message.text}</p></div>
-        </div>
+            <BoxStyled className={classes.text}><p>{message.text}</p></BoxStyled>
+        </BoxStyled>
     );
 };
 

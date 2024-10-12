@@ -1,9 +1,10 @@
+import { Container, Tabs, Text } from "@mantine/core";
 import React, { useState } from "react";
-import { Container, Tabs, Text, Title } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 
-import styles from "./styles/settingContainerStyles";
 import { useLocation, useNavigate } from "react-router-dom";
+import Typography from "../Shared/Typography";
+import styles from "./styles/settingContainerStyles";
 
 function SettingsContainer() {
 
@@ -22,7 +23,7 @@ function SettingsContainer() {
     return (
         <Container size="600px" className={classes.container}>
 
-            <Title>settings</Title>
+            <Typography type="h1">settings</Typography>
 
             <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile" style={{ margin: '1rem 0' }}>
 

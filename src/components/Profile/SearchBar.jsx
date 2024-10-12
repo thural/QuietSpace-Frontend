@@ -1,6 +1,7 @@
-import { Box, Input } from "@mantine/core";
 import { useRef } from "react";
 import { PiMagnifyingGlassBold } from "react-icons/pi";
+import BoxStyled from "../Shared/BoxStyled";
+import InputStyled from "../Shared/InputStyled";
 import styles from "./styles/searchbarStyles";
 
 
@@ -10,9 +11,9 @@ const SearchBar = ({ handleInputBlur, handleInputChange, handleInputFocus }) => 
     const queryInputRef = useRef();
 
     return (
-        <Box className={classes.searchbar} >
+        <BoxStyled className={classes.searchbar} >
             <PiMagnifyingGlassBold className={classes.searchIcon} />
-            <Input
+            <InputStyled
                 variant="unstyled"
                 className={classes.searchInput}
                 placeholder="search a topic..."
@@ -21,7 +22,7 @@ const SearchBar = ({ handleInputBlur, handleInputChange, handleInputFocus }) => 
                 onBlur={handleInputBlur}
                 ref={queryInputRef}
             />
-        </Box>
+        </BoxStyled>
     )
 }
 

@@ -1,6 +1,9 @@
-import { Anchor, Box, Flex, Title } from "@mantine/core";
 import React from "react";
-import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
+import AnchorStyled from "../Shared/AnchorStyled";
+import BoxStyled from "../Shared/BoxStyled";
+import FlexStyled from "../Shared/FlexStyled";
+import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
+import Typography from "../Shared/Typography";
 import QueryInput from "./QueryInput";
 import QueryItem from "./QueryItem";
 import useQueryContainer from "./hooks/useQueryContainer";
@@ -26,10 +29,10 @@ const QueryContainer = () => {
 
     const RecentQueries = () => {
         return (
-            <Flex className={classes.recentQueries}>
-                <Title order={4}>recent</Title>
-                <Anchor fw={400} fz="1rem" href="" target="_blank" underline="never">clear all</Anchor>
-            </Flex>
+            <FlexStyled className={classes.recentQueries}>
+                <Typography type="h4">recent</Typography>
+                <AnchorStyled label="clear all" />
+            </FlexStyled>
         )
     }
 
@@ -45,20 +48,20 @@ const QueryContainer = () => {
         else return <ResultList queryResult={queryResult} />;
     }
 
-    const ResultContainer = ({ queryResult }) => {
+    const ResultContainer = () => {
         return (
-            <Box className={classes.resultContainer} style={appliedStyle}>
+            <BoxStyled className={classes.resultContainer} style={appliedStyle}>
                 <RenderResult />
-            </Box>
+            </BoxStyled>
         )
     }
 
 
     return (
-        <Box className={classes.searchContainer}>
+        <BoxStyled className={classes.searchContainer}>
             <QueryInput {...inputProps} />
             <ResultContainer queryResult={queryResult} />
-        </Box>
+        </BoxStyled>
     )
 }
 

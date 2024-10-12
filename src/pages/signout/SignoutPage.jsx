@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import useJwtAuth from "../../hooks/useJwtAuth";
-import FullLoadingOverlay from "../../components/Shared/FillLoadingOverlay";
-import { useAuthStore } from "../../hooks/zustand";
-import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import FullLoadingOverlay from "../../components/Shared/FullLoadingOverlay";
+import Typography from "../../components/Shared/Typography";
+import useJwtAuth from "../../hooks/useJwtAuth";
+import { useAuthStore } from "../../hooks/zustand";
 
 
 const SignoutPage = () => {
@@ -43,7 +44,7 @@ const SignoutPage = () => {
     useEffect(signout, []);
 
 
-    if (isError) return <h1>{`error in signout! 🔥 error: ${error}`}</h1>
+    if (isError) return <Typography type="h1">{`error in signout! 🔥 error: ${error}`}</Typography>
     if (isLoading) return <FullLoadingOverlay />;
 }
 

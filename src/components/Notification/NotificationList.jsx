@@ -1,14 +1,14 @@
-import { Text } from "@mantine/core";
 import React from "react";
-import FollowNotification from "./FollowNotification";
 import { NotificationType } from "../../utils/enumClasses";
-import PostNotification from "./PostNotification";
+import Typography from "../Shared/Typography";
 import CommentNotification from "./CommentNotification";
+import FollowNotification from "./FollowNotification";
+import PostNotification from "./PostNotification";
 
 
 const NotificationList = ({ notifications }) => {
 
-    if (!notifications.length) return <Text ta="center">You have no Notifications yet</Text>
+    if (!notifications.length) return <Typography ta="center">You have no Notifications yet</Typography>
 
     const getNotificationCard = (notification) => {
         const { type, id } = notification
@@ -44,13 +44,7 @@ const NotificationList = ({ notifications }) => {
         }
     }
 
-    return (
-        <>
-            {
-                notifications.map(notification => getNotificationCard(notification))
-            }
-        </>
-    )
+    return notifications.map(notification => getNotificationCard(notification));
 }
 
 export default NotificationList

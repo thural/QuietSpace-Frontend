@@ -1,7 +1,7 @@
-import { Box, LoadingOverlay } from "@mantine/core";
+import BoxStyled from "../Shared/BoxStyled";
+import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import UserQueryItem from "../Shared/UserQueryItem";
 import styles from "./styles/userQueryStyles";
-import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
 
 const UserQuery = ({ handleItemClick, fetchUserQuery, userQueryList, style }) => {
 
@@ -20,7 +20,7 @@ const UserQuery = ({ handleItemClick, fetchUserQuery, userQueryList, style }) =>
     }
 
     return (
-        <Box className={classes.resultContainer} style={style} ><RenderResult /></Box>
+        <BoxStyled className={classes.resultContainer} style={style} ><RenderResult /></BoxStyled>
     )
 };
 

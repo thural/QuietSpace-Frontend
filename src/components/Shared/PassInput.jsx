@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 
 
-const PassInput = ({ name, value, handleChange }) => {
+const PassInput = ({ name, value, handleChange, ...props }) => {
     const inputRef = useRef(null);
 
     function handleClick() {
@@ -17,6 +17,7 @@ const PassInput = ({ name, value, handleChange }) => {
             onChange={handleChange}
             onClick={handleClick}
             ref={inputRef}
+            {...props}
         />
     )
 };

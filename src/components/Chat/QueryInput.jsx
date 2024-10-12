@@ -1,4 +1,6 @@
 import React, { useRef } from "react";
+import FormStyled from "../Shared/Form";
+import InputStyled from "../Shared/InputStyled";
 import styles from "./styles/queryContainerStyles";
 
 
@@ -17,10 +19,10 @@ const QueryInput = ({
     const classes = styles();
 
     return (
-        <form className={classes.searchInput}>
-            <input ref={searchInput}
+        <FormStyled className={classes.searchInput}>
+            <InputStyled ref={searchInput}
                 onFocus={handleInputFocus}
-                // onBlur={handleInputBlur}
+                onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 className='input'
                 type='text'
@@ -29,7 +31,7 @@ const QueryInput = ({
                 maxLength="128"
                 onChange={handleInputChange}
             />
-        </form>
+        </FormStyled>
     )
 }
 

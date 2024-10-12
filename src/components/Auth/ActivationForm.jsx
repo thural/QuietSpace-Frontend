@@ -1,16 +1,18 @@
 import { PinInput, Text, Title } from "@mantine/core";
 import React from "react";
+import BoxStyled from "../Shared/BoxStyled";
 import GradientButton from "../Shared/buttons/GradientButton";
 import OutlineButton from "../Shared/buttons/OutlineButton";
+import FormStyled from "../Shared/Form";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
 
 const Timer = ({ tokenTimer }) => (
-    <div className="timer">
+    <FormStyled className="timer">
         {!tokenTimer.hasTimeOut ? <Text>{"code will be expired in:"}</Text>
             : <Text>{"code has expired, get a new code"}</Text>}
         {!tokenTimer.hasTimeOut && tokenTimer.component}
-    </div>
+    </FormStyled>
 );
 
 const ActivationForm = ({ setAuthState, authState }) => {
@@ -26,11 +28,11 @@ const ActivationForm = ({ setAuthState, authState }) => {
     } = useActivationForm(setAuthState, authState);
 
     return (
-        <div className={classes.activation}>
+        <BoxStyled className={classes.activation}>
             <Title order={2}>Account Activation</Title>
             <Text size="md">{"enter code sent to your email: "}</Text>
             <Text size="md">{authState.formData.email}</Text>
-            <form className='activation-form'>
+            <FormStyled className='activation-form'>
                 <PinInput
                     length={6}
                     name="activationCode"
@@ -40,10 +42,10 @@ const ActivationForm = ({ setAuthState, authState }) => {
                 />
                 <Timer tokenTimer={tokenTimer} />
                 <GradientButton onClick={handleSubmit} />
-            </form>
+            </FormStyled>
             <Text size="md">haven't received a code?</Text>
             <OutlineButton onClick={handleResendCode} name="resend code" />
-        </div>
+        </BoxStyled>
     );
 };
 

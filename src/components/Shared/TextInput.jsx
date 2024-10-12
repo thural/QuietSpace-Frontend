@@ -8,7 +8,8 @@ const TextInput = ({
     placeholder = "",
     maxLength = "999",
     minLength = "0",
-    hidden = false
+    hidden = false,
+    ...props
 }) => {
 
     const inputRef = useRef(null);
@@ -29,6 +30,7 @@ const TextInput = ({
             onClick={handleClick}
             hidden={hidden}
             ref={inputRef}
+            {...props}
         />
     )
 };

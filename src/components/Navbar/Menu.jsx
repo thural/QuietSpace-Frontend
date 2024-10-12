@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import styles from "./styles/menuStyles";
+import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
 import { RiMenu3Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
+import BoxStyled from "../Shared/BoxStyled";
 import Clickable from "../Shared/Clickable";
+import styles from "./styles/menuStyles";
 
 
 const Menu = () => {
@@ -19,9 +20,9 @@ const Menu = () => {
 
     return (
         <>
-            <div className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}><RiMenu3Fill /></div>
-            <div className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></div>
-            <div onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
+            <BoxStyled className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}><RiMenu3Fill /></BoxStyled>
+            <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></BoxStyled>
+            <BoxStyled onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
                 <Link to="/saved">
                     <Clickable text="Saved" >
                         <PiBookmarkSimple />
@@ -42,7 +43,7 @@ const Menu = () => {
                         <PiSignOut />
                     </Clickable>
                 </Link>
-            </div>
+            </BoxStyled>
         </>
     )
 }

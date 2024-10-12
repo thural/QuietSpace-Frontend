@@ -1,7 +1,9 @@
+import { Progress } from "@mantine/core";
 import React from "react";
-import styles from "./styles/pollStyles";
-import { Flex, Progress, Text } from "@mantine/core";
+import FlexStyled from "../Shared/FlexStyled";
+import Typography from "../Shared/Typography";
 import usePoll from "./hooks/usePoll";
+import styles from "./styles/pollStyles";
 
 const Poll = ({ pollData, postId }) => {
     const classes = styles();
@@ -14,27 +16,27 @@ const Poll = ({ pollData, postId }) => {
     } = usePoll(pollData, postId);
 
     const PollOptionList = () => {
-        return pollData.options.map((option, index) => (
-            <Flex key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
-                <Text className={classes.optionDesc}>{option.label}</Text>
+        return pollData?.options.map((option, index) => (
+            <FlexStyled key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
+                <Typography className={classes.optionDesc}>{option.label}</Typography>
                 <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
-                <Text className={classes.optionPerc}>{getText(option)}</Text>
-            </Flex>
+                <Typography className={classes.optionPerc}>{getText(option)}</Typography>
+            </FlexStyled>
         ));
     };
 
     const PollStatus = () => (
-        <Flex className={classes.pollStatus}>
-            {!pollData.isEnded && <Text className="votes">{parsedVoteCounts} votes</Text>}
-            {pollData.isEnded && <Text className="votes">poll has ended</Text>}
-        </Flex>
+        <FlexStyled className={classes.pollStatus}>
+            {!pollData?.isEnded && <Typography className="votes">{parsedVoteCounts} votes</Typography>}
+            {pollData?.isEnded && <Typography className="votes">poll has ended</Typography>}
+        </FlexStyled>
     );
 
     return (
-        <Flex className={classes.pollContainer}>
+        <FlexStyled className={classes.pollContainer}>
             <PollOptionList />
             <PollStatus />
-        </Flex>
+        </FlexStyled>
     );
 };
 

@@ -1,31 +1,31 @@
 import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/Navbar/Navbar";
-import PostPage from "./pages/feed/PostPage";
 import AuthPage from "./pages/auth/AuthPage";
 import ChatPage from "./pages/chat/ChatPage";
+import PostPage from "./pages/feed/PostPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
 import './App.css';
 
-import ProfilePage from "./pages/profile/ProfilePage";
-import NotificationPage from "./pages/notification/NotifiactionPage";
+import { useEffect } from "react";
+import ActivationForm from "./components/Auth/ActivationForm";
+import FullLoadingOverlay from "./components/Shared/FullLoadingOverlay";
+import useChatSocket from "./hooks/useChatSocket";
+import useJwtAuth from "./hooks/useJwtAuth";
+import { useGetNotifications } from "./hooks/useNotificationData";
+import useNotificationSocket from "./hooks/useNotificationSocket";
+import { useStompClient } from "./hooks/useStompClient";
+import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
+import { useAuthStore } from "./hooks/zustand";
 import AllNotifications from "./pages/notification/AllNotifications";
-import RequestNotifications from "./pages/notification/RequestNotifications";
+import NotificationPage from "./pages/notification/NotifiactionPage";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
 import RepostNotifications from "./pages/notification/RepostNotifications";
+import RequestNotifications from "./pages/notification/RequestNotifications";
+import ProfilePage from "./pages/profile/ProfilePage";
 import SettingsPage from "./pages/settings/SettingsPage";
 import SignoutPage from "./pages/signout/SignoutPage";
-import ActivationForm from "./components/Auth/ActivationForm";
-import useJwtAuth from "./hooks/useJwtAuth";
-import useNotificationSocket from "./hooks/useNotificationSocket";
-import useChatSocket from "./hooks/useChatSocket";
-import FullLoadingOverlay from "./components/Shared/FillLoadingOverlay";
-import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
-import { useEffect } from "react";
-import { useAuthStore } from "./hooks/zustand";
-import { useGetNotifications } from "./hooks/useNotificationData";
-import { useStompClient } from "./hooks/useStompClient";
 
 const App = () => {
 

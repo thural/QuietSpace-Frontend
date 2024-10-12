@@ -1,9 +1,10 @@
-import React from "react";
-import Comment from "./Comment";
-import styles from "./styles/commentSectionStyles";
 import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import BoxStyled from "../Shared/BoxStyled";
+import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 import RepliedComment from "./RepliedComment";
+import styles from "./styles/commentSectionStyles";
 
 
 const CommentSection = ({ postId }) => {
@@ -26,10 +27,10 @@ const CommentSection = ({ postId }) => {
 
 
     return (
-        <div className={classes.commentSection}>
+        <BoxStyled className={classes.commentSection}>
             <CommentForm postId={postId} />
             <CommentList comments={comments} />
-        </div>
+        </BoxStyled>
     )
 }
 

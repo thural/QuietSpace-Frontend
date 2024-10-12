@@ -2,13 +2,19 @@ import React from "react";
 import Connections from "./Connections";
 import styles from "./styles/profileContainerStyles";
 
-import { Avatar, Box, Button, Container, Flex, Tabs, Text } from "@mantine/core";
+import { Container, Tabs } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetFollowers, useGetFollowings } from "../../hooks/useUserData";
 import { viewStore } from "../../hooks/zustand";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import BoxStyled from "../Shared/BoxStyled";
+import OutlineButton from "../Shared/buttons/OutlineButton";
+import Conditional from "../Shared/Conditional";
+import FlexStyled from "../Shared/FlexStyled";
+import Typography from "../Shared/Typography";
+import UserAvatar from "../Shared/UserAvatar";
 
 
 function ProfileContainer() {
@@ -56,44 +62,44 @@ function ProfileContainer() {
     );
 
     const FollowSection = () => (
-        <Flex className={classes.followSection}>
-            <Text style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{0} posts</Text>
-            <Flex style={{ justifyContent: "space-around", gap: "2rem" }}>
-                <Text
+        <FlexStyled className={classes.followSection}>
+            <Typography style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{0} posts</Typography>
+            <FlexStyled style={{ justifyContent: "space-around", gap: "2rem" }}>
+                <Typography
                     ta="center"
                     style={{ cursor: "pointer" }}
                     fw="400" onClick={toggleFollowings}>
                     {followings?.length} followings
-                </Text>
-                <Text
+                </Typography>
+                <Typography
                     ta="center"
                     style={{ cursor: "pointer" }}
                     fw="400" onClick={toggleFollowers}>
                     {followers?.length} followers
-                </Text>
-            </Flex>
-            <Box className="signout-icon" onClick={handleSignout}><PiSignOut /></Box>
-        </Flex>
+                </Typography>
+            </FlexStyled>
+            <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
+        </FlexStyled>
     );
 
     const EditSection = () => (
         <Link to="/settings" >
-            <Flex className={classes.profileEditSection}>
-                <Button
+            <FlexStyled className={classes.profileEditSection}>
+                <OutlineButton
                     variant="outline"
                     color="rgba(32, 32, 32, 1)"
                     radius="md"
-                    fullWidth>Edit Profile
-                </Button>
-            </Flex>
+                    fullWidth
+                    name="Edit Profile" />
+            </FlexStyled>
         </Link>
     );
 
     const UserDetailsSection = () => (
-        <Flex className={classes.identitySection}>
-            <Box className="profileName"><Text fw={700}>{signedUser.username}</Text></Box>
-            <Avatar color="black" size="4.8rem" radius="10rem">{toUpperFirstChar(signedUser.username)}</Avatar>
-        </Flex>
+        <FlexStyled className={classes.identitySection}>
+            <BoxStyled className="profileName"><Typography fw={700}>{signedUser.username}</Typography></BoxStyled>
+            <UserAvatar size="4.8rem" radius="10rem">{toUpperFirstChar(signedUser.username)}</UserAvatar>
+        </FlexStyled>
     );
 
 
@@ -101,8 +107,12 @@ function ProfileContainer() {
         <Container size="600px" className={classes.container}>
             <UserDetailsSection />
             <FollowSection />
-            {viewState.followings && <Connections userFetch={followings} title="followings" />}
-            {viewState.followers && <Connections userFetch={followers} title="followers" />}
+            <Conditional isEnabled={viewState.followings}>
+                <Connections userFetch={followings} title="followings" />
+            </Conditional>
+            <Conditional isEnabled={viewState.followers}>
+                <Connections userFetch={followers} title="followers" />
+            </Conditional>
             <EditSection />
             <ProfileTabs />
         </Container>

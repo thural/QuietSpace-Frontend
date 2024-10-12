@@ -7,7 +7,7 @@ const usePoll = (pollData, postId) => {
     const user = queryClient.getQueryData(["user"]);
     const postVote = useVotePoll();
 
-    const parsedVoteCounts = parseCount(pollData.voteCount);
+    const parsedVoteCounts = parseCount(pollData?.voteCount);
 
     const getStyle = (option) => {
         if (pollData.votedOption !== "not voted")

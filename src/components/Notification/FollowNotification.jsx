@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggleFollow } from "../../hooks/useUserData";
 import NotificationCard from "../Shared/NotificationCard";
+import LightButton from "../Shared/buttons/LightButton";
 
 const FollowNotification = ({ notification }) => {
 
@@ -33,7 +34,7 @@ const FollowNotification = ({ notification }) => {
 
     return (
         <NotificationCard notification={notification} onClick={handleClick} text={"followed you"}>
-            <button type="button" disabled={false} onClick={handleFollowToggle}>{followingStatus()}</button>
+            <LightButton disabled={false} onClick={handleFollowToggle}>{followingStatus()}</LightButton>
         </NotificationCard>
     )
 }

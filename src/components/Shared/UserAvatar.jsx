@@ -5,14 +5,17 @@ const UserAvatar = ({
     color = "black",
     radius = "1rem",
     src = "",
-    chars = "U"
+    chars = "U",
+    ...props
 }) => {
     return (
         <Avatar
             color={color}
             size={size}
             radius={radius}
-            src={src}>
+            src={src}
+            {...props}
+        >
             {chars}
         </Avatar>
     )

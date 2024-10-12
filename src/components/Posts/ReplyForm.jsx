@@ -1,10 +1,11 @@
 import React from "react";
-import styles from "./styles/commentReplyStyles";
-import InputEmoji from "react-input-emoji";
-import { Flex } from "@mantine/core";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import EmojiInput from "../Shared/EmojiInput";
+import FlexStyled from "../Shared/FlexStyled";
+import FormStyled from "../Shared/Form";
 import UserAvatar from "../Shared/UserAvatar";
 import useReplyForm from "./hooks/useReplyForm";
+import styles from "./styles/commentReplyStyles";
 
 const ReplyForm = ({ postId, parentId, toggleView }) => {
     const classes = styles();
@@ -19,10 +20,10 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
     } = useReplyForm(postId, parentId, toggleView);
 
     return (
-        <Flex className={classes.container}>
+        <FlexStyled className={classes.container}>
             <UserAvatar size="1.5rem" chars={toUpperFirstChar(user.username)} />
-            <form className={classes.inputWrapper}>
-                <InputEmoji
+            <FormStyled className={classes.inputWrapper}>
+                <EmojiInput
                     className={classes.commentInput}
                     value={commentInput.text}
                     onChange={handleEmojiInput}
@@ -36,8 +37,8 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
                     placeholder="type a comment"
                     ref={inputRef}
                 />
-            </form>
-        </Flex>
+            </FormStyled>
+        </FlexStyled>
     );
 };
 

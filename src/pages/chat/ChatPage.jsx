@@ -3,7 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import ChatContainer from "../../components/Chat/ChatContainer";
 import MessageContainer from "../../components/Chat/MessageContainer";
-import FullLoadingOverlay from "../../components/Shared/FillLoadingOverlay";
+import FullLoadingOverlay from "../../components/Shared/FullLoadingOverlay";
+import Typography from "../../components/Shared/Typography";
 import { useGetChatsByUserId } from "../../hooks/useChatData";
 import { useChatStore } from "../../hooks/zustand";
 import styles from "./styles/chatPageStyles";
@@ -28,7 +29,7 @@ const ChatPage = () => {
 
 
     if (isLoading) return <FullLoadingOverlay />;
-    if (isError) return <h1>{'Could not fetch chat data! 🔥'}</h1>
+    if (isError) return <Typography type="h1">{'Could not fetch chat data! 🔥'}</Typography>
     if ((!isSuccess || activeChatId == null)) return null;
 
     return (

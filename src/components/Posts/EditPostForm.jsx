@@ -1,7 +1,11 @@
 import React from "react";
-import styles from "./styles/editPostStyles";
 import Overlay from "../Overlay/Overlay";
+import BoxStyled from "../Shared/BoxStyled";
+import FormStyled from "../Shared/Form";
+import Typography from "../Shared/Typography";
+import DarkButton from "../Shared/buttons/DarkButton ";
 import useEditPostForm from "./hooks/useEditPostForm";
+import styles from "./styles/editPostStyles";
 
 const EditPostForm = ({ postId }) => {
   const classes = styles();
@@ -14,9 +18,9 @@ const EditPostForm = ({ postId }) => {
   return (
     <>
       <Overlay closable={{ editPost: false }} />
-      <div className={classes.post}>
-        <h3>edit post</h3>
-        <form>
+      <BoxStyled className={classes.post}>
+        <Typography type="h3">edit post</Typography>
+        <FormStyled>
           <textarea
             className='text input'
             name='text'
@@ -25,9 +29,9 @@ const EditPostForm = ({ postId }) => {
             value={postData["text"]}
             onChange={handleChange}>
           </textarea>
-          <button className="submit-btn" type='button' onClick={handleSubmit}> Submit </button>
-        </form>
-      </div>
+          <DarkButton className="submit-btn" type='button' onClick={handleSubmit} />
+        </FormStyled>
+      </BoxStyled>
     </>
   );
 };

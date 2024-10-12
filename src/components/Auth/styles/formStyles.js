@@ -12,26 +12,6 @@ const styles = createUseStyles({
     boxShadow: 'rgb(0 0 0 / 16%) 0px 0px 32px -8px',
     borderRadius: '1em',
     backgroundColor: 'white',
-    '& .button-custom': {
-      color: 'white',
-      fontSize: 'medium',
-      marginTop: '.25rem',
-      marginLeft: 'auto',
-      width: 'fit-content',
-      border: '1px solid black',
-      padding: '6px 12px',
-      fontSize: '1rem',
-      marginTop: '1rem',
-      fontWeight: '500',
-      borderRadius: '1rem',
-      backgroundColor: 'black'
-    },
-    '& form': {
-      gap: '1rem',
-      margin: '1rem 0',
-      display: 'flex',
-      flexFlow: 'column nowrap'
-    },
     '& .input-box': {
       display: 'flex',
       flexFlow: 'column nowrap',

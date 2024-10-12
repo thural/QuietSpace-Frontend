@@ -1,8 +1,10 @@
-import { Box, Flex } from "@mantine/core";
 import React from "react";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
 import Overlay from "../Overlay/Overlay";
+import BoxStyled from "../Shared/BoxStyled";
 import DarkButton from "../Shared/buttons/DarkButton ";
+import FlexStyled from "../Shared/FlexStyled";
+import FormStyled from "../Shared/Form";
 import TextInput from "../Shared/TextInput";
 import UserAvatar from "../Shared/UserAvatar";
 import ComboMenu from "./ComboMenu";
@@ -26,7 +28,7 @@ const CreatePostForm = () => {
     } = useCreatePostForm();
 
     const ControlSection = () => (
-        <Flex className="control-area">
+        <FlexStyled className="control-area">
             <ComboMenu options={viewAccessOptions}
                 selectedOption={postData.viewAccess}
                 handleSelect={handleViewSelect}
@@ -34,15 +36,15 @@ const CreatePostForm = () => {
             />
             <PiChartBarHorizontalFill className="poll-toggle" onClick={togglePoll} />
             <DarkButton name="post" loading={addPost.isPending} onClick={handleSubmit} />
-        </Flex>
+        </FlexStyled>
     );
 
     return (
-        <Box>
+        <BoxStyled>
             <Overlay closable={{ createPost: false }} />
-            <Flex className={classes.wrapper}>
+            <FlexStyled className={classes.wrapper}>
                 <UserAvatar radius="10rem" chars={avatarPlaceholder} />
-                <form>
+                <FormStyled>
                     <TextInput
                         name="title"
                         minLength="1"
@@ -66,9 +68,9 @@ const CreatePostForm = () => {
                         pollView={pollView}
                     />
                     <ControlSection />
-                </form>
-            </Flex>
-        </Box>
+                </FormStyled>
+            </FlexStyled>
+        </BoxStyled>
     );
 };
 

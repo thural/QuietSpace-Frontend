@@ -1,7 +1,11 @@
-import { Box, Container, Flex, Input } from "@mantine/core";
+import { Container } from "@mantine/core";
 import React from "react";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import BoxStyled from "../Shared/BoxStyled";
+import Conditional from "../Shared/Conditional";
+import FlexStyled from "../Shared/FlexStyled";
 import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
+import InputStyled from "../Shared/InputStyled";
 import UserAvatar from "../Shared/UserAvatar";
 import LightButton from "../Shared/buttons/LightButton";
 import CreatePostForm from "./CreatePostForm";
@@ -17,18 +21,18 @@ function PostContainer() {
     if (posts.isError) return <h1>{posts.error.message}</h1>;
 
     const CreatePostSection = () => (
-        <Box style={{ margin: "1rem 0" }}>
-            <Flex justify="space-between" gap="1rem">
+        <BoxStyled style={{ margin: "1rem 0" }}>
+            <FlexStyled justify="space-between" gap="1rem">
                 <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
-                <Input
+                <InputStyled
                     variant="unstyled"
                     style={{ width: "100%" }}
                     placeholder="start a topic..."
                     onClick={showCreatePostForm}
                 />
                 <LightButton name="post" handleClick={showCreatePostForm} />
-            </Flex>
-        </Box>
+            </FlexStyled>
+        </BoxStyled>
     );
 
     const PostList = () => {
@@ -40,7 +44,9 @@ function PostContainer() {
         <Container className={classes.container} size="600px">
             <CreatePostSection />
             <hr />
-            {createPostView && <CreatePostForm />}
+            <Conditional isEnabled={createPostView}>
+                <CreatePostForm />
+            </Conditional>
             <PostList />
         </Container>
     );

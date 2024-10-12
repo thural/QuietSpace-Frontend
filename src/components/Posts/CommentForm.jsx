@@ -1,10 +1,13 @@
 import React from "react";
-import styles from "./styles/commentSectionStyles";
-import InputEmoji from "react-input-emoji";
+import EmojiInput from "../Shared/EmojiInput";
+import FormStyled from "../Shared/Form";
 import useCommentForm from "./hooks/useCommentForm";
+import styles from "./styles/commentSectionStyles";
 
 const CommentForm = ({ postId }) => {
+
     const classes = styles();
+
     const {
         commentInput,
         handleEmojiInput,
@@ -13,21 +16,18 @@ const CommentForm = ({ postId }) => {
     } = useCommentForm(postId);
 
     return (
-        <form>
-            <InputEmoji
+        <FormStyled>
+            <EmojiInput
                 className={classes.commentInput}
                 value={commentInput.text}
                 onChange={handleEmojiInput}
-                fontSize={15}
                 cleanOnEnter
                 buttonElement
-                borderColor="#FFFFFF"
                 onEnter={handleSubmit}
-                theme="light"
-                placeholder="Type a comment"
+                placeholder="type a comment"
                 inputRef={inputRef}
             />
-        </form>
+        </FormStyled>
     );
 };
 

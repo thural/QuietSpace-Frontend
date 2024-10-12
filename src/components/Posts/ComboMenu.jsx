@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import styles from "./styles/comboMenuStyles";
-import { Box } from "@mantine/core";
+import React from "react";
+import BoxStyled from "../Shared/BoxStyled";
 import Clickable from "../Shared/Clickable";
 import ListMenu from "../Shared/ListMenu";
+import styles from "./styles/comboMenuStyles";
 
 
 const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
@@ -10,7 +10,7 @@ const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
     const classes = styles();
 
     return (
-        <Box className={classes.comboWrapper}>
+        <BoxStyled className={classes.comboWrapper}>
             <ListMenu menuIcon={selectedOption.concat(" ").concat(textContent)}>
                 {options.map((option, index) =>
                     <Clickable
@@ -21,7 +21,7 @@ const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
                     />
                 )}
             </ListMenu>
-        </Box>
+        </BoxStyled>
     )
 }
 

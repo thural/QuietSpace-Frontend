@@ -1,9 +1,11 @@
+import { Container, SegmentedControl } from "@mantine/core";
 import React, { useState } from "react";
-import { Container, LoadingOverlay, SegmentedControl } from "@mantine/core";
-import styles from "./styles/notificationContainerStyles";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useGetNotifications } from "../../hooks/useNotificationData";
-import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
+import BoxStyled from "../Shared/BoxStyled";
+import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
+import Typography from "../Shared/Typography";
+import styles from "./styles/notificationContainerStyles";
 
 function NotificationContainer() {
 
@@ -11,7 +13,7 @@ function NotificationContainer() {
 
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
-    const { data, isLoading, isError } = useGetNotifications();
+    const { isLoading, isError } = useGetNotifications();
 
 
     const navigateToPage = (buttonValue) => {
@@ -19,28 +21,34 @@ function NotificationContainer() {
         navigate(buttonValue);
     };
 
+    const ControlPanel = () => (
+        <BoxStyled>
+            <SegmentedControl
+                style={{ zIndex: 1 }}
+                fullWidth
+                color="rgba(32, 32, 32, 1)"
+                value={value}
+                onChange={navigateToPage}
+                data={[
+                    { label: 'all', value: '/notification/all' },
+                    { label: 'requests', value: '/notification/requests' },
+                    { label: 'replies', value: '/notification/replies' },
+                    { label: 'reposts', value: '/notification/reposts' },
+                ]}
+            />
+            <Outlet />
+        </BoxStyled>
+    );
+
+    const RenderResult = () => {
+        if (isLoading) return <FullLoadingOverlay />
+        else if (isError) return <Typography type="h1">{postsQuery.error.message}</Typography>
+        else return <ControlPanel />
+    };
 
     return (
         <Container size="600px" className={classes.container}>
-            {isLoading ? <FullLoadingOverlay />
-                : isError ? <h1>{postsQuery.error.message}</h1>
-                    : <>
-                        <SegmentedControl
-                            style={{ zIndex: 1 }}
-                            fullWidth
-                            color="rgba(32, 32, 32, 1)"
-                            value={value}
-                            onChange={navigateToPage}
-                            data={[
-                                { label: 'all', value: '/notification/all' },
-                                { label: 'requests', value: '/notification/requests' },
-                                { label: 'replies', value: '/notification/replies' },
-                                { label: 'reposts', value: '/notification/reposts' },
-                            ]}
-                        />
-                        <Outlet />
-                    </>
-            }
+            <RenderResult />
         </Container>
     )
 }

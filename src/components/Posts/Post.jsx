@@ -1,19 +1,23 @@
 import React from "react";
-import styles from "./styles/postStyles";
-import CommentSection from "./CommentSection";
-import EditPostForm from "./EditPostForm";
-import ShareMenu from "./ShareMenu";
-import Poll from "./Poll";
-import PostMenu from "./PostMenu";
-import { Avatar, Box, Flex, Text, Title } from "@mantine/core";
-import { parseCount, toUpperFirstChar } from "../../utils/stringUtils";
-import { LikeType } from "../../utils/enumClasses";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
+import { LikeType } from "../../utils/enumClasses";
+import { parseCount, toUpperFirstChar } from "../../utils/stringUtils";
+import BoxStyled from "../Shared/BoxStyled";
+import Conditional from "../Shared/Conditional";
+import FlexStyled from "../Shared/FlexStyled";
+import Typography from "../Shared/Typography";
+import UserAvatar from "../Shared/UserAvatar";
+import CommentSection from "./CommentSection";
+import EditPostForm from "./EditPostForm";
 import { usePost } from "./hooks/usePost";
+import Poll from "./Poll";
+import PostMenu from "./PostMenu";
+import ShareMenu from "./ShareMenu";
+import styles from "./styles/postStyles";
 
 const Post = ({ post }) => {
     const classes = styles();
@@ -38,31 +42,34 @@ const Post = ({ post }) => {
     } = usePost(post);
 
     const PostHeadLine = () => (
-        <Flex className={classes.postHeadline}>
-            <Avatar color="black" radius="10rem">{toUpperFirstChar(username)}</Avatar>
-            <Title className="title" order={5}>{post.title}</Title>
+        <FlexStyled className={classes.postHeadline}>
+            <UserAvatar radius="10rem">{toUpperFirstChar(username)}</UserAvatar>
+            <Typography className="title" type="5">{post.title}</Typography>
             <PostMenu handleDeletePost={handleDeletePost} setViewData={setViewData} isMutable={isMutable} />
-        </Flex>
+        </FlexStyled>
     );
 
     const PostContent = () => (
-        <Box className="content">
-            <Text className="text">{text}</Text>
-            {post.isPoll && <Poll pollData={post.pollData} />}
-        </Box>
+        <BoxStyled className="content">
+            <Typography className="text">{text}</Typography>
+            <Conditional isEnabled={post.isPoll}>
+                <Poll pollData={post.pollData} />
+            </Conditional>
+        </BoxStyled>
     );
 
-    const PollContent = () => {
-        if (!post.poll) return null;
-        return <Poll pollData={post.poll} postId={postId} />;
-    };
+    const PollContent = () => (
+        < Conditional isEnabled={!post.poll}>
+            <Poll pollData={post.poll} postId={postId} />
+        </Conditional>
+    );
 
     const PostStats = () => (
-        <Flex className={classes.postinfo}>
-            {likeCount > 0 && <p>{parseCount(likeCount)} likes</p>}
-            {dislikeCount > 0 && <p>{parseCount(dislikeCount)} dislikes</p>}
-            {!!comments?.length && <p>{parseCount(comments?.length)} comments</p>}
-        </Flex>
+        <FlexStyled className={classes.postinfo}>
+            {likeCount > 0 && <Typography>{parseCount(likeCount)} likes</Typography>}
+            {dislikeCount > 0 && <Typography>{parseCount(dislikeCount)} dislikes</Typography>}
+            {!!comments?.length && <Typography>{parseCount(comments?.length)} comments</Typography>}
+        </FlexStyled>
     );
 
     const LikeToggle = () => (
@@ -82,21 +89,25 @@ const Post = ({ post }) => {
     );
 
     return (
-        <Box id={postId} className={classes.wrapper}>
+        <BoxStyled id={postId} className={classes.wrapper}>
             <PostHeadLine />
             <PostContent />
             <PollContent />
-            <Box className="panel">
+            <BoxStyled className="panel">
                 <LikeToggle />
                 <DislikeToggle />
                 <CommentToggle />
                 <ShareMenu />
                 <PostStats />
-            </Box>
-            {editPostView && <EditPostForm postId={postId} />}
-            {showComments && <CommentSection postId={postId} />}
+            </BoxStyled>
+            <Conditional isEnabled={editPostView}>
+                <EditPostForm postId={postId} />
+            </Conditional>
+            <Conditional isEnabled={showComments}>
+                <CommentSection postId={postId} />
+            </Conditional>
             <hr />
-        </Box>
+        </BoxStyled>
     );
 };
 

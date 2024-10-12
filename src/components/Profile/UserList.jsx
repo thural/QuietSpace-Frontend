@@ -1,5 +1,6 @@
-import { Box } from "@mantine/core";
-import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
+import BoxStyled from "../Shared/BoxStyled";
+import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
+import Typography from "../Shared/Typography";
 import UserQueryItem from "../Shared/UserQueryItem";
 import styles from "./styles/userListStyles";
 
@@ -7,18 +8,19 @@ const UserList = ({ userFetch, handleItemClick, queryResult }) => {
 
     const classes = styles();
 
-    console.log("user fetch on connection: ", userFetch.isPending);
-    console.log("query result on connections: ", queryResult)
-
-    const RenderResult = () => {
-        if (userFetch.isPending) return <FullLoadingOverlay />
-        else if (userFetch.isError) return <h1>{userFetch.error.message}</h1>
-        else return queryResult.map((user, index) => (
+    const UserQueryList = ({ list, handleItemClick }) => {
+        list.map((user, index) => (
             <UserQueryItem key={index} user={user} handleItemClick={handleItemClick} />
         ));
     }
 
-    return <Box className={classes.resultContainer}><RenderResult /></Box>
+    const RenderResult = () => (
+        userFetch.isPending ? <FullLoadingOverlay />
+            : userFetch.isError ? <Typography type="h1">{userFetch.error.message}</Typography>
+                : <UserQueryList list={queryResult} handleItemClick={handleItemClick} />
+    )
+
+    return <BoxStyled className={classes.resultContainer}><RenderResult /></BoxStyled>
 }
 
 export default UserList

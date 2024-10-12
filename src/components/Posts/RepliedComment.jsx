@@ -1,10 +1,12 @@
 import React from "react";
-import styles from "./styles/repliedCommentStyles";
-import emoji from "react-easy-emoji";
-import { Box, Flex, Text } from "@mantine/core";
-import UserAvatar from "../Shared/UserAvatar";
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import BoxStyled from "../Shared/BoxStyled";
+import EmojiText from "../Shared/EmojiText";
+import FlexStyled from "../Shared/FlexStyled";
+import Typography from "../Shared/Typography";
+import UserAvatar from "../Shared/UserAvatar";
 import useRepliedComment from "./hooks/useRepliedComment";
+import styles from "./styles/repliedCommentStyles";
 
 const RepliedComment = ({ comment, repliedComment }) => {
     const classes = styles();
@@ -16,26 +18,20 @@ const RepliedComment = ({ comment, repliedComment }) => {
     };
 
     const CommentBody = () => (
-        <Box key={comment.id} className={classes.comment} style={appliedStyle}>
-            <Flex className={classes.replyCard}>
+        <BoxStyled key={comment.id} className={classes.comment} style={appliedStyle}>
+            <FlexStyled className={classes.replyCard}>
                 <div className="reply-card-indicator"></div>
-                <Text className="reply-card-text" lineClamp={1}>
-                    {repliedComment.text}
-                </Text>
-            </Flex>
-            {
-                emoji(comment.text).map((element, index) => (
-                    <p key={index} className="comment-text">{element}</p>
-                ))
-            }
-        </Box>
+                <Typography className="reply-card-text" lineClamp={1}>{repliedComment.text}</Typography>
+            </FlexStyled>
+            <EmojiText text={comment.text} />
+        </BoxStyled>
     );
 
     return (
-        <Flex className={classes.container}>
+        <FlexStyled className={classes.container}>
             <CommentBody />
             <UserAvatar chars={toUpperFirstChar(user.username)} />
-        </Flex>
+        </FlexStyled>
     );
 };
 

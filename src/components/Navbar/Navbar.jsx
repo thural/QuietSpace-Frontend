@@ -1,7 +1,6 @@
+import { Badge } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import styles from "./styles/navbarStyles";
-import Menu from "./Menu";
 import {
   PiBell,
   PiBellFill,
@@ -14,9 +13,14 @@ import {
   PiUser,
   PiUserFill
 } from "react-icons/pi";
-import { useQueryClient } from "@tanstack/react-query";
-import { Badge } from "@mantine/core";
+import { useLocation } from "react-router-dom";
+import BoxStyled from "../Shared/BoxStyled";
+import Conditional from "../Shared/Conditional";
+import NavStyled from "../Shared/NavStyled";
+import Typography from "../Shared/Typography";
+import Menu from "./Menu";
 import NavbarItem from "./NavbarItem";
+import styles from "./styles/navbarStyles";
 
 
 
@@ -45,9 +49,9 @@ const NavBar = () => {
 
 
   return (
-    <div className={classes.navbar}>
-      <h1 className="title">QS</h1>
-      <nav>
+    <BoxStyled className={classes.navbar}>
+      <Typography type="h1" className="title">QS</Typography>
+      <NavStyled>
         <NavbarItem
           linkTo="/posts"
           pathName={pathName}
@@ -78,13 +82,13 @@ const NavBar = () => {
           icon={<PiBell />}
           iconFill={<PiBellFill />}
         >
-          {hasPendingNotification && <Badge className="badge" circle />}
+          <Conditional isEnabled={hasPendingNotification}>
+            <Badge className="badge" circle />
+          </Conditional>
         </NavbarItem>
-      </nav>
-      <div className="navbar-item menu">
-        <Menu />
-      </div>
-    </div>
+      </NavStyled>
+      <BoxStyled className="navbar-item menu"><Menu /></BoxStyled>
+    </BoxStyled>
   )
 }
 

@@ -1,12 +1,13 @@
-import { Flex } from "@mantine/core";
+import FlexStyled from "../Shared/FlexStyled";
 import TextInput from "../Shared/TextInput";
+import Typography from "../Shared/Typography";
 import styles from "./styles/createPostStyles";
 
 const PollSection = ({ postData, handleChange, togglePoll, pollView }) => {
     const classes = styles();
 
     return (
-        <Flex
+        <FlexStyled
             className={classes.pollView}
             style={{ display: pollView.enabled ? "flex" : "none" }}>
 
@@ -39,9 +40,9 @@ const PollSection = ({ postData, handleChange, togglePoll, pollView }) => {
                 hidden={!postData.option3}
             />
 
-            <p className="close-poll" onClick={togglePoll} >remove poll</p>
+            <Typography className="close-poll" onClick={togglePoll} >remove poll</Typography>
 
-        </Flex>
+        </FlexStyled>
     )
 }
 
