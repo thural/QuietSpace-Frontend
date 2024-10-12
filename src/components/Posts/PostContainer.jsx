@@ -1,13 +1,13 @@
+import { Box, Container, Flex, Input } from "@mantine/core";
 import React from "react";
-import Post from "./Post";
-import CreatePostForm from "./CreatePostForm";
-import { Box, Container, Flex, Input, LoadingOverlay } from "@mantine/core";
-import styles from './styles/postContainerStyles';
 import { toUpperFirstChar } from "../../utils/stringUtils";
+import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import UserAvatar from "../Shared/UserAvatar";
-import LightBtn from "../Shared/LightBtn ";
+import LightButton from "../Shared/buttons/LightButton";
+import CreatePostForm from "./CreatePostForm";
+import Post from "./Post";
 import { usePostContainer } from "./hooks/usePostContainer";
-import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
+import styles from './styles/postContainerStyles';
 
 function PostContainer() {
     const classes = styles();
@@ -26,7 +26,7 @@ function PostContainer() {
                     placeholder="start a topic..."
                     onClick={showCreatePostForm}
                 />
-                <LightBtn name="post" handleClick={showCreatePostForm} />
+                <LightButton name="post" handleClick={showCreatePostForm} />
             </Flex>
         </Box>
     );

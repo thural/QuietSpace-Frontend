@@ -1,10 +1,11 @@
 import { Button } from "@mantine/core"
 
-const LightBtn = ({
+const LightButton = ({
     name = "submit",
     radius = "xl",
     size = "sm",
-    color = "rgba(0, 0, 0, 1)", handleClick
+    color = "rgba(0, 0, 0, 1)", handleClick,
+    ...props
 }) => {
 
     return (
@@ -14,10 +15,11 @@ const LightBtn = ({
             radius={radius}
             size={size}
             onClick={handleClick}
+            {...props}
         >
             {name}
         </Button>
     )
 }
 
-export default LightBtn
+export default LightButton

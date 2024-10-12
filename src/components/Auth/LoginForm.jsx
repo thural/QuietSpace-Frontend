@@ -1,8 +1,8 @@
 import { Box, Text, Title } from "@mantine/core";
 import React from "react";
-import FillGradientBtn from "../Shared/FillGradientBtn";
-import FullLoadingOverlay from "../Shared/FillLoadingOverlay";
-import FillOutlineBtn from "../Shared/FillOutlineBtn";
+import GradientButton from "../Shared/buttons/GradientButton";
+import OutlineButton from "../Shared/buttons/OutlineButton";
+import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import PassInput from "../Shared/PassInput";
 import TextInput from "../Shared/TextInput";
 import { useLoginForm } from "./hooks/useLoginForm";
@@ -31,10 +31,10 @@ const LoginForm = ({ setAuthState, authState }) => {
                     <TextInput name='email' value={formData.email} handleChange={handleChange} />
                     <PassInput name='password' value={formData.password} handleChange={handleChange} />
                 </Box>
-                <FillGradientBtn onClick={handleLoginForm} />
+                <GradientButton onClick={handleLoginForm} />
             </form>
             <Text className="prompt">don't have an account?</Text>
-            <FillOutlineBtn name="signup" onClick={handleSignupBtn} />
+            <OutlineButton name="signup" onClick={handleSignupBtn} />
         </Box>
     );
 };

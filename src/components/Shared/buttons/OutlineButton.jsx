@@ -1,18 +1,19 @@
 import { Button } from "@mantine/core"
 
-const FillOutlineBtn = ({ onClick, name = "submit" }) => {
+const OutlineButton = ({ onClick, radius = "md", size = "2.5rem", name = "submit", ...props }) => {
 
     return (
         <Button
-            fullWidth
-            radius="md"
+            radius={radius}
+            size={size}
             variant="outline"
             onClick={onClick}
             style={{ fontSize: 'medium' }}
+            {...props}
         >
             {name}
         </Button>
     )
 }
 
-export default FillOutlineBtn
+export default OutlineButton

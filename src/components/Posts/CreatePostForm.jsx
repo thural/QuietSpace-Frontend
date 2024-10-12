@@ -1,13 +1,14 @@
+import { Box, Flex } from "@mantine/core";
 import React from "react";
-import styles from "./styles/createPostStyles";
-import Overlay from "../Overlay/Overlay";
-import ComboMenu from "./ComboMenu";
-import { Avatar, Box, Button, Flex } from "@mantine/core";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
+import Overlay from "../Overlay/Overlay";
+import DarkButton from "../Shared/buttons/DarkButton ";
 import TextInput from "../Shared/TextInput";
-import PollSection from "./PollSection";
 import UserAvatar from "../Shared/UserAvatar";
+import ComboMenu from "./ComboMenu";
 import useCreatePostForm from "./hooks/useCreatePostForm";
+import PollSection from "./PollSection";
+import styles from "./styles/createPostStyles";
 
 const CreatePostForm = () => {
     const classes = styles();
@@ -32,12 +33,7 @@ const CreatePostForm = () => {
                 textContent={"can view"}
             />
             <PiChartBarHorizontalFill className="poll-toggle" onClick={togglePoll} />
-            <Button
-                loading={addPost.isPending}
-                onClick={handleSubmit}
-            >
-                post
-            </Button>
+            <DarkButton name="post" loading={addPost.isPending} onClick={handleSubmit} />
         </Flex>
     );
 

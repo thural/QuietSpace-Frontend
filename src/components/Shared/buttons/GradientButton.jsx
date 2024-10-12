@@ -1,17 +1,17 @@
 import { Button } from "@mantine/core"
 
-const FillGradientBtn = ({
-    to = "cyan", deg = 90,
+const GradientButton = ({
+    to = "cyan",
+    deg = 90,
     from = "blue",
     name = "submit",
     radius = "md",
-    size = "md",
+    size = "2.5rem",
     onClick
 }) => {
 
     return (
         <Button
-            fullWidth
             radius={radius}
             size={size}
             variant="gradient"
@@ -24,4 +24,4 @@ const FillGradientBtn = ({
     )
 }
 
-export default FillGradientBtn
+export default GradientButton

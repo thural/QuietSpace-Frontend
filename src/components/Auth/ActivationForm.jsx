@@ -1,7 +1,7 @@
 import { PinInput, Text, Title } from "@mantine/core";
 import React from "react";
-import FillGradientBtn from "../Shared/FillGradientBtn";
-import FillOutlineBtn from "../Shared/FillOutlineBtn";
+import GradientButton from "../Shared/buttons/GradientButton";
+import OutlineButton from "../Shared/buttons/OutlineButton";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
 
@@ -39,10 +39,10 @@ const ActivationForm = ({ setAuthState, authState }) => {
                     onChange={handleChange}
                 />
                 <Timer tokenTimer={tokenTimer} />
-                <FillGradientBtn onClick={handleSubmit} />
+                <GradientButton onClick={handleSubmit} />
             </form>
             <Text size="md">haven't received a code?</Text>
-            <FillOutlineBtn onClick={handleResendCode} name="resend code" />
+            <OutlineButton onClick={handleResendCode} name="resend code" />
         </div>
     );
 };
