@@ -2,7 +2,7 @@ import React from "react";
 import Connections from "./Connections";
 import styles from "./styles/profileContainerStyles";
 
-import { Container, Tabs } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import { toUpperFirstChar } from "../../utils/stringUtils";
 import BoxStyled from "../Shared/BoxStyled";
 import OutlineButton from "../Shared/buttons/OutlineButton";
 import Conditional from "../Shared/Conditional";
+import DefaultContainer from "../Shared/DefaultContainer";
 import FlexStyled from "../Shared/FlexStyled";
 import Typography from "../Shared/Typography";
 import UserAvatar from "../Shared/UserAvatar";
@@ -86,9 +87,7 @@ function ProfileContainer() {
         <Link to="/settings" >
             <FlexStyled className={classes.profileEditSection}>
                 <OutlineButton
-                    variant="outline"
                     color="rgba(32, 32, 32, 1)"
-                    radius="md"
                     fullWidth
                     name="Edit Profile" />
             </FlexStyled>
@@ -98,13 +97,13 @@ function ProfileContainer() {
     const UserDetailsSection = () => (
         <FlexStyled className={classes.identitySection}>
             <BoxStyled className="profileName"><Typography fw={700}>{signedUser.username}</Typography></BoxStyled>
-            <UserAvatar size="4.8rem" radius="10rem">{toUpperFirstChar(signedUser.username)}</UserAvatar>
+            <UserAvatar size="4.5rem" chars={toUpperFirstChar(signedUser.username)} />
         </FlexStyled>
     );
 
 
     return (
-        <Container size="600px" className={classes.container}>
+        <DefaultContainer>
             <UserDetailsSection />
             <FollowSection />
             <Conditional isEnabled={viewState.followings}>
@@ -115,7 +114,7 @@ function ProfileContainer() {
             </Conditional>
             <EditSection />
             <ProfileTabs />
-        </Container>
+        </DefaultContainer>
     )
 }
 

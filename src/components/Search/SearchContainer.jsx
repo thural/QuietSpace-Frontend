@@ -1,5 +1,5 @@
-import { Container } from "@mantine/core";
 import React from "react";
+import DefaultContainer from "../Shared/DefaultContainer";
 import PostQuery from "./PostQuery";
 import SearchBar from "./SearchBar";
 import UserQuery from "./UserQuery";
@@ -26,7 +26,7 @@ function SearchContainer() {
     const searchAppliedStyle = focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};
 
     return (
-        <Container size="600px" className={classes.container}>
+        <DefaultContainer>
             <SearchBar
                 handleInputChange={handleInputChange}
                 handleInputFocus={handleInputFocus}
@@ -45,7 +45,7 @@ function SearchContainer() {
                 fetchPostQuery={fetchPostQuery}
                 postQueryResult={postQueryResult}
             />
-        </Container>
+        </DefaultContainer>
     );
 }
 

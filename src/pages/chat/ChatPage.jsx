@@ -1,8 +1,8 @@
-import { Container } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import ChatContainer from "../../components/Chat/ChatContainer";
 import MessageContainer from "../../components/Chat/MessageContainer";
+import DefaultContainer from "../../components/Shared/DefaultContainer";
 import FullLoadingOverlay from "../../components/Shared/FullLoadingOverlay";
 import Typography from "../../components/Shared/Typography";
 import { useGetChatsByUserId } from "../../hooks/useChatData";
@@ -33,10 +33,10 @@ const ChatPage = () => {
     if ((!isSuccess || activeChatId == null)) return null;
 
     return (
-        <Container className={classes.container} size="600px" >
+        <DefaultContainer>
             <ChatContainer />
             <MessageContainer />
-        </Container>
+        </DefaultContainer>
     )
 }
 

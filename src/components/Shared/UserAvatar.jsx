@@ -4,7 +4,7 @@ const UserAvatar = ({
     forwardedRef,
     size = "2.5rem",
     color = "black",
-    radius = "9rem",
+    radius = "10rem",
     src = "",
     chars = "U",
     ...props

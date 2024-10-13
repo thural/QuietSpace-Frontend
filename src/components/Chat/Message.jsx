@@ -1,6 +1,7 @@
 import React from "react";
 import BoxStyled from "../Shared/BoxStyled";
 import Conditional from "../Shared/Conditional";
+import Typography from "../Shared/Typography";
 import useMessage from "./hooks/useMessage";
 import styles from "./styles/messageStyles";
 
@@ -28,7 +29,7 @@ const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnect
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
                 <BoxStyled className={classes.delete} onClick={handleDeleteMessage}>delete</BoxStyled>
             </Conditional>
-            <BoxStyled className={classes.text}><p>{message.text}</p></BoxStyled>
+            <BoxStyled className={classes.text}><Typography>{message.text}</Typography></BoxStyled>
         </BoxStyled>
     );
 };

@@ -1,8 +1,9 @@
-import { Container, SegmentedControl } from "@mantine/core";
+import { SegmentedControl } from "@mantine/core";
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useGetNotifications } from "../../hooks/useNotificationData";
 import BoxStyled from "../Shared/BoxStyled";
+import DefaultContainer from "../Shared/DefaultContainer";
 import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import Typography from "../Shared/Typography";
 import styles from "./styles/notificationContainerStyles";
@@ -47,9 +48,9 @@ function NotificationContainer() {
     };
 
     return (
-        <Container size="600px" className={classes.container}>
+        <DefaultContainer>
             <RenderResult />
-        </Container>
+        </DefaultContainer>
     )
 }
 

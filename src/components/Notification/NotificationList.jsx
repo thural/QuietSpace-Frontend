@@ -40,7 +40,7 @@ const NotificationList = ({ notifications }) => {
             case MENTION:
                 return <PostNotification key={id} notification={notification} />;
             default:
-                throw new Error("invallid notification type");
+                throw new Error("invalid notification type");
         }
     }
 

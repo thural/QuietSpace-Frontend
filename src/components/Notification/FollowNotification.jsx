@@ -34,7 +34,7 @@ const FollowNotification = ({ notification }) => {
 
     return (
         <NotificationCard notification={notification} onClick={handleClick} text={"followed you"}>
-            <LightButton disabled={false} onClick={handleFollowToggle}>{followingStatus()}</LightButton>
+            <LightButton name={followingStatus()} disabled={false} onClick={handleFollowToggle} />
         </NotificationCard>
     )
 }

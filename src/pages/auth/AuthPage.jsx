@@ -1,9 +1,9 @@
-import { Text, Title } from "@mantine/core";
 import React, { useState } from "react";
 import ActivationForm from "../../components/Auth/ActivationForm";
 import LoginForm from "../../components/Auth/LoginForm";
 import SignupForm from "../../components/Auth/SignupForm";
 import BoxStyled from "../../components/Shared/BoxStyled";
+import Typography from "../../components/Shared/Typography";
 import styles from "./styles/authStyles";
 
 const AuthPage = () => {
@@ -23,9 +23,9 @@ const AuthPage = () => {
     return (
         <BoxStyled className={classes.auth}>
             <BoxStyled className="greeting-text">
-                <Title className="brand" size="2.5rem" order={1}>Quiet Space</Title>
-                <Text className="primary-text" size="1.5rem" >social media without distraction</Text>
-                <Text className="secondary-text">where free speech and privacy is the priority</Text>
+                <Typography className="brand" size="2.5rem" type="h1">Quiet Space</Typography>
+                <Typography className="primary-text" size="1.5rem" >social media without distraction</Typography>
+                <Typography className="secondary-text">where free speech and privacy is the priority</Typography>
             </BoxStyled>
             <RenderResult />
         </BoxStyled>

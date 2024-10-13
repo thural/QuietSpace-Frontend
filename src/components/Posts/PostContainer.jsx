@@ -1,8 +1,8 @@
-import { Container } from "@mantine/core";
 import React from "react";
 import { toUpperFirstChar } from "../../utils/stringUtils";
 import BoxStyled from "../Shared/BoxStyled";
 import Conditional from "../Shared/Conditional";
+import DefaultContainer from "../Shared/DefaultContainer";
 import FlexStyled from "../Shared/FlexStyled";
 import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import InputStyled from "../Shared/InputStyled";
@@ -41,14 +41,14 @@ function PostContainer() {
     };
 
     return (
-        <Container className={classes.container} size="600px">
+        <DefaultContainer>
             <CreatePostSection />
             <hr />
             <Conditional isEnabled={createPostView}>
                 <CreatePostForm />
             </Conditional>
             <PostList />
-        </Container>
+        </DefaultContainer>
     );
 }
 

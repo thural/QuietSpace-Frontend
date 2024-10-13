@@ -1,8 +1,9 @@
-import { Container, Tabs, Text } from "@mantine/core";
+import { Tabs, Text } from "@mantine/core";
 import React, { useState } from "react";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import DefaultContainer from "../Shared/DefaultContainer";
 import Typography from "../Shared/Typography";
 import styles from "./styles/settingContainerStyles";
 
@@ -21,7 +22,7 @@ function SettingsContainer() {
 
 
     return (
-        <Container size="600px" className={classes.container}>
+        <DefaultContainer>
 
             <Typography type="h1">settings</Typography>
 
@@ -69,7 +70,7 @@ function SettingsContainer() {
                 </Tabs.Panel>
 
             </Tabs>
-        </Container>
+        </DefaultContainer>
     )
 }
 

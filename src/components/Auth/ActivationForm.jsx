@@ -1,9 +1,10 @@
-import { PinInput, Text, Title } from "@mantine/core";
+import { PinInput, Text } from "@mantine/core";
 import React from "react";
 import BoxStyled from "../Shared/BoxStyled";
 import GradientButton from "../Shared/buttons/GradientButton";
 import OutlineButton from "../Shared/buttons/OutlineButton";
 import FormStyled from "../Shared/Form";
+import Typography from "../Shared/Typography";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
 
@@ -29,9 +30,9 @@ const ActivationForm = ({ setAuthState, authState }) => {
 
     return (
         <BoxStyled className={classes.activation}>
-            <Title order={2}>Account Activation</Title>
-            <Text size="md">{"enter code sent to your email: "}</Text>
-            <Text size="md">{authState.formData.email}</Text>
+            <Typography type="h2">Account Activation</Typography>
+            <Typography size="md">{"enter code sent to your email: "}</Typography>
+            <Typography size="md">{authState.formData.email}</Typography>
             <FormStyled className='activation-form'>
                 <PinInput
                     length={6}
@@ -43,7 +44,7 @@ const ActivationForm = ({ setAuthState, authState }) => {
                 <Timer tokenTimer={tokenTimer} />
                 <GradientButton onClick={handleSubmit} />
             </FormStyled>
-            <Text size="md">haven't received a code?</Text>
+            <Typography size="md">haven't received a code?</Typography>
             <OutlineButton onClick={handleResendCode} name="resend code" />
         </BoxStyled>
     );

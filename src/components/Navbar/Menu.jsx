@@ -11,17 +11,21 @@ const Menu = () => {
 
     const classes = styles();
 
-    const [display, setDisplay] = useState('none');
+    const [display, setDisplay] = useState("none");
 
     const toggleDisplay = () => {
         if (display === "none") setDisplay("block");
         else setDisplay("none");
     }
 
+    const hideMenu = () => {
+        setDisplay("none")
+    }
+
     return (
         <>
             <BoxStyled className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}><RiMenu3Fill /></BoxStyled>
-            <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={() => setDisplay('none')}></BoxStyled>
+            <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={hideMenu}></BoxStyled>
             <BoxStyled onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
                 <Link to="/saved">
                     <Clickable text="Saved" >
