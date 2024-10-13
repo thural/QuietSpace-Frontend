@@ -1,9 +1,11 @@
 import { Input } from "@mantine/core"
+import withForwardedRef from "./hooks/withForwardedRef"
 
-const InputStyled = ({ placeholder, onKeyDown, onFocus, onChange, onBlur, variant, ...props }) => {
+const InputStyled = ({ forwardedRef, placeholder, onKeyDown, onFocus, onChange, onBlur, variant, ...props }) => {
 
     return (
         <Input
+            ref={forwardedRef}
             variant={variant}
             placeholder={placeholder}
             onKeyDown={onKeyDown}
@@ -15,4 +17,4 @@ const InputStyled = ({ placeholder, onKeyDown, onFocus, onChange, onBlur, varian
     )
 }
 
-export default InputStyled
+export default withForwardedRef(InputStyled)

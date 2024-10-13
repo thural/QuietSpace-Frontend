@@ -1,6 +1,8 @@
 import { Button } from "@mantine/core"
+import withForwardedRef from "../hooks/withForwardedRef"
 
 const DarkButton = ({
+    forwardedRef,
     name = "submit",
     variant = "dark",
     radius = "xl",
@@ -11,6 +13,7 @@ const DarkButton = ({
 
     return (
         <Button
+            ref={forwardedRef}
             variant={variant}
             color={color}
             radius={radius}
@@ -23,4 +26,4 @@ const DarkButton = ({
     )
 }
 
-export default DarkButton
+export default withForwardedRef(DarkButton)

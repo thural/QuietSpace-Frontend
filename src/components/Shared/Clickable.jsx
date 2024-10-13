@@ -1,12 +1,13 @@
+import withForwardedRef from "./hooks/withForwardedRef"
 
-const Clickable = ({ handleClick = null, altText = "", text, children, ...props }) => {
+const Clickable = ({ forwardedRef, handleClick = null, altText = "", text, children, ...props }) => {
 
     return (
-        <div className="clickable" onClick={handleClick} alt={altText} {...props}>
+        <div ref={forwardedRef} className="clickable" onClick={handleClick} alt={altText} {...props}>
             <p>{text}</p>
             {children}
         </div>
     )
 }
 
-export default Clickable
+export default withForwardedRef(Clickable)

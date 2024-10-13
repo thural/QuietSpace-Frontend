@@ -1,10 +1,11 @@
+import withForwardedRef from "../hooks/withForwardedRef";
 import styles from "../styles/customButtonStyles";
 
-const CustomButton = ({ label, ...props }) => {
+const CustomButton = ({ forwardedRef, label, ...props }) => {
     const classes = styles()
     return (
-        <button className={classes.wrapper} {...props}>{label}</button>
+        <button ref={forwardedRef} className={classes.wrapper} {...props}>{label}</button>
     )
 }
 
-export default CustomButton
+export default withForwardedRef(CustomButton)

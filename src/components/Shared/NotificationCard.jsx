@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import styles from "./styles/notificationCardStyles";
 
-import { Text, Title } from "@mantine/core";
 import useWasSeen from "../../hooks/useWasSeen";
 import { useNotificationStore } from "../../hooks/zustand";
 import { toUpperFirstChar } from "../../utils/stringUtils";
 import BoxStyled from "./BoxStyled";
 import FlexStyled from "./FlexStyled";
+import Typography from "./Typography";
 import UserAvatar from "./UserAvatar";
 
 const NotificationCard = ({ notification, onClick, children, text }) => {
@@ -31,8 +31,8 @@ const NotificationCard = ({ notification, onClick, children, text }) => {
         <FlexStyled ref={ref} className={classes.notificationCard} onClick={onClick}>
             <UserAvatar chars={toUpperFirstChar(username)} />
             <BoxStyled className={classes.notificationItem}>
-                <Title order={5} className="username">{username}</Title>
-                <Text size="1rem" lineClamp={5} className="message">{text}</Text>
+                <Typography type="5" className="username">{username}</Typography>
+                <Typography size="1rem" lineClamp={5} className="message">{text}</Typography>
             </BoxStyled>
             {children}
         </FlexStyled>

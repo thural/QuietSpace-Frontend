@@ -1,6 +1,8 @@
 import { Button } from "@mantine/core"
+import withForwardedRef from "../hooks/withForwardedRef"
 
 const GradientButton = ({
+    forwardedRef,
     to = "cyan",
     deg = 90,
     from = "blue",
@@ -12,6 +14,7 @@ const GradientButton = ({
 
     return (
         <Button
+            ref={forwardedRef}
             radius={radius}
             size={size}
             variant="gradient"
@@ -24,4 +27,4 @@ const GradientButton = ({
     )
 }
 
-export default GradientButton
+export default withForwardedRef(GradientButton)

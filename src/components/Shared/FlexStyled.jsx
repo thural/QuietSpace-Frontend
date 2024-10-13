@@ -1,7 +1,8 @@
 import { Flex } from "@mantine/core";
+import withForwardedRef from "./hooks/withForwardedRef";
 
-const FlexStyled = ({ children, ...props }) => {
-    return <Flex {...props}>{children}</Flex>
+const FlexStyled = ({ forwardedRef, children, ...props }) => {
+    return <Flex ref={forwardedRef} {...props}>{children}</Flex>
 }
 
-export default FlexStyled
+export default withForwardedRef(FlexStyled)

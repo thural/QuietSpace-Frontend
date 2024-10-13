@@ -1,9 +1,11 @@
 import { Button } from "@mantine/core"
+import withForwardedRef from "../hooks/withForwardedRef"
 
-const OutlineButton = ({ onClick, radius = "md", size = "2.5rem", name = "submit", ...props }) => {
+const OutlineButton = ({ forwardedRef, onClick, radius = "md", size = "2.5rem", name = "submit", ...props }) => {
 
     return (
         <Button
+            ref={forwardedRef}
             radius={radius}
             size={size}
             variant="outline"
@@ -16,4 +18,4 @@ const OutlineButton = ({ onClick, radius = "md", size = "2.5rem", name = "submit
     )
 }
 
-export default OutlineButton
+export default withForwardedRef(OutlineButton)

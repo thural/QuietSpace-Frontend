@@ -1,10 +1,11 @@
+import withForwardedRef from "./hooks/withForwardedRef";
 import styles from "./styles/formStyles";
 
-const FormStyled = ({ children, ...props }) => {
+const FormStyled = ({ forwardedRef, children, ...props }) => {
     const classes = styles();
     return (
-        <form {...props} className={classes.wrapper}>{children}</form>
+        <form ref={forwardedRef} {...props} className={classes.wrapper}>{children}</form>
     )
 };
 
-export default FormStyled;
+export default withForwardedRef(FormStyled);

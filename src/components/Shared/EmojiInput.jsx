@@ -1,6 +1,8 @@
 import InputEmoji from "react-input-emoji";
+import withForwardedRef from "./hooks/withForwardedRef";
 
 const EmojiInput = ({
+    forwardedRef,
     isEnabled = true,
     value,
     onChange,
@@ -12,6 +14,7 @@ const EmojiInput = ({
     ...props
 }) => (
     <InputEmoji
+        ref={forwardedRef}
         value={value}
         onChange={onChange}
         fontSize={fontSize}
@@ -26,4 +29,4 @@ const EmojiInput = ({
     />
 );
 
-export default EmojiInput
+export default withForwardedRef(EmojiInput)

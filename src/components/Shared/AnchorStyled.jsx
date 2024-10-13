@@ -1,4 +1,5 @@
 import { Anchor } from "@mantine/core"
+import withForwardedRef from "./hooks/withForwardedRef"
 
 const AnchorStyled = ({
     fw = 400,
@@ -6,11 +7,12 @@ const AnchorStyled = ({
     href = "",
     target = "_blank",
     underline = "never",
-    label = "blank"
+    label = "blank",
+    forwardedRef
 }) => {
     return (
-        <Anchor fw={fw} fz={fz} href={href} target={target} underline={underline}>{label}</Anchor>
+        <Anchor ref={forwardedRef} fw={fw} fz={fz} href={href} target={target} underline={underline}>{label}</Anchor>
     )
 }
 
-export default AnchorStyled
+export default withForwardedRef(AnchorStyled)

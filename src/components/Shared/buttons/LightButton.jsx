@@ -1,6 +1,8 @@
 import { Button } from "@mantine/core"
+import withForwardedRef from "../hooks/withForwardedRef"
 
 const LightButton = ({
+    forwardedRef,
     name = "submit",
     radius = "xl",
     size = "sm",
@@ -10,6 +12,7 @@ const LightButton = ({
 
     return (
         <Button
+            ref={forwardedRef}
             variant="light"
             color={color}
             radius={radius}
@@ -22,4 +25,4 @@ const LightButton = ({
     )
 }
 
-export default LightButton
+export default withForwardedRef(LightButton)

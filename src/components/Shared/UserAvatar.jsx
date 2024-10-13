@@ -1,15 +1,17 @@
 import { Avatar } from "@mantine/core"
 
 const UserAvatar = ({
+    forwardedRef,
     size = "2.5rem",
     color = "black",
-    radius = "1rem",
+    radius = "9rem",
     src = "",
     chars = "U",
     ...props
 }) => {
     return (
         <Avatar
+            ref={forwardedRef}
             color={color}
             size={size}
             radius={radius}

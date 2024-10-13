@@ -1,3 +1,4 @@
+import { PasswordInput } from "@mantine/core";
 import React, { useRef } from "react";
 
 
@@ -9,7 +10,7 @@ const PassInput = ({ name, value, handleChange, ...props }) => {
     }
 
     return (
-        <input
+        <PasswordInput
             type='password'
             name={name}
             placeholder={name}
