@@ -20,7 +20,7 @@ const ReplyForm = ({ postId, parentId, toggleView }) => {
     } = useReplyForm(postId, parentId, toggleView);
 
     return (
-        <FlexStyled className={classes.container}>
+        <FlexStyled className={classes.wrapper}>
             <UserAvatar size="1.5rem" chars={toUpperFirstChar(user.username)} />
             <FormStyled className={classes.inputWrapper}>
                 <EmojiInput

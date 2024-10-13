@@ -11,10 +11,8 @@ import LightButton from "../Shared/buttons/LightButton";
 import CreatePostForm from "./CreatePostForm";
 import Post from "./Post";
 import { usePostContainer } from "./hooks/usePostContainer";
-import styles from './styles/postContainerStyles';
 
 function PostContainer() {
-    const classes = styles();
     const { user, createPostView, posts, showCreatePostForm } = usePostContainer();
 
     if (posts.isLoading) return <FullLoadingOverlay />;

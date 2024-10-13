@@ -19,17 +19,17 @@ const QueryInput = ({
     const classes = styles();
 
     return (
-        <FormStyled className={classes.searchInput}>
+        <FormStyled>
             <InputStyled ref={searchInput}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
-                className='input'
                 type='text'
                 name='text'
                 placeholder="search a user ..."
                 maxLength="128"
                 onChange={handleInputChange}
+                className={classes.searchInput}
             />
         </FormStyled>
     )

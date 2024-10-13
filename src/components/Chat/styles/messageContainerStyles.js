@@ -1,4 +1,4 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
   chatboard: {
@@ -25,7 +25,8 @@ const styles = createUseStyles({
   chatHeadline: {
     gap: '.8rem',
     position: 'relative',
-    paddingLeft: '0.5rem',
+    padding: '0 0.5rem 1rem .5rem',
+    alignItems: 'center',
     '& .title': {
       width: '100%',
       position: 'relative',

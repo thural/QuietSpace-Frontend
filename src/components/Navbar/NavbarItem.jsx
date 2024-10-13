@@ -7,7 +7,7 @@ const NavbarItem = ({ linkTo, pathName, icon, iconFill, children }) => {
     return (
         <BoxStyled className="navbar-item">
             <Link to={linkTo}>
-                {pathName === linkTo ? iconFill : icon}
+                {pathName.includes(linkTo.slice(0, 5)) ? iconFill : icon}
             </Link>
             {children}
         </BoxStyled>

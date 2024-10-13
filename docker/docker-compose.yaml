@@ -2,8 +2,8 @@ version: '3.8'
 services:
   quietspace-frontend:
     build:
-      context: .
-      dockerfile: ./docker/prod/Dockerfile
+      context: ../
+      dockerfile: ./Dockerfile
     image: thural/quietspace:frontend
     networks:
       - monolith-network

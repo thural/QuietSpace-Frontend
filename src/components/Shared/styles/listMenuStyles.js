@@ -1,8 +1,8 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles(
 	{
-		menu: {
+		menuIcon: {
 			position: 'relative',
 			cursor: 'pointer',
 			alignItems: 'center',

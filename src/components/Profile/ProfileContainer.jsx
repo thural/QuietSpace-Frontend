@@ -84,14 +84,14 @@ function ProfileContainer() {
     );
 
     const EditSection = () => (
-        <Link to="/settings" >
-            <FlexStyled className={classes.profileEditSection}>
+        <FlexStyled className={classes.profileEditSection}>
+            <Link style={{ width: "100%", textDecoration: "none" }} to="/settings" >
                 <OutlineButton
                     color="rgba(32, 32, 32, 1)"
                     fullWidth
                     name="Edit Profile" />
-            </FlexStyled>
-        </Link>
+            </Link>
+        </FlexStyled>
     );
 
     const UserDetailsSection = () => (

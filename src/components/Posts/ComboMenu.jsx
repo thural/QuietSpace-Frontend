@@ -10,7 +10,7 @@ const ComboMenu = ({ options, selectedOption, textContent, handleSelect }) => {
     const classes = styles();
 
     return (
-        <BoxStyled className={classes.comboWrapper}>
+        <BoxStyled className={classes.wrapper}>
             <ListMenu menuIcon={selectedOption.concat(" ").concat(textContent)}>
                 {options.map((option, index) =>
                     <Clickable

@@ -20,7 +20,7 @@ const RepliedComment = ({ comment, repliedComment }) => {
     const CommentBody = () => (
         <BoxStyled key={comment.id} className={classes.comment} style={appliedStyle}>
             <FlexStyled className={classes.replyCard}>
-                <div className="reply-card-indicator"></div>
+                <BoxStyled className="reply-card-indicator"></BoxStyled>
                 <Typography className="reply-card-text" lineClamp={1}>{repliedComment.text}</Typography>
             </FlexStyled>
             <EmojiText text={comment.text} />
@@ -28,7 +28,7 @@ const RepliedComment = ({ comment, repliedComment }) => {
     );
 
     return (
-        <FlexStyled className={classes.container}>
+        <FlexStyled className={classes.wrapper}>
             <CommentBody />
             <UserAvatar chars={toUpperFirstChar(user.username)} />
         </FlexStyled>

@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 
-    container: {
+    wrapper: {
         fontSize: '.9rem',
         margin: '.8rem 0 1.2rem 0',
         gap: '.5rem',

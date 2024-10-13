@@ -43,7 +43,7 @@ const Post = ({ post }) => {
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline}>
-            <UserAvatar radius="10rem">{toUpperFirstChar(username)}</UserAvatar>
+            <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} />
             <Typography className="title" type="5">{post.title}</Typography>
             <PostMenu handleDeletePost={handleDeletePost} setViewData={setViewData} isMutable={isMutable} />
         </FlexStyled>
@@ -59,16 +59,16 @@ const Post = ({ post }) => {
     );
 
     const PollContent = () => (
-        < Conditional isEnabled={!post.poll}>
+        <Conditional isEnabled={post.poll}>
             <Poll pollData={post.poll} postId={postId} />
         </Conditional>
     );
 
     const PostStats = () => (
         <FlexStyled className={classes.postinfo}>
-            {likeCount > 0 && <Typography>{parseCount(likeCount)} likes</Typography>}
-            {dislikeCount > 0 && <Typography>{parseCount(dislikeCount)} dislikes</Typography>}
-            {!!comments?.length && <Typography>{parseCount(comments?.length)} comments</Typography>}
+            {likeCount > 0 && <Typography size="0.85rem">{parseCount(likeCount)} likes</Typography>}
+            {dislikeCount > 0 && <Typography size="0.85rem">{parseCount(dislikeCount)} dislikes</Typography>}
+            {!!comments?.length && <Typography size="0.85rem">{parseCount(comments.length)} comments</Typography>}
         </FlexStyled>
     );
 
@@ -93,7 +93,7 @@ const Post = ({ post }) => {
             <PostHeadLine />
             <PostContent />
             <PollContent />
-            <BoxStyled className="panel">
+            <BoxStyled className={classes.controls}>
                 <LikeToggle />
                 <DislikeToggle />
                 <CommentToggle />

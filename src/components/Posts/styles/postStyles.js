@@ -16,16 +16,6 @@ const styles = createUseStyles({
       lineHeight: '1rem'
     },
 
-    '& .panel': {
-      gap: '.5rem',
-      height: '1.5rem',
-      display: 'flex',
-      flexFlow: 'row nowrap',
-      justifyContent: 'start',
-      alignItems: 'center',
-      fontSize: '1.3rem'
-    },
-
     '& .iconbox': {
       position: "relative"
     },
@@ -44,6 +34,24 @@ const styles = createUseStyles({
       padding: '0',
       fontSize: '1rem',
     },
+    '& hr': {
+      border: 'none',
+      height: '0.5px',
+      marginTop: '1rem',
+      marginBottom: '0',
+      backgroundColor: 'rgb(204 204 204)'
+    }
+  },
+
+  controls: {
+    gap: '.5rem',
+    height: '1.5rem',
+    display: 'flex',
+    flexFlow: 'row nowrap',
+    justifyContent: 'start',
+    alignItems: 'center',
+    fontSize: '1.3rem',
+    margin: '1rem 0'
   },
 
   postHeadline: {
@@ -62,14 +70,6 @@ const styles = createUseStyles({
       marginRight: "auto"
     }
   },
-
-  '& hr': {
-    border: 'none',
-    height: '0.5px',
-    marginTop: '1rem',
-    marginBottom: '0',
-    backgroundColor: 'rgb(204 204 204)'
-  }
 })
 
 

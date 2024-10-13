@@ -33,9 +33,9 @@ const ChatPage = () => {
     if ((!isSuccess || activeChatId == null)) return null;
 
     return (
-        <DefaultContainer>
-            <ChatContainer />
-            <MessageContainer />
+        <DefaultContainer className={classes.container}>
+            <ChatContainer className={classes.contacts} />
+            <MessageContainer className={classes.messages} />
         </DefaultContainer>
     )
 }

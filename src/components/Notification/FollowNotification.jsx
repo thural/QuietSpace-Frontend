@@ -13,9 +13,7 @@ const FollowNotification = ({ notification }) => {
     const toggleFollow = useToggleFollow();
 
 
-    const isFollowing = useMemo(() => {
-        followings?.content?.some(follow => follow.id === actorId)
-    }, [followings]);
+    const isFollowing = useMemo(() => followings?.content?.some(follow => follow.id === actorId) ? "unfollow" : "follow", [followings]);
 
     const handleClick = (event) => {
         event.preventDefault();
@@ -27,14 +25,10 @@ const FollowNotification = ({ notification }) => {
         toggleFollow.mutate(actorId);
     }
 
-    const followingStatus = () => {
-        return isFollowing ? "unfollow" : "follow";
-    }
-
 
     return (
         <NotificationCard notification={notification} onClick={handleClick} text={"followed you"}>
-            <LightButton name={followingStatus()} disabled={false} onClick={handleFollowToggle} />
+            <LightButton name={isFollowing} disabled={false} onClick={handleFollowToggle} />
         </NotificationCard>
     )
 }

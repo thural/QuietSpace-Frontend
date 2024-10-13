@@ -15,7 +15,7 @@ const ShareMenu = () => {
     }
 
     return (
-        <ListMenu position={"relative"} menuIcon={<PiShareFat />}>
+        <ListMenu styleUpdate={{ position: "absolute", top: "50%", right: "50%" }} menuIcon={<PiShareFat />}>
             <Clickable text="Send" handleClick={handleSendPost} >
                 <PiPaperPlaneTilt />
             </Clickable>
