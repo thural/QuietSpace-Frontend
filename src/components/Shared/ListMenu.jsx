@@ -5,7 +5,7 @@ import styles from "./styles/listMenuStyles";
 const ListMenu = ({ children, menuIcon, styleUpdate }) => {
 
     const classes = styles();
-    const [display, setDisplay] = useState('none');
+    const [display, setDisplay] = useState("none");
 
     const toggleDisplay = () => {
         if (display === "none") setDisplay("block");

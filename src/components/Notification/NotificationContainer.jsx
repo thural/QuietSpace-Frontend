@@ -6,11 +6,8 @@ import BoxStyled from "../Shared/BoxStyled";
 import DefaultContainer from "../Shared/DefaultContainer";
 import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import Typography from "../Shared/Typography";
-import styles from "./styles/notificationContainerStyles";
 
 function NotificationContainer() {
-
-    const classes = styles();
 
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
@@ -43,8 +40,8 @@ function NotificationContainer() {
 
     const RenderResult = () => {
         if (isLoading) return <FullLoadingOverlay />
-        else if (isError) return <Typography type="h1">{postsQuery.error.message}</Typography>
-        else return <ControlPanel />
+        if (isError) return <Typography type="h1">{postsQuery.error.message}</Typography>
+        return <ControlPanel />
     };
 
     return (

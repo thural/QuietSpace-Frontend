@@ -7,7 +7,7 @@ const styles = createUseStyles({
         alignItems: 'center',
         width: '100%',
         borderBottom: ".1rem solid #e3e3e3",
-        padding: ".5rem",
+        padding: ".5rem 0",
 
         '& button': {
             color: 'black',
@@ -26,7 +26,7 @@ const styles = createUseStyles({
         },
     },
 
-    notificationItem: {
+    notificationDetails: {
         width: '100%',
         boxSizing: 'border-box',
         '& .username, .message': {

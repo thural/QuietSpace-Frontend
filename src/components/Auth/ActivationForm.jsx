@@ -3,7 +3,7 @@ import React from "react";
 import BoxStyled from "../Shared/BoxStyled";
 import GradientButton from "../Shared/buttons/GradientButton";
 import OutlineButton from "../Shared/buttons/OutlineButton";
-import FormStyled from "../Shared/Form";
+import FormStyled from "../Shared/FormStyled";
 import Typography from "../Shared/Typography";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";

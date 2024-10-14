@@ -1,6 +1,6 @@
+import React from "react";
 import { viewStore } from "../../hooks/zustand";
-import styles from "./styles/overlayStyles"
-import React from "react"
+import styles from "./styles/overlayStyles";
 
 
 const Overlay = ({ closable }) => {

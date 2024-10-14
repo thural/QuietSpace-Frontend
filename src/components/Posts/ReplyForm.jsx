@@ -2,7 +2,7 @@ import React from "react";
 import { toUpperFirstChar } from "../../utils/stringUtils";
 import EmojiInput from "../Shared/EmojiInput";
 import FlexStyled from "../Shared/FlexStyled";
-import FormStyled from "../Shared/Form";
+import FormStyled from "../Shared/FormStyled";
 import UserAvatar from "../Shared/UserAvatar";
 import useReplyForm from "./hooks/useReplyForm";
 import styles from "./styles/commentReplyStyles";

@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
 
-    queryCard: {
+    userCard: {
         display: 'flex',
         alignItems: 'center',
         width: '100%',
@@ -24,20 +24,6 @@ const styles = createUseStyles({
             backgroundColor: 'rgb(250, 250, 250)'
         },
     },
-
-    queryItem: {
-        width: '100%',
-        boxSizing: 'border-box',
-        '& .username': {
-            margin: '0.25rem 0.5rem',
-        },
-        '& .email': {
-            margin: '0.25rem 0.5rem',
-            fontSize: '1rem',
-            fontWeight: '300',
-            maxWidth: '50%'
-        }
-    }
 
 })
 

@@ -17,7 +17,7 @@ const styles = createUseStyles(
 			right: '0',
 			bottom: '0',
 			display: 'none',
-			zIndex: '0',
+			zIndex: '1',
 			position: 'fixed',
 			width: '100vw',
 			height: '100vh'

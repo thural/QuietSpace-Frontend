@@ -4,10 +4,10 @@ import styles from "./styles/notificationCardStyles";
 import useWasSeen from "../../hooks/useWasSeen";
 import { useNotificationStore } from "../../hooks/zustand";
 import { toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "./BoxStyled";
-import FlexStyled from "./FlexStyled";
-import Typography from "./Typography";
-import UserAvatar from "./UserAvatar";
+import BoxStyled from "../Shared/BoxStyled";
+import FlexStyled from "../Shared/FlexStyled";
+import Typography from "../Shared/Typography";
+import UserAvatar from "../Shared/UserAvatar";
 
 const NotificationCard = ({ notification, onClick, children, text }) => {
 
@@ -30,7 +30,7 @@ const NotificationCard = ({ notification, onClick, children, text }) => {
     return (
         <FlexStyled ref={ref} className={classes.notificationCard} onClick={onClick}>
             <UserAvatar chars={toUpperFirstChar(username)} />
-            <BoxStyled className={classes.notificationItem}>
+            <BoxStyled className={classes.notificationDetails}>
                 <Typography type="5" className="username">{username}</Typography>
                 <Typography size="1rem" lineClamp={5} className="message">{text}</Typography>
             </BoxStyled>

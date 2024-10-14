@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
-  contact: {
+  chatCard: {
     display: 'flex',
     padding: '.5rem',
     flexFlow: 'row nowrap',
@@ -11,17 +11,14 @@ const styles = createUseStyles({
     backgroundColor: 'white',
     borderRadius: '1rem 0 0 1rem',
   },
-  contactAlt: {
+  chatCardAlt: {
     backgroundColor: '#e8e8e8',
     paddingLeft: '0',
     marginLeft: '.5rem',
     borderRadius: '5rem 0 0 5rem',
     padding: '.25rem 0'
   },
-  author: {
-    marginLeft: '0',
-  },
-  text: {
+  chatDetails: {
     display: 'flex',
     flexDirection: 'column',
     gap: '.3rem',

@@ -1,15 +1,16 @@
 import React from "react";
 import AnchorStyled from "../Shared/AnchorStyled";
 import BoxStyled from "../Shared/BoxStyled";
+import ComponentList from "../Shared/ComponentList";
 import FlexStyled from "../Shared/FlexStyled";
 import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import Typography from "../Shared/Typography";
 import QueryInput from "./QueryInput";
-import QueryItem from "./QueryItem";
+import UserCard from "./UserCard";
 import useQueryContainer from "./hooks/useQueryContainer";
 import styles from "./styles/queryContainerStyles";
 
-const QueryContainer = () => {
+const ChatQuery = () => {
 
     const classes = styles();
 
@@ -36,19 +37,13 @@ const QueryContainer = () => {
         )
     }
 
-    const ResultList = ({ queryResult }) => {
-        return queryResult.map((user, index) => (
-            <QueryItem key={index} user={user} handleItemClick={handleItemClick} />
-        ))
-    }
-
     const RenderResult = () => {
         if (makeQueryMutation.isPending) return <FullLoadingOverlay />
-        else if (queryResult.length === 0) return <RecentQueries />
-        else return <ResultList queryResult={queryResult} />;
+        if (queryResult.length === 0) return <RecentQueries />
+        return <ComponentList list={queryResult} Component={UserCard} handleItemClick={handleItemClick} />;
     }
 
-    const ResultContainer = () => {
+    const QueryResult = () => {
         return (
             <BoxStyled className={classes.resultContainer} style={appliedStyle}>
                 <RenderResult />
@@ -60,9 +55,9 @@ const QueryContainer = () => {
     return (
         <BoxStyled className={classes.searchContainer}>
             <QueryInput {...inputProps} />
-            <ResultContainer queryResult={queryResult} />
+            <QueryResult queryResult={queryResult} />
         </BoxStyled>
     )
 }
 
-export default QueryContainer;
+export default ChatQuery;

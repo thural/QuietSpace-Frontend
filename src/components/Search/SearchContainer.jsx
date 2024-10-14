@@ -1,13 +1,12 @@
 import React from "react";
 import DefaultContainer from "../Shared/DefaultContainer";
 import PostQuery from "./PostQuery";
+import QueryResult from "./QueryResult";
 import SearchBar from "./SearchBar";
-import UserQuery from "./UserQuery";
 import useSearch from "./hooks/useSearch";
-import styles from "./styles/searchContainerStyles";
 
 function SearchContainer() {
-    const classes = styles();
+
     const {
         queryInputRef,
         focused,
@@ -35,7 +34,7 @@ function SearchContainer() {
                 queryInputRef={queryInputRef}
                 style={searchAppliedStyle}
             />
-            <UserQuery
+            <QueryResult
                 handleItemClick={handleItemClick}
                 fetchUserQuery={fetchUserQuery}
                 userQueryList={userQueryList}

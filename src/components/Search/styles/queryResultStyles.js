@@ -15,6 +15,6 @@ const styles = createUseStyles({
         backgroundColor: 'rgb(250, 250, 250)'
     }
 
-})
+});
 
 export default styles

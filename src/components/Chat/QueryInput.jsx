@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import FormStyled from "../Shared/Form";
+import FormStyled from "../Shared/FormStyled";
 import InputStyled from "../Shared/InputStyled";
 import styles from "./styles/queryContainerStyles";
 

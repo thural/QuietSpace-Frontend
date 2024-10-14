@@ -1,9 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
 import BoxStyled from "../Shared/BoxStyled";
+import ComponentList from "../Shared/ComponentList";
 import Typography from "../Shared/Typography";
-import Chat from "./Chat";
-import QueryContainer from "./QueryContainer";
-import styles from "./styles/contactContainerStyles";
+import ChatCard from "./ChatCard";
+import ChatQuery from "./ChatQuery";
+import styles from "./styles/chatContainerStyles";
 
 const ChatContainer = () => {
 
@@ -15,14 +16,14 @@ const ChatContainer = () => {
 
     const RenderResult = () => {
         return (chats?.length > 0) ?
-            chats.map((chat, index) => <Chat key={index} chat={chat} />)
+            <ComponentList list={chats} Component={ChatCard} />
             : <Typography ta="center">there's no chat yet</Typography>
     }
 
 
     return (
-        <BoxStyled className={classes.contacts}>
-            <QueryContainer />
+        <BoxStyled className={classes.chatContainer}>
+            <ChatQuery />
             <RenderResult />
         </BoxStyled>
     )

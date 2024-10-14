@@ -1,17 +1,18 @@
 import React from "react";
 import styles from "./styles/userQueryItemStyles";
 
-import { Text, Title } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggleFollow } from "../../hooks/useUserData";
 import { toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "./BoxStyled";
 import FlexStyled from "./FlexStyled";
 import UserAvatar from "./UserAvatar";
+import UserDetails from "./UserDetails";
 
-const UserQueryItem = ({ user, handleItemClick, ...props }) => {
+const UserQueryItem = ({ data: user, handleItemClick, ...props }) => {
 
     const classes = styles();
+
+    console.log("Connection query item: ", user);
 
     const queryClient = useQueryClient();
     const toggleFollow = useToggleFollow();
@@ -33,22 +34,15 @@ const UserQueryItem = ({ user, handleItemClick, ...props }) => {
         return isFollowing ? "unfollow" : "follow";
     }
 
-    const UserDetails = () => (
-        <BoxStyled key={user.id} className={classes.queryItem}>
-            <Title order={5} className="username">{user.username}</Title>
-            <Text lineClamp={1} truncate="end" className="email">{user.email}</Text>
-        </BoxStyled>
-    );
-
     const FollowToggle = () => (
         <button type="button" onClick={handleFollowToggle}>{followStatus()}</button>
     );
 
 
     return (
-        <FlexStyled className={classes.queryCard} onClick={handleClick} {...props}>
+        <FlexStyled className={classes.userCard} onClick={handleClick} {...props}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
-            <UserDetails />
+            <UserDetails user={user} />
             <FollowToggle />
         </FlexStyled>
     )

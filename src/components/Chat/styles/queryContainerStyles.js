@@ -1,4 +1,4 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
     searchContainer: {
@@ -79,20 +79,6 @@ const styles = createUseStyles({
         display: 'flex',
         alignItems: 'center',
         width: '100%'
-    },
-    queryItem: {
-        width: '100%',
-        background: 'white',
-        boxSizing: 'border-box',
-        '& .username': {
-            margin: '0.25rem 0.5rem',
-        },
-        '& .email': {
-            margin: '0.25rem 0.5rem',
-            fontSize: '1rem',
-            fontWeight: '300',
-            maxWidth: '10em'
-        }
     }
 });
 

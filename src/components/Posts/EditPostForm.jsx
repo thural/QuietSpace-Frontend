@@ -1,7 +1,7 @@
 import React from "react";
-import Overlay from "../Overlay/Overlay";
 import BoxStyled from "../Shared/BoxStyled";
-import FormStyled from "../Shared/Form";
+import FormStyled from "../Shared/FormStyled";
+import Overlay from "../Shared/Overlay";
 import Typography from "../Shared/Typography";
 import DarkButton from "../Shared/buttons/DarkButton ";
 import useEditPostForm from "./hooks/useEditPostForm";

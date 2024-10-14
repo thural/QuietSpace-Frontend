@@ -5,7 +5,7 @@ import Typography from "../Shared/Typography";
 import useMessage from "./hooks/useMessage";
 import styles from "./styles/messageStyles";
 
-const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnected }) => {
+const Message = ({ data: message, handleDeleteMessage, setMessageSeen, isClientConnected }) => {
 
     const classes = styles();
 
@@ -27,7 +27,7 @@ const Message = ({ message, handleDeleteMessage, setMessageSeen, isClientConnect
             onMouseOut={handleMouseOut}
         >
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
-                <BoxStyled className={classes.delete} onClick={handleDeleteMessage}>delete</BoxStyled>
+                <BoxStyled className={classes.delete} onClick={() => handleDeleteMessage(message)}>delete</BoxStyled>
             </Conditional>
             <BoxStyled className={classes.text}><Typography>{message.text}</Typography></BoxStyled>
         </BoxStyled>

@@ -1,6 +1,6 @@
 import React from "react";
 import { NotificationType } from "../../utils/enumClasses";
-import NotificationCard from "../Shared/NotificationCard";
+import NotificationCard from "./NotificationCard";
 
 const CommentNotification = ({ notification }) => {
 

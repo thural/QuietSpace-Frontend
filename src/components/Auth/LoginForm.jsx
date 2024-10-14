@@ -2,7 +2,7 @@ import React from "react";
 import BoxStyled from "../Shared/BoxStyled";
 import GradientButton from "../Shared/buttons/GradientButton";
 import OutlineButton from "../Shared/buttons/OutlineButton";
-import FormStyled from "../Shared/Form";
+import FormStyled from "../Shared/FormStyled";
 import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
 import PassInput from "../Shared/PassInput";
 import TextInput from "../Shared/TextInput";

@@ -62,7 +62,7 @@ function ProfileContainer() {
         </Tabs>
     );
 
-    const FollowSection = () => (
+    const ControlSection = () => (
         <FlexStyled className={classes.followSection}>
             <Typography style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{0} posts</Typography>
             <FlexStyled style={{ justifyContent: "space-around", gap: "2rem" }}>
@@ -105,7 +105,7 @@ function ProfileContainer() {
     return (
         <DefaultContainer>
             <UserDetailsSection />
-            <FollowSection />
+            <ControlSection />
             <Conditional isEnabled={viewState.followings}>
                 <Connections userFetch={followings} title="followings" />
             </Conditional>

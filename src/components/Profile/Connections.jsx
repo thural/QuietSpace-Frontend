@@ -1,8 +1,8 @@
 import { Center } from "@mantine/core";
 import React, { useState } from "react";
 
-import Overlay from "../Overlay/Overlay";
 import BoxStyled from "../Shared/BoxStyled";
+import Overlay from "../Shared/Overlay";
 import Typography from "../Shared/Typography";
 import SearchBar from "./SearchBar";
 import styles from "./styles/searchbarStyles";
