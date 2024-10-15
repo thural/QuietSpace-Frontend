@@ -1,16 +1,16 @@
+import BoxStyled from "@shared/BoxStyled";
+import Conditional from "@shared/Conditional";
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
+import UserAvatar from "@shared/UserAvatar";
+import { LikeType } from "@utils/enumClasses";
+import { parseCount, toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
-import { LikeType } from "../../utils/enumClasses";
-import { parseCount, toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "../Shared/BoxStyled";
-import Conditional from "../Shared/Conditional";
-import FlexStyled from "../Shared/FlexStyled";
-import Typography from "../Shared/Typography";
-import UserAvatar from "../Shared/UserAvatar";
 import CommentSection from "./CommentSection";
 import EditPostForm from "./EditPostForm";
 import { usePost } from "./hooks/usePost";

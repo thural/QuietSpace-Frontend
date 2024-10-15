@@ -1,14 +1,14 @@
+import useCreatePostForm from "./hooks/useCreatePostForm";
+import BoxStyled from "@shared/BoxStyled";
+import DarkButton from "@shared/buttons/DarkButton ";
+import FlexStyled from "@shared/FlexStyled";
+import FormStyled from "@shared/FormStyled";
+import Overlay from "@shared/Overlay";
+import TextInput from "@shared/TextInput";
+import UserAvatar from "@shared/UserAvatar";
 import React from "react";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
-import BoxStyled from "../Shared/BoxStyled";
-import DarkButton from "../Shared/buttons/DarkButton ";
-import FlexStyled from "../Shared/FlexStyled";
-import FormStyled from "../Shared/FormStyled";
-import Overlay from "../Shared/Overlay";
-import TextInput from "../Shared/TextInput";
-import UserAvatar from "../Shared/UserAvatar";
 import ComboMenu from "./ComboMenu";
-import useCreatePostForm from "./hooks/useCreatePostForm";
 import PollSection from "./PollSection";
 import styles from "./styles/createPostStyles";
 

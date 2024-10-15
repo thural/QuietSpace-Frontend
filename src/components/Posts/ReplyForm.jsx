@@ -1,9 +1,9 @@
+import EmojiInput from "@shared/EmojiInput";
+import FlexStyled from "@shared/FlexStyled";
+import FormStyled from "@shared/FormStyled";
+import UserAvatar from "@shared/UserAvatar";
+import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
-import { toUpperFirstChar } from "../../utils/stringUtils";
-import EmojiInput from "../Shared/EmojiInput";
-import FlexStyled from "../Shared/FlexStyled";
-import FormStyled from "../Shared/FormStyled";
-import UserAvatar from "../Shared/UserAvatar";
 import useReplyForm from "./hooks/useReplyForm";
 import styles from "./styles/commentReplyStyles";
 

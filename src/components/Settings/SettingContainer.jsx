@@ -2,9 +2,9 @@ import { Tabs, Text } from "@mantine/core";
 import React, { useState } from "react";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 
+import DefaultContainer from "@shared/DefaultContainer";
+import Typography from "@shared/Typography";
 import { useLocation, useNavigate } from "react-router-dom";
-import DefaultContainer from "../Shared/DefaultContainer";
-import Typography from "../Shared/Typography";
 import styles from "./styles/settingContainerStyles";
 
 function SettingsContainer() {

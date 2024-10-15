@@ -1,6 +1,6 @@
+import NotificationList from "@components/Notification/NotificationList";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import NotificationList from "../../components/Notification/NotificationList";
 
 
 const AllNotifications = () => {

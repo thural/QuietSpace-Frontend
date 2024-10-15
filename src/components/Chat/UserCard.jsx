@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./styles/queryContainerStyles";
 
+import FlexStyled from "@shared/FlexStyled";
+import UserAvatar from "@shared/UserAvatar";
+import UserDetails from "@shared/UserDetails";
 import { toUpperFirstChar } from "../../utils/stringUtils";
-import FlexStyled from "../Shared/FlexStyled";
-import UserAvatar from "../Shared/UserAvatar";
-import UserDetails from "../Shared/UserDetails";
 
 const UserCard = ({ data: user, handleItemClick, children }) => {
 

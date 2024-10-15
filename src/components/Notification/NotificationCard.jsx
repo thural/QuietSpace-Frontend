@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import styles from "./styles/notificationCardStyles";
 
-import useWasSeen from "../../hooks/useWasSeen";
-import { useNotificationStore } from "../../hooks/zustand";
-import { toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "../Shared/BoxStyled";
-import FlexStyled from "../Shared/FlexStyled";
-import Typography from "../Shared/Typography";
-import UserAvatar from "../Shared/UserAvatar";
+import useWasSeen from "@hooks/useWasSeen";
+import { useNotificationStore } from "@hooks/zustand";
+import BoxStyled from "@shared/BoxStyled";
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
+import UserAvatar from "@shared/UserAvatar";
+import { toUpperFirstChar } from "@utils/stringUtils";
 
 const NotificationCard = ({ notification, onClick, children, text }) => {
 

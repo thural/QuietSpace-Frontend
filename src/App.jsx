@@ -10,7 +10,9 @@ import './App.css';
 
 import { useEffect } from "react";
 import ActivationForm from "./components/Auth/ActivationForm";
-import FullLoadingOverlay from "./components/Shared/FullLoadingOverlay";
+import ProfileContainer from "./components/Profile/ProfileContainer";
+import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
+import Typography from "./components/shared/Typography";
 import useChatSocket from "./hooks/useChatSocket";
 import useJwtAuth from "./hooks/useJwtAuth";
 import { useGetNotifications } from "./hooks/useNotificationData";
@@ -62,7 +64,10 @@ const App = () => {
                 <Route path="/posts/*" element={<PostPage />} />
                 <Route path="/search/*" element={<SearchPage />} />
                 <Route path="/chat/*" element={<ChatPage />} />
-                <Route path="/profile/*" element={<ProfilePage />} />
+                <Route path="/profile" element={<ProfilePage />}>
+                    <Route index element={<ProfileContainer />} />
+                    <Route path=":userId" element={<ProfileContainer />} />
+                </Route>
                 <Route path="/notification/*" element={<NotificationPage />}>
                     <Route path="all" element={<AllNotifications />} />
                     <Route path="requests" element={<RequestNotifications />} />
@@ -73,6 +78,7 @@ const App = () => {
                 <Route path="/signin" element={<AuthPage />} />
                 <Route path="/signout" element={<SignoutPage />} />
                 <Route path="/activation" element={<ActivationForm />} />
+                <Route path="*" element={<Typography type="h1">Not Found</Typography>} />
             </Routes>
         </>
     )

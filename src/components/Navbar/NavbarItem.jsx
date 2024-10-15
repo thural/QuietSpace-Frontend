@@ -1,5 +1,5 @@
+import BoxStyled from "@shared/BoxStyled"
 import { Link } from "react-router-dom"
-import BoxStyled from "../Shared/BoxStyled"
 
 const NavbarItem = ({ linkTo, pathName, icon, iconFill, children }) => {
 

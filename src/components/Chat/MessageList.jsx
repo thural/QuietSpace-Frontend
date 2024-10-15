@@ -1,5 +1,5 @@
-import BoxStyled from "../Shared/BoxStyled";
-import ComponentList from "../Shared/ComponentList";
+import BoxStyled from "@shared/BoxStyled";
+import ComponentList from "@shared/ComponentList";
 import Message from "./Message";
 import styles from "./styles/messageListStyles";
 

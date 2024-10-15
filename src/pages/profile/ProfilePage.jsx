@@ -1,9 +1,13 @@
 import React from "react";
-import ProfileContainer from "../../components/Profile/ProfileContainer";
+import { Outlet } from "react-router-dom";
 
 
 const ProfilePage = () => {
-    return <ProfileContainer />
+    return (
+        <>
+            <Outlet context={{ textContext: "context passed down to nested routes" }} />
+        </>
+    )
 }
 
 export default ProfilePage

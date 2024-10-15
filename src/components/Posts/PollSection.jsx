@@ -1,6 +1,6 @@
-import FlexStyled from "../Shared/FlexStyled";
-import TextInput from "../Shared/TextInput";
-import Typography from "../Shared/Typography";
+import FlexStyled from "@shared/FlexStyled";
+import TextInput from "@shared/TextInput";
+import Typography from "@shared/Typography";
 import styles from "./styles/createPostStyles";
 
 const PollSection = ({ postData, handleChange, togglePoll, pollView }) => {

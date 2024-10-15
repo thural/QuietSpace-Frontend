@@ -1,7 +1,7 @@
+import BoxStyled from "@shared/BoxStyled";
+import Clickable from "@shared/Clickable";
+import ListMenu from "@shared/ListMenu";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
-import Clickable from "../Shared/Clickable";
-import ListMenu from "../Shared/ListMenu";
 import styles from "./styles/comboMenuStyles";
 
 

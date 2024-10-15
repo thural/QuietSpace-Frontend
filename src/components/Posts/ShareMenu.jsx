@@ -1,7 +1,7 @@
+import Clickable from "@shared/Clickable";
+import ListMenu from "@shared/ListMenu";
 import React from "react";
 import { PiArrowsClockwise, PiPaperPlaneTilt, PiShareFat } from "react-icons/pi";
-import Clickable from "../Shared/Clickable";
-import ListMenu from "../Shared/ListMenu";
 
 
 const ShareMenu = () => {

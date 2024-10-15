@@ -1,6 +1,6 @@
+import BoxStyled from "@shared/BoxStyled";
+import Typography from "@shared/Typography";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
-import Typography from "../Shared/Typography";
 import ChatHeadline from "./ChatHeadline";
 import { useMessageContainer } from "./hooks/useMessageContainer";
 import MessageInput from "./MessageInput";

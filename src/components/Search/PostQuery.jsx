@@ -1,6 +1,6 @@
-import Post from "../Posts/Post";
-import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
-import Typography from "../Shared/Typography";
+import Post from "@components/Posts/Post";
+import FullLoadingOverlay from "@shared/FullLoadingOverlay";
+import Typography from "@shared/Typography";
 
 const PostQuery = ({ fetchPostQuery, postQueryResult }) => (
     fetchPostQuery.isPending ? <FullLoadingOverlay />

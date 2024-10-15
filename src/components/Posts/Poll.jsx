@@ -1,7 +1,7 @@
 import { Progress } from "@mantine/core";
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
 import React from "react";
-import FlexStyled from "../Shared/FlexStyled";
-import Typography from "../Shared/Typography";
 import usePoll from "./hooks/usePoll";
 import styles from "./styles/pollStyles";
 

@@ -1,11 +1,11 @@
+import BoxStyled from "@shared/BoxStyled";
+import Conditional from "@shared/Conditional";
+import EmojiText from "@shared/EmojiText";
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
+import UserAvatar from "@shared/UserAvatar";
+import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
-import { toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "../Shared/BoxStyled";
-import Conditional from "../Shared/Conditional";
-import EmojiText from "../Shared/EmojiText";
-import FlexStyled from "../Shared/FlexStyled";
-import Typography from "../Shared/Typography";
-import UserAvatar from "../Shared/UserAvatar";
 import useComment from "./hooks/useComment";
 import ReplyForm from "./ReplyForm";
 import styles from "./styles/commentStyles";

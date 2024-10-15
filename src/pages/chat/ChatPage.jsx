@@ -1,12 +1,12 @@
+import ChatContainer from "@components/Chat/ChatContainer";
+import MessageContainer from "@components/Chat/MessageContainer";
+import { useGetChatsByUserId } from "@hooks/useChatData";
+import { useChatStore } from "@hooks/zustand";
+import DefaultContainer from "@shared/DefaultContainer";
+import FullLoadingOverlay from "@shared/FullLoadingOverlay";
+import Typography from "@shared/Typography";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
-import ChatContainer from "../../components/Chat/ChatContainer";
-import MessageContainer from "../../components/Chat/MessageContainer";
-import DefaultContainer from "../../components/Shared/DefaultContainer";
-import FullLoadingOverlay from "../../components/Shared/FullLoadingOverlay";
-import Typography from "../../components/Shared/Typography";
-import { useGetChatsByUserId } from "../../hooks/useChatData";
-import { useChatStore } from "../../hooks/zustand";
 import styles from "./styles/chatPageStyles";
 
 const ChatPage = () => {

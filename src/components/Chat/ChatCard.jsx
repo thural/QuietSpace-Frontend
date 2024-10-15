@@ -1,8 +1,8 @@
+import BoxStyled from "@shared/BoxStyled";
+import Typography from "@shared/Typography";
+import UserAvatar from "@shared/UserAvatar";
 import React from "react";
 import { toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "../Shared/BoxStyled";
-import Typography from "../Shared/Typography";
-import UserAvatar from "../Shared/UserAvatar";
 import useChat from "./hooks/useChat";
 import styles from "./styles/chatCardStyles";
 

@@ -1,9 +1,9 @@
+import BoxStyled from "@shared/BoxStyled";
+import FormStyled from "@shared/FormStyled";
+import Overlay from "@shared/Overlay";
+import Typography from "@shared/Typography";
+import DarkButton from "@shared/buttons/DarkButton ";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
-import FormStyled from "../Shared/FormStyled";
-import Overlay from "../Shared/Overlay";
-import Typography from "../Shared/Typography";
-import DarkButton from "../Shared/buttons/DarkButton ";
 import useEditPostForm from "./hooks/useEditPostForm";
 import styles from "./styles/editPostStyles";
 

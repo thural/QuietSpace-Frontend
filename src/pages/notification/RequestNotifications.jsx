@@ -1,7 +1,7 @@
+import NotificationList from "@components/Notification/NotificationList";
 import { useQueryClient } from "@tanstack/react-query";
+import { NotificationType } from "@utils/enumClasses";
 import React from "react";
-import { NotificationType } from "../../utils/enumClasses";
-import NotificationList from "../../components/Notification/NotificationList";
 
 
 const RequestNotifications = () => {

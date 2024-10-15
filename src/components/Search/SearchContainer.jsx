@@ -1,5 +1,5 @@
+import DefaultContainer from "@shared/DefaultContainer";
 import React from "react";
-import DefaultContainer from "../Shared/DefaultContainer";
 import PostQuery from "./PostQuery";
 import QueryResult from "./QueryResult";
 import SearchBar from "./SearchBar";

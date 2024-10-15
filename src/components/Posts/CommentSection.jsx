@@ -1,6 +1,6 @@
+import BoxStyled from "@shared/BoxStyled";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 import RepliedComment from "./RepliedComment";

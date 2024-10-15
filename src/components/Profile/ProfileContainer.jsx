@@ -2,25 +2,28 @@ import React from "react";
 import Connections from "./Connections";
 import styles from "./styles/profileContainerStyles";
 
+import { useGetFollowers, useGetFollowings } from "@hooks/useUserData";
+import { viewStore } from "@hooks/zustand";
 import { Tabs } from "@mantine/core";
+import BoxStyled from "@shared/BoxStyled";
+import OutlineButton from "@shared/buttons/OutlineButton";
+import Conditional from "@shared/Conditional";
+import DefaultContainer from "@shared/DefaultContainer";
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
+import UserAvatar from "@shared/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
+import { toUpperFirstChar } from "@utils/stringUtils";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
-import { Link, useNavigate } from "react-router-dom";
-import { useGetFollowers, useGetFollowings } from "../../hooks/useUserData";
-import { viewStore } from "../../hooks/zustand";
-import { toUpperFirstChar } from "../../utils/stringUtils";
-import BoxStyled from "../Shared/BoxStyled";
-import OutlineButton from "../Shared/buttons/OutlineButton";
-import Conditional from "../Shared/Conditional";
-import DefaultContainer from "../Shared/DefaultContainer";
-import FlexStyled from "../Shared/FlexStyled";
-import Typography from "../Shared/Typography";
-import UserAvatar from "../Shared/UserAvatar";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 
 function ProfileContainer() {
 
     const classes = styles();
+
+    const { userId } = useParams();
+    const { textContext } = useOutletContext();
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -62,7 +65,7 @@ function ProfileContainer() {
         </Tabs>
     );
 
-    const ControlSection = () => (
+    const FollowsSection = ({ followers, followings, handleSignout }) => (
         <FlexStyled className={classes.followSection}>
             <Typography style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{0} posts</Typography>
             <FlexStyled style={{ justifyContent: "space-around", gap: "2rem" }}>
@@ -83,36 +86,42 @@ function ProfileContainer() {
         </FlexStyled>
     );
 
-    const EditSection = () => (
+    const ProfileControls = ({ children }) => (
         <FlexStyled className={classes.profileEditSection}>
-            <Link style={{ width: "100%", textDecoration: "none" }} to="/settings" >
-                <OutlineButton
-                    color="rgba(32, 32, 32, 1)"
-                    fullWidth
-                    name="Edit Profile" />
-            </Link>
+            {children}
         </FlexStyled>
     );
 
-    const UserDetailsSection = () => (
+    const UserDetailsSection = ({ user }) => (
         <FlexStyled className={classes.identitySection}>
-            <BoxStyled className="profileName"><Typography fw={700}>{signedUser.username}</Typography></BoxStyled>
-            <UserAvatar size="4.5rem" chars={toUpperFirstChar(signedUser.username)} />
+            <BoxStyled className="profileName"><Typography fw={700}>{user.username}</Typography></BoxStyled>
+            <UserAvatar size="4.5rem" chars={toUpperFirstChar(user.username)} />
         </FlexStyled>
     );
 
 
     return (
         <DefaultContainer>
-            <UserDetailsSection />
-            <ControlSection />
+            <UserDetailsSection user={signedUser} />
+            <FollowsSection
+                followers={followers}
+                followings={followings}
+                handleSignout={handleSignout}
+            />
             <Conditional isEnabled={viewState.followings}>
                 <Connections userFetch={followings} title="followings" />
             </Conditional>
             <Conditional isEnabled={viewState.followers}>
                 <Connections userFetch={followers} title="followers" />
             </Conditional>
-            <EditSection />
+            <ProfileControls>
+                <Link style={{ width: "100%", textDecoration: "none" }} to="/settings" >
+                    <OutlineButton
+                        color="rgba(32, 32, 32, 1)"
+                        fullWidth
+                        name="Edit Profile" />
+                </Link>
+            </ProfileControls>
             <ProfileTabs />
         </DefaultContainer>
     )

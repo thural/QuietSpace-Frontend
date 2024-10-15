@@ -1,7 +1,7 @@
+import Clickable from "@shared/Clickable";
+import Conditional from "@shared/Conditional";
+import ListMenu from "@shared/ListMenu";
 import React from "react";
-import Conditional from "../Shared/Conditional";
-import ListMenu from "../Shared/ListMenu";
-import Clickable from "../Shared/Clickable";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
 

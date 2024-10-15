@@ -1,5 +1,5 @@
+import { NotificationType } from "@utils/enumClasses";
 import React from "react";
-import { NotificationType } from "../../utils/enumClasses";
 import NotificationCard from "./NotificationCard";
 
 const PostNotification = ({ notification }) => {

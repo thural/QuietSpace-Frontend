@@ -1,9 +1,9 @@
+import ActivationForm from "@components/Auth/ActivationForm";
+import LoginForm from "@components/Auth/LoginForm";
+import SignupForm from "@components/Auth/SignupForm";
+import BoxStyled from "@components/shared/BoxStyled";
+import Typography from "@components/shared/Typography";
 import React, { useState } from "react";
-import ActivationForm from "../../components/Auth/ActivationForm";
-import LoginForm from "../../components/Auth/LoginForm";
-import SignupForm from "../../components/Auth/SignupForm";
-import BoxStyled from "../../components/Shared/BoxStyled";
-import Typography from "../../components/Shared/Typography";
 import styles from "./styles/authStyles";
 
 const AuthPage = () => {

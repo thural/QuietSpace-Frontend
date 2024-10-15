@@ -1,7 +1,7 @@
+import BoxStyled from "@shared/BoxStyled";
+import Conditional from "@shared/Conditional";
+import Typography from "@shared/Typography";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
-import Conditional from "../Shared/Conditional";
-import Typography from "../Shared/Typography";
 import useMessage from "./hooks/useMessage";
 import styles from "./styles/messageStyles";
 

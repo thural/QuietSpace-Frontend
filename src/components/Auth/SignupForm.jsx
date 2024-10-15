@@ -1,12 +1,12 @@
+import BoxStyled from "@shared/BoxStyled";
+import GradientButton from "@shared/buttons/GradientButton";
+import OutlineButton from "@shared/buttons/OutlineButton";
+import FormStyled from "@shared/FormStyled";
+import FullLoadingOverlay from "@shared/FullLoadingOverlay";
+import PassInput from "@shared/PassInput";
+import TextInput from "@shared/TextInput";
+import Typography from "@shared/Typography";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
-import GradientButton from "../Shared/buttons/GradientButton";
-import OutlineButton from "../Shared/buttons/OutlineButton";
-import FormStyled from "../Shared/FormStyled";
-import FullLoadingOverlay from "../Shared/FullLoadingOverlay";
-import PassInput from "../Shared/PassInput";
-import TextInput from "../Shared/TextInput";
-import Typography from "../Shared/Typography";
 import { useSignupForm } from "./hooks/useSignupForm";
 import styles from "./styles/formStyles";
 

@@ -1,6 +1,6 @@
+import EmojiInput from "@shared/EmojiInput";
+import FormStyled from "@shared/FormStyled";
 import React from "react";
-import EmojiInput from "../Shared/EmojiInput";
-import FormStyled from "../Shared/FormStyled";
 import useCommentForm from "./hooks/useCommentForm";
 import styles from "./styles/commentSectionStyles";
 

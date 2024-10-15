@@ -1,5 +1,5 @@
+import PostContainer from "@components/Posts/PostContainer";
 import React from "react";
-import PostContainer from "../../components/Posts/PostContainer";
 
 
 const PostPage = () => {

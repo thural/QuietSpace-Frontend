@@ -1,10 +1,10 @@
 import { PinInput, Text } from "@mantine/core";
+import BoxStyled from "@shared/BoxStyled";
+import GradientButton from "@shared/buttons/GradientButton";
+import OutlineButton from "@shared/buttons/OutlineButton";
+import FormStyled from "@shared/FormStyled";
+import Typography from "@shared/Typography";
 import React from "react";
-import BoxStyled from "../Shared/BoxStyled";
-import GradientButton from "../Shared/buttons/GradientButton";
-import OutlineButton from "../Shared/buttons/OutlineButton";
-import FormStyled from "../Shared/FormStyled";
-import Typography from "../Shared/Typography";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
 

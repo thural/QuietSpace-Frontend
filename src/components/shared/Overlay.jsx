@@ -1,5 +1,5 @@
+import { viewStore } from "@hooks/zustand";
 import React from "react";
-import { viewStore } from "../../hooks/zustand";
 import styles from "./styles/overlayStyles";
 
 

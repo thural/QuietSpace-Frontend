@@ -1,9 +1,9 @@
 import { Center } from "@mantine/core";
 import React, { useState } from "react";
 
-import BoxStyled from "../Shared/BoxStyled";
-import Overlay from "../Shared/Overlay";
-import Typography from "../Shared/Typography";
+import BoxStyled from "@shared/BoxStyled";
+import Overlay from "@shared/Overlay";
+import Typography from "@shared/Typography";
 import SearchBar from "./SearchBar";
 import styles from "./styles/searchbarStyles";
 import UserList from "./UserList";

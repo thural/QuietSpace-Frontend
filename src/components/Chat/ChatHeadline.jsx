@@ -1,7 +1,7 @@
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
+import UserAvatar from "@shared/UserAvatar";
 import { toUpperFirstChar } from "../../utils/stringUtils";
-import FlexStyled from "../Shared/FlexStyled";
-import Typography from "../Shared/Typography";
-import UserAvatar from "../Shared/UserAvatar";
 import ChatMenu from "./ChatMenu";
 import styles from "./styles/chatHeadlineStyles";
 

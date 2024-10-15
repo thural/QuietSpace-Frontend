@@ -1,7 +1,7 @@
+import BoxStyled from "@shared/BoxStyled";
+import ComponentList from "@shared/ComponentList";
+import Typography from "@shared/Typography";
 import { useQueryClient } from "@tanstack/react-query";
-import BoxStyled from "../Shared/BoxStyled";
-import ComponentList from "../Shared/ComponentList";
-import Typography from "../Shared/Typography";
 import ChatCard from "./ChatCard";
 import ChatQuery from "./ChatQuery";
 import styles from "./styles/chatContainerStyles";

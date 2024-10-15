@@ -1,5 +1,5 @@
+import NotificationContainer from "@components/Notification/NotificationContainer";
 import React from "react";
-import NotificationContainer from "../../components/Notification/NotificationContainer";
 
 
 const NotificationPage = () => {

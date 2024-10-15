@@ -1,6 +1,6 @@
+import FormStyled from "@shared/FormStyled";
+import InputStyled from "@shared/InputStyled";
 import React, { useRef } from "react";
-import FormStyled from "../Shared/FormStyled";
-import InputStyled from "../Shared/InputStyled";
 import styles from "./styles/queryContainerStyles";
 
 

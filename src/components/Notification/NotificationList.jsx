@@ -1,6 +1,6 @@
+import Typography from "@shared/Typography";
+import { NotificationType } from "@utils/enumClasses";
 import React from "react";
-import { NotificationType } from "../../utils/enumClasses";
-import Typography from "../Shared/Typography";
 import CommentNotification from "./CommentNotification";
 import FollowNotification from "./FollowNotification";
 import PostNotification from "./PostNotification";

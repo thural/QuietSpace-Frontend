@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 
+import { useToggleFollow } from "@hooks/useUserData";
+import LightButton from "@shared/buttons/LightButton";
 import { useQueryClient } from "@tanstack/react-query";
-import { useToggleFollow } from "../../hooks/useUserData";
-import LightButton from "../Shared/buttons/LightButton";
 import NotificationCard from "./NotificationCard";
 
 const FollowNotification = ({ notification }) => {

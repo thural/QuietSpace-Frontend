@@ -1,10 +1,10 @@
+import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
+import Typography from "@components/shared/Typography";
+import useJwtAuth from "@hooks/useJwtAuth";
+import { useAuthStore } from "@hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FullLoadingOverlay from "../../components/Shared/FullLoadingOverlay";
-import Typography from "../../components/Shared/Typography";
-import useJwtAuth from "../../hooks/useJwtAuth";
-import { useAuthStore } from "../../hooks/zustand";
 
 
 const SignoutPage = () => {

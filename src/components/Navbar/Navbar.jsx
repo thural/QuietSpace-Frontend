@@ -1,4 +1,8 @@
 import { Badge } from "@mantine/core";
+import BoxStyled from "@shared/BoxStyled";
+import Conditional from "@shared/Conditional";
+import NavStyled from "@shared/NavStyled";
+import Typography from "@shared/Typography";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo } from "react";
 import {
@@ -14,10 +18,6 @@ import {
   PiUserFill
 } from "react-icons/pi";
 import { useLocation } from "react-router-dom";
-import BoxStyled from "../Shared/BoxStyled";
-import Conditional from "../Shared/Conditional";
-import NavStyled from "../Shared/NavStyled";
-import Typography from "../Shared/Typography";
 import Menu from "./Menu";
 import NavbarItem from "./NavbarItem";
 import styles from "./styles/navbarStyles";

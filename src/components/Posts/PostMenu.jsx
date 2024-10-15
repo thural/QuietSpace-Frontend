@@ -1,8 +1,8 @@
+import Clickable from "@shared/Clickable";
+import Conditional from "@shared/Conditional";
+import ListMenu from "@shared/ListMenu";
 import React from "react";
 import { PiDotsThreeVertical } from "react-icons/pi";
-import Clickable from "../Shared/Clickable";
-import Conditional from "../Shared/Conditional";
-import ListMenu from "../Shared/ListMenu";
 
 
 const PostMenu = ({ handleDeletePost, setViewData, isMutable }) => {

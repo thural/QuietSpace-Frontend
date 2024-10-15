@@ -1,6 +1,6 @@
-import BoxStyled from "../Shared/BoxStyled";
-import EmojiInput from "../Shared/EmojiInput";
-import FormStyled from "../Shared/FormStyled";
+import BoxStyled from "@shared/BoxStyled";
+import EmojiInput from "@shared/EmojiInput";
+import FormStyled from "@shared/FormStyled";
 import styles from "./styles/messageInputStyles";
 
 const MessageInput = ({ value, onChange, onEnter, placeholder, enabled }) => {
