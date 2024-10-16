@@ -44,10 +44,6 @@ const useSearch = () => {
         // TODO: implement logic to handle blur events
     };
 
-    const handleItemClick = () => {
-        // TODO: implement and call follow feature
-    };
-
     return {
         queryInputRef,
         focused,
@@ -57,7 +53,6 @@ const useSearch = () => {
         handleKeyDown,
         handleInputFocus,
         handleInputBlur,
-        handleItemClick,
         setUserQueryResult,
         setPostQueryResult,
         fetchPostQuery,

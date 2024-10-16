@@ -1,35 +1,36 @@
 import React from "react";
 import Connections from "./Connections";
 
+
 import { useGetFollowers, useGetFollowings } from "@hooks/useUserData";
 import { viewStore } from "@hooks/zustand";
 import { Tabs } from "@mantine/core";
+import OutlineButton from "@shared/buttons/OutlineButton";
 import Conditional from "@shared/Conditional";
 import DefaultContainer from "@shared/DefaultContainer";
-import { PiClockClockwise, PiIntersect, PiNote } from "react-icons/pi";
-import { useOutletContext, useParams } from "react-router-dom";
-import { useGetPostsByUserId } from "../../hooks/usePostData";
-import { useGetUserById } from "../../hooks/useUserData";
-import OutlineButton from "../shared/buttons/OutlineButton";
-import FollowToggle from "../shared/FollowToggle";
+import { useQueryClient } from "@tanstack/react-query";
+import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
+import { Link, useNavigate } from "react-router-dom";
+import { useGetPosts } from "../../hooks/usePostData";
+import BoxStyled from "../shared/BoxStyled";
 import FullLoadingOverlay from "../shared/FullLoadingOverlay";
 import FollowsSection from "./FollowSection";
 import ProfileControls from "./ProfileControls";
 import UserDetailsSection from "./UserDetailsSection";
 
 
-function ProfileContainer() {
+const UserProfileContainer = () => {
 
-    const { userId } = useParams();
-    const { textContext } = useOutletContext();
-
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { data: viewState, setViewData } = viewStore();
-    const { data: user, isLoading: isUserLoading } = useGetUserById(userId);
-    const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
-    const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy
-    const { data: userPosts, isLoading: isPostsLoading } = useGetPostsByUserId(userId);
+    const signedUser = queryClient.getQueryData(["user"]);
+    const followers = useGetFollowers(signedUser.id);
+    const followings = useGetFollowings(signedUser.id);
+    const { data: userPosts, isLoading: isPostsLoading } = useGetPosts();
 
-    if (isUserLoading || isPostsLoading) return <FullLoadingOverlay />
+
+    if (!signedUser || isPostsLoading) return <FullLoadingOverlay />
 
 
     const toggleFollowings = () => {
@@ -38,6 +39,10 @@ function ProfileContainer() {
 
     const toggleFollowers = () => {
         setViewData({ followers: true });
+    }
+
+    const handleSignout = () => {
+        navigate("/signout");
     }
 
 
@@ -60,21 +65,19 @@ function ProfileContainer() {
         </Tabs>
     );
 
-    const OutlineButtonStyled = ({ ...props }) => (
-        <OutlineButton color="rgba(32, 32, 32, 1)" fullWidth {...props} />
-    )
-
 
     return (
         <DefaultContainer>
-            <UserDetailsSection user={user} />
+            <UserDetailsSection user={signedUser} />
             <FollowsSection
                 followers={followers}
                 followings={followings}
                 posts={userPosts}
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
-            />
+            >
+                <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
+            </FollowsSection>
             <Conditional isEnabled={viewState.followings}>
                 <Connections userFetch={followings} title="followings" />
             </Conditional>
@@ -82,11 +85,17 @@ function ProfileContainer() {
                 <Connections userFetch={followers} title="followers" />
             </Conditional>
             <ProfileControls>
-                <FollowToggle Button={OutlineButtonStyled} user={user} />
+                <Link style={{ width: "100%", textDecoration: "none" }} to="/settings" >
+                    <OutlineButton
+                        color="rgba(32, 32, 32, 1)"
+                        fullWidth
+                        name="Edit Profile"
+                    />
+                </Link>
             </ProfileControls>
             <ProfileTabs />
         </DefaultContainer>
     )
 }
 
-export default ProfileContainer
+export default UserProfileContainer

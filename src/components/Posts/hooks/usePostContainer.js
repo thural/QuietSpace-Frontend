@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { viewStore } from "../../../hooks/zustand";
 import { useGetPosts } from "../../../hooks/usePostData";
+import { viewStore } from "../../../hooks/zustand";
 
 export const usePostContainer = () => {
     const queryClient = useQueryClient();

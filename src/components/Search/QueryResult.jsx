@@ -5,14 +5,14 @@ import Typography from "@shared/Typography";
 import UserQueryItem from "@shared/UserQueryItem";
 import styles from "./styles/queryResultStyles";
 
-const QueryResult = ({ handleItemClick, fetchUserQuery, userQueryList, style }) => {
+const QueryResult = ({ fetchUserQuery, userQueryList, style }) => {
 
     const classes = styles();
 
     const RenderResult = () => {
         if (fetchUserQuery.isPending) return <FullLoadingOverlay />;
         if (fetchUserQuery.isError) return <Typography type="h1">{fetchUserQuery.error.message}</Typography>;
-        return <ComponentList list={userQueryList} Component={UserQueryItem} handleItemClick={handleItemClick} />;
+        return <ComponentList list={userQueryList} Component={UserQueryItem} />;
     }
 
     return (

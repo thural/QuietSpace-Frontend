@@ -16,7 +16,7 @@ function Connections({ userFetch, title }) {
 
 
     const filterByQuery = (value) => {
-        return userFetch.data
+        return userFetch?.data?.content
             .filter(f => (f.username.includes(value) || f.email.includes(value)));
     }
 

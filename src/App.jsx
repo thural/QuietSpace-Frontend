@@ -11,6 +11,7 @@ import './App.css';
 import { useEffect } from "react";
 import ActivationForm from "./components/Auth/ActivationForm";
 import ProfileContainer from "./components/Profile/ProfileContainer";
+import UserProfileContainer from "./components/Profile/UserProfileContainer";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import Typography from "./components/shared/Typography";
 import useChatSocket from "./hooks/useChatSocket";
@@ -18,7 +19,7 @@ import useJwtAuth from "./hooks/useJwtAuth";
 import { useGetNotifications } from "./hooks/useNotificationData";
 import useNotificationSocket from "./hooks/useNotificationSocket";
 import { useStompClient } from "./hooks/useStompClient";
-import { useGetCurrentUser, useGetFollowers, useGetFollowings } from "./hooks/useUserData";
+import { useGetCurrentUser } from "./hooks/useUserData";
 import { useAuthStore } from "./hooks/zustand";
 import AllNotifications from "./pages/notification/AllNotifications";
 import NotificationPage from "./pages/notification/NotifiactionPage";
@@ -37,8 +38,6 @@ const App = () => {
 
     useStompClient({});
     useChatSocket();
-    useGetFollowers();
-    useGetFollowings();
     useGetNotifications();
     useNotificationSocket();
 
@@ -65,7 +64,7 @@ const App = () => {
                 <Route path="/search/*" element={<SearchPage />} />
                 <Route path="/chat/*" element={<ChatPage />} />
                 <Route path="/profile" element={<ProfilePage />}>
-                    <Route index element={<ProfileContainer />} />
+                    <Route index element={<UserProfileContainer />} />
                     <Route path=":userId" element={<ProfileContainer />} />
                 </Route>
                 <Route path="/notification/*" element={<NotificationPage />}>

@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { ChatEventType } from "../utils/enumClasses";
 
 import {
@@ -109,7 +109,6 @@ const useChatSocket = () => {
         if (!isClientConnected || !user) return
         subscribe(`/user/${user.id}/private/chat/event`, onSubscribe);
         subscribe(`/user/${user.id}/private/chat`, onSubscribe);
-        console.log("setting chat socket context...");
         setClientMethods(clientMethods);
     }
 

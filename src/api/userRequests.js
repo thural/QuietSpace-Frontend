@@ -9,7 +9,7 @@ export const fetchUser = async (url, token) => {
 
 export const fetchUserById = async (userId, token) => {
     try {
-        return await getApiResponse(USER_PATH + `${userId}`, 'GET', null, token);
+        return await getApiResponse(USER_PATH + `/${userId}`, 'GET', null, token);
     } catch (error) { throw new Error(error.message) }
 }
 
@@ -25,15 +25,15 @@ export const fetchToggleFollow = async (userId, token) => {
     } catch (error) { throw new Error(error.message) }
 }
 
-export const fetchFollowers = async (token) => {
+export const fetchFollowers = async (userId, token) => {
     try {
-        return await getApiResponse(USER_PATH + `/followers`, 'GET', null, token);
+        return await getApiResponse(USER_PATH + `/${userId}/followers`, 'GET', null, token);
     } catch (error) { throw new Error(error.message) }
 }
 
-export const fetchFollowings = async (token) => {
+export const fetchFollowings = async (userId, token) => {
     try {
-        return await getApiResponse(USER_PATH + `/followings`, 'GET', null, token);
+        return await getApiResponse(USER_PATH + `/${userId}/followings`, 'GET', null, token);
     } catch (error) { throw new Error(error.message) }
 }
 

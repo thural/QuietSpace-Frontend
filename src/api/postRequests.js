@@ -7,6 +7,12 @@ export const fetchPosts = async (token) => {
     } catch (error) { throw new Error(error.message) }
 }
 
+export const fetchPostsByUserId = async (userId, token) => {
+    try {
+        return await getApiResponse(POST_URL + `/user/${userId}`, 'GET', null, token);
+    } catch (error) { throw new Error(error.message) }
+}
+
 export const fetchCreatePost = async (body, token) => {
     try {
         return await getApiResponse(POST_URL, 'POST', body, token);

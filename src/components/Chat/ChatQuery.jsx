@@ -28,6 +28,7 @@ const ChatQuery = () => {
         makeQueryMutation,
     } = useQueryContainer();
 
+
     const RecentQueries = () => {
         return (
             <FlexStyled className={classes.recentQueries}>

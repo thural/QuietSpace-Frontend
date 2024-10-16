@@ -4,6 +4,7 @@ import {
     fetchDeletePost,
     fetchEditPost, fetchPostQuery,
     fetchPosts,
+    fetchPostsByUserId,
     fetchVotePoll
 } from "../api/postRequests";
 import { useAuthStore, viewStore } from "./zustand";
@@ -28,7 +29,28 @@ export const useGetPosts = () => {
         refetchOnMount: true, // refetch on component mount, default true
         refetchOnWindowFocus: true, // default true
         refetchIntervalInBackground: false, // by default refetch paused for refetchInterval, dault false
-        select: (data) => data.content // transform received data before consumption
+    });
+}
+
+export const useGetPostsByUserId = (userId) => {
+
+    const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"]);
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["posts/user", { id: userId }],
+        queryFn: async () => {
+            const response = await fetchPostsByUserId(userId, authData.accessToken);
+            return await response.json();
+        },
+        enabled: !!user?.id,
+        staleTime: 1000 * 60 * 3,
+        refetchInterval: 1000 * 60 * 6,
+        gcTime: 1000 * 60 * 15,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchIntervalInBackground: false,
     });
 }
 

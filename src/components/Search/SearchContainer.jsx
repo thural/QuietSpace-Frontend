@@ -16,7 +16,6 @@ function SearchContainer() {
         handleKeyDown,
         handleInputFocus,
         handleInputBlur,
-        handleItemClick,
         fetchPostQuery,
         fetchUserQuery
     } = useSearch();
@@ -35,7 +34,6 @@ function SearchContainer() {
                 style={searchAppliedStyle}
             />
             <QueryResult
-                handleItemClick={handleItemClick}
                 fetchUserQuery={fetchUserQuery}
                 userQueryList={userQueryList}
                 style={resultAppliedStyle}

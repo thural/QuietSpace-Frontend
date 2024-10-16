@@ -19,7 +19,6 @@ const UserDetails = ({ user, scale = 3, children }) => {
 
     const heading = `h${size}`;
 
-    console.log("UserDetails heading and fontSize: ", heading, fontSize);
 
     return (
         <BoxStyled key={user.id} className={classes.userDetails}>

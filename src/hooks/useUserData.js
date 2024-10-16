@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "./zustand";
-import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
 import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
+import { USER_PROFILE_URL } from "../constants/ApiPath";
+import { useAuthStore } from "./zustand";
 
 
 export const useGetCurrentUser = () => {
@@ -66,14 +66,14 @@ export const useGetUserById = (userId) => {
     })
 }
 
-export const useGetFollowers = () => {
+export const useGetFollowers = (userId) => {
 
     const { data: authData } = useAuthStore();
 
     return useQuery({
-        queryKey: ["followers"],
+        queryKey: ["followers", { id: userId }],
         queryFn: async () => {
-            const response = await fetchFollowers(authData.accessToken);
+            const response = await fetchFollowers(userId, authData.accessToken);
             return await response.json();
         },
         enabled: !!authData?.accessToken,
@@ -85,14 +85,14 @@ export const useGetFollowers = () => {
     })
 }
 
-export const useGetFollowings = () => {
+export const useGetFollowings = (userId) => {
 
     const { data: authData } = useAuthStore();
 
     return useQuery({
-        queryKey: ["followings"],
+        queryKey: ["followings", { id: userId }],
         queryFn: async () => {
-            const response = await fetchFollowings(authData.accessToken);
+            const response = await fetchFollowings(userId, authData.accessToken);
             return await response.json();
         },
         enabled: !!authData?.accessToken,

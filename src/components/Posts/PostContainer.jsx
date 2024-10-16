@@ -35,7 +35,7 @@ function PostContainer() {
 
     const PostList = () => {
         if (posts.isLoading) return null;
-        return posts.data?.map((post, index) => <Post key={index} post={post} />);
+        return posts?.data.content?.map((post, index) => <Post key={index} post={post} />);
     };
 
     return (

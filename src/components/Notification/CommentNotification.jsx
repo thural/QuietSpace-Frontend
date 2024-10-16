@@ -4,6 +4,8 @@ import NotificationCard from "./NotificationCard";
 
 const CommentNotification = ({ notification }) => {
 
+    const { type } = notification;
+
     const handleClick = (event) => {
         event.preventDefault();
         // TODO: navigate to post page

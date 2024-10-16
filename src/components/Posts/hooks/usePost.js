@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useGetComments } from "@hooks/useCommentData";
+import { useDeletePost } from "@hooks/usePostData";
+import { useToggleReaction } from "@hooks/useReactionData";
+import { viewStore } from "@hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
-import { viewStore } from "../../../hooks/zustand";
-import { useDeletePost } from "../../../hooks/usePostData";
-import { useGetComments } from "../../../hooks/useCommentData";
-import { useToggleReaction } from "../../../hooks/useReactionData";
-import { ContentType, LikeType } from "../../../utils/enumClasses";
+import { ContentType, LikeType } from "@utils/enumClasses";
+import { useState } from "react";
 
 export const usePost = (post) => {
     const queryClient = useQueryClient();
