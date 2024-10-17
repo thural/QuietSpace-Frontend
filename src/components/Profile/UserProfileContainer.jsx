@@ -1,7 +1,7 @@
 import React from "react";
-import Connections from "./Connections";
 
 
+import { useGetPosts } from "@hooks/usePostData";
 import { useGetFollowers, useGetFollowings } from "@hooks/useUserData";
 import { viewStore } from "@hooks/zustand";
 import { Tabs } from "@mantine/core";
@@ -11,12 +11,12 @@ import DefaultContainer from "@shared/DefaultContainer";
 import { useQueryClient } from "@tanstack/react-query";
 import { PiClockClockwise, PiIntersect, PiNote, PiSignOut } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
-import { useGetPosts } from "../../hooks/usePostData";
 import BoxStyled from "../shared/BoxStyled";
 import FullLoadingOverlay from "../shared/FullLoadingOverlay";
-import FollowsSection from "./FollowSection";
-import ProfileControls from "./ProfileControls";
-import UserDetailsSection from "./UserDetailsSection";
+import Connections from "./components/Connections/Connections";
+import FollowsSection from "./components/FollowSection/FollowSection";
+import ProfileControls from "./components/ProfileControls/ProfileControls";
+import UserDetailsSection from "./components/UserDetailsSection/UserDetailsSection";
 
 
 const UserProfileContainer = () => {

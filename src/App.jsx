@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/Navbar/Navbar";
 import AuthPage from "./pages/auth/AuthPage";
 import ChatPage from "./pages/chat/ChatPage";
-import PostPage from "./pages/feed/PostPage";
+import FeedPage from "./pages/feed/FeedPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
@@ -59,8 +59,8 @@ const App = () => {
         <>
             <NavBar />
             <Routes>
-                <Route path="/" element={<PostPage />} />
-                <Route path="/posts/*" element={<PostPage />} />
+                <Route path="/" element={<FeedPage />} />
+                <Route path="/posts/*" element={<FeedPage />} />
                 <Route path="/search/*" element={<SearchPage />} />
                 <Route path="/chat/*" element={<ChatPage />} />
                 <Route path="/profile" element={<ProfilePage />}>

@@ -1,6 +1,6 @@
+import { useToggleFollow } from "@hooks/useUserData";
 import LightButton from "@shared/buttons/LightButton";
 import { useQueryClient } from "@tanstack/react-query";
-import { useToggleFollow } from "../../hooks/useUserData";
 
 const FollowToggle = ({ user, Button = LightButton, ...props }) => {
 

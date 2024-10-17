@@ -1,9 +1,12 @@
-import BoxStyled from "@shared/BoxStyled";
-import ComponentList from "@shared/ComponentList";
+import { useGetChatsByUserId } from "@hooks/useChatData";
+import { useChatStore } from "@hooks/zustand";
+import DefaultContainer from "@shared/DefaultContainer";
+import FullLoadingOverlay from "@shared/FullLoadingOverlay";
 import Typography from "@shared/Typography";
 import { useQueryClient } from "@tanstack/react-query";
-import ChatCard from "./ChatCard";
-import ChatQuery from "./ChatQuery";
+import React, { useEffect } from "react";
+import ChatPanel from "./components/Panel/ChatPanel";
+import ChatSidebar from "./components/Sidebar/ChatSidebar";
 import styles from "./styles/chatContainerStyles";
 
 const ChatContainer = () => {
@@ -11,21 +14,28 @@ const ChatContainer = () => {
     const classes = styles();
 
     const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["user"]);
     const chats = queryClient.getQueryData(["chats"]);
+    const { data: { activeChatId }, setActiveChatId } = useChatStore();
+    const { isLoading, isError, isSuccess } = useGetChatsByUserId(user.id);
 
 
-    const RenderResult = () => {
-        return (chats?.length > 0) ?
-            <ComponentList list={chats} Component={ChatCard} />
-            : <Typography ta="center">there's no chat yet</Typography>
-    }
+    useEffect(() => {
+        if (!isSuccess || activeChatId !== null) return;
+        const firstChatId = chats[0]?.id;
+        setActiveChatId(firstChatId);
+    }, [chats]);
 
+
+    if (isLoading) return <FullLoadingOverlay />;
+    if (isError) return <Typography type="h1">{'Could not fetch chat data! 🔥'}</Typography>
+    if ((!isSuccess || activeChatId == null)) return null;
 
     return (
-        <BoxStyled className={classes.chatContainer}>
-            <ChatQuery />
-            <RenderResult />
-        </BoxStyled>
+        <DefaultContainer className={classes.container}>
+            <ChatSidebar className={classes.contacts} />
+            <ChatPanel className={classes.messages} />
+        </DefaultContainer>
     )
 }
 

@@ -1,6 +1,6 @@
+import { useQueryPosts } from "@hooks/usePostData";
+import { useQueryUsers } from "@hooks/useUserData";
 import { useEffect, useRef, useState } from "react";
-import { useQueryPosts } from "../../../hooks/usePostData";
-import { useQueryUsers } from "../../../hooks/useUserData";
 
 const useSearch = () => {
     const queryInputRef = useRef();

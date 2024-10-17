@@ -1,21 +1,20 @@
 import React from "react";
-import Connections from "./Connections";
+import Connections from "./components/Connections/Connections";
 
-import { useGetFollowers, useGetFollowings } from "@hooks/useUserData";
+import { useGetPostsByUserId } from "@hooks/usePostData";
+import { useGetFollowers, useGetFollowings, useGetUserById } from "@hooks/useUserData";
 import { viewStore } from "@hooks/zustand";
 import { Tabs } from "@mantine/core";
 import Conditional from "@shared/Conditional";
 import DefaultContainer from "@shared/DefaultContainer";
 import { PiClockClockwise, PiIntersect, PiNote } from "react-icons/pi";
 import { useOutletContext, useParams } from "react-router-dom";
-import { useGetPostsByUserId } from "../../hooks/usePostData";
-import { useGetUserById } from "../../hooks/useUserData";
 import OutlineButton from "../shared/buttons/OutlineButton";
 import FollowToggle from "../shared/FollowToggle";
 import FullLoadingOverlay from "../shared/FullLoadingOverlay";
-import FollowsSection from "./FollowSection";
-import ProfileControls from "./ProfileControls";
-import UserDetailsSection from "./UserDetailsSection";
+import FollowsSection from "./components/FollowSection/FollowSection";
+import ProfileControls from "./components/ProfileControls/ProfileControls";
+import UserDetailsSection from "./components/UserDetailsSection/UserDetailsSection";
 
 
 function ProfileContainer() {

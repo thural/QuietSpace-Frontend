@@ -1,8 +1,8 @@
 import DefaultContainer from "@shared/DefaultContainer";
 import React from "react";
-import PostQuery from "./PostQuery";
-import QueryResult from "./QueryResult";
-import SearchBar from "./SearchBar";
+import PostQuery from "./components/PostQuery/PostQuery";
+import QueryResult from "./components/QueryResult/QueryResult";
+import SearchBar from "./components/SearchBar/SearchBar";
 import useSearch from "./hooks/useSearch";
 
 function SearchContainer() {

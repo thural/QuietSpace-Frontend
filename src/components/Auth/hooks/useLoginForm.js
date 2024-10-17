@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import useJwtAuth from "@hooks/useJwtAuth";
+import { useAuthStore } from "@hooks/zustand";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../hooks/zustand";
-import useJwtAuth from "../../../hooks/useJwtAuth";
 
 export const useLoginForm = (setAuthState, authState) => {
     const { setAuthData, resetAuthData, setIsAuthenticated } = useAuthStore();

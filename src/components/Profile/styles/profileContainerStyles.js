@@ -10,14 +10,6 @@ const styles = createUseStyles({
         }
     },
 
-    identitySection: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        '& p': {
-            fontSize: '1.5rem'
-        }
-    },
-
     followSection: {
         margin: '1.5rem 0',
         justifyContent: 'space-between',
@@ -35,12 +27,6 @@ const styles = createUseStyles({
             justifyContent: 'center',
             backgroundColor: 'rgba(134, 142, 150, 0.1)'
         }
-    },
-
-    profileEditSection: {
-        '& button': {
-            borderColor: "rgba(150, 150, 150, 1)"
-        },
     },
 
     avatarGroup: {

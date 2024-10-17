@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import useJwtAuth from "../../../hooks/useJwtAuth";
+import useJwtAuth from "@hooks/useJwtAuth";
+import { useEffect, useState } from "react";
 
 export const useSignupForm = (setAuthState, authState) => {
     const [isLoading, setIsLoading] = useState(false);

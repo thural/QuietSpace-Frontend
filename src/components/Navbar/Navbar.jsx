@@ -18,8 +18,8 @@ import {
   PiUserFill
 } from "react-icons/pi";
 import { useLocation } from "react-router-dom";
-import Menu from "./Menu";
-import NavbarItem from "./NavbarItem";
+import NavItem from "./components/NavItem/NavItem";
+import NavMenu from "./components/NavMenu/NavMenu";
 import styles from "./styles/navbarStyles";
 
 
@@ -52,31 +52,31 @@ const NavBar = () => {
     <BoxStyled className={classes.navbar}>
       <Typography type="h1" className="title">QS</Typography>
       <NavStyled>
-        <NavbarItem
+        <NavItem
           linkTo="/posts"
           pathName={pathName}
           icon={<PiHouse />}
           iconFill={<PiHouseFill />}
         />
-        <NavbarItem
+        <NavItem
           linkTo="/search"
           pathName={pathName}
           icon={<PiMagnifyingGlass />}
           iconFill={<PiMagnifyingGlassFill />}
         />
-        <NavbarItem
+        <NavItem
           linkTo="/chat"
           pathName={pathName}
           icon={<PiChatCircle />}
           iconFill={<PiChatCircleFill />}
         />
-        <NavbarItem
+        <NavItem
           linkTo="/profile"
           pathName={pathName}
           icon={<PiUser />}
           iconFill={<PiUserFill />}
         />
-        <NavbarItem
+        <NavItem
           linkTo="/notification/all"
           pathName={pathName}
           icon={<PiBell />}
@@ -85,9 +85,9 @@ const NavBar = () => {
           <Conditional isEnabled={hasPendingNotification}>
             <Badge className="badge" circle />
           </Conditional>
-        </NavbarItem>
+        </NavItem>
       </NavStyled>
-      <BoxStyled className="navbar-item menu"><Menu /></BoxStyled>
+      <BoxStyled className="navbar-item menu"><NavMenu /></BoxStyled>
     </BoxStyled>
   )
 }
