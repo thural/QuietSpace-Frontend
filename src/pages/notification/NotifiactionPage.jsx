@@ -1,4 +1,4 @@
-import NotificationContainer from "@components/Notification/NotificationContainer";
+import NotificationContainer from "@components/notification/container/NotificationContainer";
 import React from "react";
 
 

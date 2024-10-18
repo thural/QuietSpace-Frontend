@@ -1,4 +1,4 @@
-import ChatContainer from "@components/Chat/ChatContainer";
+import ChatContainer from "@components/chat/container/ChatContainer";
 import React from "react";
 
 const ChatPage = () => {

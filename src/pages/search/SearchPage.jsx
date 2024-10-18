@@ -1,4 +1,4 @@
-import SearchContainer from "@components/Search/SearchContainer";
+import SearchContainer from "../../components/search/container/SearchContainer";
 import React from "react";
 
 

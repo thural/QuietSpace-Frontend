@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import NavBar from "./components/Navbar/Navbar";
 import AuthPage from "./pages/auth/AuthPage";
 import ChatPage from "./pages/chat/ChatPage";
 import FeedPage from "./pages/feed/FeedPage";
@@ -9,9 +8,6 @@ import '@mantine/core/styles.css';
 import './App.css';
 
 import { useEffect } from "react";
-import ActivationForm from "./components/Auth/ActivationForm";
-import ProfileContainer from "./components/Profile/ProfileContainer";
-import UserProfileContainer from "./components/Profile/UserProfileContainer";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import Typography from "./components/shared/Typography";
 import useChatSocket from "./hooks/useChatSocket";
@@ -29,6 +25,10 @@ import RequestNotifications from "./pages/notification/RequestNotifications";
 import ProfilePage from "./pages/profile/ProfilePage";
 import SettingsPage from "./pages/settings/SettingsPage";
 import SignoutPage from "./pages/signout/SignoutPage";
+import NavBar from "./components/navbar/container/Navbar";
+import ProfileContainer from "./components/profile/container/ProfileContainer";
+import UserProfileContainer from "./components/profile/container/UserProfileContainer";
+import ActivationForm from "./components/auth/components/activation/ActivationForm";
 
 const App = () => {
 

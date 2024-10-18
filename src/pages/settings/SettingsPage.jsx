@@ -1,4 +1,4 @@
-import SettingsContainer from "@components/Settings/SettingContainer";
+import SettingsContainer from "@components/settings/SettingContainer";
 import React from "react";
 
 

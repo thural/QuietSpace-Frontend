@@ -1,4 +1,4 @@
-import FeedContainer from "@components/Feed/FeedContainer";
+import FeedContainer from "@components/feed/container/FeedContainer";
 import React from "react";
 
 
