@@ -9,12 +9,15 @@ import Conditional from "@shared/Conditional";
 import DefaultContainer from "@shared/DefaultContainer";
 import { PiClockClockwise, PiIntersect, PiNote } from "react-icons/pi";
 import { useOutletContext, useParams } from "react-router-dom";
-import OutlineButton from "../../shared/buttons/OutlineButton";
-import FollowToggle from "../../shared/FollowToggle";
-import FullLoadingOverlay from "../../shared/FullLoadingOverlay";
+import OutlineButton from "@shared/buttons/OutlineButton";
+import FollowToggle from "@shared/FollowToggle";
+import FullLoadingOverlay from "@shared/FullLoadingOverlay";
 import FollowsSection from "../components/follow-section/FollowSection";
 import ProfileControls from "../components/profile-controls/ProfileControls";
 import UserDetailsSection from "../components/user-details/UserDetailsSection";
+import { useQueryClient } from "@tanstack/react-query";
+import PrivateBlock from "../components/shared/PrivateBlock";
+import Typography from "@shared/Typography"
 
 
 function ProfileContainer() {
@@ -22,13 +25,24 @@ function ProfileContainer() {
     const { userId } = useParams();
     const { textContext } = useOutletContext();
 
+    const queryClient = useQueryClient();
     const { data: viewState, setViewData } = viewStore();
     const { data: user, isLoading: isUserLoading } = useGetUserById(userId);
     const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
     const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy
     const { data: userPosts, isLoading: isPostsLoading } = useGetPostsByUserId(userId);
 
-    if (isUserLoading || isPostsLoading) return <FullLoadingOverlay />
+    if (isUserLoading || isPostsLoading || followers.isLoading || followings.isLoading) return <FullLoadingOverlay />;
+
+    const signedUser = queryClient.getQueryData(["user"]);
+    const isFollowing = followers.data.some(user => user.id === signedUser.id);
+
+    const isHasAccess = (!user.isPrivateAccount || isFollowing);
+
+    console.log("user followers: ", followers.data);
+    console.log("user on UserProfile: ", user);
+    console.log("is following: ", isFollowing);
+    console.log("isHasAccess: ", isHasAccess);
 
 
     const toggleFollowings = () => {
@@ -66,24 +80,40 @@ function ProfileContainer() {
 
     return (
         <DefaultContainer>
+
             <UserDetailsSection user={user} />
+
             <FollowsSection
-                followers={followers}
-                followings={followings}
+                followers={followers.data}
+                followings={followings.data}
                 posts={userPosts}
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             />
-            <Conditional isEnabled={viewState.followings}>
+
+            <Conditional isEnabled={isHasAccess && viewState.followings}>
                 <Connections userFetch={followings} title="followings" />
             </Conditional>
-            <Conditional isEnabled={viewState.followers}>
+
+            <Conditional isEnabled={isHasAccess && viewState.followers}>
                 <Connections userFetch={followers} title="followers" />
             </Conditional>
+
             <ProfileControls>
                 <FollowToggle Button={OutlineButtonStyled} user={user} />
             </ProfileControls>
-            <ProfileTabs />
+
+            <Conditional isEnabled={isHasAccess}>
+                <ProfileTabs />
+            </Conditional>
+
+            <Conditional isEnabled={!isHasAccess} >
+                <PrivateBlock message="this account is private" >
+                    <Typography>follow user to see their content</Typography>
+                    <FollowToggle Button={OutlineButtonStyled} user={user} />
+                </PrivateBlock>
+            </Conditional>
+
         </DefaultContainer>
     )
 }

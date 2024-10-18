@@ -30,7 +30,9 @@ const UserProfileContainer = () => {
     const { data: userPosts, isLoading: isPostsLoading } = useGetPosts();
 
 
-    if (!signedUser || isPostsLoading) return <FullLoadingOverlay />
+    if (!signedUser || isPostsLoading) return <FullLoadingOverlay />;
+
+    console.log("user data: ", signedUser);
 
 
     const toggleFollowings = () => {
