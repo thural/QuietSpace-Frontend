@@ -1,6 +1,6 @@
 import { useActivation } from "@hooks/useAuthData";
 import { displayCountdown } from "@hooks/useTimer";
-import { fetchResendCode } from "@src/api/authRequests";
+import { fetchResendCode } from "@/api/authRequests";
 import { useState } from "react";
 
 export const useActivationForm = (setAuthState, authState) => {

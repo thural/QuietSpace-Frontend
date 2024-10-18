@@ -11,7 +11,7 @@ export default defineConfig({
       '@shared': path.resolve(__dirname, './src/components/shared'),
       '@utils': path.resolve(__dirname, './src/utils'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@src': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
     }
   },
   plugins: [react(), removeConsole()],
