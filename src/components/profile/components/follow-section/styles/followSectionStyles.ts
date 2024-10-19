@@ -14,7 +14,6 @@ const styles = createUseStyles({
             padding: '0',
             boxSizing: 'border-box',
             borderRadius: '3rem',
-            backgroundColor: 'whitesmoke',
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: 'rgba(134, 142, 150, 0.1)'

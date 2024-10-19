@@ -7,7 +7,7 @@ import {
     handleChatException,
     handleLeftChat,
     handleOnlineUser,
-} from "../components/chat/container/utils/chatHandler.jsx";
+} from "../components/chat/container/utils/chatHandler.js";
 
 import { useChatStore, useStompStore } from "./zustand.js";
 

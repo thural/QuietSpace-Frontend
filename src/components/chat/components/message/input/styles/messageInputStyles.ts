@@ -48,7 +48,6 @@ const styles = createUseStyles({
       fontSize: '1rem',
       fontWeight: '500',
       display: 'flex',
-      padding: '0'
     },
     '& .input': {
       display: 'flex',

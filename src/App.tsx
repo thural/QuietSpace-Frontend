@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import Typography from "./components/shared/Typography";
 import useChatSocket from "./hooks/useChatSocket";
-import useJwtAuth from "./hooks/useChatSocket";
+import useJwtAuth from "./hooks/useJwtAuth";
 import { useGetNotifications } from "./hooks/useNotificationData";
 import useNotificationSocket from "./hooks/useNotificationSocket";
 import { useStompClient } from "./hooks/useStompClient";
