@@ -1,16 +1,24 @@
+import { AuthPages, SetAuthState, SignupData, LoginData } from '@/components/shared/types/authTypes';
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
+import { JwtAuthProps } from '@/components/shared/types/hookProps';
+import { RefreshTokenResponse, AuthResponse } from '@/api/schemas/auth';
 
-var refreshIntervalId = null;
-const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn = (e) => { console.log("error on stomp client: ", e) }, onLoadFn }) => {
+var refreshIntervalId: number | null = null;
+const useJwtAuth = ({
+    refreshInterval = 540000,
+    onSuccessFn = () => { console.error("onSuccess handler is not supplied") },
+    onErrorFn = (e: Error) => { console.error("error on stomp client: ", e) },
+    onLoadFn = () => { console.error("onLoad handler is not supplied") }
+}: JwtAuthProps) => {
 
-    const register = (setAuthState, formData) => {
+    const register = (setAuthState: SetAuthState, formData: SignupData) => {
 
         const onSuccess = () => {
-            setAuthState({ page: "activation", formData });
+            setAuthState({ page: AuthPages.ACTIVATION, formData });
             onSuccessFn();
         }
 
-        const onError = (error) => {
+        const onError = (error: Error) => {
             onErrorFn(error);
         }
 
@@ -20,15 +28,15 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn = (e) => 
     }
 
 
-    const authenticate = (formData) => {
+    const authenticate = (formData: LoginData) => {
         onLoadFn();
 
-        const onSuccess = (data) => {
+        const onSuccess = (data: AuthResponse) => {
             localStorage.setItem("refreshToken", data.refreshToken);
             onSuccessFn(data);
         }
 
-        const onError = (error) => {
+        const onError = (error: Error) => {
             onErrorFn(error);
         }
 
@@ -42,11 +50,11 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn = (e) => 
     const getAccessToken = () => {
         const refreshToken = localStorage.getItem("refreshToken");
 
-        const onSuccess = (data) => {
+        const onSuccess = (data: RefreshTokenResponse) => {
             onSuccessFn(data);
         }
 
-        const onError = (error) => {
+        const onError = (error: Error) => {
             onErrorFn(error);
         }
 
@@ -72,14 +80,14 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn = (e) => 
         const refreshToken = localStorage.getItem("refreshToken");
         stopTokenAutoRefresh();
         onLoadFn();
-        const onSignout = (response) => {
+        const onSignout = () => {
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("accessToken");
-            onSuccessFn(response);
+            onSuccessFn();
         }
 
-        const onError = (error) => {
-            onErrorFn();
+        const onError = (error: Error) => {
+            onErrorFn(error);
         }
 
         fetchLogout(refreshToken)
@@ -88,14 +96,14 @@ const useJwtAuth = ({ refreshInterval = 540000, onSuccessFn, onErrorFn = (e) => 
     }
 
 
-    const signup = (formData, setAuthState) => {
+    const signup = (formData: SignupData, setAuthState: SetAuthState) => {
         onLoadFn();
 
         const onSuccess = () => {
             onSuccessFn();
         }
 
-        const onError = (error) => {
+        const onError = (error: Error) => {
             onErrorFn(error);
         }
 

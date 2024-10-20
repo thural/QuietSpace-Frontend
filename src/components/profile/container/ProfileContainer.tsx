@@ -1,4 +1,3 @@
-import React from "react";
 import Connections from "../components/connections/base/Connections";
 
 import { useGetPostsByUserId } from "@hooks/usePostData";

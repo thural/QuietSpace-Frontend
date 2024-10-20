@@ -1,15 +1,17 @@
-import BoxStyled from "@shared/BoxStyled";
-import GradientButton from "@shared/buttons/GradientButton";
-import OutlineButton from "@shared/buttons/OutlineButton";
-import FormStyled from "@shared/FormStyled";
-import FullLoadingOverlay from "@shared/FullLoadingOverlay";
-import PassInput from "@shared/PassInput";
-import TextInput from "@shared/TextInput";
-import Typography from "@shared/Typography";
+import BoxStyled from "@components/shared/BoxStyled";
+import GradientButton from "@components/shared/buttons/GradientButton";
+import OutlineButton from "@components/shared/buttons/OutlineButton";
+import FormStyled from "@components/shared/FormStyled";
+import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
+import PassInput from "@components/shared/PassInput";
+import TextInput from "@components/shared/TextInput";
+import Typography from "@components/shared/Typography";
 import { useSignupForm } from "./hooks/useSignupForm";
 import styles from "./styles/formStyles";
+import React from "react";
+import { SignupFormProps } from "@components/shared/types/authTypes";
 
-const SignupForm = ({ setAuthState, authState }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
     const classes = styles();
     const {
         isLoading,

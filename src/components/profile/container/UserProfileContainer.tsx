@@ -1,6 +1,3 @@
-import React from "react";
-
-
 import { useGetPosts } from "@hooks/usePostData";
 import { useGetFollowers, useGetFollowings } from "@hooks/useUserData";
 import { viewStore } from "@hooks/zustand";

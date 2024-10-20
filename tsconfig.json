@@ -38,7 +38,7 @@
       ],
       "@utils/*": [
         "src/utils"
-      ]
+      ],
     }
   },
   "include": [

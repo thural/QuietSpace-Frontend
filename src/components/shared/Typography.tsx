@@ -1,6 +1,11 @@
 import { Text, Title } from "@mantine/core"
+import { GenericWrapper } from "./types/sharedComponentTypes"
 
-const Typography = ({ type, children, ...props }) => {
+interface TypographyProps extends GenericWrapper {
+    type?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
+}
+
+const Typography: React.FC<TypographyProps> = ({ type, children, ...props }) => {
     switch (type) {
         case "h1": return <Title order={1} {...props}>{children}</Title>
         case "h2": return <Title order={2} {...props}>{children}</Title>

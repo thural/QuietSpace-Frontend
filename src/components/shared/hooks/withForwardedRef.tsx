@@ -1,9 +1,15 @@
-import { forwardRef } from "react";
+import React, { forwardRef, ReactNode, ComponentType } from 'react';
 
-const withForwardedRef = (Component) => {
-    return forwardRef((props, ref) => (
-        <Component {...props} forwardedRef={ref} />
+interface WithForwardedRefProps {
+    children?: ReactNode;
+    forwardedRef: React.Ref<any>;
+    [key: string]: any;
+}
+
+const withForwardedRef = <P extends object>(Component: ComponentType<P>) => {
+    return forwardRef<any, Omit<P & WithForwardedRefProps, 'forwardedRef'>>((props, ref) => (
+        <Component {...props as P} forwardedRef={ref} />
     ));
 };
 
-export default withForwardedRef
+export default withForwardedRef;

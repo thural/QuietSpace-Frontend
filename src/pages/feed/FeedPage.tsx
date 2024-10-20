@@ -1,5 +1,4 @@
 import FeedContainer from "@components/feed/container/FeedContainer";
-import React from "react";
 
 
 const FeedPage = () => {

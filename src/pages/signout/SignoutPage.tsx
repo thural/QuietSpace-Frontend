@@ -22,7 +22,7 @@ const SignoutPage = () => {
         setIsLoading(true);
     }
 
-    const onSuccessFn = (data) => {
+    const onSuccessFn = () => {
         queryClient.clear();
         setIsLoading(false);
         const refreshToken = localStorage.getItem("refreshToken");

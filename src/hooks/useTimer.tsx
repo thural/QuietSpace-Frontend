@@ -1,6 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-export const calculateTimeLeft = (period) => {
+interface TimerBaseData {
+    hasTimeOut: boolean
+}
+
+interface TimerData extends TimerBaseData {
+    hasTimeOut: false
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+}
+
+export const calculateTimeLeft = (period: number) => {
     const difference = period - +new Date();
 
     if (difference > 0) return {
@@ -14,7 +26,7 @@ export const calculateTimeLeft = (period) => {
     return { hasTimeOut: true };
 };
 
-const processExpireDate = (interval) => (interval + +new Date());
+const processExpireDate = (interval: number) => (interval + +new Date());
 
 let hasReset = false;
 const resetTimer = () => { hasReset = !hasReset; }
@@ -22,7 +34,7 @@ const resetTimer = () => { hasReset = !hasReset; }
 export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") => {
 
     const expireDate = useMemo(() => processExpireDate(period), [period, hasReset]);
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(expireDate));
+    const [timeLeft, setTimeLeft] = useState<TimerData | TimerBaseData>(calculateTimeLeft(expireDate));
 
     useEffect(() => {
         setTimeout(() => {
@@ -30,14 +42,16 @@ export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") 
         }, 1000);
     });
 
-    const timerComponents = [];
+    const timerComponents: Array<JSX.Element> = [];
 
-    Object.keys(timeLeft).forEach((interval) => {
-        if (!timeLeft[interval]) return;
+    Object.keys(timeLeft).forEach((timeLabel) => {
+        const key = timeLabel as keyof TimerData;
+
+        if (!timeLeft[key]) return;
 
         timerComponents.push(
             <span>
-                {timeLeft[interval]} {interval}{" "}
+                {timeLeft[key]} {timeLabel}{" "}
             </span>
         );
     });
@@ -47,6 +61,5 @@ export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") 
         resetTimer,
         component: (
             <div>{timerComponents.length ? timerComponents : <span>{timeUpMessage}</span>}</div>)
-    };
+    }
 }
-

@@ -3,6 +3,7 @@ import LoginForm from "../components/authentication/LoginForm";
 import SignupForm from "../components/registration/SignupForm";
 import BoxStyled from "@components/shared/BoxStyled";
 import Typography from "@components/shared/Typography";
+import { AuthState, AuthPages } from "@components/shared/types/authTypes";
 import { useState } from "react";
 import styles from "./styles/authStyles";
 
@@ -10,12 +11,18 @@ const AuthContainer = () => {
 
     const classes = styles();
 
-    const [authState, setAuthState] = useState({ page: "login", formData: null });
+    const [authState, setAuthState] = useState<AuthState>({
+        page: AuthPages.LOGIN,
+        formData: {
+            email: "",
+            password: ""
+        }
+    });
 
     const RenderResult = () => {
-        if (authState.page === "signup") return <SignupForm setAuthState={setAuthState} authState={authState} />;
-        if (authState.page === "login") return <LoginForm setAuthState={setAuthState} authState={authState} />;
-        if (authState.page === "activation") return <ActivationForm setAuthState={setAuthState} authState={authState} />;
+        if (authState.page === AuthPages.SIGNNUP) return <SignupForm setAuthState={setAuthState} authState={authState} />;
+        if (authState.page === AuthPages.LOGIN) return <LoginForm setAuthState={setAuthState} authState={authState} />;
+        if (authState.page === AuthPages.ACTIVATION) return <ActivationForm setAuthState={setAuthState} authState={authState} />;
         return null;
     }
 

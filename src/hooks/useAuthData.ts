@@ -2,6 +2,7 @@ import { fetchAccessToken, fetchActivation, fetchLogin, fetchSignup } from "../a
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "./zustand";
+import { string } from "prop-types";
 
 export const usePostLogin = (authenticationNotice) => {
 
@@ -29,7 +30,7 @@ export const usePostLogin = (authenticationNotice) => {
         onError,
         staleTime: false,
         refetchInterval: false,
-        gcTime: false,
+        gcTime: undefined,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchIntervalInBackground: false,
@@ -105,6 +106,12 @@ export const useRefreshToken = () => {
         console.log("error on fetching access token: ", error);
     }
 
+    interface RefreshTokenResponse {
+        accessToken: string
+        userId: string
+        message: string
+    }
+
     return useMutation({
         mutationFn: async () => {
             console.log("useRefreshToken was called");
@@ -115,11 +122,11 @@ export const useRefreshToken = () => {
         onError,
         staleTime: false,
         refetchInterval: 540000,
-        gcTime: false,
+        gcTime: undefined,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchIntervalInBackground: false,
-        select: (data) => data.accessToken
+        select: (data: RefreshTokenResponse) => data.accessToken
     });
 }
 

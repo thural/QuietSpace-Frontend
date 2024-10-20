@@ -1,7 +1,6 @@
 import NotificationList from "@components/notification/components/list/NotificationList";
 import { useQueryClient } from "@tanstack/react-query";
 import { NotificationType } from "@utils/enumClasses";
-import React from "react";
 
 
 const ReplyNotifications = () => {

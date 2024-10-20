@@ -1,8 +1,14 @@
-import { Box } from "@mantine/core";
-import withForwardedRef from "./hooks/withForwardedRef";
+import React from 'react';
+import { Box } from '@mantine/core';
+import withForwardedRef from './hooks/withForwardedRef';
+import { GenericWrapperWithRef } from './types/sharedComponentTypes';
 
-const BoxStyled = ({ forwardedRef, children, ...props }) => {
-    return <Box ref={forwardedRef} {...props}>{children}</Box>
-}
+const BoxStyled: React.FC<GenericWrapperWithRef> = ({ forwardedRef, children, ...props }) => {
+    return (
+        <Box ref={forwardedRef} {...props}>
+            {children}
+        </Box>
+    );
+};
 
-export default withForwardedRef(BoxStyled)
+export default withForwardedRef(BoxStyled);

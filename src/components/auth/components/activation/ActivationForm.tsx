@@ -1,21 +1,22 @@
-import { PinInput, Text } from "@mantine/core";
-import BoxStyled from "@shared/BoxStyled";
-import GradientButton from "@shared/buttons/GradientButton";
-import OutlineButton from "@shared/buttons/OutlineButton";
-import FormStyled from "@shared/FormStyled";
-import Typography from "@shared/Typography";
+import { PinInput } from "@mantine/core";
+import BoxStyled from "@components/shared/BoxStyled";
+import GradientButton from "@components/shared/buttons/GradientButton";
+import OutlineButton from "@components/shared/buttons/OutlineButton";
+import FormStyled from "@components/shared/FormStyled";
+import Typography from "@components/shared/Typography";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
+import { ActivationFormProps } from "@components/shared/types/authTypes";
 
 const Timer = ({ tokenTimer }) => (
     <FormStyled className="timer">
-        {!tokenTimer.hasTimeOut ? <Text>{"code will be expired in:"}</Text>
-            : <Text>{"code has expired, get a new code"}</Text>}
+        {!tokenTimer.hasTimeOut ? <Typography>{"code will be expired in:"}</Typography>
+            : <Typography>{"code has expired, get a new code"}</Typography>}
         {!tokenTimer.hasTimeOut && tokenTimer.component}
     </FormStyled>
 );
 
-const ActivationForm = ({ setAuthState, authState }) => {
+const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
 
@@ -25,7 +26,7 @@ const ActivationForm = ({ setAuthState, authState }) => {
         handleResendCode,
         handleSubmit,
         handleChange,
-    } = useActivationForm(setAuthState, authState);
+    } = useActivationForm({ setAuthState, authState });
 
     return (
         <BoxStyled className={classes.activation}>
