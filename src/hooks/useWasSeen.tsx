@@ -6,19 +6,19 @@ function useWasSeen() {
         typeof IntersectionObserver !== "function"
     );
 
-    const ref = useRef(null);
+    const wasSeenRef = useRef(null);
     useEffect(() => {
-        if (ref.current && !wasSeen) {
+        if (wasSeenRef.current && !wasSeen) {
             const observer = new IntersectionObserver(
                 ([entry]) => entry.isIntersecting && setWasSeen(true)
             );
-            observer.observe(ref.current);
+            observer.observe(wasSeenRef.current);
             return () => {
                 observer.disconnect();
             };
         }
     }, [wasSeen]);
-    return [wasSeen, ref];
+    return [wasSeen, wasSeenRef];
 }
 
 export default useWasSeen

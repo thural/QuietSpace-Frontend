@@ -1,6 +1,6 @@
 import { AuthPages, SetAuthState, SignupData, LoginData } from '@/components/shared/types/authTypes';
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
-import { JwtAuthProps } from '@/components/shared/types/hookProps';
+import { JwtAuthProps } from '@/components/shared/types/hookPropTypes';
 import { RefreshTokenResponse, AuthResponse } from '@/api/schemas/auth';
 
 var refreshIntervalId: number | null = null;

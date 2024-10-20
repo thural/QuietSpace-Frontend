@@ -1,9 +1,9 @@
-import { useGetNotifications } from "@hooks/useNotificationData";
+import BoxStyled from "@components/shared/BoxStyled";
+import DefaultContainer from "@components/shared/DefaultContainer";
+import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
+import Typography from "@components/shared/Typography"
+import { useGetNotifications } from "@/hooks/useNotificationData";
 import { SegmentedControl } from "@mantine/core";
-import BoxStyled from "@shared/BoxStyled";
-import DefaultContainer from "@shared/DefaultContainer";
-import FullLoadingOverlay from "@shared/FullLoadingOverlay";
-import Typography from "@shared/Typography";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -11,10 +11,10 @@ function NotificationContainer() {
 
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
-    const { isLoading, isError } = useGetNotifications();
+    const { isLoading, isError, error } = useGetNotifications();
 
 
-    const navigateToPage = (buttonValue) => {
+    const navigateToPage = (buttonValue: string) => {
         setValue(buttonValue);
         navigate(buttonValue);
     };
@@ -40,7 +40,7 @@ function NotificationContainer() {
 
     const RenderResult = () => {
         if (isLoading) return <FullLoadingOverlay />
-        if (isError) return <Typography type="h1">{postsQuery.error.message}</Typography>
+        if (isError) return <Typography type="h1">{error.message}</Typography>
         return <ControlPanel />
     };
 

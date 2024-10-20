@@ -89,6 +89,8 @@ export const useGetFollowings = (userId) => {
 
     const { data: authData } = useAuthStore();
 
+    console.log("folloings")
+
     return useQuery({
         queryKey: ["followings", { id: userId }],
         queryFn: async () => {

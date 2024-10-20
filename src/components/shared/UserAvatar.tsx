@@ -1,6 +1,7 @@
 import { Avatar } from "@mantine/core"
+import { GenericWrapper } from "./types/sharedComponentTypes"
 
-const UserAvatar = ({
+const UserAvatar: React.FC<GenericWrapper> = ({
     forwardedRef,
     size = "2.5rem",
     color = "black",

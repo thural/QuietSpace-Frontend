@@ -1,8 +1,9 @@
 import ErrorBoundary from "./hooks/ErrorBoundary";
 import { Container } from "@mantine/core";
 import styles from "./styles/defaultContainerStyles";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 
-const DefaultContainer = ({ forwardRef, size = "600px", children, ...props }) => {
+const DefaultContainer: React.FC<GenericWrapper> = ({ forwardRef, size = "600px", children, ...props }) => {
 
     const classes = styles();
 

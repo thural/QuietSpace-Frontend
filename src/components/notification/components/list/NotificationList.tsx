@@ -1,16 +1,20 @@
-import Typography from "@shared/Typography";
-import { NotificationType } from "@utils/enumClasses";
+import Typography from "@components/shared/Typography";
 import CommentNotification from "../CommentNotification";
 import FollowNotification from "../FollowNotification";
 import PostNotification from "../PostNotification";
+import { NotificationResponse, NotificationType } from "@/api/schemas/notification";
+import { getEnumValueFromString } from "@/utils/enumUtils";
+import { NotificationListProps } from "@/components/shared/types/notificationTypes";
 
 
-const NotificationList = ({ notifications }) => {
+
+const NotificationList: React.FC<NotificationListProps> = ({ notifications }) => {
 
     if (!notifications.length) return <Typography ta="center">You have no Notifications yet</Typography>
 
-    const getNotificationCard = (notification) => {
-        const { type, id } = notification
+    const getNotificationCard = (notification: NotificationResponse) => {
+        const { type, id } = notification;
+        const enumValue = getEnumValueFromString(NotificationType, type)
 
         const {
             FOLLOW_REQUEST,
@@ -20,26 +24,25 @@ const NotificationList = ({ notifications }) => {
             COMMENT_REPLY,
             MENTION,
             REPOST
-        } = NotificationType
+        } = NotificationType;
 
-        switch (type) {
+        switch (enumValue) {
 
-            case COMMENT_REACTION.name:
+            case COMMENT_REACTION:
                 return <CommentNotification key={id} notification={notification} />;
-            case COMMENT_REPLY.name:
+            case COMMENT_REPLY:
                 return <CommentNotification key={id} notification={notification} />;
-            case FOLLOW_REQUEST.name:
+            case FOLLOW_REQUEST:
                 return <FollowNotification key={id} notification={notification} />;
-            case POST_REACTION.name:
+            case POST_REACTION:
                 return <PostNotification key={id} notification={notification} />;
-            case COMMENT.name:
+            case COMMENT:
                 return <PostNotification key={id} notification={notification} />;
-            case REPOST.name:
+            case REPOST:
                 return <PostNotification key={id} notification={notification} />;
             case MENTION:
                 return <PostNotification key={id} notification={notification} />;
-            default:
-                throw new Error("invalid notification type");
+            default: return null;
         }
     }
 

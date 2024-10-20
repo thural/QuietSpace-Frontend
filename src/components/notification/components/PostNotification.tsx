@@ -1,22 +1,27 @@
-import { NotificationType } from "@utils/enumClasses";
+import { NotificationType } from "@/api/schemas/notification";
 import NotificationCard from "./base/NotificationCard";
+import { NotificationItemProps } from "@/components/shared/types/notificationTypes";
+import { getEnumValueFromString } from "@/utils/enumUtils";
 
-const PostNotification = ({ notification }) => {
+const PostNotification: React.FC<NotificationItemProps> = ({ notification, ...props }) => {
 
     const { type } = notification;
+    const enumValue = getEnumValueFromString(NotificationType, type);
 
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault();
         // TODO: navigate to post page
-    }
+    };
+
+    const { POST_REACTION, COMMENT, REPOST } = NotificationType
 
     const getTextContent = () => {
-        switch (type) {
-            case NotificationType.POST_REACTION.name:
+        switch (enumValue) {
+            case POST_REACTION:
                 return "reacted to your post";
-            case NotificationType.COMMENT.name:
+            case COMMENT:
                 return "commented your post";
-            case NotificationType.REPOST.name:
+            case REPOST:
                 return "reposted your post";
             default:
                 return "mentioned you";
@@ -25,7 +30,7 @@ const PostNotification = ({ notification }) => {
 
 
     return (
-        <NotificationCard notification={notification} onClick={handleClick} text={getTextContent()} />
+        <NotificationCard notification={notification} onClick={handleClick} text={getTextContent()} {...props} />
     )
 }
 

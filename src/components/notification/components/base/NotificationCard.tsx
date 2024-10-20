@@ -1,19 +1,23 @@
 import { useEffect } from "react";
 import styles from "./styles/notificationCardStyles";
 
-import useWasSeen from "@hooks/useWasSeen";
-import { useNotificationStore } from "@hooks/zustand";
-import BoxStyled from "@shared/BoxStyled";
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
-import UserAvatar from "@shared/UserAvatar";
-import { toUpperFirstChar } from "@utils/stringUtils";
+import useWasSeen from "@/hooks/useWasSeen";
+import { useNotificationStore } from "@/hooks/zustand";
+import BoxStyled from "@components/shared/BoxStyled";
+import FlexStyled from "@components/shared/FlexStyled";
+import Typography from "@components/shared/Typography";
+import UserAvatar from "@components/shared/UserAvatar";
+import { toUpperFirstChar } from "@/utils/stringUtils";
+import { NotificationCardProps } from "@/components/shared/types/notificationTypes";
 
-const NotificationCard = ({ notification, onClick, children, text }) => {
+
+
+
+const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onClick, children, text }) => {
 
     const classes = styles();
 
-    const [wasSeen, ref] = useWasSeen();
+    const [wasSeen, wasSeenRef] = useWasSeen();
     const { id, username } = notification;
     const { clientMethods } = useNotificationStore();
     const { isClientConnected, setNotificationSeen } = clientMethods;
@@ -28,10 +32,10 @@ const NotificationCard = ({ notification, onClick, children, text }) => {
 
 
     return (
-        <FlexStyled ref={ref} className={classes.notificationCard} onClick={onClick}>
+        <FlexStyled ref={wasSeenRef} className={classes.notificationCard} onClick={onClick}>
             <UserAvatar chars={toUpperFirstChar(username)} />
             <BoxStyled className={classes.notificationDetails}>
-                <Typography type="5" className="username">{username}</Typography>
+                <Typography type="h5" className="username">{username}</Typography>
                 <Typography size="1rem" lineClamp={5} className="message">{text}</Typography>
             </BoxStyled>
             {children}
