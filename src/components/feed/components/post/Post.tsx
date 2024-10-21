@@ -16,8 +16,9 @@ import CommentPanel from "../comment/panel/CommentPanel";
 import Poll from "../poll/Poll";
 import { usePost } from "./hooks/usePost";
 import styles from "./styles/postStyles";
+import { PostSchema } from "@/api/schemas/post";
 
-const Post = ({ post }) => {
+const Post = ({ post }: { post: PostSchema }) => {
     const classes = styles();
     const {
         user,

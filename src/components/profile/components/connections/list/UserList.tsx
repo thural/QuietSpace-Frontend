@@ -1,11 +1,15 @@
-import BoxStyled from "@shared/BoxStyled";
-import ComponentList from "@shared/ComponentList";
-import FullLoadingOverlay from "@shared/FullLoadingOverlay";
-import Typography from "@shared/Typography";
-import UserQueryItem from "@shared/UserQueryItem";
+import BoxStyled from "@/components/shared/BoxStyled";
+import ComponentList from "@/components/shared/ComponentList";
+import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import Typography from "@/components/shared/Typography";
+import UserQueryItem from "@/components/shared/UserQueryItem";
 import styles from "./styles/userListStyles";
+import React from "react";
+import { UserListProps } from "./types/userListTypes";
 
-const UserList = ({ userFetch, handleItemClick, queryResult }) => {
+
+
+const UserList: React.FC<UserListProps> = ({ userFetch, handleItemClick, queryResult }) => {
 
     const classes = styles();
 

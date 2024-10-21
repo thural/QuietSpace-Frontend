@@ -1,24 +1,26 @@
-import { usePostComment } from "@hooks/useCommentData";
+import { UserSchema } from "@/api/schemas/user";
+import { usePostComment } from "@/hooks/useCommentData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
-const useCommentForm = (postId) => {
+const useCommentForm = (postId: string | number) => {
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+    const signedUser: UserSchema | undefined = queryClient.getQueryData(["user"]);
     const addNewComment = usePostComment(postId);
 
-    const [commentInput, setCommentData] = useState({ postId: postId, userId: user?.id, text: '' });
+    if (signedUser === undefined) throw new Error("(!) can't input comment data: user is undefined");
+
+    const [commentInput, setCommentData] = useState({ postId: postId, userId: signedUser.id, text: '' });
     const cursorPosition = useRef(commentInput.text.length);
     const inputRef = useRef(null);
 
     useEffect(() => {
-        if (inputRef === null) return;
-        if (inputRef.current === null) return;
+        if (inputRef === null || inputRef.current === null) return;
         inputRef.current.setSelectionRange(cursorPosition.current, cursorPosition.current);
     }, [commentInput.text]);
 
-    const handleEmojiInput = (event) => {
-        setCommentData({ ...commentInput, text: event });
+    const handleEmojiInput = (inputText: string) => {
+        setCommentData({ ...commentInput, text: inputText });
     };
 
     const handleSubmit = () => {

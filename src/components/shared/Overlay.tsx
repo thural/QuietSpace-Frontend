@@ -1,14 +1,14 @@
-import { viewStore } from "@hooks/zustand";
+import { viewStore } from "@/hooks/zustand";
 import styles from "./styles/overlayStyles";
 
 
 const Overlay = ({ closable }) => {
-  const { setViewData } = viewStore();
+  const { data: viewState, setViewData } = viewStore();
   const classes = styles();
   const active = !(closable === undefined || closable === null);
 
   const handleClick = () => {
-    if (active) setViewData({ overlay: false, ...closable });
+    if (active) setViewData(viewState, { overlay: false, ...closable });
   }
 
   return (

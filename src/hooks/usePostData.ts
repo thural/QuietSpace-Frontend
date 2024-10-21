@@ -56,15 +56,14 @@ export const useGetPostsByUserId = (userId: string | number) => {
     });
 }
 
-
 export const useCreatePost = () => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
-    const { setViewData } = viewStore();
+    const { data: viewState, setViewData } = viewStore();
 
     const handleSubmitSuccess = () => {
-        setViewData({ createPost: false })
+        setViewData(viewState, { createPost: false })
     }
 
     const handleSubmitError = () => {
@@ -73,7 +72,7 @@ export const useCreatePost = () => {
 
     const onSuccess = (data) => {
         queryClient.invalidateQueries(["posts"], { exact: true });
-        setViewData({ overlay: false, createPost: false });
+        setViewData(viewState, { overlay: false, createPost: false });
         handleSubmitSuccess();
         console.log("post added successfully:", data);
     }
@@ -97,11 +96,11 @@ export const useEditPost = (postId: string | number) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
-    const { setViewData } = viewStore();
+    const { data: viewState, setViewData } = viewStore();
 
     const onSuccess = () => {
         queryClient.invalidateQueries(["posts"], { exact: true });
-        setViewData({ overlay: false, editPost: false })
+        setViewData(viewState, { overlay: false, editPost: false })
         console.log("post edited was success");
     }
 

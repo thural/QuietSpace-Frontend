@@ -1,5 +1,5 @@
-import { useGetPosts } from "@hooks/usePostData";
-import { viewStore } from "@hooks/zustand";
+import { useGetPosts } from "@/hooks/usePostData";
+import { viewStore } from "@/hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const useFeed = () => {
@@ -10,7 +10,7 @@ export const useFeed = () => {
     const posts = useGetPosts();
 
     const toggleCreatePostForm = () => {
-        setViewData({ createPost: true });
+        setViewData(viewData, { createPost: true });
     };
 
     return {

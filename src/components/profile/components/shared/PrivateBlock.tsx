@@ -1,10 +1,11 @@
 import { Center } from "@mantine/core"
 import { RxLockClosed } from "react-icons/rx"
-import FlexStyled from "@shared/FlexStyled"
-import Typography from "@shared/Typography"
+import FlexStyled from "@/components/shared/FlexStyled"
+import Typography from "@/components/shared/Typography"
 import styles from "./styles/privateBlockStyles"
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes"
 
-const PrivateBlock = ({ message = "private content", Icon = RxLockClosed, children, ...props }) => {
+const PrivateBlock: React.FC<GenericWrapper> = ({ message = "private content", Icon = RxLockClosed, children, ...props }) => {
 
     const classes = styles();
 

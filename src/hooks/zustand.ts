@@ -1,5 +1,5 @@
 import { AuthData } from '@/components/shared/types/authTypes';
-import { ChatState, ViewState } from '@/components/shared/types/viewTypes';
+import { ChatState, ViewState, ViewStoreProps } from '@/components/shared/types/viewTypes';
 import { create } from 'zustand'
 
 export const useAuthStore = create(set => ({
@@ -31,7 +31,7 @@ export const useNotificationStore = create(set => ({
     setError: (value: Error) => set({ error: value })
 }));
 
-export const viewStore = create(set => ({
+export const viewStore = create<ViewStoreProps>(set => ({
     data: {
         overlay: false,
         createPost: false,
@@ -39,9 +39,9 @@ export const viewStore = create(set => ({
         followings: false,
         followers: false,
     },
-    setViewData: (state: ViewState, viewData: Partial<ViewState>) => set({
-        data: { ...state, ...viewData }
-    }),
+    setViewData: (viewData: Partial<ViewState>) => set(state => ({
+        data: { ...state.data, ...viewData }
+    })),
 }));
 
 export const useChatStore = create(set => ({

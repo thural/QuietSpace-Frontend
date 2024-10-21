@@ -1,11 +1,12 @@
-import BoxStyled from "@shared/BoxStyled";
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
-import UserAvatar from "@shared/UserAvatar";
-import { toUpperFirstChar } from "@utils/stringUtils";
+import BoxStyled from "@/components/shared/BoxStyled";
+import FlexStyled from "@/components/shared/FlexStyled";
+import Typography from "@/components/shared/Typography";
+import UserAvatar from "@/components/shared/UserAvatar";
+import { toUpperFirstChar } from "@/utils/stringUtils";
 import styles from "./styles/userDetailsSectionStyles";
+import { UserDetailsSectionProps } from "./types/userDetailsSectionTypes";
 
-const UserDetailsSection = ({ user }) => {
+const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {
 
     const classes = styles();
 

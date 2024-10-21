@@ -1,11 +1,11 @@
-import BoxStyled from "@shared/BoxStyled";
-import InputStyled from "@shared/InputStyled";
+import BoxStyled from "@/components/shared/BoxStyled";
+import InputStyled from "@/components/shared/InputStyled";
 import { useRef } from "react";
 import { PiMagnifyingGlassBold } from "react-icons/pi";
 import styles from "./styles/searchbarStyles";
+import { SearchBarProps } from "./types/searchBarTypes";
 
-
-const SearchBar = ({ handleInputBlur, handleInputChange, handleInputFocus }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ handleInputBlur, handleInputChange, handleInputFocus }) => {
 
     const classes = styles();
     const queryInputRef = useRef();

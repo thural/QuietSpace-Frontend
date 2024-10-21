@@ -1,8 +1,9 @@
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
+import FlexStyled from "@components/shared/FlexStyled";
+import Typography from "@components/shared/Typography";
 import styles from "./styles/followSectionStyles";
+import { FollowSectionProps } from "./types/followSectionTypes";
 
-const FollowsSection = ({ followers, followings, toggleFollowings, toggleFollowers, posts, children }) => {
+const FollowsSection: React.FC<FollowSectionProps> = ({ followers, followings, toggleFollowings, toggleFollowers, posts, children }) => {
 
     const classes = styles();
 
@@ -14,13 +15,13 @@ const FollowsSection = ({ followers, followings, toggleFollowings, toggleFollowe
                     ta="center"
                     style={{ cursor: "pointer" }}
                     fw="400" onClick={toggleFollowings}>
-                    {followings?.length} followings
+                    {followings?.data?.content.length} followings
                 </Typography>
                 <Typography
                     ta="center"
                     style={{ cursor: "pointer" }}
                     fw="400" onClick={toggleFollowers}>
-                    {followers?.length} followers
+                    {followers?.data?.content.length} followers
                 </Typography>
             </FlexStyled>
             {children}

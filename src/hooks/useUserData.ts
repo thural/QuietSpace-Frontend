@@ -1,8 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
 import { USER_PROFILE_URL } from "../constants/ApiPath";
 import { useAuthStore } from "./zustand";
-import { PagedResponse } from "@/api/schemas/common";
 import { PagedUserResponse, UserSchema } from "@/api/schemas/user";
 import { AnyFunction } from "@/components/shared/types/genericTypes";
 import { AuthState } from "@/components/shared/types/authTypes";
@@ -48,15 +47,14 @@ export const useQueryUsers = (callBackFunc: AnyFunction) => {
 
     return useMutation({
         mutationFn: async (inputText: string) => {
-            const response = await fetchUsersByQuery(inputText, authData.accessToken);
-            return response.json();
+            return await fetchUsersByQuery(inputText, authData.accessToken);
         },
         onSuccess,
         onError,
     });
 }
 
-export const useGetUserById = (userId) => {
+export const useGetUserById = (userId: string | number): UseQueryResult<UserSchema> => {
 
     const { data: authData } = useAuthStore();
 
@@ -73,11 +71,11 @@ export const useGetUserById = (userId) => {
     })
 }
 
-export const useGetFollowers = (userId) => {
 
+export const useGetFollowers = (userId: string | number): UseQueryResult<PagedUserResponse> => {
     const { data: authData } = useAuthStore();
 
-    return useQuery({
+    return useQuery<PagedUserResponse>({
         queryKey: ["followers", { id: userId }],
         queryFn: async () => {
             const response = await fetchFollowers(userId, authData.accessToken);
@@ -88,11 +86,11 @@ export const useGetFollowers = (userId) => {
         gcTime: Infinity,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
-        select: (data) => data.content
-    })
-}
+    });
+};
 
-export const useGetFollowings = (userId) => {
+
+export const useGetFollowings = (userId: string | number): UseQueryResult<PagedUserResponse> => {
 
     const { data: authData } = useAuthStore();
 
