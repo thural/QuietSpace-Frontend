@@ -1,9 +1,10 @@
 import { Box } from "@mantine/core";
-import InputStyled from "@shared/InputStyled";
+import InputStyled from "@/components/shared/InputStyled";
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
 import styles from "./styles/searchBarStyles";
+import { SearchBarProps } from "./types/SearchBarTypes";
 
-const SearchBar = ({ style, handleKeyDown, handleInputBlur, handleInputFocus, handleInputChange, queryInputRef }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ style, handleKeyDown, handleInputBlur, handleInputFocus, handleInputChange, queryInputRef }) => {
 
     const classes = styles();
 

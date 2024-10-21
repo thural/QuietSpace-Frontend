@@ -1,11 +1,21 @@
-import BoxStyled from "@shared/BoxStyled";
-import ComponentList from "@shared/ComponentList";
-import FullLoadingOverlay from "@shared/FullLoadingOverlay";
-import Typography from "@shared/Typography";
-import UserQueryItem from "@shared/UserQueryItem";
+import BoxStyled from "@components/shared/BoxStyled";
+import ComponentList from "@components/shared/ComponentList";
+import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
+import Typography from "@components/shared/Typography";
+import UserQueryItem from "@components/shared/UserQueryItem";
 import styles from "./styles/queryResultStyles";
+import React, { CSSProperties } from "react";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import { PagedUserResponse, UserListResponse } from "@/api/schemas/user";
+import { UseMutationResult } from "@tanstack/react-query";
 
-const UserQuery = ({ fetchUserQuery, userQueryList, style }) => {
+interface UserQueryProps extends GenericWrapper {
+    fetchUserQuery: UseMutationResult<PagedUserResponse, Error, string>
+    userQueryList: UserListResponse
+    style?: CSSProperties
+}
+
+const UserQuery: React.FC<UserQueryProps> = ({ fetchUserQuery, userQueryList, style }) => {
 
     const classes = styles();
 

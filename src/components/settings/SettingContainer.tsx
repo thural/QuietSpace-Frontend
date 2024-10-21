@@ -1,23 +1,17 @@
 import { Tabs, Text } from "@mantine/core";
-import React, { useState } from "react";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 
-import DefaultContainer from "@shared/DefaultContainer";
-import Typography from "@shared/Typography";
-import { useLocation, useNavigate } from "react-router-dom";
-import styles from "./styles/settingContainerStyles";
+import DefaultContainer from "@components/shared/DefaultContainer";
+import Typography from "@components/shared/Typography";
+import { useNavigate } from "react-router-dom";
 
 function SettingsContainer() {
 
-    const classes = styles();
-
-    const [value, setValue] = useState('profile');
     const navigate = useNavigate();
-    const pathName = useLocation().pathname;
 
-    const redirectToPage = (buttonValue) => {
-        setValue(buttonValue);
-        navigate(buttonValue);
+    const redirectToPage = (tabValue: string | null) => {
+        if (tabValue !== null) navigate(tabValue);
+        console.error("selected settings tab is null");
     };
 
 

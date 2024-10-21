@@ -2,6 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
 import { USER_PROFILE_URL } from "../constants/ApiPath";
 import { useAuthStore } from "./zustand";
+import { PagedResponse } from "@/api/schemas/common";
+import { PagedUserResponse, UserSchema } from "@/api/schemas/user";
+import { AnyFunction } from "@/components/shared/types/genericTypes";
+import { AuthState } from "@/components/shared/types/authTypes";
 
 
 export const useGetCurrentUser = () => {
@@ -24,23 +28,26 @@ export const useGetCurrentUser = () => {
     })
 }
 
-export const useQueryUsers = (setQueryResult) => {
+export const useQueryUsers = (callBackFunc: AnyFunction) => {
 
     const queryClient = useQueryClient();
-    const signedUser = queryClient.getQueryData(["user"]);
-    const { data: authData } = useAuthStore();
+    const signedUser: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    if (signedUser === undefined) {
+        throw new Error("(!) could not perform user query: signed user is undefined")
+    }
+    const { data: authData }: AuthState = useAuthStore();
 
-    const onSuccess = (data, variables, context) => {
-        setQueryResult(data["content"].filter(user => user.id !== signedUser.id));
-        console.log("user query success:", data);
+    const onSuccess = (pagedData: PagedUserResponse) => {
+        callBackFunc(pagedData.content.filter(user => user.id !== signedUser.id));
+        console.log("user query success:", pagedData);
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on querying users: ", error.message);
     }
 
     return useMutation({
-        mutationFn: async (inputText) => {
+        mutationFn: async (inputText: string) => {
             const response = await fetchUsersByQuery(inputText, authData.accessToken);
             return response.json();
         },

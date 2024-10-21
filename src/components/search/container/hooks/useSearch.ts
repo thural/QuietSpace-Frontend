@@ -1,48 +1,57 @@
-import { useQueryPosts } from "@hooks/usePostData";
-import { useQueryUsers } from "@hooks/useUserData";
+import { UserListResponse } from "@/api/schemas/user";
+import { useQueryPosts } from "@/hooks/usePostData";
+import { useQueryUsers } from "@/hooks/useUserData";
 import { useEffect, useRef, useState } from "react";
 
 const useSearch = () => {
-    const queryInputRef = useRef();
+
+    const queryInputRef = useRef<HTMLInputElement>(null);
     const [focused, setFocused] = useState(false);
-    const [userQueryList, setUserQueryResult] = useState([]);
+    const [userQueryList, setUserQueryResult] = useState<UserListResponse>([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);
 
-    useEffect(() => {
+
+    const initUserQuery = () => {
+        // TODO: limit to few page requests
         fetchUserQuery.mutate(".");
-    }, []);
+    }
+    useEffect(initUserQuery, []);
 
-    useEffect(() => {
+
+    const unfocusOnEmptyList = () => {
         if (!userQueryList.length) setFocused(false);
-    }, [userQueryList]);
+    }
+    useEffect(unfocusOnEmptyList, [userQueryList]);
 
-    const handleInputChange = (event) => {
-        event.preventDefault();
-        const value = event.target.value;
-        if (value.length) {
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const stringValue = event.target.value;
+        if (stringValue.length) {
             setFocused(true);
-            fetchUserQuery.mutate(value);
+            fetchUserQuery.mutate(stringValue);
         } else {
             setFocused(false);
             setUserQueryResult([]);
         }
     };
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Escape') setFocused(false);
-        if (!queryInputRef.current.value.length) return;
+        if (queryInputRef.current === null || !queryInputRef.current.value.length) return;
         if (event.key === 'Enter') fetchPostQuery.mutate(queryInputRef.current.value);
     };
 
-    const handleInputFocus = (event) => {
+    const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
         if (event.target.value.length) setFocused(true);
     };
 
-    const handleInputBlur = () => {
-        // TODO: implement logic to handle blur events
+    const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+        // TODO: implement logic to handle input blur events
+        console.log("(!) unhandled input blur event", event.target.value)
     };
+
 
     return {
         queryInputRef,

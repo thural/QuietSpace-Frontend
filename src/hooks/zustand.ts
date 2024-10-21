@@ -1,11 +1,6 @@
+import { AuthData } from '@/components/shared/types/authTypes';
+import { ChatState, ViewState } from '@/components/shared/types/viewTypes';
 import { create } from 'zustand'
-
-export const bearStore = create((set) => ({
-    bears: 0,
-    increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-    removeAllBears: () => set({ bears: 0 }),
-    updateBears: (newBears) => set({ bears: newBears }),
-}));
 
 export const useAuthStore = create(set => ({
     isAuthenticated: false,
@@ -17,12 +12,12 @@ export const useAuthStore = create(set => ({
     resetAuthData: () => set({
         data: { message: "", accessToken: "", refreshToken: "", userId: "" }
     }),
-    setAuthData: (authData) => set({ data: authData }),
-    setIsActivationStage: (value) => set({ isActivationStage: value }),
-    setIsAuthenticated: (value) => set({ isAuthenticated: value }),
-    setIsLoading: (value) => set({ isLoading: value }),
-    setIsError: (value) => set({ isError: value }),
-    setError: (value) => set({ error: value })
+    setAuthData: (authData: AuthData) => set({ data: authData }),
+    setIsActivationStage: (value: boolean) => set({ isActivationStage: value }),
+    setIsAuthenticated: (value: boolean) => set({ isAuthenticated: value }),
+    setIsLoading: (value: boolean) => set({ isLoading: value }),
+    setIsError: (value: boolean) => set({ isError: value }),
+    setError: (value: Error) => set({ error: value })
 }));
 
 export const useNotificationStore = create(set => ({
@@ -30,10 +25,10 @@ export const useNotificationStore = create(set => ({
     isLoading: false,
     isError: false,
     error: null,
-    setClientMethods: (methods) => set({ clientMethods: methods }),
-    setIsLoading: (value) => set({ isLoading: value }),
-    setIsError: (value) => set({ isError: value }),
-    setError: (value) => set({ error: value })
+    setClientMethods: (methods: Record<string, Function>) => set({ clientMethods: methods }),
+    setIsLoading: (value: boolean) => set({ isLoading: value }),
+    setIsError: (value: boolean) => set({ isError: value }),
+    setError: (value: Error) => set({ error: value })
 }));
 
 export const viewStore = create(set => ({
@@ -44,7 +39,7 @@ export const viewStore = create(set => ({
         followings: false,
         followers: false,
     },
-    setViewData: (state, viewData) => set({
+    setViewData: (state: ViewState, viewData: Partial<ViewState>) => set({
         data: { ...state, ...viewData }
     }),
 }));
@@ -55,26 +50,26 @@ export const useChatStore = create(set => ({
     isLoading: false,
     isError: false,
     error: null,
-    setActiveChatId: (activeChatId) => {
-        set(state => ({
+    setActiveChatId: (activeChatId: string) => {
+        set((state: ChatState) => ({
             data: { ...state, activeChatId }
         }));
     },
-    setMessageInput: (messageInput) => {
-        set(state => ({
+    setMessageInput: (messageInput: Record<string, string>) => {
+        set((state: ChatState) => ({
             data: { ...state, messageInput }
         }))
     },
-    setClientMethods: (methods) => set({ clientMethods: methods }),
-    setIsLoading: (value) => set({ isLoading: value }),
-    setIsError: (value) => set({ isError: value }),
-    setError: (value) => set({ error: value })
+    setClientMethods: (methods: Record<string, Function>) => set({ clientMethods: methods }),
+    setIsLoading: (value: boolean) => set({ isLoading: value }),
+    setIsError: (value: boolean) => set({ isError: value }),
+    setError: (value: Error) => set({ error: value })
 }));
 
 
 export const useStompStore = create(set => ({
     clientContext: {},
-    setClientContext: (methods) => set({
+    setClientContext: (methods: Record<string, Function>) => set({
         clientContext: methods
     }),
 }));

@@ -1,4 +1,4 @@
-import DefaultContainer from "@shared/DefaultContainer";
+import DefaultContainer from "@components/shared/DefaultContainer";
 import PostQuery from "../components/query/post/PostQuery"
 import UserQuery from "../components/query/user/UserQuery";
 import SearchBar from "../components/base/SearchBar";
@@ -39,7 +39,7 @@ function SearchContainer() {
             />
             <PostQuery
                 fetchPostQuery={fetchPostQuery}
-                postQueryResult={postQueryResult}
+                postQueryList={postQueryResult}
             />
         </DefaultContainer>
     );

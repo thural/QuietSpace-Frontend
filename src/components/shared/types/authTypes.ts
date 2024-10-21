@@ -16,6 +16,13 @@ export interface ActivationData {
     email: string
 }
 
+export interface AuthData {
+    message: string
+    accessToken: string
+    refreshToken: string
+    userId: string
+}
+
 export enum AuthPages {
     LOGIN,
     SIGNNUP,

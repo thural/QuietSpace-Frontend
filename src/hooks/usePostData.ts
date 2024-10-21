@@ -8,12 +8,14 @@ import {
     fetchVotePoll
 } from "../api/postRequests";
 import { useAuthStore, viewStore } from "./zustand";
+import { PagedPostresponse } from "@/api/schemas/post";
+import { UserSchema } from "@/api/schemas/user";
 
 
 export const useGetPosts = () => {
 
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
     const { data: authData } = useAuthStore();
 
     return useQuery({
@@ -32,10 +34,10 @@ export const useGetPosts = () => {
     });
 }
 
-export const useGetPostsByUserId = (userId) => {
+export const useGetPostsByUserId = (userId: string | number) => {
 
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
     const { data: authData } = useAuthStore();
 
     return useQuery({
@@ -69,14 +71,14 @@ export const useCreatePost = () => {
         alert("error on posting, try again later");
     }
 
-    const onSuccess = (data, variables, context) => {
+    const onSuccess = (data) => {
         queryClient.invalidateQueries(["posts"], { exact: true });
         setViewData({ overlay: false, createPost: false });
         handleSubmitSuccess();
         console.log("post added successfully:", data);
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on post: ", error.message);
         handleSubmitError();
     }
@@ -91,7 +93,7 @@ export const useCreatePost = () => {
 }
 
 
-export const useEditPost = (postId) => {
+export const useEditPost = (postId: string | number) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
@@ -103,12 +105,12 @@ export const useEditPost = (postId) => {
         console.log("post edited was success");
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on editing post:", error.message);
     }
 
     return useMutation({
-        mutationFn: async (queryText) => {
+        mutationFn: async (queryText: string) => {
             return await fetchEditPost(queryText, authData.accessToken, postId);
         },
         onSuccess,
@@ -120,18 +122,18 @@ export const useQueryPosts = (setPostQueryResult) => {
 
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data, variable, context) => {
+    const onSuccess = (data: PagedPostresponse) => {
         console.log("post query result: ", data["content"]);
         setPostQueryResult(data["content"]);
         console.log("post query was success");
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on querying post:", error.message);
     }
 
     return useMutation({
-        mutationFn: async (queryText) => {
+        mutationFn: async (queryText: string) => {
             const response = await fetchPostQuery(queryText, authData.accessToken);
             return await response.json();
         },
@@ -141,18 +143,18 @@ export const useQueryPosts = (setPostQueryResult) => {
 }
 
 
-export const useDeletePost = (postId) => {
+export const useDeletePost = (postId: string | number) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data, variables, context) => {
+    const onSuccess = (data) => {
         console.log("response data on post delete: ", data);
         queryClient.invalidateQueries(["posts"], { exact: true });
         console.log("delete post success");
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on deleting post: ", `postId: ${postId}, error message: `, error.message);
     }
 
@@ -170,12 +172,12 @@ export const useVotePoll = () => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data, variables, context) => {
+    const onSuccess = (data) => {
         console.log("response data on poll vote success: ", data);
         queryClient.invalidateQueries(["posts"], { exact: true });
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on voting poll: ", error.message);
     }
 
