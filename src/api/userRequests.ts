@@ -1,32 +1,33 @@
 import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
-import { genericFetchErrorHandler, getApiResponse } from "./commonRequest";
+import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "./schemas/common";
 import { PagedUserResponse, UserSchema } from "./schemas/user";
 
+
 export const fetchUser = async (token: JwtToken): Promise<UserSchema> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PROFILE_URL, 'GET', null, token))
+    await getWrappedApiResponse(USER_PROFILE_URL, 'GET', null, token)
 ).json();
 
 export const fetchUserById = async (userId: ResId, token: JwtToken): Promise<UserSchema> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PATH + `/${userId}`, 'GET', null, token))
+    await getWrappedApiResponse(USER_PATH + `/${userId}`, 'GET', null, token)
 ).json();
 
 export const fetchUsersByQuery = async (queryText: string, token: JwtToken): Promise<PagedUserResponse> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PATH + `/search?username=${queryText}`, 'GET', null, token))
+    await getWrappedApiResponse(USER_PATH + `/search?username=${queryText}`, 'GET', null, token)
 ).json();
 
 export const fetchToggleFollow = async (userId: ResId, token: JwtToken): Promise<Response> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PATH + `/follow/${userId}/toggle-follow`, 'POST', null, token))
+    await getWrappedApiResponse(USER_PATH + `/follow/${userId}/toggle-follow`, 'POST', null, token)
 );
 
 export const fetchFollowers = async (userId: ResId, token: JwtToken): Promise<PagedUserResponse> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PATH + `/${userId}/followers`, 'GET', null, token))
+    await getWrappedApiResponse(USER_PATH + `/${userId}/followers`, 'GET', null, token)
 ).json();
 
 export const fetchFollowings = async (userId: ResId, token: JwtToken): Promise<PagedUserResponse> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PATH + `/${userId}/followings`, 'GET', null, token))
+    await getWrappedApiResponse(USER_PATH + `/${userId}/followings`, 'GET', null, token)
 ).json();
 
 export const fetchRemoveFollower = async (token: JwtToken, userId: ResId): Promise<Response> => (
-    await genericFetchErrorHandler(() => getApiResponse(USER_PATH + `followers/remove/${userId}`, 'POST', null, token))
+    await getWrappedApiResponse(USER_PATH + `followers/remove/${userId}`, 'POST', null, token)
 );

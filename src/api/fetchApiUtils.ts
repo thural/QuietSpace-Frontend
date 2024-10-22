@@ -1,29 +1,31 @@
 import { FetchOptions, JwtToken } from "./schemas/common";
 import { CustomError } from "./schemas/errors";
 
+export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'CONNECT' | 'DELETE';
+
 
 export type ApiResponseFn = (
     url: string,
-    method: string,
+    method: RequestMethod,
     requestBody: string | Record<string, any> | null,
     token: JwtToken | null
 ) => Promise<Response>;
 
 
-type ApiResponseFunction = () => Promise<Response>;
+type GenericApiResponseFn = (...args: Array<any>) => Promise<Response>;
 
 
-export const genericFetchErrorHandler = async (
-    fetchCallBack: ApiResponseFunction
-): Promise<Response> => {
-    try {
-        return await fetchCallBack();
-    } catch (error: unknown) {
-        const customError: CustomError = new Error((error as Error).message);
-        customError.statusCode = (error as any).statusCode;
-        throw customError;
-    }
-};
+function genericFetchErrorWrapper(fn: GenericApiResponseFn) {
+    return async function (...args: Array<any>) {
+        try {
+            return await fn(...args);
+        } catch (error: unknown) {
+            const customError: CustomError = new Error((error as Error).message);
+            customError.statusCode = (error as any).statusCode;
+            throw customError;
+        }
+    };
+}
 
 
 export async function getApiResponse(
@@ -50,3 +52,5 @@ export async function getApiResponse(
     else return Promise.reject(response);
 
 }
+
+export const getWrappedApiResponse = genericFetchErrorWrapper(getApiResponse);
