@@ -2,7 +2,7 @@ import Typography from "@components/shared/Typography";
 import CommentNotification from "../CommentNotification";
 import FollowNotification from "../FollowNotification";
 import PostNotification from "../PostNotification";
-import { NotificationResponse, NotificationType } from "@/api/schemas/notification";
+import { NotificationSchema, NotificationType } from "@/api/schemas/notification";
 import { getEnumValueFromString } from "@/utils/enumUtils";
 import { NotificationListProps } from "@/components/shared/types/notificationTypes";
 
@@ -12,7 +12,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
 
     if (!notifications.length) return <Typography ta="center">You have no Notifications yet</Typography>
 
-    const getNotificationCard = (notification: NotificationResponse) => {
+    const getNotificationCard = (notification: NotificationSchema) => {
         const { type, id } = notification;
         const enumValue = getEnumValueFromString(NotificationType, type)
 

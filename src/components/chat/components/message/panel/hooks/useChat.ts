@@ -1,5 +1,5 @@
 import { useDeleteChat, useGetMessagesByChatId } from "@hooks/useChatData";
-import { useAuthStore, useChatStore } from "@hooks/zustand";
+import { useAuthStore, useChatStore } from "@/hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 

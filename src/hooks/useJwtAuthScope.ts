@@ -36,7 +36,6 @@ export const authenticate = ({ formData, onSuccessFn, onErrorFn, onLoadFn }) => 
     }
 
     fetchLogin(formData)
-        .then(response => response.json())
         .then(onSuccess)
         .catch(onError);
 }
@@ -55,7 +54,6 @@ export const getAccessToken = ({ onSuccessFn, onErrorFn }) => {
     }
 
     fetchAccessToken(refreshToken)
-        .then(response => response.json())
         .then(onSuccess)
         .catch(onError);
 }

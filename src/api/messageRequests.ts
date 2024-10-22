@@ -1,19 +1,16 @@
-import { getApiResponse } from "./commonRequest";
+import { MESSAGE_PATH } from "@/constants/ApiPath";
+import { genericFetchErrorHandler, getApiResponse } from "./commonRequest";
+import { JwtToken, ResId } from "./schemas/common";
+import { MessageBody, MessageSchema, PagedMessageResponse } from "./schemas/chat";
 
-export const fetchMessages = async (url, chatId, token) => {
-    try {
-        return await getApiResponse(url + `/chat/${chatId}`, 'GET', null, token)
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchMessages = async (chatId: ResId, token: JwtToken): Promise<PagedMessageResponse> => (
+    await genericFetchErrorHandler(() => getApiResponse(MESSAGE_PATH + `/chat/${chatId}`, 'GET', null, token))
+).json();
 
-export const fetchCreateMessage = async (url, body, token) => {
-    try {
-        return await getApiResponse(url, 'POST', body, token);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchCreateMessage = async (body: MessageBody, token: JwtToken): Promise<MessageSchema> => (
+    await genericFetchErrorHandler(() => getApiResponse(MESSAGE_PATH, 'POST', body, token))
+).json();
 
-export const fetchDeleteMessage = async (url, token, messageId) => {
-    try {
-        return await getApiResponse(url + `/${messageId}`, 'DELETE', null, token);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchDeleteMessage = async (token: JwtToken, messageId: ResId): Promise<Response> => (
+    await genericFetchErrorHandler(() => getApiResponse(MESSAGE_PATH + `/${messageId}`, 'DELETE', null, token))
+);

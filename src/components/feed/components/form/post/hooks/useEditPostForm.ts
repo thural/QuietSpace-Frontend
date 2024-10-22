@@ -2,7 +2,7 @@ import { useEditPost } from "@hooks/usePostData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-const useEditPostForm = (postId) => {
+const useEditPostForm = (postId: string) => {
     const queryClient = useQueryClient();
     const posts = queryClient.getQueryData(["posts"]);
     const editedPostData = posts.content.find(post => post.id === postId);

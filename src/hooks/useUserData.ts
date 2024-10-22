@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
-import { USER_PROFILE_URL } from "../constants/ApiPath";
 import { useAuthStore } from "./zustand";
 import { PagedUserResponse, UserSchema } from "@/api/schemas/user";
 import { AnyFunction } from "@/components/shared/types/genericTypes";
@@ -14,8 +13,7 @@ export const useGetCurrentUser = () => {
     return useQuery({
         queryKey: ["user"],
         queryFn: async () => {
-            const response = await fetchUser(USER_PROFILE_URL, authData.accessToken);
-            return await response.json();
+            return await fetchUser(authData.accessToken);
         },
         onSuccess: (data) => console.log("user: ", data),
         enabled: !!authData?.accessToken,

@@ -19,8 +19,7 @@ export const useGetNotifications = () => {
     return useQuery({
         queryKey: ["notifications"],
         queryFn: async () => {
-            const response = await fetchNotifications(authData.accessToken);
-            return await response.json();
+            return await fetchNotifications(authData.accessToken);
         },
         onSuccess,
         onError,

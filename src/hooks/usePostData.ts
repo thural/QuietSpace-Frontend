@@ -21,8 +21,7 @@ export const useGetPosts = () => {
     return useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
-            const response = await fetchPosts(authData.accessToken);
-            return await response.json();
+            return await fetchPosts(authData.accessToken);
         },
         enabled: !!user?.id, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 3 minutes, it won't refetch on trigger events, defult 0
@@ -43,8 +42,7 @@ export const useGetPostsByUserId = (userId: string | number) => {
     return useQuery({
         queryKey: ["posts/user", { id: userId }],
         queryFn: async () => {
-            const response = await fetchPostsByUserId(userId, authData.accessToken);
-            return await response.json();
+            return await fetchPostsByUserId(userId, authData.accessToken);
         },
         enabled: !!user?.id,
         staleTime: 1000 * 60 * 3,
@@ -109,8 +107,8 @@ export const useEditPost = (postId: string | number) => {
     }
 
     return useMutation({
-        mutationFn: async (queryText: string) => {
-            return await fetchEditPost(queryText, authData.accessToken, postId);
+        mutationFn: async (postData: Record<string, string>) => { // TODO: create and apply post form interface
+            return await fetchEditPost(postData, authData.accessToken, postId);
         },
         onSuccess,
         onError
@@ -133,8 +131,7 @@ export const useQueryPosts = (setPostQueryResult) => {
 
     return useMutation({
         mutationFn: async (queryText: string) => {
-            const response = await fetchPostQuery(queryText, authData.accessToken);
-            return await response.json();
+            return await fetchPostQuery(queryText, authData.accessToken);
         },
         onSuccess,
         onError

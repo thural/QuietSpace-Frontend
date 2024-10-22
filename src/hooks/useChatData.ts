@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "./zustand";
 import { CHAT_PATH, CHAT_PATH_BY_MEMBER, MESSAGE_PATH } from "../constants/ApiPath";
-import { fetchChatById, fetchChats, fetchCreateChat, fetchDeleteChat } from "../api/chatRequests";
+import { fetchChatById, fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../api/chatRequests";
 import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../api/messageRequests";
 
 export const useGetChatsByUserId = (userId) => {
@@ -11,8 +11,7 @@ export const useGetChatsByUserId = (userId) => {
     return useQuery({
         queryKey: ["chats"],
         queryFn: async () => {
-            const response = await fetchChats(userId, authData["accessToken"]);
-            return await response.json();
+            return await fetchChatByUserId(userId, authData.accessToken);
         },
         retry: 3,
         retryDelay: 1000,
@@ -29,8 +28,7 @@ export const useGetChatById = (chatId) => {
     return useQuery({
         queryKey: ["chats", { id: chatId }],
         queryFn: async () => {
-            const response = await fetchChatById(chatId, authData["accessToken"]);
-            return await response.json();
+            return await fetchChatById(chatId, authData.accessToken);
         },
         retry: 3,
         retryDelay: 1000,
@@ -56,8 +54,7 @@ export const useCreateChat = () => {
 
     return useMutation({
         mutationFn: async (chatBody) => {
-            const response = await fetchCreateChat(CHAT_PATH, chatBody, authData.accessToken);
-            return await response.json();
+            return await fetchCreateChat(chatBody, authData.accessToken);
         },
         onSuccess,
         onError,
@@ -73,8 +70,7 @@ export const useGetMessagesByChatId = (chatId) => {
     return useQuery({
         queryKey: ["messages", { id: chatId }],
         queryFn: async () => {
-            const response = await fetchMessages(MESSAGE_PATH, chatId, authData.accessToken);
-            const responseData = await response.json();
+            const responseData = await fetchMessages(chatId, authData.accessToken);
             console.log("messages response data: ", responseData);
             return responseData;
         },
@@ -105,8 +101,7 @@ export const usePostNewMessage = (setMessageData) => {
     return useMutation({
         mutationFn: async (messageData) => {
             console.log("current chat id on sending: ", messageData.chatId);
-            const response = await fetchCreateMessage(MESSAGE_PATH, messageData, authData["accessToken"]);
-            return response.json();
+            return await fetchCreateMessage(messageData, authData["accessToken"]);
         },
         onSuccess,
         onError,
@@ -129,7 +124,7 @@ export const useDeleteMessage = (messageId) => {
 
     return useMutation({
         mutationFn: async (messageId) => {
-            return await fetchDeleteMessage(MESSAGE_PATH, authData["accessToken"], messageId);
+            return await fetchDeleteMessage(authData["accessToken"], messageId);
         },
         onSuccess,
         onError,

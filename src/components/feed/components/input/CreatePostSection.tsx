@@ -1,9 +1,9 @@
-import BoxStyled from "@shared/BoxStyled";
-import FlexStyled from "@shared/FlexStyled";
-import InputStyled from "@shared/InputStyled";
-import UserAvatar from "@shared/UserAvatar";
-import LightButton from "@shared/buttons/LightButton";
-import { toUpperFirstChar } from "@utils/stringUtils";
+import BoxStyled from "@/components/shared/BoxStyled";
+import FlexStyled from "@/components/shared/FlexStyled";
+import InputStyled from "@/components/shared/InputStyled";
+import UserAvatar from "@/components/shared/UserAvatar";
+import LightButton from "@/components/shared/buttons/LightButton";
+import { toUpperFirstChar } from "@/utils/stringUtils";
 
 const CreatePostSection = ({ user, toggleCreatePostForm }) => (
     <BoxStyled style={{ margin: "1rem 0" }}>

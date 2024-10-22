@@ -1,3 +1,24 @@
+export type ResId = string | number
+
+export interface BaseSchema {
+    id: ResId
+    version?: number,
+    createDate: Date
+    updateDate?: Date
+}
+
+export type JwtToken = string
+
+export interface FetchOptions {
+    method: string
+    headers: Headers
+    body: string | null
+}
+
+export enum ContentType {
+    POST, COMMENT, MESSAGE
+}
+
 export interface SortProps {
     sorted: boolean,
     unsorted: boolean,

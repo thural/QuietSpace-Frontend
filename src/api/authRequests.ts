@@ -1,38 +1,28 @@
 import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "../constants/ApiPath";
-import { getApiResponse } from "./commonRequest";
+import { genericFetchErrorHandler, getApiResponse } from "./commonRequest";
+import { AuthReuest, AuthSchema, RefreshTokenSchema, RegisterRequest } from "./schemas/auth";
+import { JwtToken } from "./schemas/common";
 
-export const fetchSignup = async (body) => {
-    try {
-        return await getApiResponse(SIGNUP_URL, 'POST', body, null);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchSignup = async (body: RegisterRequest): Promise<Response> => (
+    await genericFetchErrorHandler(() => getApiResponse(SIGNUP_URL, 'POST', body, null))
+);
 
-export const fetchLogin = async (body) => {
-    try {
-        return await getApiResponse(LOGIN_URL, 'POST', body, null);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchLogin = async (body: AuthReuest): Promise<AuthSchema> => (
+    await genericFetchErrorHandler(() => getApiResponse(LOGIN_URL, 'POST', body, null))
+).json();
 
-export const fetchLogout = async (token) => {
-    try {
-        return await getApiResponse(LOGOUT_URL, 'POST', null, token);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchLogout = async (token: JwtToken): Promise<Response> => (
+    await genericFetchErrorHandler(() => getApiResponse(LOGOUT_URL, 'POST', null, token))
+);
 
-export const fetchAccessToken = async (token) => {
-    try {
-        return await getApiResponse(REFRESH_TOKEN, 'POST', null, token);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchAccessToken = async (token: JwtToken): Promise<RefreshTokenSchema> => (
+    await genericFetchErrorHandler(() => getApiResponse(REFRESH_TOKEN, 'POST', null, token))
+).json();
 
-export const fetchActivation = async (code) => {
-    try {
-        return await getApiResponse(ACTIVATE_ACCOUNT + `?token=${code}`, 'POST', null, null);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchActivation = async (code: number): Promise<Response> => (
+    await genericFetchErrorHandler(() => getApiResponse(ACTIVATE_ACCOUNT + `?token=${code}`, 'POST', null, null))
+);
 
-export const fetchResendCode = async (email) => {
-    try {
-        return await getApiResponse(RESEND_CODE + `?email=${email}`, 'POST', null, null);
-    } catch (error) { throw new Error(error.message) }
-}
+export const fetchResendCode = async (email: string): Promise<Response> => (
+    await genericFetchErrorHandler(() => getApiResponse(RESEND_CODE + `?email=${email}`, 'POST', null, null))
+);

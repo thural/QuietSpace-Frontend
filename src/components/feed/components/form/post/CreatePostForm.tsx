@@ -1,10 +1,10 @@
-import BoxStyled from "@shared/BoxStyled";
-import DarkButton from "@shared/buttons/DarkButton ";
-import FlexStyled from "@shared/FlexStyled";
-import FormStyled from "@shared/FormStyled";
-import Overlay from "@shared/Overlay";
-import TextInput from "@shared/TextInput";
-import UserAvatar from "@shared/UserAvatar";
+import BoxStyled from "@/components/shared/BoxStyled";
+import DarkButton from "@/components/shared/buttons/DarkButton ";
+import FlexStyled from "@/components/shared/FlexStyled";
+import FormStyled from "@/components/shared/FormStyled";
+import Overlay from "@/components/shared/Overlay";
+import TextInput from "@/components/shared/TextInput";
+import UserAvatar from "@/components/shared/UserAvatar";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
 import ComboMenu from "../../shared/combo-menu/ComboMenu";
 import PollForm from "../poll/PollForm";

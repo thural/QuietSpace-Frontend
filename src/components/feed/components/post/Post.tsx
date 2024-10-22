@@ -1,10 +1,10 @@
-import BoxStyled from "@shared/BoxStyled";
-import Conditional from "@shared/Conditional";
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
-import UserAvatar from "@shared/UserAvatar";
-import { LikeType } from "@utils/enumClasses";
-import { parseCount, toUpperFirstChar } from "@utils/stringUtils";
+import BoxStyled from "@/components/shared/BoxStyled";
+import Conditional from "@/components/shared/Conditional";
+import FlexStyled from "@/components/shared/FlexStyled";
+import Typography from "@/components/shared/Typography";
+import UserAvatar from "@/components/shared/UserAvatar";
+import { LikeType } from "@/utils/enumClasses";
+import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,

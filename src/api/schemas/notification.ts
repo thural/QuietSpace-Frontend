@@ -1,3 +1,5 @@
+import { PagedResponse } from "./common"
+
 export enum NotificationType {
     FOLLOW_REQUEST,
     POST_REACTION,
@@ -8,7 +10,7 @@ export enum NotificationType {
     REPOST
 }
 
-export interface NotificationResponse {
+export interface NotificationSchema {
     id: string | number
     actorId: string | number
     contentId: string | number
@@ -16,3 +18,5 @@ export interface NotificationResponse {
     type: string
     updateDate: Date
 }
+
+export type PagedNotificationResponse = PagedResponse<NotificationSchema>

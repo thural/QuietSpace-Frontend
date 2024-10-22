@@ -1,7 +1,7 @@
 import { AuthPages, SetAuthState, SignupData, LoginData } from '@/components/shared/types/authTypes';
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
 import { JwtAuthProps } from '@/components/shared/types/hookPropTypes';
-import { RefreshTokenResponse, AuthResponse } from '@/api/schemas/auth';
+import { RefreshTokenSchema, AuthSchema } from '@/api/schemas/auth';
 
 var refreshIntervalId: number | null = null;
 const useJwtAuth = ({
@@ -31,7 +31,7 @@ const useJwtAuth = ({
     const authenticate = (formData: LoginData) => {
         onLoadFn();
 
-        const onSuccess = (data: AuthResponse) => {
+        const onSuccess = (data: AuthSchema) => {
             localStorage.setItem("refreshToken", data.refreshToken);
             onSuccessFn(data);
         }
@@ -41,7 +41,6 @@ const useJwtAuth = ({
         }
 
         fetchLogin(formData)
-            .then(response => response.json())
             .then(onSuccess)
             .catch(onError);
     }
@@ -50,7 +49,7 @@ const useJwtAuth = ({
     const getAccessToken = () => {
         const refreshToken = localStorage.getItem("refreshToken");
 
-        const onSuccess = (data: RefreshTokenResponse) => {
+        const onSuccess = (data: RefreshTokenSchema) => {
             onSuccessFn(data);
         }
 
@@ -59,7 +58,6 @@ const useJwtAuth = ({
         }
 
         fetchAccessToken(refreshToken)
-            .then(response => response.json())
             .then(onSuccess)
             .catch(onError);
     }

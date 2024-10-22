@@ -7,7 +7,7 @@ import { ContentType, LikeType } from "@/utils/enumClasses";
 import { useState } from "react";
 import { PostSchema } from "@/api/schemas/post";
 import { UserSchema } from "@/api/schemas/user";
-import { UserReaction } from "@/api/schemas/reaction";
+import { UserReactionResponse } from "@/api/schemas/reaction";
 
 export const usePost = (post: PostSchema) => {
     const queryClient = useQueryClient();
@@ -26,7 +26,7 @@ export const usePost = (post: PostSchema) => {
         deletePost.mutate();
     };
 
-    const handleReaction = async (event: React.MouseEvent, likeType: UserReaction) => {
+    const handleReaction = async (event: React.MouseEvent, likeType: UserReactionResponse) => {
         event.preventDefault();
         if (user === undefined) {
             console.error("(!) could not handle user reaction: user is undefined");

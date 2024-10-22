@@ -17,8 +17,7 @@ export const useGetComments = (postId) => {
     return useQuery({
         queryKey: ["comments", { id: postId }],
         queryFn: async () => {
-            const response = await fetchCommentsByPostId(postId, authData.accessToken);
-            return await response.json();
+            return await fetchCommentsByPostId(postId, authData.accessToken);
         },
         onSuccess,
         onError,
@@ -46,8 +45,7 @@ export const usePostComment = (postId) => {
 
     return useMutation({
         mutationFn: async (commentData) => {
-            const response = await fetchCreateComment(commentData, authData.accessToken);
-            return await response.json();
+            return await fetchCreateComment(commentData, authData.accessToken);
         },
         onSuccess,
         onError,
