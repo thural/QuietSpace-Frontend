@@ -1,5 +1,5 @@
 import { UserSchema } from "@/api/schemas/user";
-import { usePostComment } from "@/hooks/useCommentData";
+import { usePostComment } from "@/hooks/data/useCommentData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 

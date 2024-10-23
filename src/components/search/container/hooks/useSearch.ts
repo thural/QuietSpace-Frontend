@@ -1,6 +1,6 @@
 import { UserListResponse } from "@/api/schemas/user";
-import { useQueryPosts } from "@/hooks/usePostData";
-import { useQueryUsers } from "@/hooks/useUserData";
+import { useQueryPosts } from "@/hooks/data/usePostData";
+import { useQueryUsers } from "@/hooks/data/useUserData";
 import { useEffect, useRef, useState } from "react";
 
 const useSearch = () => {

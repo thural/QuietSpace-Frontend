@@ -1,4 +1,4 @@
-import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "../constants/ApiPath";
+import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { AuthReuest, AuthSchema, RefreshTokenSchema, RegisterRequest } from "./schemas/auth";
 import { JwtToken } from "./schemas/common";
@@ -20,7 +20,7 @@ export const fetchAccessToken = async (token: JwtToken): Promise<RefreshTokenSch
     await getWrappedApiResponse(REFRESH_TOKEN, 'POST', null, token)
 ).json();
 
-export const fetchActivation = async (code: number): Promise<Response> => (
+export const fetchActivation = async (code: string): Promise<Response> => (
     await getWrappedApiResponse(ACTIVATE_ACCOUNT + `?token=${code}`, 'POST', null, null)
 );
 

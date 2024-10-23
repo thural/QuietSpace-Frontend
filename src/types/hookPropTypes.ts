@@ -2,7 +2,7 @@ import { AnyFunction, ErrorFunction } from "./genericTypes";
 
 
 export interface JwtAuthProps {
-    refreshInterval: number;
+    refreshInterval?: number;
     onSuccessFn: AnyFunction;
     onErrorFn: ErrorFunction;
     onLoadFn: AnyFunction;

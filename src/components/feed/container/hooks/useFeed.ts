@@ -1,4 +1,4 @@
-import { useGetPosts } from "@/hooks/usePostData";
+import { useGetPosts } from "@/hooks/data/usePostData";
 import { viewStore } from "@/hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 

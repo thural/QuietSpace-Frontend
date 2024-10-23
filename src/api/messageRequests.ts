@@ -1,4 +1,4 @@
-import { MESSAGE_PATH } from "@/constants/ApiPath";
+import { MESSAGE_PATH } from "@/constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "./schemas/common";
 import { MessageBody, MessageSchema, PagedMessageResponse } from "./schemas/chat";

@@ -8,11 +8,11 @@ export interface CommentBody {
     text: string
 }
 
-export interface CommentShema extends CommentBody, BaseSchema {
+export interface CommentSchema extends CommentBody, BaseSchema {
     username: string
     likeCount: number
     replyCount: number
     userReaction: UserReaction
 }
 
-export type PagedCommentResponse = PagedResponse<CommentShema>
+export type PagedCommentResponse = PagedResponse<CommentSchema>

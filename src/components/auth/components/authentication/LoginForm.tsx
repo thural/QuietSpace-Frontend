@@ -8,7 +8,7 @@ import TextInput from "@components/shared/TextInput";
 import Typography from "@components/shared/Typography";
 import { useLoginForm } from "./hooks/useLoginForm";
 import styles from "../registration/styles/formStyles";
-import { AuthFormProps } from "@components/shared/types/authTypes";
+import { AuthFormProps } from "@/types/authTypes";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 

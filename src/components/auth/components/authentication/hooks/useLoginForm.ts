@@ -2,7 +2,7 @@ import useJwtAuth from "@/hooks/useJwtAuth";
 import { useAuthStore } from "@/hooks/zustand";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthFormProps, AuthPages } from "@/components/shared/types/authTypes";
+import { AuthFormProps, AuthPages } from "@/types/authTypes";
 
 
 export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {

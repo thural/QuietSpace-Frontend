@@ -1,18 +1,22 @@
-import { AuthData } from '@/components/shared/types/authTypes';
-import { ChatState, ViewState, ViewStoreProps } from '@/components/shared/types/viewTypes';
+import { AuthSchema } from '@/api/schemas/auth';
+import { UseAuthStoreProps } from '@/types/authStoreTypes';
+import { ChatStoreProps } from '@/types/chatStoreTypes';
+import { NotificationStoreProps } from '@/types/notificationStore';
+import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
 import { create } from 'zustand'
 
-export const useAuthStore = create(set => ({
+
+export const useAuthStore = create<UseAuthStoreProps>(set => ({
     isAuthenticated: false,
     isLoading: false,
     isError: false,
     error: null,
-    data: { message: "", accessToken: "", refreshToken: "", userId: "" },
+    data: { id: "", message: "", accessToken: "", userId: "" },
     isActivationStage: false,
     resetAuthData: () => set({
-        data: { message: "", accessToken: "", refreshToken: "", userId: "" }
+        data: { id: "", message: "", accessToken: "", userId: "" }
     }),
-    setAuthData: (authData: AuthData) => set({ data: authData }),
+    setAuthData: (authData: AuthSchema) => set({ data: authData }),
     setIsActivationStage: (value: boolean) => set({ isActivationStage: value }),
     setIsAuthenticated: (value: boolean) => set({ isAuthenticated: value }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),
@@ -20,7 +24,8 @@ export const useAuthStore = create(set => ({
     setError: (value: Error) => set({ error: value })
 }));
 
-export const useNotificationStore = create(set => ({
+
+export const useNotificationStore = create<NotificationStoreProps>(set => ({
     clientMethods: {},
     isLoading: false,
     isError: false,
@@ -30,6 +35,7 @@ export const useNotificationStore = create(set => ({
     setIsError: (value: boolean) => set({ isError: value }),
     setError: (value: Error) => set({ error: value })
 }));
+
 
 export const viewStore = create<ViewStoreProps>(set => ({
     data: {
@@ -44,26 +50,19 @@ export const viewStore = create<ViewStoreProps>(set => ({
     })),
 }));
 
-export const useChatStore = create(set => ({
+
+export const useChatStore = create<ChatStoreProps>(set => ({
     data: { activeChatId: null, messageInput: {} },
     clientMethods: {},
     isLoading: false,
     isError: false,
     error: null,
-    setActiveChatId: (activeChatId: string) => {
-        set((state: ChatState) => ({
-            data: { ...state, activeChatId }
-        }));
-    },
-    setMessageInput: (messageInput: Record<string, string>) => {
-        set((state: ChatState) => ({
-            data: { ...state, messageInput }
-        }))
-    },
+    setActiveChatId: (activeChatId: string) => set(state => ({ data: { ...state.data, activeChatId } })),
+    setMessageInput: (messageInput: Record<string, string>) => set(state => ({ data: { ...state.data, messageInput } })),
     setClientMethods: (methods: Record<string, Function>) => set({ clientMethods: methods }),
-    setIsLoading: (value: boolean) => set({ isLoading: value }),
-    setIsError: (value: boolean) => set({ isError: value }),
-    setError: (value: Error) => set({ error: value })
+    setIsLoading: (isLoading: boolean) => set({ isLoading }),
+    setIsError: (isError: boolean) => set({ isError }),
+    setError: (error: Error) => set({ error })
 }));
 
 

@@ -3,7 +3,7 @@ import LoginForm from "../components/authentication/LoginForm";
 import SignupForm from "../components/registration/SignupForm";
 import BoxStyled from "@components/shared/BoxStyled";
 import Typography from "@components/shared/Typography";
-import { AuthState, AuthPages } from "@components/shared/types/authTypes";
+import { AuthState, AuthPages } from "@/types/authTypes";
 import { useState } from "react";
 import styles from "./styles/authStyles";
 

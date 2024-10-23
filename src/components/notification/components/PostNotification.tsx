@@ -1,6 +1,6 @@
 import { NotificationType } from "@/api/schemas/notification";
 import NotificationCard from "./base/NotificationCard";
-import { NotificationItemProps } from "@/components/shared/types/notificationTypes";
+import { NotificationItemProps } from "@/types/notificationTypes";
 import { getEnumValueFromString } from "@/utils/enumUtils";
 
 const PostNotification: React.FC<NotificationItemProps> = ({ notification, ...props }) => {

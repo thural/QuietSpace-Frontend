@@ -5,8 +5,9 @@ import Typography from "@/components/shared/Typography";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import useEditPostForm from "./hooks/useEditPostForm";
 import styles from "./styles/editPostStyles";
+import { ResId } from "@/api/schemas/common";
 
-const EditPostForm = ({ postId }) => {
+const EditPostForm = ({ postId }: { postId: ResId }) => {
   const classes = styles();
   const {
     postData,

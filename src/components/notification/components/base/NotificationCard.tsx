@@ -8,7 +8,7 @@ import FlexStyled from "@components/shared/FlexStyled";
 import Typography from "@components/shared/Typography";
 import UserAvatar from "@components/shared/UserAvatar";
 import { toUpperFirstChar } from "@/utils/stringUtils";
-import { NotificationCardProps } from "@/components/shared/types/notificationTypes";
+import { NotificationCardProps } from "@/types/notificationTypes";
 
 
 

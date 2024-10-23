@@ -1,4 +1,4 @@
-import { POST_URL, REACTION_PATH } from "../constants/ApiPath";
+import { POST_URL, REACTION_PATH } from "../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "./schemas/common";
 import { PagedPostresponse, PostBody, VoteBody } from "./schemas/post";

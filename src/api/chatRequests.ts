@@ -1,11 +1,11 @@
-import { CHAT_PATH, CHAT_PATH_BY_MEMBER } from "../constants/ApiPath";
+import { CHAT_PATH, CHAT_PATH_BY_MEMBER } from "../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { ChatListResponse, CreateChatRequest, ChatSchema } from "./schemas/chat";
+import { ChatResponseList, CreateChatRequest, ChatSchema } from "./schemas/chat";
 import { JwtToken, ResId } from "./schemas/common";
 import { UserSchema } from "./schemas/user";
 
 
-export const fetchChatByUserId = async (userId: ResId, token: JwtToken): Promise<ChatListResponse> => (
+export const fetchChatByUserId = async (userId: ResId, token: JwtToken): Promise<ChatResponseList> => (
     await getWrappedApiResponse(CHAT_PATH_BY_MEMBER + `/${userId}`, 'GET', null, token)
 ).json();
 

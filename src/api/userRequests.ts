@@ -1,4 +1,4 @@
-import { USER_PATH, USER_PROFILE_URL } from "../constants/ApiPath";
+import { USER_PATH, USER_PROFILE_URL } from "../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "./schemas/common";
 import { PagedUserResponse, UserSchema } from "./schemas/user";

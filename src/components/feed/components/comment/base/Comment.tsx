@@ -1,17 +1,19 @@
-import BoxStyled from "@shared/BoxStyled";
-import Conditional from "@shared/Conditional";
-import EmojiText from "@shared/EmojiText";
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
-import UserAvatar from "@shared/UserAvatar";
-import { toUpperFirstChar } from "@utils/stringUtils";
+import BoxStyled from "@components/shared/BoxStyled";
+import Conditional from "@components/shared/Conditional";
+import EmojiText from "@components/shared/EmojiText";
+import FlexStyled from "@components/shared/FlexStyled";
+import Typography from "@components/shared/Typography";
+import UserAvatar from "@components/shared/UserAvatar";
+import { toUpperFirstChar } from "@/utils/stringUtils";
 import CommentReplyForm from "../form/CommentForm";
 import styles from "./styles/commentStyles";
 import useComment from "./hooks/useComment";
+import { CommentSchema } from "@/api/schemas/comment";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment }: { comment: CommentSchema }) => {
 
     const classes = styles();
+
     const {
         user,
         replyFormView,
@@ -23,8 +25,7 @@ const Comment = ({ comment }) => {
     } = useComment(comment);
 
 
-
-    const CommentElem = ({ comment }) => (
+    const CommentElem = ({ comment }: { comment: Comment }) => (
         <FlexStyled className={classes.commentElement}>
             <BoxStyled key={comment.id} className={classes.textBody}>
                 <EmojiText text={comment.text} />

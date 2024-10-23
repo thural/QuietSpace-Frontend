@@ -1,7 +1,8 @@
-import { useCreateChat } from "@hooks/useChatData";
-import { useQueryUsers } from "@hooks/useUserData";
+import { useCreateChat } from "@/hooks/data/useChatData";
+import { useQueryUsers } from "@/hooks/data/useUserData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+
 
 const useQueryContainer = () => {
     const [focused, setFocused] = useState(false);

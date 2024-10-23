@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../api/userRequests";
-import { useAuthStore } from "./zustand";
+import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/userRequests";
+import { useAuthStore } from "../zustand";
 import { PagedUserResponse, UserSchema } from "@/api/schemas/user";
-import { AnyFunction } from "@/components/shared/types/genericTypes";
-import { AuthState } from "@/components/shared/types/authTypes";
+import { ConsumerFn } from "@/types/genericTypes";
+import { produceUndefinedError } from "@/utils/errorUtils";
+import { ResId } from "@/api/schemas/common";
 
 
 export const useGetCurrentUser = () => {
@@ -12,31 +13,32 @@ export const useGetCurrentUser = () => {
 
     return useQuery({
         queryKey: ["user"],
-        queryFn: async () => {
+        queryFn: async (): Promise<UserSchema> => {
             return await fetchUser(authData.accessToken);
         },
-        onSuccess: (data) => console.log("user: ", data),
         enabled: !!authData?.accessToken,
         staleTime: Infinity,
         gcTime: Infinity,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
-        select: (data) => data.content
     })
 }
 
-export const useQueryUsers = (callBackFunc: AnyFunction) => {
+
+export const useQueryUsers = (callBackFunc: ConsumerFn) => {
 
     const queryClient = useQueryClient();
     const signedUser: UserSchema | undefined = queryClient.getQueryData(["user"]);
+
     if (signedUser === undefined) {
-        throw new Error("(!) could not perform user query: signed user is undefined")
+        throw produceUndefinedError({ signedUser }, "could not perform user query:");
     }
-    const { data: authData }: AuthState = useAuthStore();
+
+    const { data: authData } = useAuthStore();
 
     const onSuccess = (pagedData: PagedUserResponse) => {
-        callBackFunc(pagedData.content.filter(user => user.id !== signedUser.id));
         console.log("user query success:", pagedData);
+        callBackFunc(pagedData.content.filter(user => user.id !== signedUser.id));
     }
 
     const onError = (error: Error) => {
@@ -44,7 +46,7 @@ export const useQueryUsers = (callBackFunc: AnyFunction) => {
     }
 
     return useMutation({
-        mutationFn: async (inputText: string) => {
+        mutationFn: async (inputText: string): Promise<PagedUserResponse> => {
             return await fetchUsersByQuery(inputText, authData.accessToken);
         },
         onSuccess,
@@ -52,15 +54,15 @@ export const useQueryUsers = (callBackFunc: AnyFunction) => {
     });
 }
 
-export const useGetUserById = (userId: string | number): UseQueryResult<UserSchema> => {
+
+export const useGetUserById = (userId: ResId) => {
 
     const { data: authData } = useAuthStore();
 
     return useQuery({
         queryKey: ["users", { id: userId }],
-        queryFn: async () => {
-            const response = await fetchUserById(userId, authData.accessToken);
-            return await response.json();
+        queryFn: async (): Promise<UserSchema> => {
+            return await fetchUserById(userId, authData.accessToken);
         },
         staleTime: Infinity,
         gcTime: Infinity,
@@ -70,14 +72,13 @@ export const useGetUserById = (userId: string | number): UseQueryResult<UserSche
 }
 
 
-export const useGetFollowers = (userId: string | number): UseQueryResult<PagedUserResponse> => {
+export const useGetFollowers = (userId: ResId) => {
     const { data: authData } = useAuthStore();
 
     return useQuery<PagedUserResponse>({
         queryKey: ["followers", { id: userId }],
-        queryFn: async () => {
-            const response = await fetchFollowers(userId, authData.accessToken);
-            return await response.json();
+        queryFn: async (): Promise<PagedUserResponse> => {
+            return await fetchFollowers(userId, authData.accessToken);
         },
         enabled: !!authData?.accessToken,
         staleTime: Infinity,
@@ -88,17 +89,14 @@ export const useGetFollowers = (userId: string | number): UseQueryResult<PagedUs
 };
 
 
-export const useGetFollowings = (userId: string | number): UseQueryResult<PagedUserResponse> => {
+export const useGetFollowings = (userId: ResId) => {
 
     const { data: authData } = useAuthStore();
 
-    console.log("folloings")
-
     return useQuery({
         queryKey: ["followings", { id: userId }],
-        queryFn: async () => {
-            const response = await fetchFollowings(userId, authData.accessToken);
-            return await response.json();
+        queryFn: async (): Promise<PagedUserResponse> => {
+            return await fetchFollowings(userId, authData.accessToken);
         },
         enabled: !!authData?.accessToken,
         staleTime: Infinity,
@@ -109,22 +107,23 @@ export const useGetFollowings = (userId: string | number): UseQueryResult<PagedU
     })
 }
 
+
 export const useToggleFollow = () => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data, variables, context) => {
-        queryClient.invalidateQueries(["followings"], ["followers"])
-        console.log("toggle follow success:", data);
+    const onSuccess = (data: Response) => {
+        console.log("toggle follow success response:", data);
+        queryClient.invalidateQueries({ queryKey: ["followings", "followers"] })
     }
 
-    const onError = (error, variables, context) => {
+    const onError = (error: Error) => {
         console.log("error on toggling follow: ", error.message);
     }
 
     return useMutation({
-        mutationFn: async (userId) => {
+        mutationFn: async (userId: ResId): Promise<Response> => {
             return await fetchToggleFollow(userId, authData.accessToken);
         },
         onSuccess,

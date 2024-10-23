@@ -9,7 +9,7 @@ import Typography from "@components/shared/Typography";
 import { useSignupForm } from "./hooks/useSignupForm";
 import styles from "./styles/formStyles";
 import React from "react";
-import { SignupFormProps } from "@components/shared/types/authTypes";
+import { SignupFormProps } from "@/types/authTypes";
 
 const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
     const classes = styles();

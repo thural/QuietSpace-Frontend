@@ -3,11 +3,11 @@ import { Reactiontype } from "./reaction"
 
 export interface VoteBody {
     userId: ResId
-    ppostId: ResId
+    postId: ResId
     option: string
 }
 
-interface PollOptionSchema {
+export interface PollOptionSchema {
 
     id: string | number
     label: string
@@ -17,13 +17,13 @@ interface PollOptionSchema {
 
 type PollOptionList = ContentResponse<PollOptionSchema>
 
-interface PollSchema {
+export interface PollSchema {
 
     id: string | number
     votedOption: string
     voteCount: number
     options: PollOptionList
-    dueDate: Date | null
+    dueDate: string | null
 
 }
 
@@ -31,7 +31,7 @@ export interface PostBody {
     text: string
     userId: ResId
     viewAccess: 'friends' | 'all' // TODO: check all available options
-    poll: null
+    poll: PollSchema | null
 }
 
 export interface PostSchema {

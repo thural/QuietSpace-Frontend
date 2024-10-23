@@ -3,8 +3,17 @@ import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import styles from "./styles/pollStyles";
 import usePoll from "./hooks/usePoll";
+import { PollSchema } from "@/api/schemas/post";
+import { ResId } from "@/api/schemas/common";
+import { isDateExpired } from "@/utils/dateUtils";
 
-const Poll = ({ pollData, postId }) => {
+
+interface PollProps {
+    pollData: PollSchema
+    postId: ResId
+}
+
+const Poll: React.FC<PollProps> = ({ pollData, postId }) => {
 
     const classes = styles();
 
@@ -15,6 +24,8 @@ const Poll = ({ pollData, postId }) => {
         getText,
         handleVote,
     } = usePoll(pollData, postId);
+
+    const isPollDateExpired = pollData.dueDate === null ? true : isDateExpired(pollData.dueDate);
 
     const PollOptionList = () => {
         return pollData?.options.map((option, index) => (
@@ -29,8 +40,8 @@ const Poll = ({ pollData, postId }) => {
     const PollStatus = () => (
         <FlexStyled className={classes.pollStatus}>
             {
-                !pollData?.isEnded ? <Typography className="votes">{parsedVoteCounts} votes</Typography>
-                    : <Typography className="votes">poll has ended</Typography>
+                isPollDateExpired ? <Typography className="votes">poll has ended</Typography>
+                    : <Typography className="votes">{parsedVoteCounts} votes</Typography>
             }
         </FlexStyled>
     );

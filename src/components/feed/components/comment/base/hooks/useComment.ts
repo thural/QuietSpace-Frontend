@@ -1,7 +1,7 @@
-import { useDeleteComment } from "@hooks/useCommentData";
-import { useToggleReaction } from "@hooks/useReactionData";
+import { useDeleteComment } from "@/hooks/data/useCommentData";
+import { useToggleReaction } from "@/hooks/data/useReactionData";
 import { useQueryClient } from "@tanstack/react-query";
-import { ContentType, LikeType } from "@utils/enumClasses";
+import { ContentType, LikeType } from "@/utils/enumClasses";
 import { useState } from "react";
 
 const useComment = (comment) => {

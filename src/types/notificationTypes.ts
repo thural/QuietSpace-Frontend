@@ -1,5 +1,5 @@
 import { NotificationSchema } from "@/api/schemas/notification";
-import { GenericWrapper } from "./sharedComponentTypes";
+import { GenericWrapper } from "../components/shared/types/sharedComponentTypes";
 import { ContentResponse } from "@/api/schemas/common";
 import { AnyFunction } from "./genericTypes";
 

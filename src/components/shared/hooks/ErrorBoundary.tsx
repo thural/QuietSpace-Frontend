@@ -1,37 +1,26 @@
-import { Center } from '@mantine/core';
-import React, { useEffect, useState } from 'react';
-import Typography from '../Typography';
+import React from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
-const ErrorBoundary = ({ children }) => {
-    const [error, setError] = useState(null);
+const ErrorFallback: React.FC<{ error: Error, resetErrorBoundary: () => void }> = ({ error, resetErrorBoundary }) => (
+    <div role="alert">
+        <p>Something went wrong:</p>
+        <pre>{error.message}</pre>
+        <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+);
 
-    const logError = (event) => {
-        console.log('Error message:', event.message); // Error message
-        console.log('Source:', event.filename); // URL of the script where the error occurred
-        console.log('Line:', event.lineno); // Line number where the error occurred
-        console.log('Column:', event.colno); // Column number where the error occurred
-        console.log('Error object:', event.error); // Error object (if available)
-    }
-
-    useEffect(() => {
-        const handleError = (event) => {
-            setError(event);
-            logError(event);
-        };
-
-        window.addEventListener('error', handleError);
-        return () => window.removeEventListener('error', handleError);
-    }, []);
-
-    if (error !== null) {
-        return (
-            <Center>
-                <Typography type="h1">Something went wrong: {error.message}</Typography>
-            </Center>
-        )
-    }
-
-    return children;
+const logErrorToService = (error: Error, info: React.ErrorInfo) => {
+    console.error("Logging error to service: ", error, info);
 };
 
-export default ErrorBoundary;
+export const withErrorBoundary = (Component: React.FC, fallback?: React.FC) => {
+
+    return (
+        <ErrorBoundary
+            FallbackComponent={fallback || ErrorFallback}
+            onError={logErrorToService}
+        >
+            <Component />
+        </ErrorBoundary>
+    )
+}

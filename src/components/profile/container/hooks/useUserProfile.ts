@@ -1,6 +1,6 @@
 import { UserSchema } from "@/api/schemas/user";
-import { useGetPosts, useGetPostsByUserId } from "@/hooks/usePostData";
-import { useGetFollowers, useGetFollowings, useGetUserById } from "@/hooks/useUserData";
+import { useGetPosts, useGetPostsByUserId } from "@/hooks/data/usePostData";
+import { useGetFollowers, useGetFollowings, useGetUserById } from "@/hooks/data/useUserData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

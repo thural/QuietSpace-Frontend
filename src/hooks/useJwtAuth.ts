@@ -1,9 +1,10 @@
-import { AuthPages, SetAuthState, SignupData, LoginData } from '@/components/shared/types/authTypes';
+import { AuthPages, SetAuthState, SignupBody, LoginBody } from '@/types/authTypes';
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
-import { JwtAuthProps } from '@/components/shared/types/hookPropTypes';
+import { JwtAuthProps } from '@/types/hookPropTypes';
 import { RefreshTokenSchema, AuthSchema } from '@/api/schemas/auth';
 
 var refreshIntervalId: number | null = null;
+
 const useJwtAuth = ({
     refreshInterval = 540000,
     onSuccessFn = () => { console.error("onSuccess handler is not supplied") },
@@ -11,7 +12,7 @@ const useJwtAuth = ({
     onLoadFn = () => { console.error("onLoad handler is not supplied") }
 }: JwtAuthProps) => {
 
-    const register = (setAuthState: SetAuthState, formData: SignupData) => {
+    const register = (setAuthState: SetAuthState, formData: SignupBody) => {
 
         const onSuccess = () => {
             setAuthState({ page: AuthPages.ACTIVATION, formData });
@@ -28,7 +29,7 @@ const useJwtAuth = ({
     }
 
 
-    const authenticate = (formData: LoginData) => {
+    const authenticate = (formData: LoginBody) => {
         onLoadFn();
 
         const onSuccess = (data: AuthSchema) => {
@@ -94,7 +95,7 @@ const useJwtAuth = ({
     }
 
 
-    const signup = (formData: SignupData, setAuthState: SetAuthState) => {
+    const signup = (formData: SignupBody, setAuthState: SetAuthState) => {
         onLoadFn();
 
         const onSuccess = () => {

@@ -1,6 +1,6 @@
-import { useGetComments } from "@/hooks/useCommentData";
-import { useDeletePost } from "@/hooks/usePostData";
-import { useToggleReaction } from "@/hooks/useReactionData";
+import { useGetComments } from "@/hooks/data/useCommentData";
+import { useDeletePost } from "@/hooks/data/usePostData";
+import { useToggleReaction } from "@/hooks/data/useReactionData";
 import { viewStore } from "@/hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ContentType, LikeType } from "@/utils/enumClasses";

@@ -1,26 +1,34 @@
-import { useDeleteComment } from "@hooks/useCommentData";
-import { useToggleReaction } from "@hooks/useReactionData";
+import { CommentSchema } from "@/api/schemas/comment";
+import { Reactiontype } from "@/api/schemas/reaction";
+import { UserSchema } from "@/api/schemas/user";
+import { useDeleteComment } from "@/hooks/data/useCommentData";
+import { useToggleReaction } from "@/hooks/data/useReactionData";
+import { produceUndefinedError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 
-const useRepliedComment = (comment) => {
+const useRepliedComment = (comment: CommentSchema) => {
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
     const deleteComment = useDeleteComment(comment.id);
-    const toggleLike = useToggleReaction(comment.id);
+    const toggleReaction = useToggleReaction();
+
+    if (user === undefined) throw produceUndefinedError({ user });
 
     const handleDeleteComment = () => {
         deleteComment.mutate(comment.id);
     };
 
-    const handleReaction = async (event, type) => {
+    const handleReaction = async (event: Event, type: Reactiontype) => {
         event.preventDefault();
+
         const reactionBody = {
             userId: user.id,
             contentId: comment.id,
             reactionType: type,
-            contentType: "COMMENT" // Adjust this enum if necessary
+            contentType: "COMMENT" // TODO: adjust this enum if necessary
         };
-        toggleLike.mutate(reactionBody);
+
+        toggleReaction.mutate(reactionBody);
     };
 
     return { user, handleDeleteComment, handleReaction };

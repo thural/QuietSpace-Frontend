@@ -1,4 +1,4 @@
-import { NOTIFICATION_PATH } from "../constants/ApiPath";
+import { NOTIFICATION_PATH } from "../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "./schemas/common";
 import { NotificationSchema, PagedNotificationResponse } from "./schemas/notification";

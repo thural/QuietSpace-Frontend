@@ -1,21 +1,26 @@
-import { useEditPost } from "@hooks/usePostData";
+import { ResId } from "@/api/schemas/common";
+import { PagedPostresponse } from "@/api/schemas/post";
+import { useEditPost } from "@/hooks/data/usePostData";
+import { produceUndefinedError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-const useEditPostForm = (postId: string) => {
+const useEditPostForm = (postId: ResId) => {
     const queryClient = useQueryClient();
-    const posts = queryClient.getQueryData(["posts"]);
+    const posts: PagedPostresponse | undefined = queryClient.getQueryData(["posts"]);
+    if (posts === undefined) throw produceUndefinedError({ posts });
+
     const editedPostData = posts.content.find(post => post.id === postId);
 
     const [postData, setPostData] = useState(editedPostData);
     const editCurrentPost = useEditPost(postId);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: Event) => {
         event.preventDefault();
         editCurrentPost.mutate(postData);
     };
 
-    const handleChange = (event) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
     };
@@ -27,4 +32,4 @@ const useEditPostForm = (postId: string) => {
     };
 };
 
-export default useEditPostForm;
+export default useEditPostForm

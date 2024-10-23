@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 
-import { useToggleFollow } from "@/hooks/useUserData";
+import { useToggleFollow } from "@/hooks/data/useUserData";
 import LightButton from "@components/shared/buttons/LightButton";
 import { useQueryClient } from "@tanstack/react-query";
 import NotificationCard from "./base/NotificationCard";
-import { NotificationItemProps } from "@/components/shared/types/notificationTypes";
+import { NotificationItemProps } from "@/types/notificationTypes";
 import { ContentResponse } from "@/api/schemas/common";
 import { UserSchema } from "@/api/schemas/user";
 

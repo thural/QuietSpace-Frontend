@@ -1,19 +1,30 @@
-import { useActivation } from "@/hooks/useAuthData";
+import { useActivation } from "@/hooks/data/useAuthData";
 import { displayCountdown } from "@/hooks/useTimer";
 import { fetchResendCode } from "@/api/authRequests";
 import { useState } from "react";
-import { ActivationFormProps } from "@/components/shared/types/authTypes";
+import { ActivationFormProps, AuthPages } from "@/types/authTypes";
 
 export const useActivationForm = ({ setAuthState, authState }: ActivationFormProps) => {
 
     const activationNotice = (message: string) => alert(message);
     const [formData, setFormData] = useState({ activationCode: "" });
     const tokenTimer = displayCountdown(15 * 60 * 1000, "code has expired");
-    const activation = useActivation(authState, setAuthState, activationNotice);
+
+    const onSuccess = () => {
+        console.log("account activation success");
+        activationNotice("account has been activated, please login to continue");
+        setAuthState({ ...authState, page: AuthPages.LOGIN });
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on account activation:", error.message);
+    }
+
+    const activation = useActivation(onSuccess, onError);
 
     const handleResendCode = (): void => {
         fetchResendCode(authState.formData.email);
-        tokenTimer.resetTimer(16 * 60 * 1000);
+        tokenTimer.resetTimer();
     };
 
     const handleSubmit = async (event: Event): Promise<void> => {

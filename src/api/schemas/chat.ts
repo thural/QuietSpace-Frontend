@@ -26,6 +26,7 @@ export interface ChatSchema extends BaseSchema {
 
 export type AtLeastTwoElems<T> = [T, T, ...T[]];
 
+
 export interface CreateChatRequest {
     isGroupChat: boolean
     userIds: AtLeastTwoElems<ResId>
@@ -34,4 +35,4 @@ export interface CreateChatRequest {
 }
 
 
-export type ChatListResponse = ContentResponse<ChatSchema>
+export type ChatResponseList = ContentResponse<ChatSchema>

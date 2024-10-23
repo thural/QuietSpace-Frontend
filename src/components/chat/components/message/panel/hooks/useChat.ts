@@ -1,12 +1,13 @@
-import { useDeleteChat, useGetMessagesByChatId } from "@hooks/useChatData";
+import { useDeleteChat, useGetMessagesByChatId } from "@/hooks/data/useChatData";
 import { useAuthStore, useChatStore } from "@/hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { ChatResponseList } from "@/api/schemas/chat";
 
 export const useChat = () => {
     const queryClient = useQueryClient();
     const { data: { userId } } = useAuthStore();
-    const chats = queryClient.getQueryData(["chats"]);
+    const chats: ChatResponseList | undefined = queryClient.getQueryData(["chats"]);
     const { data: { activeChatId }, clientMethods } = useChatStore();
     const deleteChat = useDeleteChat(activeChatId);
 

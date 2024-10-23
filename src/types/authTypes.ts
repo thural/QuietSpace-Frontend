@@ -1,11 +1,11 @@
 import React from "react";
 
-export interface LoginData {
+export interface LoginBody {
     email: string;
     password: string;
 }
 
-export interface SignupData extends LoginData {
+export interface SignupBody extends LoginBody {
     username: string
     firstname: string
     lastname: string
@@ -16,13 +16,6 @@ export interface ActivationData {
     email: string
 }
 
-export interface AuthData {
-    message: string
-    accessToken: string
-    refreshToken: string
-    userId: string
-}
-
 export enum AuthPages {
     LOGIN,
     SIGNNUP,
@@ -31,7 +24,7 @@ export enum AuthPages {
 
 export interface AuthState {
     page: AuthPages
-    formData: LoginData | SignupData | ActivationData
+    formData: LoginBody | SignupBody | ActivationData
 }
 
 export type SetAuthState = React.Dispatch<React.SetStateAction<AuthState>>;

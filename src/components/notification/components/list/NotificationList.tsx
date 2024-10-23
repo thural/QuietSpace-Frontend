@@ -4,7 +4,7 @@ import FollowNotification from "../FollowNotification";
 import PostNotification from "../PostNotification";
 import { NotificationSchema, NotificationType } from "@/api/schemas/notification";
 import { getEnumValueFromString } from "@/utils/enumUtils";
-import { NotificationListProps } from "@/components/shared/types/notificationTypes";
+import { NotificationListProps } from "@/types/notificationTypes";
 
 
 

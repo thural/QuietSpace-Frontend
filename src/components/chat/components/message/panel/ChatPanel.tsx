@@ -1,12 +1,13 @@
-import BoxStyled from "@shared/BoxStyled";
-import Typography from "@shared/Typography";
+import BoxStyled from "@/components/shared/BoxStyled";
 import ChatHeadline from "../headline/ChatHeadline";
 import MessageInput from "../input/MessageInput";
 import MessagesList from "../list/MessageList";
 import { useChat } from "./hooks/useChat";
 import styles from "./styles/chatPanelStyles";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import Typography from "@/components/shared/Typography";
 
-const ChatPanel = () => {
+const ChatPanel: React.FC<GenericWrapper> = () => {
 
     const classes = styles();
 

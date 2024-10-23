@@ -1,9 +1,10 @@
-import EmojiInput from "@shared/EmojiInput";
-import FormStyled from "@shared/FormStyled";
 import styles from "./styles/commentFormStyles";
 import useCommentForm from "./hooks/useCommentForm";
+import FormStyled from "@/components/shared/FormStyled";
+import EmojiInput from "@/components/shared/EmojiInput";
+import { ResId } from "@/api/schemas/common";
 
-const CommentForm = ({ postId }) => {
+const CommentForm = ({ postId }: { postId: ResId }) => {
 
     const classes = styles();
 
