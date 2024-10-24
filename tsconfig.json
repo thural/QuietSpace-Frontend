@@ -9,19 +9,17 @@
     ],
     "module": "ESNext",
     "skipLibCheck": true,
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    /* Path aliases */
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -31,15 +29,24 @@
         "src/components/*"
       ],
       "@shared/*": [
-        "src/components/shared"
+        "src/components/shared/*"
       ],
       "@hooks/*": [
-        "src/hooks"
+        "src/hooks/*"
       ],
       "@utils/*": [
-        "src/utils"
-      ],
-    }
+        "src/utils/*"
+      ]
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "node",
+      "react",
+      "react-dom",
+      "@babel/core"
+    ]
   },
   "include": [
     "src"
