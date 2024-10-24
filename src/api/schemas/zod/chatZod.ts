@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { BaseSchemaZod, ContentResponseSchema, PagedResponseSchema, ResIdSchema } from "./commonZod";
-import { ChatEventType } from "../schemas/chat";
 import { UserSchema } from "./userZod";
+import { ChatEventType } from "@/api/schemas/native/chat";
 
 export const ChatEventTypeSchema = z.nativeEnum(ChatEventType);
 

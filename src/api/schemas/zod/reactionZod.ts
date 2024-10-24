@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { Reactiontype } from "../schemas/reaction";
 import { ContentTypeEnum, ResIdSchema } from "./commonZod";
+import { Reactiontype } from "../native/reaction";
 
 export const ReactionTypeSchema = z.nativeEnum(Reactiontype);
 

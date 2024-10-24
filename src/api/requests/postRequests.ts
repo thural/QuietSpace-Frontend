@@ -1,15 +1,15 @@
-import { POST_URL, REACTION_PATH } from "../constants/apiPath";
+import { POST_URL, REACTION_PATH } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { JwtToken, ResId } from "./schemas/common";
-import { PagedPostresponse, PostBody, VoteBody } from "./schemas/post";
-import { UserReaction } from "./schemas/reaction";
+import { JwtToken, ResId } from "../schemas/inferred/common";
+import { PagedPostResponse, PostBody, VoteBody } from "../schemas/inferred/post";
+import { UserReaction } from "../schemas/inferred/reaction";
 
 
-export const fetchPosts = async (token: JwtToken): Promise<PagedPostresponse> => (
+export const fetchPosts = async (token: JwtToken): Promise<PagedPostResponse> => (
     await getWrappedApiResponse(POST_URL, 'GET', null, token)
 ).json();
 
-export const fetchPostsByUserId = async (userId: ResId, token: JwtToken): Promise<PagedPostresponse> => (
+export const fetchPostsByUserId = async (userId: ResId, token: JwtToken): Promise<PagedPostResponse> => (
     await getWrappedApiResponse(POST_URL + `/user/${userId}`, 'GET', null, token)
 ).json();
 
@@ -25,7 +25,7 @@ export const fetchDeletePost = async (postId: ResId, token: JwtToken): Promise<R
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'DELETE', null, token)
 );
 
-export const fetchPostQuery = async (queryText: string, token: JwtToken): Promise<PagedPostresponse> => (
+export const fetchPostQuery = async (queryText: string, token: JwtToken): Promise<PagedPostResponse> => (
     await getWrappedApiResponse(POST_URL + `/search?query=${queryText}`, 'GET', null, token)
 ).json();
 

@@ -1,14 +1,14 @@
-import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "../constants/apiPath";
+import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { AuthReuest, AuthSchema, RefreshTokenSchema, RegisterRequest } from "./schemas/auth";
-import { JwtToken } from "./schemas/common";
+import { AuthRequest, AuthSchema, RefreshTokenSchema, RegisterRequest } from "../schemas/inferred/auth";
+import { JwtToken } from "../schemas/inferred/common";
 
 
 export const fetchSignup = async (body: RegisterRequest): Promise<Response> => (
     await getWrappedApiResponse(SIGNUP_URL, 'POST', body, null)
 );
 
-export const fetchLogin = async (body: AuthReuest): Promise<AuthSchema> => (
+export const fetchLogin = async (body: AuthRequest): Promise<AuthSchema> => (
     await getWrappedApiResponse(LOGIN_URL, 'POST', body, null)
 ).json();
 

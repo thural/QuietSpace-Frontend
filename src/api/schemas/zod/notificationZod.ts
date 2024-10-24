@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PagedResponseSchema, ResIdSchema } from "./commonZod";
-import { NotificationType } from "../schemas/notification";
+import { NotificationType } from "../native/notification";
 
 export const NotificationTypeSchema = z.nativeEnum(NotificationType);
 

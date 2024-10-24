@@ -1,7 +1,7 @@
-import { COMMENT_PATH } from "../constants/apiPath";
+import { COMMENT_PATH } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { CommentBody, CommentSchema, PagedCommentResponse } from "./schemas/comment";
-import { JwtToken, ResId } from "./schemas/common";
+import { CommentBody, CommentSchema, PagedCommentResponse } from "../schemas/inferred/comment";
+import { JwtToken, ResId } from "../schemas/inferred/common";
 
 
 export const fetchCreateComment = async (body: CommentBody, token: JwtToken): Promise<CommentSchema> => (

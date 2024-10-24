@@ -1,7 +1,7 @@
 import { MESSAGE_PATH } from "@/constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { JwtToken, ResId } from "./schemas/common";
-import { MessageBody, MessageSchema, PagedMessageResponse } from "./schemas/chat";
+import { JwtToken, ResId } from "../schemas/inferred/common";
+import { MessageBody, MessageSchema, PagedMessageResponse } from "../schemas/inferred/chat";
 
 
 export const fetchMessages = async (chatId: ResId, token: JwtToken): Promise<PagedMessageResponse> => (

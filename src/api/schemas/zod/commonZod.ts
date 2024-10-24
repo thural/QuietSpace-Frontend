@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContentType } from "../schemas/common";
+import { ContentType } from "../native/common";
 
 export const ResIdSchema = z.union([z.string(), z.number()]);
 

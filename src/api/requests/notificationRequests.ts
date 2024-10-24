@@ -1,15 +1,15 @@
-import { NOTIFICATION_PATH } from "../constants/apiPath";
+import { NOTIFICATION_PATH } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { JwtToken, ResId } from "./schemas/common";
-import { NotificationSchema, PagedNotificationResponse } from "./schemas/notification";
-import { Reactiontype } from "./schemas/reaction";
+import { JwtToken, ResId } from "../schemas/inferred/common";
+import { NotificationSchema, PagedNotificationResponse } from "../schemas/inferred/notification";
+import { ReactionType } from "../schemas/inferred/reaction";
 
 
 export const fetchNotifications = async (token: JwtToken): Promise<PagedNotificationResponse> => (
     await getWrappedApiResponse(NOTIFICATION_PATH, 'GET', null, token)
 ).json();
 
-export const fetchNotificationsByType = async (type: Reactiontype, token: JwtToken): Promise<PagedNotificationResponse> => (
+export const fetchNotificationsByType = async (type: ReactionType, token: JwtToken): Promise<PagedNotificationResponse> => (
     await getWrappedApiResponse(NOTIFICATION_PATH + `/tpye/${type}`, 'GET', null, token)
 ).json();
 

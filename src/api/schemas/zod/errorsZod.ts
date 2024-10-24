@@ -6,7 +6,7 @@ export const CustomErrorSchema = z.object({
     name: z.string(),
     message: z.string(),
     statusCode: z.number().optional()
-}).extend({ ErrorSchema });
+}).and(ErrorSchema);
 
 export const validateCustomError = (error: unknown): boolean => {
     return CustomErrorSchema.safeParse(error).success && ErrorSchema.safeParse(error).success;

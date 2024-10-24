@@ -1,7 +1,7 @@
-import { USER_PATH, USER_PROFILE_URL } from "../constants/apiPath";
+import { USER_PATH, USER_PROFILE_URL } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
-import { JwtToken, ResId } from "./schemas/common";
-import { PagedUserResponse, UserSchema } from "./schemas/user";
+import { JwtToken, ResId } from "../schemas/inferred/common";
+import { PagedUserResponse, UserSchema } from "../schemas/inferred/user";
 
 
 export const fetchUser = async (token: JwtToken): Promise<UserSchema> => (
