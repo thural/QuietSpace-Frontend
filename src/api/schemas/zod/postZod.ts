@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContentResponseSchema, PagedResponseSchema, ResIdSchema } from "./commonZod";
+import { PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
 import { ReactionTypeSchema } from "./reactionZod";
 
 
@@ -45,5 +45,5 @@ export const PostSchema = z.object({
     updateDate: z.date().nullable()
 });
 
-export const PostListResponseSchema = ContentResponseSchema(PostSchema);
-export const PagedPostResponseSchema = PagedResponseSchema(PostSchema);
+export const PostListSchema = PageContentSchema(PostSchema);
+export const PostPageSchema = PageSchema(PostSchema);

@@ -11,12 +11,12 @@ export const AuthSchema = RefreshTokenSchema.extend({
     refreshToken: z.string()
 });
 
-export const AuthRequestSchema = z.object({
+export const AuthBodySchema = z.object({
     email: z.string().email(),
     password: z.string()
 });
 
-export const RegisterRequestSchema = AuthRequestSchema.extend({
+export const RegisterBodySchema = AuthBodySchema.extend({
     username: z.string(),
     firstname: z.string(),
     lastname: z.string()

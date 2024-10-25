@@ -1,7 +1,7 @@
 import { useAuthStore } from "../zustand";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchReaction } from "../../api/postRequests";
-import { UserReaction } from "@/api/schemas/reaction";
+import { fetchReaction } from "../../api/requests/postRequests";
+import { UserReaction } from "@/api/schemas/inferred/reaction";
 
 
 export const useToggleReaction = () => {

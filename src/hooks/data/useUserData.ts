@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/userRequests";
+import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/requests/userRequests";
 import { useAuthStore } from "../zustand";
-import { PagedUserResponse, UserSchema } from "@/api/schemas/user";
+import { UserPage, User } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
-import { produceUndefinedError } from "@/utils/errorUtils";
-import { ResId } from "@/api/schemas/common";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { ResId } from "@/api/schemas/inferred/common";
 
 
 export const useGetCurrentUser = () => {
@@ -13,7 +13,7 @@ export const useGetCurrentUser = () => {
 
     return useQuery({
         queryKey: ["user"],
-        queryFn: async (): Promise<UserSchema> => {
+        queryFn: async (): Promise<User> => {
             return await fetchUser(authData.accessToken);
         },
         enabled: !!authData?.accessToken,
@@ -28,15 +28,15 @@ export const useGetCurrentUser = () => {
 export const useQueryUsers = (callBackFunc: ConsumerFn) => {
 
     const queryClient = useQueryClient();
-    const signedUser: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
 
     if (signedUser === undefined) {
-        throw produceUndefinedError({ signedUser }, "could not perform user query:");
+        throw nullishValidationdError({ signedUser }, "could not perform user query:");
     }
 
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (pagedData: PagedUserResponse) => {
+    const onSuccess = (pagedData: UserPage) => {
         console.log("user query success:", pagedData);
         callBackFunc(pagedData.content.filter(user => user.id !== signedUser.id));
     }
@@ -46,7 +46,7 @@ export const useQueryUsers = (callBackFunc: ConsumerFn) => {
     }
 
     return useMutation({
-        mutationFn: async (inputText: string): Promise<PagedUserResponse> => {
+        mutationFn: async (inputText: string): Promise<UserPage> => {
             return await fetchUsersByQuery(inputText, authData.accessToken);
         },
         onSuccess,
@@ -61,7 +61,7 @@ export const useGetUserById = (userId: ResId) => {
 
     return useQuery({
         queryKey: ["users", { id: userId }],
-        queryFn: async (): Promise<UserSchema> => {
+        queryFn: async (): Promise<User> => {
             return await fetchUserById(userId, authData.accessToken);
         },
         staleTime: Infinity,
@@ -75,9 +75,9 @@ export const useGetUserById = (userId: ResId) => {
 export const useGetFollowers = (userId: ResId) => {
     const { data: authData } = useAuthStore();
 
-    return useQuery<PagedUserResponse>({
+    return useQuery<UserPage>({
         queryKey: ["followers", { id: userId }],
-        queryFn: async (): Promise<PagedUserResponse> => {
+        queryFn: async (): Promise<UserPage> => {
             return await fetchFollowers(userId, authData.accessToken);
         },
         enabled: !!authData?.accessToken,
@@ -95,7 +95,7 @@ export const useGetFollowings = (userId: ResId) => {
 
     return useQuery({
         queryKey: ["followings", { id: userId }],
-        queryFn: async (): Promise<PagedUserResponse> => {
+        queryFn: async (): Promise<UserPage> => {
             return await fetchFollowings(userId, authData.accessToken);
         },
         enabled: !!authData?.accessToken,

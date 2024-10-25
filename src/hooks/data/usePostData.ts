@@ -6,18 +6,18 @@ import {
     fetchPosts,
     fetchPostsByUserId,
     fetchVotePoll
-} from "../../api/postRequests";
+} from "../../api/requests/postRequests";
 import { useAuthStore, viewStore } from "../zustand";
-import { PagedPostresponse, PostBody, VoteBody } from "@/api/schemas/post";
-import { UserSchema } from "@/api/schemas/user";
-import { ResId } from "@/api/schemas/common";
+import { PostPage, PostBody, VoteBody } from "@/api/schemas/inferred/post";
+import { User } from "@/api/schemas/inferred/user";
+import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
 
 
 export const useGetPosts = () => {
 
     const queryClient = useQueryClient();
-    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
     const { data: authData } = useAuthStore();
 
     return useQuery({
@@ -39,7 +39,7 @@ export const useGetPosts = () => {
 export const useGetPostsByUserId = (userId: string | number) => {
 
     const queryClient = useQueryClient();
-    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
     const { data: authData } = useAuthStore();
 
     return useQuery({
@@ -124,7 +124,7 @@ export const useQueryPosts = (setPostQueryResult: ConsumerFn) => {
 
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: PagedPostresponse) => {
+    const onSuccess = (data: PostPage) => {
         console.log("post query result: ", data["content"]);
         setPostQueryResult(data.content);
         console.log("post query was success");
@@ -135,7 +135,7 @@ export const useQueryPosts = (setPostQueryResult: ConsumerFn) => {
     }
 
     return useMutation({
-        mutationFn: async (queryText: string): Promise<PagedPostresponse> => {
+        mutationFn: async (queryText: string): Promise<PostPage> => {
             return await fetchPostQuery(queryText, authData.accessToken);
         },
         onSuccess,

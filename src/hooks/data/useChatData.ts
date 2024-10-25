@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../zustand";
-import { fetchChatById, fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../../api/chatRequests";
-import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../../api/messageRequests";
-import { ResId } from "@/api/schemas/common";
-import { ChatResponseList, ChatSchema, CreateChatRequest, MessageBody, MessageSchema, PagedMessageResponse } from "@/api/schemas/chat";
-import { UserSchema } from "@/api/schemas/user";
-import { produceUndefinedError } from "@/utils/errorUtils";
+import { fetchChatById, fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../../api/requests/chatRequests";
+import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../../api/requests/messageRequests";
+import { ResId } from "@/api/schemas/inferred/common";
+import { ChatList, Chat, CreateChat, MessageBody, Message, PagedMessage } from "@/api/schemas/inferred/chat";
+import { User } from "@/api/schemas/inferred/user";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { ConsumerFn } from "@/types/genericTypes";
 
 
@@ -15,7 +15,7 @@ export const useGetChatsByUserId = (userId: ResId) => {
 
     return useQuery({
         queryKey: ["chats"],
-        queryFn: async (): Promise<ChatResponseList> => {
+        queryFn: async (): Promise<ChatList> => {
             return await fetchChatByUserId(userId, authData.accessToken);
         },
         retry: 3,
@@ -33,7 +33,7 @@ export const useGetChatById = (chatId: ResId) => {
 
     return useQuery({
         queryKey: ["chats", { id: chatId }],
-        queryFn: async (): Promise<ChatSchema> => {
+        queryFn: async (): Promise<Chat> => {
             return await fetchChatById(chatId, authData.accessToken);
         },
         retry: 3,
@@ -49,7 +49,7 @@ export const useCreateChat = () => {
     const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
-    const onSuccess = (data: ChatSchema) => {
+    const onSuccess = (data: Chat) => {
         queryClient.invalidateQueries({ queryKey: ["chats"] });
         console.log("chat created successfully:", data);
     }
@@ -59,7 +59,7 @@ export const useCreateChat = () => {
     }
 
     return useMutation({
-        mutationFn: async (chatBody: CreateChatRequest): Promise<ChatSchema> => {
+        mutationFn: async (chatBody: CreateChat): Promise<Chat> => {
             return await fetchCreateChat(chatBody, authData.accessToken);
         },
         onSuccess,
@@ -72,13 +72,13 @@ export const useGetMessagesByChatId = (chatId: ResId) => {
 
     const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
-    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
 
-    if (user === undefined) throw produceUndefinedError({ user });
+    if (user === undefined) throw nullishValidationdError({ user });
 
     return useQuery({
         queryKey: ["messages", { id: chatId }],
-        queryFn: async (): Promise<PagedMessageResponse> => {
+        queryFn: async (): Promise<PagedMessage> => {
             const responseData = await fetchMessages(chatId, authData.accessToken);
             console.log("messages response data: ", responseData);
             return responseData;
@@ -97,7 +97,7 @@ export const usePostNewMessage = (setMessageData: ConsumerFn) => {
     const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
-    const onSuccess = (data: MessageSchema, variables: MessageBody) => {
+    const onSuccess = (data: Message, variables: MessageBody) => {
         queryClient.invalidateQueries({ queryKey: ["messages", data.chatId] });
         setMessageData({ ...variables, text: '' });
         console.log("message sent successfully:", data);
@@ -108,7 +108,7 @@ export const usePostNewMessage = (setMessageData: ConsumerFn) => {
     };
 
     return useMutation({
-        mutationFn: async (messageData): Promise<MessageSchema> => {
+        mutationFn: async (messageData): Promise<Message> => {
             console.log("current chat id on sending: ", messageData.chatId);
             return await fetchCreateMessage(messageData, authData["accessToken"]);
         },

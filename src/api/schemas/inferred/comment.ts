@@ -2,9 +2,9 @@ import { z } from "zod";
 import {
     CommentBodySchema,
     CommentSchema,
-    PagedCommentResponseSchema
+    PagedCommentSchema
 } from "../zod/commentZod";
 
 export type CommentBody = z.infer<typeof CommentBodySchema>;
-export type CommentSchema = z.infer<typeof CommentSchema>;
-export type PagedCommentResponse = z.infer<typeof PagedCommentResponseSchema>;
+export type Comment = z.infer<typeof CommentSchema>;
+export type PagedComment = z.infer<typeof PagedCommentSchema>;

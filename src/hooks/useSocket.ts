@@ -1,80 +1,66 @@
-import sockjs from "sockjs-client/dist/sockjs"
-import { over } from "stompjs";
+import { Client, Frame, over } from 'stompjs';
+import { AnyFunction } from '@/types/genericTypes';
+import { ConnectCallback, StompHeaders, Headers, ErrorCallback } from '@/api/schemas/native/websocket';
+import SockJS from 'sockjs-client';
 
 export const useSocket = () => {
 
-    const createClient = () => {
-        const socket = new sockjs('http://localhost:8080/ws');
-        const client = over(socket);
-        return client;
-    }
-
-    const setAutoReconnect = (delay = 5000) => {
-        client.reconnect_delay = delay;
-    }
-
-    const onConnect = (frame, callbackFn) => {
-        if (callbackFn) return callbackFn(frame);
-        console.log("frame on connect: ", frame);
-    }
-
-    const onError = (error, callbackFn) => {
-        if (callbackFn) return callbackFn(error);
-        console.log("error on connect: ", error, error.headers.message);
+    const createClient = (): Client => {
+        const socket = new SockJS('http://localhost:8080/ws');
+        return over(socket);
     };
 
-    const onClose = (callbackFn) => {
+    const onConnect = (frame: Frame, callbackFn: ConnectCallback) => {
+        if (callbackFn) return callbackFn(frame);
+        console.log("frame on connect: ", frame);
+    };
+
+    const onError = (error: Frame | string, callbackFn: ErrorCallback) => {
+        if (callbackFn) return callbackFn(error);
+        console.log("error on connect: ", error);
+    };
+
+    const onClose = (callbackFn: AnyFunction) => {
         if (callbackFn) return callbackFn();
         console.log("connection has been closed");
-    }
+    };
 
-    const openConnection = (client, headers, onConnect) => {
+    const openConnection = (client: Client, headers: StompHeaders, onConnect: ConnectCallback) => {
         console.log("STOMP client is being connected...");
         client.connect(
             headers,
-            (frame) => onConnect(frame),
+            onConnect
         );
-    }
+    };
 
-    const openConnectionWithLogin = (client, headers, onConnect, onError, closeEventCallback) => {
-        console.log("STOMP client is being connected...");
-
-        client.connect(
-            headers,
-            (frame) => onConnect(frame),
-            onError,
-            closeEventCallback
-        );
-    }
-
-    const disconnect = (client, callbackFn) => {
+    const disconnect = (client: Client, callbackFn: AnyFunction) => {
         console.log("STOMP client is being disconnected...");
         client.disconnect(callbackFn);
-    }
+    };
 
-    const sendMessage = (client, destination, body, headers = {}) => {
+    const sendMessage = (client: Client, destination: string, body: any, headers: StompHeaders | Headers = {}) => {
         client.send(destination, headers, JSON.stringify(body));
-    }
+    };
 
-    const subscribe = (client, destination, callbackFn) => {
+    const subscribe = (client: Client, destination: string, callbackFn: AnyFunction) => {
         client.subscribe(destination, (message) => {
-            callbackFn(JSON.parse(message.body))
+            callbackFn(JSON.parse(message.body));
         });
-    }
+    };
 
-    const unSubscribe = (client, destination, callbackFn) => {
+    const unSubscribe = (client: Client, destination: string, callbackFn: AnyFunction) => {
         client.subscribe(destination, (message) => {
-            callbackFn(JSON.parse(message.body))
+            callbackFn(JSON.parse(message.body));
         });
-    }
+    };
 
-    const subscribeWithId = (client, destination, callbackFn, subscribtionId) => {
+    const subscribeWithId = (client: Client, destination: string, callbackFn: AnyFunction, subscribtionId: string) => {
         client.subscribe(
             destination,
             (result) => callbackFn(JSON.parse(result.body)),
             { id: subscribtionId }
         );
-    }
+    };
 
     return {
         createClient,
@@ -87,6 +73,5 @@ export const useSocket = () => {
         subscribeWithId,
         unSubscribe,
         sendMessage,
-        setAutoReconnect
     };
-}
+};

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContentResponseSchema, PagedResponseSchema, ResIdSchema } from "./commonZod";
+import { PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
 
 
 export const UserSchema = z.object({
@@ -12,5 +12,5 @@ export const UserSchema = z.object({
     updateDate: z.date()
 });
 
-export const UserListResponseSchema = ContentResponseSchema(UserSchema);
-export const PagedUserResponseSchema = PagedResponseSchema(UserSchema);
+export const UserListSchema = PageContentSchema(UserSchema);
+export const UserPageSchema = PageSchema(UserSchema);

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { BaseSchemaZod, PagedResponseSchema, ResIdSchema } from "./commonZod";
-import { UserReactionSchema } from "./reactionZod";
+import { BaseSchema, PageSchema, ResIdSchema } from "./commonZod";
+import { UserReactionBody } from "./reactionZod";
 
 export const CommentBodySchema = z.object({
     parentId: ResIdSchema.nullable().optional(),
@@ -10,11 +10,11 @@ export const CommentBodySchema = z.object({
 });
 
 export const CommentSchema = CommentBodySchema.extend({
-    ...BaseSchemaZod.shape,
+    ...BaseSchema.shape,
     username: z.string(),
     likeCount: z.number(),
     replyCount: z.number(),
-    userReaction: UserReactionSchema
+    userReaction: UserReactionBody
 });
 
-export const PagedCommentResponseSchema = PagedResponseSchema(CommentSchema);
+export const PagedCommentSchema = PageSchema(CommentSchema);

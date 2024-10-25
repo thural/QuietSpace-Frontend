@@ -1,108 +1,76 @@
-import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
+import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
+import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/requests/authRequests';
+import { Auth } from '@/api/schemas/inferred/auth';
 
-let refreshIntervalId = null;
+var refreshIntervalId: number | undefined = undefined;
 
 export const stopTokenAutoRefresh = () => {
-    clearInterval(refreshIntervalId);
+    window.clearInterval(refreshIntervalId);
+}
+
+export const register = ({ setAuthState, formData, onErrorFn }: any) => {
+    const onSuccess = () => setAuthState({ page: "activation", formData });
+    const onError = (error: Error) => onErrorFn(error);
+    fetchSignup(formData).then(onSuccess).catch(onError);
 }
 
 
-export const register = ({ setAuthState, formData, onErrorFn }) => {
-
-    const onSuccess = () => {
-        setAuthState({ page: "activation", formData });
-    }
-
-    const onError = (error) => {
-        onErrorFn(error);
-    }
-
-    fetchSignup(formData)
-        .then(onSuccess)
-        .catch(onError);
-}
-
-
-export const authenticate = ({ formData, onSuccessFn, onErrorFn, onLoadFn }) => {
+export const authenticate = ({ formData, onSuccessFn, onErrorFn, onLoadFn }: any) => {
     onLoadFn();
 
-    const onSuccess = (data) => {
-        localStorage.setItem("refreshToken", data.refreshToken);
+    const onSuccess = (data: Auth) => {
+        setRefreshToken(data.refreshToken)
         onSuccessFn(data);
     }
 
-    const onError = (error) => {
-        onErrorFn(error);
-    }
-
-    fetchLogin(formData)
-        .then(onSuccess)
-        .catch(onError);
+    const onError = (error: Error) => onErrorFn(error);
+    fetchLogin(formData).then(onSuccess).catch(onError);
 }
 
 
-export const getAccessToken = ({ onSuccessFn, onErrorFn }) => {
-    const refreshToken = localStorage.getItem("refreshToken");
+export const getAccessToken = ({ onSuccessFn, onErrorFn }: any) => {
+    const refreshToken = getRefreshToken();
+    const onSuccess = (data: any) => onSuccessFn(data);
 
-    const onSuccess = (data) => {
-        onSuccessFn(data);
-    }
-
-    const onError = (error) => {
+    const onError = (error: Error) => {
         stopTokenAutoRefresh();
         onErrorFn(error);
     }
 
-    fetchAccessToken(refreshToken)
-        .then(onSuccess)
-        .catch(onError);
+    fetchAccessToken(refreshToken).then(onSuccess).catch(onError);
 }
 
 
-export const loadAccessToken = ({ refreshInterval = 540000, onSuccessFn }) => {
-    getAccessToken({ onSuccessFn });
-    refreshIntervalId = setInterval(() => {
-        getAccessToken({ onSuccessFn });
-    }, refreshInterval);
+export const loadAccessToken = ({ refreshInterval = 540000, onSuccessFn }: any) => {
+    const callbackFn = () => getAccessToken({ onSuccessFn });
+    refreshIntervalId = window.setInterval(callbackFn, refreshInterval);
 }
 
 
-export const signout = ({ onSuccessFn, onErrorFn, onLoadFn }) => {
-    const refreshToken = localStorage.getItem("refreshToken");
+export const signout = ({ onSuccessFn, onErrorFn, onLoadFn }: any) => {
+
+    const refreshToken = getRefreshToken();
     stopTokenAutoRefresh();
     onLoadFn();
-    const onSignout = (response) => {
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("accessToken");
+
+    const onSignout = (response: Response) => {
+        clearAuthTokens();
         onSuccessFn(response);
     }
 
-    const onError = (error) => {
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("accessToken");
+    const onError = (error: Error) => {
+        console.log("(!) server side error on logging out, local credentials are cleared");
+        clearAuthTokens();
         onErrorFn(error);
     }
 
-    fetchLogout(refreshToken)
-        .then(onSignout)
-        .catch(onError);
+    fetchLogout(refreshToken).then(onSignout).catch(onError);
 }
 
 
-export const signup = ({ formData, onSuccessFn, onErrorFn, onLoadFn }) => {
+export const signup = ({ formData, onSuccessFn, onErrorFn, onLoadFn }: any) => {
     onLoadFn();
-
-    const onSuccess = () => {
-        onSuccessFn();
-    }
-
-    const onError = (error) => {
-        console.log("error on signup:", error.message);
-        onErrorFn(error);
-    }
-
-    fetchSignup(formData)
-        .then(onSuccess)
-        .catch(onError);
+    const onSuccess = () => onSuccessFn();
+    const onError = (error: Error) => onErrorFn(error);
+    fetchSignup(formData).then(onSuccess).catch(onError);
 }
-

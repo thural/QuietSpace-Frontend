@@ -1,10 +1,10 @@
-import { fetchAccessToken, fetchActivation, fetchLogin, fetchLogout, fetchSignup } from "../../api/authRequests";
+import { fetchAccessToken, fetchActivation, fetchLogin, fetchLogout, fetchSignup } from "../../api/requests/authRequests";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../zustand";
-import { AuthReuest, AuthSchema, RefreshTokenSchema } from "@/api/schemas/auth";
+import { AuthBody, Auth, RefreshToken } from "@/api/schemas/inferred/auth";
 import { AnyFunction } from "@/types/genericTypes";
-import { JwtToken } from "@/api/schemas/common";
+import { JwtToken } from "@/api/schemas/inferred/common";
 
 
 export const usePostLogin = (authenticationNotice: Function) => {
@@ -12,7 +12,7 @@ export const usePostLogin = (authenticationNotice: Function) => {
     const { setAuthData } = useAuthStore();
     const navigate = useNavigate();
 
-    const onSuccess = (data: AuthSchema) => {
+    const onSuccess = (data: Auth) => {
         console.log("auth response was success");
         localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
@@ -25,7 +25,7 @@ export const usePostLogin = (authenticationNotice: Function) => {
     }
 
     return useMutation({
-        mutationFn: async (formData: AuthReuest) => {
+        mutationFn: async (formData: AuthBody) => {
             return fetchLogin(formData);
         },
         onSuccess,
@@ -69,7 +69,7 @@ export const useRefreshToken = () => {
     const { setAuthData } = useAuthStore();
     const refreshToken: JwtToken | null = localStorage.getItem("refreshToken");
 
-    const onSuccess = (data: RefreshTokenSchema) => {
+    const onSuccess = (data: RefreshToken) => {
         console.log("access token refresh was success");
         setAuthData(data)
     }

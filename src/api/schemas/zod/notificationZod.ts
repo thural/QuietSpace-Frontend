@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PagedResponseSchema, ResIdSchema } from "./commonZod";
+import { PageSchema, ResIdSchema } from "./commonZod";
 import { NotificationType } from "../native/notification";
 
 export const NotificationTypeSchema = z.nativeEnum(NotificationType);
@@ -13,4 +13,4 @@ export const NotificationSchema = z.object({
     updateDate: z.date()
 });
 
-export const PagedNotificationResponseSchema = PagedResponseSchema(NotificationSchema);
+export const NotificationPageSchema = PageSchema(NotificationSchema);

@@ -1,9 +1,10 @@
 import { AuthPages, SetAuthState, SignupBody, LoginBody } from '@/types/authTypes';
-import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/authRequests';
+import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/requests/authRequests';
 import { JwtAuthProps } from '@/types/hookPropTypes';
-import { RefreshTokenSchema, AuthSchema } from '@/api/schemas/auth';
+import { RefreshToken, Auth } from '@/api/schemas/inferred/auth';
+import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
 
-var refreshIntervalId: number | null = null;
+var refreshIntervalId: number;
 
 const useJwtAuth = ({
     refreshInterval = 540000,
@@ -14,101 +15,66 @@ const useJwtAuth = ({
 
     const register = (setAuthState: SetAuthState, formData: SignupBody) => {
 
-        const onSuccess = () => {
+        const onSuccess = (response: Response) => {
             setAuthState({ page: AuthPages.ACTIVATION, formData });
-            onSuccessFn();
+            onSuccessFn(response);
         }
 
-        const onError = (error: Error) => {
-            onErrorFn(error);
-        }
-
-        fetchSignup(formData)
-            .then(onSuccess)
-            .catch(onError);
+        const onError = (error: Error) => onErrorFn(error);
+        fetchSignup(formData).then(onSuccess).catch(onError);
     }
 
 
     const authenticate = (formData: LoginBody) => {
         onLoadFn();
 
-        const onSuccess = (data: AuthSchema) => {
-            localStorage.setItem("refreshToken", data.refreshToken);
+        const onSuccess = (data: Auth) => {
+            setRefreshToken(data.refreshToken)
             onSuccessFn(data);
         }
 
-        const onError = (error: Error) => {
-            onErrorFn(error);
-        }
-
-        fetchLogin(formData)
-            .then(onSuccess)
-            .catch(onError);
+        const onError = (error: Error) => onErrorFn(error);
+        fetchLogin(formData).then(onSuccess).catch(onError);
     }
 
 
     const getAccessToken = () => {
-        const refreshToken = localStorage.getItem("refreshToken");
-
-        const onSuccess = (data: RefreshTokenSchema) => {
-            onSuccessFn(data);
-        }
-
-        const onError = (error: Error) => {
-            onErrorFn(error);
-        }
-
-        fetchAccessToken(refreshToken)
-            .then(onSuccess)
-            .catch(onError);
+        const refreshToken = getRefreshToken();
+        const onSuccess = (data: RefreshToken) => onSuccessFn(data);
+        const onError = (error: Error) => onErrorFn(error);
+        fetchAccessToken(refreshToken).then(onSuccess).catch(onError);
     }
 
 
     const loadAccessToken = () => {
         getAccessToken();
-        refreshIntervalId = setInterval(getAccessToken, refreshInterval);
+        refreshIntervalId = window.setInterval(getAccessToken, refreshInterval);
     }
 
 
-    const stopTokenAutoRefresh = () => {
-        clearInterval(refreshIntervalId);
-    }
+    const stopTokenAutoRefresh = () => clearInterval(refreshIntervalId);
 
 
     const signout = () => {
-        const refreshToken = localStorage.getItem("refreshToken");
+        const refreshToken = getRefreshToken();
         stopTokenAutoRefresh();
+
         onLoadFn();
         const onSignout = () => {
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("accessToken");
+            clearAuthTokens();
             onSuccessFn();
         }
 
-        const onError = (error: Error) => {
-            onErrorFn(error);
-        }
-
-        fetchLogout(refreshToken)
-            .then(onSignout)
-            .catch(onError);
+        const onError = (error: Error) => onErrorFn(error);
+        fetchLogout(refreshToken).then(onSignout).catch(onError);
     }
 
 
-    const signup = (formData: SignupBody, setAuthState: SetAuthState) => {
+    const signup = (formData: SignupBody) => {
         onLoadFn();
-
-        const onSuccess = () => {
-            onSuccessFn();
-        }
-
-        const onError = (error: Error) => {
-            onErrorFn(error);
-        }
-
-        fetchSignup(formData)
-            .then(onSuccess)
-            .catch(onError);
+        const onSuccess = () => onSuccessFn();
+        const onError = (error: Error) => onErrorFn(error);
+        fetchSignup(formData).then(onSuccess).catch(onError);
     }
 
 

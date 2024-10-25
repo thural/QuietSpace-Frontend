@@ -1,7 +1,8 @@
-import { AuthSchema } from '@/api/schemas/auth';
+import { Auth } from '@/api/schemas/inferred/auth';
 import { UseAuthStoreProps } from '@/types/authStoreTypes';
 import { ChatStoreProps } from '@/types/chatStoreTypes';
 import { NotificationStoreProps } from '@/types/notificationStore';
+import { StompStore } from '@/types/stompStoreTypes';
 import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
 import { create } from 'zustand'
 
@@ -16,7 +17,7 @@ export const useAuthStore = create<UseAuthStoreProps>(set => ({
     resetAuthData: () => set({
         data: { id: "", message: "", accessToken: "", userId: "" }
     }),
-    setAuthData: (authData: AuthSchema) => set({ data: authData }),
+    setAuthData: (authData: Auth) => set({ data: authData }),
     setIsActivationStage: (value: boolean) => set({ isActivationStage: value }),
     setIsAuthenticated: (value: boolean) => set({ isAuthenticated: value }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),
@@ -66,9 +67,7 @@ export const useChatStore = create<ChatStoreProps>(set => ({
 }));
 
 
-export const useStompStore = create(set => ({
+export const useStompStore = create<StompStore>(set => ({
     clientContext: {},
-    setClientContext: (methods: Record<string, Function>) => set({
-        clientContext: methods
-    }),
+    setClientContext: (methods) => set({ clientContext: methods }),
 }));

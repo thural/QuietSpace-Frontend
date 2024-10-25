@@ -3,7 +3,7 @@ import { ContentType } from "../native/common";
 
 export const ResIdSchema = z.union([z.string(), z.number()]);
 
-export const BaseSchemaZod = z.object({
+export const BaseSchema = z.object({
     id: ResIdSchema,
     version: z.number().optional(),
     createDate: z.date(),
@@ -26,7 +26,7 @@ export const SortPropsSchema = z.object({
     empty: z.boolean()
 });
 
-export const PageablePropsSchema = z.object({
+export const PagePropsSchema = z.object({
     pageNumber: z.number(),
     pageSize: z.number(),
     sort: SortPropsSchema,
@@ -35,13 +35,13 @@ export const PageablePropsSchema = z.object({
     unpaged: z.boolean()
 });
 
-export const ContentResponseSchema = <T extends z.ZodType>(schema: T) =>
+export const PageContentSchema = <T extends z.ZodType>(schema: T) =>
     z.array(schema);
 
-export const PagedResponseSchema = <T extends z.ZodType>(schema: T) =>
+export const PageSchema = <T extends z.ZodType>(schema: T) =>
     z.object({
-        content: ContentResponseSchema(schema),
-        pageable: PageablePropsSchema,
+        content: PageContentSchema(schema),
+        pageable: PagePropsSchema,
         totalPages: z.number(),
         totalElements: z.number(),
         last: z.boolean(),

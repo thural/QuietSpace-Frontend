@@ -1,52 +1,59 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChatEventType } from "../utils/enumClasses";
 import { useNotificationStore, useStompStore } from "./zustand";
+import { User } from "@/api/schemas/inferred/user";
+import { ChatEvent } from "@/api/schemas/inferred/chat";
+import { Notification, NotificationPage } from "@/api/schemas/inferred/notification";
+import { ResId } from "@/api/schemas/native/common";
+import { ChatEventSchema } from "@/api/schemas/zod/chatZod";
+import { Frame } from "stompjs";
 
 
 const useNotificationSocket = () => {
 
     const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
     const { setClientMethods } = useNotificationStore();
     const { clientContext } = useStompStore();
     const { subscribe, sendMessage, isClientConnected } = clientContext;
 
 
-
-    const handleReceivedNotifcation = (notification) => {
-        queryClient.setQueryData(['notifications'], (oldData) => {
+    const handleReceivedNotifcation = (notification: Notification) => {
+        queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
             const oldContent = oldData.content;
             const updatedContent = [...oldContent, notification];
-            return { content: updatedContent, ...oldData };
+            return { ...oldData, content: updatedContent };
         });
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    };
 
-        queryClient.invalidateQueries(["notifications"]);
-    }
 
-    const handleSeenNotification = (event) => {
-        queryClient.setQueryData(['notifications'], (oldData) => {
+    const handleSeenNotification = (eventBody: ChatEvent) => {
+        queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
             const oldContent = oldData.content;
-            const updatedContent = oldContent.map(n => {
-                if (n.id !== event.notificationId) return n;
-                n.isSeen = true; return n;
+            const updatedContent = oldContent.map(notification => {
+                if (notification.id !== eventBody.recipientId) return notification;
+                notification.isSeen = true;
+                return notification;
             });
-            return { content: updatedContent, ...oldData }
+            return { ...oldData, content: updatedContent };
         });
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    };
 
-        queryClient.invalidateQueries(["notifications"]);
+
+    const onSubscribe = (message: Frame) => {
+        const messageBody: ChatEvent | Notification = JSON.parse(message.body);
+        if (ChatEventSchema.safeParse(messageBody).success)
+            handleSeenNotification(messageBody as ChatEvent);
+        else handleReceivedNotifcation(messageBody as Notification);
     }
 
-    const onSubscribe = (message) => {
-        const messageBody = JSON.parse(message.body);
-        if (messageBody.type === ChatEventType.SEEN_NOTIFICATION.name) {
-            handleSeenNotification(messageBody);
-        } else handleReceivedNotifcation(messageBody);
+
+    const setNotificationSeen = (notificationId: ResId) => {
+        sendMessage(`/app/private/notifications/seen/${notificationId}`);
     }
 
-    const setNotificationSeen = (notificationId) => {
-        sendMessage(`/app/private/notifications/seen/${notificationId}`)
-    }
 
     const clientMethods = { setNotificationSeen, isClientConnected };
 
@@ -57,9 +64,7 @@ const useNotificationSocket = () => {
         setClientMethods(clientMethods);
     }
 
-    useEffect(setup, [isClientConnected, user]);
-
-
+    useEffect(setup, [isClientConnected, user])
     return clientMethods;
 }
 

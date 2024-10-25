@@ -5,7 +5,6 @@ interface TimerBaseData {
 }
 
 interface TimerData extends TimerBaseData {
-    hasTimeOut: false
     days: number
     hours: number
     minutes: number
@@ -24,7 +23,7 @@ export const calculateTimeLeft = (period: number) => {
     };
 
     return { hasTimeOut: true };
-};
+}
 
 const processExpireDate = (interval: number) => (interval + +new Date());
 
@@ -34,7 +33,7 @@ const resetTimer = () => { hasReset = !hasReset; }
 export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") => {
 
     const expireDate = useMemo(() => processExpireDate(period), [period, hasReset]);
-    const [timeLeft, setTimeLeft] = useState<TimerData | TimerBaseData>(calculateTimeLeft(expireDate));
+    const [timeLeft, setTimeLeft] = useState<Partial<TimerData>>(calculateTimeLeft(expireDate));
 
     useEffect(() => {
         setTimeout(() => {
@@ -60,6 +59,7 @@ export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") 
         hasTimeOut: timeLeft.hasTimeOut,
         resetTimer,
         component: (
-            <div>{timerComponents.length ? timerComponents : <span>{timeUpMessage}</span>}</div>)
+            <div>{timerComponents.length ? timerComponents : <span>{timeUpMessage}</span>}</div>
+        )
     }
 }

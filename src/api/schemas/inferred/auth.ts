@@ -2,11 +2,11 @@ import { z } from "zod";
 import {
     RefreshTokenSchema,
     AuthSchema,
-    AuthRequestSchema,
-    RegisterRequestSchema
+    AuthBodySchema,
+    RegisterBodySchema
 } from "../zod/authZod";
 
-export type RefreshTokenSchema = z.infer<typeof RefreshTokenSchema>;
-export type AuthSchema = z.infer<typeof AuthSchema>;
-export type AuthRequest = z.infer<typeof AuthRequestSchema>;
-export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
+export type RefreshToken = z.infer<typeof RefreshTokenSchema>;
+export type Auth = z.infer<typeof AuthSchema>;
+export type AuthBody = z.infer<typeof AuthBodySchema>;
+export type RegisterBody = z.infer<typeof RegisterBodySchema>;

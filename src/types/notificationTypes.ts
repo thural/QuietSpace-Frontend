@@ -1,14 +1,14 @@
-import { NotificationSchema } from "@/api/schemas/notification";
+import { Notification } from "@/api/schemas/inferred/notification";
 import { GenericWrapper } from "../components/shared/types/sharedComponentTypes";
-import { ContentResponse } from "@/api/schemas/common";
+import { PageContent } from "@/api/schemas/inferred/common";
 import { AnyFunction } from "./genericTypes";
 
 export interface NotificationItemProps extends GenericWrapper {
-    notification: NotificationSchema
+    notification: Notification
 }
 
 export interface NotificationListProps {
-    notifications: ContentResponse<NotificationSchema>
+    notifications: PageContent<Notification>
 }
 
 export interface NotificationCardProps extends GenericWrapper {
