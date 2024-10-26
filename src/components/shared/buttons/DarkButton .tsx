@@ -1,7 +1,8 @@
 import { Button } from "@mantine/core"
 import withForwardedRef from "../hooks/withForwardedRef"
+import { GenericWrapperWithRef } from "../types/sharedComponentTypes"
 
-const DarkButton = ({
+const DarkButton: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
     name = "submit",
     variant = "dark",

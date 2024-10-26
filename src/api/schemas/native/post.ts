@@ -27,11 +27,16 @@ export interface PollSchema {
 
 }
 
+export interface PollBody {
+    dueDate: Date
+    options: Array<String>
+}
+
 export interface PostBody {
     text: string
     userId: ResId
     viewAccess: 'friends' | 'all' // TODO: check all available options
-    poll: PollSchema | null
+    poll: PollBody | null
 }
 
 export interface PostSchema {

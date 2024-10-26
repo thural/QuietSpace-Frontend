@@ -5,14 +5,14 @@ import LightButton from "@components/shared/buttons/LightButton";
 import { useQueryClient } from "@tanstack/react-query";
 import NotificationCard from "./base/NotificationCard";
 import { NotificationItemProps } from "@/types/notificationTypes";
-import { ContentResponse } from "@/api/schemas/common";
-import { UserSchema } from "@/api/schemas/user";
+import { PageContent } from "@/api/schemas/inferred/common";
+import { User } from "@/api/schemas/inferred/user";
 
 const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) => {
 
     const { actorId } = notification;
     const queryClient = useQueryClient();
-    const followings: ContentResponse<UserSchema> | undefined = queryClient.getQueryData(["followings"]);
+    const followings: PageContent<User> | undefined = queryClient.getQueryData(["followings"]);
     const toggleFollow = useToggleFollow();
 
 

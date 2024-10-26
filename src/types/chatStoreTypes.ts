@@ -1,8 +1,10 @@
 import { ResId } from "@/api/schemas/inferred/common";
 
+export type ActiveChatId = ResId | null;
+
 export interface ChatStoreProps {
     data: {
-        activeChatId: ResId | null;
+        activeChatId: ActiveChatId;
         messageInput: Record<string, string>;
     };
     clientMethods: Record<string, Function>;

@@ -1,31 +1,31 @@
-import { CommentSchema } from "@/api/schemas/comment";
-import { Reactiontype } from "@/api/schemas/reaction";
-import { UserSchema } from "@/api/schemas/user";
+import { Comment } from "@/api/schemas/inferred/comment";
+import { ReactionType, UserReaction } from "@/api/schemas/inferred/reaction";
+import { User } from "@/api/schemas/inferred/user";
+import { ContentType } from "@/api/schemas/native/common";
 import { useDeleteComment } from "@/hooks/data/useCommentData";
 import { useToggleReaction } from "@/hooks/data/useReactionData";
-import { produceUndefinedError } from "@/utils/errorUtils";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 
-const useRepliedComment = (comment: CommentSchema) => {
+const useRepliedComment = (comment: Comment) => {
+
     const queryClient = useQueryClient();
-    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
     const deleteComment = useDeleteComment(comment.id);
     const toggleReaction = useToggleReaction();
 
-    if (user === undefined) throw produceUndefinedError({ user });
+    if (user === undefined) throw nullishValidationdError({ user });
 
-    const handleDeleteComment = () => {
-        deleteComment.mutate(comment.id);
-    };
+    const handleDeleteComment = () => deleteComment.mutate(comment.id);
 
-    const handleReaction = async (event: Event, type: Reactiontype) => {
+    const handleReaction = async (event: Event, type: ReactionType) => {
         event.preventDefault();
 
-        const reactionBody = {
+        const reactionBody: UserReaction = {
             userId: user.id,
             contentId: comment.id,
             reactionType: type,
-            contentType: "COMMENT" // TODO: adjust this enum if necessary
+            contentType: ContentType.COMMENT
         };
 
         toggleReaction.mutate(reactionBody);
@@ -34,4 +34,4 @@ const useRepliedComment = (comment: CommentSchema) => {
     return { user, handleDeleteComment, handleReaction };
 };
 
-export default useRepliedComment;
+export default useRepliedComment

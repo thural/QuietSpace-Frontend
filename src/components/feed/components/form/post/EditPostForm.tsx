@@ -5,7 +5,7 @@ import Typography from "@/components/shared/Typography";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import useEditPostForm from "./hooks/useEditPostForm";
 import styles from "./styles/editPostStyles";
-import { ResId } from "@/api/schemas/common";
+import { ResId } from "@/api/schemas/inferred/common";
 
 const EditPostForm = ({ postId }: { postId: ResId }) => {
   const classes = styles();
@@ -25,7 +25,7 @@ const EditPostForm = ({ postId }: { postId: ResId }) => {
             className='text input'
             name='text'
             placeholder="text"
-            maxLength="128"
+            maxLength={128}
             value={postData["text"]}
             onChange={handleChange}>
           </textarea>

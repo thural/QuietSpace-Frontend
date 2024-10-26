@@ -1,8 +1,9 @@
 import { PasswordInput } from "@mantine/core";
 import { useRef } from "react";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 
 
-const PassInput = ({ name, value, handleChange, ...props }) => {
+const PassInput: React.FC<GenericWrapper> = ({ name, value, handleChange, ...props }) => {
     const inputRef = useRef(null);
 
     function handleClick() {

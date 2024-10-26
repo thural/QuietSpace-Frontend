@@ -1,6 +1,6 @@
 import { useActivation } from "@/hooks/data/useAuthData";
 import { displayCountdown } from "@/hooks/useTimer";
-import { fetchResendCode } from "@/api/authRequests";
+import { fetchResendCode } from "@/api/requests/authRequests";
 import { useState } from "react";
 import { ActivationFormProps, AuthPages } from "@/types/authTypes";
 

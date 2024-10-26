@@ -1,8 +1,9 @@
 import { useState } from "react";
 import BoxStyled from "./BoxStyled";
 import styles from "./styles/listMenuStyles";
+import { GenericWrapperWithRef } from "./types/sharedComponentTypes";
 
-const ListMenu = ({ children, menuIcon, styleUpdate }) => {
+const ListMenu: React.FC<GenericWrapperWithRef> = ({ children, menuIcon, styleUpdate }) => {
 
     const classes = styles();
     const [display, setDisplay] = useState("none");

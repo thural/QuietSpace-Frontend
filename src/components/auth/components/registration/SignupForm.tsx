@@ -12,7 +12,9 @@ import React from "react";
 import { SignupFormProps } from "@/types/authTypes";
 
 const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
+
     const classes = styles();
+
     const {
         isLoading,
         isError,
@@ -24,7 +26,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
     } = useSignupForm(setAuthState, authState);
 
     if (isLoading) return <FullLoadingOverlay />;
-    if (isError) return <Typography type="h1">{`could not authenticate! 🔥 error: ${error}`}</Typography>;
+    if (isError) return <Typography type="h1">{`(!) could not authenticate! error: ${error}`}</Typography>;
 
     return (
         <BoxStyled className={classes.wrapper}>

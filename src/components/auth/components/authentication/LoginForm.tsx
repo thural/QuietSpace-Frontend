@@ -25,7 +25,7 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
     } = useLoginForm({ setAuthState, authState });
 
     if (isAuthenticating) return <FullLoadingOverlay />;
-    if (isError) return <Typography type="h1">{`could not authenticate! 🔥 error: ${error}`}</Typography>;
+    if (isError) return <Typography type="h1">{`(!) could not authenticate! error: ${error}`}</Typography>;
 
     return (
         <BoxStyled className={classes.wrapper}>

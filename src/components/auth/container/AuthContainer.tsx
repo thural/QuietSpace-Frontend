@@ -13,17 +13,13 @@ const AuthContainer = () => {
 
     const [authState, setAuthState] = useState<AuthState>({
         page: AuthPages.LOGIN,
-        formData: {
-            email: "",
-            password: ""
-        }
+        formData: { email: "", password: "" }
     });
 
     const RenderResult = () => {
         if (authState.page === AuthPages.SIGNNUP) return <SignupForm setAuthState={setAuthState} authState={authState} />;
         if (authState.page === AuthPages.LOGIN) return <LoginForm setAuthState={setAuthState} authState={authState} />;
         if (authState.page === AuthPages.ACTIVATION) return <ActivationForm setAuthState={setAuthState} authState={authState} />;
-        return null;
     }
 
 

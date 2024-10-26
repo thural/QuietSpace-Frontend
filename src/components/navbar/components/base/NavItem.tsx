@@ -1,7 +1,15 @@
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes"
 import BoxStyled from "@shared/BoxStyled"
 import { Link } from "react-router-dom"
 
-const NavItem = ({ linkTo, pathName, icon, iconFill, children }) => {
+interface NavItem extends GenericWrapper {
+    linkTo: string,
+    pathName: string,
+    icon: React.ReactNode,
+    iconFill: React.ReactNode,
+}
+
+const NavItem: React.FC<NavItem> = ({ linkTo, pathName, icon, iconFill, children }) => {
 
 
     return (

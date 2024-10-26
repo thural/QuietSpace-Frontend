@@ -6,14 +6,15 @@ import FlexStyled from "./FlexStyled";
 import FollowToggle from "./FollowToggle";
 import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 
-const UserQueryItem = ({ data: user }) => {
+const UserQueryItem: React.FC<GenericWrapper> = ({ data: user }) => {
 
     const classes = styles();
     const navigate = useNavigate();
 
 
-    const handleClick = (event) => {
+    const handleClick = (event: Event) => {
         event.preventDefault();
         navigate(`/profile/${user.id}`);
     }

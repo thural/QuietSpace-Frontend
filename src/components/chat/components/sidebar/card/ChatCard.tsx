@@ -4,8 +4,9 @@ import UserAvatar from "@shared/UserAvatar";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import useChat from "../panel/hooks/useChat";
 import styles from "./styles/chatCardStyles";
+import { Chat } from "@/api/schemas/inferred/chat";
 
-const ChatCard = ({ data: chat }) => {
+const ChatCard = ({ data: chat }: { data: Chat }) => {
 
     const classes = styles();
 

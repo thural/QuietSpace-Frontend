@@ -1,5 +1,6 @@
-import { PagedResponse } from "@/api/schemas/common";
-import { NotificationSchema, NotificationType } from "@/api/schemas/notification";
+import { Page } from "@/api/schemas/inferred/common";
+import { Notification } from "@/api/schemas/inferred/notification";
+import { NotificationType } from "@/api/schemas/native/notification";
 import NotificationList from "@/components/notification/components/list/NotificationList";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import { getEnumValueFromString } from "@/utils/enumUtils";
@@ -7,13 +8,12 @@ import { useQueryClient } from "@tanstack/react-query";
 
 
 const ReplyNotifications = () => {
+
     const queryClient = useQueryClient();
-    const notificationData: PagedResponse<NotificationSchema> | undefined = queryClient.getQueryData(["notifications"]);
+    const notificationData: Page<Notification> | undefined = queryClient.getQueryData(["notifications"]);
 
     if (notificationData === undefined) return <FullLoadingOverlay />;
-
     const notifications = notificationData?.content.filter(n => getEnumValueFromString(NotificationType, n.type) === NotificationType.COMMENT_REPLY)
-
     return (
         <NotificationList notifications={notifications} />
     )

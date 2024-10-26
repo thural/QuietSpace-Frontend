@@ -1,7 +1,8 @@
 import { Button } from "@mantine/core"
 import withForwardedRef from "../hooks/withForwardedRef"
+import { GenericWrapperWithRef } from "../types/sharedComponentTypes"
 
-const OutlineButton = ({
+const OutlineButton: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
     onClick,
     radius = "md",

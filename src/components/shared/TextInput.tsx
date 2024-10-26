@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 
 
-const TextInput = ({
-    name,
-    value,
+const TextInput: React.FC<GenericWrapper> = ({
+    name = "",
+    value = "",
     handleChange,
     placeholder = "",
     maxLength = "999",
@@ -22,10 +23,8 @@ const TextInput = ({
         <input
             type='text'
             name={name}
-            maxLength={maxLength}
             placeholder={name}
             value={value}
-            minLength={minLength}
             onChange={handleChange}
             onClick={handleClick}
             hidden={hidden}

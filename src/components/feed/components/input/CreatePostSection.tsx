@@ -1,11 +1,18 @@
+import { User } from "@/api/schemas/inferred/user";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FlexStyled from "@/components/shared/FlexStyled";
 import InputStyled from "@/components/shared/InputStyled";
 import UserAvatar from "@/components/shared/UserAvatar";
 import LightButton from "@/components/shared/buttons/LightButton";
+import { ProcedureFn } from "@/types/genericTypes";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 
-const CreatePostSection = ({ user, toggleCreatePostForm }) => (
+interface CreatePostSection {
+    user: User
+    handleClick: ProcedureFn
+}
+
+const CreatePostSection: React.FC<CreatePostSection> = ({ user, handleClick }) => (
     <BoxStyled style={{ margin: "1rem 0" }}>
         <FlexStyled justify="space-between" gap="1rem">
             <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
@@ -13,9 +20,9 @@ const CreatePostSection = ({ user, toggleCreatePostForm }) => (
                 variant="unstyled"
                 style={{ width: "100%" }}
                 placeholder="start a topic..."
-                onClick={toggleCreatePostForm}
+                onClick={handleClick}
             />
-            <LightButton name="post" handleClick={toggleCreatePostForm} />
+            <LightButton name="post" handleClick={handleClick} />
         </FlexStyled>
     </BoxStyled>
 );

@@ -3,11 +3,21 @@ import FlexStyled from "@shared/FlexStyled";
 import FormStyled from "@shared/FormStyled";
 import UserAvatar from "@shared/UserAvatar";
 import { toUpperFirstChar } from "@utils/stringUtils";
-import styles from "./commentReplyFormStyles";
-import useReplyForm from "./hooks/useReplyForm";
+import styles from "./styles/commentReplyFormStyles";
+import useReplyForm from "../panel/hooks/useReplyForm";
+import { ResId } from "@/api/schemas/inferred/common";
+import { ConsumerFn } from "@/types/genericTypes";
 
-const CommentReplyForm = ({ postId, parentId, toggleView }) => {
+interface CommentReplyForm {
+    postId: ResId
+    parentId: ResId
+    toggleView: ConsumerFn
+}
+
+const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggleView }) => {
+
     const classes = styles();
+
     const {
         user,
         commentInput,

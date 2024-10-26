@@ -23,11 +23,16 @@ export const PollSchema = z.object({
     dueDate: z.string().nullable()
 });
 
+export const PollBodySchema = z.object({
+    dueDate: z.string().nullable(),
+    options: z.array(z.string())
+})
+
 export const PostBodySchema = z.object({
     text: z.string(),
     userId: ResIdSchema,
     viewAccess: z.enum(['friends', 'all']),
-    poll: PollSchema.nullable()
+    poll: PollBodySchema.nullable()
 });
 
 export const PostSchema = z.object({

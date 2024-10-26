@@ -1,8 +1,9 @@
 import BoxStyled from "./BoxStyled";
 import styles from "./styles/userDetailsStyles";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 import Typography from "./Typography";
 
-const UserDetails = ({ user, scale = 3, children }) => {
+const UserDetails: React.FC<GenericWrapper> = ({ user, scale = 3, children }) => {
 
     const classes = styles();
 

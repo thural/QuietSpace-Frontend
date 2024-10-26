@@ -1,3 +1,4 @@
+import { ProcedureFn } from "@/types/genericTypes";
 import { useEffect, useMemo, useState } from "react";
 
 interface TimerBaseData {
@@ -25,12 +26,18 @@ export const calculateTimeLeft = (period: number) => {
     return { hasTimeOut: true };
 }
 
+export interface CountDownDisplay {
+    hasTimeOut: boolean | undefined
+    resetTimer: ProcedureFn
+    component: JSX.Element
+}
+
 const processExpireDate = (interval: number) => (interval + +new Date());
 
 let hasReset = false;
 const resetTimer = () => { hasReset = !hasReset; }
 
-export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") => {
+export const displayCountdown = (period = 900000, timeUpMessage = "time's up!"): CountDownDisplay => {
 
     const expireDate = useMemo(() => processExpireDate(period), [period, hasReset]);
     const [timeLeft, setTimeLeft] = useState<Partial<TimerData>>(calculateTimeLeft(expireDate));
@@ -58,8 +65,6 @@ export const displayCountdown = (period = 900000, timeUpMessage = "time's up!") 
     return {
         hasTimeOut: timeLeft.hasTimeOut,
         resetTimer,
-        component: (
-            <div>{timerComponents.length ? timerComponents : <span>{timeUpMessage}</span>}</div>
-        )
+        component: <div>{timerComponents.length ? timerComponents : <span>{timeUpMessage}</span>}</div>
     }
 }

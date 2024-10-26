@@ -6,11 +6,11 @@ import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import EmojiText from "@/components/shared/EmojiText";
 import UserAvatar from "@/components/shared/UserAvatar";
-import { CommentBody, CommentSchema } from "@/api/schemas/comment";
+import { Comment } from "@/api/schemas/inferred/comment";
 
 interface CommentReplyProps {
-    comment: CommentSchema
-    repliedComment: CommentBody
+    comment: Comment
+    repliedComment: Comment
 }
 
 const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) => {
@@ -41,4 +41,4 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
     );
 };
 
-export default CommentReply;
+export default CommentReply

@@ -2,7 +2,7 @@ import styles from "./styles/commentFormStyles";
 import useCommentForm from "./hooks/useCommentForm";
 import FormStyled from "@/components/shared/FormStyled";
 import EmojiInput from "@/components/shared/EmojiInput";
-import { ResId } from "@/api/schemas/common";
+import { ResId } from "@/api/schemas/inferred/common";
 
 const CommentForm = ({ postId }: { postId: ResId }) => {
 

@@ -3,17 +3,17 @@ import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import styles from "./styles/pollStyles";
 import usePoll from "./hooks/usePoll";
-import { PollSchema } from "@/api/schemas/post";
-import { ResId } from "@/api/schemas/common";
+import { ResId } from "@/api/schemas/inferred/common";
 import { isDateExpired } from "@/utils/dateUtils";
+import { Poll } from "@/api/schemas/inferred/post";
 
 
 interface PollProps {
-    pollData: PollSchema
+    pollData: Poll
     postId: ResId
 }
 
-const Poll: React.FC<PollProps> = ({ pollData, postId }) => {
+const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
 
     const classes = styles();
 
@@ -54,4 +54,4 @@ const Poll: React.FC<PollProps> = ({ pollData, postId }) => {
     );
 };
 
-export default Poll;
+export default PollBox;

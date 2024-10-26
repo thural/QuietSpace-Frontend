@@ -8,9 +8,9 @@ import { toUpperFirstChar } from "@/utils/stringUtils";
 import CommentReplyForm from "../form/CommentForm";
 import styles from "./styles/commentStyles";
 import useComment from "./hooks/useComment";
-import { CommentSchema } from "@/api/schemas/comment";
+import { Comment } from "@/api/schemas/inferred/comment";
 
-const Comment = ({ comment }: { comment: CommentSchema }) => {
+const CommentBox = ({ comment }: { comment: Comment }) => {
 
     const classes = styles();
 
@@ -39,7 +39,7 @@ const Comment = ({ comment }: { comment: CommentSchema }) => {
                 </Conditional>
             </BoxStyled>
             <Conditional isEnabled={replyFormView} >
-                <CommentReplyForm postId={comment.postId} parentId={comment.id} toggleView={setReplyFormView} />
+                <CommentReplyForm postId={comment.postId} />
             </Conditional>
         </FlexStyled>
     );
@@ -54,4 +54,4 @@ const Comment = ({ comment }: { comment: CommentSchema }) => {
     );
 };
 
-export default Comment;
+export default CommentBox;

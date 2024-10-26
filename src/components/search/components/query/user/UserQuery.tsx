@@ -6,12 +6,12 @@ import UserQueryItem from "@components/shared/UserQueryItem";
 import styles from "./styles/queryResultStyles";
 import React, { CSSProperties } from "react";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import { PagedUserResponse, UserListResponse } from "@/api/schemas/user";
+import { UserPage, UserList } from "@/api/schemas/inferred/user";
 import { UseMutationResult } from "@tanstack/react-query";
 
 interface UserQueryProps extends GenericWrapper {
-    fetchUserQuery: UseMutationResult<PagedUserResponse, Error, string>
-    userQueryList: UserListResponse
+    fetchUserQuery: UseMutationResult<UserPage, Error, string>
+    userQueryList: UserList
     style?: CSSProperties
 }
 

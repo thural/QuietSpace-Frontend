@@ -1,15 +1,15 @@
-import { PagedUserResponse, UserListResponse } from "@/api/schemas/user";
+import { UserPage, UserList } from "@/api/schemas/inferred/user";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
 
-const useUserConnection = (userFetch: UseQueryResult<PagedUserResponse>) => {
+const useUserConnection = (userFetch: UseQueryResult<UserPage>) => {
 
     if (userFetch.data === undefined) throw new Error("some error...");
 
-    const [queryResult, setQueryResult] = useState<UserListResponse>(userFetch.data.content);
+    const [queryResult, setQueryResult] = useState<UserList>(userFetch.data.content);
 
 
-    const filterByQuery = (value: string): UserListResponse => {
+    const filterByQuery = (value: string): UserList => {
         return userFetch.data.content
             .filter(f => (f.username.includes(value) || f.email.includes(value)));
     }

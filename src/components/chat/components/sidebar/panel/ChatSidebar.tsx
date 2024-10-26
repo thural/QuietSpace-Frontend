@@ -5,7 +5,7 @@ import styles from "./styles/chatSidebarStyles";
 import BoxStyled from "@/components/shared/BoxStyled";
 import ComponentList from "@/components/shared/ComponentList";
 import Typography from "@/components/shared/Typography";
-import { ChatResponseList } from "@/api/schemas/chat";
+import { ChatList } from "@/api/schemas/inferred/chat";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 
 const ChatSidebar: React.FC<GenericWrapper> = () => {
@@ -13,7 +13,7 @@ const ChatSidebar: React.FC<GenericWrapper> = () => {
     const classes = styles();
 
     const queryClient = useQueryClient();
-    const chats: ChatResponseList | undefined = queryClient.getQueryData(["chats"]);
+    const chats: ChatList | undefined = queryClient.getQueryData(["chats"]);
     if (chats === undefined) throw new Error("(!) chat list is undefined");
 
 

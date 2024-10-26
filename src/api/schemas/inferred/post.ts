@@ -6,12 +6,14 @@ import {
     PostBodySchema,
     PostSchema,
     PostListSchema,
-    PostPageSchema
+    PostPageSchema,
+    PollBodySchema
 } from "../zod/postZod";
 
 export type VoteBody = z.infer<typeof VoteBodySchema>;
 export type PollOption = z.infer<typeof PollOptionSchema>;
 export type Poll = z.infer<typeof PollSchema>;
+export type PollBody = z.infer<typeof PollBodySchema>
 export type PostBody = z.infer<typeof PostBodySchema>;
 export type Post = z.infer<typeof PostSchema>;
 export type PostList = z.infer<typeof PostListSchema>;

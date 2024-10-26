@@ -1,4 +1,4 @@
-import { NotificationType } from "@/api/schemas/notification";
+import { NotificationType } from "@/api/schemas/native/notification";
 import NotificationCard from "./base/NotificationCard";
 import { NotificationItemProps } from "@/types/notificationTypes";
 import { getEnumValueFromString } from "@/utils/enumUtils";

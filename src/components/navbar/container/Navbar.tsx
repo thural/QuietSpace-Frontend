@@ -21,6 +21,9 @@ import { useLocation } from "react-router-dom";
 import NavItem from "../components/base/NavItem";
 import NavMenu from "../components/menu/NavMenu";
 import styles from "./styles/navbarStyles";
+import { PageContent } from "@/api/schemas/inferred/common";
+import { Chat } from "@/api/schemas/inferred/chat";
+import { NotificationPage } from "@/api/schemas/inferred/notification";
 
 
 
@@ -31,9 +34,9 @@ const NavBar = () => {
 
   const queryClient = useQueryClient();
   const pathName = useLocation().pathname;
-  const chats = queryClient.getQueryData(["chats"]);
+  const chats: PageContent<Chat> | undefined = queryClient.getQueryData(["chats"]);
   const user = queryClient.getQueryData(["user"]);
-  const notifications = queryClient.getQueryData(["notifications"]);
+  const notifications: NotificationPage | undefined = queryClient.getQueryData(["notifications"]);
 
 
   var hasUnreadChat = useMemo(() => {

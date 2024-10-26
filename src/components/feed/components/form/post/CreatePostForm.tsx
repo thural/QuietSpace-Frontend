@@ -12,14 +12,15 @@ import useCreatePostForm from "./hooks/useCreatePostForm";
 import styles from "./styles/createPostStyles";
 
 const CreatePostForm = () => {
+
     const classes = styles();
+
     const {
         postData,
         pollView,
         handleChange,
         handleSubmit,
         handleViewSelect,
-        handleReplySelect,
         togglePoll,
         avatarPlaceholder,
         addPost,
@@ -57,8 +58,8 @@ const CreatePostForm = () => {
                         value={postData.text}
                         onChange={handleChange}
                         placeholder="what's on your mind?"
-                        maxLength="999"
-                        minLength="1"
+                        maxLength={999}
+                        minLength={1}
                     />
                     <PollForm
                         postData={postData}

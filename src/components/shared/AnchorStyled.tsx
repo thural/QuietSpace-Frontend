@@ -1,7 +1,8 @@
 import { Anchor } from "@mantine/core"
 import withForwardedRef from "./hooks/withForwardedRef"
+import { GenericWrapperWithRef } from "./types/sharedComponentTypes"
 
-const AnchorStyled = ({
+const AnchorStyled: React.FC<GenericWrapperWithRef> = ({
     fw = 400,
     fz = "1rem",
     href = "",

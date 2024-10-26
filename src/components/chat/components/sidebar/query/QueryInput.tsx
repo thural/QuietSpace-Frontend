@@ -1,6 +1,7 @@
 import FormStyled from "@shared/FormStyled";
 import InputStyled from "@shared/InputStyled";
 import styles from "./styles/chatQueryStyles";
+import { useRef } from "react";
 
 
 const QueryInput = ({

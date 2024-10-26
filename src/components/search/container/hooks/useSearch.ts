@@ -1,4 +1,4 @@
-import { UserListResponse } from "@/api/schemas/user";
+import { UserList } from "@/api/schemas/inferred/user";
 import { useQueryPosts } from "@/hooks/data/usePostData";
 import { useQueryUsers } from "@/hooks/data/useUserData";
 import { useEffect, useRef, useState } from "react";
@@ -7,7 +7,7 @@ const useSearch = () => {
 
     const queryInputRef = useRef<HTMLInputElement>(null);
     const [focused, setFocused] = useState(false);
-    const [userQueryList, setUserQueryResult] = useState<UserListResponse>([]);
+    const [userQueryList, setUserQueryResult] = useState<UserList>([]);
     const [postQueryResult, setPostQueryResult] = useState([]);
     const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const fetchPostQuery = useQueryPosts(setPostQueryResult);

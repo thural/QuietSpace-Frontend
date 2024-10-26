@@ -1,7 +1,8 @@
 import withForwardedRef from "../hooks/withForwardedRef"
 import { Button } from "@mantine/core"
+import { GenericWrapperWithRef } from "../types/sharedComponentTypes"
 
-const LightButton = ({
+const LightButton: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
     name = "submit",
     radius = "xl",

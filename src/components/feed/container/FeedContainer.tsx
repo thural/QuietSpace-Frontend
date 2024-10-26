@@ -4,11 +4,11 @@ import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import Typography from "@/components/shared/Typography";
 import CreatePostSection from "../components/input/CreatePostSection";
 import CreatePostForm from "../components/form/post/CreatePostForm";
-import PostList from "../components/list/PostList";
+import PostListBox from "../components/list/PostList";
 import useFeed from "./hooks/useFeed";
 
 function FeedContainer() {
-    const { user, createPostView, posts, showCreatePostForm } = useFeed();
+    const { user, createPostView, posts, toggleCreatePostForm } = useFeed();
 
     if (posts.isLoading) return <FullLoadingOverlay />;
     if (posts.isError) return <Typography type="h1">{posts.error.message}</Typography>;
@@ -16,12 +16,12 @@ function FeedContainer() {
 
     return (
         <DefaultContainer>
-            <CreatePostSection user={user} handleClick={showCreatePostForm} />
+            <CreatePostSection user={user} handleClick={toggleCreatePostForm} />
             <hr />
             <Conditional isEnabled={createPostView}>
                 <CreatePostForm />
             </Conditional>
-            <PostList posts={posts} />
+            <PostListBox posts={posts} />
         </DefaultContainer>
     );
 }

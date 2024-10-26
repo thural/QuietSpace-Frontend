@@ -13,16 +13,14 @@ import {
 import EditPostForm from "../form/post/EditPostForm";
 import PostMenu from "../shared/post-menu/PostMenu";
 import CommentPanel from "../comment/panel/CommentPanel";
-import Poll from "../poll/Poll";
+import PollBox from "../poll/Poll";
 import { usePost } from "./hooks/usePost";
 import styles from "./styles/postStyles";
-import { PostSchema } from "@/api/schemas/post";
+import { Post } from "@/api/schemas/inferred/post";
 
-const Post = ({ post }: { post: PostSchema }) => {
+const PostBox = ({ post }: { post: Post }) => {
     const classes = styles();
     const {
-        user,
-        viewData,
         setViewData,
         editPostView,
         postId,
@@ -43,7 +41,7 @@ const Post = ({ post }: { post: PostSchema }) => {
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} />
-            <Typography className="title" type="5">{post.title}</Typography>
+            <Typography className="title" type="h5">{post.title}</Typography>
             <PostMenu handleDeletePost={handleDeletePost} setViewData={setViewData} isMutable={isMutable} />
         </FlexStyled>
     );
@@ -51,15 +49,15 @@ const Post = ({ post }: { post: PostSchema }) => {
     const PostContent = () => (
         <BoxStyled className="content">
             <Typography className="text">{text}</Typography>
-            <Conditional isEnabled={post.isPoll}>
-                <Poll pollData={post.pollData} />
+            <Conditional isEnabled={post.poll}>
+                <PollBox postId={postId} pollData={post.poll} />
             </Conditional>
         </BoxStyled>
     );
 
     const PollContent = () => (
         <Conditional isEnabled={post.poll}>
-            <Poll pollData={post.poll} postId={postId} />
+            <PollBox pollData={post.poll} postId={postId} />
         </Conditional>
     );
 
@@ -73,18 +71,18 @@ const Post = ({ post }: { post: PostSchema }) => {
 
     const LikeToggle = () => (
         userReaction?.reactionType === LikeType.LIKE.toString()
-            ? <PiArrowFatUpFill className="posticon" onClick={handleLike} alt="post like icon" />
-            : <PiArrowFatUp className="posticon" onClick={handleLike} alt="post like icon" />
+            ? <PiArrowFatUpFill className="posticon" onClick={handleLike} />
+            : <PiArrowFatUp className="posticon" onClick={handleLike} />
     );
 
     const DislikeToggle = () => (
         userReaction?.reactionType === LikeType.DISLIKE.toString()
-            ? <PiArrowFatDownFill className="posticon" onClick={handleDislike} alt="post dislike icon" />
-            : <PiArrowFatDown className="posticon" onClick={handleDislike} alt="post dislike icon" />
+            ? <PiArrowFatDownFill className="posticon" onClick={handleDislike} />
+            : <PiArrowFatDown className="posticon" onClick={handleDislike} />
     );
 
     const CommentToggle = () => (
-        <PiChatCircle onClick={toggleComments} alt="comment icon" />
+        <PiChatCircle onClick={toggleComments} />
     );
 
     return (
@@ -110,4 +108,4 @@ const Post = ({ post }: { post: PostSchema }) => {
     );
 };
 
-export default Post;
+export default PostBox;

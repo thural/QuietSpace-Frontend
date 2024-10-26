@@ -1,9 +1,10 @@
 import withForwardedRef from "./hooks/withForwardedRef"
+import { GenericWrapperWithRef } from "./types/sharedComponentTypes"
 
-const Clickable = ({ forwardedRef, handleClick = null, altText = "", text, children, ...props }) => {
+const Clickable: React.FC<GenericWrapperWithRef> = ({ forwardedRef, handleClick = null, altText = "", text, children, ...props }) => {
 
     return (
-        <div ref={forwardedRef} className="clickable" onClick={handleClick} alt={altText} {...props}>
+        <div ref={forwardedRef} className="clickable" onClick={handleClick} {...props}>
             <p>{text}</p>
             {children}
         </div>

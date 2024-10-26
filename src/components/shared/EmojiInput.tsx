@@ -1,7 +1,8 @@
 import InputEmoji from "react-input-emoji";
 import withForwardedRef from "./hooks/withForwardedRef";
+import { GenericWrapperWithRef } from "./types/sharedComponentTypes";
 
-const EmojiInput = ({
+const EmojiInput: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
     isEnabled = true,
     value,

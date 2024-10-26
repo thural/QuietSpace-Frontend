@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseSchema, PageSchema, ResIdSchema } from "./commonZod";
+import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
 import { UserReactionBody } from "./reactionZod";
 
 export const CommentBodySchema = z.object({
@@ -16,5 +16,7 @@ export const CommentSchema = CommentBodySchema.extend({
     replyCount: z.number(),
     userReaction: UserReactionBody
 });
+
+export const CommentList = PageContentSchema(CommentSchema);
 
 export const PagedCommentSchema = PageSchema(CommentSchema);

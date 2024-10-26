@@ -2,7 +2,7 @@ import { viewStore } from "@/hooks/zustand";
 import styles from "./styles/overlayStyles";
 
 
-const Overlay = ({ closable }) => {
+const Overlay = ({ closable }: { closable: Object }) => {
   const { data: viewState, setViewData } = viewStore();
   const classes = styles();
   const active = !(closable === undefined || closable === null);

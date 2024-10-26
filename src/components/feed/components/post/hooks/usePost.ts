@@ -5,13 +5,13 @@ import { viewStore } from "@/hooks/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ContentType, LikeType } from "@/utils/enumClasses";
 import { useState } from "react";
-import { PostSchema } from "@/api/schemas/post";
-import { UserSchema } from "@/api/schemas/user";
-import { UserReactionResponse } from "@/api/schemas/reaction";
+import { PostSchema } from "@/api/schemas/inferred/post";
+import { User } from "@/api/schemas/inferred/user";
+import { UserReactionResponse } from "@/api/schemas/inferred/reaction";
 
 export const usePost = (post: PostSchema) => {
     const queryClient = useQueryClient();
-    const user: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
     const { data: viewData, setViewData } = viewStore();
     const { editPost: editPostView } = viewData;
 

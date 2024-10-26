@@ -1,4 +1,4 @@
-import { UserSchema } from "@/api/schemas/user";
+import { User } from "@/api/schemas/inferred/user";
 import { useGetPosts, useGetPostsByUserId } from "@/hooks/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/hooks/data/useUserData";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const useUserProfile = (userId: string | undefined) => {
 
     const queryClient = useQueryClient();
-    const signedUser: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
     if (signedUser === undefined || userId === undefined) throw new Error("(!) user is undefined");
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
 
@@ -68,7 +68,7 @@ export const useCurrentProfile = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { data: userPosts, isLoading: isPostsLoading } = useGetPosts();
-    const signedUser: UserSchema | undefined = queryClient.getQueryData(["user"]);
+    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
 
     // TODO: refactor Overlay component tu utilize local view state instead
     const initViewState = { followers: false, followings: false }
