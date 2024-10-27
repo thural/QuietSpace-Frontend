@@ -1,5 +1,5 @@
-import { useCreateChat } from "@/hooks/data/useChatData";
-import { useQueryUsers } from "@/hooks/data/useUserData";
+import { useCreateChat } from "@/services/data/useChatData";
+import { useQueryUsers } from "@/services/data/useUserData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 

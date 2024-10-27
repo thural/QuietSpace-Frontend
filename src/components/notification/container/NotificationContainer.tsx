@@ -2,7 +2,7 @@ import BoxStyled from "@components/shared/BoxStyled";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
 import Typography from "@components/shared/Typography"
-import { useGetNotifications } from "@/hooks/data/useNotificationData";
+import { useGetNotifications } from "@/services/data/useNotificationData";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";

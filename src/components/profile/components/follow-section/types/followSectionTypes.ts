@@ -1,13 +1,9 @@
-import { PagedPostresponse } from "@/api/schemas/inferred/post"
-import { UserPage } from "@/api/schemas/inferred/user"
-import { AnyFunction } from "@/types/genericTypes"
+import { ProcedureFn } from "@/types/genericTypes"
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes"
-import { UseQueryResult } from "@tanstack/react-query"
+import { ResId } from "@/api/schemas/native/common"
 
 export interface FollowSectionProps extends GenericWrapper {
-    followers: UseQueryResult<UserPage>
-    followings: UseQueryResult<UserPage>
-    toggleFollowings: AnyFunction
-    toggleFollowers: AnyFunction
-    posts: PagedPostresponse
+    userId: ResId
+    toggleFollowings: ProcedureFn
+    toggleFollowers: ProcedureFn
 }

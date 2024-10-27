@@ -1,5 +1,5 @@
-import { useDeleteChat, useGetMessagesByChatId } from "@/hooks/data/useChatData";
-import { useAuthStore, useChatStore } from "@/hooks/zustand";
+import { useDeleteChat, useGetMessagesByChatId } from "@/services/data/useChatData";
+import { useAuthStore, useChatStore } from "@/services/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useMemo, useState } from "react";
 import { ChatList } from "@/api/schemas/inferred/chat";
@@ -23,6 +23,8 @@ export const useChat = () => {
         text: ''
     });
 
+    const sendMessage = () => sendChatMessage(inputData);
+
     const handleInputChange = (eventData: string) => {
         setInputData({ ...inputData, text: eventData });
     }
@@ -32,7 +34,7 @@ export const useChat = () => {
         deleteChat.mutate();
     }
 
-    const enabled = useMemo(() => (isSuccess && isClientConnected), [isSuccess, isClientConnected]);
+    const isEnabled = useMemo(() => (isSuccess && isClientConnected), [isSuccess, isClientConnected]);
 
     return {
         chats,
@@ -43,13 +45,13 @@ export const useChat = () => {
         isError,
         isLoading,
         isSuccess,
-        sendChatMessage,
+        sendMessage,
         deleteChatMessage,
         setMessageSeen,
         isClientConnected,
         inputData,
         handleInputChange,
         handleDeleteChat,
-        enabled
+        isEnabled
     };
 }

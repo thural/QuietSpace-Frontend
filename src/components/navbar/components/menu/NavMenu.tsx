@@ -1,52 +1,32 @@
 import BoxStyled from "@shared/BoxStyled";
-import Clickable from "@shared/Clickable";
-import { useState } from "react";
+
 import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
 import { RiMenu3Fill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+
 import styles from "./styles/navMenuStyles";
+import ComponentList from "@/components/shared/ComponentList";
+import CustomLink, { CustomLinkProps } from "@/components/shared/routes/CustomLink";
+import useNavMenu from "./hooks/useNavMenu";
 
 
 const NavMenu = () => {
 
     const classes = styles();
+    const { display, setDisplay, toggleDisplay, hideMenu } = useNavMenu();
 
-    const [display, setDisplay] = useState("none");
-
-    const toggleDisplay = () => {
-        if (display === "none") setDisplay("block");
-        else setDisplay("none");
-    }
-
-    const hideMenu = () => {
-        setDisplay("none")
-    }
+    const links: Array<CustomLinkProps> = [
+        { to: "/saved", text: "saved", Component: <PiBookmarkSimple /> },
+        { to: "/activity", text: "activity", Component: <PiClockCounterClockwise /> },
+        { to: "/settings", text: "settings", Component: <PiGearSix /> },
+        { to: "/signout", text: "logout", Component: <PiSignOut /> },
+    ];
 
     return (
         <>
             <BoxStyled className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}><RiMenu3Fill /></BoxStyled>
             <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={hideMenu}></BoxStyled>
             <BoxStyled onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
-                <Link to="/saved">
-                    <Clickable text="Saved" >
-                        <PiBookmarkSimple />
-                    </Clickable>
-                </Link>
-                <Link to="/activity">
-                    <Clickable text="Activity" >
-                        <PiClockCounterClockwise />
-                    </Clickable>
-                </Link>
-                <Link to="/settings">
-                    <Clickable text="Settings" >
-                        <PiGearSix />
-                    </Clickable>
-                </Link>
-                <Link to="/signout">
-                    <Clickable text="Logout" >
-                        <PiSignOut />
-                    </Clickable>
-                </Link>
+                <ComponentList Component={CustomLink} list={links} />
             </BoxStyled>
         </>
     )

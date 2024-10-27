@@ -1,6 +1,6 @@
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollBody, Post, PostBody, PostPage } from "@/api/schemas/inferred/post";
-import { useEditPost } from "@/hooks/data/usePostData";
+import { useEditPost } from "@/services/data/usePostData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";

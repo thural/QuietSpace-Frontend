@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import styles from "./styles/notificationCardStyles";
 
-import useWasSeen from "@/hooks/useWasSeen";
-import { useNotificationStore } from "@/hooks/zustand";
+import useWasSeen from "@/services/useWasSeen";
+import { useNotificationStore } from "@/services/zustand";
 import BoxStyled from "@components/shared/BoxStyled";
 import FlexStyled from "@components/shared/FlexStyled";
 import Typography from "@components/shared/Typography";

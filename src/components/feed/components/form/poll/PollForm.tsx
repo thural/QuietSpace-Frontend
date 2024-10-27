@@ -14,13 +14,14 @@ interface PollForm {
 }
 
 const PollForm: React.FC<PollForm> = ({ postData, handleChange, togglePoll, pollView }) => {
+
     const classes = styles();
 
     return (
         <FlexStyled
             className={classes.pollInput}
-            style={{ display: pollView.enabled ? "flex" : "none" }}>
-
+            style={{ display: pollView.enabled ? "flex" : "none" }}
+        >
             <TextInput
                 name="option1"
                 className="poll-input"

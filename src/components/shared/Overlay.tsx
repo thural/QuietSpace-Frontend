@@ -1,4 +1,4 @@
-import { viewStore } from "@/hooks/zustand";
+import { viewStore } from "@/services/zustand";
 import styles from "./styles/overlayStyles";
 
 

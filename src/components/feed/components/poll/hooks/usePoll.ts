@@ -1,4 +1,4 @@
-import { useVotePoll } from "@/hooks/data/usePostData";
+import { useVotePoll } from "@/services/data/usePostData";
 import { useQueryClient } from "@tanstack/react-query";
 import { parseCount } from "@/utils/stringUtils";
 import { ResId } from "@/api/schemas/inferred/common";

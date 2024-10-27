@@ -1,4 +1,4 @@
-import { useCreatePost } from "@/hooks/data/usePostData";
+import { useCreatePost } from "@/services/data/usePostData";
 import { useQueryClient } from "@tanstack/react-query";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useState } from "react";

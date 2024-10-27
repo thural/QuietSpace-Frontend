@@ -6,6 +6,7 @@ import usePoll from "./hooks/usePoll";
 import { ResId } from "@/api/schemas/inferred/common";
 import { isDateExpired } from "@/utils/dateUtils";
 import { Poll } from "@/api/schemas/inferred/post";
+import Conditional from "@/components/shared/Conditional";
 
 
 interface PollProps {
@@ -27,6 +28,7 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
 
     const isPollDateExpired = pollData.dueDate === null ? true : isDateExpired(pollData.dueDate);
 
+
     const PollOptionList = () => {
         return pollData?.options.map((option, index) => (
             <FlexStyled key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
@@ -37,14 +39,18 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
         ));
     };
 
+
     const PollStatus = () => (
         <FlexStyled className={classes.pollStatus}>
-            {
-                isPollDateExpired ? <Typography className="votes">poll has ended</Typography>
-                    : <Typography className="votes">{parsedVoteCounts} votes</Typography>
-            }
+            <Conditional isEnabled={isPollDateExpired} >
+                <Typography className="votes">poll has ended</Typography>
+            </Conditional>
+            <Conditional isEnabled={!isPollDateExpired} >
+                <Typography className="votes">{parsedVoteCounts} votes</Typography>
+            </Conditional>
         </FlexStyled>
     );
+
 
     return (
         <FlexStyled className={classes.pollContainer}>

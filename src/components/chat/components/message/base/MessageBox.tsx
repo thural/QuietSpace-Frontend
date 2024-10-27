@@ -4,20 +4,19 @@ import Typography from "@shared/Typography";
 import useMessage from "./hooks/useMessage";
 import styles from "./styles/messageStyles";
 
-const Message = ({ data: message, handleDeleteMessage, setMessageSeen, isClientConnected }) => {
+const MessageBox = ({ data: message }) => {
 
     const classes = styles();
 
     const {
         user,
         isHovering,
-        setIsHovering,
-        wasSeen,
         ref,
         appliedStyle,
         handleMouseOver,
         handleMouseOut,
-    } = useMessage(message, setMessageSeen, isClientConnected);
+        deleteChatMessage,
+    } = useMessage(message);
 
     return (
         <BoxStyled id={message.id} ref={ref} className={classes.message}
@@ -26,11 +25,11 @@ const Message = ({ data: message, handleDeleteMessage, setMessageSeen, isClientC
             onMouseOut={handleMouseOut}
         >
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
-                <BoxStyled className={classes.delete} onClick={() => handleDeleteMessage(message)}>delete</BoxStyled>
+                <BoxStyled className={classes.delete} onClick={() => deleteChatMessage(message)}>delete</BoxStyled>
             </Conditional>
             <BoxStyled className={classes.text}><Typography>{message.text}</Typography></BoxStyled>
         </BoxStyled>
     );
 };
 
-export default Message;
+export default MessageBox;

@@ -1,6 +1,6 @@
 import { Auth } from '@/api/schemas/inferred/auth';
 import { UseAuthStoreProps } from '@/types/authStoreTypes';
-import { ChatStoreProps } from '@/types/chatStoreTypes';
+import { ActiveChatId, ChatStoreProps } from '@/types/chatStoreTypes';
 import { NotificationStoreProps } from '@/types/notificationStore';
 import { StompStore } from '@/types/stompStoreTypes';
 import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
@@ -58,7 +58,7 @@ export const useChatStore = create<ChatStoreProps>(set => ({
     isLoading: false,
     isError: false,
     error: null,
-    setActiveChatId: (activeChatId: string) => set(state => ({ data: { ...state.data, activeChatId } })),
+    setActiveChatId: (activeChatId: ActiveChatId) => set(state => ({ data: { ...state.data, activeChatId } })),
     setMessageInput: (messageInput: Record<string, string>) => set(state => ({ data: { ...state.data, messageInput } })),
     setClientMethods: (methods: Record<string, Function>) => set({ clientMethods: methods }),
     setIsLoading: (isLoading: boolean) => set({ isLoading }),

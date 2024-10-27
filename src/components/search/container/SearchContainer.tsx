@@ -6,41 +6,16 @@ import useSearch from "./hooks/useSearch";
 
 function SearchContainer() {
 
-    const {
-        queryInputRef,
-        focused,
-        userQueryList,
-        postQueryResult,
-        handleInputChange,
-        handleKeyDown,
-        handleInputFocus,
-        handleInputBlur,
-        fetchPostQuery,
-        fetchUserQuery
-    } = useSearch();
+    const searchMethods = useSearch();
 
-    const resultAppliedStyle = focused ? { display: 'block' } : { display: 'none' };
-    const searchAppliedStyle = focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};
+    const resultAppliedStyle = searchMethods.focused ? { display: 'block' } : { display: 'none' };
+    const searchAppliedStyle = searchMethods.focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};
 
     return (
         <DefaultContainer>
-            <SearchBar
-                handleInputChange={handleInputChange}
-                handleInputFocus={handleInputFocus}
-                handleInputBlur={handleInputBlur}
-                handleKeyDown={handleKeyDown}
-                queryInputRef={queryInputRef}
-                style={searchAppliedStyle}
-            />
-            <UserQuery
-                fetchUserQuery={fetchUserQuery}
-                userQueryList={userQueryList}
-                style={resultAppliedStyle}
-            />
-            <PostQuery
-                fetchPostQuery={fetchPostQuery}
-                postQueryList={postQueryResult}
-            />
+            <SearchBar {...searchMethods} style={searchAppliedStyle} />
+            <UserQuery {...searchMethods} style={resultAppliedStyle} />
+            <PostQuery{...searchMethods} />
         </DefaultContainer>
     );
 }

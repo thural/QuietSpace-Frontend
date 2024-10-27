@@ -1,6 +1,6 @@
 import { User } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/native/common";
-import { usePostComment } from "@/hooks/data/useCommentData";
+import { usePostComment } from "@/services/data/useCommentData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";

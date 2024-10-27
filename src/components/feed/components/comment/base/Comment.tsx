@@ -17,7 +17,6 @@ const CommentBox = ({ comment }: { comment: Comment }) => {
     const {
         user,
         replyFormView,
-        setReplyFormView,
         handleDeleteComment,
         handleLikeToggle,
         handleCommentReply,
@@ -54,4 +53,4 @@ const CommentBox = ({ comment }: { comment: Comment }) => {
     );
 };
 
-export default CommentBox;
+export default CommentBox

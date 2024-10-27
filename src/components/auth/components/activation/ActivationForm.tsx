@@ -7,7 +7,7 @@ import Typography from "@components/shared/Typography";
 import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
 import { ActivationFormProps } from "@/types/authTypes";
-import { CountDownDisplay } from "@/hooks/useTimer";
+import { CountDownDisplay } from "@/services/useTimer";
 
 const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
     <FormStyled className="timer">

@@ -1,6 +1,6 @@
 import { User } from "@/api/schemas/inferred/user";
-import { useGetPosts } from "@/hooks/data/usePostData";
-import { viewStore } from "@/hooks/zustand";
+import { useGetPosts } from "@/services/data/usePostData";
+import { viewStore } from "@/services/zustand";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 

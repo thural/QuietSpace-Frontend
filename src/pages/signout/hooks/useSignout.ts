@@ -1,5 +1,5 @@
-import useJwtAuth from "@/hooks/useJwtAuth";
-import { useAuthStore } from "@/hooks/zustand";
+import useJwtAuth from "@/services/useJwtAuth";
+import { useAuthStore } from "@/services/zustand";
 import { getRefreshToken } from "@/utils/authUtils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";

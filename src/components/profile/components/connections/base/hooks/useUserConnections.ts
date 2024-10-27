@@ -1,10 +1,11 @@
 import { UserPage, UserList } from "@/api/schemas/inferred/user";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
 
 const useUserConnection = (userFetch: UseQueryResult<UserPage>) => {
 
-    if (userFetch.data === undefined) throw new Error("some error...");
+    if (userFetch.data === undefined) throw nullishValidationdError({ userFetch });
 
     const [queryResult, setQueryResult] = useState<UserList>(userFetch.data.content);
 

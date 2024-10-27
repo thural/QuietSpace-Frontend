@@ -26,7 +26,7 @@ const AuthContainer = () => {
     return (
         <BoxStyled className={classes.auth}>
             <BoxStyled className="greeting-text">
-                <Typography className="brand" size="2.5rem" type="h1">Quiet Space</Typography>
+                <Typography className="brand" size="2.5rem" type="h1">QuietSpace</Typography>
                 <Typography className="primary-text" size="1.5rem" >social media without distraction</Typography>
                 <Typography className="secondary-text">where free speech and privacy is the priority</Typography>
             </BoxStyled>

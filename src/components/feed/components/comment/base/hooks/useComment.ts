@@ -1,5 +1,5 @@
-import { useDeleteComment } from "@/hooks/data/useCommentData";
-import { useToggleReaction } from "@/hooks/data/useReactionData";
+import { useDeleteComment } from "@/services/data/useCommentData";
+import { useToggleReaction } from "@/services/data/useReactionData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { User } from "@/api/schemas/inferred/user";
@@ -13,7 +13,7 @@ const useComment = (comment: Comment) => {
 
     const queryClient = useQueryClient();
     const user: User | undefined = queryClient.getQueryData(["user"]);
-    if (user === undefined) throw nullishValidationdError({ user })
+    if (user === undefined) throw nullishValidationdError({ user });
     const deleteComment = useDeleteComment(comment.postId);
     const toggleLike = useToggleReaction();
 

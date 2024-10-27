@@ -1,10 +1,18 @@
-import useWasSeen from "@hooks/useWasSeen";
-import { useQueryClient } from "@tanstack/react-query";
+import { getSignedUser } from "@/api/queries/userQueries";
+import { Message } from "@/api/schemas/inferred/chat";
+import useWasSeen from "@/services/useWasSeen";
+import { useChatStore } from "@/services/zustand";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { useEffect, useState } from "react";
 
-const useMessage = (message, setMessageSeen, isClientConnected) => {
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+const useMessage = (message: Message) => {
+
+    const user = getSignedUser();
+    if (user === undefined) throw nullishValidationdError({ user });
+
+    const { clientMethods } = useChatStore();
+    const { deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
+
     const [isHovering, setIsHovering] = useState(false);
     const [wasSeen, ref] = useWasSeen();
 
@@ -18,6 +26,7 @@ const useMessage = (message, setMessageSeen, isClientConnected) => {
         backgroundColor: "#3c3cff",
         borderRadius: '1rem 1rem 0rem 1rem'
     };
+
 
     const handleMouseOver = () => {
         setIsHovering(true);
@@ -35,15 +44,19 @@ const useMessage = (message, setMessageSeen, isClientConnected) => {
 
     useEffect(handleSeenMessage, [wasSeen, isClientConnected]);
 
+
     return {
         user,
         isHovering,
         setIsHovering,
         wasSeen,
         ref,
+        deleteChatMessage,
         appliedStyle,
         handleMouseOver,
         handleMouseOut,
+        setMessageSeen,
+        isClientConnected
     };
 };
 

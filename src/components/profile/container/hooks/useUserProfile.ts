@@ -1,14 +1,15 @@
 import { User } from "@/api/schemas/inferred/user";
-import { useGetPosts, useGetPostsByUserId } from "@/hooks/data/usePostData";
-import { useGetFollowers, useGetFollowings, useGetUserById } from "@/hooks/data/useUserData";
-import { useQueryClient } from "@tanstack/react-query";
+import { ResId } from "@/api/schemas/inferred/common";
+import { useGetPosts, useGetPostsByUserId } from "@/services/data/usePostData";
+import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { getSignedUser } from "@/api/queries/userQueries";
 
-const useUserProfile = (userId: string | undefined) => {
+const useUserProfile = (userId: ResId) => {
 
-    const queryClient = useQueryClient();
-    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
+    const signedUser: User | undefined = getSignedUser();
     if (signedUser === undefined || userId === undefined) throw new Error("(!) user is undefined");
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
 
@@ -18,38 +19,30 @@ const useUserProfile = (userId: string | undefined) => {
 
     const user = useGetUserById(userId);
     const userPosts = useGetPostsByUserId(userId);
-    if (signedUser === undefined || user === undefined) throw new Error("(!)signed user is undefined");
+    if (signedUser === undefined || user === undefined) throw nullishValidationdError({ signedUser, user });
     const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
     const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy
 
 
-    useEffect(() => {
+    const updateState = () => {
         if (user.isLoading || followers.isLoading) return;
-
         if (user.isError || followers.isError) {
             setIsHasAccss({ ...isHasAccess, isError: true });
             return;
         }
-
         if (user.data === undefined || followers.data === undefined) {
             setIsHasAccss({ ...isHasAccess, isError: true });
             return;
         }
-
         const isFollowing = followers.data.content.some(user => user.id === signedUser.id);
         setIsHasAccss({ ...isHasAccess, isLoading: false, data: (!user.data.isPrivateAccount || isFollowing) })
-    },
-        [user.data, followers.data]
-    );
-
-
-    const toggleFollowings = () => {
-        setviewState({ ...viewState, followings: !viewState.followings });
     }
 
-    const toggleFollowers = () => {
-        setviewState({ ...viewState, followers: !viewState.followers });
-    }
+    useEffect(updateState, [user.data, followers.data]);
+
+    const toggleFollowings = () => setviewState({ ...viewState, followings: !viewState.followings });
+    const toggleFollowers = () => setviewState({ ...viewState, followers: !viewState.followers });
+
 
     return {
         user,
@@ -63,18 +56,19 @@ const useUserProfile = (userId: string | undefined) => {
     }
 }
 
+
+
 export const useCurrentProfile = () => {
 
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const { data: userPosts, isLoading: isPostsLoading } = useGetPosts();
-    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
+    const userPosts = useGetPosts();
+    const signedUser: User | undefined = getSignedUser();
 
     // TODO: refactor Overlay component tu utilize local view state instead
     const initViewState = { followers: false, followings: false }
     const [viewState, setviewState] = useState(initViewState);
 
-    if (signedUser === undefined || isPostsLoading) throw new Error("some error");
+    if (signedUser === undefined) throw nullishValidationdError({ signedUser });
 
     const followers = useGetFollowers(signedUser.id);
     const followings = useGetFollowings(signedUser.id);
@@ -93,6 +87,7 @@ export const useCurrentProfile = () => {
     const handleSignout = () => {
         navigate("/signout");
     }
+
 
     return {
         signedUser,

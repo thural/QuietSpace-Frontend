@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/requests/userRequests";
 import { useAuthStore } from "../zustand";
 import { UserPage, User } from "@/api/schemas/inferred/user";
@@ -103,7 +103,6 @@ export const useGetFollowings = (userId: ResId) => {
         gcTime: Infinity,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
-        select: (data) => data.content
     })
 }
 

@@ -1,8 +1,9 @@
-import useJwtAuth from "@/hooks/useJwtAuth";
-import { useAuthStore } from "@/hooks/zustand";
+import useJwtAuth from "@/services/useJwtAuth";
+import { useAuthStore } from "@/services/zustand";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthFormProps, AuthPages } from "@/types/authTypes";
+import { Auth } from "@/api/schemas/inferred/auth";
 
 
 export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
@@ -19,7 +20,7 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
         setIsAuthenticating(true);
     };
 
-    const onSuccessFn = (data): void => {
+    const onSuccessFn = (data: Auth): void => {
         setIsAuthenticating(false);
         setIsAuthenticated(true);
         setAuthData(data);
@@ -44,9 +45,7 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
         authenticate(formData);
     };
 
-    const handleFormChange = (event: Event) => {
-        if (!event.target || !(event.target instanceof HTMLInputElement))
-            throw new Error("Invalid input: expected an HTMLInputElement");
+    const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         const { name, value }: { name: string; value: string } = target;
         setFormData({ ...formData, [name]: value });

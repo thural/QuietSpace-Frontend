@@ -10,13 +10,13 @@ import './App.css';
 import { useEffect } from "react";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import Typography from "./components/shared/Typography";
-import useChatSocket from "./hooks/useChatSocket";
-import useJwtAuth from "./hooks/useJwtAuth";
-import { useGetNotifications } from "./hooks/data/useNotificationData";
-import useNotificationSocket from "./hooks/useNotificationSocket";
-import { useStompClient } from "./hooks/useStompClient";
-import { useGetCurrentUser } from "./hooks/data/useUserData";
-import { useAuthStore } from "./hooks/zustand";
+import useChatSocket from "./services/useChatSocket";
+import useJwtAuth from "./services/useJwtAuth";
+import { useGetNotifications } from "./services/data/useNotificationData";
+import useNotificationSocket from "./services/useNotificationSocket";
+import { useStompClient } from "./services/useStompClient";
+import { useGetCurrentUser } from "./services/data/useUserData";
+import { useAuthStore } from "./services/zustand";
 import AllNotifications from "./pages/notification/AllNotifications";
 import NotificationPage from "./pages/notification/NotifiactionPage";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
@@ -29,10 +29,11 @@ import NavBar from "./components/navbar/container/Navbar";
 import ProfileContainer from "./components/profile/container/ProfileContainer";
 import UserProfileContainer from "./components/profile/container/UserProfileContainer";
 import ActivationForm from "./components/auth/components/activation/ActivationForm";
+import { Auth } from "./api/schemas/inferred/auth";
 
 const App = () => {
 
-    const { isLoading: isUserLoading, isError: isUserError, data: userData } = useGetCurrentUser();
+    const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
 
@@ -42,7 +43,7 @@ const App = () => {
     useNotificationSocket();
 
 
-    const onSuccessFn = (data) => {
+    const onSuccessFn = (data: Auth) => {
         setAuthData(data);
         setIsAuthenticated(true);
     }
@@ -52,7 +53,7 @@ const App = () => {
 
 
     if (isUserLoading) return <FullLoadingOverlay />;
-    if (!isAuthenticated || isUserError) return <AuthPage />;
+    if (!isAuthenticated || isUserError) return <AuthPage />; // TODO: handle Auth using routing instead
 
 
     return (

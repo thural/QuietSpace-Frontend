@@ -1,13 +1,16 @@
-import { useChatStore } from "@hooks/zustand";
-import { useQueryClient } from "@tanstack/react-query";
+import { getSignedUser } from "@/api/queries/userQueries";
+import { Chat } from "@/api/schemas/inferred/chat";
+import { useChatStore } from "@/services/zustand";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
-const useChat = (chat) => {
-    const queryClient = useQueryClient();
-    const user = queryClient.getQueryData(["user"]);
+const useChatCard = (chat: Chat) => {
+
+    const user = getSignedUser();
+    if (user === undefined) throw nullishValidationdError({ user });
     const { setActiveChatId } = useChatStore();
 
     const contactId = chat.userIds.find(userId => userId !== user.id);
-    const username = chat.members[0]["username"];
+    const username: string | undefined = chat.members.find(member => member.id !== user.id)?.username;
     const recentText = chat.recentMessage ? chat.recentMessage.text : "chat is empty";
 
     const handleClick = () => {
@@ -26,4 +29,4 @@ const useChat = (chat) => {
     };
 };
 
-export default useChat;
+export default useChatCard;

@@ -11,7 +11,7 @@ export interface ChatStoreProps {
     isLoading: boolean;
     isError: boolean;
     error: Error | null;
-    setActiveChatId: (activeChatId: string) => void;
+    setActiveChatId: (activeChatId: ActiveChatId) => void;
     setMessageInput: (messageInput: Record<string, string>) => void;
     setClientMethods: (methods: Record<string, Function>) => void;
     setIsLoading: (isLoading: boolean) => void;

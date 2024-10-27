@@ -9,10 +9,10 @@ interface CommentListProps {
     postId: ResId
 }
 
-const CommentListComp: React.FC<CommentListProps> = ({ comments, postId }) => {
+const CommentListComp: React.FC<CommentListProps> = ({ comments }) => {
     if (!comments) return null;
     return comments.map((comment, index) => {
-        if (!comment.parentId) return <CommentBox key={index} postId={postId} comment={comment} />;
+        if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
         const repliedComment = comments.find(c => c.id === comment.parentId);
         return <CommentReply key={index} comment={comment} repliedComment={repliedComment} />;
     })

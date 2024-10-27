@@ -1,6 +1,10 @@
 import { GenericWrapper } from "./types/sharedComponentTypes";
 
-const Conditional: React.FC<GenericWrapper> = ({ isEnabled, children }) => {
+export interface Conditional extends GenericWrapper {
+    isEnabled: boolean
+}
+
+const Conditional: React.FC<Conditional> = ({ isEnabled, children }) => {
     if (isEnabled) return <>{children}</>
     else return null;
 }

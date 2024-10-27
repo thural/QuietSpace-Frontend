@@ -1,5 +1,5 @@
 import { User } from "@/api/schemas/inferred/user";
-import { usePostComment } from "@/hooks/data/useCommentData";
+import { usePostComment } from "@/services/data/useCommentData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 

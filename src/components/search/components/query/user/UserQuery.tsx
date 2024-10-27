@@ -4,16 +4,9 @@ import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
 import Typography from "@components/shared/Typography";
 import UserQueryItem from "@components/shared/UserQueryItem";
 import styles from "./styles/queryResultStyles";
-import React, { CSSProperties } from "react";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import { UserPage, UserList } from "@/api/schemas/inferred/user";
-import { UseMutationResult } from "@tanstack/react-query";
+import React from "react";
+import { UserQueryProps } from "./types/userQueryTypes";
 
-interface UserQueryProps extends GenericWrapper {
-    fetchUserQuery: UseMutationResult<UserPage, Error, string>
-    userQueryList: UserList
-    style?: CSSProperties
-}
 
 const UserQuery: React.FC<UserQueryProps> = ({ fetchUserQuery, userQueryList, style }) => {
 

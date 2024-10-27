@@ -2,8 +2,8 @@ import { Comment } from "@/api/schemas/inferred/comment";
 import { ReactionType, UserReaction } from "@/api/schemas/inferred/reaction";
 import { User } from "@/api/schemas/inferred/user";
 import { ContentType } from "@/api/schemas/native/common";
-import { useDeleteComment } from "@/hooks/data/useCommentData";
-import { useToggleReaction } from "@/hooks/data/useReactionData";
+import { useDeleteComment } from "@/services/data/useCommentData";
+import { useToggleReaction } from "@/services/data/useReactionData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 

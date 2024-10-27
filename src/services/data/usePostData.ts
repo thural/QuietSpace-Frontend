@@ -36,7 +36,7 @@ export const useGetPosts = () => {
 }
 
 
-export const useGetPostsByUserId = (userId: string | number) => {
+export const useGetPostsByUserId = (userId: ResId) => {
 
     const queryClient = useQueryClient();
     const user: User | undefined = queryClient.getQueryData(["user"]);
@@ -44,7 +44,7 @@ export const useGetPostsByUserId = (userId: string | number) => {
 
     return useQuery({
         queryKey: ["posts/user", { id: userId }],
-        queryFn: async () => {
+        queryFn: async (): Promise<PostPage> => {
             return await fetchPostsByUserId(userId, authData.accessToken);
         },
         enabled: !!user?.id,
