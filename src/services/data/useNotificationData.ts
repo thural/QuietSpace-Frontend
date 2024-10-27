@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "../zustand";
+import { useAuthStore } from "../store/zustand";
 import { fetchCountOfPendingNotifications, fetchNotifications } from "../../api/requests/notificationRequests";
 
 

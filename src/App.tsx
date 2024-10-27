@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import AuthPage from "./pages/auth/AuthPage"
 import ChatPage from "./pages/chat/ChatPage";
 import FeedPage from "./pages/feed/FeedPage";
@@ -10,13 +10,13 @@ import './App.css';
 import { useEffect } from "react";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import Typography from "./components/shared/Typography";
-import useChatSocket from "./services/useChatSocket";
-import useJwtAuth from "./services/useJwtAuth";
+import useChatSocket from "./services/chat/useChatSocket";
+import useJwtAuth from "./services/auth/useJwtAuth";
 import { useGetNotifications } from "./services/data/useNotificationData";
-import useNotificationSocket from "./services/useNotificationSocket";
-import { useStompClient } from "./services/useStompClient";
+import useNotificationSocket from "./services/notification/useNotificationSocket";
+import { useStompClient } from "./services/socket/useStompClient";
 import { useGetCurrentUser } from "./services/data/useUserData";
-import { useAuthStore } from "./services/zustand";
+import { useAuthStore } from "./services/store/zustand";
 import AllNotifications from "./pages/notification/AllNotifications";
 import NotificationPage from "./pages/notification/NotifiactionPage";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
@@ -24,7 +24,7 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import RequestNotifications from "./pages/notification/RequestNotifications";
 import ProfilePage from "./pages/profile/ProfilePage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import SignoutPage from "./pages/signout/SignoutPage";
+import SignoutPage from "./pages/auth/signout/SignoutPage";
 import NavBar from "./components/navbar/container/Navbar";
 import ProfileContainer from "./components/profile/container/ProfileContainer";
 import UserProfileContainer from "./components/profile/container/UserProfileContainer";
@@ -33,14 +33,25 @@ import { Auth } from "./api/schemas/inferred/auth";
 
 const App = () => {
 
+    const navigate = useNavigate();
+
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
 
-    useStompClient({});
-    useChatSocket();
-    useGetNotifications();
-    useNotificationSocket();
+    const initServices = () => {
+        if (!isAuthenticated || isUserError || isUserLoading) return;
+        try {
+            useStompClient({});
+            useChatSocket();
+            useGetNotifications();
+            useNotificationSocket();
+        } catch (error: unknown) {
+            console.error(error);
+        }
+    }
+
+    useEffect(initServices, [isAuthenticated]);
 
 
     const onSuccessFn = (data: Auth) => {
@@ -49,7 +60,17 @@ const App = () => {
     }
 
     const { loadAccessToken } = useJwtAuth({ onSuccessFn });
-    useEffect(loadAccessToken, []);
+
+    const initAuth = () => {
+        try {
+            loadAccessToken();
+        } catch (error: unknown) {
+            console.error(error);
+            navigate("/signin");
+        }
+    }
+
+    useEffect(initAuth, []);
 
 
     if (isUserLoading) return <FullLoadingOverlay />;
@@ -58,10 +79,10 @@ const App = () => {
 
     return (
         <>
-            <NavBar />
+            {isAuthenticated && !isUserError && <NavBar />}
             <Routes>
                 <Route path="/" element={<FeedPage />} />
-                <Route path="/posts/*" element={<FeedPage />} />
+                <Route path="/feed/*" element={<FeedPage />} />
                 <Route path="/search/*" element={<SearchPage />} />
                 <Route path="/chat/*" element={<ChatPage />} />
                 <Route path="/profile" element={<ProfilePage />}>

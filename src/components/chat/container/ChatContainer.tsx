@@ -1,5 +1,5 @@
 import { useGetChatsByUserId } from "@/services/data/useChatData";
-import { useChatStore } from "@/services/zustand";
+import { useChatStore } from "@/services/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import ChatPanel from "../components/message/panel/ChatPanel"

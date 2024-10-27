@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNotificationStore, useStompStore } from "./zustand";
+import { useNotificationStore, useStompStore } from "../store/zustand";
 import { User } from "@/api/schemas/inferred/user";
 import { ChatEvent } from "@/api/schemas/inferred/chat";
 import { Notification, NotificationPage } from "@/api/schemas/inferred/notification";

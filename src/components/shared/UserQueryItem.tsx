@@ -7,15 +7,19 @@ import FollowToggle from "./FollowToggle";
 import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
 import { GenericWrapper } from "./types/sharedComponentTypes";
+import userQueries from "@/api/queries/userQueries";
 
 const UserQueryItem: React.FC<GenericWrapper> = ({ data: user }) => {
 
     const classes = styles();
     const navigate = useNavigate();
+    const { getSignedUser } = userQueries();
+    const SignedUserId = getSignedUser()?.id;
 
 
     const handleClick = (event: Event) => {
         event.preventDefault();
+        if (user.id === SignedUserId) return navigate('/profile');
         navigate(`/profile/${user.id}`);
     }
 

@@ -1,5 +1,5 @@
 import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
-import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/requests/authRequests';
+import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../../api/requests/authRequests';
 import { Auth } from '@/api/schemas/inferred/auth';
 
 var refreshIntervalId: number | undefined = undefined;

@@ -2,9 +2,10 @@ import Typography from "@components/shared/Typography";
 import CommentNotification from "../CommentNotification";
 import FollowNotification from "../FollowNotification";
 import PostNotification from "../PostNotification";
-import { Notification, NotificationType } from "@/api/schemas/inferred/notification";
+import { Notification } from "@/api/schemas/inferred/notification";
 import { getEnumValueFromString } from "@/utils/enumUtils";
 import { NotificationListProps } from "@/types/notificationTypes";
+import { NotificationType } from "@/api/schemas/native/notification";
 
 
 

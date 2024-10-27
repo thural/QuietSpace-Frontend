@@ -1,12 +1,13 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import userQueries from "@/api/queries/userQueries";
 import { Message } from "@/api/schemas/inferred/chat";
-import useWasSeen from "@/services/useWasSeen";
-import { useChatStore } from "@/services/zustand";
+import useWasSeen from "@/services/common/useWasSeen";
+import { useChatStore } from "@/services/store/zustand";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useEffect, useState } from "react";
 
 const useMessage = (message: Message) => {
 
+    const { getSignedUser } = userQueries();
     const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
 

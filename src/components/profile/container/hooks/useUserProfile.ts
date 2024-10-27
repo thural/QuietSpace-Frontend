@@ -5,12 +5,13 @@ import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/da
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { getSignedUser } from "@/api/queries/userQueries";
+import userQueries from "@/api/queries/userQueries";
 
 const useUserProfile = (userId: ResId) => {
 
+    const { getSignedUser } = userQueries();
     const signedUser: User | undefined = getSignedUser();
-    if (signedUser === undefined || userId === undefined) throw new Error("(!) user is undefined");
+    if (signedUser === undefined || userId === undefined) throw nullishValidationdError({ signedUser, userId });
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
 
     // TODO: refactor Overlay component tu utilize local view state instead
@@ -62,6 +63,7 @@ export const useCurrentProfile = () => {
 
     const navigate = useNavigate();
     const userPosts = useGetPosts();
+    const { getSignedUser } = userQueries();
     const signedUser: User | undefined = getSignedUser();
 
     // TODO: refactor Overlay component tu utilize local view state instead
@@ -72,8 +74,6 @@ export const useCurrentProfile = () => {
 
     const followers = useGetFollowers(signedUser.id);
     const followings = useGetFollowings(signedUser.id);
-
-    if (followers.isLoading || followings.isLoading) throw new Error("some error");
 
 
     const toggleFollowings = () => {

@@ -1,7 +1,7 @@
 import { useGetComments } from "@/services/data/useCommentData";
 import { useDeletePost } from "@/services/data/usePostData";
 import { useToggleReaction } from "@/services/data/useReactionData";
-import { viewStore } from "@/services/zustand";
+import { viewStore } from "@/services/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ContentType, LikeType } from "@/utils/enumClasses";
 import { useState } from "react";

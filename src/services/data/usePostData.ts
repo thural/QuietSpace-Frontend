@@ -7,7 +7,7 @@ import {
     fetchPostsByUserId,
     fetchVotePoll
 } from "../../api/requests/postRequests";
-import { useAuthStore, viewStore } from "../zustand";
+import { useAuthStore, viewStore } from "../store/zustand";
 import { PostPage, PostBody, VoteBody } from "@/api/schemas/inferred/post";
 import { User } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/inferred/common";

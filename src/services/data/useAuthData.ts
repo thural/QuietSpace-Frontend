@@ -1,7 +1,7 @@
 import { fetchAccessToken, fetchActivation, fetchLogin, fetchLogout, fetchSignup } from "../../api/requests/authRequests";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../zustand";
+import { useAuthStore } from "../store/zustand";
 import { AuthBody, Auth, RefreshToken } from "@/api/schemas/inferred/auth";
 import { AnyFunction } from "@/types/genericTypes";
 import { JwtToken } from "@/api/schemas/inferred/common";

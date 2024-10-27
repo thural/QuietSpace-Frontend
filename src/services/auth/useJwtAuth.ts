@@ -1,5 +1,5 @@
 import { AuthPages, SetAuthState, SignupBody, LoginBody } from '@/types/authTypes';
-import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../api/requests/authRequests';
+import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../../api/requests/authRequests';
 import { JwtAuthProps } from '@/types/hookPropTypes';
 import { RefreshToken, Auth } from '@/api/schemas/inferred/auth';
 import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';

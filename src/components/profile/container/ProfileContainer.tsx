@@ -40,25 +40,28 @@ function ProfileContainer() {
 
     return (
         <DefaultContainer>
-            <UserDetailsSection user={user.data} />followifollowingsngs
+            <UserDetailsSection user={user.data} />
             <FollowsSection
                 userId={userId}
+                posts={userPosts}
+                followings={followings}
+                followers={followers}
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             />
-            <Conditional isEnabled={isHasAccess && viewState.followings}>
+            <Conditional isEnabled={isHasAccess.data && viewState.followings && !!followings.data?.totalElements}>
                 <UserConnections userFetch={followings} title="followings" />
             </Conditional>
-            <Conditional isEnabled={isHasAccess && viewState.followers}>
+            <Conditional isEnabled={isHasAccess.data && viewState.followers && !!followers.data?.totalElements}>
                 <UserConnections userFetch={followers} title="followers" />
             </Conditional>
             <ProfileControls>
                 <FollowToggle Button={OutlineButtonStyled} user={user} />
             </ProfileControls>
-            <Conditional isEnabled={isHasAccess}>
+            <Conditional isEnabled={isHasAccess.data}>
                 <ProfileTabs />
             </Conditional>
-            <Conditional isEnabled={!isHasAccess} >
+            <Conditional isEnabled={!isHasAccess.data} >
                 <PrivateBlock message="this account is private" >
                     <Typography>follow user to see their content</Typography>
                     <FollowToggle Button={OutlineButtonStyled} user={user} />

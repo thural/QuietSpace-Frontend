@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "../zustand";
+import { useAuthStore } from "../store/zustand";
 import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment } from "../../api/requests/commentRequests";
 import { ResId } from "@/api/schemas/inferred/common";
 import { CommentBody, Comment, PagedComment } from "@/api/schemas/inferred/comment";

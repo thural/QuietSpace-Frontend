@@ -34,7 +34,7 @@ const NavBar = () => {
 
   const itemList: Array<NavItemProps> = [
     {
-      linkTo: "/posts",
+      linkTo: "/feed",
       pathName: pathName,
       icon: <PiHouse />,
       iconFill: <PiHouseFill />

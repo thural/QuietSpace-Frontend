@@ -1,5 +1,5 @@
 import { useDeleteChat, useGetMessagesByChatId } from "@/services/data/useChatData";
-import { useAuthStore, useChatStore } from "@/services/zustand";
+import { useAuthStore, useChatStore } from "@/services/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useMemo, useState } from "react";
 import { ChatList } from "@/api/schemas/inferred/chat";

@@ -1,10 +1,11 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import userQueries from "@/api/queries/userQueries";
 import { Chat } from "@/api/schemas/inferred/chat";
-import { useChatStore } from "@/services/zustand";
+import { useChatStore } from "@/services/store/zustand";
 import { nullishValidationdError } from "@/utils/errorUtils";
 
 const useChatCard = (chat: Chat) => {
 
+    const { getSignedUser } = userQueries();
     const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
     const { setActiveChatId } = useChatStore();

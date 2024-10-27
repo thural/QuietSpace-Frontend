@@ -35,15 +35,18 @@ const UserProfileContainer = () => {
             <UserDetailsSection user={signedUser} />
             <FollowsSection
                 userId={0}
+                posts={userPosts}
+                followings={followings}
+                followers={followers}
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             >
                 <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
             </FollowsSection>
-            <Conditional isEnabled={viewState.followings}>
+            <Conditional isEnabled={viewState.followings && !!followings.data?.totalElements}>
                 <UserConnections userFetch={followings} title="followings" />
             </Conditional>
-            <Conditional isEnabled={viewState.followers}>
+            <Conditional isEnabled={viewState.followers && !!followers.data?.totalElements}>
                 <UserConnections userFetch={followers} title="followers" />
             </Conditional>
             <ProfileControls>

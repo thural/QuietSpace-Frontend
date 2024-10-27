@@ -1,5 +1,5 @@
-import useJwtAuth from "@/services/useJwtAuth";
-import { useAuthStore } from "@/services/zustand";
+import useJwtAuth from "@/services/auth/useJwtAuth";
+import { useAuthStore } from "@/services/store/zustand";
 import { getRefreshToken } from "@/utils/authUtils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ export const useSignout = () => {
         const refreshToken: string = getRefreshToken();
         setAuthData({ id: "", message: "", accessToken: "", refreshToken, userId: "" });
         setIsAuthenticated(false);
-        navigate("/");
+        navigate("/login");
     }
 
     const onErrorFn = (error: Error) => {

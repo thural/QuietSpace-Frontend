@@ -1,5 +1,5 @@
-import useJwtAuth from "@/services/useJwtAuth";
-import { useAuthStore } from "@/services/zustand";
+import useJwtAuth from "@/services/auth/useJwtAuth";
+import { useAuthStore } from "@/services/store/zustand";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthFormProps, AuthPages } from "@/types/authTypes";

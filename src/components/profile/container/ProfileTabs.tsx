@@ -1,5 +1,5 @@
 import Typography from "@/components/shared/Typography";
-import { Tabs } from "@mantine/core";
+import { Center, Tabs } from "@mantine/core";
 import { PiClockClockwise, PiIntersect, PiNote } from "react-icons/pi";
 
 const ProfileTabs = () => (
@@ -15,15 +15,17 @@ const ProfileTabs = () => (
                 Saves
             </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="timeline">
-            <Typography>activity timeline</Typography>
-        </Tabs.Panel>
-        <Tabs.Panel value="interests">
-            <Typography>user interests</Typography>
-        </Tabs.Panel>
-        <Tabs.Panel value="saved">
-            <Typography>saved posts</Typography>
-        </Tabs.Panel>
+        <Center>
+            <Tabs.Panel value="timeline">
+                <Typography>activity timeline</Typography>
+            </Tabs.Panel>
+            <Tabs.Panel value="interests">
+                <Typography>user interests</Typography>
+            </Tabs.Panel>
+            <Tabs.Panel value="saved">
+                <Typography>saved posts</Typography>
+            </Tabs.Panel>
+        </Center>
     </Tabs>
 );
 

@@ -1,5 +1,5 @@
 import { AuthPages, AuthState, SetAuthState, SignupBody } from "@/types/authTypes";
-import useJwtAuth from "@/services/useJwtAuth";
+import useJwtAuth from "@/services/auth/useJwtAuth";
 import { ChangeEvent, useEffect, useState } from "react";
 
 export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) => {

@@ -3,11 +3,11 @@ import {
     handleChatException,
     handleLeftChat,
     handleOnlineUser,
-} from "../components/chat/container/utils/chatHandler.js";
+} from "../../components/chat/container/utils/chatHandler.js";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useChatStore, useStompStore } from "./zustand.js";
+import { useChatStore, useStompStore } from "../store/zustand.js";
 import { ChatEvent, ChatList, MessageBody, Message, PagedMessage } from "@/api/schemas/inferred/chat.js";
 import { User } from "@/api/schemas/inferred/user.js";
 import { nullishValidationdError } from "@/utils/errorUtils.js";

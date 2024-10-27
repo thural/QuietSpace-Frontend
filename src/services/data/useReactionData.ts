@@ -1,4 +1,4 @@
-import { useAuthStore } from "../zustand";
+import { useAuthStore } from "../store/zustand";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchReaction } from "../../api/requests/postRequests";
 import { UserReaction } from "@/api/schemas/inferred/reaction";

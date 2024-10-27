@@ -1,7 +1,7 @@
 import SockJS from 'sockjs-client';
 import { useEffect, useState } from "react";
 import { Client, Frame, over } from "stompjs";
-import { useAuthStore, useStompStore } from "./zustand";
+import { useAuthStore, useStompStore } from "../store/zustand";
 import { StompHeaders, Headers, StompClientProps } from "@/api/schemas/native/websocket";
 import { AnyFunction } from "@/types/genericTypes";
 import { ResId } from "@/api/schemas/native/common";

@@ -6,6 +6,9 @@ import postcssPresetMantine from 'postcss-preset-mantine'
 import postcssSimpleVars from 'postcss-simple-vars'
 
 export default defineConfig({
+  define: {
+    global: 'globalThis',
+  },
   resolve: {
     alias: {
       '@components': path.resolve(__dirname, './src/components'),

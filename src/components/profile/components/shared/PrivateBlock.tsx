@@ -11,10 +11,10 @@ const PrivateBlock: React.FC<GenericWrapper> = ({ message = "private content", I
 
     return (
         <Center {...props}>
-            <FlexStyled class={classes.privateBlock}>
-                <Icon class={classes.icon} />
-                <FlexStyled class={classes.messageSection}>
-                    <Typography class={classes.primaryMessage} type="h4">{message}</Typography>
+            <FlexStyled className={classes.privateBlock}>
+                <Icon className={classes.icon} />
+                <FlexStyled className={classes.messageSection}>
+                    <Typography className={classes.primaryMessage} type="h4">{message}</Typography>
                     {children}
                 </FlexStyled>
             </FlexStyled>
