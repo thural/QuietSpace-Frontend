@@ -18,13 +18,14 @@ import { ChatEventType } from "@/api/schemas/native/chat.js";
 
 
 
-const useChatSocket = () => {
+const useChatSocket = (chatId: ResId | null = null) => {
 
     const queryClient = useQueryClient();
     const user: User | undefined = queryClient.getQueryData(["user"]);
     if (user === undefined) throw nullishValidationdError({ user });
-    const { data: { activeChatId }, setClientMethods } = useChatStore();
+    const { setClientMethods } = useChatStore();
     const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
+
 
 
     const updateChatData = (message: Message) => {
@@ -38,22 +39,25 @@ const useChatSocket = () => {
         });
     }
 
+
     const handleReceivedMessage = (messageBody: Message) => {
-        queryClient.setQueryData(['messages', { id: activeChatId }], (oldData: PagedMessage) => {
+        queryClient.setQueryData(['messages', { id: chatId }], (oldData: PagedMessage) => {
             return { ...oldData, content: [messageBody, ...oldData.content] };
         });
 
         queryClient.invalidateQueries({ queryKey: ["chats"] });
     }
 
+
     const handleDeletedMessage = (messageBody: ChatEvent) => {
-        queryClient.setQueryData(['messages', { id: activeChatId }], (oldData: PagedMessage) => {
+        queryClient.setQueryData(['messages', { id: chatId }], (oldData: PagedMessage) => {
             const updatedMessages = oldData.content.filter(message => message.id !== messageBody.messageId);
             return { ...oldData, content: updatedMessages };
         });
 
         queryClient.invalidateQueries({ queryKey: ["chats"] });
     }
+
 
     const handleSeenMessage = ({ messageId, chatId }: { messageId: ResId, chatId: ResId }) => {
         queryClient.setQueryData(['messages', { id: chatId }], (oldData: PagedMessage) => {
@@ -67,6 +71,7 @@ const useChatSocket = () => {
 
         queryClient.invalidateQueries({ queryKey: ["chats"] });
     }
+
 
     const onSubscribe = (message: StompMessage) => {
 
@@ -94,17 +99,17 @@ const useChatSocket = () => {
                 default: throw new Error("(!) ChatEventType value is unknown")
             }
         } catch (error: unknown) {
-            console.error("caught error on processing chat event: ", (error as Error).message)
+            console.error("caught error on processing chat event: ", (error as Error).message);
         }
     }
 
 
-
     const sendChatMessage = (inputData: MessageBody) => {
-        if (activeChatId === null) throw nullishValidationdError({ inputData });
-        inputData.chatId = activeChatId;
+        if (chatId === null) throw nullishValidationdError({ inputData });
+        inputData.chatId = chatId;
         sendMessage("/app/private/chat", inputData);
     }
+
 
     const deleteChatMessage = (messageId: ResId) => sendMessage(`/app/private/chat/delete/${messageId}`);
     const setMessageSeen = (messageId: ResId) => sendMessage(`/app/private/chat/seen/${messageId}`);
@@ -112,11 +117,13 @@ const useChatSocket = () => {
     const clientMethods = { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected }
 
     const setup = () => {
-        if (!isClientConnected || !user) return
+        if (!isClientConnected || !user) return;
         subscribe(`/user/${user.id}/private/chat/event`, onSubscribe);
         subscribe(`/user/${user.id}/private/chat`, onSubscribe);
         setClientMethods(clientMethods);
     }
+
+
 
     useEffect(setup, [isClientConnected, user]);
 

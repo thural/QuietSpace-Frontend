@@ -3,21 +3,28 @@ import { useAuthStore, useChatStore } from "@/services/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useMemo, useState } from "react";
 import { ChatList } from "@/api/schemas/inferred/chat";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { useParams } from "react-router-dom";
 
 export const useChat = () => {
+
+    const { chatId } = useParams();
+    if (chatId === undefined) throw nullishValidationdError({ chatId });
+
     const queryClient = useQueryClient();
+
     const { data: { userId } } = useAuthStore();
     const chats: ChatList | undefined = queryClient.getQueryData(["chats"]);
-    const { data: { activeChatId }, clientMethods } = useChatStore();
-    const deleteChat = useDeleteChat(activeChatId);
+    const { clientMethods } = useChatStore();
+    const deleteChat = useDeleteChat(chatId);
 
-    const currentChat = chats?.find(chat => chat.id === activeChatId);
+    const currentChat = chats?.find(chat => chat.id === chatId);
     const { username: recipientName, id: recipientId } = currentChat?.members[0] || {};
-    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(activeChatId);
+    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(chatId);
     const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
 
     const [inputData, setInputData] = useState({
-        chatId: activeChatId,
+        chatId: chatId,
         senderId: userId,
         recipientId,
         text: ''
@@ -38,7 +45,7 @@ export const useChat = () => {
 
     return {
         chats,
-        activeChatId,
+        chatId,
         currentChat,
         recipientName,
         messages,

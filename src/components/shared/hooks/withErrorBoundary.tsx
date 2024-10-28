@@ -9,8 +9,12 @@ const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) =
     </div>
 );
 
-export const MyErrorBoundary: React.FC = ({ children }) => (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
-        {children}
-    </ErrorBoundary>
-);
+const withErrorBoundary = <P extends object>(Component: React.ComponentType<P>): React.FC<P> => {
+    return (props: P) => (
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Component {...props} />
+        </ErrorBoundary>
+    );
+};
+
+export default withErrorBoundary;

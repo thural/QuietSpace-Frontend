@@ -6,14 +6,23 @@ import { useChat } from "./hooks/useChat";
 import styles from "./styles/chatPanelStyles";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 const ChatPanel: React.FC<GenericWrapper> = () => {
 
     const classes = styles();
+    let data = undefined;
+
+    try {
+        data = useChat();
+    } catch (error: unknown) {
+        console.error(error);
+        return <Typography className="system-message" ta="center">error loading messages</Typography>;
+    }
 
     const {
         chats,
-        activeChatId,
+        chatId,
         recipientName,
         messages,
         isError,
@@ -23,12 +32,14 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         handleInputChange,
         handleDeleteChat,
         isEnabled
-    } = useChat();
+    } = data;
 
+
+
+    if (isError) throw new Error("(!) unhandler error on chat service");
     if (!chats?.length) return <Typography style={{ margin: "1rem" }} ta="center">there's no messages yet</Typography>;
     if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
-    if (isError) return <Typography className="system-message" ta="center">error loading messages</Typography>;
-    if (activeChatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
+    if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
     if (!messages) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
 
     return (
@@ -49,4 +60,4 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
     )
 }
 
-export default ChatPanel
+export default withErrorBoundary(ChatPanel);

@@ -30,6 +30,7 @@ import ProfileContainer from "./components/profile/container/ProfileContainer";
 import UserProfileContainer from "./components/profile/container/UserProfileContainer";
 import ActivationForm from "./components/auth/components/activation/ActivationForm";
 import { Auth } from "./api/schemas/inferred/auth";
+import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
 
 const App = () => {
 
@@ -84,7 +85,10 @@ const App = () => {
                 <Route path="/" element={<FeedPage />} />
                 <Route path="/feed/*" element={<FeedPage />} />
                 <Route path="/search/*" element={<SearchPage />} />
-                <Route path="/chat/*" element={<ChatPage />} />
+                <Route path="/chat" element={<ChatPage />} >
+                    <Route index element={<ChatPanel />} />
+                    <Route path=":chatId" element={<ChatPanel />} />
+                </Route>
                 <Route path="/profile" element={<ProfilePage />}>
                     <Route index element={<UserProfileContainer />} />
                     <Route path=":userId" element={<ProfileContainer />} />
