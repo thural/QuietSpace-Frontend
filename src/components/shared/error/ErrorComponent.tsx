@@ -5,7 +5,7 @@ import styles from './styles/errorContainerStyles';
 import { PiWarningCircleBold } from "react-icons/pi";
 
 interface ErrorComponentProps {
-    message: string;
+    message: string | undefined | null;
 }
 
 const ErrorComponent: React.FC<ErrorComponentProps> = ({ message }) => {

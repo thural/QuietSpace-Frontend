@@ -16,9 +16,7 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
-    const onLoadFn = () => {
-        setIsAuthenticating(true);
-    };
+    const onLoadFn = () => setIsAuthenticating(true);
 
     const onSuccessFn = (data: Auth): void => {
         setIsAuthenticating(false);

@@ -14,15 +14,18 @@ const useUserProfile = (userId: ResId) => {
     if (signedUser === undefined || userId === undefined) throw nullishValidationdError({ signedUser, userId });
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
 
-    // TODO: refactor Overlay component tu utilize local view state instead
-    const initViewState = { followers: false, followings: false }
-    const [viewState, setviewState] = useState(initViewState);
 
     const user = useGetUserById(userId);
     const userPosts = useGetPostsByUserId(userId);
     if (signedUser === undefined || user === undefined) throw nullishValidationdError({ signedUser, user });
     const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
     const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy
+
+    const [viewFollowers, setViewFollowers] = useState(false);
+    const toggleFollowers = () => setViewFollowers(!viewFollowers);
+
+    const [viewFollowings, setViewFollowings] = useState(false);
+    const toggleFollowings = () => setViewFollowings(!viewFollowings);
 
 
     const updateState = () => {
@@ -41,9 +44,6 @@ const useUserProfile = (userId: ResId) => {
 
     useEffect(updateState, [user.data, followers.data]);
 
-    const toggleFollowings = () => setviewState({ ...viewState, followings: !viewState.followings });
-    const toggleFollowers = () => setviewState({ ...viewState, followers: !viewState.followers });
-
 
     return {
         user,
@@ -51,7 +51,8 @@ const useUserProfile = (userId: ResId) => {
         followings,
         isHasAccess,
         userPosts,
-        viewState,
+        viewFollowers,
+        viewFollowings,
         toggleFollowers,
         toggleFollowings,
     }
@@ -66,27 +67,18 @@ export const useCurrentProfile = () => {
     const { getSignedUser } = userQueries();
     const signedUser: User | undefined = getSignedUser();
 
-    // TODO: refactor Overlay component tu utilize local view state instead
-    const initViewState = { followers: false, followings: false }
-    const [viewState, setviewState] = useState(initViewState);
-
     if (signedUser === undefined) throw nullishValidationdError({ signedUser });
 
     const followers = useGetFollowers(signedUser.id);
     const followings = useGetFollowings(signedUser.id);
 
+    const [viewFollowers, setViewFollowers] = useState(false);
+    const toggleFollowers = () => setViewFollowers(!viewFollowers);
 
-    const toggleFollowings = () => {
-        setviewState({ ...viewState, followings: !viewState.followings });
-    }
+    const [viewFollowings, setViewFollowings] = useState(false);
+    const toggleFollowings = () => setViewFollowings(!viewFollowings);
 
-    const toggleFollowers = () => {
-        setviewState({ ...viewState, followers: !viewState.followers });
-    }
-
-    const handleSignout = () => {
-        navigate("/signout");
-    }
+    const handleSignout = () => navigate("/signout");
 
 
     return {
@@ -94,7 +86,8 @@ export const useCurrentProfile = () => {
         userPosts,
         followers,
         followings,
-        viewState,
+        viewFollowers,
+        viewFollowings,
         toggleFollowings,
         toggleFollowers,
         handleSignout

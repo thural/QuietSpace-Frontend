@@ -9,10 +9,21 @@ import Typography from "@components/shared/Typography";
 import { useLoginForm } from "./hooks/useLoginForm";
 import styles from "../registration/styles/formStyles";
 import { AuthFormProps } from "@/types/authTypes";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
+    let data = undefined;
+
+    try {
+        data = useLoginForm({ setAuthState, authState });
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error on acitvation form: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
 
     const {
         formData,
@@ -22,10 +33,10 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
         handleLoginForm,
         handleFormChange,
         handleSignupBtn,
-    } = useLoginForm({ setAuthState, authState });
+    } = data;
 
     if (isAuthenticating) return <FullLoadingOverlay />;
-    if (isError) return <Typography type="h1">{`(!) could not authenticate! error: ${error}`}</Typography>;
+    if (isError) return <ErrorComponent message={`(!) could not authenticate! error: ${error}`} />;
 
     return (
         <BoxStyled className={classes.wrapper}>
@@ -43,4 +54,4 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
     );
 };
 
-export default LoginForm;
+export default withErrorBoundary(LoginForm);

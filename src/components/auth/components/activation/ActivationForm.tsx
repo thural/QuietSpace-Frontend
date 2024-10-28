@@ -8,6 +8,8 @@ import { useActivationForm } from "./hooks/useActivationForm";
 import styles from "./styles/activationFormStyles";
 import { ActivationFormProps } from "@/types/authTypes";
 import { CountDownDisplay } from "@/services/common/useTimer";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
     <FormStyled className="timer">
@@ -20,6 +22,15 @@ const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
 const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
+    let data = undefined;
+
+    try {
+        data = useActivationForm({ setAuthState, authState });
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error on acitvation form: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
 
     const {
         formData,
@@ -27,7 +38,7 @@ const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState
         handleResendCode,
         handleSubmit,
         handleChange,
-    } = useActivationForm({ setAuthState, authState });
+    } = data;
 
     return (
         <BoxStyled className={classes.activation}>
@@ -51,4 +62,4 @@ const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState
     );
 };
 
-export default ActivationForm
+export default withErrorBoundary(ActivationForm);

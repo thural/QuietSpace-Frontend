@@ -5,11 +5,6 @@ import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { LikeType } from "@/utils/enumClasses";
 import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
-import {
-    PiArrowFatDown, PiArrowFatDownFill,
-    PiArrowFatUp, PiArrowFatUpFill,
-    PiChatCircle,
-} from "react-icons/pi";
 import EditPostForm from "../form/post/EditPostForm";
 import PostMenu from "../shared/post-menu/PostMenu";
 import CommentPanel from "../comment/panel/CommentPanel";
@@ -17,12 +12,20 @@ import PollBox from "../poll/Poll";
 import { usePost } from "./hooks/usePost";
 import styles from "./styles/postStyles";
 import { Post } from "@/api/schemas/inferred/post";
+import Overlay from "@/components/shared/Overlay/Overlay";
+import {
+    PiArrowFatDown, PiArrowFatDownFill,
+    PiArrowFatUp, PiArrowFatUpFill,
+    PiChatCircle,
+} from "react-icons/pi";
+
+
 
 const PostBox = ({ post }: { post: Post }) => {
+
     const classes = styles();
+
     const {
-        setViewData,
-        editPostView,
         postId,
         username,
         userReaction,
@@ -35,28 +38,31 @@ const PostBox = ({ post }: { post: Post }) => {
         handleLike,
         handleDislike,
         isMutable,
+        isOverlayOpen,
+        toggleOverlay,
         toggleComments,
     } = usePost(post);
+
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} />
             <Typography className="title" type="h5">{post.title}</Typography>
-            <PostMenu handleDeletePost={handleDeletePost} setViewData={setViewData} isMutable={isMutable} />
+            <PostMenu handleDeletePost={handleDeletePost} toggleEdit={toggleOverlay} isMutable={isMutable} />
         </FlexStyled>
     );
 
     const PostContent = () => (
         <BoxStyled className="content">
             <Typography className="text">{text}</Typography>
-            <Conditional isEnabled={post.poll}>
+            <Conditional isEnabled={!!post.poll}>
                 <PollBox postId={postId} pollData={post.poll} />
             </Conditional>
         </BoxStyled>
     );
 
     const PollContent = () => (
-        <Conditional isEnabled={post.poll}>
+        <Conditional isEnabled={!!post.poll}>
             <PollBox pollData={post.poll} postId={postId} />
         </Conditional>
     );
@@ -97,9 +103,9 @@ const PostBox = ({ post }: { post: Post }) => {
                 {/* <ShareMenu /> */}
                 <PostStats />
             </BoxStyled>
-            <Conditional isEnabled={editPostView}>
+            <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} />
-            </Conditional>
+            </Overlay>
             <Conditional isEnabled={showComments}>
                 <CommentPanel postId={postId} />
             </Conditional>

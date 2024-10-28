@@ -1,6 +1,5 @@
 import BoxStyled from "@/components/shared/BoxStyled";
 import FormStyled from "@/components/shared/FormStyled";
-import Overlay from "@/components/shared/Overlay";
 import Typography from "@/components/shared/Typography";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import useEditPostForm from "./hooks/useEditPostForm";
@@ -17,7 +16,6 @@ const EditPostForm = ({ postId }: { postId: ResId }) => {
 
   return (
     <>
-      <Overlay closable={{ editPost: false }} />
       <BoxStyled className={classes.post}>
         <Typography type="h3">edit post</Typography>
         <FormStyled>

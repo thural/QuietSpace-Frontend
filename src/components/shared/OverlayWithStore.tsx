@@ -2,7 +2,7 @@ import { viewStore } from "@/services/store/zustand";
 import styles from "./styles/overlayStyles";
 
 
-const Overlay = ({ closable }: { closable: Object }) => {
+const OverlayWithStore = ({ closable }: { closable: Object }) => {
   const { data: viewState, setViewData } = viewStore();
   const classes = styles();
   const active = !(closable === undefined || closable === null);
@@ -16,4 +16,4 @@ const Overlay = ({ closable }: { closable: Object }) => {
   )
 }
 
-export default Overlay
+export default OverlayWithStore

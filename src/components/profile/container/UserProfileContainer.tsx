@@ -13,6 +13,7 @@ import { useCurrentProfile } from "./hooks/useUserProfile";
 import UserProfileTabs from "./UserProfileTabs";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import Overlay from "@/components/shared/Overlay/Overlay";
 
 
 const UserProfileContainer = () => {
@@ -32,7 +33,8 @@ const UserProfileContainer = () => {
         userPosts,
         followers,
         followings,
-        viewState,
+        viewFollowers,
+        viewFollowings,
         toggleFollowings,
         toggleFollowers,
         handleSignout
@@ -55,12 +57,16 @@ const UserProfileContainer = () => {
             >
                 <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
             </FollowsSection>
-            <Conditional isEnabled={viewState.followings && !!followings.data?.totalElements}>
-                <UserConnections userFetch={followings} title="followings" />
-            </Conditional>
-            <Conditional isEnabled={viewState.followers && !!followers.data?.totalElements}>
-                <UserConnections userFetch={followers} title="followers" />
-            </Conditional>
+            <Overlay isOpen={viewFollowings} onClose={toggleFollowings}>
+                <Conditional isEnabled={!!followings.data?.totalElements}>
+                    <UserConnections userFetch={followings} title="followings" />
+                </Conditional>
+            </Overlay>
+            <Overlay isOpen={viewFollowers} onClose={toggleFollowers}>
+                <Conditional isEnabled={!!followers.data?.totalElements}>
+                    <UserConnections userFetch={followers} title="followers" />
+                </Conditional>
+            </Overlay>
             <ProfileControls>
                 <Link style={{ width: "100%", textDecoration: "none" }} to="/settings" >
                     <OutlineButton

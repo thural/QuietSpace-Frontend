@@ -15,6 +15,7 @@ import ProfileTabs from "./ProfileTabs";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import Overlay from "@/components/shared/Overlay/Overlay";
 
 
 function ProfileContainer() {
@@ -37,7 +38,8 @@ function ProfileContainer() {
         followings,
         isHasAccess,
         userPosts,
-        viewState,
+        viewFollowers,
+        viewFollowings,
         toggleFollowers,
         toggleFollowings,
     } = data;
@@ -60,12 +62,16 @@ function ProfileContainer() {
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             />
-            <Conditional isEnabled={isHasAccess.data && viewState.followings && !!followings.data?.totalElements}>
-                <UserConnections userFetch={followings} title="followings" />
-            </Conditional>
-            <Conditional isEnabled={isHasAccess.data && viewState.followers && !!followers.data?.totalElements}>
-                <UserConnections userFetch={followers} title="followers" />
-            </Conditional>
+            <Overlay isOpen={viewFollowings} onClose={toggleFollowings}>
+                <Conditional isEnabled={isHasAccess.data && !!followings.data?.totalElements}>
+                    <UserConnections userFetch={followings} title="followings" />
+                </Conditional>
+            </Overlay>
+            <Overlay isOpen={viewFollowers} onClose={toggleFollowers}>
+                <Conditional isEnabled={isHasAccess.data && !!followers.data?.totalElements}>
+                    <UserConnections userFetch={followers} title="followers" />
+                </Conditional>
+            </Overlay>
             <ProfileControls>
                 <FollowToggle Button={OutlineButtonStyled} user={user} />
             </ProfileControls>

@@ -10,10 +10,22 @@ import { useSignupForm } from "./hooks/useSignupForm";
 import styles from "./styles/formStyles";
 import React from "react";
 import { SignupFormProps } from "@/types/authTypes";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
+
+    let data = undefined;
+
+    try {
+        data = useSignupForm(setAuthState, authState);
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error on acitvation form: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
 
     const {
         isLoading,
@@ -23,10 +35,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
         handleSubmit,
         handleChange,
         handleLoginClick
-    } = useSignupForm(setAuthState, authState);
+    } = data;
 
     if (isLoading) return <FullLoadingOverlay />;
-    if (isError) return <Typography type="h1">{`(!) could not authenticate! error: ${error}`}</Typography>;
+    if (isError) return <ErrorComponent message={`(!) could not authenticate! error: ${error}`} />
 
     return (
         <BoxStyled className={classes.wrapper}>
@@ -48,4 +60,4 @@ const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
     );
 };
 
-export default SignupForm;
+export default withErrorBoundary(SignupForm);

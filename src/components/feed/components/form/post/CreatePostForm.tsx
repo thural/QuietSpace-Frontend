@@ -2,14 +2,13 @@ import BoxStyled from "@/components/shared/BoxStyled";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import FlexStyled from "@/components/shared/FlexStyled";
 import FormStyled from "@/components/shared/FormStyled";
-import Overlay from "@/components/shared/Overlay";
 import TextInput from "@/components/shared/TextInput";
 import UserAvatar from "@/components/shared/UserAvatar";
-import { PiChartBarHorizontalFill } from "react-icons/pi";
 import ComboMenu from "../../shared/combo-menu/ComboMenu";
 import PollForm from "../poll/PollForm";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import styles from "./styles/createPostStyles";
+import { PiChartBarHorizontalFill } from "react-icons/pi";
 
 const CreatePostForm = () => {
 
@@ -41,7 +40,6 @@ const CreatePostForm = () => {
 
     return (
         <BoxStyled>
-            <Overlay closable={{ createPost: false }} />
             <FlexStyled className={classes.wrapper}>
                 <UserAvatar radius="10rem" chars={avatarPlaceholder} />
                 <FormStyled>

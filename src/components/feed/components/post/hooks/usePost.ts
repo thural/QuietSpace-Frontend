@@ -10,6 +10,7 @@ import { User } from "@/api/schemas/inferred/user";
 import { UserReactionResponse } from "@/api/schemas/inferred/reaction";
 
 export const usePost = (post: PostSchema) => {
+
     const queryClient = useQueryClient();
     const user: User | undefined = queryClient.getQueryData(["user"]);
     const { data: viewData, setViewData } = viewStore();
@@ -22,9 +23,10 @@ export const usePost = (post: PostSchema) => {
     const deletePost = useDeletePost(postId);
     const togglePostLike = useToggleReaction(postId);
 
-    const handleDeletePost = async () => {
-        deletePost.mutate();
-    };
+    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+    const toggleOverlay = () => setIsOverlayOpen(!isOverlayOpen);
+
+    const handleDeletePost = async () => deletePost.mutate();
 
     const handleReaction = async (event: React.MouseEvent, likeType: UserReactionResponse) => {
         event.preventDefault();
@@ -49,8 +51,6 @@ export const usePost = (post: PostSchema) => {
 
     return {
         user,
-        viewData,
-        setViewData,
         editPostView,
         postId,
         username,
@@ -60,6 +60,8 @@ export const usePost = (post: PostSchema) => {
         dislikeCount,
         showComments,
         comments,
+        isOverlayOpen,
+        toggleOverlay,
         handleDeletePost,
         handleLike,
         handleDislike,
