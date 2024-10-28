@@ -1,5 +1,5 @@
 import { Anchor } from "@mantine/core"
-import withForwardedRef from "./hooks/withForwardedRef"
+import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "./types/sharedComponentTypes"
 
 const AnchorStyled: React.FC<GenericWrapperWithRef> = ({
@@ -16,4 +16,4 @@ const AnchorStyled: React.FC<GenericWrapperWithRef> = ({
     )
 }
 
-export default withForwardedRef(AnchorStyled)
+export default withForwardedRefAndErrBoundary(AnchorStyled)

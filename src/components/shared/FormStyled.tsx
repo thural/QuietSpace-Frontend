@@ -1,4 +1,4 @@
-import withForwardedRef from "./hooks/withForwardedRef";
+import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef";
 import styles from "./styles/formStyles";
 
 const FormStyled = ({ forwardedRef, children, ...props }) => {
@@ -8,4 +8,4 @@ const FormStyled = ({ forwardedRef, children, ...props }) => {
     )
 };
 
-export default withForwardedRef(FormStyled);
+export default withForwardedRefAndErrBoundary(FormStyled);

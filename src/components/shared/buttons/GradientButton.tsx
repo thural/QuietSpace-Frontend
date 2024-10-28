@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core"
-import withForwardedRef from "../hooks/withForwardedRef"
+import withForwardedRefAndErrBoundary from "../hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "../types/sharedComponentTypes"
 
 const GradientButton: React.FC<GenericWrapperWithRef> = ({
@@ -28,4 +28,4 @@ const GradientButton: React.FC<GenericWrapperWithRef> = ({
     )
 }
 
-export default withForwardedRef(GradientButton)
+export default withForwardedRefAndErrBoundary(GradientButton)

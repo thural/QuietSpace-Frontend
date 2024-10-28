@@ -1,5 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import withErrorBoundary from "./components/shared/hooks/withErrorBoundary";
 
 const RouteSwitch = () => {
     return (
@@ -9,4 +10,4 @@ const RouteSwitch = () => {
     )
 }
 
-export default RouteSwitch
+export default withErrorBoundary(RouteSwitch);

@@ -11,9 +11,21 @@ import ProfileControls from "../components/profile-controls/ProfileControls";
 import UserDetailsSection from "../components/user-details/UserDetailsSection";
 import { useCurrentProfile } from "./hooks/useUserProfile";
 import UserProfileTabs from "./UserProfileTabs";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 
 const UserProfileContainer = () => {
+
+    let data = undefined;
+
+    try {
+        data = useCurrentProfile();
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error loading user profile data: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
 
     const {
         signedUser,
@@ -24,7 +36,7 @@ const UserProfileContainer = () => {
         toggleFollowings,
         toggleFollowers,
         handleSignout
-    } = useCurrentProfile();
+    } = data;
 
 
     if (signedUser === undefined || userPosts.isLoading || followers.isLoading || followings.isLoading) return <FullLoadingOverlay />;
@@ -63,4 +75,4 @@ const UserProfileContainer = () => {
     )
 }
 
-export default UserProfileContainer
+export default withErrorBoundary(UserProfileContainer);

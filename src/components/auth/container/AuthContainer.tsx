@@ -6,6 +6,7 @@ import Typography from "@components/shared/Typography";
 import { AuthState, AuthPages } from "@/types/authTypes";
 import { useState } from "react";
 import styles from "./styles/authStyles";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 const AuthContainer = () => {
 
@@ -35,4 +36,4 @@ const AuthContainer = () => {
     )
 }
 
-export default AuthContainer
+export default withErrorBoundary(AuthContainer);

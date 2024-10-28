@@ -7,6 +7,7 @@ import ComponentList from "@/components/shared/ComponentList";
 import Typography from "@/components/shared/Typography";
 import { ChatList } from "@/api/schemas/inferred/chat";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 const ChatSidebar: React.FC<GenericWrapper> = () => {
 
@@ -32,4 +33,4 @@ const ChatSidebar: React.FC<GenericWrapper> = () => {
     )
 }
 
-export default ChatSidebar
+export default withErrorBoundary(ChatSidebar);

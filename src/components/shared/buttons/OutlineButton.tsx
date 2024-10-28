@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core"
-import withForwardedRef from "../hooks/withForwardedRef"
+import withForwardedRefAndErrBoundary from "../hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "../types/sharedComponentTypes"
 
 const OutlineButton: React.FC<GenericWrapperWithRef> = ({
@@ -26,4 +26,4 @@ const OutlineButton: React.FC<GenericWrapperWithRef> = ({
     )
 }
 
-export default withForwardedRef(OutlineButton)
+export default withForwardedRefAndErrBoundary(OutlineButton)

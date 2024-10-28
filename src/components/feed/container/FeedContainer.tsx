@@ -6,9 +6,22 @@ import CreatePostSection from "../components/input/CreatePostSection";
 import CreatePostForm from "../components/form/post/CreatePostForm";
 import PostListBox from "../components/list/PostList";
 import useFeed from "./hooks/useFeed";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 function FeedContainer() {
-    const { user, createPostView, posts, toggleCreatePostForm } = useFeed();
+
+    let data = undefined;
+
+    try {
+        data = useFeed();
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error loading feed data: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
+
+    const { user, createPostView, posts, toggleCreatePostForm } = data;
 
     if (posts.isLoading) return <FullLoadingOverlay />;
     if (posts.isError) return <Typography type="h1">{posts.error.message}</Typography>;
@@ -26,4 +39,4 @@ function FeedContainer() {
     );
 }
 
-export default FeedContainer;
+export default withErrorBoundary(FeedContainer);

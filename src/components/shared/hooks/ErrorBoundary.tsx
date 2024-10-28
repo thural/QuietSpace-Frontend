@@ -1,5 +1,6 @@
 import React from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import { GenericWrapper } from '../types/sharedComponentTypes';
 
 const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => (
     <div role="alert">
@@ -9,7 +10,7 @@ const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) =
     </div>
 );
 
-export const MyErrorBoundary: React.FC = ({ children }) => (
+export const MyErrorBoundary: React.FC<GenericWrapper> = ({ children }) => (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
         {children}
     </ErrorBoundary>

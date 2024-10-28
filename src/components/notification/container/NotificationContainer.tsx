@@ -1,17 +1,30 @@
 import BoxStyled from "@components/shared/BoxStyled";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
-import Typography from "@components/shared/Typography"
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 function NotificationContainer() {
 
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
-    const { isLoading, isError, error } = useGetNotifications();
+
+
+    let data = undefined;
+
+    try {
+        data = useGetNotifications();
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error loading notification data: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
+
+    const { isLoading, isError, error } = data;
 
 
     const navigateToPage = (buttonValue: string) => {
@@ -40,7 +53,7 @@ function NotificationContainer() {
 
     const RenderResult = () => {
         if (isLoading) return <FullLoadingOverlay />
-        if (isError) return <Typography type="h1">{error.message}</Typography>
+        if (isError) return <ErrorComponent message={error.message} />
         return <ControlPanel />
     };
 
@@ -51,4 +64,4 @@ function NotificationContainer() {
     )
 }
 
-export default NotificationContainer
+export default withErrorBoundary(NotificationContainer);

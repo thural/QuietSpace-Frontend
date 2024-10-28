@@ -1,10 +1,10 @@
 export const nullishValidationdError = (args: { [key: string]: any }, message = "") => {
     for (const [name, value] of Object.entries(args)) {
         if (value === undefined) {
-            return new Error('(!)' + ` ${message}: ${name} is undefined `);
+            return new Error(`${message} ${name} is undefined `);
         }
         if (value === null) {
-            return new Error('(!)' + ` ${message}: ${name} is nulh `);
+            return new Error(`${message} ${name} is null `);
         }
     }
 };

@@ -7,6 +7,7 @@ import styles from "./styles/chatPanelStyles";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 const ChatPanel: React.FC<GenericWrapper> = () => {
 
@@ -17,7 +18,8 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         data = useChat();
     } catch (error: unknown) {
         console.error(error);
-        return <Typography className="system-message" ta="center">error loading messages</Typography>;
+        const errorMessage = `error loading messages: ${(error as Error).message}`
+        return <ErrorComponent message={errorMessage} />
     }
 
     const {

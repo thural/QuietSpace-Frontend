@@ -1,4 +1,4 @@
-import withForwardedRef from "../hooks/withForwardedRef";
+import withForwardedRefAndErrBoundary from "../hooks/withForwardedRef";
 import styles from "../styles/customButtonStyles";
 import { GenericWrapperWithRef } from "../types/sharedComponentTypes";
 
@@ -9,4 +9,4 @@ const CustomButton: React.FC<GenericWrapperWithRef> = ({ forwardedRef, label, ..
     )
 }
 
-export default withForwardedRef(CustomButton)
+export default withForwardedRefAndErrBoundary(CustomButton)

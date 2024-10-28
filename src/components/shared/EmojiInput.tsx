@@ -1,5 +1,5 @@
 import InputEmoji from "react-input-emoji";
-import withForwardedRef from "./hooks/withForwardedRef";
+import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef";
 import { GenericWrapperWithRef } from "./types/sharedComponentTypes";
 
 const EmojiInput: React.FC<GenericWrapperWithRef> = ({
@@ -30,4 +30,4 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
     />
 );
 
-export default withForwardedRef(EmojiInput)
+export default withForwardedRefAndErrBoundary(EmojiInput)

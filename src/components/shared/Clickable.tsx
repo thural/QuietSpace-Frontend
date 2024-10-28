@@ -1,4 +1,4 @@
-import withForwardedRef from "./hooks/withForwardedRef"
+import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "./types/sharedComponentTypes"
 
 const Clickable: React.FC<GenericWrapperWithRef> = ({ forwardedRef, handleClick = null, altText = "", text, children, ...props }) => {
@@ -11,4 +11,4 @@ const Clickable: React.FC<GenericWrapperWithRef> = ({ forwardedRef, handleClick 
     )
 }
 
-export default withForwardedRef(Clickable)
+export default withForwardedRefAndErrBoundary(Clickable)

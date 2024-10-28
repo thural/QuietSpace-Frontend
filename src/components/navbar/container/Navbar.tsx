@@ -22,6 +22,8 @@ import useNotification from "./hooks/useNotification";
 import NavItem from "../components/base/NavItem";
 import { NavItemProps } from "../components/base/types/navItemTypes";
 import ComponentList from "@/components/shared/ComponentList";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 
 
@@ -30,7 +32,18 @@ const NavBar = () => {
 
   const classes = styles();
   const pathName = useLocation().pathname;
-  const { hasPendingNotification } = useNotification();
+
+  let data = undefined;
+
+  try {
+    data = useNotification();
+  } catch (error: unknown) {
+    console.error(error);
+    const errorMessage = `error loading notification data: ${(error as Error).message}`;
+    return <ErrorComponent message={errorMessage} />;
+  }
+
+  const { hasPendingNotification } = data;
 
   const itemList: Array<NavItemProps> = [
     {
@@ -80,4 +93,4 @@ const NavBar = () => {
   )
 }
 
-export default NavBar
+export default withErrorBoundary(NavBar);

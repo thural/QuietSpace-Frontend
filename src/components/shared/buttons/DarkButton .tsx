@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core"
-import withForwardedRef from "../hooks/withForwardedRef"
+import withForwardedRefAndErrBoundary from "../hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "../types/sharedComponentTypes"
 
 const DarkButton: React.FC<GenericWrapperWithRef> = ({
@@ -27,4 +27,4 @@ const DarkButton: React.FC<GenericWrapperWithRef> = ({
     )
 }
 
-export default withForwardedRef(DarkButton)
+export default withForwardedRefAndErrBoundary(DarkButton)

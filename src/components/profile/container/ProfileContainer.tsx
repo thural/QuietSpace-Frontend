@@ -13,12 +13,23 @@ import Typography from "@components/shared/Typography"
 import useUserProfile from "./hooks/useUserProfile";
 import ProfileTabs from "./ProfileTabs";
 import { nullishValidationdError } from "@/utils/errorUtils";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 
 
 function ProfileContainer() {
 
     const { userId } = useParams();
-    if (userId === undefined) throw nullishValidationdError({ userId });
+    let data = undefined;
+
+    try {
+        if (userId === undefined) throw nullishValidationdError({ userId });
+        data = useUserProfile(userId);
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error loading user profile data: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
+    }
 
     const {
         user,
@@ -29,7 +40,7 @@ function ProfileContainer() {
         viewState,
         toggleFollowers,
         toggleFollowings,
-    } = useUserProfile(userId);
+    } = data;
 
 
     if (user.isLoading || userPosts.isLoading || followers.isLoading || followings.isLoading || !user.data) return <FullLoadingOverlay />;
@@ -71,4 +82,4 @@ function ProfileContainer() {
     )
 }
 
-export default ProfileContainer
+export default withErrorBoundary(ProfileContainer);

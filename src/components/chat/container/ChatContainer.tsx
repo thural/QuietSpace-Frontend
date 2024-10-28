@@ -7,22 +7,28 @@ import { useGetChatsByUserId } from "@/services/data/useChatData";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { useParams } from "react-router-dom";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
     const classes = styles();
 
-    const { chatId } = useParams();
-    console.log("chatId on ChatContianer: ", chatId);
+    let data = undefined;
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    try {
+        const queryClient = useQueryClient();
+        const user: User | undefined = queryClient.getQueryData(["user"]);
+        if (user === undefined) throw nullishValidationdError({ user });
+        data = useGetChatsByUserId(user.id);
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `could not load chat data: ${(error as Error).message}`
+        return <ErrorComponent message={errorMessage} />;
+    }
 
-    if (user === undefined) throw nullishValidationdError({ user });
-
-    const { isLoading, isError } = useGetChatsByUserId(user.id);
+    const { isLoading, isError } = data;
 
 
     if (isLoading) return <FullLoadingOverlay />;
@@ -37,4 +43,4 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     )
 }
 
-export default ChatContainer
+export default withErrorBoundary(ChatContainer);
