@@ -62,15 +62,11 @@ function ProfileContainer() {
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             />
-            <Overlay isOpen={viewFollowings} onClose={toggleFollowings}>
-                <Conditional isEnabled={isHasAccess.data && !!followings.data?.totalElements}>
-                    <UserConnections userFetch={followings} title="followings" />
-                </Conditional>
+            <Overlay isOpen={viewFollowings && isHasAccess.data && !!followings.data?.totalElements} onClose={toggleFollowings}>
+                <UserConnections userFetch={followings} title="followings" />
             </Overlay>
-            <Overlay isOpen={viewFollowers} onClose={toggleFollowers}>
-                <Conditional isEnabled={isHasAccess.data && !!followers.data?.totalElements}>
-                    <UserConnections userFetch={followers} title="followers" />
-                </Conditional>
+            <Overlay isOpen={viewFollowers && isHasAccess.data && !!followers.data?.totalElements} onClose={toggleFollowers}>
+                <UserConnections userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>
                 <FollowToggle Button={OutlineButtonStyled} user={user} />

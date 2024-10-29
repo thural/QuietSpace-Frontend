@@ -1,7 +1,7 @@
 import { Text, Title } from "@mantine/core"
 import { GenericWrapper } from "./types/sharedComponentTypes"
 
-interface TypographyProps extends GenericWrapper {
+export interface TypographyProps extends GenericWrapper {
     type?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
 }
 

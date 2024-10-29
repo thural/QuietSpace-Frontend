@@ -1,5 +1,4 @@
 import OutlineButton from "@components/shared/buttons/OutlineButton";
-import Conditional from "@components/shared/Conditional";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import { PiSignOut } from "react-icons/pi";
 import { Link } from "react-router-dom";
@@ -57,15 +56,11 @@ const UserProfileContainer = () => {
             >
                 <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
             </FollowsSection>
-            <Overlay isOpen={viewFollowings} onClose={toggleFollowings}>
-                <Conditional isEnabled={!!followings.data?.totalElements}>
-                    <UserConnections userFetch={followings} title="followings" />
-                </Conditional>
+            <Overlay isOpen={viewFollowings && !!followings.data?.totalElements} onClose={toggleFollowings}>
+                <UserConnections userFetch={followings} title="followings" />
             </Overlay>
-            <Overlay isOpen={viewFollowers} onClose={toggleFollowers}>
-                <Conditional isEnabled={!!followers.data?.totalElements}>
-                    <UserConnections userFetch={followers} title="followers" />
-                </Conditional>
+            <Overlay isOpen={viewFollowers && !!followers.data?.totalElements} onClose={toggleFollowers}>
+                <UserConnections userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>
                 <Link style={{ width: "100%", textDecoration: "none" }} to="/settings" >

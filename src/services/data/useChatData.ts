@@ -143,7 +143,9 @@ export const useDeleteMessage = (chatId: ResId) => {
 }
 
 
-export const useDeleteChat = (chatId: ResId) => {
+export const useDeleteChat = (chatId: ResId | undefined) => {
+
+    if (chatId === undefined) throw nullishValidationdError({ chatId });
 
     const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();

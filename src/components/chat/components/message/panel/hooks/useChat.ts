@@ -3,13 +3,8 @@ import { useAuthStore, useChatStore } from "@/services/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useMemo, useState } from "react";
 import { ChatList } from "@/api/schemas/inferred/chat";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { useParams } from "react-router-dom";
 
 export const useChat = () => {
-
-    const { chatId } = useParams();
-    if (chatId === undefined) throw nullishValidationdError({ chatId });
 
     const queryClient = useQueryClient();
 
@@ -45,7 +40,6 @@ export const useChat = () => {
 
     return {
         chats,
-        chatId,
         currentChat,
         recipientName,
         messages,

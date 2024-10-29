@@ -8,10 +8,17 @@ import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import { useParams } from "react-router-dom";
+import Placeholder from "../placeholder/ChatPlaceHolder";
+import { PiChatsCircle } from "react-icons/pi";
 
 const ChatPanel: React.FC<GenericWrapper> = () => {
 
     const classes = styles();
+    const { chatId } = useParams();
+
+    if (chatId === undefined) return <Placeholder Icon={PiChatsCircle} message="start a chat" type="h3" />;
+
     let data = undefined;
 
     try {
@@ -24,7 +31,6 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
 
     const {
         chats,
-        chatId,
         recipientName,
         messages,
         isError,
