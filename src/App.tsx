@@ -31,6 +31,7 @@ import UserProfileContainer from "./components/profile/container/UserProfileCont
 import ActivationForm from "./components/auth/components/activation/ActivationForm";
 import { Auth } from "./api/schemas/inferred/auth";
 import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
+import ErrorComponent from "./components/shared/error/ErrorComponent";
 
 const App = () => {
 
@@ -103,7 +104,7 @@ const App = () => {
                 <Route path="/signin" element={<AuthPage />} />
                 <Route path="/signout" element={<SignoutPage />} />
                 <Route path="/activation" element={<ActivationForm />} />
-                <Route path="*" element={<Typography type="h1">Not Found</Typography>} />
+                <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
             </Routes>
         </>
     )

@@ -7,6 +7,8 @@ import { ChatList, Chat, CreateChat, MessageBody, Message, PagedMessage } from "
 import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ConsumerFn } from "@/types/genericTypes";
+import chatQueries from "@/api/queries/chatQueries";
+import { useNavigate } from "react-router-dom";
 
 
 export const useGetChatsByUserId = (userId: ResId) => {
@@ -47,11 +49,13 @@ export const useGetChatById = (chatId: ResId) => {
 export const useCreateChat = () => {
 
     const { data: authData } = useAuthStore();
-    const queryClient = useQueryClient();
+    const { addChatData } = chatQueries();
+    const navigate = useNavigate();
 
     const onSuccess = (data: Chat) => {
-        queryClient.invalidateQueries({ queryKey: ["chats"] });
         console.log("chat created successfully:", data);
+        addChatData(data);
+        navigate(`chat/${data.id}`);
     }
 
     const onError = (error: Error) => {

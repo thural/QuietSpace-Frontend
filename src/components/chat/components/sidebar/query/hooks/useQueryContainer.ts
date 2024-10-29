@@ -1,26 +1,28 @@
-import { useCreateChat } from "@/services/data/useChatData";
+import { User } from "@/api/schemas/inferred/user";
 import { useQueryUsers } from "@/services/data/useUserData";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 
 const useQueryContainer = () => {
+
     const [focused, setFocused] = useState(false);
     const [queryResult, setQueryResult] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const queryClient = useQueryClient();
-    const createChatMutation = useCreateChat();
-    const user = queryClient.getQueryData(["user"]);
+    const user: User | undefined = queryClient.getQueryData(["user"]);
+    if (user === undefined) throw nullishValidationdError({ user });
+
     const makeQueryMutation = useQueryUsers(setQueryResult);
 
-    const handleItemClick = async (event, clickedUser) => {
+    const handleItemClick = async (event: React.MouseEvent, clickedUser: User) => {
         event.preventDefault();
-        const createdChatRequestBody = { "userIds": [user.id, clickedUser.id] };
-        createChatMutation.mutate(createdChatRequestBody);
+        // TODO: handle new chat by pushing to ocal cache
     };
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setFocused(true);
         if (value.length) handleQuerySubmit(value);
@@ -34,17 +36,9 @@ const useQueryContainer = () => {
         setTimeout(() => { setIsSubmitting(false); }, 1000);
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Escape') setFocused(false);
-    };
-
-    const handleInputFocus = () => {
-        setFocused(true);
-    };
-
-    const handleInputBlur = () => {
-        setFocused(false);
-    };
+    const handleKeyDown = (event: React.KeyboardEvent) => { if (event.key === 'Escape') setFocused(false) };
+    const handleInputFocus = () => setFocused(true);
+    const handleInputBlur = () => setFocused(false);
 
     const appliedStyle = (!focused) ? { display: 'none' } : { display: 'block' };
     const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, handleInputChange };

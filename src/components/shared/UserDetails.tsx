@@ -1,7 +1,7 @@
 import BoxStyled from "./BoxStyled";
 import styles from "./styles/userDetailsStyles";
 import { GenericWrapper } from "./types/sharedComponentTypes";
-import Typography from "./Typography";
+import Typography, { headingSize } from "./Typography";
 
 const UserDetails: React.FC<GenericWrapper> = ({ user, scale = 3, children }) => {
 
@@ -18,7 +18,7 @@ const UserDetails: React.FC<GenericWrapper> = ({ user, scale = 3, children }) =>
         return `${normalizedSize}rem`
     })();
 
-    const heading = `h${size}`;
+    const heading: headingSize = `h${size}`;
 
 
     return (
