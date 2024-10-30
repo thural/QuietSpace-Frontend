@@ -8,16 +8,28 @@ import QueryInput from "./QueryInput";
 import UserCard from "./UserCard";
 import useQueryContainer from "./hooks/useQueryContainer";
 import styles from "./styles/chatQueryStyles";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 const ChatQuery = () => {
 
     const classes = styles();
 
+
+    let data = undefined;
+
+    try {
+        data = useQueryContainer();
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error loading users: ${(error as Error).message}`
+        return <ErrorComponent message={errorMessage} />
+    }
+
     const {
         focused,
         queryResult,
         isSubmitting,
-        handleItemClick,
+        handleChatCreation,
         handleInputChange,
         handleKeyDown,
         handleInputFocus,
@@ -25,7 +37,7 @@ const ChatQuery = () => {
         appliedStyle,
         inputProps,
         makeQueryMutation,
-    } = useQueryContainer();
+    } = data;
 
 
     const RecentQueries = () => {
@@ -40,7 +52,7 @@ const ChatQuery = () => {
     const RenderResult = () => {
         if (makeQueryMutation.isPending) return <FullLoadingOverlay />
         if (queryResult.length === 0) return <RecentQueries />
-        return <ComponentList list={queryResult} Component={UserCard} handleItemClick={handleItemClick} />;
+        return <ComponentList list={queryResult} Component={UserCard} handleItemClick={handleChatCreation} />;
     }
 
     const QueryResult = () => {

@@ -19,12 +19,12 @@ import chatQueries from "@/api/queries/chatQueries.js";
 
 
 
-const useChatSocket = (chatId: ResId | null = null) => {
+const useChatSocket = (chatId: ResId) => {
 
     const queryClient = useQueryClient();
     const user: User | undefined = queryClient.getQueryData(["user"]);
     if (user === undefined) throw nullishValidationdError({ user });
-    const { handleReceivedMessage, handleDeletedMessage, handleSeenMessage } = chatQueries();
+    const { insertMessageCache, deleteMessageCache, setMessageSeenCache } = chatQueries();
     const { setClientMethods } = useChatStore();
     const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
 
@@ -33,7 +33,7 @@ const useChatSocket = (chatId: ResId | null = null) => {
     const onSubscribe = (message: StompMessage) => {
         const messageBody: any = JSON.parse(message.body);
 
-        if (MessageSchema.safeParse(messageBody).success) return handleReceivedMessage(messageBody);
+        if (MessageSchema.safeParse(messageBody).success) return insertMessageCache(messageBody);
 
         try {
             if (!ChatEventSchema.safeParse(messageBody).success) return;
@@ -47,9 +47,9 @@ const useChatSocket = (chatId: ResId | null = null) => {
                 case ChatEventType.DELETE_MESSAGE:
                     return handleChatDelete(messageBody);
                 case ChatEventType.DELETE_MESSAGE:
-                    return handleDeletedMessage(messageBody);
+                    return deleteMessageCache(messageBody);
                 case ChatEventType.SEEN_MESSAGE:
-                    return handleSeenMessage(messageBody);
+                    return setMessageSeenCache(messageBody);
                 case ChatEventType.LEFT_CHAT:
                     return handleLeftChat(messageBody);
                 case ChatEventType.EXCEPTION:
@@ -62,7 +62,6 @@ const useChatSocket = (chatId: ResId | null = null) => {
     }
 
     const sendChatMessage = (inputData: MessageBody) => {
-        if (chatId === null) throw nullishValidationdError({ inputData });
         inputData.chatId = chatId;
         sendMessage("/app/private/chat", inputData);
     }

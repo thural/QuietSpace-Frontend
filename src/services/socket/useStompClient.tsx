@@ -36,7 +36,6 @@ export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }
         setIsConnecting(false);
     }
 
-
     const openConnection = ({ headers = { "Authorization": "Bearer " + data.accessToken } }) => {
         if (!client.connected) return handleError("error on opening connection, client is not ready");
         if (!onConnect) onConnect = (frame: Frame | undefined) => console.log("stomp client has been connected: ", frame);

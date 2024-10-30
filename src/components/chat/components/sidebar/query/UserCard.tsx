@@ -18,6 +18,7 @@ const UserCard: React.FC<UserCardProps> = ({ data: user, handleItemClick, childr
     const classes = styles();
 
     const handleClick = (event: React.MouseEvent) => {
+        console.log("user itom on chat query was clicked");
         event.preventDefault();
         handleItemClick(event, user);
     }

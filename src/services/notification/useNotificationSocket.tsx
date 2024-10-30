@@ -3,43 +3,21 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNotificationStore, useStompStore } from "../store/zustand";
 import { User } from "@/api/schemas/inferred/user";
 import { ChatEvent } from "@/api/schemas/inferred/chat";
-import { Notification, NotificationPage } from "@/api/schemas/inferred/notification";
+import { Notification } from "@/api/schemas/inferred/notification";
 import { ResId } from "@/api/schemas/native/common";
 import { ChatEventSchema } from "@/api/schemas/zod/chatZod";
 import { Frame } from "stompjs";
+import notificationQueries from "@/api/queries/notificationQueries";
 
 
 const useNotificationSocket = () => {
 
     const queryClient = useQueryClient();
     const user: User | undefined = queryClient.getQueryData(["user"]);
+    const { handleSeenNotification, handleReceivedNotifcation } = notificationQueries();
     const { setClientMethods } = useNotificationStore();
     const { clientContext } = useStompStore();
     const { subscribe, sendMessage, isClientConnected } = clientContext;
-
-
-    const handleReceivedNotifcation = (notification: Notification) => {
-        queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
-            const oldContent = oldData.content;
-            const updatedContent = [...oldContent, notification];
-            return { ...oldData, content: updatedContent };
-        });
-        queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    };
-
-
-    const handleSeenNotification = (eventBody: ChatEvent) => {
-        queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
-            const oldContent = oldData.content;
-            const updatedContent = oldContent.map(notification => {
-                if (notification.id !== eventBody.recipientId) return notification;
-                notification.isSeen = true;
-                return notification;
-            });
-            return { ...oldData, content: updatedContent };
-        });
-        queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    };
 
 
     const onSubscribe = (message: Frame) => {
@@ -49,11 +27,9 @@ const useNotificationSocket = () => {
         else handleReceivedNotifcation(messageBody as Notification);
     }
 
-
     const setNotificationSeen = (notificationId: ResId) => {
         sendMessage(`/app/private/notifications/seen/${notificationId}`);
     }
-
 
     const clientMethods = { setNotificationSeen, isClientConnected };
 
@@ -64,7 +40,7 @@ const useNotificationSocket = () => {
         setClientMethods(clientMethods);
     }
 
-    useEffect(setup, [isClientConnected, user])
+    useEffect(setup, [isClientConnected, user]);
     return clientMethods;
 }
 

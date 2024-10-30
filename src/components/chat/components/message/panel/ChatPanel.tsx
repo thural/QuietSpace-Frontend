@@ -19,10 +19,11 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
 
     if (chatId === undefined) return <Placeholder Icon={PiChatsCircle} message="start a chat" type="h3" />;
 
+
     let data = undefined;
 
     try {
-        data = useChat();
+        data = useChat(chatId);
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `error loading messages: ${(error as Error).message}`

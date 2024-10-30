@@ -13,30 +13,23 @@ const useJwtAuth = ({
     onLoadFn = () => { console.error("onLoad handler is not supplied") }
 }: JwtAuthProps) => {
 
-    const register = (setAuthState: SetAuthState, formData: SignupBody) => {
 
+    const register = (setAuthState: SetAuthState, formData: SignupBody) => {
         const onSuccess = (response: Response) => {
             setAuthState({ page: AuthPages.ACTIVATION, formData });
             onSuccessFn(response);
         }
-
-        const onError = (error: Error) => onErrorFn(error);
-        fetchSignup(formData).then(onSuccess).catch(onError);
+        fetchSignup(formData).then(onSuccess).catch(onErrorFn);
     }
-
 
     const authenticate = (formData: LoginBody) => {
         onLoadFn();
-
         const onSuccess = (data: Auth) => {
             setRefreshToken(data.refreshToken)
             onSuccessFn(data);
         }
-
-        const onError = (error: Error) => onErrorFn(error);
-        fetchLogin(formData).then(onSuccess).catch(onError);
+        fetchLogin(formData).then(onSuccess).catch(onErrorFn);
     }
-
 
     const getAccessToken = () => {
         const refreshToken = getRefreshToken();
@@ -45,30 +38,23 @@ const useJwtAuth = ({
         fetchAccessToken(refreshToken).then(onSuccess).catch(onError);
     }
 
-
     const loadAccessToken = () => {
         getAccessToken();
         refreshIntervalId = window.setInterval(getAccessToken, refreshInterval);
     }
 
-
     const stopTokenAutoRefresh = () => clearInterval(refreshIntervalId);
-
 
     const signout = () => {
         const refreshToken = getRefreshToken();
         stopTokenAutoRefresh();
-
         onLoadFn();
         const onSignout = () => {
             clearAuthTokens();
             onSuccessFn();
         }
-
-        const onError = (error: Error) => onErrorFn(error);
-        fetchLogout(refreshToken).then(onSignout).catch(onError);
+        fetchLogout(refreshToken).then(onSignout).catch(onErrorFn);
     }
-
 
     const signup = (formData: SignupBody) => {
         onLoadFn();
@@ -76,7 +62,6 @@ const useJwtAuth = ({
         const onError = (error: Error) => onErrorFn(error);
         fetchSignup(formData).then(onSuccess).catch(onError);
     }
-
 
 
     return {

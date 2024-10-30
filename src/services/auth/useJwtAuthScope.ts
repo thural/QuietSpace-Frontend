@@ -17,12 +17,10 @@ export const register = ({ setAuthState, formData, onErrorFn }: any) => {
 
 export const authenticate = ({ formData, onSuccessFn, onErrorFn, onLoadFn }: any) => {
     onLoadFn();
-
     const onSuccess = (data: Auth) => {
         setRefreshToken(data.refreshToken)
         onSuccessFn(data);
     }
-
     const onError = (error: Error) => onErrorFn(error);
     fetchLogin(formData).then(onSuccess).catch(onError);
 }
@@ -31,12 +29,10 @@ export const authenticate = ({ formData, onSuccessFn, onErrorFn, onLoadFn }: any
 export const getAccessToken = ({ onSuccessFn, onErrorFn }: any) => {
     const refreshToken = getRefreshToken();
     const onSuccess = (data: any) => onSuccessFn(data);
-
     const onError = (error: Error) => {
         stopTokenAutoRefresh();
         onErrorFn(error);
     }
-
     fetchAccessToken(refreshToken).then(onSuccess).catch(onError);
 }
 
@@ -48,23 +44,19 @@ export const loadAccessToken = ({ refreshInterval = 540000, onSuccessFn }: any) 
 
 
 export const signout = ({ onSuccessFn, onErrorFn, onLoadFn }: any) => {
-
     const refreshToken = getRefreshToken();
     stopTokenAutoRefresh();
     onLoadFn();
-
-    const onSignout = (response: Response) => {
+    const onSuccess = (response: Response) => {
         clearAuthTokens();
         onSuccessFn(response);
     }
-
     const onError = (error: Error) => {
-        console.log("(!) server side error on logging out, local credentials are cleared");
+        console.error("(!) server side error on logging out, local credentials are cleared");
         clearAuthTokens();
         onErrorFn(error);
     }
-
-    fetchLogout(refreshToken).then(onSignout).catch(onError);
+    fetchLogout(refreshToken).then(onSuccess).catch(onError);
 }
 
 

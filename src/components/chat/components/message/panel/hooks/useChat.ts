@@ -8,14 +8,14 @@ import { nullishValidationdError } from "@/utils/errorUtils";
 
 export const useChat = (chatId: ResId) => {
 
-    const { data: { userId } } = useAuthStore();
     const queryClient = useQueryClient();
+    const { data: { userId } } = useAuthStore();
+    const { clientMethods } = useChatStore();
     const chats: ChatList | undefined = queryClient.getQueryData(["chats"]);
 
 
     const deleteChat = useDeleteChat(chatId);
     const createChatMutation = useCreateChat();
-    const { clientMethods } = useChatStore();
     const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(chatId);
 

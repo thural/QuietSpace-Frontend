@@ -9,7 +9,6 @@ import './App.css';
 
 import { useEffect } from "react";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
-import Typography from "./components/shared/Typography";
 import useChatSocket from "./services/chat/useChatSocket";
 import useJwtAuth from "./services/auth/useJwtAuth";
 import { useGetNotifications } from "./services/data/useNotificationData";

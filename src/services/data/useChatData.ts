@@ -49,12 +49,12 @@ export const useGetChatById = (chatId: ResId) => {
 export const useCreateChat = () => {
 
     const { data: authData } = useAuthStore();
-    const { addChatData } = chatQueries();
+    const { insertInitChatCache } = chatQueries();
     const navigate = useNavigate();
 
     const onSuccess = (data: Chat) => {
         console.log("chat created successfully:", data);
-        addChatData(data);
+        insertInitChatCache(data);
         navigate(`chat/${data.id}`);
     }
 
