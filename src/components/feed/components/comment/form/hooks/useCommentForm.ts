@@ -1,11 +1,10 @@
-import { User } from "@/api/schemas/inferred/user";
+import { getSignedUser } from "@/api/queries/userQueries";
 import { usePostComment } from "@/services/data/useCommentData";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 const useCommentForm = (postId: string | number) => {
-    const queryClient = useQueryClient();
-    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
+
+    const signedUser = getSignedUser()
     const addNewComment = usePostComment(postId);
 
     if (signedUser === undefined) throw new Error("(!) can't input comment data: user is undefined");

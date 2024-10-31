@@ -7,13 +7,12 @@ import FollowToggle from "./FollowToggle";
 import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
 import { GenericWrapper } from "./types/sharedComponentTypes";
-import userQueries from "@/api/queries/userQueries";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 const UserQueryItem: React.FC<GenericWrapper> = ({ data: user }) => {
 
     const classes = styles();
     const navigate = useNavigate();
-    const { getSignedUser } = userQueries();
     const SignedUserId = getSignedUser()?.id;
 
 
@@ -28,7 +27,7 @@ const UserQueryItem: React.FC<GenericWrapper> = ({ data: user }) => {
         <FlexStyled className={classes.userCard} onClick={handleClick}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
             <UserDetails user={user} />
-            <FollowToggle user={user} />
+            <FollowToggle user={user.data} />
         </FlexStyled>
     )
 }

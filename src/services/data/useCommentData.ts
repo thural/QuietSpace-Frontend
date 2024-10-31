@@ -16,7 +16,6 @@ export const useGetComments = (postId: ResId) => {
         },
         staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
         refetchInterval: 1000 * 60 * 3, // refetch data after 3 minutes on idle
-        select: data => data.content
     })
 }
 

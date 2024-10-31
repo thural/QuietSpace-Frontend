@@ -1,16 +1,13 @@
-import { User } from "@/api/schemas/inferred/user";
+import { getSignedUser } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/native/common";
 import { usePostComment } from "@/services/data/useCommentData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
 
 const useReplyForm = (postId: ResId, parentId: ResId, toggleView: ConsumerFn) => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
-
+    const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
 
     const addNewComment = usePostComment(postId);

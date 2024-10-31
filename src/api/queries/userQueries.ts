@@ -4,39 +4,27 @@ import { User, UserPage } from "../schemas/inferred/user";
 
 
 
-const userQueries = () => {
-
+export const getSignedUser = (): User | undefined => {
     const queryClient = useQueryClient();
-
-    const getSignedUser = (): User | undefined => {
-        return queryClient.getQueryData(["user"]);
-    }
-
-    const getFollowingsByUserId = (userId: ResId): UserPage | undefined => {
-        return queryClient.getQueryData(["followings", { id: userId }]);
-    }
-
-    const getFollowersByUserId = (userId: ResId): UserPage | undefined => {
-        return queryClient.getQueryData(["followers", { id: userId }]);
-    }
-
-    const getFollowingsByUser = (userId: ResId): UserPage | undefined => {
-        return queryClient.getQueryData(["followings", { id: userId }]);
-    }
-
-    const getFollowersByUser = (userId: ResId): UserPage | undefined => {
-        return queryClient.getQueryData(["followers", { id: userId }]);
-    }
-
-    return {
-        getSignedUser,
-        getFollowingsByUserId,
-        getFollowersByUserId,
-        getFollowingsByUser,
-        getFollowersByUser
-    }
+    return queryClient.getQueryData(["user"]);
 }
 
+export const getFollowingsByUserId = (userId: ResId): UserPage | undefined => {
+    const queryClient = useQueryClient();
+    return queryClient.getQueryData(["followings", { id: userId }]);
+}
 
-export default userQueries
+export const getFollowersByUserId = (userId: ResId): UserPage | undefined => {
+    const queryClient = useQueryClient();
+    return queryClient.getQueryData(["followers", { id: userId }]);
+}
 
+export const getFollowingsByUser = (userId: ResId): UserPage | undefined => {
+    const queryClient = useQueryClient();
+    return queryClient.getQueryData(["followings", { id: userId }]);
+}
+
+export const getFollowersByUser = (userId: ResId): UserPage | undefined => {
+    const queryClient = useQueryClient();
+    return queryClient.getQueryData(["followers", { id: userId }]);
+}

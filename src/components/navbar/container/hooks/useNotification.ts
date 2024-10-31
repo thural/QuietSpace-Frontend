@@ -1,18 +1,15 @@
-import { Chat } from "@/api/schemas/inferred/chat";
-import { PageContent } from "@/api/schemas/inferred/common";
-import { NotificationPage } from "@/api/schemas/inferred/notification";
-import { User } from "@/api/schemas/inferred/user";
+import { getChatsCache } from "@/api/queries/chatQueries";
+import { getNotificationsCache } from "@/api/queries/notificationQueries";
+import { getSignedUser } from "@/api/queries/userQueries";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 
 const useNotification = () => {
 
-    const queryClient = useQueryClient();
-    const chats: PageContent<Chat> | undefined = queryClient.getQueryData(["chats"]);
-    const user: User | undefined = queryClient.getQueryData(["user"]);
-    const notifications: NotificationPage | undefined = queryClient.getQueryData(["notifications"]);
+    const chats = getChatsCache();
+    const user = getSignedUser();
+    const notifications = getNotificationsCache();
 
     if (user === undefined) throw nullishValidationdError({ user });
 

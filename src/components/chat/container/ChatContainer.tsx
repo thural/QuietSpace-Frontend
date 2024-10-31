@@ -1,15 +1,13 @@
 import DefaultContainer from "@/components/shared/DefaultContainer";
-import Typography from "@/components/shared/Typography";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import ChatSidebar from "../components/sidebar/panel/ChatSidebar"
 import styles from "./styles/chatContainerStyles";
 import { useGetChatsByUserId } from "@/services/data/useChatData";
-import { useQueryClient } from "@tanstack/react-query";
-import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
@@ -18,8 +16,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     let data = undefined;
 
     try {
-        const queryClient = useQueryClient();
-        const user: User | undefined = queryClient.getQueryData(["user"]);
+        const user = getSignedUser();
         if (user === undefined) throw nullishValidationdError({ user });
         data = useGetChatsByUserId(user.id);
     } catch (error: unknown) {
@@ -32,7 +29,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
 
     if (isLoading) return <FullLoadingOverlay />;
-    if (isError) return <Typography type="h1">{'(!) could not fetch chat data!'}</Typography>;
+    if (isError) return <ErrorComponent message='could not fetch chat data!' />;
 
 
     return (

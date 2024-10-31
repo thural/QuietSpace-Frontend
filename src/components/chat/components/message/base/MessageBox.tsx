@@ -3,29 +3,30 @@ import Conditional from "@shared/Conditional";
 import Typography from "@shared/Typography";
 import useMessage from "./hooks/useMessage";
 import styles from "./styles/messageStyles";
+import { Message } from "@/api/schemas/inferred/chat";
+import { handleDeleteMessage } from "@/components/chat/container/utils/chatHandler";
 
-const MessageBox = ({ data: message }) => {
+const MessageBox = ({ data: message }: { data: Message }) => {
 
     const classes = styles();
 
     const {
         user,
         isHovering,
-        ref,
+        wasSeenRef,
         appliedStyle,
         handleMouseOver,
         handleMouseOut,
-        deleteChatMessage,
     } = useMessage(message);
 
     return (
-        <BoxStyled id={message.id} ref={ref} className={classes.message}
+        <BoxStyled id={message.id} ref={wasSeenRef} className={classes.message}
             style={appliedStyle}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
         >
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
-                <BoxStyled className={classes.delete} onClick={() => deleteChatMessage(message)}>delete</BoxStyled>
+                <BoxStyled className={classes.delete} onClick={handleDeleteMessage}>delete</BoxStyled>
             </Conditional>
             <BoxStyled className={classes.text}><Typography>{message.text}</Typography></BoxStyled>
         </BoxStyled>

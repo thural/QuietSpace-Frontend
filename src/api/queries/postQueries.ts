@@ -4,19 +4,12 @@ import { ResId } from "../schemas/native/common";
 
 
 
-const postQueries = () => {
-
-    const queryCLient = useQueryClient();
-
-
-    const getPostsByUserId = (userId: ResId): PostPage | undefined => {
-        return queryCLient.getQueryData(["posts/user", { id: userId }]);
-    }
-
-
-    return {
-        getPostsByUserId
-    }
+export const getPostsByUserId = (userId: ResId): PostPage | undefined => {
+    const queryClient = useQueryClient();
+    return queryClient.getQueryData(["posts/user", { id: userId }]);
 }
 
-export default postQueries
+export const getPosts = (): PostPage | undefined => {
+    const queryClient = useQueryClient();
+    return queryClient.getQueryData(["posts"]);
+}

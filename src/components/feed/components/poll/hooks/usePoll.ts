@@ -1,17 +1,16 @@
 import { useVotePoll } from "@/services/data/usePostData";
-import { useQueryClient } from "@tanstack/react-query";
 import { parseCount } from "@/utils/stringUtils";
 import { ResId } from "@/api/schemas/inferred/common";
-import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { Poll, PollOption, VoteBody } from "@/api/schemas/inferred/post";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 const usePoll = (pollData: Poll, postId: ResId) => {
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
-    if (user === undefined) throw nullishValidationdError({ user });
-    const postVote = useVotePoll();
 
+    const user = getSignedUser();
+    if (user === undefined) throw nullishValidationdError({ user });
+
+    const postVote = useVotePoll();
     const parsedVoteCounts = parseCount(pollData?.voteCount);
 
     const getStyle = (option: PollOption) => {

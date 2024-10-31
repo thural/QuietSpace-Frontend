@@ -1,20 +1,18 @@
-import { useQueryClient } from "@tanstack/react-query";
 import ChatCard from "../card/ChatCard";
 import ChatQuery from "../query/ChatQuery";
 import styles from "./styles/chatSidebarStyles";
 import BoxStyled from "@/components/shared/BoxStyled";
 import ComponentList from "@/components/shared/ComponentList";
 import Typography from "@/components/shared/Typography";
-import { ChatList } from "@/api/schemas/inferred/chat";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import { getChatsCache } from "@/api/queries/chatQueries";
 
 const ChatSidebar: React.FC<GenericWrapper> = () => {
 
     const classes = styles();
 
-    const queryClient = useQueryClient();
-    const chats: ChatList | undefined = queryClient.getQueryData(["chats"]);
+    const chats = getChatsCache();
     if (chats === undefined) throw new Error("(!) chat list is undefined");
 
 

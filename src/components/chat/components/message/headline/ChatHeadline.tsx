@@ -4,8 +4,14 @@ import UserAvatar from "@shared/UserAvatar";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import ChatMenu from "./ChatMenu";
 import styles from "./styles/chatHeadlineStyles";
+import { ConsumerFn } from "@/types/genericTypes";
 
-const ChatHeadline = ({ recipientName, handleDeleteChat }) => {
+interface ChatHeadlineProps {
+    recipientName: string
+    handleDeleteChat: ConsumerFn
+}
+
+const ChatHeadline: React.FC<ChatHeadlineProps> = ({ recipientName, handleDeleteChat }) => {
 
     const classes = styles();
 

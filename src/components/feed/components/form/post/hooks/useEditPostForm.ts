@@ -1,15 +1,13 @@
+import { getPosts } from "@/api/queries/postQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PollBody, Post, PostBody, PostPage } from "@/api/schemas/inferred/post";
+import { PollBody, Post, PostBody } from "@/api/schemas/inferred/post";
 import { useEditPost } from "@/services/data/usePostData";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 const useEditPostForm = (postId: ResId) => {
 
-    const queryClient = useQueryClient();
-    const posts: PostPage | undefined = queryClient.getQueryData(["posts"]);
-
+    const posts = getPosts();
     if (posts === undefined) throw nullishValidationdError({ posts });
 
     const editedPost: Post | undefined = posts.content.find(post => post.id === postId);

@@ -1,4 +1,4 @@
-export const getFirstThreeWords = (str) => {
+export const getFirstThreeWords = (str: string) => {
     if (!str.trim() || str.split(/\s+/).length < 3) {
         return str.trim();
     }
@@ -6,7 +6,7 @@ export const getFirstThreeWords = (str) => {
     return str.split(/\s+/, 3).join(" ");
 }
 
-export const parseCount = (number) => {
+export const parseCount = (number: number) => {
     if (number < 1000) {
         return number;
     } else if (number >= 1000 && number < 1_000_000) {
@@ -20,6 +20,6 @@ export const parseCount = (number) => {
     }
 }
 
-export const toUpperFirstChar = (name) => {
+export const toUpperFirstChar = (name: string) => {
     return name?.charAt(0).toUpperCase();
 }

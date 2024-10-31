@@ -1,20 +1,17 @@
 import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNotificationStore, useStompStore } from "../store/zustand";
-import { User } from "@/api/schemas/inferred/user";
 import { ChatEvent } from "@/api/schemas/inferred/chat";
 import { Notification } from "@/api/schemas/inferred/notification";
 import { ResId } from "@/api/schemas/native/common";
 import { ChatEventSchema } from "@/api/schemas/zod/chatZod";
 import { Frame } from "stompjs";
-import notificationQueries from "@/api/queries/notificationQueries";
+import { handleReceivedNotifcation, handleSeenNotification } from "@/api/queries/notificationQueries";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 
 const useNotificationSocket = () => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
-    const { handleSeenNotification, handleReceivedNotifcation } = notificationQueries();
+    const user = getSignedUser();
     const { setClientMethods } = useNotificationStore();
     const { clientContext } = useStompStore();
     const { subscribe, sendMessage, isClientConnected } = clientContext;

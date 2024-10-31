@@ -2,25 +2,29 @@ import { useMemo } from "react";
 
 import { useToggleFollow } from "@/services/data/useUserData";
 import LightButton from "@components/shared/buttons/LightButton";
-import { useQueryClient } from "@tanstack/react-query";
 import NotificationCard from "./base/NotificationCard";
 import { NotificationItemProps } from "@/types/notificationTypes";
-import { PageContent } from "@/api/schemas/inferred/common";
+import { Page } from "@/api/schemas/inferred/common";
 import { User } from "@/api/schemas/inferred/user";
+import { getFollowingsByUser, getSignedUser } from "@/api/queries/userQueries";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { useNavigate } from "react-router-dom";
 
 const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) => {
 
+    const navigate = useNavigate();
     const { actorId } = notification;
-    const queryClient = useQueryClient();
-    const followings: PageContent<User> | undefined = queryClient.getQueryData(["followings"]);
+    const user = getSignedUser();
+    if (user === undefined) throw nullishValidationdError({ user });
+    const followings: Page<User> | undefined = getFollowingsByUser(user.id);
     const toggleFollow = useToggleFollow();
 
 
-    const isFollowing = useMemo(() => followings?.some(follow => follow.id === actorId) ? "unfollow" : "follow", [followings]);
+    const isFollowing = useMemo(() => followings?.content.some(follow => follow.id === actorId) ? "unfollow" : "follow", [followings]);
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault();
-        // TODO: navigate to user page
+        navigate(`/profile/${actorId}`);
     };
 
 

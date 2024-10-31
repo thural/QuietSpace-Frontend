@@ -5,6 +5,7 @@ import { UserPage, User } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ResId } from "@/api/schemas/inferred/common";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 
 export const useGetCurrentUser = () => {
@@ -27,8 +28,7 @@ export const useGetCurrentUser = () => {
 
 export const useQueryUsers = (callBackFunc: ConsumerFn) => {
 
-    const queryClient = useQueryClient();
-    const signedUser: User | undefined = queryClient.getQueryData(["user"]);
+    const signedUser = getSignedUser();
 
     if (signedUser === undefined) {
         throw nullishValidationdError({ signedUser }, "could not perform user query:");

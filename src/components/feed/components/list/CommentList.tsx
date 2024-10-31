@@ -5,7 +5,7 @@ import React from "react";
 import { ResId } from "@/api/schemas/native/common";
 
 interface CommentListProps {
-    comments: CommentList
+    comments: CommentList | undefined
     postId: ResId
 }
 

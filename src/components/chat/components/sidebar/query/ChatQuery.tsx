@@ -26,14 +26,8 @@ const ChatQuery = () => {
     }
 
     const {
-        focused,
         queryResult,
-        isSubmitting,
         handleChatCreation,
-        handleInputChange,
-        handleKeyDown,
-        handleInputFocus,
-        handleInputBlur,
         appliedStyle,
         inputProps,
         makeQueryMutation,
@@ -67,7 +61,7 @@ const ChatQuery = () => {
     return (
         <BoxStyled className={classes.searchContainer}>
             <QueryInput {...inputProps} />
-            <QueryResult queryResult={queryResult} />
+            <QueryResult />
         </BoxStyled>
     )
 }

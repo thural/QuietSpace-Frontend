@@ -2,8 +2,18 @@ import BoxStyled from "@shared/BoxStyled";
 import EmojiInput from "@shared/EmojiInput";
 import FormStyled from "@shared/FormStyled";
 import styles from "./styles/messageInputStyles";
+import { ConsumerFn } from "@/types/genericTypes";
 
-const MessageInput = ({ value, onChange, onEnter, placeholder, enabled }) => {
+interface MessageinputProps {
+    value: string
+    onChange: ConsumerFn
+    onEnter: ConsumerFn
+    placeholder: string
+    enabled: boolean
+}
+
+const MessageInput: React.FC<MessageinputProps> = ({ value, onChange, onEnter, placeholder, enabled }) => {
+
     const classes = styles();
 
     return (

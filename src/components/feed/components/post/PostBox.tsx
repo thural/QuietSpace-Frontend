@@ -107,7 +107,7 @@ const PostBox = ({ post }: { post: Post }) => {
                 <EditPostForm postId={postId} />
             </Overlay>
             <Conditional isEnabled={showComments}>
-                <CommentPanel postId={postId} />
+                <CommentPanel postId={postId} comments={comments} />
             </Conditional>
             <hr />
         </BoxStyled>

@@ -10,10 +10,7 @@ const MessagesList = ({ messages }: { messages: MessageList }) => {
 
     return (
         <BoxStyled className={classes.messages}>
-            <ComponentList
-                list={messages}
-                Component={MessageBox}
-            />
+            <ComponentList list={messages} Component={MessageBox} />
         </BoxStyled>
     );
 };

@@ -1,13 +1,11 @@
-import { User } from "@/api/schemas/inferred/user";
+import { getSignedUser } from "@/api/queries/userQueries";
 import { useGetPosts } from "@/services/data/usePostData";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export const useFeed = () => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    const user = getSignedUser();
     const posts = useGetPosts();
 
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);

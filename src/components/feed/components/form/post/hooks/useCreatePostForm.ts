@@ -1,17 +1,15 @@
 import { useCreatePost } from "@/services/data/usePostData";
-import { useQueryClient } from "@tanstack/react-query";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useState } from "react";
 import { PollBody, PostBody } from "@/api/schemas/inferred/post";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { User } from "@/api/schemas/inferred/user";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 export interface PollView { enabled: boolean, extraOption: boolean }
 
 const useCreatePostForm = () => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    const user = getSignedUser();
     if (!user) throw nullishValidationdError({ user });
     const addPost = useCreatePost();
 

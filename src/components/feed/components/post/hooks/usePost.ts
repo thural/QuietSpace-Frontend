@@ -1,43 +1,33 @@
 import { useGetComments } from "@/services/data/useCommentData";
 import { useDeletePost } from "@/services/data/usePostData";
 import { useToggleReaction } from "@/services/data/useReactionData";
-import { viewStore } from "@/services/store/zustand";
-import { useQueryClient } from "@tanstack/react-query";
 import { ContentType, LikeType } from "@/utils/enumClasses";
 import { useState } from "react";
-import { PostSchema } from "@/api/schemas/inferred/post";
-import { User } from "@/api/schemas/inferred/user";
+import { Post } from "@/api/schemas/inferred/post";
 import { UserReactionResponse } from "@/api/schemas/inferred/reaction";
+import { getSignedUser } from "@/api/queries/userQueries";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
-export const usePost = (post: PostSchema) => {
+export const usePost = (post: Post) => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
-    const { data: viewData, setViewData } = viewStore();
-    const { editPost: editPostView } = viewData;
+    const user = getSignedUser();
+    if (user === undefined) throw nullishValidationdError({ user });
 
     const { id: postId, username, userReaction, text, likeCount, dislikeCount } = post;
-    const [showComments, setShowComments] = useState(false);
 
-    const { data: comments } = useGetComments(postId);
+    const comments = useGetComments(postId);
     const deletePost = useDeletePost(postId);
-    const togglePostLike = useToggleReaction(postId);
+    const togglePostLike = useToggleReaction();
 
-    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-    const toggleOverlay = () => setIsOverlayOpen(!isOverlayOpen);
 
     const handleDeletePost = async () => deletePost.mutate();
 
-    const handleReaction = async (event: React.MouseEvent, likeType: UserReactionResponse) => {
+    const handleReaction = async (event: React.MouseEvent, reaction: UserReactionResponse) => {
         event.preventDefault();
-        if (user === undefined) {
-            console.error("(!) could not handle user reaction: user is undefined");
-            return
-        }
         const reactionBody = {
             userId: user.id,
             contentId: postId,
-            reactionType: likeType,
+            reactionType: reaction.reactionType,
             contentType: ContentType.POST.toString(),
         };
         togglePostLike.mutate(reactionBody);
@@ -47,11 +37,16 @@ export const usePost = (post: PostSchema) => {
     const handleDislike = (event: React.MouseEvent<SVGElement, MouseEvent>) => handleReaction(event, LikeType.DISLIKE.toString());
     const isMutable = user?.role === "admin" || post?.userId === user?.id;
 
+
+    const [showComments, setShowComments] = useState(false);
     const toggleComments = () => setShowComments(!showComments);
 
+    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+    const toggleOverlay = () => setIsOverlayOpen(!isOverlayOpen);
+
+
+
     return {
-        user,
-        editPostView,
         postId,
         username,
         userReaction,
@@ -60,12 +55,12 @@ export const usePost = (post: PostSchema) => {
         dislikeCount,
         showComments,
         comments,
-        isOverlayOpen,
-        toggleOverlay,
         handleDeletePost,
         handleLike,
         handleDislike,
         isMutable,
+        isOverlayOpen,
+        toggleOverlay,
         toggleComments,
     };
 };

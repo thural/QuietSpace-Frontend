@@ -1,4 +1,4 @@
-import userQueries from "@/api/queries/userQueries";
+import { getSignedUser } from "@/api/queries/userQueries";
 import { Message } from "@/api/schemas/inferred/chat";
 import useWasSeen from "@/services/common/useWasSeen";
 import { useChatStore } from "@/services/store/zustand";
@@ -7,27 +7,18 @@ import { useEffect, useState } from "react";
 
 const useMessage = (message: Message) => {
 
-    const { getSignedUser } = userQueries();
     const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
+
 
     const { clientMethods } = useChatStore();
     const { deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
 
+
     const [isHovering, setIsHovering] = useState(false);
-    const [wasSeen, ref] = useWasSeen();
+    const [wasSeen, wasSeenRef] = useWasSeen();
 
-    const appliedStyle = message.senderId !== user.id ? {
-        marginRight: "auto",
-        borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
-    } : {
-        marginLeft: "auto",
-        color: "white",
-        borderColor: "blue",
-        backgroundColor: "#3c3cff",
-        borderRadius: '1rem 1rem 0rem 1rem'
-    };
-
+    const handleDeleteMessage = () => deleteChatMessage(message);
 
     const handleMouseOver = () => {
         setIsHovering(true);
@@ -46,18 +37,26 @@ const useMessage = (message: Message) => {
     useEffect(handleSeenMessage, [wasSeen, isClientConnected]);
 
 
+
+    const appliedStyle = message.senderId !== user.id ? {
+        marginRight: "auto",
+        borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
+    } : {
+        marginLeft: "auto",
+        color: "white",
+        borderColor: "blue",
+        backgroundColor: "#3c3cff",
+        borderRadius: '1rem 1rem 0rem 1rem'
+    };
+
     return {
         user,
         isHovering,
-        setIsHovering,
-        wasSeen,
-        ref,
-        deleteChatMessage,
+        wasSeenRef,
         appliedStyle,
         handleMouseOver,
         handleMouseOut,
-        setMessageSeen,
-        isClientConnected
+        handleDeleteMessage,
     };
 };
 

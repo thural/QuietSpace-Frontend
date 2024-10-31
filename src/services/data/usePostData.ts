@@ -12,12 +12,12 @@ import { PostPage, PostBody, VoteBody } from "@/api/schemas/inferred/post";
 import { User } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 
 export const useGetPosts = () => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    const user = getSignedUser();
     const { data: authData } = useAuthStore();
 
     return useQuery({
@@ -38,8 +38,7 @@ export const useGetPosts = () => {
 
 export const useGetPostsByUserId = (userId: ResId) => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    const user = getSignedUser();
     const { data: authData } = useAuthStore();
 
     return useQuery({

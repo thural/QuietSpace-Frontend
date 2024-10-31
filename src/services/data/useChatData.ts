@@ -7,8 +7,9 @@ import { ChatList, Chat, CreateChat, MessageBody, Message, PagedMessage } from "
 import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ConsumerFn } from "@/types/genericTypes";
-import chatQueries from "@/api/queries/chatQueries";
+import { insertInitChatCache } from "@/api/queries/chatQueries";
 import { useNavigate } from "react-router-dom";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 
 export const useGetChatsByUserId = (userId: ResId) => {
@@ -49,7 +50,6 @@ export const useGetChatById = (chatId: ResId) => {
 export const useCreateChat = () => {
 
     const { data: authData } = useAuthStore();
-    const { insertInitChatCache } = chatQueries();
     const navigate = useNavigate();
 
     const onSuccess = (data: Chat) => {
@@ -75,9 +75,8 @@ export const useCreateChat = () => {
 export const useGetMessagesByChatId = (chatId: ResId) => {
 
     const { data: authData } = useAuthStore();
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
 
+    const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
 
     return useQuery({

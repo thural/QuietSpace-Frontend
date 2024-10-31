@@ -1,28 +1,29 @@
 import { useCreateChat, useDeleteChat, useGetMessagesByChatId } from "@/services/data/useChatData";
 import { useAuthStore, useChatStore } from "@/services/store/zustand";
-import { useQueryClient } from "@tanstack/react-query";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ChatList, CreateChat } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
 import { nullishValidationdError } from "@/utils/errorUtils";
+import { getChatsCache } from "@/api/queries/chatQueries";
 
 export const useChat = (chatId: ResId) => {
 
-    const queryClient = useQueryClient();
+    const chats: ChatList | undefined = getChatsCache()
+    const currentChat = chats?.find(chat => chat.id === chatId);
+    if (currentChat === undefined) throw nullishValidationdError({ currentChat });
+    const { username: recipientName, id: recipientId } = currentChat.members[0] || {};
+
+
+
     const { data: { userId } } = useAuthStore();
     const { clientMethods } = useChatStore();
-    const chats: ChatList | undefined = queryClient.getQueryData(["chats"]);
+    const { sendChatMessage, isClientConnected } = clientMethods;
+
 
 
     const deleteChat = useDeleteChat(chatId);
     const createChatMutation = useCreateChat();
-    const { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(chatId);
-
-
-    const currentChat = chats?.find(chat => chat.id === chatId);
-    if (currentChat === undefined) throw nullishValidationdError({ currentChat });
-    const { username: recipientName, id: recipientId } = currentChat.members[0] || {};
 
 
 
@@ -51,7 +52,7 @@ export const useChat = (chatId: ResId) => {
         handleChatCreation(recipientId, text, false);
     }
 
-    const sendMessage = () => {
+    const handeSendMessgae = () => {
         if (chatId === -1) createChat();
         sendChatMessage(inputData);
     };
@@ -65,29 +66,22 @@ export const useChat = (chatId: ResId) => {
         deleteChat.mutate();
     }
 
-    const isEnabled = useMemo(() => (isSuccess && isClientConnected), [isSuccess, isClientConnected]);
 
 
-
+    const isInputEnabled: boolean = isSuccess && !!isClientConnected;
 
 
 
     return {
         chats,
-        currentChat,
         recipientName,
         messages,
         isError,
         isLoading,
-        isSuccess,
-        sendMessage,
-        deleteChatMessage,
-        setMessageSeen,
-        isClientConnected,
+        handeSendMessgae,
         inputData,
         handleInputChange,
         handleDeleteChat,
-        handleChatCreation,
-        isEnabled
+        isInputEnabled,
     };
 }

@@ -4,11 +4,10 @@ import FlexStyled from "@/components/shared/FlexStyled"
 import Typography, { TypographyProps } from "@/components/shared/Typography"
 import styles from "./styles/privateBlockStyles"
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes"
-import { JSXElementConstructor } from "react"
 
 export interface PrivateBlockProps extends TypographyProps, GenericWrapper {
     message: string,
-    Icon: JSXElementConstructor<any>
+    Icon?: React.ComponentType
 }
 
 const PrivateBlock: React.FC<PrivateBlockProps> = ({ message = "private content", Icon = RxLockClosed, type = "h4", children, ...props }) => {

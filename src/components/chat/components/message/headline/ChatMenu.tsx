@@ -1,16 +1,22 @@
+import { ProcedureFn } from "@/types/genericTypes";
 import Clickable from "@shared/Clickable";
 import Conditional from "@shared/Conditional";
 import ListMenu from "@shared/ListMenu";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
+interface ChatMenuProps {
+    isMutable: boolean
+    handleDeleteChat: ProcedureFn
+}
 
-const ChatMenu = ({ isMutable }) => {
+const ChatMenu: React.FC<ChatMenuProps> = ({ isMutable, handleDeleteChat }) => {
 
     const handleChatMute = () => {
         // TODO: handle chat mute
     }
 
     const handleChatRemove = () => {
+        handleDeleteChat();
         // TODO: handle chat remove
     }
 

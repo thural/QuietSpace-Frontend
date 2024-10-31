@@ -1,6 +1,5 @@
 import { useDeleteComment } from "@/services/data/useCommentData";
 import { useToggleReaction } from "@/services/data/useReactionData";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { User } from "@/api/schemas/inferred/user";
 import { Comment } from "@/api/schemas/inferred/comment";
@@ -8,11 +7,11 @@ import { nullishValidationdError } from "@/utils/errorUtils";
 import { ReactionType } from "@/api/schemas/inferred/reaction";
 import { ContentType } from "@/api/schemas/native/common";
 import { Reactiontype } from "@/api/schemas/native/reaction";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 const useComment = (comment: Comment) => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    const user: User | undefined = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
     const deleteComment = useDeleteComment(comment.postId);
     const toggleLike = useToggleReaction();

@@ -5,11 +5,10 @@ import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/da
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import userQueries from "@/api/queries/userQueries";
+import { getSignedUser } from "@/api/queries/userQueries";
 
 const useUserProfile = (userId: ResId) => {
 
-    const { getSignedUser } = userQueries();
     const signedUser: User | undefined = getSignedUser();
     if (signedUser === undefined || userId === undefined) throw nullishValidationdError({ signedUser, userId });
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
@@ -64,7 +63,6 @@ export const useCurrentProfile = () => {
 
     const navigate = useNavigate();
     const userPosts = useGetPosts();
-    const { getSignedUser } = userQueries();
     const signedUser: User | undefined = getSignedUser();
 
     if (signedUser === undefined) throw nullishValidationdError({ signedUser });

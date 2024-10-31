@@ -5,26 +5,23 @@ import {
     handleOnlineUser,
 } from "../../components/chat/container/utils/chatHandler.js";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useChatStore, useStompStore } from "../store/zustand.js";
 import { MessageBody } from "@/api/schemas/inferred/chat.js";
-import { User } from "@/api/schemas/inferred/user.js";
 import { nullishValidationdError } from "@/utils/errorUtils.js";
 import { ResId } from "@/api/schemas/inferred/common.js";
 import { ChatEventSchema, MessageSchema } from "@/api/schemas/zod/chatZod.js";
 import { StompMessage } from "@/api/schemas/inferred/websocket.js";
 import { ChatEventType } from "@/api/schemas/native/chat.js";
-import chatQueries from "@/api/queries/chatQueries.js";
+import { deleteMessageCache, insertMessageCache, setMessageSeenCache } from "@/api/queries/chatQueries.js";
+import { getSignedUser } from "@/api/queries/userQueries.js";
 
 
 
 const useChatSocket = (chatId: ResId) => {
 
-    const queryClient = useQueryClient();
-    const user: User | undefined = queryClient.getQueryData(["user"]);
+    const user = getSignedUser()
     if (user === undefined) throw nullishValidationdError({ user });
-    const { insertMessageCache, deleteMessageCache, setMessageSeenCache } = chatQueries();
     const { setClientMethods } = useChatStore();
     const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
 

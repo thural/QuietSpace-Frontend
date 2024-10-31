@@ -20,6 +20,7 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
     if (chatId === undefined) return <Placeholder Icon={PiChatsCircle} message="start a chat" type="h3" />;
 
 
+
     let data = undefined;
 
     try {
@@ -36,12 +37,13 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         messages,
         isError,
         isLoading,
-        sendMessage,
+        handeSendMessgae,
         inputData,
         handleInputChange,
         handleDeleteChat,
-        isEnabled
+        isInputEnabled,
     } = data;
+
 
 
     if (isError) throw new Error("(!) unhandler error on chat service");
@@ -52,17 +54,14 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
 
     return (
         <BoxStyled className={classes.chatboard}>
-            <ChatHeadline
-                recipientName={recipientName}
-                handleDeleteChat={handleDeleteChat}
-            />
+            <ChatHeadline recipientName={recipientName} handleDeleteChat={handleDeleteChat} />
             <MessagesList messages={messages} />
             <MessageInput
                 value={inputData.text}
                 onChange={handleInputChange}
-                onEnter={sendMessage}
+                onEnter={handeSendMessgae}
                 placeholder="write a message"
-                enabled={isEnabled}
+                enabled={isInputEnabled}
             />
         </BoxStyled>
     )
