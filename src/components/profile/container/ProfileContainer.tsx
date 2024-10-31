@@ -77,7 +77,7 @@ function ProfileContainer() {
             <Conditional isEnabled={!isHasAccess.data} >
                 <PrivateBlock message="this account is private" >
                     <Typography>follow user to see their content</Typography>
-                    <FollowToggle Button={OutlineButtonStyled} user={user} />
+                    <FollowToggle Button={OutlineButtonStyled} user={user.data} />
                 </PrivateBlock>
             </Conditional>
         </DefaultContainer>

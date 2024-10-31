@@ -8,8 +8,9 @@ import useFeed from "./hooks/useFeed";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 import Overlay from "@/components/shared/Overlay/Overlay";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 
-function FeedContainer() {
+const FeedContainer: React.FC<GenericWrapper> = () => {
 
     let data = undefined;
 

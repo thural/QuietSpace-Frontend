@@ -4,7 +4,6 @@ import { fetchChatById, fetchChatByUserId, fetchCreateChat, fetchDeleteChat } fr
 import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../../api/requests/messageRequests";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ChatList, Chat, CreateChat, MessageBody, Message, PagedMessage } from "@/api/schemas/inferred/chat";
-import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ConsumerFn } from "@/types/genericTypes";
 import { insertInitChatCache } from "@/api/queries/chatQueries";

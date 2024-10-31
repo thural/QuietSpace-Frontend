@@ -1,8 +1,8 @@
-import FeedContainer from "@components/feed/container/FeedContainer";
+import { Outlet } from "react-router-dom";
 
 
 const FeedPage = () => {
-    return <FeedContainer />
+    return <Outlet />;
 }
 
 export default FeedPage

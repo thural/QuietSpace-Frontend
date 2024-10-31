@@ -31,6 +31,10 @@ import ActivationForm from "./components/auth/components/activation/ActivationFo
 import { Auth } from "./api/schemas/inferred/auth";
 import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
 import ErrorComponent from "./components/shared/error/ErrorComponent";
+import PostCard from "./components/feed/components/post/card/PostCard";
+import PostBox from "./components/feed/components/post/PostBox";
+import FeedContainer from "./components/feed/container/FeedContainer";
+import PostContainer from "./components/feed/container/PostContainer";
 
 const App = () => {
 
@@ -83,7 +87,10 @@ const App = () => {
             {isAuthenticated && !isUserError && <NavBar />}
             <Routes>
                 <Route path="/" element={<FeedPage />} />
-                <Route path="/feed/*" element={<FeedPage />} />
+                <Route path="/feed/*" element={<FeedPage />}>
+                    <Route index element={<FeedContainer />} />
+                    <Route path=":postId" element={<PostContainer />} />
+                </Route>
                 <Route path="/search/*" element={<SearchPage />} />
                 <Route path="/chat" element={<ChatPage />} >
                     <Route index element={<ChatPanel />} />

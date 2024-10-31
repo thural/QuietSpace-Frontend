@@ -5,37 +5,32 @@ import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { LikeType } from "@/utils/enumClasses";
 import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
-import EditPostForm from "../form/post/EditPostForm";
-import PostMenu from "../shared/post-menu/PostMenu";
-import PollBox from "../poll/Poll";
-import { usePost } from "./hooks/usePost";
-import styles from "./styles/postStyles";
+import EditPostForm from "../../form/post/EditPostForm";
+import PostMenu from "../../shared/post-menu/PostMenu";
+import PollBox from "../../poll/Poll";
+import { usePost } from "../hooks/usePost";
+import styles from "../styles/postStyles";
+import { Post } from "@/api/schemas/inferred/post";
 import Overlay from "@/components/shared/Overlay/Overlay";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
-import { useParams } from "react-router-dom";
-import { getPostById } from "@/api/queries/postQueries";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import CommentPanel from "../comment/panel/CommentPanel";
+import { useNavigate } from "react-router-dom";
 
 
 
-const PostBox = () => {
+const PostCard = ({ post }: { post: Post }) => {
 
     const classes = styles();
-
-    const { postId } = useParams();
-    if (postId === undefined) throw nullishValidationdError({ postId });
-
-    const post = getPostById(postId);
-    if (post === undefined) return <ErrorComponent message="could not load post" />;
-
+    const navigate = useNavigate();
+    const handleNavigation = () => {
+        navigate(`/feed/${post.id}`);
+    }
 
     const {
+        postId,
         username,
         userReaction,
         text,
@@ -49,20 +44,19 @@ const PostBox = () => {
         isOverlayOpen,
         toggleOverlay,
         toggleComments,
-        showComments
     } = usePost(post);
 
 
-    const PostHeadLine = () => (
-        <FlexStyled className={classes.postHeadline}>
+    const PostHeadLine = ({ onClick }) => (
+        <FlexStyled className={classes.postHeadline} onClick={onClick}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} />
             <Typography className="title" type="h5">{post.title}</Typography>
             <PostMenu handleDeletePost={handleDeletePost} toggleEdit={toggleOverlay} isMutable={isMutable} />
         </FlexStyled>
     );
 
-    const PostContent = () => (
-        <BoxStyled className="content">
+    const PostContent = ({ onClick }) => (
+        <BoxStyled className="content" onClick={onClick}>
             <Typography className="text">{text}</Typography>
             <Conditional isEnabled={!!post.poll}>
                 <PollBox postId={postId} pollData={post.poll} />
@@ -70,9 +64,9 @@ const PostBox = () => {
         </BoxStyled>
     );
 
-    const PollContent = () => (
+    const PollContent = ({ onClick }) => (
         <Conditional isEnabled={!!post.poll}>
-            <PollBox pollData={post.poll} postId={postId} />
+            <PollBox pollData={post.poll} postId={postId} onClick={onClick} />
         </Conditional>
     );
 
@@ -80,7 +74,7 @@ const PostBox = () => {
         <FlexStyled className={classes.postinfo}>
             {likeCount > 0 && <Typography size="0.85rem">{parseCount(likeCount)} likes</Typography>}
             {dislikeCount > 0 && <Typography size="0.85rem">{parseCount(dislikeCount)} dislikes</Typography>}
-            {!!comments?.length && <Typography size="0.85rem">{parseCount(comments.length)} comments</Typography>}
+            {!!comments.data?.content?.length && <Typography size="0.85rem">{parseCount(comments.length)} comments</Typography>}
         </FlexStyled>
     );
 
@@ -101,10 +95,10 @@ const PostBox = () => {
     );
 
     return (
-        <BoxStyled id={postId} className={classes.wrapper}>
-            <PostHeadLine />
-            <PostContent />
-            <PollContent />
+        <BoxStyled id={postId} className={classes.wrapper} >
+            <PostHeadLine onClick={handleNavigation} />
+            <PostContent onClick={handleNavigation} />
+            <PollContent onClick={handleNavigation} />
             <BoxStyled className={classes.controls}>
                 <LikeToggle />
                 <DislikeToggle />
@@ -115,9 +109,8 @@ const PostBox = () => {
             <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} />
             </Overlay>
-            <CommentPanel postId={postId} comments={comments} />
         </BoxStyled>
     );
 };
 
-export default PostBox;
+export default PostCard;
