@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PollBody, PostBody } from "@/api/schemas/inferred/post";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { getSignedUser } from "@/api/queries/userQueries";
+import { format } from 'date-fns'
 
 export interface PollView { enabled: boolean, extraOption: boolean }
 
@@ -34,7 +35,10 @@ const useCreatePostForm = () => {
     const handleSubmit = (event: SubmitEvent) => {
         event.preventDefault();
 
-        const poll: PollBody = { dueDate: String(new Date), options: [] };
+        const now = 81000 + +new Date();
+        const formattedDate = format(now, "yyyy-MM-dd'T'HH:mm:ssXXX");
+
+        const poll: PollBody = { dueDate: formattedDate, options: [] };
 
         Object.entries(postData).forEach(([key, value]: any) => {
             if (key.includes("option")) poll.options.push(value);

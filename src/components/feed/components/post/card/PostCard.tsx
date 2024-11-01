@@ -57,7 +57,6 @@ const PostCard = ({ postId }: { postId: ResId }) => {
         isOverlayOpen,
         commentFormView,
         toggleOverlay,
-        toggleComments,
         toggleCommentForm
     } = data;
 
@@ -120,7 +119,6 @@ const PostCard = ({ postId }: { postId: ResId }) => {
         <BoxStyled id={postId} className={classes.wrapper} >
             <PostHeadLine onClick={handleNavigation} />
             <PostContent onClick={handleNavigation} />
-            <PollContent onClick={handleNavigation} />
             <BoxStyled className={classes.controls}>
                 <LikeToggle />
                 <DislikeToggle />

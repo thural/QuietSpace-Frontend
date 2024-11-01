@@ -115,7 +115,6 @@ const PostBox = () => {
         <BoxStyled id={postId} className={classes.wrapper}>
             <PostHeadLine />
             <PostContent />
-            <PollContent />
             <BoxStyled className={classes.controls}>
                 <LikeToggle />
                 <DislikeToggle />

@@ -4,7 +4,7 @@ import { GenericWrapper } from "./types/sharedComponentTypes";
 
 const TextInput: React.FC<GenericWrapper> = ({
     name = "",
-    value = "",
+    value,
     handleChange,
     placeholder = "",
     maxLength = "999",
