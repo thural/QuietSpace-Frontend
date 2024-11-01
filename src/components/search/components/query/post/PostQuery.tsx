@@ -8,7 +8,7 @@ import { PostQueryProps } from "./types/postQueryTypes";
 const PostQuery: React.FC<PostQueryProps> = ({ fetchPostQuery, postQueryList }) => (
     fetchPostQuery.isPending ? <FullLoadingOverlay />
         : fetchPostQuery.isError ? <Typography type="h1">{fetchPostQuery.error.message}</Typography>
-            : postQueryList?.map((post: Post, index: number) => <PostCard key={index} post={post} />)
+            : postQueryList?.map((post: Post, index: number) => <PostCard key={index} postId={post.id} />)
 )
 
 export default PostQuery

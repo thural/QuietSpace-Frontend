@@ -2,14 +2,14 @@ import { BaseSchema, ContentResponse, PagedResponse, ResId } from "./common";
 import { UserSchema } from "./user";
 
 export enum ChatEventType {
-    CONNECT,
-    DISCONNECT,
-    DELETE_MESSAGE,
-    SEEN_MESSAGE,
-    SEEN_NOTIFICATION,
-    JOINED_CHAT,
-    LEFT_CHAT,
-    EXCEPTION
+    CONNECT = "CONNECT",
+    DISCONNECT = "DISCONNECT",
+    DELETE_MESSAGE = "DELETE_MESSAGE",
+    SEEN_MESSAGE = "SEEN_MESSAGE",
+    SEEN_NOTIFICATION = "SEEN_NOTIFICATION",
+    JOINED_CHAT = "JOINED_CHAT",
+    LEFT_CHAT = "LEFT_CHAT",
+    EXCEPTION = "EXCEPTION"
 }
 
 export interface BaseEvent {

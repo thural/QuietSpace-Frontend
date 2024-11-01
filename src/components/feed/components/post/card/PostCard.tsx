@@ -3,14 +3,12 @@ import Conditional from "@/components/shared/Conditional";
 import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
-import { LikeType } from "@/utils/enumClasses";
 import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
 import EditPostForm from "../../form/post/EditPostForm";
 import PostMenu from "../../shared/post-menu/PostMenu";
 import PollBox from "../../poll/Poll";
 import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
-import { Post } from "@/api/schemas/inferred/post";
 import Overlay from "@/components/shared/Overlay/Overlay";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
@@ -18,24 +16,38 @@ import {
     PiChatCircle,
 } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { Reactiontype } from "@/api/schemas/native/reaction";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import { ResId } from "@/api/schemas/inferred/common";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
 
 
-const PostCard = ({ post }: { post: Post }) => {
+const PostCard = ({ postId }: { postId: ResId }) => {
 
     const classes = styles();
+
     const navigate = useNavigate();
+
     const handleNavigation = () => {
-        navigate(`/feed/${post.id}`);
+        navigate(`/feed/${postId}`);
+    }
+
+    let data = undefined;
+
+    try {
+        if (postId === undefined) throw nullishValidationdError({ postId });
+        data = usePost(postId);
+    } catch (error) {
+        return <ErrorComponent message={(error as Error).message} />;
     }
 
     const {
-        postId,
-        username,
-        userReaction,
-        text,
-        likeCount,
-        dislikeCount,
+        post,
+        isLoading,
+        isError,
         comments,
         handleDeletePost,
         handleLike,
@@ -44,10 +56,15 @@ const PostCard = ({ post }: { post: Post }) => {
         isOverlayOpen,
         toggleOverlay,
         toggleComments,
-    } = usePost(post);
+    } = data;
+
+    if (isLoading || post === undefined) return <FullLoadingOverlay />;
+    if (isError) return <ErrorComponent message="could not load post" />;
+
+    const { username, userReaction, text, likeCount, dislikeCount } = post;
 
 
-    const PostHeadLine = ({ onClick }) => (
+    const PostHeadLine: React.FC<GenericWrapper> = ({ onClick }) => (
         <FlexStyled className={classes.postHeadline} onClick={onClick}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} />
             <Typography className="title" type="h5">{post.title}</Typography>
@@ -55,7 +72,7 @@ const PostCard = ({ post }: { post: Post }) => {
         </FlexStyled>
     );
 
-    const PostContent = ({ onClick }) => (
+    const PostContent: React.FC<GenericWrapper> = ({ onClick }) => (
         <BoxStyled className="content" onClick={onClick}>
             <Typography className="text">{text}</Typography>
             <Conditional isEnabled={!!post.poll}>
@@ -74,18 +91,18 @@ const PostCard = ({ post }: { post: Post }) => {
         <FlexStyled className={classes.postinfo}>
             {likeCount > 0 && <Typography size="0.85rem">{parseCount(likeCount)} likes</Typography>}
             {dislikeCount > 0 && <Typography size="0.85rem">{parseCount(dislikeCount)} dislikes</Typography>}
-            {!!comments.data?.content?.length && <Typography size="0.85rem">{parseCount(comments.length)} comments</Typography>}
+            {!!comments.data?.content?.length && <Typography size="0.85rem">{parseCount(comments.data.totalElements)} comments</Typography>}
         </FlexStyled>
     );
 
     const LikeToggle = () => (
-        userReaction === LikeType.LIKE.toString()
+        (!!userReaction && userReaction.reactionType === Reactiontype.LIKE)
             ? <PiArrowFatUpFill className="posticon" onClick={handleLike} />
             : <PiArrowFatUp className="posticon" onClick={handleLike} />
     );
 
     const DislikeToggle = () => (
-        userReaction === LikeType.DISLIKE.toString()
+        (!!userReaction && userReaction.reactionType === Reactiontype.DISLIKE)
             ? <PiArrowFatDownFill className="posticon" onClick={handleDislike} />
             : <PiArrowFatDown className="posticon" onClick={handleDislike} />
     );
@@ -93,6 +110,8 @@ const PostCard = ({ post }: { post: Post }) => {
     const CommentToggle = () => (
         <PiChatCircle onClick={toggleComments} />
     );
+
+
 
     return (
         <BoxStyled id={postId} className={classes.wrapper} >

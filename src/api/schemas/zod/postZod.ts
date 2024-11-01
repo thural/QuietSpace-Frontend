@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
-import { ReactionTypeSchema } from "./reactionZod";
+import { ReactionTypeSchema, UserReactionSchema } from "./reactionZod";
 
 
 export const VoteBodySchema = z.object({
@@ -45,7 +45,7 @@ export const PostSchema = z.object({
     likeCount: z.number(),
     dislikeCount: z.number(),
     commentCount: z.number(),
-    userReaction: ReactionTypeSchema,
+    userReaction: UserReactionSchema,
     createDate: z.date().nullable(),
     updateDate: z.date().nullable()
 });

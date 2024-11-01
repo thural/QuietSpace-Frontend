@@ -1,40 +1,41 @@
 import { useGetComments } from "@/services/data/useCommentData";
-import { useDeletePost } from "@/services/data/usePostData";
+import { useDeletePost, useGetPostById } from "@/services/data/usePostData";
 import { useToggleReaction } from "@/services/data/useReactionData";
-import { ContentType, LikeType } from "@/utils/enumClasses";
 import { useState } from "react";
-import { Post } from "@/api/schemas/inferred/post";
-import { UserReactionResponse } from "@/api/schemas/inferred/reaction";
+import { ReactionType } from "@/api/schemas/inferred/reaction";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { nullishValidationdError } from "@/utils/errorUtils";
+import { Reactiontype } from "@/api/schemas/native/reaction";
+import { ContentType } from "@/api/schemas/native/common";
+import { ResId } from "@/api/schemas/inferred/common";
 
-export const usePost = (post: Post) => {
+export const usePost = (postId: ResId) => {
 
     const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
 
-    const { id: postId, username, userReaction, text, likeCount, dislikeCount } = post;
+    const { data: post, isLoading, isError } = useGetPostById(postId);
 
     const comments = useGetComments(postId);
     const deletePost = useDeletePost(postId);
-    const togglePostLike = useToggleReaction();
+    const togglePostLike = useToggleReaction(postId);
 
 
     const handleDeletePost = async () => deletePost.mutate();
 
-    const handleReaction = async (event: React.MouseEvent, reaction: UserReactionResponse) => {
+    const handleReaction = async (event: React.MouseEvent, reaction: ReactionType) => {
         event.preventDefault();
         const reactionBody = {
             userId: user.id,
             contentId: postId,
-            reactionType: reaction.reactionType,
-            contentType: ContentType.POST.toString(),
+            reactionType: reaction,
+            contentType: ContentType.POST,
         };
         togglePostLike.mutate(reactionBody);
     };
 
-    const handleLike = (event: React.MouseEvent<SVGElement, MouseEvent>) => handleReaction(event, LikeType.LIKE.toString());
-    const handleDislike = (event: React.MouseEvent<SVGElement, MouseEvent>) => handleReaction(event, LikeType.DISLIKE.toString());
+    const handleLike = (event: React.MouseEvent<SVGElement, MouseEvent>) => handleReaction(event, Reactiontype.LIKE);
+    const handleDislike = (event: React.MouseEvent<SVGElement, MouseEvent>) => handleReaction(event, Reactiontype.DISLIKE);
     const isMutable = user?.role === "admin" || post?.userId === user?.id;
 
 
@@ -47,12 +48,10 @@ export const usePost = (post: Post) => {
 
 
     return {
+        post,
+        isLoading,
+        isError,
         postId,
-        username,
-        userReaction,
-        text,
-        likeCount,
-        dislikeCount,
         showComments,
         comments,
         handleDeletePost,

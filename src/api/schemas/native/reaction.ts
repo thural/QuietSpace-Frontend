@@ -1,8 +1,8 @@
 import { ContentType } from "@/utils/enumClasses"
 
 export enum Reactiontype {
-    LIKE,
-    DISLIKE
+    LIKE = "LIKE",
+    DISLIKE = "DISLIKE"
 }
 
 export interface UserReaction {

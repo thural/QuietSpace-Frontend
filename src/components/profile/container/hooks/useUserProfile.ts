@@ -1,6 +1,6 @@
 import { User } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/inferred/common";
-import { useGetPosts, useGetPostsByUserId } from "@/services/data/usePostData";
+import { useGetPosts, useGetPostById } from "@/services/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ const useUserProfile = (userId: ResId) => {
 
 
     const user = useGetUserById(userId);
-    const userPosts = useGetPostsByUserId(userId);
+    const userPosts = useGetPostById(userId);
     if (signedUser === undefined || user === undefined) throw nullishValidationdError({ signedUser, user });
     const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
     const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy

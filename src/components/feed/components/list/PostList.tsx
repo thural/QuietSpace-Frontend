@@ -4,7 +4,7 @@ import { PagedPostresponse } from "@/api/schemas/native/post";
 
 const PostListBox = ({ posts }: { posts: UseQueryResult<PagedPostresponse> }) => {
     if (posts.isLoading || !posts.data) return null;
-    return posts.data.content?.map((post, index) => <PostCard key={index} post={post} />);
+    return posts.data.content?.map((post, index) => <PostCard key={index} postId={post.id} />);
 };
 
 export default PostListBox

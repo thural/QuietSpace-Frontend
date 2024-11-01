@@ -16,7 +16,9 @@ export interface FetchOptions {
 }
 
 export enum ContentType {
-    POST, COMMENT, MESSAGE
+    POST = "POST",
+    COMMENT = "COMMENT",
+    MESSAGE = "MESSAGE"
 }
 
 export interface SortProps {

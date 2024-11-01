@@ -3,7 +3,6 @@ import Conditional from "@/components/shared/Conditional";
 import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
-import { LikeType } from "@/utils/enumClasses";
 import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
 import EditPostForm from "../form/post/EditPostForm";
 import PostMenu from "../shared/post-menu/PostMenu";
@@ -11,36 +10,38 @@ import PollBox from "../poll/Poll";
 import { usePost } from "./hooks/usePost";
 import styles from "./styles/postStyles";
 import Overlay from "@/components/shared/Overlay/Overlay";
+import { useParams } from "react-router-dom";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import CommentPanel from "../comment/panel/CommentPanel";
+import { Reactiontype } from "@/api/schemas/native/reaction";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
-import { useParams } from "react-router-dom";
-import { getPostById } from "@/api/queries/postQueries";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import CommentPanel from "../comment/panel/CommentPanel";
+import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 
 
 
 const PostBox = () => {
 
     const classes = styles();
-
     const { postId } = useParams();
-    if (postId === undefined) throw nullishValidationdError({ postId });
 
-    const post = getPostById(postId);
-    if (post === undefined) return <ErrorComponent message="could not load post" />;
+    let data = undefined;
 
+    try {
+        if (postId === undefined) throw nullishValidationdError({ postId });
+        data = usePost(postId);
+    } catch (error) {
+        return <ErrorComponent message={(error as Error).message} />;
+    }
 
     const {
-        username,
-        userReaction,
-        text,
-        likeCount,
-        dislikeCount,
+        post,
+        isLoading,
+        isError,
         comments,
         handleDeletePost,
         handleLike,
@@ -49,8 +50,14 @@ const PostBox = () => {
         isOverlayOpen,
         toggleOverlay,
         toggleComments,
-        showComments
-    } = usePost(post);
+    } = data;
+
+
+
+    if (isLoading || post === undefined) return <FullLoadingOverlay />;
+    if (isError) return <ErrorComponent message="could not load post" />;
+
+    const { username, userReaction, text, likeCount, dislikeCount } = post;
 
 
     const PostHeadLine = () => (
@@ -80,18 +87,18 @@ const PostBox = () => {
         <FlexStyled className={classes.postinfo}>
             {likeCount > 0 && <Typography size="0.85rem">{parseCount(likeCount)} likes</Typography>}
             {dislikeCount > 0 && <Typography size="0.85rem">{parseCount(dislikeCount)} dislikes</Typography>}
-            {!!comments?.length && <Typography size="0.85rem">{parseCount(comments.length)} comments</Typography>}
+            {!!comments?.data?.content.length && <Typography size="0.85rem">{parseCount(comments.data.totalElements)} comments</Typography>}
         </FlexStyled>
     );
 
     const LikeToggle = () => (
-        userReaction === LikeType.LIKE.toString()
+        (!!userReaction && userReaction.reactionType === Reactiontype.LIKE)
             ? <PiArrowFatUpFill className="posticon" onClick={handleLike} />
             : <PiArrowFatUp className="posticon" onClick={handleLike} />
     );
 
     const DislikeToggle = () => (
-        userReaction === LikeType.DISLIKE.toString()
+        (!!userReaction && userReaction.reactionType === Reactiontype.DISLIKE)
             ? <PiArrowFatDownFill className="posticon" onClick={handleDislike} />
             : <PiArrowFatDown className="posticon" onClick={handleDislike} />
     );
@@ -99,6 +106,8 @@ const PostBox = () => {
     const CommentToggle = () => (
         <PiChatCircle onClick={toggleComments} />
     );
+
+
 
     return (
         <BoxStyled id={postId} className={classes.wrapper}>
@@ -120,4 +129,4 @@ const PostBox = () => {
     );
 };
 
-export default PostBox;
+export default PostBox

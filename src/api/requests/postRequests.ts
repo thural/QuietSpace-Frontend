@@ -1,12 +1,16 @@
 import { POST_URL, REACTION_PATH } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "../schemas/inferred/common";
-import { PostPage, PostBody, VoteBody } from "../schemas/inferred/post";
+import { PostPage, PostBody, VoteBody, Post } from "../schemas/inferred/post";
 import { UserReaction } from "../schemas/inferred/reaction";
 
 
 export const fetchPosts = async (token: JwtToken): Promise<PostPage> => (
     await getWrappedApiResponse(POST_URL, 'GET', null, token)
+).json();
+
+export const fetchPostById = async (postId: ResId, token: JwtToken): Promise<Post> => (
+    await getWrappedApiResponse(POST_URL + `/${postId}`, 'GET', null, token)
 ).json();
 
 export const fetchPostsByUserId = async (userId: ResId, token: JwtToken): Promise<PostPage> => (

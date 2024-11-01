@@ -2,14 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchCreatePost,
     fetchDeletePost,
-    fetchEditPost, fetchPostQuery,
+    fetchEditPost, fetchPostById, fetchPostQuery,
     fetchPosts,
     fetchPostsByUserId,
     fetchVotePoll
 } from "../../api/requests/postRequests";
 import { useAuthStore, viewStore } from "../store/zustand";
-import { PostPage, PostBody, VoteBody } from "@/api/schemas/inferred/post";
-import { User } from "@/api/schemas/inferred/user";
+import { PostPage, PostBody, VoteBody, Post } from "@/api/schemas/inferred/post";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
 import { getSignedUser } from "@/api/queries/userQueries";
@@ -32,6 +31,26 @@ export const useGetPosts = () => {
         refetchOnMount: true, // refetch on component mount, default true
         refetchOnWindowFocus: true, // default true
         refetchIntervalInBackground: false, // by default refetch paused for refetchInterval, dault false
+    });
+}
+
+export const useGetPostById = (postId: ResId) => {
+
+    const user = getSignedUser();
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["posts", { id: postId }],
+        queryFn: async (): Promise<Post> => {
+            return await fetchPostById(postId, authData.accessToken);
+        },
+        enabled: !!user?.id,
+        staleTime: 1000 * 60 * 3,
+        refetchInterval: 1000 * 60 * 6,
+        gcTime: 1000 * 60 * 15,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchIntervalInBackground: false,
     });
 }
 

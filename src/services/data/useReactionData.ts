@@ -2,16 +2,18 @@ import { useAuthStore } from "../store/zustand";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchReaction } from "../../api/requests/postRequests";
 import { UserReaction } from "@/api/schemas/inferred/reaction";
+import { ResId } from "@/api/schemas/native/common";
 
 
-export const useToggleReaction = () => {
+export const useToggleReaction = (postId: ResId) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {
         console.log("response data on reaction: ", data);
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+
+        queryClient.invalidateQueries({ queryKey: ["posts", { id: postId }] });
     }
 
     const onError = (error: Error) => {
