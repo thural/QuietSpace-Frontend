@@ -38,6 +38,8 @@ export const usePost = (postId: ResId) => {
     const handleDislike = (event: React.MouseEvent<SVGElement, MouseEvent>) => handleReaction(event, Reactiontype.DISLIKE);
     const isMutable = user?.role === "admin" || post?.userId === user?.id;
 
+    const [commentFormView, setCommentFormView] = useState(false);
+    const toggleCommentForm = () => setCommentFormView(!commentFormView);
 
     const [showComments, setShowComments] = useState(false);
     const toggleComments = () => setShowComments(!showComments);
@@ -53,13 +55,15 @@ export const usePost = (postId: ResId) => {
         isError,
         postId,
         showComments,
+        commentFormView,
         comments,
+        isMutable,
+        isOverlayOpen,
         handleDeletePost,
         handleLike,
         handleDislike,
-        isMutable,
-        isOverlayOpen,
         toggleOverlay,
         toggleComments,
+        toggleCommentForm,
     };
 };

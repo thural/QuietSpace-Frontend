@@ -5,18 +5,17 @@ import FlexStyled from "@components/shared/FlexStyled";
 import Typography from "@components/shared/Typography";
 import UserAvatar from "@components/shared/UserAvatar";
 import { toUpperFirstChar } from "@/utils/stringUtils";
-import CommentReplyForm from "../form/CommentForm";
 import styles from "./styles/commentStyles";
 import useComment from "./hooks/useComment";
 import { Comment } from "@/api/schemas/inferred/comment";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 
-const CommentBox = ({ comment }: { comment: Comment }) => {
+const CommentBox: React.FC<GenericWrapper> = ({ comment }) => {
 
     const classes = styles();
 
     const {
         user,
-        replyFormView,
         handleDeleteComment,
         handleLikeToggle,
         handleCommentReply,
@@ -37,9 +36,6 @@ const CommentBox = ({ comment }: { comment: Comment }) => {
                     <Typography className="comment-delete" onClick={handleDeleteComment}>delete</Typography>
                 </Conditional>
             </BoxStyled>
-            <Conditional isEnabled={replyFormView} >
-                <CommentReplyForm postId={comment.postId} />
-            </Conditional>
         </FlexStyled>
     );
 

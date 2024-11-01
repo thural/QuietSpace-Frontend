@@ -22,6 +22,7 @@ import { ResId } from "@/api/schemas/inferred/common";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import { nullishValidationdError } from "@/utils/errorUtils";
+import CreateCommentForm from "../../form/comment/CreateCommentForm";
 
 
 
@@ -54,8 +55,10 @@ const PostCard = ({ postId }: { postId: ResId }) => {
         handleDislike,
         isMutable,
         isOverlayOpen,
+        commentFormView,
         toggleOverlay,
         toggleComments,
+        toggleCommentForm
     } = data;
 
     if (isLoading || post === undefined) return <FullLoadingOverlay />;
@@ -108,7 +111,7 @@ const PostCard = ({ postId }: { postId: ResId }) => {
     );
 
     const CommentToggle = () => (
-        <PiChatCircle onClick={toggleComments} />
+        <PiChatCircle onClick={toggleCommentForm} />
     );
 
 
@@ -127,6 +130,9 @@ const PostCard = ({ postId }: { postId: ResId }) => {
             </BoxStyled>
             <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} />
+            </Overlay>
+            <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
+                <CreateCommentForm post={post} />
             </Overlay>
         </BoxStyled>
     );

@@ -9,7 +9,7 @@ interface CommentListProps {
     postId: ResId
 }
 
-const CommentListComp: React.FC<CommentListProps> = ({ comments }) => {
+const CommentList: React.FC<CommentListProps> = ({ comments }) => {
     if (!comments) return null;
     return comments.map((comment, index) => {
         if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
@@ -18,4 +18,4 @@ const CommentListComp: React.FC<CommentListProps> = ({ comments }) => {
     })
 }
 
-export default CommentListComp
+export default CommentList

@@ -21,6 +21,7 @@ import {
     PiChatCircle,
 } from "react-icons/pi";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import CreateCommentForm from "../form/comment/CreateCommentForm";
 
 
 
@@ -42,14 +43,15 @@ const PostBox = () => {
         post,
         isLoading,
         isError,
+        commentFormView,
         comments,
+        isMutable,
+        isOverlayOpen,
         handleDeletePost,
         handleLike,
         handleDislike,
-        isMutable,
-        isOverlayOpen,
         toggleOverlay,
-        toggleComments,
+        toggleCommentForm,
     } = data;
 
 
@@ -104,7 +106,7 @@ const PostBox = () => {
     );
 
     const CommentToggle = () => (
-        <PiChatCircle onClick={toggleComments} />
+        <PiChatCircle onClick={toggleCommentForm} />
     );
 
 
@@ -124,7 +126,11 @@ const PostBox = () => {
             <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} />
             </Overlay>
-            <CommentPanel postId={postId} comments={comments} />
+            <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
+                <CreateCommentForm post={post} />
+            </Overlay>
+            <hr />
+            <CommentPanel comments={comments} />
         </BoxStyled>
     );
 };

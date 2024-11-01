@@ -1,32 +1,38 @@
-import BoxStyled from "@components/shared/BoxStyled";
-import CommentForm from "../form/CommentForm";
-import styles from "./styles/commentPanelStyles";
-import CommentListComp from "../../list/CommentList";
-import { ResId } from "@/api/schemas/inferred/common";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import { UseQueryResult } from "@tanstack/react-query";
 import { PagedComment } from "@/api/schemas/inferred/comment";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import BoxStyled from "@components/shared/BoxStyled";
+import { UseQueryResult } from "@tanstack/react-query";
+import CommentBox from "../base/Comment";
+import CommentReply from "../replly/CommentReply";
+import styles from "./styles/commentPanelStyles";
 
 
 interface CommentPanelProps {
-    postId: ResId
     comments: UseQueryResult<PagedComment>
 }
 
 
-const CommentPanel: React.FC<CommentPanelProps> = ({ postId, comments }) => {
+const CommentPanel: React.FC<CommentPanelProps> = ({ comments }) => {
 
     const classes = styles();
 
     if (comments.isLoading) return <FullLoadingOverlay />;
     if (comments.isError) return <ErrorComponent message="could not load comments" />;
 
+    const CommentList = () => {
+        if (!comments) return null;
+        return comments.data?.content.map((comment, index) => {
+            if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
+            const repliedComment = comments.data.content.find(c => c.id === comment.parentId);
+            return <CommentReply key={index} comment={comment} repliedComment={repliedComment} />;
+        })
+    }
+
 
     return (
         <BoxStyled className={classes.commentSection}>
-            <CommentForm postId={postId} />
-            <CommentListComp comments={comments.data?.content} postId={postId} />
+            <CommentList />
         </BoxStyled>
     )
 }
