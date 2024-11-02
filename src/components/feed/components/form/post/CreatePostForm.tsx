@@ -9,8 +9,14 @@ import PollForm from "../poll/PollForm";
 import useCreatePostForm from "./hooks/useCreatePostForm";
 import styles from "./styles/createPostStyles";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import { ConsumerFn } from "@/types/genericTypes";
 
-const CreatePostForm = () => {
+interface CreatePostFormProps extends GenericWrapper {
+    toggleForm: ConsumerFn
+}
+
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
 
     const classes = styles();
 
@@ -24,7 +30,7 @@ const CreatePostForm = () => {
         avatarPlaceholder,
         addPost,
         viewAccessOptions,
-    } = useCreatePostForm();
+    } = useCreatePostForm(toggleForm);
 
     const ControlSection = () => (
         <FlexStyled className="control-area">
@@ -34,7 +40,7 @@ const CreatePostForm = () => {
                 textContent={"can view"}
             />
             <PiChartBarHorizontalFill className="poll-toggle" onClick={togglePoll} />
-            <DarkButton name="post" loading={addPost.isPending} onClick={handleSubmit} />
+            <DarkButton name="post" disabled={!postData.text} loading={addPost.isPending} onClick={handleSubmit} />
         </FlexStyled>
     );
 

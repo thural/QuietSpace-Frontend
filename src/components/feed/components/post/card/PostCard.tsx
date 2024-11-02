@@ -1,40 +1,33 @@
+import { ResId } from "@/api/schemas/inferred/common";
+import { Reactiontype } from "@/api/schemas/native/reaction";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import FlexStyled from "@/components/shared/FlexStyled";
+import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import Overlay from "@/components/shared/Overlay/Overlay";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
-import EditPostForm from "../../form/post/EditPostForm";
-import PostMenu from "../../shared/post-menu/PostMenu";
-import PollBox from "../../poll/Poll";
-import { usePost } from "../hooks/usePost";
-import styles from "../styles/postStyles";
-import Overlay from "@/components/shared/Overlay/Overlay";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
 } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
-import { Reactiontype } from "@/api/schemas/native/reaction";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import { ResId } from "@/api/schemas/inferred/common";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
-import { nullishValidationdError } from "@/utils/errorUtils";
 import CreateCommentForm from "../../form/comment/CreateCommentForm";
+import EditPostForm from "../../form/post/EditPostForm";
+import PollBox from "../../poll/Poll";
+import PostMenu from "../../shared/post-menu/PostMenu";
+import { usePost } from "../hooks/usePost";
+import styles from "../styles/postStyles";
 
 
 
 const PostCard = ({ postId }: { postId: ResId }) => {
 
     const classes = styles();
-
-    const navigate = useNavigate();
-
-    const handleNavigation = () => {
-        navigate(`/feed/${postId}`);
-    }
 
     let data = undefined;
 
@@ -56,8 +49,10 @@ const PostCard = ({ postId }: { postId: ResId }) => {
         isMutable,
         isOverlayOpen,
         commentFormView,
-        toggleOverlay,
-        toggleCommentForm
+        toggleEditForm,
+        toggleCommentForm,
+        handleNavigation,
+        handleUserNavigation
     } = data;
 
     if (isLoading || post === undefined) return <FullLoadingOverlay />;
@@ -66,11 +61,11 @@ const PostCard = ({ postId }: { postId: ResId }) => {
     const { username, userReaction, text, likeCount, dislikeCount } = post;
 
 
-    const PostHeadLine: React.FC<GenericWrapper> = ({ onClick }) => (
-        <FlexStyled className={classes.postHeadline} onClick={onClick}>
-            <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} />
+    const PostHeadLine = () => (
+        <FlexStyled className={classes.postHeadline} onClick={(e: MouseEvent) => e.stopPropagation()}>
+            <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)} />
             <Typography className="title" type="h5">{post.title}</Typography>
-            <PostMenu handleDeletePost={handleDeletePost} toggleEdit={toggleOverlay} isMutable={isMutable} />
+            <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
         </FlexStyled>
     );
 
@@ -81,12 +76,6 @@ const PostCard = ({ postId }: { postId: ResId }) => {
                 <PollBox postId={postId} pollData={post.poll} />
             </Conditional>
         </BoxStyled>
-    );
-
-    const PollContent = ({ onClick }) => (
-        <Conditional isEnabled={!!post.poll}>
-            <PollBox pollData={post.poll} postId={postId} onClick={onClick} />
-        </Conditional>
     );
 
     const PostStats = () => (
@@ -116,9 +105,9 @@ const PostCard = ({ postId }: { postId: ResId }) => {
 
 
     return (
-        <BoxStyled id={postId} className={classes.wrapper} >
-            <PostHeadLine onClick={handleNavigation} />
-            <PostContent onClick={handleNavigation} />
+        <BoxStyled id={postId} className={classes.wrapper} onClick={handleNavigation} >
+            <PostHeadLine />
+            <PostContent />
             <BoxStyled className={classes.controls}>
                 <LikeToggle />
                 <DislikeToggle />
@@ -126,8 +115,8 @@ const PostCard = ({ postId }: { postId: ResId }) => {
                 {/* <ShareMenu /> */}
                 <PostStats />
             </BoxStyled>
-            <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
-                <EditPostForm postId={postId} />
+            <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
+                <EditPostForm postId={postId} toggleForm={toggleEditForm} />
             </Overlay>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm post={post} />

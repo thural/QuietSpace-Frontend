@@ -33,7 +33,7 @@ const FeedContainer: React.FC<GenericWrapper> = () => {
             <CreatePostSection user={user} handleClick={toggleOverlay} />
             <hr />
             <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
-                <CreatePostForm />
+                <CreatePostForm toggleForm={toggleOverlay} />
             </Overlay>
             <PostListBox posts={posts} />
         </DefaultContainer>

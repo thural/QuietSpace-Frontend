@@ -1,12 +1,12 @@
-import { ProcedureFn } from "@/types/genericTypes";
-import { GenericWrapper } from "../types/sharedComponentTypes";
+import { ConsumerFn } from "@/types/genericTypes";
 import BoxStyled from "../BoxStyled";
-import styles from "./styles/overlayStyles"
 import DarkButton from "../buttons/DarkButton ";
+import { GenericWrapper } from "../types/sharedComponentTypes";
+import styles from "./styles/overlayStyles";
 
 interface OverlayProps extends GenericWrapper {
   isOpen: boolean
-  onClose: ProcedureFn
+  onClose: ConsumerFn
 }
 
 const Overlay: React.FC<OverlayProps> = ({ isOpen, onClose, children }) => {

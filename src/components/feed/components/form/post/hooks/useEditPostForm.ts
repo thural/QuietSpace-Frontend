@@ -1,23 +1,20 @@
-import { getPosts } from "@/api/queries/postQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PollBody, Post, PostBody } from "@/api/schemas/inferred/post";
-import { useEditPost } from "@/services/data/usePostData";
+import { PollBody, PostBody } from "@/api/schemas/inferred/post";
+import { useEditPost, useGetPostById } from "@/services/data/usePostData";
+import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useState } from "react";
 
-const useEditPostForm = (postId: ResId) => {
 
-    const posts = getPosts();
-    if (posts === undefined) throw nullishValidationdError({ posts });
+const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
 
-    const editedPost: Post | undefined = posts.content.find(post => post.id === postId);
+    const { data: editedPost, isLoading, isError } = useGetPostById(postId);
+    if (editedPost === undefined) throw nullishValidationdError({ editedPost });
 
-    if (editedPost === undefined) throw nullishValidationdError({ editedPostData: editedPost });
-
-    const pollData: PollBody = {
+    const pollData: PollBody | null = editedPost.poll ? {
         options: editedPost.poll.options.map(option => option.label),
         dueDate: editedPost.poll.dueDate
-    }
+    } : null;
 
     const requestBody: PostBody = {
         text: editedPost.text,
@@ -27,7 +24,7 @@ const useEditPostForm = (postId: ResId) => {
     }
 
     const [postData, setPostData] = useState<PostBody>(requestBody);
-    const editCurrentPost = useEditPost(postId);
+    const editCurrentPost = useEditPost(postId, toggleForm);
 
     const handleSubmit = (event: Event) => {
         event.preventDefault();
@@ -41,8 +38,10 @@ const useEditPostForm = (postId: ResId) => {
 
     return {
         postData,
+        isError,
+        isLoading,
         handleSubmit,
-        handleChange,
+        handleChange
     };
 };
 

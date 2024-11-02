@@ -31,7 +31,7 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
 
     const PollOptionList = () => {
         return pollData?.options.map((option, index) => (
-            <FlexStyled key={index} className={classes.progressContainer} style={getStyle(option)} onClick={() => handleVote(option)}>
+            <FlexStyled key={index} className={classes.progressContainer} style={getStyle(option)} onClick={(e) => handleVote(e, option)}>
                 <Typography className={classes.optionDesc}>{option.label}</Typography>
                 <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
                 <Typography className={classes.optionPerc}>{getText(option)}</Typography>

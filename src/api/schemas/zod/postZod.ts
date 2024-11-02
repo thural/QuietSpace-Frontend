@@ -41,7 +41,7 @@ export const PostSchema = z.object({
     username: z.string(),
     title: z.string(),
     text: z.string(),
-    poll: PollSchema,
+    poll: z.optional(PollSchema),
     likeCount: z.number(),
     dislikeCount: z.number(),
     commentCount: z.number(),

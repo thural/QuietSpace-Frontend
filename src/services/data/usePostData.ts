@@ -12,6 +12,7 @@ import { PostPage, PostBody, VoteBody, Post } from "@/api/schemas/inferred/post"
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
 import { getSignedUser } from "@/api/queries/userQueries";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 export const useGetPosts = () => {
@@ -76,14 +77,14 @@ export const useGetPostsByUserId = (userId: ResId) => {
 }
 
 
-export const useCreatePost = () => {
+export const useCreatePost = (toggleForm: ConsumerFn) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
     const { data: viewState, setViewData } = viewStore();
 
     const handleSubmitSuccess = () => {
-        setViewData(viewState, { createPost: false })
+        toggleForm();
     }
 
     const handleSubmitError = () => {
@@ -112,16 +113,15 @@ export const useCreatePost = () => {
 }
 
 
-export const useEditPost = (postId: ResId) => {
+export const useEditPost = (postId: ResId, toggleForm: ConsumerFn) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
-    const { data: viewState, setViewData } = viewStore();
 
     const onSuccess = () => {
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
-        setViewData(viewState, { overlay: false, editPost: false })
-        console.log("post edited was success");
+        queryClient.invalidateQueries({ queryKey: ["posts", { id: postId }] });
+        console.log("post edit was success");
+        toggleForm();
     }
 
     const onError = (error: Error) => {
@@ -167,10 +167,13 @@ export const useDeletePost = (postId: ResId) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
+    const { postId: id } = useParams();
+    const navigate = useNavigate();
+
     const onSuccess = (data: Response) => {
         console.log("response data on post delete: ", data);
         queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
-        console.log("delete post success");
+        if (id === postId) navigate("/feed");
     }
 
     const onError = (error: Error) => {
@@ -187,14 +190,14 @@ export const useDeletePost = (postId: ResId) => {
 }
 
 
-export const useVotePoll = () => {
+export const useVotePoll = (postId: ResId) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {
         console.log("response data on poll vote success: ", data);
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+        queryClient.invalidateQueries({ queryKey: ["posts", { id: postId }] });
     }
 
     const onError = (error: Error) => {

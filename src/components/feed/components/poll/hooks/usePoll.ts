@@ -10,7 +10,7 @@ const usePoll = (pollData: Poll, postId: ResId) => {
     const user = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
 
-    const postVote = useVotePoll();
+    const postVote = useVotePoll(postId);
     const parsedVoteCounts = parseCount(pollData?.voteCount);
 
     const getStyle = (option: PollOption) => {
@@ -31,7 +31,8 @@ const usePoll = (pollData: Poll, postId: ResId) => {
         else return "";
     };
 
-    const handleVote = async (option: PollOption) => {
+    const handleVote = async (e: React.MouseEvent, option: PollOption) => {
+        e.stopPropagation();
         const voteBody: VoteBody = {
             userId: user.id,
             postId: postId,

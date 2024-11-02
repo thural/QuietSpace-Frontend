@@ -5,14 +5,15 @@ import { PollBody, PostBody } from "@/api/schemas/inferred/post";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { format } from 'date-fns'
+import { ConsumerFn } from "@/types/genericTypes";
 
 export interface PollView { enabled: boolean, extraOption: boolean }
 
-const useCreatePostForm = () => {
+const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
     const user = getSignedUser();
     if (!user) throw nullishValidationdError({ user });
-    const addPost = useCreatePost();
+    const addPost = useCreatePost(toggleForm);
 
     const viewAccessOptions = ["friends", "anyone"];
 

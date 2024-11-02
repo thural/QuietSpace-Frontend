@@ -21,12 +21,18 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ comments }) => {
     if (comments.isError) return <ErrorComponent message="could not load comments" />;
 
     const CommentList = () => {
-        if (!comments) return null;
-        return comments.data?.content.map((comment, index) => {
+        if (comments.data?.totalElements === 0) return null;
+        const renderResult = comments.data?.content.map((comment, index) => {
             if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
             const repliedComment = comments.data.content.find(c => c.id === comment.parentId);
             return <CommentReply key={index} comment={comment} repliedComment={repliedComment} />;
         })
+        return (
+            <>
+                <hr />
+                {renderResult}
+            </>
+        )
     }
 
 
