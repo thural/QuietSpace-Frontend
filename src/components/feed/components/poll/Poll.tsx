@@ -7,10 +7,12 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { isDateExpired } from "@/utils/dateUtils";
 import { Poll } from "@/api/schemas/inferred/post";
 import Conditional from "@/components/shared/Conditional";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
 
 interface PollProps {
-    pollData: Poll
+    pollData: Poll | undefined
     postId: ResId
 }
 
@@ -18,20 +20,34 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
 
     const classes = styles();
 
+    let data = undefined;
+
+    try {
+        if (pollData === undefined) throw nullishValidationdError({ pollData });
+        data = usePoll(pollData, postId);
+    } catch (error: unknown) {
+        return <ErrorComponent message={(error as Error).message} />
+    }
+
     const {
         parsedVoteCounts,
         getStyle,
         getShare,
         getText,
         handleVote,
-    } = usePoll(pollData, postId);
+    } = data;
 
     const isPollDateExpired = pollData.dueDate === null ? true : isDateExpired(pollData.dueDate);
 
 
     const PollOptionList = () => {
         return pollData?.options.map((option, index) => (
-            <FlexStyled key={index} className={classes.progressContainer} style={getStyle(option)} onClick={(e) => handleVote(e, option)}>
+            <FlexStyled
+                key={index}
+                className={classes.progressContainer}
+                style={getStyle(option)}
+                onClick={(e: React.MouseEvent) => handleVote(e, option)}
+            >
                 <Typography className={classes.optionDesc}>{option.label}</Typography>
                 <Progress className={classes.progress} color="black" size="xl" value={getShare(option)} />
                 <Typography className={classes.optionPerc}>{getText(option)}</Typography>

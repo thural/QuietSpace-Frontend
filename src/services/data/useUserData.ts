@@ -107,14 +107,16 @@ export const useGetFollowings = (userId: ResId) => {
 }
 
 
-export const useToggleFollow = () => {
+export const useToggleFollow = (userId: ResId) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {
         console.log("toggle follow success response:", data);
-        queryClient.invalidateQueries({ queryKey: ["followings", "followers"] })
+        queryClient.invalidateQueries({ queryKey: ["followings", { id: userId }] });
+        queryClient.invalidateQueries({ queryKey: ["followers", { id: userId }] });
+        queryClient.invalidateQueries({ queryKey: ["users", { id: userId }] });
     }
 
     const onError = (error: Error) => {

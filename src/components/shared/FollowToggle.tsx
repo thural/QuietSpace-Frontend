@@ -1,10 +1,8 @@
-import LightButton from "@components/shared/buttons/LightButton";
-import { useToggleFollow } from "@/services/data/useUserData";
-import { GenericWrapper } from "./types/sharedComponentTypes";
 import { User } from "@/api/schemas/inferred/user";
-import { getFollowingsByUserId } from "@/api/queries/userQueries";
-import { Page } from "@/api/schemas/inferred/common";
+import { useToggleFollow } from "@/services/data/useUserData";
+import LightButton from "@components/shared/buttons/LightButton";
 import React from "react";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 
 interface FollowToggleProps extends GenericWrapper {
     user: User
@@ -13,13 +11,10 @@ interface FollowToggleProps extends GenericWrapper {
 
 const FollowToggle: React.FC<FollowToggleProps> = ({ user, Button = LightButton, ...props }) => {
 
-    const followings: Page<User> | undefined = getFollowingsByUserId(user.id);
-    const isFollowing = followings?.content?.some(follow => follow.id === user.id);
+    const followStatus = user.isFollowing ? "unfollow" : "follow";
+    const toggleFollow = useToggleFollow(user.id);
 
-    const followStatus = isFollowing ? "unfollow" : "follow";
-    const toggleFollow = useToggleFollow();
-
-    const handleFollowToggle = (event: Event) => {
+    const handleFollowToggle = (event: React.MouseEvent) => {
         event.preventDefault();
         toggleFollow.mutate(user.id);
     }

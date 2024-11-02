@@ -1,24 +1,27 @@
 import styles from "./styles/userQueryItemStyles";
 
+import { getSignedUser } from "@/api/queries/userQueries";
+import { User } from "@/api/schemas/inferred/user";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import { useNavigate } from "react-router-dom";
 import FlexStyled from "./FlexStyled";
 import FollowToggle from "./FollowToggle";
 import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
-import { GenericWrapper } from "./types/sharedComponentTypes";
-import { getSignedUser } from "@/api/queries/userQueries";
+import React from "react";
 
-const UserQueryItem: React.FC<GenericWrapper> = ({ data: user }) => {
+const UserQueryItem = ({ user }: { user: User }) => {
 
     const classes = styles();
     const navigate = useNavigate();
-    const SignedUserId = getSignedUser()?.id;
+    const signedUser: User | undefined = getSignedUser();
+    if (signedUser === undefined) throw nullishValidationdError({ signedUser });
 
 
-    const handleClick = (event: Event) => {
+    const handleClick = (event: React.MouseEvent) => {
         event.preventDefault();
-        if (user.id === SignedUserId) return navigate('/profile');
+        if (user.id === signedUser.id) return navigate('/profile');
         navigate(`/profile/${user.id}`);
     }
 
@@ -27,7 +30,7 @@ const UserQueryItem: React.FC<GenericWrapper> = ({ data: user }) => {
         <FlexStyled className={classes.userCard} onClick={handleClick}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
             <UserDetails user={user} />
-            <FollowToggle user={user.data} />
+            <FollowToggle onClick={(e: React.MouseEvent) => e.preventDefault()} user={user} />
         </FlexStyled>
     )
 }

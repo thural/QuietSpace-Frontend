@@ -1,26 +1,18 @@
-import { useMemo } from "react";
 
-import { useToggleFollow } from "@/services/data/useUserData";
-import LightButton from "@components/shared/buttons/LightButton";
-import NotificationCard from "./base/NotificationCard";
+import { useGetUserById, useToggleFollow } from "@/services/data/useUserData";
 import { NotificationItemProps } from "@/types/notificationTypes";
-import { Page } from "@/api/schemas/inferred/common";
-import { User } from "@/api/schemas/inferred/user";
-import { getFollowingsByUser, getSignedUser } from "@/api/queries/userQueries";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import LightButton from "@components/shared/buttons/LightButton";
 import { useNavigate } from "react-router-dom";
+import NotificationCard from "./base/NotificationCard";
 
 const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) => {
 
     const navigate = useNavigate();
     const { actorId } = notification;
-    const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
-    const followings: Page<User> | undefined = getFollowingsByUser(user.id);
-    const toggleFollow = useToggleFollow();
+    const user = useGetUserById(actorId);
+    const toggleFollow = useToggleFollow(actorId);
+    const isFollowing = user.data?.isFollowing ? "unfollow" : "follow";
 
-
-    const isFollowing = useMemo(() => followings?.content.some(follow => follow.id === actorId) ? "unfollow" : "follow", [followings]);
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault();

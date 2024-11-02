@@ -1,11 +1,11 @@
-import { User } from "@/api/schemas/inferred/user";
+import { getSignedUser } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { useGetPosts, useGetPostById } from "@/services/data/usePostData";
+import { User } from "@/api/schemas/inferred/user";
+import { useGetPosts, useGetPostsByUserId } from "@/services/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { getSignedUser } from "@/api/queries/userQueries";
 
 const useUserProfile = (userId: ResId) => {
 
@@ -15,7 +15,7 @@ const useUserProfile = (userId: ResId) => {
 
 
     const user = useGetUserById(userId);
-    const userPosts = useGetPostById(userId);
+    const userPosts = useGetPostsByUserId(userId);
     if (signedUser === undefined || user === undefined) throw nullishValidationdError({ signedUser, user });
     const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
     const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy

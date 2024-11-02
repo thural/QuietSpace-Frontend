@@ -69,7 +69,7 @@ function ProfileContainer() {
                 <UserConnections userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>
-                <FollowToggle Button={OutlineButtonStyled} user={user} />
+                <FollowToggle followers={followers} Button={OutlineButtonStyled} user={user.data} />
             </ProfileControls>
             <Conditional isEnabled={isHasAccess.data}>
                 <ProfileTabs />

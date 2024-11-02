@@ -8,6 +8,8 @@ export const UserSchema = z.object({
     username: z.string(),
     email: z.string().email(),
     isPrivateAccount: z.boolean(),
+    isFollower: z.boolean().nullable(),
+    isFollowing: z.boolean().nullable(),
     createDate: z.date(),
     updateDate: z.date()
 });
