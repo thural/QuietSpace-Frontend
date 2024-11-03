@@ -6,7 +6,7 @@ import useChatCard from "../panel/hooks/useChatCard";
 import styles from "./styles/chatCardStyles";
 import { Chat } from "@/api/schemas/inferred/chat";
 
-const ChatCard = ({ data: chat }: { data: Chat }) => {
+const ChatCard = ({ chat }: { chat: Chat }) => {
 
     const classes = styles();
 

@@ -3,10 +3,9 @@ import BoxStyled from "@shared/BoxStyled";
 import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
 import { RiMenu3Fill } from "react-icons/ri";
 
-import styles from "./styles/navMenuStyles";
-import ComponentList from "@/components/shared/ComponentList";
 import CustomLink, { CustomLinkProps } from "@/components/shared/routes/CustomLink";
 import useNavMenu from "./hooks/useNavMenu";
+import styles from "./styles/navMenuStyles";
 
 
 const NavMenu = () => {
@@ -21,13 +20,13 @@ const NavMenu = () => {
         { to: "/signout", text: "logout", Component: <PiSignOut /> },
     ];
 
+    const LinkList = () => links.map(linkData => <CustomLink {...linkData} />)
+
     return (
         <>
             <BoxStyled className={classes.icon} onClick={toggleDisplay} style={{ cursor: 'pointer' }}><RiMenu3Fill /></BoxStyled>
             <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={hideMenu}></BoxStyled>
-            <BoxStyled onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}>
-                <ComponentList Component={CustomLink} list={links} />
-            </BoxStyled>
+            <BoxStyled onClick={() => setDisplay('none')} className={classes.menuList} style={{ display }}><LinkList /></BoxStyled>
         </>
     )
 }

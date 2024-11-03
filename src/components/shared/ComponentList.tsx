@@ -8,7 +8,7 @@ interface ComponentListProps extends GenericWrapper {
 
 const ComponentList: React.FC<ComponentListProps> = ({ Component, list, ...props }) => (
     list.map((elemData: Object, index: number) =>
-        <Component key={index} data={elemData}  {...elemData} {...props} />)
+        <Component key={index}  {...elemData} {...props} />)
 );
 
 export default ComponentList

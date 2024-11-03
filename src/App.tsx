@@ -1,5 +1,5 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
-import AuthPage from "./pages/auth/AuthPage"
+import AuthPage from "./pages/auth/AuthPage";
 import ChatPage from "./pages/chat/ChatPage";
 import FeedPage from "./pages/feed/FeedPage";
 import SearchPage from "./pages/search/SearchPage";
@@ -8,14 +8,18 @@ import '@mantine/core/styles.css';
 import './App.css';
 
 import { useEffect } from "react";
+import { Auth } from "./api/schemas/inferred/auth";
+import ActivationForm from "./components/auth/components/activation/ActivationForm";
+import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
+import ChatPlaceholder from "./components/chat/components/message/panel/ChatPlaceholder";
+import FeedContainer from "./components/feed/container/FeedContainer";
+import PostContainer from "./components/feed/container/PostContainer";
+import NavBar from "./components/navbar/container/Navbar";
+import ProfileContainer from "./components/profile/container/ProfileContainer";
+import UserProfileContainer from "./components/profile/container/UserProfileContainer";
+import ErrorComponent from "./components/shared/error/ErrorComponent";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
-import useChatSocket from "./services/chat/useChatSocket";
-import useJwtAuth from "./services/auth/useJwtAuth";
-import { useGetNotifications } from "./services/data/useNotificationData";
-import useNotificationSocket from "./services/notification/useNotificationSocket";
-import { useStompClient } from "./services/socket/useStompClient";
-import { useGetCurrentUser } from "./services/data/useUserData";
-import { useAuthStore } from "./services/store/zustand";
+import SignoutPage from "./pages/auth/signout/SignoutPage";
 import AllNotifications from "./pages/notification/AllNotifications";
 import NotificationPage from "./pages/notification/NotifiactionPage";
 import ReplyNotifications from "./pages/notification/ReplyNotifications";
@@ -23,16 +27,13 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import RequestNotifications from "./pages/notification/RequestNotifications";
 import ProfilePage from "./pages/profile/ProfilePage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import SignoutPage from "./pages/auth/signout/SignoutPage";
-import NavBar from "./components/navbar/container/Navbar";
-import ProfileContainer from "./components/profile/container/ProfileContainer";
-import UserProfileContainer from "./components/profile/container/UserProfileContainer";
-import ActivationForm from "./components/auth/components/activation/ActivationForm";
-import { Auth } from "./api/schemas/inferred/auth";
-import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
-import ErrorComponent from "./components/shared/error/ErrorComponent";
-import FeedContainer from "./components/feed/container/FeedContainer";
-import PostContainer from "./components/feed/container/PostContainer";
+import useJwtAuth from "./services/auth/useJwtAuth";
+import useChatSocket from "./services/chat/useChatSocket";
+import { useGetNotifications } from "./services/data/useNotificationData";
+import { useGetCurrentUser } from "./services/data/useUserData";
+import useNotificationSocket from "./services/notification/useNotificationSocket";
+import { useStompClient } from "./services/socket/useStompClient";
+import { useAuthStore } from "./services/store/zustand";
 
 const App = () => {
 
@@ -91,7 +92,7 @@ const App = () => {
                 </Route>
                 <Route path="/search/*" element={<SearchPage />} />
                 <Route path="/chat" element={<ChatPage />} >
-                    <Route index element={<ChatPanel />} />
+                    <Route index element={<ChatPlaceholder />} />
                     <Route path=":chatId" element={<ChatPanel />} />
                 </Route>
                 <Route path="/profile" element={<ProfilePage />}>

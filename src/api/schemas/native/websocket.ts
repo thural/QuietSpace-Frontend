@@ -22,9 +22,9 @@ export type DisconnectCallback = AnyFunction;
 
 
 export interface StompClientProps {
-    onConnect: ConnectCallback,
-    onSubscribe: SubscribeCallback
-    onClose: CloseCallback
-    onError: ErrorCallback
-    onDisconnect: DisconnectCallback
+    onConnect?: ConnectCallback,
+    onSubscribe?: SubscribeCallback
+    onClose?: CloseCallback
+    onError?: ErrorCallback
+    onDisconnect?: DisconnectCallback
 }

@@ -6,9 +6,9 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { ChatList, Chat, CreateChat, MessageBody, Message, PagedMessage } from "@/api/schemas/inferred/chat";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ConsumerFn } from "@/types/genericTypes";
-import { insertInitChatCache } from "@/api/queries/chatQueries";
 import { useNavigate } from "react-router-dom";
 import { getSignedUser } from "@/api/queries/userQueries";
+import chatQueries from "@/api/queries/chatQueries";
 
 
 export const useGetChatsByUserId = (userId: ResId) => {
@@ -50,6 +50,7 @@ export const useCreateChat = () => {
 
     const { data: authData } = useAuthStore();
     const navigate = useNavigate();
+    const { insertInitChatCache } = chatQueries();
 
     const onSuccess = (data: Chat) => {
         console.log("chat created successfully:", data);

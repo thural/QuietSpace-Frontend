@@ -1,16 +1,17 @@
+import { MessageList } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@shared/BoxStyled";
-import ComponentList from "@shared/ComponentList";
 import MessageBox from "../base/MessageBox";
 import styles from "./styles/messageListStyles";
-import { MessageList } from "@/api/schemas/inferred/chat";
 
 const MessagesList = ({ messages }: { messages: MessageList }) => {
 
     const classes = styles();
 
+    const MessageList = () => messages.map((message, key) => <MessageBox key={key} message={message} />);
+
     return (
         <BoxStyled className={classes.messages}>
-            <ComponentList list={messages} Component={MessageBox} />
+            <MessageList />
         </BoxStyled>
     );
 };

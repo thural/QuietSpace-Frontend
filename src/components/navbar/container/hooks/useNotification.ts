@@ -1,4 +1,4 @@
-import { getChatsCache } from "@/api/queries/chatQueries";
+import chatQueries from "@/api/queries/chatQueries";
 import { getNotificationsCache } from "@/api/queries/notificationQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 
 const useNotification = () => {
-
+    const { getChatsCache } = chatQueries();
     const chats = getChatsCache();
     const user = getSignedUser();
     const notifications = getNotificationsCache();

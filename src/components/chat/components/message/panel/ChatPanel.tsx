@@ -11,19 +11,19 @@ import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import { useParams } from "react-router-dom";
 import Placeholder from "../placeholder/ChatPlaceHolder";
 import { PiChatsCircle } from "react-icons/pi";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
 const ChatPanel: React.FC<GenericWrapper> = () => {
 
     const classes = styles();
     const { chatId } = useParams();
 
-    if (chatId === undefined) return <Placeholder Icon={PiChatsCircle} message="start a chat" type="h3" />;
-
 
 
     let data = undefined;
 
     try {
+        if (!chatId) throw nullishValidationdError({ chatId });
         data = useChat(chatId);
     } catch (error: unknown) {
         console.error(error);
@@ -48,14 +48,18 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
 
     if (isError) throw new Error("(!) unhandler error on chat service");
     if (!chats?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
-    if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
-    if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
-    if (!messages) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
+
+    const RenderResult = () => {
+        if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
+        if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
+        if (!messages) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
+        return <MessagesList messages={messages} />;
+    }
 
     return (
         <BoxStyled className={classes.chatboard}>
             <ChatHeadline recipientName={recipientName} handleDeleteChat={handleDeleteChat} />
-            <MessagesList messages={messages} />
+            <RenderResult />
             <MessageInput
                 value={inputData.text}
                 onChange={handleInputChange}

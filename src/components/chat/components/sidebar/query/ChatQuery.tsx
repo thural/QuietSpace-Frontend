@@ -1,6 +1,6 @@
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import AnchorStyled from "@shared/AnchorStyled";
 import BoxStyled from "@shared/BoxStyled";
-import ComponentList from "@shared/ComponentList";
 import FlexStyled from "@shared/FlexStyled";
 import FullLoadingOverlay from "@shared/FullLoadingOverlay";
 import Typography from "@shared/Typography";
@@ -8,14 +8,12 @@ import QueryInput from "./QueryInput";
 import UserCard from "./UserCard";
 import useQueryContainer from "./hooks/useQueryContainer";
 import styles from "./styles/chatQueryStyles";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
 
 const ChatQuery = () => {
 
     const classes = styles();
-
-
     let data = undefined;
+
 
     try {
         data = useQueryContainer();
@@ -46,7 +44,7 @@ const ChatQuery = () => {
     const RenderResult = () => {
         if (makeQueryMutation.isPending) return <FullLoadingOverlay />
         if (queryResult.length === 0) return <RecentQueries />
-        return <ComponentList list={queryResult} Component={UserCard} handleItemClick={handleChatCreation} />;
+        return queryResult.map((user, key) => <UserCard key={key} user={user} handleItemClick={handleChatCreation} />)
     }
 
     const QueryResult = () => {

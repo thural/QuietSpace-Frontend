@@ -13,16 +13,17 @@ import { ResId } from "@/api/schemas/inferred/common.js";
 import { ChatEventSchema, MessageSchema } from "@/api/schemas/zod/chatZod.js";
 import { StompMessage } from "@/api/schemas/inferred/websocket.js";
 import { ChatEventType } from "@/api/schemas/native/chat.js";
-import { deleteMessageCache, insertMessageCache, setMessageSeenCache } from "@/api/queries/chatQueries.js";
+import chatQueries from "@/api/queries/chatQueries.js";
 import { getSignedUser } from "@/api/queries/userQueries.js";
 
 
 
-const useChatSocket = (chatId: ResId) => {
+const useChatSocket = () => {
 
     const user = getSignedUser()
     if (user === undefined) throw nullishValidationdError({ user });
     const { setClientMethods } = useChatStore();
+    const { deleteMessageCache, insertMessageCache, setMessageSeenCache } = chatQueries();
     const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
 
 
@@ -59,7 +60,6 @@ const useChatSocket = (chatId: ResId) => {
     }
 
     const sendChatMessage = (inputData: MessageBody) => {
-        inputData.chatId = chatId;
         sendMessage("/app/private/chat", inputData);
     }
 
@@ -69,9 +69,11 @@ const useChatSocket = (chatId: ResId) => {
     const clientMethods = { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected }
 
     const setup = () => {
+        console.log("initiating chat socket");
         if (!isClientConnected || !user) return;
         subscribe(`/user/${user.id}/private/chat/event`, onSubscribe);
         subscribe(`/user/${user.id}/private/chat`, onSubscribe);
+        console.log("chat cleint methods has been set");
         setClientMethods(clientMethods);
     }
 

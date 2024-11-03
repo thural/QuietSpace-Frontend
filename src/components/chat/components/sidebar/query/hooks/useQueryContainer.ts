@@ -1,4 +1,4 @@
-import { insertInitChatCache, insertMessageCache } from "@/api/queries/chatQueries";
+import chatQueries from "@/api/queries/chatQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { Chat, Message } from "@/api/schemas/inferred/chat";
 import { User } from "@/api/schemas/inferred/user";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 const useQueryContainer = () => {
 
     const navigate = useNavigate();
+    const { insertMessageCache, insertInitChatCache } = chatQueries();
 
     const user: User | undefined = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
@@ -34,7 +35,7 @@ const useQueryContainer = () => {
             id: crypto.randomUUID(),
             createDate: new Date,
             updateDate: new Date,
-            chatId: -1,
+            chatId: "-1",
             senderId: user.id,
             version: 1,
             recipientId: clickedUser.id,
@@ -44,7 +45,7 @@ const useQueryContainer = () => {
         }
 
         const newChat: Chat = {
-            id: -1,
+            id: "-1",
             createDate: new Date,
             userIds: [user.id, clickedUser.id],
             recentMessage: newMessage,
@@ -93,4 +94,4 @@ const useQueryContainer = () => {
     };
 };
 
-export default useQueryContainer;
+export default useQueryContainer

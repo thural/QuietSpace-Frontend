@@ -4,20 +4,19 @@ import { ChangeEvent, useState } from "react";
 import { ChatList, CreateChat } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { getChatsCache } from "@/api/queries/chatQueries";
+import chatQueries from "@/api/queries/chatQueries";
 
 export const useChat = (chatId: ResId) => {
-
-    const chats: ChatList | undefined = getChatsCache()
-    const currentChat = chats?.find(chat => chat.id === chatId);
-    if (currentChat === undefined) throw nullishValidationdError({ currentChat });
-    const { username: recipientName, id: recipientId } = currentChat.members[0] || {};
-
-
 
     const { data: { userId } } = useAuthStore();
     const { clientMethods } = useChatStore();
     const { sendChatMessage, isClientConnected } = clientMethods;
+
+    const { getChatsCache } = chatQueries();
+    const chats: ChatList | undefined = getChatsCache()
+    const currentChat = chats?.find(chat => chat.id === chatId);
+    if (currentChat === undefined) throw nullishValidationdError({ currentChat });
+    const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== userId) || {};
 
 
 
@@ -53,7 +52,7 @@ export const useChat = (chatId: ResId) => {
     }
 
     const handeSendMessgae = () => {
-        if (chatId === -1) createChat();
+        if (chatId === "-1") createChat();
         sendChatMessage(inputData);
     };
 

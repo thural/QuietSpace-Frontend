@@ -13,12 +13,12 @@ export interface UserCardProps extends GenericWrapper {
     handleItemClick: ConsumerFn
 }
 
-const UserCard: React.FC<UserCardProps> = ({ data: user, handleItemClick, children }) => {
+const UserCard: React.FC<UserCardProps> = ({ user, handleItemClick, children }) => {
 
     const classes = styles();
 
     const handleClick = (event: React.MouseEvent) => {
-        console.log("user itom on chat query was clicked");
+        console.log("user item on chat query was clicked");
         event.preventDefault();
         handleItemClick(event, user);
     }

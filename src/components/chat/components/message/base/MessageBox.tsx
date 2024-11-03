@@ -6,7 +6,7 @@ import styles from "./styles/messageStyles";
 import { Message } from "@/api/schemas/inferred/chat";
 import { handleDeleteMessage } from "@/components/chat/container/utils/chatHandler";
 
-const MessageBox = ({ data: message }: { data: Message }) => {
+const MessageBox = ({ message }: { message: Message }) => {
 
     const classes = styles();
 
