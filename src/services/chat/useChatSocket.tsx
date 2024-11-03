@@ -57,10 +57,7 @@ const useChatSocket = () => {
         }
     }
 
-    const sendChatMessage = (inputData: MessageBody) => {
-        sendMessage("/app/private/chat", inputData);
-    }
-
+    const sendChatMessage = (inputData: MessageBody) => sendMessage("/app/private/chat", inputData);
     const deleteChatMessage = (messageId: ResId) => sendMessage(`/app/private/chat/delete/${messageId}`);
     const setMessageSeen = (messageId: ResId) => sendMessage(`/app/private/chat/seen/${messageId}`);
 

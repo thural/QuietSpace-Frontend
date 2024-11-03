@@ -5,7 +5,7 @@ import { Notification } from "@/api/schemas/inferred/notification";
 import { ResId } from "@/api/schemas/native/common";
 import { ChatEventSchema } from "@/api/schemas/zod/chatZod";
 import { Frame } from "stompjs";
-import { handleReceivedNotifcation, handleSeenNotification } from "@/api/queries/notificationQueries";
+import notificationQueries from "@/api/queries/notificationQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
 
 
@@ -13,6 +13,7 @@ const useNotificationSocket = () => {
 
     const user = getSignedUser();
     const { setClientMethods } = useNotificationStore();
+    const { handleReceivedNotifcation, handleSeenNotification } = notificationQueries();
     const { clientContext } = useStompStore();
     const { subscribe, sendMessage, isClientConnected } = clientContext;
 

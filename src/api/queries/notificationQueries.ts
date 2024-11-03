@@ -5,31 +5,44 @@ import { Page } from "../schemas/inferred/common";
 
 
 
-export const handleReceivedNotifcation = (notification: Notification) => {
-    const queryClient = useQueryClient();
-    queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
-        const oldContent = oldData.content;
-        const updatedContent = [...oldContent, notification];
-        return { ...oldData, content: updatedContent };
-    });
-    queryClient.invalidateQueries({ queryKey: ["notifications"] });
-};
+const notificationQueries = () => {
 
-export const handleSeenNotification = (eventBody: ChatEvent) => {
     const queryClient = useQueryClient();
-    queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
-        const oldContent = oldData.content;
-        const updatedContent = oldContent.map(notification => {
-            if (notification.id !== eventBody.recipientId) return notification;
-            notification.isSeen = true;
-            return notification;
+
+    const handleReceivedNotifcation = (notification: Notification) => {
+        queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
+            const oldContent = oldData.content;
+            const updatedContent = [...oldContent, notification];
+            return { ...oldData, content: updatedContent };
         });
-        return { ...oldData, content: updatedContent };
-    });
-    queryClient.invalidateQueries({ queryKey: ["notifications"] });
-};
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    };
 
-export const getNotificationsCache = (): Page<Notification> | undefined => {
-    const queryClient = useQueryClient();
-    return queryClient.getQueryData(["notifications"]);
+    const handleSeenNotification = (eventBody: ChatEvent) => {
+
+        queryClient.setQueryData(['notifications'], (oldData: NotificationPage) => {
+            const oldContent = oldData.content;
+            const updatedContent = oldContent.map(notification => {
+                if (notification.id !== eventBody.recipientId) return notification;
+                notification.isSeen = true;
+                return notification;
+            });
+            return { ...oldData, content: updatedContent };
+        });
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    };
+
+    const getNotificationsCache = (): Page<Notification> | undefined => {
+        return queryClient.getQueryData(["notifications"]);
+    }
+
+
+
+    return {
+        handleReceivedNotifcation,
+        handleSeenNotification,
+        getNotificationsCache
+    }
 }
+
+export default notificationQueries

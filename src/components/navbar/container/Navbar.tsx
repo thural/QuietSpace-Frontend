@@ -43,7 +43,7 @@ const NavBar = () => {
     return <ErrorComponent message={errorMessage} />;
   }
 
-  const { hasPendingNotification } = data;
+  const { hasPendingNotification, hasUnreadChat } = data;
 
   const itemList: Array<NavItemProps> = [
     {
@@ -58,25 +58,28 @@ const NavBar = () => {
       icon: <PiMagnifyingGlass />,
       iconFill: <PiMagnifyingGlassFill />
     },
-    {
-      linkTo: "/chat",
-      pathName: pathName,
-      icon: <PiChatCircle />,
-      iconFill: <PiChatCircleFill />
-    },
-    {
-      linkTo: "/profile",
-      pathName: pathName,
-      icon: <PiUser />,
-      iconFill: <PiUserFill />
-    },
-    {
-      linkTo: "/notification/all",
-      pathName: pathName,
-      icon: <PiBell />,
-      iconFill: <PiBellFill />
-    }
   ];
+
+  const notification = {
+    linkTo: "/notification/all",
+    pathName: pathName,
+    icon: <PiBell />,
+    iconFill: <PiBellFill />
+  }
+
+  const profile = {
+    linkTo: "/profile",
+    pathName: pathName,
+    icon: <PiUser />,
+    iconFill: <PiUserFill />
+  }
+
+  const chat = {
+    linkTo: "/chat",
+    pathName: pathName,
+    icon: <PiChatCircle />,
+    iconFill: <PiChatCircleFill />
+  }
 
 
   return (
@@ -84,9 +87,17 @@ const NavBar = () => {
       <Typography type="h1" className="title">QS</Typography>
       <NavStyled>
         <ComponentList Component={NavItem} list={itemList} />
-        <Conditional isEnabled={hasPendingNotification}>
-          <Badge className="badge" circle />
-        </Conditional>
+        <NavItem {...chat}>
+          <Conditional isEnabled={hasUnreadChat}>
+            <Badge className="badge" circle />
+          </Conditional>
+        </NavItem>
+        <NavItem {...profile} />
+        <NavItem {...notification}>
+          <Conditional isEnabled={hasPendingNotification}>
+            <Badge className="badge" circle />
+          </Conditional>
+        </NavItem>
       </NavStyled>
       <BoxStyled className="navbar-item menu"><NavMenu /></BoxStyled>
     </BoxStyled>

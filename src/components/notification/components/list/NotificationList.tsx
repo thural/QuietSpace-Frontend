@@ -1,11 +1,10 @@
+import { Notification } from "@/api/schemas/inferred/notification";
+import { NotificationType } from "@/api/schemas/native/notification";
+import { NotificationListProps } from "@/types/notificationTypes";
 import Typography from "@components/shared/Typography";
 import CommentNotification from "../CommentNotification";
 import FollowNotification from "../FollowNotification";
 import PostNotification from "../PostNotification";
-import { Notification } from "@/api/schemas/inferred/notification";
-import { getEnumValueFromString } from "@/utils/enumUtils";
-import { NotificationListProps } from "@/types/notificationTypes";
-import { NotificationType } from "@/api/schemas/native/notification";
 
 
 
@@ -15,7 +14,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
 
     const getNotificationCard = (notification: Notification) => {
         const { type, id } = notification;
-        const enumValue = getEnumValueFromString(NotificationType, type)
+        // const enumValue = getEnumValueFromString(NotificationType, type)
 
         const {
             FOLLOW_REQUEST,
@@ -27,7 +26,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
             REPOST
         } = NotificationType;
 
-        switch (enumValue) {
+        switch (type) {
 
             case COMMENT_REACTION:
                 return <CommentNotification key={id} notification={notification} />;

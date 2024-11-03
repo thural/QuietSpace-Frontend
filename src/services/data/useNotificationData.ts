@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
 import { fetchCountOfPendingNotifications, fetchNotifications } from "../../api/requests/notificationRequests";
+import { PagedNotificationResponse } from "@/api/schemas/native/notification";
 
 
 
@@ -10,12 +11,11 @@ export const useGetNotifications = () => {
 
     return useQuery({
         queryKey: ["notifications"],
-        queryFn: async () => {
+        queryFn: async (): Promise<PagedNotificationResponse> => {
             return await fetchNotifications(authData.accessToken);
         },
         retry: 3,
-        retryDelay: 1000,
-        select: data => data.content
+        retryDelay: 1000
     });
 }
 
