@@ -20,7 +20,7 @@ const NavMenu = () => {
         { to: "/signout", text: "logout", Component: <PiSignOut /> },
     ];
 
-    const LinkList = () => links.map(linkData => <CustomLink {...linkData} />)
+    const LinkList = () => links.map((linkData, key) => <CustomLink key={key} {...linkData} />)
 
     return (
         <>

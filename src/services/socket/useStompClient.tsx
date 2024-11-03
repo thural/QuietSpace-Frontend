@@ -1,100 +1,188 @@
-import SockJS from 'sockjs-client';
 import { useEffect, useState } from "react";
+import SockJS from 'sockjs-client';
 import { Client, Frame, over } from "stompjs";
-import { useAuthStore, useStompStore } from "../store/zustand";
-import { StompHeaders, Headers, StompClientProps } from "@/api/schemas/native/websocket";
-import { AnyFunction } from "@/types/genericTypes";
+import { useAuthStore, useStompStore } from "@/services/store/zustand";
+import {
+    Headers,
+    StompHeaders,
+    StompClientProps,
+    ConnectCallback,
+    SubscribeCallback,
+    DisconnectCallback
+} from "@/api/schemas/native/websocket";
 import { ResId } from "@/api/schemas/native/common";
 import { ClientContextType } from "@/types/stompStoreTypes";
 
 export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }: StompClientProps) => {
 
-    const initClient = over(new SockJS('http://localhost:8080/ws'));
-
-
     const { setClientContext } = useStompStore();
     const { isAuthenticated, data } = useAuthStore();
-    const [client, setClient] = useState<Client>(initClient);
-    const [isConnecting, setIsConnecting] = useState(true);
-    const [isError, setIsError] = useState(false);
+
+    const [stompClient, setStompClient] = useState<Client | null>(null);
+    const [isClientConnected, setIsClientConnected] = useState<boolean>(false);
+    const [isConnecting, setIsConnecting] = useState<boolean>(true);
+    const [isDisconnected, setIsDisconnected] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
 
-    const createStompClient = (): Client => over(new SockJS('http://localhost:8080/ws'));
 
     const handleError = (message: string) => {
+        if (!onError) onError = (message: Frame | string) => console.error(message);
         setError(new Error(message));
         setIsError(true);
         onError(message);
         console.log(message);
     }
 
-    const handleConnect = (frame: Frame | undefined, callBackFn: AnyFunction) => {
-        setError(null);
-        setIsError(false);
-        callBackFn(frame);
-        setIsConnecting(false);
+    const createStompClient = (): Client => {
+        const socket = new SockJS('http://localhost:8080/ws');
+        const client = over(socket);
+        return client;
     }
 
-    const openConnection = ({ headers = { "Authorization": "Bearer " + data.accessToken } }) => {
-        if (!client.connected) return handleError("error on opening connection, client is not ready");
-        if (!onConnect) onConnect = (frame: Frame | undefined) => console.log("stomp client has been connected: ", frame);
-        client.connect(headers, (frame) => handleConnect(frame, onConnect));
+    const setAutoReconnect = (delay: number = 5000) => {
+        if (stompClient) {
+            stompClient.reconnect_delay = delay;
+        }
+    }
+
+    const openConnection = ({ headers = { "Authorization": "Bearer " + data?.accessToken } }) => {
+        if (stompClient === null) {
+            return handleError("error on opening connection, client is not ready");
+        }
+
+        const defaultConnect: ConnectCallback = (frame) =>
+            console.log("stomp client has been connected: ", frame);
+
+        stompClient.connect(
+            headers,
+            (frame) => {
+                setError(null);
+                setIsError(false);
+                setIsConnecting(false);
+                setIsClientConnected(true);
+                (onConnect || defaultConnect)(frame);
+            }
+        );
     }
 
     const disconnect = () => {
-        if (!client.connected) return handleError("error, client is already disconnected");
-        if (!onDisconnect) onDisconnect = () => console.log("client has been disconnected");
-        client.disconnect(onDisconnect);
+        if (!isClientConnected) {
+            return handleError("error, client is already disconnected");
+        }
+
+        const defaultDisconnect: DisconnectCallback = () =>
+            console.log("client has been disconnected");
+
+        stompClient?.disconnect(
+            () => {
+                setIsDisconnected(true);
+                (onDisconnect || defaultDisconnect)();
+            }
+        );
     }
 
     const sendMessage = (destination: string, body: any, headers: StompHeaders | Headers = {}) => {
-        if (!client.connected) return handleError("error on sending message, client is not ready");
-        client.send(destination, headers, JSON.stringify(body));
+        if (!isClientConnected) {
+            return handleError("error on sending message, client is not ready");
+        }
+        stompClient?.send(destination, headers, JSON.stringify(body));
     }
 
-    const subscribe = (destination: string, onSubscribe: AnyFunction) => {
-        if (!client.connected) return handleError("error on subsbcribing: client is not ready");
-        if (!onSubscribe) onSubscribe = (message: Frame) => console.log(`received message at ${destination}, ${message}`);
-        client.subscribe(destination, onSubscribe);
+    const subscribe = (destination: string, callback?: SubscribeCallback) => {
+        if (stompClient === null) {
+            return handleError("error on subscribing, client is not ready");
+        }
+
+        const defaultCallback: SubscribeCallback = (message) => {
+            console.log(`received message at ${destination}, ${message}`)
+        };
+
+        stompClient.subscribe(destination, callback || defaultCallback);
     }
 
-    const subscribeWithId = (destination: string, subscribtionId: ResId) => {
-        if (!client.connected) return handleError("error on subscribing, client is not ready");
-        if (!onSubscribe) onSubscribe = (message: Frame | undefined) => console.log(`received message: ${message}, at: ${destination}`);
-        client.subscribe(destination, onSubscribe, { id: subscribtionId });
+    const subscribeWithId = (destination: string, subscriptionId: ResId) => {
+        if (stompClient === null) {
+            return handleError("error on subscribing, client is not ready");
+        }
+
+        const defaultSubscribe: SubscribeCallback = (message) => {
+            if (message?.body) {
+                const messageBody = JSON.parse(message.body);
+                console.log(`received message at ${destination}, ${messageBody}`)
+            }
+        };
+
+        stompClient.subscribe(destination, onSubscribe || defaultSubscribe, { id: subscriptionId });
     }
 
     const unSubscribe = (destination: string) => {
-        if (!client.connected) return handleError("error on unsubsbcribing, client is not ready");
-        client.unsubscribe(destination);
+        if (stompClient === null) {
+            return handleError("error on unsubscribing, client is not ready");
+        }
+        stompClient.unsubscribe(destination);
     }
 
 
-    const methods = { subscribe, disconnect, unSubscribe, sendMessage, subscribeWithId };
-    const recentContext = { isClientConnected: client.connected, isDisconnected: !client.connected, isConnecting, isError, error }
+
+    const methods = {
+        subscribe,
+        disconnect,
+        unSubscribe,
+        sendMessage,
+        subscribeWithId,
+        setAutoReconnect
+    };
+
+    const recentContext = {
+        isClientConnected,
+        isDisconnected,
+        isConnecting,
+        isError,
+        error
+    };
+
+
+
     const setContext = (recentContext: ClientContextType) => setClientContext({ ...methods, ...recentContext });
 
 
-    const onAuthenticationChange = () => {
+
+    const onAuthenticated = () => {
         if (!isAuthenticated) return;
-        setClient(createStompClient());
+        const newClient = createStompClient();
+        setStompClient(newClient);
         setContext(recentContext);
     }
 
     const onClientChange = () => {
-        if (!client.connected) return;
+        if (!stompClient) return;
         setIsConnecting(true);
         openConnection({});
         setContext(recentContext);
     }
 
-    const onConnectionChange = () => {
-        if (!client.connected) return;
+    const onConnnectionChange = () => {
+        if (!isClientConnected) return;
         setContext(recentContext);
     }
 
-    useEffect(onAuthenticationChange, [isAuthenticated])
-    useEffect(onClientChange, [client]);
-    useEffect(onConnectionChange, [client.connected]);
-}
+
+
+    useEffect(onAuthenticated, [isAuthenticated])
+    useEffect(onClientChange, [stompClient])
+    useEffect(onConnnectionChange, [isClientConnected]);
+
+
+
+
+    return {
+        stompClient,
+        isClientConnected,
+        isConnecting,
+        isError,
+        error,
+        ...methods
+    };
+};

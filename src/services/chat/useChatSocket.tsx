@@ -5,23 +5,21 @@ import {
     handleOnlineUser,
 } from "../../components/chat/container/utils/chatHandler.js";
 
-import { useEffect } from "react";
-import { useChatStore, useStompStore } from "../store/zustand.js";
-import { MessageBody } from "@/api/schemas/inferred/chat.js";
-import { nullishValidationdError } from "@/utils/errorUtils.js";
-import { ResId } from "@/api/schemas/inferred/common.js";
-import { ChatEventSchema, MessageSchema } from "@/api/schemas/zod/chatZod.js";
-import { StompMessage } from "@/api/schemas/inferred/websocket.js";
-import { ChatEventType } from "@/api/schemas/native/chat.js";
 import chatQueries from "@/api/queries/chatQueries.js";
 import { getSignedUser } from "@/api/queries/userQueries.js";
+import { MessageBody } from "@/api/schemas/inferred/chat.js";
+import { ResId } from "@/api/schemas/inferred/common.js";
+import { StompMessage } from "@/api/schemas/inferred/websocket.js";
+import { ChatEventType } from "@/api/schemas/native/chat.js";
+import { ChatEventSchema, MessageSchema } from "@/api/schemas/zod/chatZod.js";
+import { useEffect } from "react";
+import { useChatStore, useStompStore } from "../store/zustand.js";
 
 
 
 const useChatSocket = () => {
 
     const user = getSignedUser()
-    if (user === undefined) throw nullishValidationdError({ user });
     const { setClientMethods } = useChatStore();
     const { deleteMessageCache, insertMessageCache, setMessageSeenCache } = chatQueries();
     const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();

@@ -8,6 +8,7 @@ import '@mantine/core/styles.css';
 import './App.css';
 
 import { useEffect } from "react";
+import { Frame } from "stompjs";
 import { Auth } from "./api/schemas/inferred/auth";
 import ActivationForm from "./components/auth/components/activation/ActivationForm";
 import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
@@ -43,19 +44,10 @@ const App = () => {
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
 
-    const initServices = () => {
-        if (!isAuthenticated || isUserError || isUserLoading) return;
-        try {
-            useStompClient({});
-            useChatSocket();
-            useGetNotifications();
-            useNotificationSocket();
-        } catch (error: unknown) {
-            console.error(error);
-        }
-    }
-
-    useEffect(initServices, [isAuthenticated]);
+    useStompClient({ onError: (message: Frame | string) => console.error(message) });
+    useChatSocket();
+    useGetNotifications();
+    useNotificationSocket();
 
 
     const onSuccessFn = (data: Auth) => {
