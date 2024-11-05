@@ -44,6 +44,7 @@
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "zod": "^3.23.8",
+    "zod-validation-error": "^3.4.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

@@ -21,7 +21,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
         data = useGetChatsByUserId(user.id);
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `could not load chat data: ${(error as Error).message}`
+        const errorMessage = `could not load chat data: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />;
     }
 

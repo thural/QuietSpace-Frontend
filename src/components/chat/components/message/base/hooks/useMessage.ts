@@ -18,7 +18,7 @@ const useMessage = (message: Message) => {
     const [isHovering, setIsHovering] = useState(false);
     const [wasSeen, wasSeenRef] = useWasSeen();
 
-    const handleDeleteMessage = () => deleteChatMessage(message);
+    const handleDeleteMessage = () => deleteChatMessage(message.id);
 
     const handleMouseOver = () => {
         setIsHovering(true);

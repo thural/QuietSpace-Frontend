@@ -6,8 +6,8 @@ export const ResIdSchema = z.union([z.string(), z.number()]);
 export const BaseSchema = z.object({
     id: ResIdSchema,
     version: z.number().optional(),
-    createDate: z.date(),
-    updateDate: z.date().optional()
+    createDate: z.string().optional(),
+    updateDate: z.string().optional()
 });
 
 export const JwtTokenSchema = z.string();

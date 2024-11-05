@@ -1,17 +1,17 @@
 import BoxStyled from "@/components/shared/BoxStyled";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import Typography from "@/components/shared/Typography";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { PiChatsCircle } from "react-icons/pi";
+import { useParams } from "react-router-dom";
 import ChatHeadline from "../headline/ChatHeadline";
 import MessageInput from "../input/MessageInput";
 import MessagesList from "../list/MessageList";
+import Placeholder from "../placeholder/ChatPlaceHolder";
 import { useChat } from "./hooks/useChat";
 import styles from "./styles/chatPanelStyles";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import Typography from "@/components/shared/Typography";
-import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import { useParams } from "react-router-dom";
-import Placeholder from "../placeholder/ChatPlaceHolder";
-import { PiChatsCircle } from "react-icons/pi";
-import { nullishValidationdError } from "@/utils/errorUtils";
 
 const ChatPanel: React.FC<GenericWrapper> = () => {
 
@@ -45,6 +45,7 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
     } = data;
 
 
+    console.log("messages", messages);
 
     if (isError) throw new Error("(!) unhandler error on chat service");
     if (!chats?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
@@ -53,8 +54,9 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
         if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
         if (!messages) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
-        return <MessagesList messages={messages} />;
+        return <MessagesList messages={messages.content} />;
     }
+
 
     return (
         <BoxStyled className={classes.chatboard}>

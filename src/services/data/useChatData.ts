@@ -88,7 +88,6 @@ export const useGetMessagesByChatId = (chatId: ResId) => {
         },
         retry: 3,
         retryDelay: 1000,
-        select: (data) => data.content,
         enabled: !!user.id && !!chatId,
         staleTime: 1000 * 60 * 3,
         refetchInterval: 1000 * 60 * 6
@@ -156,7 +155,6 @@ export const useDeleteChat = (chatId: ResId | undefined) => {
     const onSuccess = () => {
         queryClient.invalidateQueries({ queryKey: ["chats"] })
             .then(() => console.log("chat cache was invalidated"));
-        console.log("chat cache was invalidated");
     }
 
     const onError = (error: Error) => {

@@ -3,6 +3,7 @@ import EmojiInput from "@shared/EmojiInput";
 import FormStyled from "@shared/FormStyled";
 import styles from "./styles/messageInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
+import { useRef } from "react";
 
 interface MessageinputProps {
     value: string
@@ -15,11 +16,13 @@ interface MessageinputProps {
 const MessageInput: React.FC<MessageinputProps> = ({ value, onChange, onEnter, placeholder, enabled }) => {
 
     const classes = styles();
+    const messageInput = useRef("");
 
     return (
         <BoxStyled className={classes.inputSection}>
             <FormStyled className={classes.inputForm}>
                 <EmojiInput
+                    ref={messageInput}
                     className={classes.messageInput}
                     value={value}
                     onChange={onChange}

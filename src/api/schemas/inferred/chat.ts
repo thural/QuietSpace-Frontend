@@ -3,7 +3,7 @@ import {
     ChatEventTypeSchema,
     BaseEventSchema,
     ChatEventSchema,
-    MessageBodySchema,
+    MessageFormSchema,
     MessageSchema,
     ChatSchema,
     CreateChatSchema,
@@ -16,7 +16,7 @@ import {
 export type ChatEventType = z.infer<typeof ChatEventTypeSchema>;
 export type BaseEvent = z.infer<typeof BaseEventSchema>;
 export type ChatEvent = z.infer<typeof ChatEventSchema>;
-export type MessageBody = z.infer<typeof MessageBodySchema>;
+export type MessageBody = z.infer<typeof MessageFormSchema>;
 export type Message = z.infer<typeof MessageSchema>;
 export type Chat = z.infer<typeof ChatSchema>;
 export type CreateChat = z.infer<typeof CreateChatSchema>;

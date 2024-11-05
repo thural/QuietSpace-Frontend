@@ -33,8 +33,8 @@ const useQueryContainer = () => {
 
         const newMessage: Message = {
             id: crypto.randomUUID(),
-            createDate: new Date,
-            updateDate: new Date,
+            createDate: String(new Date),
+            updateDate: String(new Date),
             chatId: "-1",
             senderId: user.id,
             version: 1,
@@ -46,11 +46,11 @@ const useQueryContainer = () => {
 
         const newChat: Chat = {
             id: "-1",
-            createDate: new Date,
+            createDate: String(new Date),
             userIds: [user.id, clickedUser.id],
             recentMessage: newMessage,
             members: [user, clickedUser],
-            updateDate: new Date,
+            updateDate: String(new Date),
             version: 1
         }
 

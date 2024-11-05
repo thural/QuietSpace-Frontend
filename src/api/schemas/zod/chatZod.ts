@@ -6,26 +6,26 @@ import { ChatEventType } from "@/api/schemas/native/chat";
 export const ChatEventTypeSchema = z.nativeEnum(ChatEventType);
 
 export const BaseEventSchema = z.object({
-    message: z.string(),
-    eventBody: z.object({}),
+    message: z.string().optional(),
+    eventBody: z.record(z.any()).optional(),
     type: ChatEventTypeSchema
 });
 
 export const ChatEventSchema = BaseEventSchema.extend({
     chatId: ResIdSchema,
-    actorId: ResIdSchema,
-    messageId: ResIdSchema,
-    recipientId: ResIdSchema
+    actorId: ResIdSchema.optional(),
+    messageId: ResIdSchema.optional(),
+    recipientId: ResIdSchema.optional()
 });
 
-export const MessageBodySchema = z.object({
+export const MessageFormSchema = z.object({
     chatId: ResIdSchema,
     senderId: ResIdSchema,
     recipientId: ResIdSchema,
     text: z.string()
 });
 
-export const MessageSchema = MessageBodySchema.extend({
+export const MessageSchema = MessageFormSchema.extend({
     ...BaseSchema.shape,
     senderName: z.string(),
     isSeen: z.boolean()
@@ -34,7 +34,7 @@ export const MessageSchema = MessageBodySchema.extend({
 export const ChatSchema = BaseSchema.extend({
     userIds: z.array(ResIdSchema),
     members: z.array(UserSchema),
-    recentMessage: MessageSchema
+    recentMessage: MessageSchema.optional()
 });
 
 export const AtLeastTwoElemSchema = <T extends z.ZodType>(schema: T) =>

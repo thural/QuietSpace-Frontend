@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Chat, ChatEvent, ChatList, Message, MessageList, PagedMessage } from "../schemas/inferred/chat";
+import { Chat, ChatEvent, ChatList, Message, PagedMessage } from "../schemas/inferred/chat";
 import { PageContent } from "../schemas/inferred/common";
+import { getInitPageObject } from "@/utils/dataTemplates";
 
 
 
@@ -36,7 +37,6 @@ const chatQueries = () => {
     }
 
     const insertInitChatCache = (chatBody: Chat) => {
-        console.log("inserting chat: ", chatBody);
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             const updatedChats = [...oldData, chatBody];
             console.log("updated chat data on chat creation: ", updatedChats);
@@ -45,12 +45,9 @@ const chatQueries = () => {
     }
 
     const insertMessageCache = (messageBody: Message) => {
-        queryClient.setQueryData(['messages', { id: messageBody.chatId }], (oldData: MessageList) => {
-            console.log("old message data: ", oldData);
-            console.log("type of old data: ", typeof oldData);
-            console.log("insered message to cache: ", messageBody);
-            if (oldData === undefined) return [messageBody];
-            return [...oldData, messageBody];
+        queryClient.setQueryData(['messages', { id: messageBody.chatId }], (oldData: PagedMessage) => {
+            if (oldData !== undefined) return { ...oldData, content: [messageBody, ...oldData.content] };
+            return getInitPageObject(25, [messageBody]);
         });
     }
 
@@ -59,8 +56,6 @@ const chatQueries = () => {
             const updatedMessages = oldData.content.filter(message => message.id !== chatEvent.messageId);
             return { ...oldData, content: updatedMessages };
         });
-
-        queryClient.invalidateQueries({ queryKey: ["chats"] });
     }
 
     const setMessageSeenCache = (chatEvent: ChatEvent) => {
@@ -73,7 +68,6 @@ const chatQueries = () => {
             });
             return { ...oldData, content: updatedMessages };
         });
-        queryClient.invalidateQueries({ queryKey: ["chats"] });
     }
 
 

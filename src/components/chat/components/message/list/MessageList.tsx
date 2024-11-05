@@ -7,11 +7,9 @@ const MessagesList = ({ messages }: { messages: MessageList }) => {
 
     const classes = styles();
 
-    const MessageList = () => messages.map((message, key) => <MessageBox key={key} message={message} />);
-
     return (
         <BoxStyled className={classes.messages}>
-            <MessageList />
+            {messages.map((message, key) => <MessageBox key={key} message={message} />)}
         </BoxStyled>
     );
 };
