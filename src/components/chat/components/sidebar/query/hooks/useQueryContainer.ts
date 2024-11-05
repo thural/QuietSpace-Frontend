@@ -2,9 +2,10 @@ import chatQueries from "@/api/queries/chatQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { Chat, Message } from "@/api/schemas/inferred/chat";
 import { User } from "@/api/schemas/inferred/user";
+import { useGetChatsByUserId } from "@/services/data/useChatData";
 import { useQueryUsers } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -15,6 +16,8 @@ const useQueryContainer = () => {
 
     const user: User | undefined = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
+
+    const { data: chats, isLoading, isError } = useGetChatsByUserId(user.id);
 
 
 
@@ -31,6 +34,13 @@ const useQueryContainer = () => {
     const handleChatCreation = async (event: React.MouseEvent, clickedUser: User) => {
         event.preventDefault();
 
+        if (isLoading || isError) throw nullishValidationdError({ chats });
+
+        const isExistingChat = chats?.some(chat => chat.members
+            .some(user => user.id === clickedUser.id));
+
+        if (isExistingChat) return;
+
         const newMessage: Message = {
             id: crypto.randomUUID(),
             createDate: String(new Date),
@@ -39,7 +49,7 @@ const useQueryContainer = () => {
             senderId: user.id,
             version: 1,
             recipientId: clickedUser.id,
-            text: "you opened a chat",
+            text: "opened new chat",
             isSeen: true,
             senderName: user.username
         }
@@ -59,18 +69,18 @@ const useQueryContainer = () => {
         navigate("-1");
     };
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setFocused(true);
-        if (value.length) handleQuerySubmit(value);
-        else setQueryResult([]);
-    };
-
     const handleQuerySubmit = async (value: string) => {
         if (isSubmitting) return;
         setIsSubmitting(true);
         makeQueryMutation.mutate(value);
         setTimeout(() => { setIsSubmitting(false); }, 1000);
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setFocused(true);
+        if (value.length) handleQuerySubmit(value);
+        else setQueryResult([]);
     };
 
     const handleKeyDown = (event: React.KeyboardEvent) => { if (event.key === 'Escape') setFocused(false) };
