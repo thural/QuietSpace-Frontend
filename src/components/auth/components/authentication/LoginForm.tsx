@@ -11,6 +11,7 @@ import styles from "../registration/styles/formStyles";
 import { AuthFormProps } from "@/types/authTypes";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
+import React from "react";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 
@@ -21,7 +22,7 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
         data = useLoginForm({ setAuthState, authState });
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error on acitvation form: ${(error as Error).message}`;
+        const errorMessage = `error on activation form: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />;
     }
 

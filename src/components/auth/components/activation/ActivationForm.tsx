@@ -10,6 +10,7 @@ import { ActivationFormProps } from "@/types/authTypes";
 import { CountDownDisplay } from "@/services/common/useTimer";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import React from "react";
 
 const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
     <FormStyled className="timer">
@@ -28,7 +29,7 @@ const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState
         data = useActivationForm({ setAuthState, authState });
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error on acitvation form: ${(error as Error).message}`;
+        const errorMessage = `error on activation form: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />;
     }
 

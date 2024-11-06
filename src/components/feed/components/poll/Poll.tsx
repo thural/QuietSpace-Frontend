@@ -9,6 +9,7 @@ import { Poll } from "@/api/schemas/inferred/post";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import { nullishValidationdError } from "@/utils/errorUtils";
+import React from "react";
 
 
 interface PollProps {

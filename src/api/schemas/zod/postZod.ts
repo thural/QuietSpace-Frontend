@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
-import { ReactionTypeSchema, UserReactionSchema } from "./reactionZod";
+import { UserReactionSchema } from "./reactionZod";
 
 
 export const VoteBodySchema = z.object({
@@ -26,9 +26,10 @@ export const PollSchema = z.object({
 export const PollBodySchema = z.object({
     dueDate: z.string().nullable(),
     options: z.array(z.string())
-})
+});
 
 export const PostBodySchema = z.object({
+    title: z.string(),
     text: z.string(),
     userId: ResIdSchema,
     viewAccess: z.enum(['friends', 'all']),

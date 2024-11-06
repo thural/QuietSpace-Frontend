@@ -19,8 +19,8 @@ const ChatQuery = () => {
         data = useQueryContainer();
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error loading users: ${(error as Error).message}`
-        return <ErrorComponent message={errorMessage} />
+        const errorMessage = `error loading users: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />;
     }
 
     const {
@@ -30,6 +30,7 @@ const ChatQuery = () => {
         inputProps,
         makeQueryMutation,
     } = data;
+
 
 
     const RecentQueries = () => {
@@ -44,12 +45,13 @@ const ChatQuery = () => {
     const RenderResult = () => {
         if (makeQueryMutation.isPending) return <FullLoadingOverlay />
         if (queryResult.length === 0) return <RecentQueries />
-        return queryResult.map((user, key) => <UserCard key={key} user={user} handleItemClick={handleChatCreation} />)
+        return queryResult.map((user, key) =>
+            <UserCard key={key} user={user} isDisplayEmail={true} onClick={handleChatCreation} />);
     }
 
     const QueryResult = () => {
         return (
-            <BoxStyled className={classes.resultContainer} style={appliedStyle}>
+            <BoxStyled className={classes.resultContainer} style={appliedStyle} ref={inputProps.resultListRef}>
                 <RenderResult />
             </BoxStyled>
         )
@@ -57,7 +59,10 @@ const ChatQuery = () => {
 
 
     return (
-        <BoxStyled className={classes.searchContainer}>
+        <BoxStyled
+            onFocus={inputProps.handleInputFocus}
+            onBlur={inputProps.handleInputBlur}
+            className={classes.searchContainer}>
             <QueryInput {...inputProps} />
             <QueryResult />
         </BoxStyled>

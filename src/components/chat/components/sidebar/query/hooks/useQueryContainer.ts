@@ -5,7 +5,7 @@ import { User } from "@/api/schemas/inferred/user";
 import { useGetChatsByUserId } from "@/services/data/useChatData";
 import { useQueryUsers } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -83,12 +83,22 @@ const useQueryContainer = () => {
         else setQueryResult([]);
     };
 
+
+    const searchInputRef = useRef(null);
+
     const handleKeyDown = (event: React.KeyboardEvent) => { if (event.key === 'Escape') setFocused(false) };
     const handleInputFocus = () => setFocused(true);
-    const handleInputBlur = () => console.log("blur event triggered") // setFocused(false);
+
+    const resultListRef = useRef<HTMLDivElement>(null);
+
+    const handleInputBlur = (event: React.FocusEvent) => {
+        if (resultListRef.current && resultListRef.current.contains(event.relatedTarget as Node)) return;
+        // setFocused(false);
+    };
+
 
     const appliedStyle = (!focused) ? { display: 'none' } : { display: 'block' };
-    const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, handleInputChange };
+    const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, handleInputChange, searchInputRef, resultListRef };
 
 
 

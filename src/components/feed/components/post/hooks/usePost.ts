@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 
 export const usePost = (postId: ResId) => {
 
-    const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
+    const signedUser = getSignedUser();
+    if (signedUser === undefined) throw nullishValidationdError({ signedUser });
 
     const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ export const usePost = (postId: ResId) => {
 
     const handleUserNavigation = (e: React.MouseEvent, userId: ResId) => {
         e.stopPropagation();
-        if (userId === user.id) return navigate(`/profile`);
+        if (userId === signedUser.id) return navigate(`/profile`);
         navigate(`/profile/${userId}`);
     }
 
@@ -46,7 +46,7 @@ export const usePost = (postId: ResId) => {
     const handleReaction = async (e: React.MouseEvent, reaction: ReactionType) => {
         e.preventDefault();
         const reactionBody = {
-            userId: user.id,
+            userId: signedUser.id,
             contentId: postId,
             reactionType: reaction,
             contentType: ContentType.POST,
@@ -62,7 +62,7 @@ export const usePost = (postId: ResId) => {
         event.stopPropagation();
         handleReaction(event, Reactiontype.DISLIKE);
     }
-    const isMutable = user?.role === "admin" || post?.userId === user?.id;
+    const isMutable = signedUser?.role === "admin" || post?.userId === signedUser?.id;
 
     const [commentFormView, setCommentFormView] = useState(false);
     const toggleCommentForm = (e: React.MouseEvent) => {
@@ -87,6 +87,7 @@ export const usePost = (postId: ResId) => {
     return {
         post,
         isLoading,
+        signedUser,
         isError,
         postId,
         showComments,

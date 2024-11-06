@@ -1,4 +1,5 @@
 import { Reactiontype } from "@/api/schemas/native/reaction";
+import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
@@ -6,9 +7,8 @@ import FlexStyled from "@/components/shared/FlexStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import Overlay from "@/components/shared/Overlay/Overlay";
 import Typography from "@/components/shared/Typography";
-import UserAvatar from "@/components/shared/UserAvatar";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
+import { parseCount } from "@/utils/stringUtils";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
@@ -43,6 +43,7 @@ const PostBox = () => {
         post,
         isLoading,
         isError,
+        signedUser,
         commentFormView,
         comments,
         isMutable,
@@ -60,13 +61,14 @@ const PostBox = () => {
     if (isLoading || post === undefined) return <FullLoadingOverlay />;
     if (isError) return <ErrorComponent message="could not load post" />;
 
-    const { username, userReaction, text, likeCount, dislikeCount } = post;
+    const { userReaction, text, likeCount, dislikeCount } = post;
 
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline}>
-            <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)} />
-            <Typography className="title" type="h5">{post.title}</Typography>
+            <UserCard user={signedUser} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)}>
+                <Typography className="title" type="h5">{post.title}</Typography>
+            </UserCard>
             <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
         </FlexStyled>
     );

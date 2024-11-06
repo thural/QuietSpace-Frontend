@@ -22,6 +22,7 @@ import PollBox from "../../poll/Poll";
 import PostMenu from "../../shared/post-menu/PostMenu";
 import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
+import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 
 
 
@@ -40,6 +41,7 @@ const PostCard = ({ postId }: { postId: ResId }) => {
 
     const {
         post,
+        signedUser,
         isLoading,
         isError,
         comments,
@@ -58,13 +60,15 @@ const PostCard = ({ postId }: { postId: ResId }) => {
     if (isLoading || post === undefined) return <FullLoadingOverlay />;
     if (isError) return <ErrorComponent message="could not load post" />;
 
-    const { username, userReaction, text, likeCount, dislikeCount } = post;
+    const { userReaction, text, likeCount, dislikeCount } = post;
 
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline} onClick={(e: MouseEvent) => e.stopPropagation()}>
-            <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)} />
-            <Typography className="title" type="h5">{post.title}</Typography>
+            {/* <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)} /> */}
+            <UserCard user={signedUser} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)}>
+                <Typography className="title" type="h5">{post.title}</Typography>
+            </UserCard>
             <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
         </FlexStyled>
     );
