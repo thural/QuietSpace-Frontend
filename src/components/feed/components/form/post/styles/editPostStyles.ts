@@ -18,8 +18,9 @@ const styles = createUseStyles({
     backgroundColor: 'white',
     border: '1px solid gray',
     '& h3': {
+      margin: 'auto',
       marginTop: '0',
-      marginBottom: '1rem'
+      marginBottom: '0rem',
     },
     '& button': {
       color: 'white',
@@ -36,30 +37,31 @@ const styles = createUseStyles({
     },
     '& textarea': {
       width: '100%',
-      height: '240px',
+      minHeight: '25vh',
       resize: 'none',
       outline: 'none',
       boxSizing: 'border-box',
       padding: '.75rem',
-      backgroundColor: '#e2e8f0',
+      // backgroundColor: '#e2e8f0',
       border: '1px solid #e2e8f0',
       borderRadius: '1rem',
     },
-    // '& .input': {
-    //   display: 'flex',
-    //   flexFlow: 'column nowrap',
-    //   gap: '0.5rem',
-    //   padding: '.5rem'
-    // },
-    // '& input': {
-    //   boxSizing: 'border-box',
-    //   width: '100%',
-    //   padding: '10px',
-    //   height: '1.8rem',
-    //   backgroundColor: '#e2e8f0',
-    //   border: '1px solid #e2e8f0',
-    //   borderRadius: '10px'
-    // },
+    '& .title': {
+      marginTop: '1rem',
+      display: 'flex',
+      flexFlow: 'column nowrap',
+      gap: '0.5rem',
+      fontSize: '1.2rem',
+      fontWeight: '500',
+      boxSizing: 'border-box',
+      width: '100%',
+      padding: '1rem',
+      height: '1.8rem',
+      margin: '.5rem 0',
+      // backgroundColor: '#e2e8f0',
+      border: '1px solid #e2e8f0',
+      borderRadius: '10px'
+    },
     '& input:focus': {
       outline: 'none',
       borderColor: '#a7abb1',

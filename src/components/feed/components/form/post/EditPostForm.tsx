@@ -1,14 +1,16 @@
+import { ResId } from "@/api/schemas/inferred/common";
+import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 import BoxStyled from "@/components/shared/BoxStyled";
-import FormStyled from "@/components/shared/FormStyled";
-import Typography from "@/components/shared/Typography";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
+import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import FormStyled from "@/components/shared/FormStyled";
+import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import TextInput from "@/components/shared/TextInput";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import Typography from "@/components/shared/Typography";
+import { ConsumerFn } from "@/types/genericTypes";
 import useEditPostForm from "./hooks/useEditPostForm";
 import styles from "./styles/editPostStyles";
-import { ResId } from "@/api/schemas/inferred/common";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import { ConsumerFn } from "@/types/genericTypes";
-import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 
 interface EditPostFormProps extends GenericWrapper {
   postId: ResId,
@@ -24,7 +26,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
   try {
     data = useEditPostForm(postId, toggleForm);
   } catch (error) {
-    return <ErrorComponent message={(error as Error).message} />
+    return <ErrorComponent message={(error as Error).message} />;
   }
 
   const {
@@ -33,6 +35,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
     postData,
     handleSubmit,
     handleChange,
+    signedUser,
   } = data;
 
 
@@ -42,7 +45,17 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
 
   return (
     <BoxStyled className={classes.post} onClick={(e: Event) => e.stopPropagation()}>
-      <Typography type="h3">edit post</Typography>
+      <Typography type="h3">Edit Post</Typography>
+      <UserCard user={signedUser} />
+      <TextInput
+        className="title"
+        name="title"
+        minLength="1"
+        maxLength="32"
+        value={postData.title}
+        placeholder="type a title"
+        handleChange={handleChange}
+      />
       <FormStyled>
         <textarea
           name='text'

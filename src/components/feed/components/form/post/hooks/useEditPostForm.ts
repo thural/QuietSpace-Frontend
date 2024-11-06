@@ -1,8 +1,10 @@
+import { getSignedUser } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollBody, PostBody } from "@/api/schemas/inferred/post";
 import { useEditPost, useGetPostById } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
+import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useState } from "react";
 
 
@@ -17,6 +19,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
     } : null;
 
     const requestBody: PostBody = {
+        title: editedPost.title,
         text: editedPost.text,
         userId: editedPost.userId,
         poll: pollData,
@@ -36,12 +39,18 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         setPostData({ ...postData, [name]: value });
     };
 
+    const signedUser = getSignedUser();
+    if (signedUser === undefined) throw nullishValidationdError({ signeduser: signedUser })
+    const avatarPlaceholder = toUpperFirstChar(signedUser.username);
+
     return {
         postData,
         isError,
         isLoading,
         handleSubmit,
-        handleChange
+        handleChange,
+        signedUser,
+        avatarPlaceholder
     };
 };
 
