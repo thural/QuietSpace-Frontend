@@ -1,9 +1,18 @@
+import { User } from "@/api/schemas/inferred/user";
 import BoxStyled from "./BoxStyled";
 import styles from "./styles/userDetailsStyles";
 import { GenericWrapper } from "./types/sharedComponentTypes";
 import Typography, { headingSize } from "./Typography";
+import Conditional from "./Conditional";
 
-const UserDetails: React.FC<GenericWrapper> = ({ user, scale = 3, children }) => {
+interface UserDetailsProps extends GenericWrapper {
+    user: User
+    isDisplayEmail?: boolean
+    isDisplayName?: boolean
+    scale?: number
+}
+
+const UserDetails: React.FC<UserDetailsProps> = ({ user, scale = 3, isDisplayEmail = true, isDisplayName = true, children }) => {
 
     const classes = styles();
 
@@ -23,8 +32,12 @@ const UserDetails: React.FC<GenericWrapper> = ({ user, scale = 3, children }) =>
 
     return (
         <BoxStyled key={user.id} className={classes.userDetails}>
-            <Typography type={heading} className="username">{user.username}</Typography>
-            <Typography style={{ fontSize }} lineClamp={1} truncate="end" className="email">{user.email}</Typography>
+            <Conditional isEnabled={isDisplayName}>
+                <Typography type={heading} className="username">{user.username}</Typography>
+            </Conditional>
+            <Conditional isEnabled={isDisplayEmail}>
+                <Typography style={{ fontSize }} lineClamp={1} truncate="end" className="email">{user.email}</Typography>
+            </Conditional>
             {children}
         </BoxStyled>
     )

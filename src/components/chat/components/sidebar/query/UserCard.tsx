@@ -1,33 +1,33 @@
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import styles from "./styles/chatQueryStyles";
+import styles from "./styles/userCardStyles";
 
+import { User } from "@/api/schemas/inferred/user";
 import FlexStyled from "@shared/FlexStyled";
 import UserAvatar from "@shared/UserAvatar";
 import UserDetails from "@shared/UserDetails";
 import { toUpperFirstChar } from "@utils/stringUtils";
-import { User } from "@/api/schemas/inferred/user";
-import { ConsumerFn } from "@/types/genericTypes";
+import React from "react";
+import BoxStyled from "@/components/shared/BoxStyled";
 
 export interface UserCardProps extends GenericWrapper {
     user: User
-    handleItemClick: ConsumerFn
+    isDisplayEmail?: boolean
+    isDisplayName?: boolean
 }
 
-const UserCard: React.FC<UserCardProps> = ({ user, handleItemClick, children }) => {
+const UserCard: React.FC<UserCardProps> = ({ user, isDisplayEmail = false, isDisplayName = true, children, ...props }) => {
 
     const classes = styles();
 
-    const handleClick = (event: React.MouseEvent) => {
-        console.log("user item on chat query was clicked");
-        event.preventDefault();
-        handleItemClick(event, user);
-    }
-
     return (
-        <FlexStyled className={classes.queryCard} onClick={handleClick}>
+        <FlexStyled className={classes.queryCard} {...props}>
             <UserAvatar size="2.5rem" radius="10rem" chars={toUpperFirstChar(user.username)} />
-            <UserDetails user={user} scale={5} />
-            {children}
+            <BoxStyled>
+                <UserDetails user={user} scale={5} isDisplayEmail={isDisplayEmail} isDisplayName={isDisplayName} />
+                <BoxStyled className={classes.detailsSection}>
+                    {children}
+                </BoxStyled>
+            </BoxStyled>
         </FlexStyled>
     )
 }
