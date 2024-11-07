@@ -1,10 +1,5 @@
-import {
-    handleChatException,
-    handleLeftChat,
-    handleOnlineUser,
-} from "../../components/chat/container/utils/chatHandler.js";
+import chatHandler from "../../components/chat/container/utils/chatHandler.js";
 
-import chatQueries from "@/api/queries/chatQueries.js";
 import { getSignedUser } from "@/api/queries/userQueries.js";
 import { ChatEvent, Message, MessageBody } from "@/api/schemas/inferred/chat.js";
 import { ResId } from "@/api/schemas/inferred/common.js";
@@ -12,17 +7,27 @@ import { StompMessage } from "@/api/schemas/inferred/websocket.js";
 import { ChatEventType } from "@/api/schemas/native/chat.js";
 import { ChatEventSchema, MessageSchema } from "@/api/schemas/zod/chatZod.js";
 import { useEffect } from "react";
-import { useChatStore, useStompStore } from "../store/zustand.js";
-import { fromZodError } from 'zod-validation-error'
 import { ZodError } from "zod";
+import { fromZodError } from 'zod-validation-error';
+import { useChatStore, useStompStore } from "../store/zustand.js";
 
 
 
 const useChatSocket = () => {
 
-    const user = getSignedUser()
+    const user = getSignedUser();
+
     const { setClientMethods } = useChatStore();
-    const { deleteMessageCache, insertMessageCache, setMessageSeenCache } = chatQueries();
+
+    const {
+        hadnleRecievedMessage,
+        handleChatException,
+        handleLeftChat,
+        handleOnlineUser,
+        handleDeleteMessage,
+        handleSeenMessage
+    } = chatHandler();
+
     const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
 
 
@@ -30,10 +35,8 @@ const useChatSocket = () => {
     const onSubscribe = (message: StompMessage) => {
         const messageBody: Message | ChatEvent = JSON.parse(message.body);
 
-        if (MessageSchema.safeParse(messageBody).success) {
-            console.log("received chat message on websocket", messageBody);
-            return insertMessageCache(messageBody as Message);
-        }
+        if (MessageSchema.safeParse(messageBody).success)
+            return hadnleRecievedMessage(messageBody as Message);
 
         try {
             const chatEvent: ChatEvent = ChatEventSchema.parse(messageBody);
@@ -45,9 +48,9 @@ const useChatSocket = () => {
                 case ChatEventType.DISCONNECT:
                     return handleOnlineUser(chatEvent);
                 case ChatEventType.DELETE_MESSAGE:
-                    return deleteMessageCache(chatEvent);
+                    return handleDeleteMessage(chatEvent);
                 case ChatEventType.SEEN_MESSAGE:
-                    return setMessageSeenCache(chatEvent);
+                    return handleSeenMessage(chatEvent);
                 case ChatEventType.LEFT_CHAT:
                     return handleLeftChat(chatEvent);
                 case ChatEventType.EXCEPTION:

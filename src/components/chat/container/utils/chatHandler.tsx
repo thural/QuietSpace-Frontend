@@ -1,25 +1,48 @@
-import { ChatEvent } from "@/api/schemas/inferred/chat"
+import chatQueries from "@/api/queries/chatQueries";
+import { ChatEvent, Message } from "@/api/schemas/inferred/chat"
 
-export const handleChatException = (message: ChatEvent) => {
-    console.log("error on receiving message: ", message)
+const chatHandler = () => {
+
+    const { deleteMessageCache, insertMessageCache, setMessageSeenCache, updateChatCache } = chatQueries();
+
+    const handleChatException = (message: ChatEvent) => {
+        console.log("error on receiving message: ", message)
+    }
+
+    const handleOnlineUser = (chatEvent: ChatEvent) => {
+        // TODO: implement online badge
+    }
+
+    const handleChatDelete = (chatEvent: ChatEvent) => {
+        // TODO: mutate chat cache
+    }
+
+    const handleDeleteMessage = (chatEvent: ChatEvent) => {
+        deleteMessageCache(chatEvent);
+    }
+
+    const handleSeenMessage = (chatEvent: ChatEvent) => {
+        setMessageSeenCache(chatEvent);
+    }
+
+    const handleLeftChat = (chatEvent: ChatEvent) => {
+        // TODO: mutate chat cache
+    }
+
+    const hadnleRecievedMessage = (messageBody: Message) => {
+        insertMessageCache(messageBody);
+        updateChatCache(messageBody);
+    }
+
+    return {
+        handleChatException,
+        handleOnlineUser,
+        handleChatDelete,
+        handleDeleteMessage,
+        handleSeenMessage,
+        handleLeftChat,
+        hadnleRecievedMessage
+    }
 }
 
-export const handleOnlineUser = (message: ChatEvent) => {
-    // TODO: implement online badge
-}
-
-export const handleChatDelete = (message: ChatEvent) => {
-    // TODO: mutate chat cache
-}
-
-export const handleDeleteMessage = (message: ChatEvent) => {
-    // TODO: mutate message cache
-}
-
-export const handleSeenMessage = (message: ChatEvent) => {
-    // TODO: mutate message cache
-}
-
-export const handleLeftChat = (message: ChatEvent) => {
-    // TODO: mutate mutate chat cache
-}
+export default chatHandler

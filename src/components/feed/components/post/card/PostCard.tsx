@@ -1,5 +1,6 @@
 import { ResId } from "@/api/schemas/inferred/common";
 import { Reactiontype } from "@/api/schemas/native/reaction";
+import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
@@ -8,9 +9,8 @@ import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import Overlay from "@/components/shared/Overlay/Overlay";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
-import UserAvatar from "@/components/shared/UserAvatar";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { parseCount, toUpperFirstChar } from "@/utils/stringUtils";
+import { parseCount } from "@/utils/stringUtils";
 import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
@@ -22,7 +22,6 @@ import PollBox from "../../poll/Poll";
 import PostMenu from "../../shared/post-menu/PostMenu";
 import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
-import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 
 
 
@@ -65,7 +64,6 @@ const PostCard = ({ postId }: { postId: ResId }) => {
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline} onClick={(e: MouseEvent) => e.stopPropagation()}>
-            {/* <UserAvatar radius="10rem" chars={toUpperFirstChar(username)} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)} /> */}
             <UserCard user={signedUser} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)}>
                 <Typography className="title" type="h5">{post.title}</Typography>
             </UserCard>
@@ -123,7 +121,7 @@ const PostCard = ({ postId }: { postId: ResId }) => {
                 <EditPostForm postId={postId} toggleForm={toggleEditForm} />
             </Overlay>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
-                <CreateCommentForm post={post} />
+                <CreateCommentForm postItem={post} />
             </Overlay>
         </BoxStyled>
     );

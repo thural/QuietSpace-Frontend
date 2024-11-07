@@ -4,13 +4,26 @@ import { Post } from "@/api/schemas/inferred/post";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { usePostComment } from "@/services/data/useCommentData";
+import { Comment } from "@/api/schemas/inferred/comment";
 
 
-const useCreateCommentForm = (post: Post) => {
+const useCreateCommentForm = (postItem: Post | Comment) => {
 
     const signedUser = getSignedUser();
     if (!signedUser) throw nullishValidationdError({ signedUser });
-    const [commentData, setCommentData] = useState({ postId: post.id, userId: signedUser.id, text: '' });
+    let initState = undefined;
+
+
+    const isComment = (object: Post | Comment): object is Comment => {
+        return "replyCount" in object;
+    }
+
+    if (isComment(postItem)) {
+        initState = { postId: postItem.postId, parentId: postItem.id, userId: signedUser.id, text: '' };
+    } else initState = { postId: postItem.id, userId: signedUser.id, text: '' };
+
+
+    const [commentData, setCommentData] = useState(initState);
 
 
 
@@ -27,11 +40,11 @@ const useCreateCommentForm = (post: Post) => {
         setCommentData({ ...commentData, text: inputText });
     };
 
-    const addComment = usePostComment(post.id);
+    const addComment = usePostComment(postItem.id);
     const handleSubmit = () => addComment.mutate(commentData);
 
     const userAvatarPlaceholder = toUpperFirstChar(signedUser.username);
-    const authorAvatarPlaceholder = toUpperFirstChar(post.username);
+    const authorAvatarPlaceholder = toUpperFirstChar(postItem.username);
 
     return {
         inputRef,

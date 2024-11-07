@@ -5,10 +5,13 @@ import { toUpperFirstChar } from "@utils/stringUtils";
 import useChatCard from "../panel/hooks/useChatCard";
 import styles from "./styles/chatCardStyles";
 import { Chat } from "@/api/schemas/inferred/chat";
+import { useParams } from "react-router-dom";
 
 const ChatCard = ({ chat }: { chat: Chat }) => {
 
     const classes = styles();
+
+    const { chatId } = useParams();
 
     const {
         contactId,
@@ -18,8 +21,11 @@ const ChatCard = ({ chat }: { chat: Chat }) => {
         appliedStyle,
     } = useChatCard(chat);
 
+
+    const cardStyle = chatId == chat.id ? { background: "#e2e8f0" } : {};
+
     return (
-        <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick}>
+        <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick} style={cardStyle}>
             <UserAvatar chars={toUpperFirstChar(username)} />
             <BoxStyled className={classes.chatDetails} style={appliedStyle}>
                 <Typography size="sm" lineClamp={1}>{username}</Typography>

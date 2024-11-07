@@ -9,12 +9,13 @@ import UserAvatar from "@/components/shared/UserAvatar";
 import { Text } from "@mantine/core";
 import useCreateCommentForm from "./hooks/useCreateCommentForm";
 import styles from "./styles/createPostStyles";
+import { Comment } from "@/api/schemas/inferred/comment";
 
 interface CreateCommentFormProps extends GenericWrapper {
-    post: Post
+    postItem: Post | Comment
 }
 
-const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ post }) => {
+const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem }) => {
 
     const classes = styles();
 
@@ -26,7 +27,7 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ post }) => {
         handleSubmit,
         userAvatarPlaceholder,
         authorAvatarPlaceholder,
-    } = useCreateCommentForm(post);
+    } = useCreateCommentForm(postItem);
 
 
 
@@ -43,7 +44,7 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ post }) => {
             <FlexStyled className={classes.wrapper}>
                 <FlexStyled className={classes.postCard}>
                     <UserAvatar radius="10rem" chars={authorAvatarPlaceholder} />
-                    <Text className={classes.postContent} truncate="end">{post.text}</Text>
+                    <Text className={classes.postContent} truncate="end">{postItem.text}</Text>
                 </FlexStyled>
                 <FlexStyled>
                     <UserAvatar radius="10rem" chars={userAvatarPlaceholder} />

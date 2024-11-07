@@ -16,8 +16,6 @@ const useComment = (comment: Comment) => {
     const deleteComment = useDeleteComment(comment.postId);
     const toggleLike = useToggleReaction();
 
-    const [replyFormView, setReplyFormView] = useState(false);
-
 
     const handleReaction = async (event: Event, type: ReactionType) => {
         event.preventDefault();
@@ -41,9 +39,13 @@ const useComment = (comment: Comment) => {
         handleReaction(event, Reactiontype.LIKE);
     };
 
-    const handleCommentReply = () => {
-        setReplyFormView(!replyFormView);
-    };
+
+
+    const [commentFormView, setCommentFormView] = useState(false);
+    const toggleCommentForm = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setCommentFormView(!commentFormView);
+    }
 
 
     const isLiked = comment.userReaction?.reactionType === Reactiontype.LIKE;
@@ -51,12 +53,11 @@ const useComment = (comment: Comment) => {
 
     return {
         user,
-        replyFormView,
-        setReplyFormView,
+        commentFormView,
+        toggleCommentForm,
         handleReaction,
         handleDeleteComment,
         handleLikeToggle,
-        handleCommentReply,
         isLiked,
     };
 };

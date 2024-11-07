@@ -83,7 +83,7 @@ const App = () => {
                     <Route path=":postId" element={<PostContainer />} />
                 </Route>
                 <Route path="/search/*" element={<SearchPage />} />
-                <Route path="/chat" element={<ChatPage />} >
+                <Route path="/chat/*" element={<ChatPage />} >
                     <Route index element={<ChatPlaceholder />} />
                     <Route path=":chatId" element={<ChatPanel />} />
                 </Route>

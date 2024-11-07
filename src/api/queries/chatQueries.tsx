@@ -1,7 +1,6 @@
+import { getInitPageObject } from "@/utils/dataTemplates";
 import { useQueryClient } from "@tanstack/react-query";
 import { Chat, ChatEvent, ChatList, Message, PagedMessage } from "../schemas/inferred/chat";
-import { PageContent } from "../schemas/inferred/common";
-import { getInitPageObject } from "@/utils/dataTemplates";
 
 
 
@@ -9,7 +8,7 @@ const chatQueries = () => {
 
     const queryClient = useQueryClient();
 
-    const getChatsCache = (): PageContent<Chat> | undefined => {
+    const getChatsCache = (): Array<Chat> | undefined => {
         return queryClient.getQueryData(["chats"]);
     }
 

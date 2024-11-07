@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
+import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
 import { UserReactionSchema } from "./reactionZod";
 
 
@@ -37,7 +37,7 @@ export const PostBodySchema = z.object({
 });
 
 export const PostSchema = z.object({
-    id: ResIdSchema,
+    ...BaseSchema.shape,
     userId: ResIdSchema,
     username: z.string(),
     title: z.string(),
@@ -47,8 +47,6 @@ export const PostSchema = z.object({
     dislikeCount: z.number(),
     commentCount: z.number(),
     userReaction: UserReactionSchema,
-    createDate: z.date().nullable(),
-    updateDate: z.date().nullable()
 });
 
 export const PostListSchema = PageContentSchema(PostSchema);

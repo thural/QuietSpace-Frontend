@@ -127,7 +127,7 @@ const PostBox = () => {
                 <EditPostForm toggleForm={toggleEditForm} postId={postId} />
             </Overlay>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
-                <CreateCommentForm post={post} />
+                <CreateCommentForm postItem={post} />
             </Overlay>
             <CommentPanel comments={comments} />
         </BoxStyled>

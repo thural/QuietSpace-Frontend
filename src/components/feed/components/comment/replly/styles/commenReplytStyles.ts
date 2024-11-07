@@ -18,9 +18,10 @@ const styles = createUseStyles({
             width: '.35rem',
             height: '2rem',
             borderRadius: '1rem 0rem 0rem 1rem',
-            backgroundColor: '#ffb838'
+            backgroundColor: '#3c3c3c'
         },
         '& .reply-card-text': {
+            width: '100%',
             fontSize: '.9rem',
             height: '2rem',
             borderRadius: '0 .5rem .5rem .0',
@@ -31,12 +32,10 @@ const styles = createUseStyles({
     },
 
     comment: {
+        maxWidth: '50%',
         width: 'fit-content',
-        padding: '10px 10px',
         position: 'relative',
-        boxSizing: 'border-box',
-        backgroundColor: '#F0F2F4',
-        borderRadius: '1rem 0rem 1rem 0rem',
+
 
         '& .comment-text': {
             display: 'inline-block',
@@ -48,11 +47,38 @@ const styles = createUseStyles({
         },
     },
 
+    commentBody: {
+        backgroundColor: '#F0F2F4',
+        boxSizing: 'border-box',
+        borderRadius: '1rem 0rem 1rem 0rem',
+        padding: '10px 10px',
+    },
+
     avatar: {
         color: 'black',
         borderRadius: '10rem',
         alignSelf: 'flex-'
     },
+
+    commentOptions: {
+        margin: '.5rem 0',
+        width: '100%',
+        gap: '10px',
+        color: '#303030',
+        display: 'flex',
+        flexFlow: 'row nowrap',
+        fontSize: '.8rem',
+        fontWeight: '500',
+        '& > *': {
+            cursor: 'pointer',
+        },
+        '& p': {
+            margin: '0',
+            fontSize: '.8rem',
+            color: '#4d4d4d'
+        }
+    },
+
 })
 
 

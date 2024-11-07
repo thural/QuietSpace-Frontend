@@ -25,16 +25,17 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
         return <ErrorComponent message={errorMessage} />;
     }
 
-    const { isLoading, isError } = data;
+    const { data: chats, isLoading, isError } = data;
 
 
     if (isLoading) return <FullLoadingOverlay />;
-    if (isError) return <ErrorComponent message='could not fetch chat data!' />;
+    if (isError || chats === undefined) return <ErrorComponent message='could not fetch chat data!' />;
 
+    console.log("chat data: ", chats);
 
     return (
         <DefaultContainer className={classes.container}>
-            <ChatSidebar className={classes.contacts} />
+            <ChatSidebar chats={chats} className={classes.contacts} />
             {children}
         </DefaultContainer>
     )

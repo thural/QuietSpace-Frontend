@@ -1,4 +1,4 @@
-import chatQueries from "@/api/queries/chatQueries";
+import { Chat } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Typography from "@/components/shared/Typography";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
@@ -7,13 +7,15 @@ import ChatCard from "../card/ChatCard";
 import ChatQuery from "../query/ChatQuery";
 import styles from "./styles/chatSidebarStyles";
 
-const ChatSidebar: React.FC<GenericWrapper> = () => {
+interface ChatSidebarProps extends GenericWrapper {
+    chats: Array<Chat>
+}
+
+const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats }) => {
 
     const classes = styles();
-    const { getChatsCache } = chatQueries();
 
-    const chats = getChatsCache();
-    if (chats === undefined) throw new Error("(!) chat list is undefined");
+    console.log("chats: ", chats);
 
 
     const RenderResult = () => {

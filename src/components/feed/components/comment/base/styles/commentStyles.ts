@@ -40,6 +40,25 @@ const styles = createUseStyles({
     borderRadius: '0rem 1rem 1rem 1rem'
   },
 
+  replyCard: {
+    alignItems: 'center',
+    '& .reply-card-indicator': {
+      width: '.35rem',
+      height: '2rem',
+      borderRadius: '1rem 0rem 0rem 1rem',
+      backgroundColor: '#000000'
+    },
+    '& .reply-card-text': {
+      width: '100%',
+      fontSize: '.9rem',
+      height: '2rem',
+      borderRadius: '0 .5rem .5rem .0',
+      backgroundColor: '#dbe2e8',
+      padding: '0 0.5rem'
+    }
+
+  },
+
   commentWrapper: {
 
   },
