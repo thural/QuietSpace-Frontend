@@ -5,10 +5,11 @@ import {
     fetchEditPost, fetchPostById, fetchPostQuery,
     fetchPosts,
     fetchPostsByUserId,
+    fetchCreateRepost,
     fetchVotePoll
 } from "../../api/requests/postRequests";
-import { useAuthStore, viewStore } from "../store/zustand";
-import { PostPage, PostBody, VoteBody, Post } from "@/api/schemas/inferred/post";
+import { useAuthStore } from "../store/zustand";
+import { PostPage, PostBody, VoteBody, Post, RepostBody } from "@/api/schemas/inferred/post";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
 import { getSignedUser } from "@/api/queries/userQueries";
@@ -81,31 +82,47 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
-    const { data: viewState, setViewData } = viewStore();
 
-    const handleSubmitSuccess = () => {
-        toggleForm();
-    }
-
-    const handleSubmitError = () => {
-        alert("error on posting, try again later");
-    }
 
     const onSuccess = (data: Response) => {
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
-        setViewData(viewState, { overlay: false, createPost: false });
-        handleSubmitSuccess();
         console.log("post added successfully:", data);
+        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+        toggleForm();
     }
 
     const onError = (error: Error) => {
         console.log("error on post: ", error.message);
-        handleSubmitError();
+        toggleForm();
     }
 
     return useMutation({
-        mutationFn: async (postData: PostBody): Promise<Response> => {
+        mutationFn: async (postData: PostBody): Promise<Post> => {
             return await fetchCreatePost(postData, authData.accessToken)
+        },
+        onSuccess,
+        onError
+    })
+}
+
+export const useCreateRepost = (toggleForm: ConsumerFn) => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data: Response) => {
+        console.log("post added successfully:", data);
+        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+        toggleForm();
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on repost: ", error.message);
+        alert("error on reposting, try again later");
+    }
+
+    return useMutation({
+        mutationFn: async (repostData: RepostBody): Promise<Post> => {
+            return await fetchCreateRepost(repostData, authData.accessToken)
         },
         onSuccess,
         onError
@@ -145,7 +162,6 @@ export const useQueryPosts = (setPostQueryResult: ConsumerFn) => {
     const onSuccess = (data: PostPage) => {
         console.log("post query result: ", data["content"]);
         setPostQueryResult(data.content);
-        console.log("post query was success");
     }
 
     const onError = (error: Error) => {

@@ -1,4 +1,4 @@
-import { ContentResponse, PagedResponse, ResId } from "./common"
+import { BaseSchema, ContentResponse, PagedResponse, ResId } from "./common"
 import { Reactiontype } from "./reaction"
 
 export interface VoteBody {
@@ -9,7 +9,7 @@ export interface VoteBody {
 
 export interface PollOptionSchema {
 
-    id: string | number
+    id: ResId
     label: string
     voteShare: string
 
@@ -19,7 +19,7 @@ type PollOptionList = ContentResponse<PollOptionSchema>
 
 export interface PollSchema {
 
-    id: string | number
+    id: ResId
     votedOption: string
     voteCount: number
     options: PollOptionList
@@ -28,7 +28,7 @@ export interface PollSchema {
 }
 
 export interface PollBody {
-    dueDate: Date
+    dueDate: string | null
     options: Array<String>
 }
 
@@ -39,9 +39,10 @@ export interface PostBody {
     poll: PollBody | null
 }
 
-export interface PostSchema {
-    id: string | number
-    userId: string | number
+export interface PostSchema extends BaseSchema {
+    repostId: ResId
+    repostText: string
+    userId: ResId
     username: string
     title: string
     text: string
@@ -50,8 +51,6 @@ export interface PostSchema {
     dislikeCount: number
     commentCount: number
     userReaction: Reactiontype
-    createDate: Date | null
-    updateDate: Date | null
 }
 
 export type PostListResponse = ContentResponse<PostSchema>

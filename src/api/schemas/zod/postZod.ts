@@ -29,7 +29,7 @@ export const PollBodySchema = z.object({
 });
 
 export const PostBodySchema = z.object({
-    title: z.string(),
+    title: z.string().optional(),
     text: z.string(),
     userId: ResIdSchema,
     viewAccess: z.enum(['friends', 'all']),
@@ -39,15 +39,22 @@ export const PostBodySchema = z.object({
 export const PostSchema = z.object({
     ...BaseSchema.shape,
     userId: ResIdSchema,
+    repostId: ResIdSchema.nullable(),
+    repostText: ResIdSchema.nullable(),
     username: z.string(),
     title: z.string(),
     text: z.string(),
-    poll: z.optional(PollSchema),
+    poll: z.nullable(PollSchema),
     likeCount: z.number(),
     dislikeCount: z.number(),
     commentCount: z.number(),
     userReaction: UserReactionSchema,
 });
+
+export const RepostBodySchema = z.object({
+    text: z.string(),
+    postId: ResIdSchema
+})
 
 export const PostListSchema = PageContentSchema(PostSchema);
 export const PostPageSchema = PageSchema(PostSchema);

@@ -23,10 +23,16 @@ import PostMenu from "../../shared/post-menu/PostMenu";
 import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
 import ShareMenu from "../../shared/share-menu/ShareMenu";
+import CreateRepostForm from "../../form/repost/CreateRepostForm";
 
 
+interface PostCardProps {
+    postId: ResId
+    isBaseCard?: boolean
+}
 
-const PostCard = ({ postId }: { postId: ResId }) => {
+
+const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false }) => {
 
     const classes = styles();
 
@@ -51,6 +57,8 @@ const PostCard = ({ postId }: { postId: ResId }) => {
         isMutable,
         isOverlayOpen,
         commentFormView,
+        repostFormView,
+        toggleRepostForm,
         toggleEditForm,
         toggleCommentForm,
         handleNavigation,
@@ -111,11 +119,11 @@ const PostCard = ({ postId }: { postId: ResId }) => {
         <BoxStyled id={postId} className={classes.wrapper} onClick={handleNavigation} >
             <PostHeadLine />
             <PostContent />
-            <BoxStyled className={classes.controls}>
+            <BoxStyled isEnabled={!isBaseCard} className={classes.controls}>
                 <LikeToggle />
                 <DislikeToggle />
                 <CommentToggle />
-                <ShareMenu />
+                <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
                 <PostStats />
             </BoxStyled>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
@@ -123,6 +131,9 @@ const PostCard = ({ postId }: { postId: ResId }) => {
             </Overlay>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm postItem={post} />
+            </Overlay>
+            <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
+                <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
             </Overlay>
         </BoxStyled>
     );

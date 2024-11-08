@@ -1,16 +1,15 @@
 import DefaultContainer from "@/components/shared/DefaultContainer";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
-import Typography from "@/components/shared/Typography";
-import CreatePostSection from "../components/input/CreatePostSection";
-import CreatePostForm from "../components/form/post/CreatePostForm";
-import PostListBox from "../components/list/PostList";
-import useFeed from "./hooks/useFeed";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
+import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
 import Overlay from "@/components/shared/Overlay/Overlay";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import Typography from "@/components/shared/Typography";
+import CreatePostForm from "../components/form/post/CreatePostForm";
+import CreatePostSection from "../components/input/CreatePostSection";
+import PostListBox from "../components/list/PostList";
+import useFeed from "./hooks/useFeed";
 
-const FeedContainer: React.FC<GenericWrapper> = () => {
+const FeedContainer = () => {
 
     let data = undefined;
 

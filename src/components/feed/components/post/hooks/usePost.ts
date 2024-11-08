@@ -82,6 +82,12 @@ export const usePost = (postId: ResId) => {
         setIsOverlayOpen(!isOverlayOpen);
     };
 
+    const toggleRepostForm = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setRepostFormView(!repostFormView);
+    }
+    const [repostFormView, setRepostFormView] = useState(false);
+
 
 
     return {
@@ -95,6 +101,8 @@ export const usePost = (postId: ResId) => {
         comments,
         isMutable,
         isOverlayOpen,
+        repostFormView,
+        toggleRepostForm,
         handleDeletePost,
         handleLike,
         handleDislike,

@@ -23,6 +23,7 @@ import PostMenu from "../shared/post-menu/PostMenu";
 import { usePost } from "./hooks/usePost";
 import styles from "./styles/postStyles";
 import ShareMenu from "../shared/share-menu/ShareMenu";
+import CreateRepostForm from "../form/repost/CreateRepostForm";
 
 
 
@@ -49,6 +50,8 @@ const PostBox = () => {
         comments,
         isMutable,
         isOverlayOpen,
+        repostFormView,
+        toggleRepostForm,
         handleDeletePost,
         handleLike,
         handleDislike,
@@ -121,7 +124,7 @@ const PostBox = () => {
                 <LikeToggle />
                 <DislikeToggle />
                 <CommentToggle />
-                <ShareMenu />
+                <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
                 <PostStats />
             </BoxStyled>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
@@ -129,6 +132,9 @@ const PostBox = () => {
             </Overlay>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm postItem={post} />
+            </Overlay>
+            <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
+                <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
             </Overlay>
             <CommentPanel comments={comments} />
         </BoxStyled>
