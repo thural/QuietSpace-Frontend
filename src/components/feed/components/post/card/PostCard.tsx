@@ -22,6 +22,7 @@ import PollBox from "../../poll/Poll";
 import PostMenu from "../../shared/post-menu/PostMenu";
 import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
+import ShareMenu from "../../shared/share-menu/ShareMenu";
 
 
 
@@ -114,7 +115,7 @@ const PostCard = ({ postId }: { postId: ResId }) => {
                 <LikeToggle />
                 <DislikeToggle />
                 <CommentToggle />
-                {/* <ShareMenu /> */}
+                <ShareMenu />
                 <PostStats />
             </BoxStyled>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
