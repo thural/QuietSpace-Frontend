@@ -7,10 +7,11 @@ import { PiDotsThreeVertical } from "react-icons/pi";
 interface PostMenu {
     handleDeletePost: ConsumerFn
     toggleEditForm: ConsumerFn
-    isMutable: boolean
+    isMutable?: boolean
+    isRepost?: boolean
 }
 
-const PostMenu: React.FC<PostMenu> = ({ handleDeletePost, toggleEditForm, isMutable }) => {
+const PostMenu: React.FC<PostMenu> = ({ handleDeletePost, toggleEditForm, isMutable = false, isRepost = false }) => {
 
     const handleSavePost = () => {
         // TODO: handle save post
@@ -23,8 +24,10 @@ const PostMenu: React.FC<PostMenu> = ({ handleDeletePost, toggleEditForm, isMuta
 
     return (
         <ListMenu styleUpdate={{}} menuIcon={<PiDotsThreeVertical />}>
-            <Conditional isEnabled={isMutable} >
+            <Conditional isEnabled={isMutable && !isRepost}>
                 <Clickable handleClick={toggleEditForm} alt="edit post" text="edit" />
+            </Conditional>
+            <Conditional isEnabled={isMutable} >
                 <Clickable handleClick={handleDeletePost} alt="remove post" text="remove" />
             </Conditional>
             <Conditional isEnabled={!isMutable} >

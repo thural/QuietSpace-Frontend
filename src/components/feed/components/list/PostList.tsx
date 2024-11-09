@@ -7,7 +7,7 @@ const PostListBox = ({ posts }: { posts: UseQueryResult<PagedPostresponse> }) =>
     if (posts.isLoading || !posts.data) return null;
     return posts.data.content?.map((post, index) => {
         if (post.repostId === null) return <PostCard key={index} postId={post.id} />;
-        return <RepostCard postId={post.id} text={post.repostText} />
+        return <RepostCard post={post} key={index} />
     });
 };
 

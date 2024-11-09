@@ -8,6 +8,7 @@ import QueryInput from "./QueryInput";
 import UserCard from "./UserCard";
 import useQueryContainer from "./hooks/useQueryContainer";
 import styles from "./styles/chatQueryStyles";
+import { User } from "@/api/schemas/inferred/user";
 
 const ChatQuery = () => {
 
@@ -45,8 +46,8 @@ const ChatQuery = () => {
     const RenderResult = () => {
         if (makeQueryMutation.isPending) return <FullLoadingOverlay />
         if (queryResult.length === 0) return <RecentQueries />
-        return queryResult.map((user, key) =>
-            <UserCard key={key} user={user} isDisplayEmail={true} onClick={handleChatCreation} />);
+        return queryResult.map((user: User, key: number) =>
+            <UserCard key={key} userId={user.id} isDisplayEmail={true} onClick={handleChatCreation} />);
     }
 
     const QueryResult = () => {

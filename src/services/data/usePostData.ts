@@ -122,6 +122,7 @@ export const useCreateRepost = (toggleForm: ConsumerFn) => {
 
     return useMutation({
         mutationFn: async (repostData: RepostBody): Promise<Post> => {
+            console.log("repost data on request", repostData);
             return await fetchCreateRepost(repostData, authData.accessToken)
         },
         onSuccess,

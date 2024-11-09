@@ -13,7 +13,7 @@ const styles = createUseStyles({
       width: '100%',
       position: 'relative',
       fontSize: '1rem',
-      fontWeight: '600',
+      fontWeight: '500',
       lineHeight: '1rem'
     },
 

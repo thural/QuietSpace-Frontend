@@ -1,7 +1,7 @@
 import { useGetComments } from "@/services/data/useCommentData";
 import { useDeletePost, useGetPostById } from "@/services/data/usePostData";
 import { useToggleReaction } from "@/services/data/useReactionData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReactionType } from "@/api/schemas/inferred/reaction";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -9,6 +9,8 @@ import { Reactiontype } from "@/api/schemas/native/reaction";
 import { ContentType } from "@/api/schemas/native/common";
 import { ResId } from "@/api/schemas/inferred/common";
 import { useNavigate } from "react-router-dom";
+import { useGetUserById } from "@/services/data/useUserData";
+import { User } from "@/api/schemas/inferred/user";
 
 
 
@@ -31,7 +33,7 @@ export const usePost = (postId: ResId) => {
     }
 
 
-    const { data: post, isLoading, isError } = useGetPostById(postId);
+    const { data: post, isLoading, isError, isSuccess } = useGetPostById(postId);
 
     const comments = useGetComments(postId);
     const deletePost = useDeletePost(postId);
@@ -90,9 +92,11 @@ export const usePost = (postId: ResId) => {
 
 
 
+
     return {
         post,
         isLoading,
+        isSuccess,
         signedUser,
         isError,
         postId,

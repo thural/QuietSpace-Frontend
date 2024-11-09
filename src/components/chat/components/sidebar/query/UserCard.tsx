@@ -1,23 +1,31 @@
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import styles from "./styles/userCardStyles";
 
-import { User } from "@/api/schemas/inferred/user";
+import { ResId } from "@/api/schemas/native/common";
+import BoxStyled from "@/components/shared/BoxStyled";
+import { useGetUserById } from "@/services/data/useUserData";
+import { LoadingOverlay } from "@mantine/core";
 import FlexStyled from "@shared/FlexStyled";
 import UserAvatar from "@shared/UserAvatar";
 import UserDetails from "@shared/UserDetails";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
-import BoxStyled from "@/components/shared/BoxStyled";
+import { User } from "@/api/schemas/inferred/user";
 
 export interface UserCardProps extends GenericWrapper {
-    user: User
+    userId: ResId
+    user?: User
     isDisplayEmail?: boolean
     isDisplayName?: boolean
 }
 
-const UserCard: React.FC<UserCardProps> = ({ user, isDisplayEmail = false, isDisplayName = true, children, ...props }) => {
+const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isDisplayName = true, children, ...props }) => {
 
     const classes = styles();
+
+    const { data: user, isLoading } = useGetUserById(userId);
+
+    if (isLoading) return <LoadingOverlay />
 
     return (
         <FlexStyled className={classes.queryCard} {...props}>

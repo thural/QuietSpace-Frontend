@@ -18,21 +18,22 @@ import {
 } from "react-icons/pi";
 import CreateCommentForm from "../../form/comment/CreateCommentForm";
 import EditPostForm from "../../form/post/EditPostForm";
+import CreateRepostForm from "../../form/repost/CreateRepostForm";
 import PollBox from "../../poll/Poll";
 import PostMenu from "../../shared/post-menu/PostMenu";
+import ShareMenu from "../../shared/share-menu/ShareMenu";
 import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
-import ShareMenu from "../../shared/share-menu/ShareMenu";
-import CreateRepostForm from "../../form/repost/CreateRepostForm";
 
 
 interface PostCardProps {
     postId: ResId
     isBaseCard?: boolean
+    isMenuHidden?: boolean
 }
 
 
-const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false }) => {
+const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuHidden = false }) => {
 
     const classes = styles();
 
@@ -47,7 +48,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false }) => {
 
     const {
         post,
-        signedUser,
+        isSuccess,
         isLoading,
         isError,
         comments,
@@ -65,18 +66,24 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false }) => {
         handleUserNavigation
     } = data;
 
-    if (isLoading || post === undefined) return <FullLoadingOverlay />;
+
+    if (isLoading || !post || !isSuccess) return <FullLoadingOverlay />;
     if (isError) return <ErrorComponent message="could not load post" />;
 
+
     const { userReaction, text, likeCount, dislikeCount } = post;
+
+    console.log("post", post);
 
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline} onClick={(e: MouseEvent) => e.stopPropagation()}>
-            <UserCard user={signedUser} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)}>
+            <UserCard userId={post.userId} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)}>
                 <Typography className="title" type="h5">{post.title}</Typography>
             </UserCard>
-            <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+            <Conditional isEnabled={!isMenuHidden}>
+                <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+            </Conditional>
         </FlexStyled>
     );
 
@@ -119,12 +126,14 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false }) => {
         <BoxStyled id={postId} className={classes.wrapper} onClick={handleNavigation} >
             <PostHeadLine />
             <PostContent />
-            <BoxStyled isEnabled={!isBaseCard} className={classes.controls}>
-                <LikeToggle />
-                <DislikeToggle />
-                <CommentToggle />
-                <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
-                <PostStats />
+            <BoxStyled className={classes.controls}>
+                <Conditional isEnabled={!isBaseCard}>
+                    <LikeToggle />
+                    <DislikeToggle />
+                    <CommentToggle />
+                    <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
+                    <PostStats />
+                </Conditional>
             </BoxStyled>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} toggleForm={toggleEditForm} />

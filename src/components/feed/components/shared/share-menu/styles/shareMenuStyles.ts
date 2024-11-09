@@ -54,7 +54,7 @@ const styles = createUseStyles(
             '& .clickable': {
                 padding: '.5rem',
                 display: 'flex',
-                fontSize: '1rem',
+                fontSize: '1.35rem',
                 alignItems: 'center',
                 justifyContent: 'space-between'
             },

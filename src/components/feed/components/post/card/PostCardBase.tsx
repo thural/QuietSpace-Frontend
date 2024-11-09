@@ -1,4 +1,4 @@
-import { User } from "@/api/schemas/inferred/user";
+import { ResId } from "@/api/schemas/native/common";
 import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FlexStyled from "@/components/shared/FlexStyled";
@@ -10,18 +10,18 @@ import styles from "../styles/postStyles";
 interface PostCardBaseProps {
     title: string
     text: string
-    signedUser: User
+    userId: ResId
 }
 
 
-const PostCardBase: React.FC<PostCardBaseProps> = ({ title, text, signedUser }) => {
+const PostCardBase: React.FC<PostCardBaseProps> = ({ title, text, userId }) => {
 
     const classes = styles();
 
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline}>
-            <UserCard user={signedUser}>
+            <UserCard userId={userId}>
                 <Typography className="title" type="h5">{title}</Typography>
             </UserCard>
         </FlexStyled>
@@ -29,7 +29,7 @@ const PostCardBase: React.FC<PostCardBaseProps> = ({ title, text, signedUser }) 
 
     const PostContent: React.FC<GenericWrapper> = ({ onClick }) => (
         <BoxStyled className="content" onClick={onClick}>
-            <Typography className="text">{text}</Typography>
+            <Typography >{text}</Typography>
         </BoxStyled>
     );
 

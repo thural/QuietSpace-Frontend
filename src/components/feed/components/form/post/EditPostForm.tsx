@@ -46,7 +46,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
   return (
     <BoxStyled className={classes.post} onClick={(e: Event) => e.stopPropagation()}>
       <Typography type="h3">Edit Post</Typography>
-      <UserCard user={signedUser} />
+      <UserCard userId={signedUser.id} />
       <TextInput
         className="title"
         name="title"
