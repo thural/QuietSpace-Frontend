@@ -72,7 +72,7 @@ function ProfileContainer() {
                 <FollowToggle followers={followers} Button={OutlineButtonStyled} user={user.data} />
             </ProfileControls>
             <Conditional isEnabled={isHasAccess.data}>
-                <ProfileTabs />
+                <ProfileTabs userId={userId} />
             </Conditional>
             <Conditional isEnabled={!isHasAccess.data} >
                 <PrivateBlock message="this account is private" >

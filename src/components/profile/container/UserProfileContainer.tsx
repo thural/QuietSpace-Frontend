@@ -71,7 +71,7 @@ const UserProfileContainer = () => {
                     />
                 </Link>
             </ProfileControls>
-            <UserProfileTabs />
+            <UserProfileTabs userId={signedUser.id} />
         </DefaultContainer>
     )
 }

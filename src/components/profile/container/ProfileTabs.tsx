@@ -1,29 +1,37 @@
+import { ResId } from "@/api/schemas/native/common";
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import { Center, Tabs } from "@mantine/core";
-import { PiClockClockwise, PiIntersect, PiNote } from "react-icons/pi";
+import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiClockClockwise } from "react-icons/pi";
+import UserPostList from "../components/list/UserPostList";
 
-const ProfileTabs = () => (
+
+interface ProfileTabsProps extends GenericWrapper {
+    userId: ResId
+}
+
+const ProfileTabs: React.FC<ProfileTabsProps> = ({ userId }) => (
     <Tabs color="black" defaultValue="timeline" style={{ margin: '1rem 0' }}>
         <Tabs.List justify="center" grow>
             <Tabs.Tab value="timeline" leftSection={<PiClockClockwise size={24} />}>
                 Timeline
             </Tabs.Tab>
-            <Tabs.Tab value="interests" leftSection={<PiIntersect size={24} />}>
-                Interests
+            <Tabs.Tab value="replies" leftSection={<PiArrowBendDoubleUpLeft size={24} />}>
+                Replies
             </Tabs.Tab>
-            <Tabs.Tab value="saved" leftSection={<PiNote size={24} />}>
-                Saves
+            <Tabs.Tab value="reposts" leftSection={<PiArrowsClockwise size={24} />}>
+                Reposts
             </Tabs.Tab>
         </Tabs.List>
         <Center>
             <Tabs.Panel value="timeline">
-                <Typography>activity timeline</Typography>
+                <UserPostList userId={userId} />
             </Tabs.Panel>
-            <Tabs.Panel value="interests">
-                <Typography>user interests</Typography>
+            <Tabs.Panel value="replies">
+                <Typography>user replies</Typography>
             </Tabs.Panel>
-            <Tabs.Panel value="saved">
-                <Typography>saved posts</Typography>
+            <Tabs.Panel value="reposts">
+                <Typography>reposts</Typography>
             </Tabs.Panel>
         </Center>
     </Tabs>
