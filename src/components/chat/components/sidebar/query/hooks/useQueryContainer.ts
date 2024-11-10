@@ -97,7 +97,7 @@ const useQueryContainer = () => {
     };
 
 
-    const appliedStyle = (!focused) ? { display: 'none' } : { display: 'block' };
+    const appliedStyle = (!focused) ? { display: 'none' } : { display: 'flex' };
     const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, handleInputChange, searchInputRef, resultListRef };
 
 

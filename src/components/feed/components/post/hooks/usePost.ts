@@ -1,16 +1,14 @@
+import { getSignedUser } from "@/api/queries/userQueries";
+import { ResId } from "@/api/schemas/inferred/common";
+import { ReactionType } from "@/api/schemas/inferred/reaction";
+import { ContentType } from "@/api/schemas/native/common";
+import { Reactiontype } from "@/api/schemas/native/reaction";
 import { useGetComments } from "@/services/data/useCommentData";
 import { useDeletePost, useGetPostById } from "@/services/data/usePostData";
 import { useToggleReaction } from "@/services/data/useReactionData";
-import { useEffect, useState } from "react";
-import { ReactionType } from "@/api/schemas/inferred/reaction";
-import { getSignedUser } from "@/api/queries/userQueries";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { Reactiontype } from "@/api/schemas/native/reaction";
-import { ContentType } from "@/api/schemas/native/common";
-import { ResId } from "@/api/schemas/inferred/common";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetUserById } from "@/services/data/useUserData";
-import { User } from "@/api/schemas/inferred/user";
 
 
 
@@ -38,6 +36,8 @@ export const usePost = (postId: ResId) => {
     const comments = useGetComments(postId);
     const deletePost = useDeletePost(postId);
     const togglePostLike = useToggleReaction(postId);
+
+    const hasCommented = comments.data?.content.some(comment => comment.userId === signedUser.id);
 
 
     const handleDeletePost = async (e: React.MouseEvent) => {
@@ -103,6 +103,7 @@ export const usePost = (postId: ResId) => {
         showComments,
         commentFormView,
         comments,
+        hasCommented,
         isMutable,
         isOverlayOpen,
         repostFormView,

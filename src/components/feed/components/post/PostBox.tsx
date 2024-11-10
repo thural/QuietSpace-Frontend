@@ -13,6 +13,7 @@ import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
+    PiChatCircleFill,
 } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import CommentPanel from "../comment/panel/CommentPanel";
@@ -51,6 +52,7 @@ const PostBox = () => {
         isMutable,
         isOverlayOpen,
         repostFormView,
+        hasCommented,
         toggleRepostForm,
         handleDeletePost,
         handleLike,
@@ -111,7 +113,8 @@ const PostBox = () => {
     );
 
     const CommentToggle = () => (
-        <PiChatCircle onClick={toggleCommentForm} />
+        hasCommented ? <PiChatCircleFill onClick={toggleCommentForm} />
+            : <PiChatCircle onClick={toggleCommentForm} />
     );
 
 

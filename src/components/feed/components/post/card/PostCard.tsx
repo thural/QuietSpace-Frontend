@@ -15,6 +15,7 @@ import {
     PiArrowFatDown, PiArrowFatDownFill,
     PiArrowFatUp, PiArrowFatUpFill,
     PiChatCircle,
+    PiChatCircleFill,
 } from "react-icons/pi";
 import CreateCommentForm from "../../form/comment/CreateCommentForm";
 import EditPostForm from "../../form/post/EditPostForm";
@@ -52,6 +53,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
         isLoading,
         isError,
         comments,
+        hasCommented,
         handleDeletePost,
         handleLike,
         handleDislike,
@@ -117,34 +119,38 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
     );
 
     const CommentToggle = () => (
-        <PiChatCircle onClick={toggleCommentForm} />
+        hasCommented ? <PiChatCircleFill onClick={toggleCommentForm} />
+            : <PiChatCircle onClick={toggleCommentForm} />
     );
 
 
 
     return (
-        <BoxStyled id={postId} className={classes.wrapper} onClick={handleNavigation} >
-            <PostHeadLine />
-            <PostContent />
-            <BoxStyled className={classes.controls}>
-                <Conditional isEnabled={!isBaseCard}>
-                    <LikeToggle />
-                    <DislikeToggle />
-                    <CommentToggle />
-                    <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
-                    <PostStats />
-                </Conditional>
+        <>
+            <BoxStyled id={postId} className={classes.wrapper} onClick={handleNavigation} >
+                <PostHeadLine />
+                <PostContent />
+                <BoxStyled className={classes.controls}>
+                    <Conditional isEnabled={!isBaseCard}>
+                        <LikeToggle />
+                        <DislikeToggle />
+                        <CommentToggle />
+                        <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
+                        <PostStats />
+                    </Conditional>
+                </BoxStyled>
+                <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
+                    <EditPostForm postId={postId} toggleForm={toggleEditForm} />
+                </Overlay>
+                <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
+                    <CreateCommentForm postItem={post} />
+                </Overlay>
+                <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
+                    <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
+                </Overlay>
             </BoxStyled>
-            <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
-                <EditPostForm postId={postId} toggleForm={toggleEditForm} />
-            </Overlay>
-            <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
-                <CreateCommentForm postItem={post} />
-            </Overlay>
-            <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
-                <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
-            </Overlay>
-        </BoxStyled>
+            <hr />
+        </>
     );
 };
 

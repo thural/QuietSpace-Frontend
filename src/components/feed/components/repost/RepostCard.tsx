@@ -54,7 +54,6 @@ const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
                     <PostMenu isRepost={true} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
                 </FlexStyled>
                 <Typography className={classes.repostText}>{post.repostText}</Typography>
-                <hr />
             </BoxStyled>
             <PostCard postId={post.repostId} isMenuHidden={true} />
         </BoxStyled>

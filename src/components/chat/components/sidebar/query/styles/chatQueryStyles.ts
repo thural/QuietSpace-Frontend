@@ -57,6 +57,7 @@ const styles = createUseStyles({
     },
     resultContainer: {
         width: '100%',
+        flexDirection: 'column',
         display: 'none',
         padding: '4px',
         zIndex: '3',
@@ -65,7 +66,8 @@ const styles = createUseStyles({
         borderBottom: '1px solid gainsboro',
         boxSizing: 'border-box',
         minHeight: '16rem',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        gap: '.5rem'
     },
     recentQueries: {
         width: '100%',

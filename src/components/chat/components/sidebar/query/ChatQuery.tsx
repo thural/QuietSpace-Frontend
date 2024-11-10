@@ -52,9 +52,9 @@ const ChatQuery = () => {
 
     const QueryResult = () => {
         return (
-            <BoxStyled className={classes.resultContainer} style={appliedStyle} ref={inputProps.resultListRef}>
+            <FlexStyled className={classes.resultContainer} style={appliedStyle} ref={inputProps.resultListRef}>
                 <RenderResult />
-            </BoxStyled>
+            </FlexStyled>
         )
     }
 

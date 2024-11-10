@@ -13,7 +13,6 @@ const styles = createUseStyles({
   },
 
   repostSection: {
-    marginLeft: '1.5rem',
     marginBottom: '0rem'
   },
 
@@ -33,7 +32,7 @@ const styles = createUseStyles({
 
   repostText: {
     fontWeight: '300',
-    fontSize: '1.25rem',
+    fontSize: '1rem',
   }
 })
 

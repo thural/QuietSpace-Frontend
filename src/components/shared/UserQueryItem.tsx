@@ -29,7 +29,7 @@ const UserQueryItem = ({ user }: { user: User }) => {
     return (
         <FlexStyled className={classes.userCard} onClick={handleClick}>
             <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
-            <UserDetails user={user} />
+            <UserDetails scale={4} user={user} />
             <FollowToggle onClick={(e: React.MouseEvent) => e.preventDefault()} user={user} />
         </FlexStyled>
     )

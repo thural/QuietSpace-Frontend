@@ -5,7 +5,6 @@ const styles = createUseStyles({
   wrapper: {
     position: 'relative',
     padding: '0',
-    paddingBottom: '1rem',
     fontSize: '1rem',
     margin: '1rem 0',
 
