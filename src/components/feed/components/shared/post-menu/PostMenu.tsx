@@ -1,3 +1,5 @@
+import { ResId } from "@/api/schemas/native/common";
+import { useSavePost } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import Clickable from "@components/shared/Clickable";
 import Conditional from "@components/shared/Conditional";
@@ -9,12 +11,15 @@ interface PostMenu {
     toggleEditForm: ConsumerFn
     isMutable?: boolean
     isRepost?: boolean
+    postId: ResId
 }
 
-const PostMenu: React.FC<PostMenu> = ({ handleDeletePost, toggleEditForm, isMutable = false, isRepost = false }) => {
+const PostMenu: React.FC<PostMenu> = ({ postId, handleDeletePost, toggleEditForm, isMutable = false, isRepost = false }) => {
+
+    const savePost = useSavePost();
 
     const handleSavePost = () => {
-        // TODO: handle save post
+        savePost.mutate(postId);
     }
 
     const handleReportPost = () => {

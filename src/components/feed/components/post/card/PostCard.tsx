@@ -75,8 +75,6 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
 
     const { userReaction, text, likeCount, dislikeCount } = post;
 
-    console.log("post", post);
-
 
     const PostHeadLine = () => (
         <FlexStyled className={classes.postHeadline} onClick={(e: MouseEvent) => e.stopPropagation()}>
@@ -84,7 +82,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
                 <Typography className="title" type="h5">{post.title}</Typography>
             </UserCard>
             <Conditional isEnabled={!isMenuHidden}>
-                <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+                <PostMenu postId={postId} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
             </Conditional>
         </FlexStyled>
     );

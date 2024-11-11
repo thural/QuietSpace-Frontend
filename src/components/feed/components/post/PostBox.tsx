@@ -75,7 +75,7 @@ const PostBox = () => {
             <UserCard userId={signedUser.id} onClick={(e: React.MouseEvent) => handleUserNavigation(e, post.userId)}>
                 <Typography className="title" type="h5">{post.title}</Typography>
             </UserCard>
-            <PostMenu handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+            <PostMenu postId={postId} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
         </FlexStyled>
     );
 

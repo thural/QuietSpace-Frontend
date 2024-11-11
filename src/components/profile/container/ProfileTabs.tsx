@@ -31,7 +31,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ userId }) => (
                 <Typography>user replies</Typography>
             </Tabs.Panel>
             <Tabs.Panel value="reposts">
-                <Typography>reposts</Typography>
+                <UserPostList userId={userId} isReposts={true} />
             </Tabs.Panel>
         </Center>
     </Tabs>

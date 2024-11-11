@@ -15,10 +15,20 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ handleSendClick, handleRepostClic
     const classes = styles();
     const [display, setDisplay] = useState('none');
 
-    const toggleDisplay = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const toggleDisplay = (event: React.MouseEvent) => {
+        event.stopPropagation();
         if (display === "none") setDisplay("block");
         else setDisplay("none");
+    }
+
+    const handleSend = (event: React.MouseEvent) => {
+        handleSendClick(event);
+        toggleDisplay(event);
+    }
+
+    const handleRepost = (event: React.MouseEvent) => {
+        handleRepostClick(event);
+        toggleDisplay(event);
     }
 
     return (
@@ -28,10 +38,10 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ handleSendClick, handleRepostClic
             </BoxStyled>
             <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={toggleDisplay} />
             <BoxStyled className={classes.menuList} style={{ display }}>
-                <Clickable text="Send" handleClick={handleSendClick} >
+                <Clickable text="Send" handleClick={handleSend} >
                     <PiPaperPlaneTilt />
                 </Clickable>
-                <Clickable text="Repost" handleClick={handleRepostClick} >
+                <Clickable text="Repost" handleClick={handleRepost} >
                     <PiArrowsClockwise />
                 </Clickable>
             </BoxStyled>

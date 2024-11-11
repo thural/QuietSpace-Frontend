@@ -11,6 +11,7 @@ const useCreateRepostForm = (toggleForm: ConsumerFn, post: Post) => {
 
 
     const [repostData, setRepostData] = useState<RepostBody>({ text: "", postId: post.id });
+
     const handleChange = (event: React.ChangeEvent<any>) => {
         const { name, value } = event.target;
         setRepostData({ ...repostData, [name]: value });
@@ -18,7 +19,10 @@ const useCreateRepostForm = (toggleForm: ConsumerFn, post: Post) => {
 
 
     const addRepost = useCreateRepost(toggleForm);
-    const handleSubmit = () => addRepost.mutate(repostData);
+    const handleSubmit = (e: Event) => {
+        e.stopPropagation();
+        addRepost.mutate(repostData);
+    };
 
 
     const avatarPlaceholder = toUpperFirstChar(signedUser?.username);

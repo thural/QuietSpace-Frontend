@@ -36,10 +36,10 @@ const UserProfileTabs: React.FC<UserProfileTabsProps> = ({ userId }) => {
                     <Typography>user replies</Typography>
                 </Tabs.Panel>
                 <Tabs.Panel value="reposts">
-                    <Typography>reposts</Typography>
+                    <UserPostList userId={userId} isReposts={true} />
                 </Tabs.Panel>
                 <Tabs.Panel value="saved">
-                    <Typography>saved posts</Typography>
+                    <UserPostList userId={userId} isSavedPosts={true} />
                 </Tabs.Panel>
             </Center>
         </Tabs>

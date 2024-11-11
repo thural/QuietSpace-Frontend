@@ -51,7 +51,7 @@ const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
                     <PiArrowsClockwiseBold className="repost-icon" />
                     <UserDetails scale={4} user={user} isDisplayEmail={false} />
                     <Typography style={{ margin: '0 .5rem' }}>reposted</Typography>
-                    <PostMenu isRepost={true} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+                    <PostMenu postId={post.id} isRepost={true} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
                 </FlexStyled>
                 <Typography className={classes.repostText}>{post.repostText}</Typography>
             </BoxStyled>

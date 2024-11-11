@@ -21,7 +21,6 @@ const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggle
     const {
         user,
         commentInput,
-        setCommentData,
         handleKeyDown,
         handleEmojiInput,
         handleSubmit,
@@ -29,7 +28,7 @@ const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggle
     } = useReplyForm(postId, parentId, toggleView);
 
     return (
-        <FlexStyled className={classes.wrapper}>
+        <FlexStyled className={classes.wrapper} >
             <UserAvatar size="1.5rem" chars={toUpperFirstChar(user.username)} />
             <FormStyled className={classes.inputWrapper}>
                 <EmojiInput

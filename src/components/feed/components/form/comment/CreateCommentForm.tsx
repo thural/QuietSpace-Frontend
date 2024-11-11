@@ -1,5 +1,5 @@
+import { Comment } from "@/api/schemas/inferred/comment";
 import { Post } from "@/api/schemas/inferred/post";
-import BoxStyled from "@/components/shared/BoxStyled";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import EmojiInput from "@/components/shared/EmojiInput";
 import FlexStyled from "@/components/shared/FlexStyled";
@@ -9,7 +9,6 @@ import UserAvatar from "@/components/shared/UserAvatar";
 import { Text } from "@mantine/core";
 import useCreateCommentForm from "./hooks/useCreateCommentForm";
 import styles from "./styles/createPostStyles";
-import { Comment } from "@/api/schemas/inferred/comment";
 
 interface CreateCommentFormProps extends GenericWrapper {
     postItem: Post | Comment
@@ -40,30 +39,28 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem }) => {
 
 
     return (
-        <BoxStyled>
-            <FlexStyled className={classes.wrapper}>
-                <FlexStyled className={classes.postCard}>
-                    <UserAvatar radius="10rem" chars={authorAvatarPlaceholder} />
-                    <Text className={classes.postContent} truncate="end">{postItem.text}</Text>
-                </FlexStyled>
-                <FlexStyled>
-                    <UserAvatar radius="10rem" chars={userAvatarPlaceholder} />
-                    <FormStyled>
-                        <EmojiInput
-                            className={classes.commentInput}
-                            value={commentData.text}
-                            onChange={handleChange}
-                            cleanOnEnter
-                            buttonElement
-                            onEnter={handleSubmit}
-                            placeholder="type a comment"
-                            inputRef={inputRef}
-                        />
-                        <ControlSection />
-                    </FormStyled>
-                </FlexStyled>
+        <FlexStyled className={classes.wrapper} onClick={(e: Event) => e.stopPropagation()}>
+            <FlexStyled className={classes.postCard}>
+                <UserAvatar radius="10rem" chars={authorAvatarPlaceholder} />
+                <Text className={classes.postContent} truncate="end">{postItem.text}</Text>
             </FlexStyled>
-        </BoxStyled>
+            <FlexStyled>
+                <UserAvatar radius="10rem" chars={userAvatarPlaceholder} />
+                <FormStyled>
+                    <EmojiInput
+                        className={classes.commentInput}
+                        value={commentData.text}
+                        onChange={handleChange}
+                        cleanOnEnter
+                        buttonElement
+                        onEnter={handleSubmit}
+                        placeholder="type a comment"
+                        inputRef={inputRef}
+                    />
+                    <ControlSection />
+                </FormStyled>
+            </FlexStyled>
+        </FlexStyled>
     );
 };
 

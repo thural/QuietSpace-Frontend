@@ -6,7 +6,9 @@ import {
     fetchPosts,
     fetchPostsByUserId,
     fetchCreateRepost,
-    fetchVotePoll
+    fetchVotePoll,
+    fetchSavePost,
+    fetchSavedPostsByUser
 } from "../../api/requests/postRequests";
 import { useAuthStore } from "../store/zustand";
 import { PostPage, PostBody, VoteBody, Post, RepostBody } from "@/api/schemas/inferred/post";
@@ -14,6 +16,7 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { useNavigate, useParams } from "react-router-dom";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
 
 export const useGetPosts = () => {
@@ -45,6 +48,26 @@ export const useGetPostById = (postId: ResId) => {
         queryKey: ["posts", { id: postId }],
         queryFn: async (): Promise<Post> => {
             return await fetchPostById(postId, authData.accessToken);
+        },
+        enabled: !!user?.id,
+        staleTime: 1000 * 60 * 3,
+        refetchInterval: 1000 * 60 * 6,
+        gcTime: 1000 * 60 * 15,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchIntervalInBackground: false,
+    });
+}
+
+export const useGetSavedPostsByUserId = (userId: ResId) => {
+
+    const user = getSignedUser();
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["posts/saved", { id: userId }],
+        queryFn: async (): Promise<PostPage> => {
+            return await fetchSavedPostsByUser(authData.accessToken);
         },
         enabled: !!user?.id,
         staleTime: 1000 * 60 * 3,
@@ -97,7 +120,7 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
 
     return useMutation({
         mutationFn: async (postData: PostBody): Promise<Post> => {
-            return await fetchCreatePost(postData, authData.accessToken)
+            return await fetchCreatePost(postData, authData.accessToken);
         },
         onSuccess,
         onError
@@ -123,7 +146,34 @@ export const useCreateRepost = (toggleForm: ConsumerFn) => {
     return useMutation({
         mutationFn: async (repostData: RepostBody): Promise<Post> => {
             console.log("repost data on request", repostData);
-            return await fetchCreateRepost(repostData, authData.accessToken)
+            return await fetchCreateRepost(repostData, authData.accessToken);
+        },
+        onSuccess,
+        onError
+    })
+}
+
+export const useSavePost = () => {
+
+    const queryClient = useQueryClient();
+    const user = getSignedUser();
+    if (user === undefined) throw nullishValidationdError({ user });
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data: Response) => {
+        console.log("post saved successfully:", data);
+        queryClient.invalidateQueries({ queryKey: ["posts/saved", { id: user.id }] });
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on repost: ", error.message);
+        console.log("access token on saving post: ", authData.accessToken);
+        alert("error on saving post, try again later");
+    }
+
+    return useMutation({
+        mutationFn: async (postId: ResId): Promise<Response> => {
+            return await fetchSavePost(postId, authData.accessToken);
         },
         onSuccess,
         onError

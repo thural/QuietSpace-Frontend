@@ -8,8 +8,8 @@ import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { ConsumerFn } from "@/types/genericTypes";
 import PostCardBase from "../../post/card/PostCardBase";
-import styles from "./styles/createRepostStyles";
 import useCreateRepostForm from "./hooks/useCreateRepostForm";
+import styles from "./styles/createRepostStyles";
 
 
 interface CreateRepostProps extends GenericWrapper {
@@ -22,7 +22,6 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
     const classes = styles();
 
     const {
-        signedUser,
         avatarPlaceholder,
         repostData,
         addRepost,
@@ -39,22 +38,20 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
     );
 
     return (
-        <BoxStyled onClick={(e: Event) => e.stopPropagation()}>
-            <FlexStyled className={classes.wrapper}>
-                <FormStyled>
-                    <UserAvatar radius="10rem" chars={avatarPlaceholder} />
-                    <TextInput
-                        name="text"
-                        minLength="1"
-                        maxLength="64"
-                        placeholder="type a comment"
-                        handleChange={handleChange}
-                    />
-                </FormStyled>
-                <PostCardBase text={post.text} title={post.title} userId={post.userId} />
-                <ControlSection />
-            </FlexStyled>
-        </BoxStyled>
+        <FlexStyled className={classes.wrapper} onClick={(e: Event) => e.stopPropagation()}>
+            <FormStyled>
+                <UserAvatar radius="10rem" chars={avatarPlaceholder} />
+                <TextInput
+                    name="text"
+                    minLength="1"
+                    maxLength="64"
+                    placeholder="type a comment"
+                    handleChange={handleChange}
+                />
+            </FormStyled>
+            <PostCardBase text={post.text} title={post.title} userId={post.userId} />
+            <ControlSection />
+        </FlexStyled>
     );
 };
 

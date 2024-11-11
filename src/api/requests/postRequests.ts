@@ -13,6 +13,10 @@ export const fetchPostById = async (postId: ResId, token: JwtToken): Promise<Pos
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'GET', null, token)
 ).json();
 
+export const fetchSavedPostsByUser = async (token: JwtToken): Promise<PostPage> => (
+    await getWrappedApiResponse(POST_URL + "/saved", 'GET', null, token)
+).json();
+
 export const fetchPostsByUserId = async (userId: ResId, token: JwtToken): Promise<PostPage> => (
     await getWrappedApiResponse(POST_URL + `/user/${userId}`, 'GET', null, token)
 ).json();
@@ -43,4 +47,8 @@ export const fetchReaction = async (reaction: UserReaction, token: JwtToken): Pr
 
 export const fetchVotePoll = async (vote: VoteBody, token: JwtToken): Promise<Response> => (
     await getWrappedApiResponse(POST_URL + "/vote-poll", 'POST', vote, token)
+);
+
+export const fetchSavePost = async (postId: ResId, token: JwtToken): Promise<Response> => (
+    await getWrappedApiResponse(POST_URL + `/saved/${postId}`, 'PATCH', token)
 );

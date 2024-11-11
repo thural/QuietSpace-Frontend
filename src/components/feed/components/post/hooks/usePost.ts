@@ -84,8 +84,8 @@ export const usePost = (postId: ResId) => {
         setIsOverlayOpen(!isOverlayOpen);
     };
 
-    const toggleRepostForm = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const toggleRepostForm = (e: Event) => {
+        if (!!e) e.stopPropagation();
         setRepostFormView(!repostFormView);
     }
     const [repostFormView, setRepostFormView] = useState(false);

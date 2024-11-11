@@ -1,7 +1,7 @@
 import { getSignedUser } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { User } from "@/api/schemas/inferred/user";
-import { useGetPosts, useGetPostsByUserId } from "@/services/data/usePostData";
+import { useGetPostsByUserId } from "@/services/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useEffect, useState } from "react";
@@ -62,10 +62,11 @@ const useUserProfile = (userId: ResId) => {
 export const useCurrentProfile = () => {
 
     const navigate = useNavigate();
-    const userPosts = useGetPosts();
     const signedUser: User | undefined = getSignedUser();
 
     if (signedUser === undefined) throw nullishValidationdError({ signedUser });
+
+    const userPosts = useGetPostsByUserId(signedUser.id);
 
     const followers = useGetFollowers(signedUser.id);
     const followings = useGetFollowings(signedUser.id);
