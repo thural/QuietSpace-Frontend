@@ -1,24 +1,28 @@
-import { PagedComment } from "@/api/schemas/inferred/comment";
+import { ResId } from "@/api/schemas/native/common";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 import BoxStyled from "@components/shared/BoxStyled";
-import { UseQueryResult } from "@tanstack/react-query";
 import CommentBox from "../base/Comment";
 import CommentReply from "../replly/CommentReply";
 import styles from "./styles/commentPanelStyles";
+import { useGetComments } from "@/services/data/useCommentData";
 
 
 interface CommentPanelProps {
-    comments: UseQueryResult<PagedComment>
+    postId: ResId | undefined
 }
 
 
-const CommentPanel: React.FC<CommentPanelProps> = ({ comments }) => {
+const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
 
     const classes = styles();
+    if (postId === undefined) return null;
+    const comments = useGetComments(postId);
 
-    if (comments.isLoading) return <FullLoadingOverlay />;
+
+    if (comments.isLoading) return <LoaderStyled />;
     if (comments.isError) return <ErrorComponent message="could not load comments" />;
+
 
     const CommentList = () => {
         if (comments.data?.totalElements === 0) return null;

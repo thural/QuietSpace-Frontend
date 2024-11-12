@@ -1,7 +1,7 @@
 import notificationQueries from "@/api/queries/notificationQueries";
 import { NotificationType } from "@/api/schemas/native/notification";
 import NotificationList from "@/components/notification/components/list/NotificationList";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 import { getEnumValueFromString } from "@/utils/enumUtils";
 
 
@@ -10,7 +10,7 @@ const RequestNotifications = () => {
 
     const notificationData = getNotificationsCache();
 
-    if (notificationData === undefined) return <FullLoadingOverlay />;
+    if (notificationData === undefined) return <LoaderStyled />;
     const notifications = notificationData?.content.filter(n => getEnumValueFromString(NotificationType, n.type) === NotificationType.REPOST)
     return <NotificationList notifications={notifications} />
 }

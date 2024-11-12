@@ -12,8 +12,8 @@ const SignoutPage = () => {
 
     const { isLoading, isError, error } = useSignout(); // TODO: adjust routing to disable Navbar on signout
 
-    if (isError) return <Typography type="h1">{`error in signout! 🔥 error: ${error}`}</Typography>
     if (isLoading) return <FullLoadingOverlay />;
+    if (isError) return <Typography type="h1">{`error in signout! 🔥 error: ${error}`}</Typography>;
 }
 
 export default SignoutPage

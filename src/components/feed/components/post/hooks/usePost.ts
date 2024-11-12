@@ -54,17 +54,19 @@ export const usePost = (postId: ResId) => {
             contentType: ContentType.POST,
         };
         togglePostLike.mutate(reactionBody);
-    };
+    }
 
     const handleLike = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
         event.stopPropagation();
         handleReaction(event, Reactiontype.LIKE);
     }
+
     const handleDislike = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
         event.stopPropagation();
         handleReaction(event, Reactiontype.DISLIKE);
     }
-    const isMutable = signedUser?.role === "admin" || post?.userId === signedUser?.id;
+
+    const isMutable = signedUser?.role === "ADMIN" || post?.userId === signedUser?.id;
 
     const [commentFormView, setCommentFormView] = useState(false);
     const toggleCommentForm = (e: React.MouseEvent) => {

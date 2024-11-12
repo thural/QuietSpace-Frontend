@@ -1,14 +1,14 @@
+import { User } from "@/api/schemas/inferred/user";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import AnchorStyled from "@shared/AnchorStyled";
 import BoxStyled from "@shared/BoxStyled";
 import FlexStyled from "@shared/FlexStyled";
-import FullLoadingOverlay from "@shared/FullLoadingOverlay";
 import Typography from "@shared/Typography";
 import QueryInput from "./QueryInput";
 import UserCard from "./UserCard";
 import useQueryContainer from "./hooks/useQueryContainer";
 import styles from "./styles/chatQueryStyles";
-import { User } from "@/api/schemas/inferred/user";
 
 const ChatQuery = () => {
 
@@ -44,7 +44,7 @@ const ChatQuery = () => {
     }
 
     const RenderResult = () => {
-        if (makeQueryMutation.isPending) return <FullLoadingOverlay />
+        if (makeQueryMutation.isPending) return <LoaderStyled />
         if (queryResult.length === 0) return <RecentQueries />
         return queryResult.map((user: User, key: number) =>
             <UserCard key={key} userId={user.id} isDisplayEmail={true} onClick={handleChatCreation} />);

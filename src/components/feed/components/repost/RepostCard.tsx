@@ -2,11 +2,11 @@ import { Post } from "@/api/schemas/inferred/post"
 import BoxStyled from "@/components/shared/BoxStyled"
 import ErrorComponent from "@/components/shared/error/ErrorComponent"
 import FlexStyled from "@/components/shared/FlexStyled"
+import PostSkeleton from "@/components/shared/PostSkeleton"
 import Typography from "@/components/shared/Typography"
 import UserDetails from "@/components/shared/UserDetails"
 import { useGetUserById } from "@/services/data/useUserData"
 import { nullishValidationdError } from "@/utils/errorUtils"
-import { LoadingOverlay } from "@mantine/core"
 import { PiArrowsClockwiseBold } from "react-icons/pi"
 import PostCard from "../post/card/PostCard"
 import { usePost } from "../post/hooks/usePost"
@@ -39,13 +39,11 @@ const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
 
     const { data: user, isLoading, isError, error } = useGetUserById(post.userId);
 
-    if (isLoading) return <LoadingOverlay />
-    if (isError || user === undefined) return <ErrorComponent message={error.message} />
+    if (isError) return <ErrorComponent message={error?.message} />
 
 
-
-    return (
-        <BoxStyled className={classes.wrapper} >
+    const PostContent = () => (
+        <>
             <BoxStyled className={classes.repostSection}>
                 <FlexStyled className={classes.postHeadline}>
                     <PiArrowsClockwiseBold className="repost-icon" />
@@ -56,6 +54,16 @@ const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
                 <Typography className={classes.repostText}>{post.repostText}</Typography>
             </BoxStyled>
             <PostCard postId={post.repostId} isMenuHidden={true} />
+        </>
+    );
+
+    const RenderResult = () => (
+        isLoading || user === undefined ? <PostSkeleton /> : <PostContent />
+    );
+
+    return (
+        <BoxStyled className={classes.wrapper} >
+            <RenderResult />
         </BoxStyled>
     )
 }
