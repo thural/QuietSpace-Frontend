@@ -10,11 +10,9 @@ import UserAvatar from "@shared/UserAvatar";
 import UserDetails from "@shared/UserDetails";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
-import { User } from "@/api/schemas/inferred/user";
 
 export interface UserCardProps extends GenericWrapper {
     userId: ResId
-    user?: User
     isDisplayEmail?: boolean
     isDisplayName?: boolean
 }

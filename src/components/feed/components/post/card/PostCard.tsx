@@ -70,7 +70,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
         toggleCommentForm,
         toggleRepostForm
     }
-    null
+
     const postHeadlineProps = {
         post,
         isMenuHidden,

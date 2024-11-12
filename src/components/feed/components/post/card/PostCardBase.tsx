@@ -2,19 +2,20 @@ import { ResId } from "@/api/schemas/native/common";
 import UserCard from "@/components/chat/components/sidebar/query/UserCard";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FlexStyled from "@/components/shared/FlexStyled";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import styles from "../styles/postStyles";
+import { Text } from "@mantine/core";
 
 
 interface PostCardBaseProps {
     title: string
     text: string
     userId: ResId
+    lineClamp?: number
 }
 
 
-const PostCardBase: React.FC<PostCardBaseProps> = ({ title, text, userId }) => {
+const PostCardBase: React.FC<PostCardBaseProps> = ({ title, text, userId, lineClamp = 5 }) => {
 
     const classes = styles();
 
@@ -27,9 +28,9 @@ const PostCardBase: React.FC<PostCardBaseProps> = ({ title, text, userId }) => {
         </FlexStyled>
     );
 
-    const PostContent: React.FC<GenericWrapper> = ({ onClick }) => (
-        <BoxStyled className="content" onClick={onClick}>
-            <Typography >{text}</Typography>
+    const PostContent = () => (
+        <BoxStyled className="content">
+            <Text lineClamp={lineClamp} >{text}</Text>
         </BoxStyled>
     );
 

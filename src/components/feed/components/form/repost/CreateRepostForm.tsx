@@ -1,5 +1,4 @@
 import { Post } from "@/api/schemas/inferred/post";
-import BoxStyled from "@/components/shared/BoxStyled";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import FlexStyled from "@/components/shared/FlexStyled";
 import FormStyled from "@/components/shared/FormStyled";
