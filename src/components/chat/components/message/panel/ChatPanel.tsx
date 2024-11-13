@@ -1,7 +1,6 @@
 import BoxStyled from "@/components/shared/BoxStyled";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
-import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { PiChatsCircle } from "react-icons/pi";
@@ -13,11 +12,10 @@ import Placeholder from "../placeholder/ChatPlaceHolder";
 import { useChat } from "./hooks/useChat";
 import styles from "./styles/chatPanelStyles";
 
-const ChatPanel: React.FC<GenericWrapper> = () => {
+const ChatPanel = () => {
 
     const classes = styles();
     const { chatId } = useParams();
-
 
 
     let data = undefined;
@@ -27,11 +25,12 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         data = useChat(chatId);
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error loading messages: ${(error as Error).message}`
+        const errorMessage = `error loading messages: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />
     }
 
     const {
+        text,
         chats,
         signedUserId,
         recipientName,
@@ -39,20 +38,20 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         isError,
         isLoading,
         handeSendMessgae,
-        inputData,
         handleInputChange,
         handleDeleteChat,
         isInputEnabled,
     } = data;
 
 
+
     if (isError) throw new Error("(!) unhandler error on chat service");
-    if (!chats?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
+    if (!chats.data?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
 
     const RenderResult = () => {
         if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
         if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
-        if (!messages) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
+        if (messages?.totalElements === 0) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
         return <MessagesList signedUserId={signedUserId} messages={messages.content} />;
     }
 
@@ -62,7 +61,7 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
             <ChatHeadline recipientName={recipientName} handleDeleteChat={handleDeleteChat} />
             <RenderResult />
             <MessageInput
-                value={inputData.text}
+                value={text}
                 onChange={handleInputChange}
                 onEnter={handeSendMessgae}
                 placeholder="write a message"

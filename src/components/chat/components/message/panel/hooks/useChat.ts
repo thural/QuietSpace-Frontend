@@ -1,87 +1,68 @@
-import { useCreateChat, useDeleteChat, useGetMessagesByChatId } from "@/services/data/useChatData";
-import { useAuthStore, useChatStore } from "@/services/store/zustand";
-import { ChangeEvent, useState } from "react";
-import { ChatList, CreateChat } from "@/api/schemas/inferred/chat";
+import { CreateChat } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
+import { useCreateChat, useDeleteChat, useGetChatsByUserId, useGetMessagesByChatId } from "@/services/data/useChatData";
+import { useAuthStore, useChatStore } from "@/services/store/zustand";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import chatQueries from "@/api/queries/chatQueries";
+import { ChangeEvent, useState } from "react";
 
 export const useChat = (chatId: ResId) => {
 
-    const { data: { userId: signedUserId } } = useAuthStore();
+    const { data: { userId: senderId } } = useAuthStore();
     const { clientMethods } = useChatStore();
     const { sendChatMessage, isClientConnected } = clientMethods;
 
-    const { getChatsCache } = chatQueries();
-    const chats: ChatList | undefined = getChatsCache()
-    const currentChat = chats?.find(chat => chat.id === chatId);
+    const chats = useGetChatsByUserId(senderId);
+    const currentChat = chats.data?.find(chat => chat.id === chatId);
     if (currentChat === undefined) throw nullishValidationdError({ currentChat });
-    const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== signedUserId) || {};
-
-
+    const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== senderId) || {};
 
     const deleteChat = useDeleteChat(chatId);
     const createChatMutation = useCreateChat();
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(chatId);
+    const isInputEnabled: boolean = isSuccess && !!isClientConnected;
 
-
-
-    const [inputData, setInputData] = useState({
-        chatId: chatId,
-        senderId: signedUserId,
-        recipientId,
-        text: ''
-    });
+    const [text, setText] = useState('');
+    const formBody = { chatId, senderId, recipientId, text };
 
 
 
     const handleChatCreation = (recipientId: ResId, text: string, isGroupChat: boolean) => {
-        const createChatRequestBody: CreateChat = {
-            isGroupChat,
-            recipientId,
-            text,
-            "userIds": [signedUserId, recipientId]
-        };
+        const createChatRequestBody: CreateChat = { isGroupChat, recipientId, text, "userIds": [senderId, recipientId] };
         createChatMutation.mutate(createChatRequestBody);
     };
 
     const createChat = () => {
-        const { recipientId, text } = inputData;
         if (recipientId === undefined) throw nullishValidationdError({ recipientId });
         handleChatCreation(recipientId, text, false);
-    }
+    };
 
     const handeSendMessgae = () => {
         if (chatId === "-1") createChat();
-        sendChatMessage(inputData);
+        sendChatMessage(formBody);
     };
 
     const handleInputChange = (eventData: string) => {
-        setInputData({ ...inputData, text: eventData });
-    }
+        setText(eventData);
+    };
 
     const handleDeleteChat = (event: ChangeEvent) => {
         event.preventDefault();
         deleteChat.mutate();
-    }
-
-
-
-    const isInputEnabled: boolean = isSuccess && !!isClientConnected;
+    };
 
 
 
     return {
+        text,
         chats,
         recipientName,
-        signedUserId,
+        signedUserId: senderId,
         messages,
         isError,
         isLoading,
+        isInputEnabled,
         handeSendMessgae,
-        inputData,
         handleInputChange,
         handleDeleteChat,
-        isInputEnabled,
     };
 }

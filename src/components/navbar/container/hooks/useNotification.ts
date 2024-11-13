@@ -15,9 +15,9 @@ const useNotification = () => {
     if (user === undefined) throw nullishValidationdError({ user });
 
     var hasUnreadChat = useMemo(() => {
-        if (chats === undefined) return false;
+        if (!chats) return false;
         return chats.some(({ recentMessage }) => {
-            !recentMessage.isSeen && recentMessage.senderId !== user.id
+            !recentMessage?.isSeen && recentMessage?.senderId !== user.id
         });
     }, [chats]);
 

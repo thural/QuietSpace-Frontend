@@ -32,8 +32,7 @@ const MessagesList: React.FC<MessageListProps> = ({ messages, signedUserId }) =>
         <BoxStyled className={classes.messages}>
             {messages.map((message, key) => {
                 const appliedStyle = getAppliedStyle(message.senderId, signedUserId);
-                console.log("appliedStyle: ", appliedStyle);
-                return message.text.startsWith("##MP##") ? <PostMessageCard style={appliedStyle} postId={extractId(message.text)} />
+                return message.text.startsWith("##MP##") ? <PostMessageCard key={key} style={appliedStyle} postId={extractId(message.text)} />
                     : <MessageBox style={appliedStyle} key={key} message={message} />
             })}
         </BoxStyled>

@@ -15,8 +15,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats }) => {
 
     const classes = styles();
 
-    console.log("chats: ", chats);
-
 
     const RenderResult = () => {
         return (chats?.length > 0) ?
