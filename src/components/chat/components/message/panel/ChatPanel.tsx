@@ -33,6 +33,7 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
 
     const {
         chats,
+        signedUserId,
         recipientName,
         messages,
         isError,
@@ -45,8 +46,6 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
     } = data;
 
 
-    console.log("messages", messages);
-
     if (isError) throw new Error("(!) unhandler error on chat service");
     if (!chats?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
 
@@ -54,7 +53,7 @@ const ChatPanel: React.FC<GenericWrapper> = () => {
         if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
         if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
         if (!messages) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
-        return <MessagesList messages={messages.content} />;
+        return <MessagesList signedUserId={signedUserId} messages={messages.content} />;
     }
 
 

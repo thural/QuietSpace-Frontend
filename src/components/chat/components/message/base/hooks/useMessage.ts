@@ -36,24 +36,10 @@ const useMessage = (message: Message) => {
 
     useEffect(handleSeenMessage, [wasSeen, isClientConnected]);
 
-
-
-    const appliedStyle = message.senderId !== user.id ? {
-        marginRight: "auto",
-        borderRadius: '1.25rem 1.25rem 1.25rem 0rem',
-    } : {
-        marginLeft: "auto",
-        color: "white",
-        borderColor: "blue",
-        backgroundColor: "#3c3cff",
-        borderRadius: '1rem 1rem 0rem 1rem'
-    };
-
     return {
         user,
         isHovering,
         wasSeenRef,
-        appliedStyle,
         handleMouseOver,
         handleMouseOut,
         handleDeleteMessage,

@@ -23,7 +23,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isD
 
     const { data: user, isLoading } = useGetUserById(userId);
 
-    if (isLoading) return <LoadingOverlay />
+    if (isLoading) return <LoadingOverlay />;
 
     return (
         <FlexStyled className={classes.queryCard} {...props}>

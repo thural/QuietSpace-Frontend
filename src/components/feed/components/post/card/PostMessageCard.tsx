@@ -1,18 +1,20 @@
-import BoxStyled from "@/components/shared/BoxStyled"
-import PostCardBase from "./PostCardBase"
 import { ResId } from "@/api/schemas/native/common"
-import { useGetPostById } from "@/services/data/usePostData"
-import { Skeleton } from "@mantine/core"
+import BoxStyled from "@/components/shared/BoxStyled"
 import ErrorComponent from "@/components/shared/error/ErrorComponent"
+import PostMessageSkeleton from "@/components/shared/PostMessageSkeleton"
+import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes"
+import { useGetPostById } from "@/services/data/usePostData"
+import PostCardBase from "./PostCardBase"
 
-interface PostMessageCardProps {
+interface PostMessageCardProps extends GenericWrapper {
     postId: ResId
     lineClamp?: number
+    style: React.CSSProperties
 }
 
-const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7 }) => {
+const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7, style }) => {
 
-    const style = {
+    const componentStyle: React.CSSProperties = {
         maxWidth: '200px',
         position: 'relative',
         border: '#a1a1a1 solid 1px',
@@ -27,22 +29,18 @@ const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7
         boxShadow: '0px 0px 16px -16px'
     }
 
-    const LoadingCard = () => (
-        <>
-            <Skeleton height={50} circle mb="xl" />
-            <Skeleton height={8} radius="xl" />
-            <Skeleton height={8} mt={6} radius="xl" />
-            <Skeleton height={8} mt={6} width="70%" radius="xl" />
-        </>
-    )
+    const mergedStyle = { ...componentStyle, ...style, backgroundColor: 'white' };
+
 
     const { data: post, isLoading, isError, error } = useGetPostById(postId);
 
-    if (isLoading) return <LoadingCard />
+    if (isLoading) return <PostMessageSkeleton style={mergedStyle} />
     if (isError || post === undefined) return <ErrorComponent message={error?.message} />
 
+
+
     return (
-        <BoxStyled style={style}>
+        <BoxStyled style={mergedStyle}>
             <PostCardBase lineClamp={lineClamp} {...post} />
         </BoxStyled>
     )

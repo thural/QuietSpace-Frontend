@@ -1,11 +1,16 @@
+import { Message } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@shared/BoxStyled";
 import Conditional from "@shared/Conditional";
 import Typography from "@shared/Typography";
 import useMessage from "./hooks/useMessage";
 import styles from "./styles/messageStyles";
-import { Message } from "@/api/schemas/inferred/chat";
 
-const MessageBox = ({ message }: { message: Message }) => {
+interface MessageBoxProps {
+    message: Message
+    style: React.CSSProperties
+}
+
+const MessageBox: React.FC<MessageBoxProps> = ({ message, style }) => {
 
     const classes = styles();
 
@@ -13,7 +18,6 @@ const MessageBox = ({ message }: { message: Message }) => {
         user,
         isHovering,
         wasSeenRef,
-        appliedStyle,
         handleMouseOver,
         handleMouseOut,
         handleDeleteMessage
@@ -21,9 +25,9 @@ const MessageBox = ({ message }: { message: Message }) => {
 
     return (
         <BoxStyled id={message.id} ref={wasSeenRef} className={classes.message}
-            style={appliedStyle}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
+            style={style}
         >
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
                 <BoxStyled className={classes.delete} onClick={handleDeleteMessage}>delete</BoxStyled>

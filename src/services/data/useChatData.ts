@@ -50,12 +50,12 @@ export const useCreateChat = () => {
 
     const { data: authData } = useAuthStore();
     const navigate = useNavigate();
-    const { insertInitChatCache } = chatQueries();
+    const { updateInitChatCache } = chatQueries();
 
     const onSuccess = (data: Chat) => {
         console.log("chat created successfully:", data);
-        insertInitChatCache(data);
-        navigate(`chat/${data.id}`);
+        updateInitChatCache(data);
+        navigate(`/chat/${data.id}`);
     }
 
     const onError = (error: Error) => {

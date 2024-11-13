@@ -8,7 +8,7 @@ import chatQueries from "@/api/queries/chatQueries";
 
 export const useChat = (chatId: ResId) => {
 
-    const { data: { userId } } = useAuthStore();
+    const { data: { userId: signedUserId } } = useAuthStore();
     const { clientMethods } = useChatStore();
     const { sendChatMessage, isClientConnected } = clientMethods;
 
@@ -16,7 +16,7 @@ export const useChat = (chatId: ResId) => {
     const chats: ChatList | undefined = getChatsCache()
     const currentChat = chats?.find(chat => chat.id === chatId);
     if (currentChat === undefined) throw nullishValidationdError({ currentChat });
-    const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== userId) || {};
+    const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== signedUserId) || {};
 
 
 
@@ -28,7 +28,7 @@ export const useChat = (chatId: ResId) => {
 
     const [inputData, setInputData] = useState({
         chatId: chatId,
-        senderId: userId,
+        senderId: signedUserId,
         recipientId,
         text: ''
     });
@@ -40,7 +40,7 @@ export const useChat = (chatId: ResId) => {
             isGroupChat,
             recipientId,
             text,
-            "userIds": [userId, recipientId]
+            "userIds": [signedUserId, recipientId]
         };
         createChatMutation.mutate(createChatRequestBody);
     };
@@ -74,6 +74,7 @@ export const useChat = (chatId: ResId) => {
     return {
         chats,
         recipientName,
+        signedUserId,
         messages,
         isError,
         isLoading,

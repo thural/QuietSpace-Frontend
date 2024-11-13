@@ -9,11 +9,10 @@ const chatQueries = () => {
     const queryClient = useQueryClient();
 
     const getChatsCache = (): Array<Chat> | undefined => {
-        return queryClient.getQueryData(["chats"]);
+        return queryClient.getQueryData(['chats']);
     }
 
     const updateChatCache = (message: Message) => {
-
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             const updatedChats = oldData.map(chat => {
                 if (chat.id !== message.chatId) return chat;
@@ -28,7 +27,7 @@ const chatQueries = () => {
         console.log("inserting chat: ", chatBody);
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             const updatedChats = oldData.map(chat => {
-                if (chat.id === -1) return chatBody
+                if (chat.id === "-1") return chatBody
                 else return chat
             });
             return updatedChats;
