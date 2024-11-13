@@ -1,11 +1,11 @@
+import { Chat } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@shared/BoxStyled";
 import Typography from "@shared/Typography";
 import UserAvatar from "@shared/UserAvatar";
 import { toUpperFirstChar } from "@utils/stringUtils";
+import { useParams } from "react-router-dom";
 import useChatCard from "../panel/hooks/useChatCard";
 import styles from "./styles/chatCardStyles";
-import { Chat } from "@/api/schemas/inferred/chat";
-import { useParams } from "react-router-dom";
 
 const ChatCard = ({ chat }: { chat: Chat }) => {
 

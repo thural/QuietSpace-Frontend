@@ -23,3 +23,11 @@ export const parseCount = (number: number) => {
 export const toUpperFirstChar = (name: string) => {
     return name?.charAt(0).toUpperCase();
 }
+
+export const processRecentText = (text: string) => text.startsWith("##MP##") ? "shared a post" : text;
+
+export const extractId = (text: string) => {
+    const idStart = text.indexOf('##MP## ') + 7;
+    const idEnd = idStart + 36;
+    return text.substring(idStart, idEnd);
+}

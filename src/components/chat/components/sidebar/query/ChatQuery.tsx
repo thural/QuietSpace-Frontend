@@ -33,7 +33,6 @@ const ChatQuery = () => {
     } = data;
 
 
-
     const RecentQueries = () => {
         return (
             <FlexStyled className={classes.recentQueries}>
@@ -47,7 +46,12 @@ const ChatQuery = () => {
         if (makeQueryMutation.isPending) return <LoaderStyled />
         if (queryResult.length === 0) return <RecentQueries />
         return queryResult.map((user: User, key: number) =>
-            <UserCard key={key} userId={user.id} isDisplayEmail={true} onClick={handleChatCreation} />);
+            <UserCard
+                key={key}
+                userId={user.id}
+                isDisplayEmail={true}
+                onClick={(e: React.MouseEvent) => handleChatCreation(e, user)}
+            />);
     }
 
     const QueryResult = () => {

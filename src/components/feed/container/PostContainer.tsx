@@ -9,6 +9,7 @@ const PostContainer: React.FC<GenericWrapper> = () => {
 
     const { postId } = useParams();
 
+    console.log("postId", postId);
 
     return (
         <DefaultContainer>
