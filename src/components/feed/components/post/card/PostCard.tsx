@@ -14,6 +14,7 @@ import { usePost } from "../hooks/usePost";
 import styles from "../styles/postStyles";
 import PostStatSection from "../../fragments/PostStatSection";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
+import BatchShareForm from "@/components/chat/components/form/BatchSendForm";
 
 
 interface PostCardProps extends GenericWrapper {
@@ -42,6 +43,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
         isError,
         comments,
         hasCommented,
+        shareFormview,
         handleDeletePost,
         handleLike,
         handleDislike,
@@ -49,6 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
         isOverlayOpen,
         commentFormView,
         repostFormView,
+        toggleShareForm,
         toggleRepostForm,
         toggleEditForm,
         toggleCommentForm,
@@ -65,6 +68,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
         post,
         commentCount: comments.data?.totalElements,
         hasCommented,
+        toggleShareForm,
         handleLike,
         handleDislike,
         toggleCommentForm,
@@ -96,6 +100,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
             </Overlay>
             <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
                 <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
+            </Overlay>
+            <Overlay onClose={toggleShareForm} isOpen={shareFormview}>
+                <BatchShareForm toggleForm={toggleShareForm} postId={post.id} />
             </Overlay>
             {children}
         </>

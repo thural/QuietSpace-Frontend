@@ -5,7 +5,7 @@ import { PiMagnifyingGlassBold } from "react-icons/pi";
 import styles from "./styles/searchbarStyles";
 import { SearchBarProps } from "./types/searchBarTypes";
 
-const SearchBar: React.FC<SearchBarProps> = ({ handleInputBlur, handleInputChange, handleInputFocus }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ handleInputBlur, handleInputChange, handleInputFocus, placeHolder = "search a topic..." }) => {
 
     const classes = styles();
     const queryInputRef = useRef();
@@ -16,7 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ handleInputBlur, handleInputChang
             <InputStyled
                 variant="unstyled"
                 className={classes.searchInput}
-                placeholder="search a topic..."
+                placeholder={placeHolder}
                 onFocus={handleInputFocus}
                 onChange={handleInputChange}
                 onBlur={handleInputBlur}

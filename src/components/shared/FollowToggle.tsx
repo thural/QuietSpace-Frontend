@@ -15,6 +15,7 @@ const FollowToggle: React.FC<FollowToggleProps> = ({ user, Button = LightButton,
     const toggleFollow = useToggleFollow(user.id);
 
     const handleFollowToggle = (event: React.MouseEvent) => {
+        event.stopPropagation();
         event.preventDefault();
         toggleFollow.mutate(user.id);
     }

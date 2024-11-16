@@ -14,7 +14,7 @@ const UserQuery: React.FC<UserQueryProps> = ({ fetchUserQuery, userQueryList, st
     const RenderResult = () => {
         if (fetchUserQuery.isPending) return <LoaderStyled />;
         if (fetchUserQuery.isError) return <ErrorComponent message={fetchUserQuery.error.message} />;
-        return userQueryList.map((user, key) => <UserQueryItem key={key} user={user} />);
+        return userQueryList.map((user, key) => <UserQueryItem key={key} data={user} />);
     }
 
     return (

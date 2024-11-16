@@ -8,7 +8,8 @@ const DarkButton: React.FC<GenericWrapperWithRef> = ({
     variant = "dark",
     radius = "xl",
     size = "sm",
-    color = "rgba(250, 250, 250, 1)", handleClick,
+    color = "rgba(250, 250, 250, 1)",
+    handleClick,
     ...props
 }) => {
 

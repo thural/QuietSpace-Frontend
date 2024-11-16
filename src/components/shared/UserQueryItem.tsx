@@ -10,8 +10,17 @@ import FollowToggle from "./FollowToggle";
 import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
 import React from "react";
+import Conditional from "./Conditional";
+import { GenericWrapper } from "./types/sharedComponentTypes";
 
-const UserQueryItem = ({ user }: { user: User }) => {
+
+
+interface UserQueryItemProps extends GenericWrapper {
+    data: User
+    hasFollowToggle?: boolean
+}
+
+const UserQueryItem: React.FC<UserQueryItemProps> = ({ data, hasFollowToggle = true, children }) => {
 
     const classes = styles();
     const navigate = useNavigate();
@@ -21,16 +30,20 @@ const UserQueryItem = ({ user }: { user: User }) => {
 
     const handleClick = (event: React.MouseEvent) => {
         event.preventDefault();
-        if (user.id === signedUser.id) return navigate('/profile');
-        navigate(`/profile/${user.id}`);
+        event.stopPropagation();
+        if (data.id === signedUser.id) return navigate('/profile');
+        navigate(`/profile/${data.id}`);
     }
 
 
     return (
         <FlexStyled className={classes.userCard} onClick={handleClick}>
-            <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
-            <UserDetails scale={4} user={user} />
-            <FollowToggle onClick={(e: React.MouseEvent) => e.preventDefault()} user={user} />
+            <UserAvatar radius="10rem" chars={toUpperFirstChar(data.username)} />
+            <UserDetails scale={4} user={data} />
+            <Conditional isEnabled={hasFollowToggle}>
+                <FollowToggle user={data} />
+            </Conditional>
+            {children}
         </FlexStyled>
     )
 }

@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
     container: {
-        paddingTop: '4rem',
+        paddingTop: '2.5rem',
         gap: '.5rem',
         top: '50%',
         left: '50%',

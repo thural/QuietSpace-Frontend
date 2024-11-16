@@ -6,11 +6,11 @@ import BoxStyled from "@/components/shared/BoxStyled";
 import { ConsumerFn } from "@/types/genericTypes";
 
 interface ShareMenuProps {
-    handleSendClick: ConsumerFn
+    handleShareClick: ConsumerFn
     handleRepostClick: ConsumerFn
 }
 
-const ShareMenu: React.FC<ShareMenuProps> = ({ handleSendClick, handleRepostClick }) => {
+const ShareMenu: React.FC<ShareMenuProps> = ({ handleShareClick, handleRepostClick }) => {
 
     const classes = styles();
     const [display, setDisplay] = useState('none');
@@ -22,7 +22,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ handleSendClick, handleRepostClic
     }
 
     const handleSend = (event: React.MouseEvent) => {
-        handleSendClick(event);
+        handleShareClick(event);
         toggleDisplay(event);
     }
 

@@ -13,6 +13,7 @@ interface PostStatSectionProps {
     hasCommented: boolean
     handleLike: ConsumerFn
     handleDislike: ConsumerFn
+    toggleShareForm: ConsumerFn
     toggleCommentForm: ConsumerFn
     toggleRepostForm: ConsumerFn
 }
@@ -34,6 +35,7 @@ const PostStatSection: React.FC<PostStatSectionProps> = ({
     hasCommented,
     handleLike,
     handleDislike,
+    toggleShareForm,
     toggleCommentForm,
     toggleRepostForm
 }) => (
@@ -41,7 +43,7 @@ const PostStatSection: React.FC<PostStatSectionProps> = ({
         <LikeToggle userReaction={post?.userReaction} handleLike={handleLike} />
         <DislikeToggle userReaction={post?.userReaction} handleDislike={handleDislike} />
         <CommentToggle hasCommented={hasCommented} toggleForm={toggleCommentForm} />
-        <ShareMenu handleSendClick={() => console.log("handle send post")} handleRepostClick={toggleRepostForm} />
+        <ShareMenu handleShareClick={toggleShareForm} handleRepostClick={toggleRepostForm} />
         <PostStats post={post} commentCount={commentCount} />
     </BoxStyled>
 );

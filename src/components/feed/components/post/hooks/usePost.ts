@@ -92,6 +92,13 @@ export const usePost = (postId: ResId) => {
     }
     const [repostFormView, setRepostFormView] = useState(false);
 
+    const [shareFormview, setShareFormView] = useState(false);
+
+    const toggleShareForm = (e: Event) => {
+        if (!!e) e.stopPropagation();
+        setShareFormView(!shareFormview);
+    }
+
 
 
 
@@ -104,12 +111,14 @@ export const usePost = (postId: ResId) => {
         postId,
         showComments,
         commentFormView,
+        shareFormview,
         comments,
         hasCommented,
         isMutable,
         isOverlayOpen,
         repostFormView,
         toggleRepostForm,
+        toggleShareForm,
         handleDeletePost,
         handleLike,
         handleDislike,

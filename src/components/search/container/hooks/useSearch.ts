@@ -27,6 +27,8 @@ const useSearch = () => {
 
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
         const stringValue = event.target.value;
         if (stringValue.length) {
             setFocused(true);
@@ -44,6 +46,8 @@ const useSearch = () => {
     };
 
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
         if (event.target.value.length) setFocused(true);
     };
 
