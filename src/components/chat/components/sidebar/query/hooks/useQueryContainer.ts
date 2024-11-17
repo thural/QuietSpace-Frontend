@@ -2,7 +2,7 @@ import chatQueries from "@/api/queries/chatQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { Chat, Message } from "@/api/schemas/inferred/chat";
 import { User } from "@/api/schemas/inferred/user";
-import { useGetChatsByUserId } from "@/services/data/useChatData";
+import { useGetChats } from "@/services/data/useChatData";
 import { useQueryUsers } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import React, { useRef, useState } from "react";
@@ -17,7 +17,7 @@ const useQueryContainer = () => {
     const user: User | undefined = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
 
-    const { data: chats, isLoading, isError } = useGetChatsByUserId(user.id);
+    const { data: chats, isLoading, isError } = useGetChats();
 
 
 

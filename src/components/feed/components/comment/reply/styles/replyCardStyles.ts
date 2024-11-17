@@ -10,6 +10,7 @@ const styles = createUseStyles({
     margin: '1rem 0',
     alignItems: 'center',
     gap: '.8rem',
+    width: '100%'
   },
 
   replytSection: {
@@ -21,7 +22,7 @@ const styles = createUseStyles({
     position: 'relative',
     gap: '.8rem',
     alignItems: 'center',
-    '& .repost-icon': {
+    '& .reply-icon': {
       fontSize: '1.75rem'
     }
   },

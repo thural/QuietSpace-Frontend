@@ -1,7 +1,6 @@
 import { ResId } from "@/api/schemas/native/common";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
-import Typography from "@/components/shared/Typography";
-import { Center, Tabs } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiClockClockwise, PiNote } from "react-icons/pi";
 import UserPostList from "../components/list/UserPostList";
 
@@ -28,20 +27,18 @@ const UserProfileTabs: React.FC<UserProfileTabsProps> = ({ userId }) => {
                 </Tabs.Tab>
             </Tabs.List>
 
-            <Center>
-                <Tabs.Panel value="timeline">
-                    <UserPostList userId={userId} />
-                </Tabs.Panel>
-                <Tabs.Panel value="replies">
-                    <Typography>user replies</Typography>
-                </Tabs.Panel>
-                <Tabs.Panel value="reposts">
-                    <UserPostList userId={userId} isReposts={true} />
-                </Tabs.Panel>
-                <Tabs.Panel value="saved">
-                    <UserPostList userId={userId} isSavedPosts={true} />
-                </Tabs.Panel>
-            </Center>
+            <Tabs.Panel value="timeline">
+                <UserPostList userId={userId} />
+            </Tabs.Panel>
+            <Tabs.Panel value="replies">
+                <UserPostList userId={userId} isRepliedPosts={true} />
+            </Tabs.Panel>
+            <Tabs.Panel value="reposts">
+                <UserPostList userId={userId} isReposts={true} />
+            </Tabs.Panel>
+            <Tabs.Panel value="saved">
+                <UserPostList userId={userId} isSavedPosts={true} />
+            </Tabs.Panel>
         </Tabs>
     )
 };

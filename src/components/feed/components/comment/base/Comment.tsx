@@ -26,7 +26,6 @@ const CommentBox: React.FC<CommentProps> = ({ comment, repliedComment }) => {
         handleDeleteComment,
         handleLikeToggle,
         toggleCommentForm,
-        commentFormView,
         isLiked,
     } = useComment(comment);
 
@@ -45,8 +44,7 @@ const CommentBox: React.FC<CommentProps> = ({ comment, repliedComment }) => {
             <BoxStyled className={classes.commentOptions}>
                 <Typography className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</Typography>
                 <Typography className="comment-reply" onClick={toggleCommentForm}>reply</Typography>
-                <Typography className="comment-reply-count">{comment.replyCount}</Typography>
-                <Conditional isEnabled={comment.username === user.username}>
+                <Conditional isEnabled={comment.userId === user.id}>
                     <Typography className="comment-delete" onClick={handleDeleteComment}>delete</Typography>
                 </Conditional>
             </BoxStyled>

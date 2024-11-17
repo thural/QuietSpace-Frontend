@@ -65,6 +65,7 @@ const styles = createUseStyles({
 
   commentOptions: {
     width: '100%',
+    justifyContent: 'flex-start',
     gap: '10px',
     color: '#303030',
     display: 'flex',

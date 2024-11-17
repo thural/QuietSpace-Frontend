@@ -1,6 +1,6 @@
 import { CreateChat } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
-import { useCreateChat, useDeleteChat, useGetChatsByUserId, useGetMessagesByChatId } from "@/services/data/useChatData";
+import { useCreateChat, useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
 import { useAuthStore, useChatStore } from "@/services/store/zustand";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ChangeEvent, useState } from "react";
@@ -11,7 +11,7 @@ export const useChat = (chatId: ResId) => {
     const { clientMethods } = useChatStore();
     const { sendChatMessage, isClientConnected } = clientMethods;
 
-    const chats = useGetChatsByUserId(senderId);
+    const chats = useGetChats();
     const currentChat = chats.data?.find(chat => chat.id === chatId);
     if (currentChat === undefined) throw nullishValidationdError({ currentChat });
     const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== senderId) || {};

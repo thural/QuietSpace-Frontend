@@ -35,6 +35,7 @@ import { useGetCurrentUser } from "./services/data/useUserData";
 import useNotificationSocket from "./services/notification/useNotificationSocket";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
+import { useGetChats } from "./services/data/useChatData";
 
 const App = () => {
 
@@ -48,6 +49,7 @@ const App = () => {
     useChatSocket();
     useGetNotifications();
     useNotificationSocket();
+    useGetChats();
 
 
     const onSuccessFn = (data: Auth) => {

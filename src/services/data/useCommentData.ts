@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
-import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment } from "../../api/requests/commentRequests";
+import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLatestComment } from "../../api/requests/commentRequests";
 import { ResId } from "@/api/schemas/inferred/common";
 import { CommentBody, Comment, PagedComment } from "@/api/schemas/inferred/comment";
 
@@ -16,6 +16,20 @@ export const useGetComments = (postId: ResId) => {
         },
         staleTime: 1000 * 60 * 6, // keep data fresh up to 6 minutes
         refetchInterval: 1000 * 60 * 3, // refetch data after 3 minutes on idle
+    })
+}
+
+export const useGetLatestComment = (userId: ResId, postId: ResId) => {
+
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["comments/latest", { id: postId, userId }],
+        queryFn: async (): Promise<Comment> => {
+            return await fetchLatestComment(userId, postId, authData.accessToken);
+        },
+        staleTime: 1000 * 60 * 6,
+        refetchInterval: 1000 * 60 * 3,
     })
 }
 

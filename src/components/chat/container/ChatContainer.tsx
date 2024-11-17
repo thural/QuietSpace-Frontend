@@ -2,7 +2,7 @@ import DefaultContainer from "@/components/shared/DefaultContainer";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import ChatSidebar from "../components/sidebar/panel/ChatSidebar"
 import styles from "./styles/chatContainerStyles";
-import { useGetChatsByUserId } from "@/services/data/useChatData";
+import { useGetChats } from "@/services/data/useChatData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import withErrorBoundary from "@/components/shared/hooks/withErrorBoundary";
@@ -18,7 +18,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     try {
         const user = getSignedUser();
         if (user === undefined) throw nullishValidationdError({ user });
-        data = useGetChatsByUserId(user.id);
+        data = useGetChats();
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `could not load chat data: ${(error as Error).message}`;

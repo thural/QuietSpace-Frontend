@@ -3,7 +3,7 @@ import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 import BoxStyled from "@components/shared/BoxStyled";
 import CommentBox from "../base/Comment";
-import CommentReply from "../replly/CommentReply";
+import CommentReply from "../reply/CommentReply";
 import styles from "./styles/commentPanelStyles";
 import { useGetComments } from "@/services/data/useCommentData";
 

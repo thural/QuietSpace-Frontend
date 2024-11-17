@@ -14,7 +14,7 @@ const useComment = (comment: Comment) => {
     const user: User | undefined = getSignedUser();
     if (user === undefined) throw nullishValidationdError({ user });
     const deleteComment = useDeleteComment(comment.postId);
-    const toggleLike = useToggleReaction();
+    const toggleLike = useToggleReaction(comment.id);
 
 
     const handleReaction = async (event: Event, type: ReactionType) => {

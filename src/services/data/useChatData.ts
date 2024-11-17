@@ -11,18 +11,18 @@ import { getSignedUser } from "@/api/queries/userQueries";
 import chatQueries from "@/api/queries/chatQueries";
 
 
-export const useGetChatsByUserId = (userId: ResId) => {
+export const useGetChats = () => {
 
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
     return useQuery({
         queryKey: ["chats"],
         queryFn: async (): Promise<ChatList> => {
-            return await fetchChatByUserId(userId, authData.accessToken);
+            return await fetchChatByUserId(authData.userId, authData.accessToken);
         },
         retry: 3,
         retryDelay: 1000,
-        enabled: !!userId,
+        enabled: isAuthenticated,
         staleTime: 1000 * 60 * 6,
         refetchInterval: 1000 * 60 * 3,
     });

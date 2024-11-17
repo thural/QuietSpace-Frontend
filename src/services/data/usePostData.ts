@@ -8,7 +8,8 @@ import {
     fetchCreateRepost,
     fetchVotePoll,
     fetchSavePost,
-    fetchSavedPostsByUser
+    fetchSavedPostsByUser,
+    fetchRepliedPostsByUserId
 } from "../../api/requests/postRequests";
 import { useAuthStore } from "../store/zustand";
 import { PostPage, PostBody, VoteBody, Post, RepostBody } from "@/api/schemas/inferred/post";
@@ -68,6 +69,26 @@ export const useGetSavedPostsByUserId = (userId: ResId) => {
         queryKey: ["posts/saved", { id: userId }],
         queryFn: async (): Promise<PostPage> => {
             return await fetchSavedPostsByUser(authData.accessToken);
+        },
+        enabled: !!user?.id,
+        staleTime: 1000 * 60 * 3,
+        refetchInterval: 1000 * 60 * 6,
+        gcTime: 1000 * 60 * 15,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchIntervalInBackground: false,
+    });
+}
+
+export const useGetRepliedPostsByUserId = (userId: ResId) => {
+
+    const user = getSignedUser();
+    const { data: authData } = useAuthStore();
+
+    return useQuery({
+        queryKey: ["posts/user/replied", { id: userId }],
+        queryFn: async (): Promise<PostPage> => {
+            return await fetchRepliedPostsByUserId(userId, authData.accessToken);
         },
         enabled: !!user?.id,
         staleTime: 1000 * 60 * 3,
