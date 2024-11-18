@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles({
 
-  pollInput: {
+  pollForm: {
     display: 'none',
     gap: '.225rem',
     flexFlow: 'column nowrap',
@@ -27,9 +27,7 @@ const styles = createUseStyles({
       cursor: 'pointer',
       fontSize: '.9rem',
       marginLeft: 'auto',
-      lineHeight: '0'
     },
-
   },
 });
 

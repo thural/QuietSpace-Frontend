@@ -35,10 +35,7 @@ const styles = createUseStyles({
       backgroundColor: 'black',
     },
     '& textarea': {
-      width: '100%',
       height: '96px',
-      resize: 'none',
-      outline: 'none',
       boxSizing: 'border-box',
       padding: '10px',
       backgroundColor: '#e2e8f0',

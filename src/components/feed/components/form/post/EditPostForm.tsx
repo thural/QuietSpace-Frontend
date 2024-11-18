@@ -1,16 +1,17 @@
 import { ResId } from "@/api/schemas/inferred/common";
-import UserCard from "@/components/chat/components/sidebar/query/UserCard";
-import BoxStyled from "@/components/shared/BoxStyled";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import ErrorComponent from "@/components/shared/error/ErrorComponent";
 import FormStyled from "@/components/shared/FormStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
-import TextInput from "@/components/shared/TextInput";
+import ModalStyled from "@/components/shared/ModalStyled";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
+import UserAvatar from "@/components/shared/UserAvatar";
 import { ConsumerFn } from "@/types/genericTypes";
+import TextInput from "../../fragments/TextInput";
+import TitleInput from "../../fragments/TitleInput";
 import useEditPostForm from "./hooks/useEditPostForm";
-import styles from "./styles/editPostStyles";
+import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
 
 interface EditPostFormProps extends GenericWrapper {
   postId: ResId,
@@ -18,8 +19,6 @@ interface EditPostFormProps extends GenericWrapper {
 }
 
 const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
-
-  const classes = styles();
 
   let data = undefined;
 
@@ -35,7 +34,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
     postData,
     handleSubmit,
     handleChange,
-    signedUser,
+    avatarPlaceholder
   } = data;
 
 
@@ -44,29 +43,16 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
 
 
   return (
-    <BoxStyled className={classes.post} onClick={(e: Event) => e.stopPropagation()}>
-      <Typography type="h3">Edit Post</Typography>
-      <UserCard userId={signedUser.id} />
-      <TextInput
-        className="title"
-        name="title"
-        minLength="1"
-        maxLength="32"
-        value={postData.title}
-        placeholder="type a title"
-        handleChange={handleChange}
-      />
+    <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
+      <CloseButtonStyled handleToggle={toggleForm} />
+      <Typography style={{ alignSelf: "center" }} type="h4">Edit Post</Typography>
+      <UserAvatar radius="10rem" chars={avatarPlaceholder} />
       <FormStyled>
-        <textarea
-          name='text'
-          placeholder="text"
-          maxLength={999}
-          value={postData.text}
-          onChange={handleChange}>
-        </textarea>
+        <TitleInput value={postData.title} handleChange={handleChange} />
+        <TextInput value={postData.text} handleChange={handleChange} />
         <DarkButton className="submit-btn" type='button' onClick={handleSubmit} />
       </FormStyled>
-    </BoxStyled>
+    </ModalStyled>
   );
 };
 

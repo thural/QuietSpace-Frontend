@@ -36,15 +36,7 @@ const styles = createUseStyles({
       backgroundColor: 'black',
     },
     '& textarea': {
-      width: '100%',
       minHeight: '25vh',
-      resize: 'none',
-      outline: 'none',
-      boxSizing: 'border-box',
-      padding: '.75rem',
-      // backgroundColor: '#e2e8f0',
-      border: '1px solid #e2e8f0',
-      borderRadius: '1rem',
     },
     '& .title': {
       marginTop: '1rem',

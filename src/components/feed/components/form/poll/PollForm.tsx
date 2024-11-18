@@ -1,10 +1,11 @@
 import FlexStyled from "@/components/shared/FlexStyled";
-import TextInput from "@/components/shared/TextInput";
+import TextInputStyled from "@/components/shared/TextInputStyled";
 import Typography from "@/components/shared/Typography";
 import styles from "./styles/pollIFormStyles";
 import { PostBody } from "@/api/schemas/inferred/post";
 import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
 import { PollView } from "../post/hooks/useCreatePostForm";
+import InputBoxStyled from "@/components/shared/InputBoxStyled";
 
 interface PollForm {
     postData: PostBody
@@ -19,40 +20,40 @@ const PollForm: React.FC<PollForm> = ({ postData, handleChange, togglePoll, poll
 
     return (
         <FlexStyled
-            className={classes.pollInput}
+            className={classes.pollForm}
             style={{ display: pollView.enabled ? "flex" : "none" }}
         >
-            <TextInput
-                name="option1"
-                className="poll-input"
-                placeholder="yes"
-                handleChange={handleChange}
-            />
+            <InputBoxStyled>
+                <TextInputStyled
+                    name="option1"
+                    className="poll-input"
+                    placeholder="yes"
+                    handleChange={handleChange}
+                />
 
-            <TextInput
-                name="option2"
-                className="poll-input"
-                placeholder="no"
-                handleChange={handleChange}
-            />
+                <TextInputStyled
+                    name="option2"
+                    className="poll-input"
+                    placeholder="no"
+                    handleChange={handleChange}
+                />
 
-            <TextInput
-                name="option3"
-                className="poll-input"
-                placeholder="add another option"
-                handleChange={handleChange}
-            />
+                <TextInputStyled
+                    name="option3"
+                    className="poll-input"
+                    placeholder="add another option"
+                    handleChange={handleChange}
+                />
 
-            <TextInput
-                name="option4"
-                className="poll-input"
-                placeholder="add another option"
-                handleChange={handleChange}
-                hidden={!postData.option3}
-            />
-
+                <TextInputStyled
+                    name="option4"
+                    className="poll-input"
+                    placeholder="add another option"
+                    handleChange={handleChange}
+                    hidden={!postData.option3}
+                />
+            </InputBoxStyled>
             <Typography className="close-poll" onClick={togglePoll} >remove poll</Typography>
-
         </FlexStyled>
     )
 }

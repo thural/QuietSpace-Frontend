@@ -16,7 +16,7 @@ const ComboMenu: React.FC<ComboMenu> = ({ options, selectedOption, textContent, 
     const classes = styles();
 
     return (
-        <BoxStyled className={classes.wrapper}>
+        <BoxStyled className={classes.comboMenu}>
             <ListMenu styleUpdate={{}} menuIcon={selectedOption.concat(" ").concat(textContent)}>
                 {options.map((option, index) =>
                     <Clickable

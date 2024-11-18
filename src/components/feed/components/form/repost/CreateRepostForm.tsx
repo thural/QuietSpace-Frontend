@@ -2,7 +2,7 @@ import { Post } from "@/api/schemas/inferred/post";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import FlexStyled from "@/components/shared/FlexStyled";
 import FormStyled from "@/components/shared/FormStyled";
-import TextInput from "@/components/shared/TextInput";
+import TextInputStyled from "@/components/shared/TextInputStyled";
 import { GenericWrapper } from "@/components/shared/types/sharedComponentTypes";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { ConsumerFn } from "@/types/genericTypes";
@@ -40,7 +40,7 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
         <FlexStyled className={classes.wrapper} onClick={(e: Event) => e.stopPropagation()}>
             <FormStyled>
                 <UserAvatar radius="10rem" chars={avatarPlaceholder} />
-                <TextInput
+                <TextInputStyled
                     name="text"
                     minLength="1"
                     maxLength="64"

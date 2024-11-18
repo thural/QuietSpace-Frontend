@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss";
 
 const styles = createUseStyles(
 	{
-		wrapper: {
+		comboMenu: {
 			position: 'relative',
 			'& .selected-option': {
 				margin: '0',
@@ -43,10 +43,10 @@ const styles = createUseStyles(
 		menuList: {
 
 			height: 'fit-content',
-			top: '50%',
+			top: '-3rem',
+			right: '-3rem',
 			color: 'black',
 			cursor: 'pointer',
-			right: '50%',
 			width: '10rem',
 			border: '1px solid #f1f1f1',
 			bottom: '2rem',
