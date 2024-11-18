@@ -7,8 +7,8 @@ import LoaderStyled from "@/components/shared/LoaderStyled";
 const PostListBox = ({ posts }: { posts: UseQueryResult<PagedPostresponse> }) => {
     if (posts.isLoading || !posts.data) return <LoaderStyled />;
     return posts.data.content?.map((post, index) => {
-        if (post.repostId === null) return <PostCard key={index} postId={post.id} />;
-        return <RepostCard post={post} key={index} />
+        if (post.repostId === null) return <PostCard isPostsLoading={posts.isLoading} key={index} postId={post.id} />;
+        return <RepostCard isPostsLoading={posts.isLoading} post={post} key={index} />
     });
 };
 

@@ -1,7 +1,7 @@
 import { USER_PATH, USER_PROFILE_URL } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "../schemas/inferred/common";
-import { UserPage, User } from "../schemas/inferred/user";
+import { UserPage, User, ProfileSettingsRequest, ProfileSettingsResponse } from "../schemas/inferred/user";
 
 
 export const fetchUser = async (token: JwtToken): Promise<User> => (
@@ -28,6 +28,14 @@ export const fetchFollowings = async (userId: ResId, token: JwtToken): Promise<U
     await getWrappedApiResponse(USER_PATH + `/${userId}/followings`, 'GET', null, token)
 ).json();
 
-export const fetchRemoveFollower = async (token: JwtToken, userId: ResId): Promise<Response> => (
+export const fetchSaveSettings = async (request: ProfileSettingsRequest, token: JwtToken): Promise<ProfileSettingsResponse> => (
+    await getWrappedApiResponse(USER_PROFILE_URL + "/settings", 'PATCH', request, token)
+).json();
+
+export const fetchRemoveFollower = async (userId: ResId, token: JwtToken): Promise<Response> => (
     await getWrappedApiResponse(USER_PATH + `followers/remove/${userId}`, 'POST', null, token)
+);
+
+export const fetchBlockUserById = async (userId: ResId, token: JwtToken): Promise<Response> => (
+    await getWrappedApiResponse(USER_PROFILE_URL + `/block/${userId}`, 'POST', null, token)
 );

@@ -1,4 +1,5 @@
 import { ContentType } from "@/utils/enumClasses"
+import { BaseSchema } from "./common"
 
 export enum Reactiontype {
     LIKE = "LIKE",
@@ -12,8 +13,6 @@ export interface UserReaction {
     contentType: ContentType
 }
 
-export interface UserReactionResponse extends UserReaction {
-    id: string | number
+export interface UserReactionResponse extends UserReaction, BaseSchema {
     username: string | number
-    updateDate: Date | null
 }

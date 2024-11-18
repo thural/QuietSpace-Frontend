@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchFollowers, fetchFollowings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/requests/userRequests";
+import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/requests/userRequests";
 import { useAuthStore } from "../store/zustand";
-import { UserPage, User } from "@/api/schemas/inferred/user";
+import { UserPage, User, ProfileSettingsRequest, ProfileSettingsResponse } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { ResId } from "@/api/schemas/inferred/common";
@@ -126,6 +126,54 @@ export const useToggleFollow = (userId: ResId) => {
     return useMutation({
         mutationFn: async (userId: ResId): Promise<Response> => {
             return await fetchToggleFollow(userId, authData.accessToken);
+        },
+        onSuccess,
+        onError,
+    });
+}
+
+export const useBlockUser = (userId: ResId) => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data: Response) => {
+        console.log("toggle follow success response:", data);
+        queryClient.invalidateQueries({ queryKey: ["followings", { id: userId }] });
+        queryClient.invalidateQueries({ queryKey: ["followers", { id: userId }] });
+        queryClient.invalidateQueries({ queryKey: ["users", { id: userId }] });
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on blocking user: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (userId: ResId): Promise<Response> => {
+            return await fetchBlockUserById(userId, authData.accessToken);
+        },
+        onSuccess,
+        onError,
+    });
+}
+
+export const useSaveProfileSettings = (userId: ResId) => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+
+    const onSuccess = (data: Response) => {
+        console.log("save profile settings success response:", data);
+        queryClient.invalidateQueries({ queryKey: ["users", { id: userId }] });
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on saving user profile settings: ", error.message);
+    }
+
+    return useMutation({
+        mutationFn: async (settingsForm: ProfileSettingsRequest): Promise<ProfileSettingsResponse> => {
+            return await fetchSaveSettings(settingsForm, authData.accessToken);
         },
         onSuccess,
         onError,

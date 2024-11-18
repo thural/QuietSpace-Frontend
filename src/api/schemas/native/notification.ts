@@ -16,7 +16,7 @@ export interface NotificationSchema {
     contentId: string | number
     isSeen: boolean
     type: string
-    updateDate: Date
+    updateDate: string
 }
 
 export type PagedNotificationResponse = PagedResponse<NotificationSchema>

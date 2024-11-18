@@ -21,10 +21,16 @@ interface PostCardProps extends GenericWrapper {
     postId: ResId | undefined
     isBaseCard?: boolean
     isMenuHidden?: boolean
+    isPostsLoading?: boolean
 }
 
 
-const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuHidden = false, children }) => {
+const PostCard: React.FC<PostCardProps> = ({
+    isPostsLoading = false,
+    postId, isBaseCard = false,
+    isMenuHidden = false,
+    children
+}) => {
 
     const classes = styles();
 
@@ -109,7 +115,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, isBaseCard = false, isMenuH
     );
 
     const RenderResult = () => (
-        isLoading ? <PostSkeleton /> : <MainContent />
+        isPostsLoading || isLoading ? <PostSkeleton /> : <MainContent />
     );
 
 

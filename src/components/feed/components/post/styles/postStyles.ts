@@ -32,7 +32,7 @@ const styles = createUseStyles({
       margin: '1rem 0',
       marginTop: '.5rem',
       padding: '0',
-      fontSize: '1rem',
+      fontSize: '.9rem',
     },
     '& hr': {
       border: 'none',

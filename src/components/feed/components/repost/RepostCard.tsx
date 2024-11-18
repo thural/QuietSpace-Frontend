@@ -14,10 +14,11 @@ import PostMenu from "../shared/post-menu/PostMenu"
 import styles from "./styles/repostCardStyles"
 
 interface RepostCardProps {
+    isPostsLoading?: boolean
     post: Post
 }
 
-const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
+const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false }) => {
 
     let data = undefined;
 
@@ -47,7 +48,7 @@ const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
             <BoxStyled className={classes.repostSection}>
                 <FlexStyled className={classes.postHeadline}>
                     <PiArrowsClockwiseBold className="repost-icon" />
-                    <UserDetails scale={4} user={user} isDisplayEmail={false} />
+                    <UserDetails scale={5} user={user} isDisplayEmail={false} />
                     <Typography style={{ margin: '0 .5rem' }}>reposted</Typography>
                     <PostMenu postId={post.id} isRepost={true} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
                 </FlexStyled>
@@ -58,9 +59,9 @@ const RepostCard: React.FC<RepostCardProps> = ({ post }) => {
     );
 
     const RenderResult = () => (
-        isLoading || user === undefined ? <PostSkeleton /> : <PostContent />
+        isPostsLoading || isLoading || user === undefined ? <PostSkeleton /> : <PostContent />
     );
-
+    post
     return (
         <BoxStyled className={classes.wrapper} >
             <RenderResult />

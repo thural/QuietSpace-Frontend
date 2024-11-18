@@ -3,8 +3,8 @@ export type ResId = string | number
 export interface BaseSchema {
     id: ResId
     version?: number,
-    createDate: Date
-    updateDate?: Date
+    createDate: string
+    updateDate?: string
 }
 
 export type JwtToken = string

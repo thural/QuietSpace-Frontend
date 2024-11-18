@@ -2,7 +2,6 @@ import notificationQueries from "@/api/queries/notificationQueries";
 import { NotificationType } from "@/api/schemas/native/notification";
 import NotificationList from "@/components/notification/components/list/NotificationList";
 import LoaderStyled from "@/components/shared/LoaderStyled";
-import { getEnumValueFromString } from "@/utils/enumUtils";
 
 
 const RequestNotifications = () => {
@@ -11,7 +10,7 @@ const RequestNotifications = () => {
     const notificationData = getNotificationsCache();
 
     if (notificationData === undefined) return <LoaderStyled />;
-    const notifications = notificationData?.content.filter(n => getEnumValueFromString(NotificationType, n.type) === NotificationType.REPOST)
+    const notifications = notificationData?.content.filter(n => n.type === NotificationType.FOLLOW_REQUEST)
     return <NotificationList notifications={notifications} />
 }
 
