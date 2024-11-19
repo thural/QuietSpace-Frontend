@@ -1,6 +1,6 @@
-import withForwardedRefAndErrBoundary from "../hooks/withForwardedRef";
-import styles from "../styles/customButtonStyles";
-import { GenericWrapperWithRef } from "../types/sharedComponentTypes";
+import withForwardedRefAndErrBoundary from "../../../services/hook/shared/withForwardedRef";
+import styles from "../../../styles/shared/customButtonStyles";
+import { GenericWrapperWithRef } from "../../../types/sharedComponentTypes";
 
 const CustomButton: React.FC<GenericWrapperWithRef> = ({ forwardedRef, label, ...props }) => {
     const classes = styles()

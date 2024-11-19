@@ -1,4 +1,4 @@
-import ChatContainer from "@components/chat/container/ChatContainer";
+import ChatContainer from "@/components/chat/ChatContainer";
 import { Outlet } from "react-router-dom";
 
 const ChatPage = () => {

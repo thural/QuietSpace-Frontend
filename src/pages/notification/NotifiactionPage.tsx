@@ -1,4 +1,4 @@
-import NotificationContainer from "@components/notification/container/NotificationContainer";
+import NotificationContainer from "@/components/notification/NotificationContainer";
 
 
 const NotificationPage = () => {

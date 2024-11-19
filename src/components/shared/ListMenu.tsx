@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BoxStyled from "./BoxStyled";
-import styles from "./styles/listMenuStyles";
-import { GenericWrapperWithRef } from "./types/sharedComponentTypes";
+import styles from "../../styles/shared/listMenuStyles";
+import { GenericWrapperWithRef } from "../../types/sharedComponentTypes";
 
 const ListMenu: React.FC<GenericWrapperWithRef> = ({ children, menuIcon, styleUpdate }) => {
 

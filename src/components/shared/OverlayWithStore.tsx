@@ -1,5 +1,5 @@
 import { viewStore } from "@/services/store/zustand";
-import styles from "./styles/overlayStyles";
+import styles from "../../styles/shared/overlayStyles";
 
 
 const OverlayWithStore = ({ closable }: { closable: Object }) => {

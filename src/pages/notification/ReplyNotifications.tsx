@@ -1,6 +1,6 @@
 import notificationQueries from "@/api/queries/notificationQueries";
 import { NotificationType } from "@/api/schemas/native/notification";
-import NotificationList from "@/components/notification/components/list/NotificationList";
+import NotificationList from "@/components/notification/list/NotificationList";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 
 

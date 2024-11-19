@@ -1,6 +1,6 @@
 import InputEmoji from "react-input-emoji";
-import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef";
-import { GenericWrapperWithRef } from "./types/sharedComponentTypes";
+import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef";
+import { GenericWrapperWithRef } from "../../types/sharedComponentTypes";
 
 const EmojiInput: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,

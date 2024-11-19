@@ -1,7 +1,7 @@
 import { ResId } from "@/api/schemas/native/common";
 import { ConsumerFn } from "@/types/genericTypes";
 import BoxStyled from "./BoxStyled";
-import styles from "./styles/checkboxStyles"
+import styles from "../../styles/shared/checkboxStyles"
 
 
 interface CheckBoxProps {

@@ -5,20 +5,20 @@ import FeedPage from "./pages/feed/FeedPage";
 import SearchPage from "./pages/search/SearchPage";
 
 import '@mantine/core/styles.css';
-import './App.css';
+import './styles/App.css';
 
 import { useEffect } from "react";
 import { Frame } from "stompjs";
 import { Auth } from "./api/schemas/inferred/auth";
-import ActivationForm from "./components/auth/components/activation/ActivationForm";
-import ChatPanel from "./components/chat/components/message/panel/ChatPanel";
-import ChatPlaceholder from "./components/chat/components/message/panel/ChatPlaceholder";
-import FeedContainer from "./components/feed/container/FeedContainer";
-import PostContainer from "./components/feed/container/PostContainer";
-import NavBar from "./components/navbar/container/Navbar";
-import ProfileContainer from "./components/profile/container/ProfileContainer";
-import UserProfileContainer from "./components/profile/container/UserProfileContainer";
-import ErrorComponent from "./components/shared/error/ErrorComponent";
+import ActivationForm from "./components/auth/ActivationForm";
+import ChatPanel from "./components/chat/message/ChatPanel";
+import ChatPlaceholder from "./components/chat/message/ChatPlaceholder";
+import FeedContainer from "./components/feed/FeedContainer";
+import PostContainer from "./components/feed/PostContainer";
+import NavBar from "./components/navbar/Navbar";
+import ProfileContainer from "./components/profile/ProfileContainer";
+import UserProfileContainer from "./components/profile/UserProfileContainer";
+import ErrorComponent from "./components/shared/errors/ErrorComponent";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import SignoutPage from "./pages/auth/signout/SignoutPage";
 import AllNotifications from "./pages/notification/AllNotifications";
@@ -28,14 +28,14 @@ import RepostNotifications from "./pages/notification/RepostNotifications";
 import RequestNotifications from "./pages/notification/RequestNotifications";
 import ProfilePage from "./pages/profile/ProfilePage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import useJwtAuth from "./services/auth/useJwtAuth";
-import useChatSocket from "./services/chat/useChatSocket";
+import { useGetChats } from "./services/data/useChatData";
 import { useGetNotifications } from "./services/data/useNotificationData";
 import { useGetCurrentUser } from "./services/data/useUserData";
-import useNotificationSocket from "./services/notification/useNotificationSocket";
+import useJwtAuth from "./services/hook/auth/useJwtAuth";
+import useChatSocket from "./services/hook/chat/useChatSocket";
+import useNotificationSocket from "./services/hook/notification/useNotificationSocket";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
-import { useGetChats } from "./services/data/useChatData";
 
 const App = () => {
 

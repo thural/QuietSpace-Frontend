@@ -3,6 +3,7 @@ import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle
 import DefaultContainer from "@components/shared/DefaultContainer";
 import Typography from "@components/shared/Typography";
 import { useNavigate } from "react-router-dom";
+import ProfileSettings from "./ProfileSettings";
 
 
 function SettingsContainer() {
@@ -45,7 +46,7 @@ function SettingsContainer() {
 
 
                 <Tabs.Panel value="profile">
-                    <Text ta="center">profile settings</Text>
+                    <ProfileSettings />
                 </Tabs.Panel>
                 <Tabs.Panel value="privacy">
                     <Text ta="center">privacy settings</Text>

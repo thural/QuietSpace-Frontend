@@ -1,4 +1,4 @@
-import { GenericWrapper } from "./types/sharedComponentTypes";
+import { GenericWrapper } from "../../types/sharedComponentTypes";
 
 export interface Conditional extends GenericWrapper {
     isEnabled: boolean

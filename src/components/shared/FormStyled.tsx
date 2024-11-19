@@ -1,5 +1,5 @@
-import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef";
-import styles from "./styles/formStyles";
+import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef";
+import styles from "../../styles/shared/formStyles";
 
 const FormStyled = ({ forwardedRef, children, ...props }) => {
     const classes = styles();

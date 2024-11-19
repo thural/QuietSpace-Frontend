@@ -1,4 +1,4 @@
-import styles from "./styles/userQueryItemStyles";
+import styles from "../../styles/shared/userQueryItemStyles";
 
 import { getSignedUser } from "@/api/queries/userQueries";
 import { User } from "@/api/schemas/inferred/user";
@@ -11,7 +11,7 @@ import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
 import React from "react";
 import Conditional from "./Conditional";
-import { GenericWrapper } from "./types/sharedComponentTypes";
+import { GenericWrapper } from "../../types/sharedComponentTypes";
 
 
 

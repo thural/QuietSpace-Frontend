@@ -1,6 +1,6 @@
 import { Input } from "@mantine/core"
-import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef"
-import { GenericWrapperWithRef } from "./types/sharedComponentTypes"
+import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef"
+import { GenericWrapperWithRef } from "../../types/sharedComponentTypes"
 
 const InputStyled: React.FC<GenericWrapperWithRef> = ({ forwardedRef, placeholder, onKeyDown, onFocus, onChange, onBlur, variant, ...props }) => {
 

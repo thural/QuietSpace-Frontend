@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react"
-import withForwardedRefAndErrBoundary from "./hooks/withForwardedRef"
-import { GenericWrapperWithRef } from "./types/sharedComponentTypes"
+import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef"
+import { GenericWrapperWithRef } from "../../types/sharedComponentTypes"
 
 interface ClickableProps extends GenericWrapperWithRef {
     handleClick: MouseEventHandler<HTMLDivElement>,

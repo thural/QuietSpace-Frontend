@@ -1,5 +1,5 @@
 import { Notification } from "@/api/schemas/inferred/notification";
-import { GenericWrapper } from "../components/shared/types/sharedComponentTypes";
+import { GenericWrapper } from "./sharedComponentTypes";
 import { PageContent } from "@/api/schemas/inferred/common";
 import { AnyFunction } from "./genericTypes";
 
