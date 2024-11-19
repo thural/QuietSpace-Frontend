@@ -11,8 +11,8 @@ interface PostContentProps {
 }
 
 const PostContent: React.FC<PostContentProps> = ({ handleContentClick, post }) => (
-    <BoxStyled className="content" onClick={handleContentClick}>
-        <Typography className="text">{post.text}</Typography>
+    <BoxStyled onClick={handleContentClick}>
+        <Typography>{post.text}</Typography>
         <Conditional isEnabled={!!post.poll}>
             <PollBox postId={post.id} pollData={post.poll} />
         </Conditional>

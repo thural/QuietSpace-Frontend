@@ -3,8 +3,6 @@ import { createUseStyles } from "react-jss";
 const styles = createUseStyles({
   wrapper: {
     color: 'white',
-    fontSize: 'medium',
-    marginTop: '.25rem',
     marginLeft: 'auto',
     width: 'fit-content',
     border: '1px solid black',

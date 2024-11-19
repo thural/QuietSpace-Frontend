@@ -1,11 +1,11 @@
 import FlexStyled from "@/components/shared/FlexStyled";
 import TextInputStyled from "@/components/shared/TextInputStyled";
 import Typography from "@/components/shared/Typography";
-import styles from "./styles/pollIFormStyles";
+import styles from "@/styles/feed/pollIFormStyles";
 import { PostBody } from "@/api/schemas/inferred/post";
 import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
-import { PollView } from "../post/hooks/useCreatePostForm";
 import InputBoxStyled from "@/components/shared/InputBoxStyled";
+import { PollView } from "@/services/hook/feed/useCreatePostForm";
 
 interface PollForm {
     postData: PostBody

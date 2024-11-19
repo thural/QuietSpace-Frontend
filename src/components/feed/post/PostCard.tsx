@@ -15,6 +15,7 @@ import styles from "@/styles/feed/postStyles";
 import PostStatSection from "../fragments/PostStatSection";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import BatchShareForm from "@/components/chat/form/BatchSendForm";
+import PostMenu from "../fragments/PostMenu";
 
 
 interface PostCardProps extends GenericWrapper {
@@ -62,7 +63,6 @@ const PostCard: React.FC<PostCardProps> = ({
         toggleEditForm,
         toggleCommentForm,
         handleNavigation,
-        handleUserNavigation
     } = data;
 
 
@@ -81,19 +81,14 @@ const PostCard: React.FC<PostCardProps> = ({
         toggleRepostForm
     }
 
-    const postHeadlineProps = {
-        post,
-        isMenuHidden,
-        isMutable,
-        toggleEditForm,
-        handleDelete: handleDeletePost,
-        handleUserClick: handleUserNavigation
-    }
-
 
     const MainContent = () => (
         <>
-            <PostHeadline {...postHeadlineProps} />
+            <PostHeadline post={post}>
+                <Conditional isEnabled={!isMenuHidden}>
+                    <PostMenu postId={post.id} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+                </Conditional>
+            </PostHeadline>
             <PostContent post={post} handleContentClick={handleNavigation} />
             <Conditional isEnabled={!isBaseCard}>
                 <PostStatSection{...postStatSectionProps} />
@@ -121,7 +116,7 @@ const PostCard: React.FC<PostCardProps> = ({
 
     return (
         <>
-            <BoxStyled id={postId} className={classes.wrapper} onClick={handleNavigation} >
+            <BoxStyled id={postId} className={classes.postCard} onClick={handleNavigation} >
                 <RenderResult />
             </BoxStyled>
             {!children && <hr />}

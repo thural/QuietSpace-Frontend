@@ -10,6 +10,9 @@ import UserAvatar from "@shared/UserAvatar";
 import UserDetails from "@shared/UserDetails";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { getSignedUser } from "@/api/queries/userQueries";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
 export interface UserCardProps extends GenericWrapper {
     userId: ResId
@@ -20,13 +23,22 @@ export interface UserCardProps extends GenericWrapper {
 const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isDisplayName = true, children, ...props }) => {
 
     const classes = styles();
+    const navigate = useNavigate();
+    const signedUser = getSignedUser();
+    if (!signedUser || !userId) throw nullishValidationdError({ signedUser });
 
     const { data: user, isLoading } = useGetUserById(userId);
+
+    const handleUserNavigation = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (userId === signedUser.id) return navigate(`/profile`);
+        navigate(`/profile/${userId}`);
+    }
 
     if (isLoading) return <LoadingOverlay />;
 
     return (
-        <FlexStyled className={classes.queryCard} {...props}>
+        <FlexStyled onClick={handleUserNavigation} className={classes.queryCard} {...props}>
             <UserAvatar size="2.5rem" radius="10rem" chars={toUpperFirstChar(user.username)} />
             <BoxStyled>
                 <UserDetails user={user} scale={5} isDisplayEmail={isDisplayEmail} isDisplayName={isDisplayName} />

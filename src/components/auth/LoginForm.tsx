@@ -12,7 +12,7 @@ import PassInput from "@components/shared/PassInput";
 import Typography from "@components/shared/Typography";
 import React from "react";
 import { useLoginForm } from "../../services/hook/auth/useLoginForm";
-import styles from "../../styles/auth/formStyles";
+import styles from "@/styles/auth/formStyles";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 
@@ -48,9 +48,9 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
                     <TextInputStyled name='email' value={formData.email} handleChange={handleFormChange} />
                     <PassInput name='password' value={formData.password} handleChange={handleFormChange} />
                 </InputBoxStyled>
-                <Typography className="prompt">don't have an account?</Typography>
-                <OutlineButton name="signup" onClick={handleSignupBtn} />
                 <GradientButton onClick={handleLoginForm} />
+                <Typography type="h4">don't have an account?</Typography>
+                <OutlineButton name="signup" onClick={handleSignupBtn} />
             </FormStyled>
         </BoxStyled>
     );

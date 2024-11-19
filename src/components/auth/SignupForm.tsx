@@ -12,7 +12,7 @@ import PassInput from "@components/shared/PassInput";
 import Typography from "@components/shared/Typography";
 import React from "react";
 import { useSignupForm } from "../../services/hook/auth/useSignupForm";
-import styles from "../../styles/auth/formStyles";
+import styles from "@/styles/auth/formStyles";
 
 const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
 
@@ -54,9 +54,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
                     <PassInput name='confirmPassword' value={formData.confirmPassword} handleChange={handleChange} />
                 </InputBoxStyled>
             </FormStyled>
-            <Typography className="prompt">already have account?</Typography>
-            <OutlineButton onClick={handleLoginClick} name="login" />
             <GradientButton onClick={handleSubmit} />
+            <Typography type="h4">already have account?</Typography>
+            <OutlineButton onClick={handleLoginClick} name="login" />
         </BoxStyled>
     );
 };

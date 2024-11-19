@@ -24,12 +24,6 @@ export const usePost = (postId: ResId) => {
         navigate(`/feed/${postId}`);
     }
 
-    const handleUserNavigation = (e: React.MouseEvent, userId: ResId) => {
-        e.stopPropagation();
-        if (userId === signedUser.id) return navigate(`/profile`);
-        navigate(`/profile/${userId}`);
-    }
-
 
     const { data: post, isLoading, isError, isSuccess } = useGetPostById(postId);
 
@@ -123,7 +117,6 @@ export const usePost = (postId: ResId) => {
         handleLike,
         handleDislike,
         handleNavigation,
-        handleUserNavigation,
         toggleEditForm,
         toggleComments,
         toggleCommentForm,

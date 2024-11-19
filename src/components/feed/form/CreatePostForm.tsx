@@ -10,10 +10,10 @@ import { PiChartBarHorizontalFill } from "react-icons/pi";
 import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
 import ComboMenu from "../fragments/ComboMenu";
-import PollForm from "../poll/Poll";
 import useCreatePostForm from "@/services/hook/feed/useCreatePostForm";
 import styles from "@/styles/feed/createPostStyles";
 import Typography from "@/components/shared/Typography";
+import PollForm from "./PollForm";
 
 interface CreatePostFormProps extends GenericWrapper {
     toggleForm: ConsumerFn

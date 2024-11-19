@@ -41,7 +41,7 @@ const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7
 
     return (
         <BoxStyled style={mergedStyle}>
-            <PostCardBase lineClamp={lineClamp} {...post} />
+            <PostCardBase post={post} lineClamp={lineClamp} />
         </BoxStyled>
     )
 }

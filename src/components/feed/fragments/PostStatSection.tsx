@@ -6,6 +6,7 @@ import CommentToggle from "./CommentToggle";
 import DislikeToggle from "./DislikeToggle";
 import LikeToggle from "./LikeToggle";
 import PostStats from "./PostStats";
+import { createUseStyles } from "react-jss";
 
 interface PostStatSectionProps {
     post: Post
@@ -18,16 +19,18 @@ interface PostStatSectionProps {
     toggleRepostForm: ConsumerFn
 }
 
-const style = {
-    gap: '.5rem',
-    height: '1.5rem',
-    display: 'flex',
-    flexFlow: 'row nowrap',
-    justifyContent: 'start',
-    alignItems: 'center',
-    fontSize: '1.3rem',
-    margin: '1rem 0'
-}
+const useStyles = createUseStyles({
+    statsSection: {
+        gap: '.5rem',
+        height: '1.5rem',
+        display: 'flex',
+        flexFlow: 'row nowrap',
+        justifyContent: 'start',
+        alignItems: 'center',
+        fontSize: '1.3rem',
+        margin: '1rem 0'
+    }
+})
 
 const PostStatSection: React.FC<PostStatSectionProps> = ({
     post,
@@ -38,14 +41,19 @@ const PostStatSection: React.FC<PostStatSectionProps> = ({
     toggleShareForm,
     toggleCommentForm,
     toggleRepostForm
-}) => (
-    <BoxStyled style={style}>
-        <LikeToggle userReaction={post?.userReaction} handleLike={handleLike} />
-        <DislikeToggle userReaction={post?.userReaction} handleDislike={handleDislike} />
-        <CommentToggle hasCommented={hasCommented} toggleForm={toggleCommentForm} />
-        <ShareMenu handleShareClick={toggleShareForm} handleRepostClick={toggleRepostForm} />
-        <PostStats post={post} commentCount={commentCount} />
-    </BoxStyled>
-);
+}) => {
+
+    const classes = useStyles();
+
+    return (
+        <BoxStyled className={classes.statsSection}>
+            <LikeToggle userReaction={post?.userReaction} handleLike={handleLike} />
+            <DislikeToggle userReaction={post?.userReaction} handleDislike={handleDislike} />
+            <CommentToggle hasCommented={hasCommented} toggleForm={toggleCommentForm} />
+            <ShareMenu handleShareClick={toggleShareForm} handleRepostClick={toggleRepostForm} />
+            <PostStats post={post} commentCount={commentCount} />
+        </BoxStyled>
+    );
+}
 
 export default PostStatSection

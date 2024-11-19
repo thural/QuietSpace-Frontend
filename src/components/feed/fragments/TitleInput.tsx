@@ -19,6 +19,7 @@ const TitleInput: React.FC<TitleInputProps> = ({ value, handleChange }) => {
             height: '1.8rem',
             boxSizing: 'border-box',
             marginBottom: '0.5rem',
+
             '&:focus': {
                 outline: 'none',
                 borderColor: '#a7abb1',

@@ -41,6 +41,7 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
             <FormStyled>
                 <UserAvatar radius="10rem" chars={avatarPlaceholder} />
                 <TextInputStyled
+                    isStyled={false}
                     name="text"
                     minLength="1"
                     maxLength="64"
@@ -48,7 +49,7 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
                     handleChange={handleChange}
                 />
             </FormStyled>
-            <PostCardBase text={post.text} title={post.title} userId={post.userId} />
+            <PostCardBase post={post} />
             <ControlSection />
         </FlexStyled>
     );
