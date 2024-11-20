@@ -12,7 +12,7 @@ interface CreatePostSection {
     handleClick: ProcedureFn
 }
 
-const CreatePostSection: React.FC<CreatePostSection> = ({ user, handleClick }) => (
+const ToggleFormSection: React.FC<CreatePostSection> = ({ user, handleClick }) => (
     <BoxStyled style={{ margin: "1rem 0" }}>
         <FlexStyled justify="space-between" gap="1rem">
             <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
@@ -27,4 +27,4 @@ const CreatePostSection: React.FC<CreatePostSection> = ({ user, handleClick }) =
     </BoxStyled>
 );
 
-export default CreatePostSection
+export default ToggleFormSection

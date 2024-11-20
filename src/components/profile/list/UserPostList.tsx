@@ -1,5 +1,5 @@
 import { ResId } from "@/api/schemas/native/common";
-import ReplyCard from "@/components/feed/comment/ReplyCard";
+import PostReplyCard from "@/components/feed/post/PostReplyCard";
 import PostCard from "@/components/feed/post/PostCard";
 import RepostCard from "@/components/feed/repost/RepostCard";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
@@ -24,7 +24,7 @@ const UserPostList: React.FC<UserPostListProps> = ({ userId, isReposts = false, 
     return posts?.content
         .filter(post => (!!post.repostId === isReposts))
         .map((post, index) => {
-            if (isRepliedPosts) return <ReplyCard post={post} userId={userId} />
+            if (isRepliedPosts) return <PostReplyCard post={post} userId={userId} />
             if (post.repostId === null) return <PostCard key={index} postId={post.id} />;
             return <RepostCard post={post} key={index} />
         });

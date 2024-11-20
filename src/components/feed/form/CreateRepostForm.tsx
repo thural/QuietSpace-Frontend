@@ -1,14 +1,13 @@
 import { Post } from "@/api/schemas/inferred/post";
-import DarkButton from "@/components/shared/buttons/DarkButton ";
-import FlexStyled from "@/components/shared/FlexStyled";
 import FormStyled from "@/components/shared/FormStyled";
-import TextInputStyled from "@/components/shared/TextInputStyled";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import ModalStyled from "@/components/shared/ModalStyled";
 import UserAvatar from "@/components/shared/UserAvatar";
+import useCreateRepostForm from "@/services/hook/feed/useCreateRepostForm";
 import { ConsumerFn } from "@/types/genericTypes";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
+import FormControls from "../fragments/FormControls";
+import TextInput from "../fragments/TextInput";
 import PostCardBase from "../post/PostCardBase";
-import useCreateRepostForm from "../../../services/hook/feed/useCreateRepostForm";
-import styles from "../../../styles/feed/createRepostStyles";
 
 
 interface CreateRepostProps extends GenericWrapper {
@@ -18,8 +17,6 @@ interface CreateRepostProps extends GenericWrapper {
 
 const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => {
 
-    const classes = styles();
-
     const {
         avatarPlaceholder,
         repostData,
@@ -28,30 +25,15 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
         handleSubmit,
     } = useCreateRepostForm(toggleForm, post);
 
-
-
-    const ControlSection = () => (
-        <FlexStyled className="control-area">
-            <DarkButton name="post" disabled={!repostData.text} loading={addRepost.isPending} onClick={handleSubmit} />
-        </FlexStyled>
-    );
-
     return (
-        <FlexStyled className={classes.wrapper} onClick={(e: Event) => e.stopPropagation()}>
+        <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
             <FormStyled>
                 <UserAvatar radius="10rem" chars={avatarPlaceholder} />
-                <TextInputStyled
-                    isStyled={false}
-                    name="text"
-                    minLength="1"
-                    maxLength="64"
-                    placeholder="type a comment"
-                    handleChange={handleChange}
-                />
+                <TextInput minHeight="3rem" value={repostData.text} handleChange={handleChange} />
             </FormStyled>
             <PostCardBase post={post} />
-            <ControlSection />
-        </FlexStyled>
+            <FormControls isLoading={addRepost.isPending} isDisabled={!repostData.text} handleSubmit={handleSubmit} />
+        </ModalStyled>
     );
 };
 

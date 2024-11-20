@@ -4,7 +4,6 @@ const styles = createUseStyles({
 
   pollForm: {
     display: 'none',
-    gap: '.225rem',
     flexFlow: 'column nowrap',
 
     '& input:focus': {

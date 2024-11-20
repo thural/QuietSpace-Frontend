@@ -1,11 +1,11 @@
-import FlexStyled from "@/components/shared/FlexStyled";
-import TextInputStyled from "@/components/shared/TextInputStyled";
-import Typography from "@/components/shared/Typography";
-import styles from "@/styles/feed/pollIFormStyles";
 import { PostBody } from "@/api/schemas/inferred/post";
-import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
+import Clickable from "@/components/shared/Clickable";
+import FlexStyled from "@/components/shared/FlexStyled";
 import InputBoxStyled from "@/components/shared/InputBoxStyled";
+import TextInputStyled from "@/components/shared/TextInputStyled";
 import { PollView } from "@/services/hook/feed/useCreatePostForm";
+import styles from "@/styles/feed/pollIFormStyles";
+import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
 
 interface PollForm {
     postData: PostBody
@@ -53,7 +53,7 @@ const PollForm: React.FC<PollForm> = ({ postData, handleChange, togglePoll, poll
                     hidden={!postData.option3}
                 />
             </InputBoxStyled>
-            <Typography className="close-poll" onClick={togglePoll} >remove poll</Typography>
+            <Clickable className="close-poll" onClick={togglePoll} >remove poll</Clickable>
         </FlexStyled>
     )
 }

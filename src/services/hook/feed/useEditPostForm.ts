@@ -47,6 +47,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         postData,
         isError,
         isLoading,
+        editCurrentPost,
         handleSubmit,
         handleChange,
         signedUser,

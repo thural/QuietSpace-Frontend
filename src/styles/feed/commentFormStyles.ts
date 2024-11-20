@@ -14,7 +14,21 @@ const styles = createUseStyles({
     borderRadius: '4px',
     backgroundColor: 'transparent'
   },
-})
 
+  card: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem'
+  },
+
+  content: {
+    maxWidth: '100%',
+    marginRight: '1rem'
+  },
+
+  controls: {
+    justifyContent: 'flex-end'
+  }
+});
 
 export default styles

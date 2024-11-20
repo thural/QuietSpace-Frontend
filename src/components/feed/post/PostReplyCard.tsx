@@ -6,16 +6,16 @@ import ErrorComponent from "@/components/shared/errors/ErrorComponent"
 import PostSkeleton from "@/components/shared/PostSkeleton"
 import { useGetLatestComment } from "@/services/data/useCommentData"
 import { useGetUserById } from "@/services/data/useUserData"
-import CommentBox from "./Comment"
-import styles from "../../../styles/feed/replyCardStyles"
+import CommentBox from "../comment/Comment"
+import styles from "@/styles/feed/replyCardStyles"
 import { nullishValidationdError } from "@/utils/errorUtils"
 
-interface RepostCardProps {
+interface PostReplyCardProps {
     post: Post
     userId: ResId
 }
 
-const ReplyCard: React.FC<RepostCardProps> = ({ post, userId }) => {
+const PostReplyCard: React.FC<PostReplyCardProps> = ({ post, userId }) => {
 
     const classes = styles();
 
@@ -54,4 +54,4 @@ const ReplyCard: React.FC<RepostCardProps> = ({ post, userId }) => {
     )
 }
 
-export default ReplyCard
+export default PostReplyCard

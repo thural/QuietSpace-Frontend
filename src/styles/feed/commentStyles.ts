@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss"
 
 const styles = createUseStyles({
 
-  container: {
+  commentWrapper: {
     fontSize: '.9rem',
     margin: '.8rem 0 1.2rem 0',
     gap: '.5rem',
@@ -59,42 +59,30 @@ const styles = createUseStyles({
 
   },
 
-  commentWrapper: {
+  comment: {
+    maxWidth: '50%',
+    flexDirection: 'column',
+    width: 'fit-content',
+    position: 'relative',
 
-  },
-
-  commentOptions: {
-    width: '100%',
-    justifyContent: 'flex-start',
-    gap: '10px',
-    color: '#303030',
-    display: 'flex',
-    flexFlow: 'row nowrap',
-    fontSize: '.8rem',
-    fontWeight: '500',
-    '& > *': {
+    '& .comment-text': {
+      display: 'inline-block',
+      margin: '0',
+      padding: '0'
+    },
+    '& .comment-options > *': {
       cursor: 'pointer',
     },
-    '& p': {
-      margin: '0',
-      fontSize: '.8rem',
-      color: '#4d4d4d'
-    }
   },
 
-  commentInput: {
-    width: '100%',
-    border: 'none',
-    height: 'auto',
-    resize: 'none',
-    outline: 'none',
-    overflow: 'hidden',
+  commentBody: {
+    backgroundColor: '#F0F2F4',
     boxSizing: 'border-box',
-    maxHeight: '200px',
-    backgroundColor: 'transparent'
+    borderRadius: '1rem 0rem 1rem 0rem',
+    padding: '10px 10px',
   },
 
-})
+});
 
 
 export default styles

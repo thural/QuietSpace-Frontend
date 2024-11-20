@@ -3,11 +3,11 @@ import { ConsumerFn } from "@/types/genericTypes";
 import { createUseStyles } from "react-jss";
 
 interface TitleInputProps {
-    value: string
+    value: string | undefined
     handleChange: ConsumerFn
 }
 
-const TitleInput: React.FC<TitleInputProps> = ({ value, handleChange }) => {
+const TitleInput: React.FC<TitleInputProps> = ({ value = "", handleChange }) => {
 
 
     const useStyles = createUseStyles({

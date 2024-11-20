@@ -1,27 +1,23 @@
-import DarkButton from "@/components/shared/buttons/DarkButton ";
 import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
-import FlexStyled from "@/components/shared/FlexStyled";
 import FormStyled from "@/components/shared/FormStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
+import useCreatePostForm from "@/services/hook/feed/useCreatePostForm";
 import { ConsumerFn } from "@/types/genericTypes";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { PiChartBarHorizontalFill } from "react-icons/pi";
+import ComboMenu from "../fragments/ComboMenu";
+import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
-import ComboMenu from "../fragments/ComboMenu";
-import useCreatePostForm from "@/services/hook/feed/useCreatePostForm";
-import styles from "@/styles/feed/createPostStyles";
-import Typography from "@/components/shared/Typography";
 import PollForm from "./PollForm";
 
-interface CreatePostFormProps extends GenericWrapper {
+export interface CreatePostFormProps extends GenericWrapper {
     toggleForm: ConsumerFn
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
-
-    const classes = styles();
 
     const {
         postData,
@@ -34,20 +30,6 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
         addPost,
         viewAccessOptions,
     } = useCreatePostForm(toggleForm);
-
-
-
-    const ControlSection = () => (
-        <FlexStyled className={classes.controlArea}>
-            <ComboMenu options={viewAccessOptions}
-                selectedOption={postData.viewAccess}
-                handleSelect={handleViewSelect}
-                textContent={"can view"}
-            />
-            <PiChartBarHorizontalFill className={classes.pollToggle} onClick={togglePoll} />
-            <DarkButton className={classes.button} name="post" disabled={!postData.text} loading={addPost.isPending} onClick={handleSubmit} />
-        </FlexStyled>
-    );
 
 
     return (
@@ -64,7 +46,14 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
                     togglePoll={togglePoll}
                     pollView={pollView}
                 />
-                <ControlSection />
+                <FormControls isDisabled={!postData.text} isLoading={addPost.isPending} handleSubmit={handleSubmit}>
+                    <ComboMenu options={viewAccessOptions}
+                        selectedOption={postData.viewAccess}
+                        handleSelect={handleViewSelect}
+                        textContent={"can view"}
+                    />
+                    <PiChartBarHorizontalFill style={{ cursor: 'pointer' }} onClick={togglePoll} />
+                </FormControls>
             </FormStyled>
         </ModalStyled>
     );

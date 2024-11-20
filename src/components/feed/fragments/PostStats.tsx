@@ -21,8 +21,10 @@ const useStyles = createUseStyles({
 })
 
 const PostStats: React.FC<PostStatsProps> = ({ post, commentCount }) => {
+
     const classes = useStyles();
     const { likeCount, dislikeCount } = post;
+
     return (
         <FlexStyled className={classes.postStats}>
             {likeCount > 0 && <Typography size="0.85rem">{parseCount(likeCount)} likes</Typography>}

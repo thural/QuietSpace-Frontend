@@ -61,7 +61,6 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
     const RenderResult = () => (
         isPostsLoading || isLoading || user === undefined ? <PostSkeleton /> : <PostContent />
     );
-    post
     return (
         <BoxStyled className={classes.wrapper} >
             <RenderResult />

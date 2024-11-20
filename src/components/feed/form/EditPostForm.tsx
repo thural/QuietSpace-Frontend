@@ -1,17 +1,17 @@
 import { ResId } from "@/api/schemas/inferred/common";
-import DarkButton from "@/components/shared/buttons/DarkButton ";
+import FormControls from "@/components/feed/fragments/FormControls";
+import TextInput from "@/components/feed/fragments/TextInput";
+import TitleInput from "@/components/feed/fragments/TitleInput";
+import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import FormStyled from "@/components/shared/FormStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import ModalStyled from "@/components/shared/ModalStyled";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
 import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
+import useEditPostForm from "@/services/hook/feed/useEditPostForm";
 import { ConsumerFn } from "@/types/genericTypes";
-import TextInput from "../fragments/TextInput";
-import TitleInput from "../fragments/TitleInput";
-import useEditPostForm from "../../../services/hook/feed/useEditPostForm";
-import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 interface EditPostFormProps extends GenericWrapper {
   postId: ResId,
@@ -32,6 +32,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
     isError,
     isLoading,
     postData,
+    editCurrentPost,
     handleSubmit,
     handleChange,
     avatarPlaceholder
@@ -50,7 +51,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
       <FormStyled>
         <TitleInput value={postData.title} handleChange={handleChange} />
         <TextInput value={postData.text} handleChange={handleChange} />
-        <DarkButton className="submit-btn" type='button' onClick={handleSubmit} />
+        <FormControls isLoading={editCurrentPost.isPending} isDisabled={!postData.text} handleSubmit={handleSubmit} />
       </FormStyled>
     </ModalStyled>
   );

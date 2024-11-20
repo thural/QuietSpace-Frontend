@@ -1,14 +1,12 @@
-import BoxStyled from "@/components/shared/BoxStyled";
+import { ResId } from "@/api/schemas/inferred/common";
 import FormStyled from "@/components/shared/FormStyled";
+import ModalStyled from "@/components/shared/ModalStyled";
+import TextAreaStyled from "@/components/shared/TextAreaStyled";
 import Typography from "@/components/shared/Typography";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
-import useEditPostForm from "./hooks/useEditCommentForm";
-import styles from "./styles/editPostStyles";
-import { ResId } from "@/api/schemas/inferred/common";
-import TextAreaStyled from "@/components/shared/TextAreaStyled";
+import useEditPostForm from "@/services/hook/feed/useEditCommentForm";
 
 const EditPostForm = ({ postId }: { postId: ResId }) => {
-  const classes = styles();
   const {
     postData,
     handleSubmit,
@@ -16,20 +14,19 @@ const EditPostForm = ({ postId }: { postId: ResId }) => {
   } = useEditPostForm(postId);
 
   return (
-    <BoxStyled className={classes.post}>
+    <ModalStyled>
       <Typography type="h3">edit post</Typography>
       <FormStyled>
         <TextAreaStyled
-          className='text input'
           name='text'
           placeholder="text"
           maxLength={128}
-          value={postData["text"]}
+          value={postData.text}
           handleChange={handleChange}>
         </TextAreaStyled>
         <DarkButton className="submit-btn" type='button' onClick={handleSubmit} />
       </FormStyled>
-    </BoxStyled>
+    </ModalStyled>
   );
 };
 

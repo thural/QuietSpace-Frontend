@@ -37,12 +37,17 @@ const TextInputStyled: React.FC<TextInputStyledProps> = ({
             border: '1px solid #e2e8f0',
             outline: 'none',
             borderRadius: '10px',
-            '&:focus': {
+            '& :focus': {
                 outline: 'none',
                 borderColor: '#a7abb1',
             },
         },
-        unstyled: {}
+        unstyled: {
+            width: '100%',
+            border: 'none',
+            height: '2rem',
+            boxSizing: 'border-box',
+        }
     });
 
     const classes = useStyles();

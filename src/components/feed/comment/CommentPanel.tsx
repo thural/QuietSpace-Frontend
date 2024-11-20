@@ -1,11 +1,11 @@
 import { ResId } from "@/api/schemas/native/common";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import LoaderStyled from "@/components/shared/LoaderStyled";
+import { useGetComments } from "@/services/data/useCommentData";
+import styles from "@/styles/feed/commentPanelStyles";
 import BoxStyled from "@components/shared/BoxStyled";
 import CommentBox from "./Comment";
 import CommentReply from "./CommentReply";
-import styles from "@/styles/feed/commentPanelStyles";
-import { useGetComments } from "@/services/data/useCommentData";
 
 
 interface CommentPanelProps {
@@ -26,15 +26,13 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
 
     const CommentList = () => {
         if (comments.data?.totalElements === 0) return null;
-        const renderResult = comments.data?.content.map((comment, index) => {
-            if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
-            const repliedComment = comments.data.content.find(c => c.id === comment.parentId);
-            return <CommentReply key={index} comment={comment} repliedComment={repliedComment} />;
-        })
         return (
             <>
-                <hr />
-                {renderResult}
+                {comments.data?.content.map((comment, index) => {
+                    if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
+                    const repliedComment = comments.data.content.find(c => c.id === comment.parentId);
+                    return <CommentReply key={index} comment={comment} repliedComment={repliedComment} />;
+                })}
             </>
         )
     }

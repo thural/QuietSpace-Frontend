@@ -1,16 +1,16 @@
 import { Comment } from "@/api/schemas/inferred/comment";
 import BoxStyled from "@/components/shared/BoxStyled";
-import Conditional from "@/components/shared/Conditional";
 import EmojiText from "@/components/shared/EmojiText";
+import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import FlexStyled from "@/components/shared/FlexStyled";
+import Overlay from "@/components/shared/Overlay";
 import Typography from "@/components/shared/Typography";
 import UserAvatar from "@/components/shared/UserAvatar";
-import { toUpperFirstChar } from "@/utils/stringUtils";
 import useComment from "@/services/hook/feed/useComment";
-import styles from "@/styles/feed/commenReplytStyles";
-import Overlay from "@/components/shared/Overlay";
+import styles from "@/styles/feed/commentStyles";
+import { toUpperFirstChar } from "@/utils/stringUtils";
 import CreateCommentForm from "../form/CreateCommentForm";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import CommentControls from "./CommentControls";
 
 interface CommentReplyProps {
     comment: Comment
@@ -39,13 +39,15 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
         isLiked,
     } = data;
 
-    const appliedStyle = {
+    const isOwner = comment.userId === user.id;
+
+    const appliedStyle = isOwner ? {
         borderRadius: '1rem 0rem 1rem 1rem',
         marginLeft: 'auto'
-    };
+    } : {};
 
     const CommentBody = () => (
-        <BoxStyled key={comment.id} className={classes.comment} style={appliedStyle}>
+        <FlexStyled key={comment.id} className={classes.comment} style={appliedStyle}>
             <BoxStyled className={classes.commentBody}>
                 <FlexStyled className={classes.replyCard}>
                     <BoxStyled className="reply-card-indicator"></BoxStyled>
@@ -53,19 +55,18 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
                 </FlexStyled>
                 <EmojiText text={comment.text} />
             </BoxStyled>
-            <BoxStyled className={classes.commentOptions}>
-                <Typography className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</Typography>
-                <Typography className="comment-reply" onClick={toggleCommentForm}>reply</Typography>
-                <Typography className="comment-reply-count">{comment.replyCount}</Typography>
-                <Conditional isEnabled={comment.username === user.username}>
-                    <Typography className="comment-delete" onClick={handleDeleteComment}>delete</Typography>
-                </Conditional>
-            </BoxStyled>
-        </BoxStyled>
+            <CommentControls
+                isOwner={isOwner}
+                isLiked={isLiked}
+                handleLike={handleLikeToggle}
+                handleReply={toggleCommentForm}
+                hanldeDelete={handleDeleteComment}
+            />
+        </FlexStyled>
     );
 
     return (
-        <FlexStyled className={classes.wrapper}>
+        <FlexStyled className={classes.commentWrapper}>
             <CommentBody />
             <UserAvatar chars={toUpperFirstChar(user.username)} />
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>

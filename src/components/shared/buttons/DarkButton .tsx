@@ -1,14 +1,14 @@
 import { Button } from "@mantine/core"
-import withForwardedRefAndErrBoundary from "../../../services/hook/shared/withForwardedRef"
-import { GenericWrapperWithRef } from "../../../types/sharedComponentTypes"
+import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef"
+import { GenericWrapperWithRef } from "@/types/sharedComponentTypes"
 
 const DarkButton: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
     name = "submit",
-    variant = "dark",
+    variant = "filled",
     radius = "xl",
     size = "sm",
-    color = "rgba(250, 250, 250, 1)",
+    color = "rgba(0, 0, 0, 1)",
     handleClick,
     ...props
 }) => {

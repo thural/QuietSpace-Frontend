@@ -6,7 +6,7 @@ import Typography from "@/components/shared/Typography";
 import useFeed from "@/services/hook/feed/useFeed";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import CreatePostForm from "./form/CreatePostForm";
-import CreatePostSection from "./fragments/CreatePostSection";
+import ToggleFormSection from "./fragments/ToggleFormSection";
 import PostListBox from "./post/PostList";
 
 const FeedContainer = () => {
@@ -29,7 +29,7 @@ const FeedContainer = () => {
 
     return (
         <DefaultContainer>
-            <CreatePostSection user={user} handleClick={toggleOverlay} />
+            <ToggleFormSection user={user} handleClick={toggleOverlay} />
             <hr />
             <Overlay onClose={toggleOverlay} isOpen={isOverlayOpen}>
                 <CreatePostForm toggleForm={toggleOverlay} />

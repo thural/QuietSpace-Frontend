@@ -19,13 +19,13 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
     const [postData, setPostData] = useState<PostBody>({
         text: "",
+        title: "",
         userId: user.id,
         viewAccess: 'all',
         poll: null
     });
 
     const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
-
 
 
     const handleChange = (event: React.ChangeEvent<any>) => {

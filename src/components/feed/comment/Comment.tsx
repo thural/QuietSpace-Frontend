@@ -1,28 +1,27 @@
-import BoxStyled from "@components/shared/BoxStyled";
-import Conditional from "@components/shared/Conditional";
-import EmojiText from "@components/shared/EmojiText";
-import FlexStyled from "@components/shared/FlexStyled";
-import Typography from "@components/shared/Typography";
-import UserAvatar from "@components/shared/UserAvatar";
-import { toUpperFirstChar } from "@/utils/stringUtils";
-import styles from "@/styles/feed/commentStyles";
-import useComment from "@/services/hook/feed/useComment";
 import { Comment } from "@/api/schemas/inferred/comment";
 import Overlay from "@/components/shared/Overlay";
-import CreateCommentForm from "../form/CreateCommentForm";
+import useComment from "@/services/hook/feed/useComment";
+import styles from "@/styles/feed/commentStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { toUpperFirstChar } from "@/utils/stringUtils";
+import BoxStyled from "@components/shared/BoxStyled";
+import EmojiText from "@components/shared/EmojiText";
+import FlexStyled from "@components/shared/FlexStyled";
+import UserAvatar from "@components/shared/UserAvatar";
+import CreateCommentForm from "../form/CreateCommentForm";
+import CommentControls from "./CommentControls";
 
 interface CommentProps extends GenericWrapper {
     comment: Comment
-    repliedComment?: Comment
 }
 
-const CommentBox: React.FC<CommentProps> = ({ comment, repliedComment }) => {
+const CommentBox: React.FC<CommentProps> = ({ comment }) => {
 
     const classes = styles();
 
     const {
         user,
+        commentFormView,
         handleDeleteComment,
         handleLikeToggle,
         toggleCommentForm,
@@ -30,34 +29,28 @@ const CommentBox: React.FC<CommentProps> = ({ comment, repliedComment }) => {
     } = useComment(comment);
 
 
-    const MainBox = ({ comment }: { comment: Comment }) => (
+    const CommentBody: React.FC<{ comment: Comment }> = ({ comment }) => (
         <FlexStyled className={classes.commentElement}>
-            <Conditional isEnabled={!!repliedComment}>
-                <FlexStyled className={classes.replyCard}>
-                    <BoxStyled className="reply-card-indicator"></BoxStyled>
-                    <Typography className="reply-card-text" lineClamp={1}>{repliedComment?.text}</Typography>
-                </FlexStyled>
-            </Conditional>
             <BoxStyled key={comment.id} className={classes.textBody}>
                 <EmojiText text={comment.text} />
             </BoxStyled>
-            <BoxStyled className={classes.commentOptions}>
-                <Typography className="comment-like" onClick={handleLikeToggle}>{isLiked ? "unlike" : "like"}</Typography>
-                <Typography className="comment-reply" onClick={toggleCommentForm}>reply</Typography>
-                <Conditional isEnabled={comment.userId === user.id}>
-                    <Typography className="comment-delete" onClick={handleDeleteComment}>delete</Typography>
-                </Conditional>
-            </BoxStyled>
+            <CommentControls
+                isOwner={comment.userId === user.id}
+                isLiked={isLiked}
+                handleLike={handleLikeToggle}
+                handleReply={toggleCommentForm}
+                hanldeDelete={handleDeleteComment}
+            />
         </FlexStyled>
     );
 
     return (
-        <BoxStyled className={classes.container}>
+        <BoxStyled className={classes.commentWrapper}>
             <FlexStyled className={classes.mainElement}>
                 <UserAvatar size="1.75rem" chars={toUpperFirstChar(comment.username)} />
-                <MainBox comment={comment} />
+                <CommentBody comment={comment} />
             </FlexStyled>
-            <Overlay onClose={toggleCommentForm} isOpen={false}>
+            <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm postItem={comment} />
             </Overlay>
         </BoxStyled>

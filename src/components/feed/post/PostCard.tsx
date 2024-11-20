@@ -1,21 +1,21 @@
 import { ResId } from "@/api/schemas/inferred/common";
+import BatchShareForm from "@/components/chat/form/BatchSendForm";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import Overlay from "@/components/shared/Overlay";
 import PostSkeleton from "@/components/shared/PostSkeleton";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import CreateCommentForm from "../form/CreateCommentForm";
-import EditPostForm from "../form/EditPostForm";
-import CreateRepostForm from "../form/CreateRepostForm";
-import PostContent from "../fragments/PostContent";
-import PostHeadline from "../fragments/PostHeadline";
 import { usePost } from "@/services/hook/feed/usePost";
 import styles from "@/styles/feed/postStyles";
-import PostStatSection from "../fragments/PostStatSection";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import BatchShareForm from "@/components/chat/form/BatchSendForm";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import CreateCommentForm from "../form/CreateCommentForm";
+import CreateRepostForm from "../form/CreateRepostForm";
+import EditPostForm from "../form/EditPostForm";
+import PostContent from "../fragments/PostContent";
+import PostHeadline from "../fragments/PostHeadline";
 import PostMenu from "../fragments/PostMenu";
+import PostStatSection from "../fragments/PostStatSection";
 
 
 interface PostCardProps extends GenericWrapper {
@@ -86,7 +86,12 @@ const PostCard: React.FC<PostCardProps> = ({
         <>
             <PostHeadline post={post}>
                 <Conditional isEnabled={!isMenuHidden}>
-                    <PostMenu postId={post.id} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
+                    <PostMenu
+                        postId={post.id}
+                        handleDeletePost={handleDeletePost}
+                        toggleEditForm={toggleEditForm}
+                        isMutable={isMutable}
+                    />
                 </Conditional>
             </PostHeadline>
             <PostContent post={post} handleContentClick={handleNavigation} />
@@ -105,6 +110,10 @@ const PostCard: React.FC<PostCardProps> = ({
             <Overlay onClose={toggleShareForm} isOpen={shareFormview}>
                 <BatchShareForm toggleForm={toggleShareForm} postId={post.id} />
             </Overlay>
+            <Conditional isEnabled={!!children}>
+                <hr />
+                <CreateCommentForm postItem={post} isSecondaryMode={true} />
+            </Conditional>
             {children}
         </>
     );
