@@ -1,10 +1,10 @@
 import { ResId } from "@/api/schemas/native/common";
-import PostReplyCard from "@/components/feed/post/PostReplyCard";
 import PostCard from "@/components/feed/post/PostCard";
+import PostReplyCard from "@/components/feed/post/PostReplyCard";
 import RepostCard from "@/components/feed/repost/RepostCard";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 import { useGetPostsByUserId, useGetRepliedPostsByUserId, useGetSavedPostsByUserId } from "@/services/data/usePostData";
-import { LoadingOverlay } from "@mantine/core";
 
 interface UserPostListProps {
     userId: ResId
@@ -18,7 +18,7 @@ const UserPostList: React.FC<UserPostListProps> = ({ userId, isReposts = false, 
     const { data: posts, isLoading, isError, error } = isRepliedPosts ? useGetRepliedPostsByUserId(userId)
         : !isSavedPosts ? useGetPostsByUserId(userId) : useGetSavedPostsByUserId(userId);
 
-    if (isLoading) return <LoadingOverlay />;
+    if (isLoading) return <LoaderStyled />;
     if (isError) return <ErrorComponent message={error.message} />;
 
     return posts?.content

@@ -1,7 +1,7 @@
 import BoxStyled from "@shared/BoxStyled";
 import EmojiInput from "@shared/EmojiInput";
 import FormStyled from "@shared/FormStyled";
-import styles from "../../../styles/chat/messageInputStyles";
+import styles from "@/styles/chat/messageInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 import { useRef } from "react";
 

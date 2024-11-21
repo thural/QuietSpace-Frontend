@@ -7,7 +7,7 @@ const ProfileSettings = () => {
         <BoxStyled>
             <Typography type="h3">Profile Settings</Typography>
             <Typography type="h1">Bio</Typography>
-            <TextInputStyled value={"some user bio to be fetched"} />
+            <TextInputStyled handleChange={() => console.log("handle bio input change")} name="bio" value={"some user bio to be fetched"} />
         </BoxStyled>
     )
 }

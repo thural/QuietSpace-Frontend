@@ -9,8 +9,8 @@ import FormStyled from "@components/shared/FormStyled";
 import Typography from "@components/shared/Typography";
 import { PinInput } from "@mantine/core";
 import React from "react";
-import { useActivationForm } from "../../services/hook/auth/useActivationForm";
-import styles from "../../styles/auth/activationFormStyles";
+import { useActivationForm } from "@/services/hook/auth/useActivationForm";
+import styles from "@/styles/auth/activationFormStyles";
 
 const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
     <FormStyled className="timer">

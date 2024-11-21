@@ -5,6 +5,7 @@ const styles = createUseStyles({
     userCard: {
         display: 'flex',
         alignItems: 'center',
+        margin: '.5rem 0',
         width: '100%',
 
         '& button': {
@@ -16,10 +17,8 @@ const styles = createUseStyles({
             display: 'block',
             padding: '0 1rem',
             fontSize: '.85rem',
-            marginTop: '1rem',
             fontWeight: '500',
             marginLeft: 'auto',
-            alignSelf: 'baseline',
             borderRadius: '.75rem',
             backgroundColor: 'rgb(250, 250, 250)'
         },

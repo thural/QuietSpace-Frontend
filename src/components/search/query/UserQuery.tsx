@@ -18,14 +18,14 @@ const UserQuery: React.FC<UserQueryProps> = ({ fetchUserQuery, userQueryList, st
 
     const classes = styles();
 
-    const RenderResult = () => {
-        if (fetchUserQuery.isPending) return <LoaderStyled />;
-        if (fetchUserQuery.isError) return <ErrorComponent message={fetchUserQuery.error.message} />;
-        return userQueryList.map((user, key) => <UserQueryItem key={key} data={user} />);
-    }
+    const RenderResult = () => (
+        fetchUserQuery.isPending ? <LoaderStyled />
+            : fetchUserQuery.isError ? <ErrorComponent message={fetchUserQuery.error.message} />
+                : userQueryList.map((user, key) => <UserQueryItem key={key} data={user} />)
+    )
 
     return (
-        <BoxStyled onClick={(e: Event) => e.preventDefault()} className={classes.resultContainer} style={style} >
+        <BoxStyled className={classes.resultContainer} style={style} >
             <RenderResult />
         </BoxStyled>
     )

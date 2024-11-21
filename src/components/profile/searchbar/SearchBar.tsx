@@ -21,7 +21,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ handleInputBlur, handleInputChang
         <BoxStyled className={classes.searchbar} >
             <PiMagnifyingGlassBold className={classes.searchIcon} />
             <InputStyled
-                variant="unstyled"
                 className={classes.searchInput}
                 placeholder={placeHolder}
                 onFocus={handleInputFocus}

@@ -1,11 +1,11 @@
+import { UserList, UserPage } from "@/api/schemas/inferred/user";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import Typography from "@/components/shared/Typography";
-import React, { JSXElementConstructor } from "react";
 import styles from "@/styles/profile/userListStyles";
-import { UseQueryResult } from "@tanstack/react-query";
-import { UserList, UserPage } from "@/api/schemas/inferred/user";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { UseQueryResult } from "@tanstack/react-query";
+import React, { JSXElementConstructor } from "react";
 
 export interface UserListProps extends GenericWrapper {
     userFetch: UseQueryResult<UserPage>
@@ -24,7 +24,11 @@ const UserQueryList: React.FC<UserListProps> = ({ userFetch, queryResult, Item }
                 : queryResult.map((data, key) => <Item key={key} data={data} />)
     )
 
-    return <BoxStyled className={classes.resultContainer}><RenderResult /></BoxStyled>
+    return (
+        <BoxStyled className={classes.resultContainer}>
+            <RenderResult />
+        </BoxStyled>
+    );
 }
 
 export default UserQueryList

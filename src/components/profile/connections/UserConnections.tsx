@@ -23,7 +23,7 @@ const UserConnections: React.FC<ConnectionsProps> = ({ userFetch, title }) => {
 
     const classes = styles();
 
-    if (userFetch.isLoading) return <FullLoadingOverlay />
+    if (userFetch.isLoading) return <FullLoadingOverlay />;
 
     const {
         queryResult,
@@ -35,7 +35,7 @@ const UserConnections: React.FC<ConnectionsProps> = ({ userFetch, title }) => {
 
 
 
-    const UserItem = ({ data }: { data: User }) => (<UserQueryItem data={data} />);
+    const UserItem: React.FC<{ data: User }> = ({ data }) => <UserQueryItem data={data} />;
 
     return (
         <BoxStyled className={classes.container} >

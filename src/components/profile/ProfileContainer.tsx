@@ -13,7 +13,7 @@ import UserConnections from "./connections/UserConnections";
 import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";
 import ProfileTabs from "./tabs/ProfileTabs";
-import PrivateBlock from "./shared/PrivateBlock";
+import PrivateBlock from "../shared/PrivateBlock";
 import UserDetailsSection from "./user-details/UserDetailsSection";
 import useUserProfile from "../../services/hook/profile/useUserProfile";
 

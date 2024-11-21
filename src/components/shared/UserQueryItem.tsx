@@ -4,14 +4,14 @@ import { getSignedUser } from "@/api/queries/userQueries";
 import { User } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { toUpperFirstChar } from "@utils/stringUtils";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { GenericWrapper } from "../../types/sharedComponentTypes";
+import Conditional from "./Conditional";
 import FlexStyled from "./FlexStyled";
 import FollowToggle from "./FollowToggle";
 import UserAvatar from "./UserAvatar";
 import UserDetails from "./UserDetails";
-import React from "react";
-import Conditional from "./Conditional";
-import { GenericWrapper } from "../../types/sharedComponentTypes";
 
 
 

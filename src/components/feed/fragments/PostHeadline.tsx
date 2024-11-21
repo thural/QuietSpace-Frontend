@@ -1,5 +1,5 @@
 import { Post } from "@/api/schemas/inferred/post";
-import UserCard from "@/components/chat/sidebar/UserCard";
+import UserCard from "@/components/shared/UserCard";
 import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

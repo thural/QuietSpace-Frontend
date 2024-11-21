@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import ChatHeadline from "@/components/chat/message/ChatHeadline";
 import MessageInput from "@/components/chat/message/MessageInput";
 import MessagesList from "@/components/chat/message/MessageList";
-import Placeholder from "@/components/chat/message/ChatPlaceHolder";
+import Placeholder from "@/components/chat/message/Placeholder";
 
 const ChatPanel = () => {
 

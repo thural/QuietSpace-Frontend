@@ -19,7 +19,7 @@ function SettingsContainer() {
     return (
         <DefaultContainer>
 
-            <Typography type="h1">settings</Typography>
+            <Typography type="h2">settings</Typography>
 
             <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile" style={{ margin: '1rem 0' }}>
 

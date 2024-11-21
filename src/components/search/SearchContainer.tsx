@@ -27,7 +27,7 @@ function SearchContainer() {
         <DefaultContainer>
             <SearchBar {...searchMethods} style={searchAppliedStyle} />
             <UserQuery {...searchMethods} style={resultAppliedStyle} />
-            <PostQuery{...searchMethods} />
+            <PostQuery {...searchMethods} />
         </DefaultContainer>
     );
 }

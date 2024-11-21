@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import useChatCard from "@/styles/chat/useChatCard";
 import styles from "@/styles/chat/chatCardStyles";
 
-const ChatCard = ({ chat }: { chat: Chat }) => {
+const ChatCard: React.FC<{ chat: Chat }> = ({ chat }) => {
 
     const classes = styles();
 

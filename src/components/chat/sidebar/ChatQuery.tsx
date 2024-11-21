@@ -5,8 +5,8 @@ import AnchorStyled from "@shared/AnchorStyled";
 import BoxStyled from "@shared/BoxStyled";
 import FlexStyled from "@shared/FlexStyled";
 import Typography from "@shared/Typography";
-import QueryInput from "./QueryInput";
-import UserCard from "./UserCard";
+import ChatQueryInput from "./ChatQueryInput";
+import UserCard from "../../shared/UserCard";
 import useQueryContainer from "@/services/hook/chat/useQueryContainer";
 import styles from "@/styles/chat/chatQueryStyles";
 
@@ -54,7 +54,7 @@ const ChatQuery = () => {
             />);
     }
 
-    const QueryResult = () => {
+    const QueryPanel = () => {
         return (
             <FlexStyled className={classes.resultContainer} style={appliedStyle} ref={inputProps.resultListRef}>
                 <RenderResult />
@@ -68,8 +68,8 @@ const ChatQuery = () => {
             onFocus={inputProps.handleInputFocus}
             onBlur={inputProps.handleInputBlur}
             className={classes.searchContainer}>
-            <QueryInput {...inputProps} />
-            <QueryResult />
+            <ChatQueryInput {...inputProps} />
+            <QueryPanel />
         </BoxStyled>
     )
 }

@@ -31,8 +31,6 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     if (isLoading) return <FullLoadingOverlay />;
     if (isError || chats === undefined) return <ErrorComponent message='could not fetch chat data!' />;
 
-    console.log("chat data: ", chats);
-
     return (
         <DefaultContainer className={classes.container}>
             <ChatSidebar chats={chats} className={classes.contacts} />

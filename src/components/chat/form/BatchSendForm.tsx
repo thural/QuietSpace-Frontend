@@ -59,7 +59,7 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
 
     if (fetchUserQuery.isPending) return <FullLoadingOverlay />
 
-    const SelectableUserItem = ({ data }: { data: User }) => (
+    const SelectableUserItem: React.FC<{ data: User }> = ({ data }) => (
         <UserQueryItem hasFollowToggle={false} data={data}>
             <CheckBox value={data.id} onChange={handleUserSelect} />
         </UserQueryItem>

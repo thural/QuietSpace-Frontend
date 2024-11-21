@@ -25,7 +25,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isD
     const classes = styles();
     const navigate = useNavigate();
     const signedUser = getSignedUser();
-    if (!signedUser || !userId) throw nullishValidationdError({ signedUser });
+    if (!signedUser || !userId) throw nullishValidationdError({ signedUser, userId });
 
     const { data: user, isLoading } = useGetUserById(userId);
 
@@ -35,7 +35,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isD
         navigate(`/profile/${userId}`);
     }
 
-    if (isLoading) return <LoadingOverlay />;
+    if (isLoading || !user) return <LoadingOverlay />;
 
     return (
         <FlexStyled onClick={handleUserNavigation} className={classes.queryCard} {...props}>

@@ -1,4 +1,4 @@
-import PrivateBlock, { PrivateBlockProps } from "@/components/profile/shared/PrivateBlock";
+import PrivateBlock, { PrivateBlockProps } from "@/components/shared/PrivateBlock";
 import FlexStyled from "@/components/shared/FlexStyled";
 import styles from "@/styles/chat/chatPlaceholderStyles";
 import { JSXElementConstructor } from "react";

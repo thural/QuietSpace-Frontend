@@ -16,7 +16,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats }) => {
     const classes = styles();
 
 
-    const RenderResult = () => {
+    const ChatList = () => {
         return (chats?.length > 0) ?
             chats.map((chat, key) => <ChatCard key={key} chat={chat} />)
             : <Typography ta="center">there's no chat yet</Typography>
@@ -26,7 +26,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats }) => {
     return (
         <BoxStyled className={classes.chatContainer}>
             <ChatQuery />
-            <RenderResult />
+            <ChatList />
         </BoxStyled>
     )
 }
