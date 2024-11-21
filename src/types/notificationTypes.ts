@@ -1,7 +1,7 @@
-import { Notification } from "@/api/schemas/inferred/notification";
-import { GenericWrapper } from "./sharedComponentTypes";
 import { PageContent } from "@/api/schemas/inferred/common";
-import { AnyFunction } from "./genericTypes";
+import { Notification } from "@/api/schemas/inferred/notification";
+import { ConsumerFn } from "./genericTypes";
+import { GenericWrapper } from "./sharedComponentTypes";
 
 export interface NotificationItemProps extends GenericWrapper {
     notification: Notification
@@ -12,7 +12,7 @@ export interface NotificationListProps {
 }
 
 export interface NotificationCardProps extends GenericWrapper {
-    notification: any
-    onClick: AnyFunction
+    notification: Notification
+    onClick: ConsumerFn
     text: string
 }

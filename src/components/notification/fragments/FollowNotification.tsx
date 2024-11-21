@@ -1,17 +1,16 @@
 
-import { useGetUserById, useToggleFollow } from "@/services/data/useUserData";
+import FollowToggle from "@/components/shared/FollowToggle";
+import { useGetUserById } from "@/services/data/useUserData";
 import { NotificationItemProps } from "@/types/notificationTypes";
-import LightButton from "@components/shared/buttons/LightButton";
 import { useNavigate } from "react-router-dom";
 import NotificationCard from "../base/NotificationCard";
+import NotificationSkeleton from "@/components/shared/NotificationSkeleton";
 
 const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) => {
 
     const navigate = useNavigate();
     const { actorId } = notification;
-    const user = useGetUserById(actorId);
-    const toggleFollow = useToggleFollow(actorId);
-    const isFollowing = user.data?.isFollowing ? "unfollow" : "follow";
+    const { data: user, isLoading } = useGetUserById(actorId);
 
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -19,16 +18,11 @@ const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) =
         navigate(`/profile/${actorId}`);
     };
 
-
-    const handleFollowToggle = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        event.preventDefault();
-        toggleFollow.mutate(actorId);
-    }
-
+    if (isLoading || user === undefined) return <NotificationSkeleton />;
 
     return (
         <NotificationCard notification={notification} onClick={handleClick} text={"followed you"}>
-            <LightButton name={isFollowing} disabled={false} onClick={handleFollowToggle} />
+            <FollowToggle user={user} />
         </NotificationCard>
     )
 }

@@ -14,7 +14,6 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
 
     const getNotificationCard = (notification: Notification) => {
         const { type, id } = notification;
-        // const enumValue = getEnumValueFromString(NotificationType, type)
 
         const {
             FOLLOW_REQUEST,

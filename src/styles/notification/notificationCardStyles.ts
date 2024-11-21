@@ -18,28 +18,12 @@ const styles = createUseStyles({
             display: 'block',
             padding: '0 1rem',
             fontSize: '.85rem',
-            marginTop: '1rem',
             fontWeight: '500',
             marginLeft: 'auto',
             borderRadius: '.75rem',
             backgroundColor: 'rgb(250, 250, 250)'
         },
     },
-
-    notificationDetails: {
-        width: '100%',
-        boxSizing: 'border-box',
-        '& .username, .message': {
-            margin: '0.25rem 0.5rem',
-        },
-        '& .email': {
-            margin: '0.25rem 0.5rem',
-            fontSize: '1rem',
-            fontWeight: '300',
-            maxWidth: '50%'
-        }
-    }
-
 })
 
 export default styles
