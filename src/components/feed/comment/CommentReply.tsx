@@ -32,6 +32,8 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
 
     const {
         user,
+        isOwner,
+        appliedStyle,
         handleDeleteComment,
         handleLikeToggle,
         toggleCommentForm,
@@ -39,12 +41,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
         isLiked,
     } = data;
 
-    const isOwner = comment.userId === user.id;
 
-    const appliedStyle = isOwner ? {
-        borderRadius: '1rem 0rem 1rem 1rem',
-        marginLeft: 'auto'
-    } : {};
 
     const CommentBody = () => (
         <FlexStyled key={comment.id} className={classes.comment} style={appliedStyle}>

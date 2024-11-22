@@ -1,10 +1,10 @@
-import { fetchAccessToken, fetchActivation, fetchLogin, fetchLogout, fetchSignup } from "../../api/requests/authRequests";
+import { Auth, AuthBody, RefreshToken } from "@/api/schemas/inferred/auth";
+import { JwtToken } from "@/api/schemas/inferred/common";
+import { AnyFunction } from "@/types/genericTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { fetchAccessToken, fetchActivation, fetchLogin, fetchLogout } from "../../api/requests/authRequests";
 import { useAuthStore } from "../store/zustand";
-import { AuthBody, Auth, RefreshToken } from "@/api/schemas/inferred/auth";
-import { AnyFunction } from "@/types/genericTypes";
-import { JwtToken } from "@/api/schemas/inferred/common";
 
 
 export const usePostLogin = (authenticationNotice: Function) => {

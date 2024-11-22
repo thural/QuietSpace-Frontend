@@ -1,16 +1,16 @@
-import { getPosts } from "@/api/queries/postQueries";
+import { getPostById, getPosts } from "@/api/queries/postQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollBody, Post, PostBody } from "@/api/schemas/inferred/post";
 import { useEditPost } from "@/services/data/usePostData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useState } from "react";
 
-const useEditPostForm = (postId: ResId) => {
+const useEditCommentForm = (postId: ResId) => {
 
     const posts = getPosts();
     if (posts === undefined) throw nullishValidationdError({ posts });
 
-    const editedPost: Post | undefined = posts.content.find(post => post.id === postId);
+    const editedPost: Post | undefined = getPostById(postId);
 
     if (editedPost === undefined) throw nullishValidationdError({ editedPostData: editedPost });
 
@@ -46,4 +46,4 @@ const useEditPostForm = (postId: ResId) => {
     };
 };
 
-export default useEditPostForm
+export default useEditCommentForm

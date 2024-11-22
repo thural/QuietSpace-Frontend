@@ -1,4 +1,4 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollBody, PostBody } from "@/api/schemas/inferred/post";
 import { useEditPost, useGetPostById } from "@/services/data/usePostData";
@@ -39,8 +39,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         setPostData({ ...postData, [name]: value });
     };
 
-    const signedUser = getSignedUser();
-    if (signedUser === undefined) throw nullishValidationdError({ signeduser: signedUser })
+    const signedUser = getSignedUserElseThrow();
     const avatarPlaceholder = toUpperFirstChar(signedUser.username);
 
     return {

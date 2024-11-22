@@ -1,18 +1,15 @@
 import chatQueries from "@/api/queries/chatQueries";
 import notificationQueries from "@/api/queries/notificationQueries";
-import { getSignedUser } from "@/api/queries/userQueries";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { useMemo } from "react";
 
 
 const useNotification = () => {
     const { getChatsCache } = chatQueries();
     const chats = getChatsCache();
-    const user = getSignedUser();
+    const user = getSignedUserElseThrow();
     const { getNotificationsCache } = notificationQueries();
     const notifications = getNotificationsCache();
-
-    if (user === undefined) throw nullishValidationdError({ user });
 
     var hasUnreadChat = useMemo(() => {
         if (!chats) return false;

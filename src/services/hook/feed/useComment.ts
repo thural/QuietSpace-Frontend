@@ -1,61 +1,48 @@
-import { useDeleteComment } from "@/services/data/useCommentData";
-import { useToggleReaction } from "@/services/data/useReactionData";
-import { useState } from "react";
-import { User } from "@/api/schemas/inferred/user";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { Comment } from "@/api/schemas/inferred/comment";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { ReactionType } from "@/api/schemas/inferred/reaction";
 import { ContentType } from "@/api/schemas/native/common";
 import { Reactiontype } from "@/api/schemas/native/reaction";
-import { getSignedUser } from "@/api/queries/userQueries";
+import { useDeleteComment } from "@/services/data/useCommentData";
+import useReaction from "@/services/hook/feed/useReaction";
+import { useState } from "react";
 
 const useComment = (comment: Comment) => {
 
-    const user: User | undefined = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
+    const user = getSignedUserElseThrow();
     const deleteComment = useDeleteComment(comment.postId);
-    const toggleLike = useToggleReaction(comment.id);
 
-
-    const handleReaction = async (event: Event, type: ReactionType) => {
+    const handleReaction = useReaction(comment.id);
+    const handleLikeToggle = (event: Event) => {
         event.preventDefault();
-
-        const reactionBody = {
-            userId: user.id,
-            contentId: comment.id,
-            reactionType: type,
-            contentType: ContentType.COMMENT
-        };
-
-        toggleLike.mutate(reactionBody);
+        handleReaction(ContentType.COMMENT, Reactiontype.LIKE);
     };
-
 
     const handleDeleteComment = () => {
         deleteComment.mutate(comment.id);
     };
 
-    const handleLikeToggle = (event: Event) => {
-        handleReaction(event, Reactiontype.LIKE);
-    };
-
-
-
     const [commentFormView, setCommentFormView] = useState(false);
     const toggleCommentForm = (e: React.MouseEvent) => {
         e.stopPropagation();
         setCommentFormView(!commentFormView);
-    }
-
+    };
 
     const isLiked = comment.userReaction?.reactionType === Reactiontype.LIKE;
+    const isOwner = comment.userId === user.id;
+
+    const appliedStyle = isOwner ? {
+        borderRadius: '1rem 0rem 1rem 1rem',
+        marginLeft: 'auto'
+    } : {};
+
 
 
     return {
         user,
+        isOwner,
+        appliedStyle,
         commentFormView,
         toggleCommentForm,
-        handleReaction,
         handleDeleteComment,
         handleLikeToggle,
         isLiked,

@@ -1,14 +1,12 @@
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import { ResId } from "@/api/schemas/inferred/common";
+import { Poll, PollOption, VoteBody } from "@/api/schemas/inferred/post";
 import { useVotePoll } from "@/services/data/usePostData";
 import { parseCount } from "@/utils/stringUtils";
-import { ResId } from "@/api/schemas/inferred/common";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { Poll, PollOption, VoteBody } from "@/api/schemas/inferred/post";
-import { getSignedUser } from "@/api/queries/userQueries";
 
 const usePoll = (pollData: Poll, postId: ResId) => {
 
-    const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
+    const user = getSignedUserElseThrow();
 
     const postVote = useVotePoll(postId);
     const parsedVoteCounts = parseCount(pollData?.voteCount);

@@ -4,14 +4,14 @@ import ModalStyled from "@/components/shared/ModalStyled";
 import TextAreaStyled from "@/components/shared/TextAreaStyled";
 import Typography from "@/components/shared/Typography";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
-import useEditPostForm from "@/services/hook/feed/useEditCommentForm";
+import useEditCommentForm from "@/services/hook/feed/useEditCommentForm";
 
-const EditPostForm = ({ postId }: { postId: ResId }) => {
+const EditCommentForm = ({ postId }: { postId: ResId }) => {
   const {
     postData,
     handleSubmit,
     handleChange,
-  } = useEditPostForm(postId);
+  } = useEditCommentForm(postId);
 
   return (
     <ModalStyled>
@@ -30,4 +30,4 @@ const EditPostForm = ({ postId }: { postId: ResId }) => {
   );
 };
 
-export default EditPostForm;
+export default EditCommentForm;

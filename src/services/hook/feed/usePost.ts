@@ -1,77 +1,46 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { ReactionType } from "@/api/schemas/inferred/reaction";
 import { ContentType } from "@/api/schemas/native/common";
 import { Reactiontype } from "@/api/schemas/native/reaction";
 import { useGetComments } from "@/services/data/useCommentData";
 import { useDeletePost, useGetPostById } from "@/services/data/usePostData";
-import { useToggleReaction } from "@/services/data/useReactionData";
-import { nullishValidationdError } from "@/utils/errorUtils";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useReaction from "./useReaction";
+import useNavigation from "../shared/useNavigation";
 
 
 
 export const usePost = (postId: ResId) => {
 
-    const signedUser = getSignedUser();
-    if (signedUser === undefined) throw nullishValidationdError({ signedUser });
-
-    const navigate = useNavigate();
+    const signedUser = getSignedUserElseThrow();
+    const { data: post, isLoading, isError } = useGetPostById(postId);
+    const { navigatePath } = useNavigation();
 
     const handleNavigation = (e: React.MouseEvent) => {
         e.stopPropagation();
-        navigate(`/feed/${postId}`);
+        navigatePath(`/feed/${postId}`);
     }
 
-
-    const { data: post, isLoading, isError, isSuccess } = useGetPostById(postId);
-
-    const comments = useGetComments(postId);
     const deletePost = useDeletePost(postId);
-    const togglePostLike = useToggleReaction(postId);
-
-    const hasCommented = comments.data?.content.some(comment => comment.userId === signedUser.id);
-
-
     const handleDeletePost = async (e: React.MouseEvent) => {
         e.stopPropagation();
         deletePost.mutate();
     }
 
-    const handleReaction = async (e: React.MouseEvent, reaction: ReactionType) => {
-        e.preventDefault();
-        const reactionBody = {
-            userId: signedUser.id,
-            contentId: postId,
-            reactionType: reaction,
-            contentType: ContentType.POST,
-        };
-        togglePostLike.mutate(reactionBody);
-    }
-
-    const handleLike = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
+    const handleReaction = useReaction(postId);
+    const handleLike = (event: React.MouseEvent) => {
         event.stopPropagation();
-        handleReaction(event, Reactiontype.LIKE);
+        handleReaction(ContentType.POST, Reactiontype.LIKE);
     }
-
-    const handleDislike = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
+    const handleDislike = (event: React.MouseEvent) => {
         event.stopPropagation();
-        handleReaction(event, Reactiontype.DISLIKE);
+        handleReaction(ContentType.POST, Reactiontype.DISLIKE);
     }
-
-    const isMutable = signedUser?.role === "ADMIN" || post?.userId === signedUser?.id;
 
     const [commentFormView, setCommentFormView] = useState(false);
     const toggleCommentForm = (e: React.MouseEvent) => {
         e.stopPropagation();
         setCommentFormView(!commentFormView);
-    }
-
-    const [showComments, setShowComments] = useState(false);
-    const toggleComments = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setShowComments(!showComments);
     }
 
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
@@ -80,45 +49,43 @@ export const usePost = (postId: ResId) => {
         setIsOverlayOpen(!isOverlayOpen);
     };
 
+    const [repostFormView, setRepostFormView] = useState(false);
     const toggleRepostForm = (e: Event) => {
         if (!!e) e.stopPropagation();
         setRepostFormView(!repostFormView);
     }
-    const [repostFormView, setRepostFormView] = useState(false);
 
     const [shareFormview, setShareFormView] = useState(false);
-
     const toggleShareForm = (e: Event) => {
         if (!!e) e.stopPropagation();
         setShareFormView(!shareFormview);
     }
 
 
+    const comments = useGetComments(postId);
+    const isMutable = signedUser?.role === "ADMIN" || post?.userId === signedUser?.id;
+    const hasCommented = comments.data?.content.some(comment => comment.userId === signedUser.id);
+
 
 
     return {
         post,
         isLoading,
-        isSuccess,
-        signedUser,
         isError,
-        postId,
-        showComments,
-        commentFormView,
-        shareFormview,
         comments,
         hasCommented,
-        isMutable,
-        isOverlayOpen,
-        repostFormView,
-        toggleRepostForm,
-        toggleShareForm,
+        shareFormview,
         handleDeletePost,
         handleLike,
         handleDislike,
-        handleNavigation,
+        isMutable,
+        isOverlayOpen,
+        commentFormView,
+        repostFormView,
+        toggleShareForm,
+        toggleRepostForm,
         toggleEditForm,
-        toggleComments,
         toggleCommentForm,
+        handleNavigation,
     };
 };

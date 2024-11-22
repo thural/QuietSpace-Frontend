@@ -1,6 +1,5 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { Chat } from "@/api/schemas/inferred/chat";
-import { nullishValidationdError } from "@/utils/errorUtils";
 import { processRecentText } from "@/utils/stringUtils";
 import { useNavigate } from "react-router-dom";
 
@@ -10,8 +9,7 @@ const useChatCard = (chat: Chat) => {
     const handleClick = () => navigate(`/chat/${chat.id}`);
 
 
-    const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
+    const user = getSignedUserElseThrow();
 
 
     const contactId = chat.userIds.find(userId => userId !== user.id);

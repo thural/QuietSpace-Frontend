@@ -16,16 +16,15 @@ export const useChat = (chatId: ResId) => {
     if (currentChat === undefined) throw nullishValidationdError({ currentChat });
     const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== senderId) || {};
 
-    const deleteChat = useDeleteChat(chatId);
-    const createChatMutation = useCreateChat();
     const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(chatId);
-    const isInputEnabled: boolean = isSuccess && !!isClientConnected;
 
     const [text, setText] = useState('');
     const formBody = { chatId, senderId, recipientId, text };
+    const handleInputChange = (eventData: string) => {
+        setText(eventData);
+    };
 
-
-
+    const createChatMutation = useCreateChat();
     const handleChatCreation = (recipientId: ResId, text: string, isGroupChat: boolean) => {
         const createChatRequestBody: CreateChat = { isGroupChat, recipientId, text, "userIds": [senderId, recipientId] };
         createChatMutation.mutate(createChatRequestBody);
@@ -41,15 +40,13 @@ export const useChat = (chatId: ResId) => {
         sendChatMessage(formBody);
     };
 
-    const handleInputChange = (eventData: string) => {
-        setText(eventData);
-    };
-
+    const deleteChat = useDeleteChat(chatId);
     const handleDeleteChat = (event: ChangeEvent) => {
         event.preventDefault();
         deleteChat.mutate();
     };
 
+    const isInputEnabled: boolean = isSuccess && !!isClientConnected;
 
 
     return {

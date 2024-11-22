@@ -1,16 +1,15 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { User } from "@/api/schemas/inferred/user";
 import { useGetPostsByUserId } from "@/services/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useNavigation from "../shared/useNavigation";
 
 const useUserProfile = (userId: ResId) => {
 
-    const signedUser: User | undefined = getSignedUser();
-    if (signedUser === undefined || userId === undefined) throw nullishValidationdError({ signedUser, userId });
+    const signedUser = getSignedUserElseThrow();
+    if (userId === undefined) throw nullishValidationdError({ userId });
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
 
 
@@ -61,11 +60,8 @@ const useUserProfile = (userId: ResId) => {
 
 export const useCurrentProfile = () => {
 
-    const navigate = useNavigate();
-    const signedUser: User | undefined = getSignedUser();
-
-    if (signedUser === undefined) throw nullishValidationdError({ signedUser });
-
+    const { navigatePath } = useNavigation();
+    const signedUser = getSignedUserElseThrow();
     const userPosts = useGetPostsByUserId(signedUser.id);
 
     const followers = useGetFollowers(signedUser.id);
@@ -77,7 +73,7 @@ export const useCurrentProfile = () => {
     const [viewFollowings, setViewFollowings] = useState(false);
     const toggleFollowings = () => setViewFollowings(!viewFollowings);
 
-    const handleSignout = () => navigate("/signout");
+    const handleSignout = () => navigatePath("/signout");
 
 
     return {

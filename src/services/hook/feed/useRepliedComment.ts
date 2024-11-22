@@ -1,35 +1,25 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { Comment } from "@/api/schemas/inferred/comment";
-import { ReactionType, UserReaction } from "@/api/schemas/inferred/reaction";
 import { ContentType } from "@/api/schemas/native/common";
+import { Reactiontype } from "@/api/schemas/native/reaction";
 import { useDeleteComment } from "@/services/data/useCommentData";
-import { useToggleReaction } from "@/services/data/useReactionData";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import useReaction from "./useReaction";
 
 const useRepliedComment = (comment: Comment) => {
 
-    const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
-
+    const user = getSignedUserElseThrow();
 
     const deleteComment = useDeleteComment(comment.id);
-    const toggleReaction = useToggleReaction();
-
     const handleDeleteComment = () => deleteComment.mutate(comment.id);
 
-    const handleReaction = async (event: Event, type: ReactionType) => {
+    const handleReaction = useReaction(comment.id);
+    const handleLikeToggle = (event: Event) => {
         event.preventDefault();
-
-        const reactionBody: UserReaction = {
-            userId: user.id,
-            contentId: comment.id,
-            reactionType: type,
-            contentType: ContentType.COMMENT
-        };
-
-        toggleReaction.mutate(reactionBody);
+        handleReaction(ContentType.COMMENT, Reactiontype.LIKE);
     };
-    return { user, handleDeleteComment, handleReaction };
+
+
+    return { user, handleDeleteComment, handleLikeToggle };
 };
 
 export default useRepliedComment

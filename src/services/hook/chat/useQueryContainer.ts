@@ -1,34 +1,25 @@
 import chatQueries from "@/api/queries/chatQueries";
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { Chat, Message } from "@/api/schemas/inferred/chat";
 import { User } from "@/api/schemas/inferred/user";
 import { useGetChats } from "@/services/data/useChatData";
 import { useQueryUsers } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useNavigation from "../shared/useNavigation";
 
 
 const useQueryContainer = () => {
 
-    const navigate = useNavigate();
+    const user = getSignedUserElseThrow();
+    const { navigatePath } = useNavigation();
     const { insertMessageCache, insertInitChatCache } = chatQueries();
-
-    const user: User | undefined = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
-
     const { data: chats, isLoading, isError } = useGetChats();
-
 
 
     const [focused, setFocused] = useState(false);
     const [queryResult, setQueryResult] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-
-
-    const makeQueryMutation = useQueryUsers(setQueryResult);
-
 
 
     const handleChatCreation = async (event: React.MouseEvent, clickedUser: User) => {
@@ -53,7 +44,6 @@ const useQueryContainer = () => {
             isSeen: true,
             senderName: user.username
         }
-
         const newChat: Chat = {
             id: "-1",
             createDate: String(new Date),
@@ -66,9 +56,10 @@ const useQueryContainer = () => {
 
         insertMessageCache(newMessage);
         insertInitChatCache(newChat);
-        navigate("-1");
+        navigatePath("-1");
     };
 
+    const makeQueryMutation = useQueryUsers(setQueryResult);
     const handleQuerySubmit = async (value: string) => {
         if (isSubmitting) return;
         setIsSubmitting(true);
@@ -84,19 +75,16 @@ const useQueryContainer = () => {
     };
 
 
-    const searchInputRef = useRef(null);
-
     const handleKeyDown = (event: React.KeyboardEvent) => { if (event.key === 'Escape') setFocused(false) };
     const handleInputFocus = () => setFocused(true);
 
     const resultListRef = useRef<HTMLDivElement>(null);
-
     const handleInputBlur = (event: React.FocusEvent) => {
         if (resultListRef.current && resultListRef.current.contains(event.relatedTarget as Node)) return;
         // setFocused(false);
     };
 
-
+    const searchInputRef = useRef(null);
     const appliedStyle = (!focused) ? { display: 'none' } : { display: 'flex' };
     const inputProps = { handleInputFocus, handleInputBlur, handleKeyDown, handleInputChange, searchInputRef, resultListRef };
 

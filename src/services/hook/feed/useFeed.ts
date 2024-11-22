@@ -1,17 +1,14 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { useGetPosts } from "@/services/data/usePostData";
-import { nullishValidationdError } from "@/utils/errorUtils";
 import { useState } from "react";
 
 export const useFeed = () => {
 
-    const user = getSignedUser();
+    const user = getSignedUserElseThrow();
     const posts = useGetPosts();
 
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const toggleOverlay = () => setIsOverlayOpen(!isOverlayOpen);
-
-    if (user === undefined) throw nullishValidationdError({ user });
 
     return {
         user,

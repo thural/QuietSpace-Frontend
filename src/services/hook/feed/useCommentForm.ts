@@ -1,13 +1,12 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import { ResId } from "@/api/schemas/inferred/common";
 import { usePostComment } from "@/services/data/useCommentData";
 import { useEffect, useRef, useState } from "react";
 
-const useCommentForm = (postId: string | number) => {
+const useCommentForm = (postId: ResId) => {
 
-    const signedUser = getSignedUser()
+    const signedUser = getSignedUserElseThrow();
     const addNewComment = usePostComment(postId);
-
-    if (signedUser === undefined) throw new Error("(!) can't input comment data: user is undefined");
 
     const [commentInput, setCommentData] = useState({ postId: postId, userId: signedUser.id, text: '' });
     const cursorPosition = useRef(commentInput.text.length);

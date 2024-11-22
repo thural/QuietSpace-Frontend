@@ -6,6 +6,7 @@ import { ConsumerFn } from "@/types/genericTypes";
 import { useState } from "react";
 
 const useBatchShareForm = (postId: ResId, toggleForm: ConsumerFn) => {
+
     const { data: { userId: senderId } } = useAuthStore();
     const { clientMethods } = useChatStore();
     const { sendChatMessage, isClientConnected } = clientMethods;

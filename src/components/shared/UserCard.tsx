@@ -1,5 +1,5 @@
-import { GenericWrapper } from "@/types/sharedComponentTypes";
 import styles from "@/styles/chat/userCardStyles";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 import { ResId } from "@/api/schemas/native/common";
 import BoxStyled from "@/components/shared/BoxStyled";
@@ -11,8 +11,8 @@ import UserDetails from "@shared/UserDetails";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getSignedUser } from "@/api/queries/userQueries";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import { User } from "@/api/schemas/inferred/user";
 
 export interface UserCardProps extends GenericWrapper {
     userId: ResId
@@ -24,8 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isD
 
     const classes = styles();
     const navigate = useNavigate();
-    const signedUser = getSignedUser();
-    if (!signedUser || !userId) throw nullishValidationdError({ signedUser, userId });
+    const signedUser: User = getSignedUserElseThrow();
 
     const { data: user, isLoading } = useGetUserById(userId);
 
