@@ -1,16 +1,9 @@
 import { getSignedUser } from "@/api/queries/userQueries";
-import { Page, ResId } from "@/api/schemas/inferred/common";
-import { Post, PostBody, PostPage, RepostBody, VoteBody } from "@/api/schemas/inferred/post";
-import { ConsumerFn } from "@/types/genericTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
 import {
     fetchCreatePost,
     fetchCreateRepost,
     fetchDeletePost,
     fetchEditPost,
-    fetchPosts,
     fetchPostById, fetchPostQuery,
     fetchPosts,
     fetchPostsByUserId,
@@ -19,8 +12,14 @@ import {
     fetchSavedPostsByUser,
     fetchVotePoll
 } from "@/api/requests/postRequests";
-import { useAuthStore } from "../store/zustand";
+import { ResId } from "@/api/schemas/inferred/common";
+import { Post, PostBody, PostPage, RepostBody, VoteBody } from "@/api/schemas/inferred/post";
+import { ConsumerFn } from "@/types/genericTypes";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuthStore } from "../store/zustand";
 
 
 export const useGetPosts = () => {
