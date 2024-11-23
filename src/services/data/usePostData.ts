@@ -1,23 +1,26 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSignedUser } from "@/api/queries/userQueries";
+import { Page, ResId } from "@/api/schemas/inferred/common";
+import { Post, PostBody, PostPage, RepostBody, VoteBody } from "@/api/schemas/inferred/post";
+import { ConsumerFn } from "@/types/genericTypes";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     fetchCreatePost,
+    fetchCreateRepost,
     fetchDeletePost,
-    fetchEditPost, fetchPostById, fetchPostQuery,
+    fetchEditPost,
+    fetchPosts,
+    fetchPostById, fetchPostQuery,
     fetchPosts,
     fetchPostsByUserId,
-    fetchCreateRepost,
-    fetchVotePoll,
+    fetchRepliedPostsByUserId,
     fetchSavePost,
     fetchSavedPostsByUser,
-    fetchRepliedPostsByUserId
-} from "../../api/requests/postRequests";
+    fetchVotePoll
+} from "@/api/requests/postRequests";
 import { useAuthStore } from "../store/zustand";
-import { PostPage, PostBody, VoteBody, Post, RepostBody } from "@/api/schemas/inferred/post";
-import { ResId } from "@/api/schemas/inferred/common";
-import { ConsumerFn } from "@/types/genericTypes";
-import { getSignedUser } from "@/api/queries/userQueries";
-import { useNavigate, useParams } from "react-router-dom";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 
 
 export const useGetPosts = () => {
@@ -37,6 +40,28 @@ export const useGetPosts = () => {
         refetchOnMount: true, // refetch on component mount, default true
         refetchOnWindowFocus: true, // default true
         refetchIntervalInBackground: false, // by default refetch paused for refetchInterval, dault false
+    });
+}
+
+export const useGetPagedPosts = () => {
+
+    const { data: authData, isAuthenticated } = useAuthStore();
+
+    return useInfiniteQuery({
+        queryKey: ["posts"],
+        queryFn: async ({ pageParam }) => {
+            const pageParams = buildPageParams(pageParam, 2);
+            return await fetchPosts(authData.accessToken, pageParams);
+        },
+        initialPageParam: 0,
+        getNextPageParam,
+        enabled: isAuthenticated,
+        staleTime: 1000 * 60 * 3,
+        refetchInterval: 1000 * 60 * 6,
+        gcTime: 1000 * 60 * 15,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchIntervalInBackground: false,
     });
 }
 

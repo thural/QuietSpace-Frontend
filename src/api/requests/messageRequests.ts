@@ -4,8 +4,8 @@ import { JwtToken, ResId } from "../schemas/inferred/common";
 import { MessageBody, Message, PagedMessage } from "../schemas/inferred/chat";
 
 
-export const fetchMessages = async (chatId: ResId, token: JwtToken): Promise<PagedMessage> => (
-    await getWrappedApiResponse(MESSAGE_PATH + `/chat/${chatId}`, 'GET', null, token)
+export const fetchMessages = async (chatId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<PagedMessage> => (
+    await getWrappedApiResponse(MESSAGE_PATH + `/chat/${chatId}` + (pageParams || ""), 'GET', null, token)
 ).json();
 
 export const fetchCreateMessage = async (body: MessageBody, token: JwtToken): Promise<Message> => (

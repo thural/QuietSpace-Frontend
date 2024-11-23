@@ -1,19 +1,20 @@
+import { NotificationPage } from "@/api/schemas/inferred/notification";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "../store/zustand";
 import { fetchCountOfPendingNotifications, fetchNotifications } from "../../api/requests/notificationRequests";
-import { PagedNotificationResponse } from "@/api/schemas/native/notification";
+import { useAuthStore } from "../store/zustand";
 
 
 
 export const useGetNotifications = () => {
 
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
     return useQuery({
         queryKey: ["notifications"],
-        queryFn: async (): Promise<PagedNotificationResponse> => {
+        queryFn: async (): Promise<NotificationPage> => {
             return await fetchNotifications(authData.accessToken);
         },
+        enabled: isAuthenticated,
         retry: 3,
         retryDelay: 1000
     });

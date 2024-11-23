@@ -1,11 +1,11 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { useGetPosts } from "@/services/data/usePostData";
+import { useGetPagedPosts } from "@/services/data/usePostData";
 import { useState } from "react";
 
 export const useFeed = () => {
 
     const user = getSignedUserElseThrow();
-    const posts = useGetPosts();
+    const posts = useGetPagedPosts();
 
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const toggleOverlay = () => setIsOverlayOpen(!isOverlayOpen);

@@ -12,20 +12,20 @@ export const fetchUserById = async (userId: ResId, token: JwtToken): Promise<Use
     await getWrappedApiResponse(USER_PATH + `/${userId}`, 'GET', null, token)
 ).json();
 
-export const fetchUsersByQuery = async (queryText: string, token: JwtToken): Promise<UserPage> => (
-    await getWrappedApiResponse(USER_PATH + `/search?username=${queryText}`, 'GET', null, token)
+export const fetchUsersByQuery = async (queryText: string, token: JwtToken, pageParams?: string | undefined): Promise<UserPage> => (
+    await getWrappedApiResponse(USER_PATH + `/search?username=${queryText}` + (pageParams || ""), 'GET', null, token)
 ).json();
 
 export const fetchToggleFollow = async (userId: ResId, token: JwtToken): Promise<Response> => (
     await getWrappedApiResponse(USER_PATH + `/follow/${userId}/toggle-follow`, 'POST', null, token)
 );
 
-export const fetchFollowers = async (userId: ResId, token: JwtToken): Promise<UserPage> => (
-    await getWrappedApiResponse(USER_PATH + `/${userId}/followers`, 'GET', null, token)
+export const fetchFollowers = async (userId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<UserPage> => (
+    await getWrappedApiResponse(USER_PATH + `/${userId}/followers` + (pageParams || ""), 'GET', null, token)
 ).json();
 
-export const fetchFollowings = async (userId: ResId, token: JwtToken): Promise<UserPage> => (
-    await getWrappedApiResponse(USER_PATH + `/${userId}/followings`, 'GET', null, token)
+export const fetchFollowings = async (userId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<UserPage> => (
+    await getWrappedApiResponse(USER_PATH + `/${userId}/followings` + (pageParams || ""), 'GET', null, token)
 ).json();
 
 export const fetchSaveSettings = async (request: ProfileSettingsRequest, token: JwtToken): Promise<ProfileSettingsResponse> => (

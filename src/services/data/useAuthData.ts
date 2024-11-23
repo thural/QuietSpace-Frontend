@@ -1,6 +1,7 @@
-import { Auth, AuthBody, RefreshToken } from "@/api/schemas/inferred/auth";
+import { Auth, AuthBody } from "@/api/schemas/inferred/auth";
 import { JwtToken } from "@/api/schemas/inferred/common";
 import { AnyFunction } from "@/types/genericTypes";
+import { getRefreshToken } from "@/utils/authUtils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { fetchAccessToken, fetchActivation, fetchLogin, fetchLogout } from "../../api/requests/authRequests";
@@ -67,9 +68,9 @@ export const usePostLogout = () => {
 export const useRefreshToken = () => {
 
     const { setAuthData } = useAuthStore();
-    const refreshToken: JwtToken | null = localStorage.getItem("refreshToken");
+    const refreshToken: JwtToken | null = getRefreshToken();
 
-    const onSuccess = (data: RefreshToken) => {
+    const onSuccess = (data: Auth) => {
         console.log("access token refresh was success");
         setAuthData(data)
     }

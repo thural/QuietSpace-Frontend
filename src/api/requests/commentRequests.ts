@@ -12,8 +12,8 @@ export const fetchDeleteComment = async (commentId: ResId, token: JwtToken): Pro
     await getWrappedApiResponse(COMMENT_PATH + `/${commentId}`, 'DELETE', null, token)
 );
 
-export const fetchCommentsByPostId = async (postId: ResId, token: JwtToken): Promise<PagedComment> => (
-    await getWrappedApiResponse(COMMENT_PATH + `/post/${postId}`, 'GET', null, token)
+export const fetchCommentsByPostId = async (postId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<PagedComment> => (
+    await getWrappedApiResponse(COMMENT_PATH + `/post/${postId}` + (pageParams || ""), 'GET', null, token)
 ).json();
 
 export const fetchLatestComment = async (userId: ResId, postId: ResId, token: JwtToken): Promise<Comment> => (

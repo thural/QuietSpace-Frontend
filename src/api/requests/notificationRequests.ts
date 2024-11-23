@@ -5,12 +5,12 @@ import { Notification, NotificationPage } from "../schemas/inferred/notification
 import { ReactionType } from "../schemas/inferred/reaction";
 
 
-export const fetchNotifications = async (token: JwtToken): Promise<NotificationPage> => (
-    await getWrappedApiResponse(NOTIFICATION_PATH, 'GET', null, token)
+export const fetchNotifications = async (token: JwtToken, pageParams?: string | undefined): Promise<NotificationPage> => (
+    await getWrappedApiResponse(NOTIFICATION_PATH + (pageParams || ""), 'GET', null, token)
 ).json();
 
-export const fetchNotificationsByType = async (type: ReactionType, token: JwtToken): Promise<NotificationPage> => (
-    await getWrappedApiResponse(NOTIFICATION_PATH + `/tpye/${type}`, 'GET', null, token)
+export const fetchNotificationsByType = async (type: ReactionType, token: JwtToken, pageParams?: string | undefined): Promise<NotificationPage> => (
+    await getWrappedApiResponse(NOTIFICATION_PATH + `/tpye/${type}` + (pageParams || ""), 'GET', null, token)
 ).json();
 
 export const fetchCountOfPendingNotifications = async (token: JwtToken): Promise<number> => (

@@ -1,6 +1,5 @@
 import useJwtAuth from "@/services/hook/auth/useJwtAuth";
 import { useAuthStore } from "@/services/store/zustand";
-import { getRefreshToken } from "@/utils/authUtils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export const useSignout = () => {
 
-    const { setAuthData, resetAuthData, setIsAuthenticated } = useAuthStore();
+    const { resetAuthData, setIsAuthenticated } = useAuthStore();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
@@ -21,8 +20,7 @@ export const useSignout = () => {
     const onSuccessFn = () => {
         queryClient.clear();
         setIsLoading(false);
-        const refreshToken: string = getRefreshToken();
-        setAuthData({ id: "", message: "", accessToken: "", refreshToken, userId: "" });
+        resetAuthData();
         setIsAuthenticated(false);
         navigate("/login");
     }

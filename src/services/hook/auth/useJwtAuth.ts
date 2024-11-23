@@ -1,5 +1,5 @@
 import { AuthPages, SetAuthState, SignupBody, LoginBody } from '@/types/authTypes';
-import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '../../../api/requests/authRequests';
+import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '@/api/requests/authRequests';
 import { JwtAuthProps } from '@/types/hookPropTypes';
 import { RefreshToken, Auth } from '@/api/schemas/inferred/auth';
 import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
@@ -7,9 +7,9 @@ import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authU
 var refreshIntervalId: number;
 
 const useJwtAuth = ({
-    refreshInterval = 540000,
+    refreshInterval = 490000,
     onSuccessFn = () => { console.error("onSuccess handler is not supplied") },
-    onErrorFn = (e: Error) => { console.error("error on stomp client: ", e) },
+    onErrorFn = (e: Error) => { console.error("error on JwtAuth client: ", e) },
     onLoadFn = () => { console.error("onLoad handler is not supplied") }
 }: JwtAuthProps) => {
 
