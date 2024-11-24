@@ -1,3 +1,4 @@
+import { Notification } from "@/api/schemas/inferred/notification";
 import { NotificationType } from "@/api/schemas/native/notification";
 
 export const genNotificationText = (type: string) => {
@@ -29,4 +30,23 @@ export const genNotificationText = (type: string) => {
             return "invalid notification type"
     }
 
+};
+
+
+export type Category = "all" | "requests" | "replies" | "reposts" | "mentions";
+
+const noFilter = () => true;
+const repostFilter = (n: Notification) => n.type === NotificationType.REPOST;
+const mentionFilter = (n: Notification) => n.type === NotificationType.MENTION;
+const requestFilter = (n: Notification) => n.type === NotificationType.FOLLOW_REQUEST;
+const replyFilter = (n: Notification) => n.type === NotificationType.COMMENT_REPLY || n.type === NotificationType.COMMENT;
+
+export const pickNotificationFilter = (category: Category) => {
+    switch (category) {
+        case "all": return noFilter;
+        case "replies": return replyFilter;
+        case "reposts": return repostFilter;
+        case "requests": return requestFilter;
+        case "mentions": return mentionFilter;
+    }
 };

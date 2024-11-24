@@ -33,7 +33,7 @@ const InfinateScrollContainer: React.FC<InfinateScrollContainerProps> = ({
             {children}
             <BoxStyled ref={wasSeenRef} />
             <Conditional isEnabled={!hasNextPage}>
-                <Typography>end of the stream has been reached</Typography>
+                <Typography style={{ margin: '1rem' }} ta="center">end of the stream has been reached</Typography>
             </Conditional>
             <Conditional isEnabled={isFetchingNextPage}>
                 <LoaderStyled />

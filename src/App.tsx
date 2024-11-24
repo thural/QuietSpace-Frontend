@@ -36,6 +36,7 @@ import useChatSocket from "./services/hook/chat/useChatSocket";
 import useNotificationSocket from "./services/hook/notification/useNotificationSocket";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
+import NotificationList from "./components/notification/list/NotificationList";
 
 const App = () => {
 
@@ -94,10 +95,7 @@ const App = () => {
                     <Route path=":userId" element={<ProfileContainer />} />
                 </Route>
                 <Route path="/notification/*" element={<NotificationPage />}>
-                    <Route path="all" element={<AllNotifications />} />
-                    <Route path="requests" element={<RequestNotifications />} />
-                    <Route path="replies" element={<ReplyNotifications />} />
-                    <Route path="reposts" element={<RepostNotifications />} />
+                    <Route path=":category" element={<NotificationList />} />
                 </Route>
                 <Route path="/settings/*" element={<SettingsPage />} />
                 <Route path="/signin" element={<AuthPage />} />

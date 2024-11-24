@@ -1,18 +1,18 @@
+import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import { useGetNotifications } from "@/services/data/useNotificationData";
+import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 import BoxStyled from "@components/shared/BoxStyled";
 import DefaultContainer from "@components/shared/DefaultContainer";
-import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
-import { useGetNotifications } from "@/services/data/useNotificationData";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import { useNavigate } from "react-router-dom";
+import LoaderStyled from "../shared/LoaderStyled";
 
-function NotificationContainer() {
+const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
 
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
-
 
     let data = undefined;
 
@@ -24,7 +24,14 @@ function NotificationContainer() {
         return <ErrorComponent message={errorMessage} />;
     }
 
-    const { isLoading, isError, error } = data;
+    const { data: pagedData, isLoading, isError, error } = data;
+
+
+    if (isLoading) return <LoaderStyled />;
+    if (isError) return <ErrorComponent message={error.message} />;
+
+    const content = pagedData.pages.flatMap((page) => page.content);
+    console.log("paged notification data content: ", content)
 
 
     const navigateToPage = (buttonValue: string) => {
@@ -45,21 +52,16 @@ function NotificationContainer() {
                     { label: 'requests', value: '/notification/requests' },
                     { label: 'replies', value: '/notification/replies' },
                     { label: 'reposts', value: '/notification/reposts' },
+                    { label: 'mentions', value: '/notification/mentions' },
                 ]}
             />
-            <Outlet />
+            {children}
         </BoxStyled>
     );
 
-    const RenderResult = () => {
-        if (isLoading) return <FullLoadingOverlay />
-        if (isError) return <ErrorComponent message={error.message} />
-        return <ControlPanel />
-    };
-
     return (
         <DefaultContainer>
-            <RenderResult />
+            <ControlPanel />
         </DefaultContainer>
     )
 }

@@ -1,29 +1,37 @@
 import chatQueries from "@/api/queries/chatQueries";
-import notificationQueries from "@/api/queries/notificationQueries";
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import { useGetNotifications } from "@/services/data/useNotificationData";
 import { useMemo } from "react";
 
 
 const useNotification = () => {
-    const { getChatsCache } = chatQueries();
-    const chats = getChatsCache();
-    const user = getSignedUserElseThrow();
-    const { getNotificationsCache } = notificationQueries();
-    const notifications = getNotificationsCache();
 
-    var hasUnreadChat = useMemo(() => {
-        if (!chats) return false;
-        return chats.some(({ recentMessage }) => {
-            !recentMessage?.isSeen && recentMessage?.senderId !== user.id
-        });
-    }, [chats]);
+    return { hasPendingNotification: false, hasUnreadChat: false }
 
-    var hasPendingNotification = useMemo(() => {
-        if (notifications === undefined) return false;
-        return notifications.content.some(({ isSeen }) => !isSeen);
-    }, [notifications]);
+    // const { getChatsCache } = chatQueries();
+    // const chats = getChatsCache();
+    // const user = getSignedUserElseThrow();
 
-    return { hasPendingNotification, hasUnreadChat }
+
+    // const { data, isLoading } = useGetNotifications();
+
+    // if (isLoading) return { hasPendingNotification: false, hasUnreadChat: false }
+
+    // const hasUnreadChat = useMemo(() => {
+    //     if (!chats) return false;
+    //     return chats.some(({ recentMessage }) => {
+    //         !recentMessage?.isSeen && recentMessage?.senderId !== user.id
+    //     });
+    // }, [chats]);
+
+    // const content = data.pages.flatMap((page) => page.content);
+
+    // const hasPendingNotification = useMemo(() => {
+    //     if (content === undefined) return false;
+    //     return content.some(({ isSeen }) => !isSeen);
+    // }, [data]);
+
+    // return { hasPendingNotification, hasUnreadChat }
 }
 
 export default useNotification

@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { UseInfiniteQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Notification, NotificationPage } from "../schemas/inferred/notification";
 import { ChatEvent } from "../schemas/inferred/chat";
 import { Page } from "../schemas/inferred/common";
@@ -32,7 +32,7 @@ const notificationQueries = () => {
         queryClient.invalidateQueries({ queryKey: ["notifications"] });
     };
 
-    const getNotificationsCache = (): Page<Notification> | undefined => {
+    const getNotificationsCache = (): UseInfiniteQueryResult<Page<Notification>> | undefined => {
         return queryClient.getQueryData(["notifications"]);
     }
 

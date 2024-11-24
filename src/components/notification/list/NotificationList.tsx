@@ -1,16 +1,30 @@
 import { Notification } from "@/api/schemas/inferred/notification";
 import { NotificationType } from "@/api/schemas/native/notification";
-import { NotificationListProps } from "@/types/notificationTypes";
+import { useGetNotifications } from "@/services/data/useNotificationData";
+import { Category, pickNotificationFilter } from "@/utils/notificationUtils";
 import Typography from "@components/shared/Typography";
+import { Center } from "@mantine/core";
+import { useParams } from "react-router-dom";
 import CommentNotification from "../fragments/CommentNotification";
 import FollowNotification from "../fragments/FollowNotification";
 import PostNotification from "../fragments/PostNotification";
+import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
+
+const NotificationList = () => {
+
+    const { category }: { category: Category } = useParams();
+
+    const { data: pagedData, isFetchingNextPage, hasNextPage, fetchNextPage } = useGetNotifications();
+    const content: Array<Notification> = pagedData.pages.flatMap((page) => page.content);
+
+    if (content.length == 0) return <Center>
+        <Typography ta="center">You have no Notifications yet</Typography>
+    </Center>;
 
 
+    const appliedFilter = pickNotificationFilter(category);
+    const notifications = content.filter(appliedFilter);
 
-const NotificationList: React.FC<NotificationListProps> = ({ notifications }) => {
-
-    if (!notifications.length) return <Typography ta="center">You have no Notifications yet</Typography>
 
     const getNotificationCard = (notification: Notification) => {
         const { type, id } = notification;
@@ -45,7 +59,18 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
         }
     }
 
-    return notifications.map(notification => getNotificationCard(notification));
+
+
+
+    return (
+        <InfinateScrollContainer
+            isFetchingNextPage={isFetchingNextPage}
+            hasNextPage={hasNextPage}
+            fetchNextPage={fetchNextPage}
+        >
+            {notifications.map(notification => getNotificationCard(notification))}
+        </InfinateScrollContainer>
+    );
 }
 
 export default NotificationList
