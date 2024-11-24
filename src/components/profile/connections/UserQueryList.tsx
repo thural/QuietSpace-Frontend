@@ -1,14 +1,15 @@
 import { UserList, UserPage } from "@/api/schemas/inferred/user";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
 import Typography from "@/components/shared/Typography";
 import styles from "@/styles/profile/userListStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { UseQueryResult } from "@tanstack/react-query";
+import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import React, { JSXElementConstructor } from "react";
 
 export interface UserListProps extends GenericWrapper {
-    userFetch: UseQueryResult<UserPage>
+    userFetch: UseInfiniteQueryResult<InfiniteData<UserPage>>
     queryResult: UserList
     itemProps?: Object
     Item: JSXElementConstructor<any>
@@ -18,15 +19,23 @@ const UserQueryList: React.FC<UserListProps> = ({ userFetch, queryResult, Item }
 
     const classes = styles();
 
+    const { isPending, isError, error, isFetchingNextPage, hasNextPage, fetchNextPage } = userFetch;
+
     const RenderResult = () => (
-        userFetch.isPending ? <FullLoadingOverlay />
-            : userFetch.isError ? <Typography type="h1">{userFetch.error.message}</Typography>
+        isPending ? <FullLoadingOverlay />
+            : isError ? <Typography type="h1">{error.message}</Typography>
                 : queryResult.map((data, key) => <Item key={key} data={data} />)
     )
 
     return (
         <BoxStyled className={classes.resultContainer}>
-            <RenderResult />
+            <InfinateScrollContainer
+                isFetchingNextPage={isFetchingNextPage}
+                hasNextPage={hasNextPage}
+                fetchNextPage={fetchNextPage}
+            >
+                <RenderResult />
+            </InfinateScrollContainer>
         </BoxStyled>
     );
 }

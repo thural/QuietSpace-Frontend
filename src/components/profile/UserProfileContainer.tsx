@@ -12,7 +12,7 @@ import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";
 import UserDetailsSection from "./user-details/UserDetailsSection";
 import UserProfileTabs from "./tabs/UserProfileTabs";
-import { useCurrentProfile } from "../../services/hook/profile/useUserProfile";
+import { useCurrentProfile } from "@/services/hook/profile/useUserProfile";
 
 
 const UserProfileContainer = () => {
@@ -32,6 +32,9 @@ const UserProfileContainer = () => {
         userPosts,
         followers,
         followings,
+        postsCount,
+        followingsCount,
+        followersCount,
         viewFollowers,
         viewFollowings,
         toggleFollowings,
@@ -48,18 +51,18 @@ const UserProfileContainer = () => {
             <UserDetailsSection user={signedUser} />
             <FollowsSection
                 userId={0}
-                posts={userPosts}
-                followings={followings}
-                followers={followers}
+                postsCount={postsCount}
+                followingsCount={followingsCount}
+                followersCount={followersCount}
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             >
                 <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
             </FollowsSection>
-            <Overlay isOpen={viewFollowings && !!followings.data?.totalElements} onClose={toggleFollowings}>
+            <Overlay isOpen={viewFollowings && !!followingsCount} onClose={toggleFollowings}>
                 <UserConnections userFetch={followings} title="followings" />
             </Overlay>
-            <Overlay isOpen={viewFollowers && !!followers.data?.totalElements} onClose={toggleFollowers}>
+            <Overlay isOpen={viewFollowers && !!followersCount} onClose={toggleFollowers}>
                 <UserConnections userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>

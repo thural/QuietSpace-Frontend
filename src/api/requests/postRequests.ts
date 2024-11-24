@@ -13,8 +13,8 @@ export const fetchPostById = async (postId: ResId, token: JwtToken): Promise<Pos
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'GET', null, token)
 ).json();
 
-export const fetchSavedPostsByUser = async (token: JwtToken): Promise<PostPage> => (
-    await getWrappedApiResponse(POST_URL + "/saved", 'GET', null, token)
+export const fetchSavedPostsByUser = async (token: JwtToken, pageParams?: string | undefined): Promise<PostPage> => (
+    await getWrappedApiResponse(POST_URL + "/saved" + (pageParams || ""), 'GET', null, token)
 ).json();
 
 export const fetchPostsByUserId = async (userId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<PostPage> => (

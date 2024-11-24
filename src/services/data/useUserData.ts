@@ -1,23 +1,24 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "../../api/requests/userRequests";
-import { useAuthStore } from "../store/zustand";
-import { UserPage, User, ProfileSettingsRequest, ProfileSettingsResponse } from "@/api/schemas/inferred/user";
+import { getSignedUser } from "@/api/queries/userQueries";
+import { ResId } from "@/api/schemas/inferred/common";
+import { ProfileSettingsRequest, ProfileSettingsResponse, User, UserPage } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { ResId } from "@/api/schemas/inferred/common";
-import { getSignedUser } from "@/api/queries/userQueries";
+import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "@/api/requests/userRequests";
+import { useAuthStore } from "../store/zustand";
 
 
 export const useGetCurrentUser = () => {
 
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
     return useQuery({
         queryKey: ["user"],
         queryFn: async (): Promise<User> => {
             return await fetchUser(authData.accessToken);
         },
-        enabled: !!authData?.accessToken,
+        enabled: isAuthenticated,
         staleTime: Infinity,
         gcTime: Infinity,
         refetchOnMount: false,
@@ -73,14 +74,17 @@ export const useGetUserById = (userId: ResId) => {
 
 
 export const useGetFollowers = (userId: ResId) => {
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
-    return useQuery<UserPage>({
+    return useInfiniteQuery({
         queryKey: ["followers", { id: userId }],
-        queryFn: async (): Promise<UserPage> => {
-            return await fetchFollowers(userId, authData.accessToken);
+        queryFn: async ({ pageParam }): Promise<UserPage> => {
+            const pageParams = buildPageParams(pageParam, 9);
+            return await fetchFollowers(userId, authData.accessToken, pageParams);
         },
-        enabled: !!authData?.accessToken,
+        initialPageParam: 0,
+        getNextPageParam,
+        enabled: isAuthenticated,
         staleTime: Infinity,
         gcTime: Infinity,
         refetchOnMount: false,
@@ -91,14 +95,17 @@ export const useGetFollowers = (userId: ResId) => {
 
 export const useGetFollowings = (userId: ResId) => {
 
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["followings", { id: userId }],
-        queryFn: async (): Promise<UserPage> => {
-            return await fetchFollowings(userId, authData.accessToken);
+        queryFn: async ({ pageParam }): Promise<UserPage> => {
+            const pageParams = buildPageParams(pageParam, 9);
+            return await fetchFollowings(userId, authData.accessToken, pageParams);
         },
-        enabled: !!authData?.accessToken,
+        initialPageParam: 0,
+        getNextPageParam,
+        enabled: isAuthenticated,
         staleTime: Infinity,
         gcTime: Infinity,
         refetchOnMount: false,

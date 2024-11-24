@@ -34,6 +34,9 @@ function ProfileContainer() {
 
     const {
         user,
+        postsCount,
+        followingsCount,
+        followersCount,
         followers,
         followings,
         isHasAccess,
@@ -56,16 +59,16 @@ function ProfileContainer() {
             <UserDetailsSection user={user.data} />
             <FollowsSection
                 userId={userId}
-                posts={userPosts}
-                followings={followings}
-                followers={followers}
+                postsCount={postsCount}
+                followingsCount={followingsCount}
+                followersCount={followersCount}
                 toggleFollowings={toggleFollowings}
                 toggleFollowers={toggleFollowers}
             />
-            <Overlay isOpen={viewFollowings && isHasAccess.data && !!followings.data?.totalElements} onClose={toggleFollowings}>
+            <Overlay isOpen={viewFollowings && isHasAccess.data && !!followingsCount} onClose={toggleFollowings}>
                 <UserConnections userFetch={followings} title="followings" />
             </Overlay>
-            <Overlay isOpen={viewFollowers && isHasAccess.data && !!followers.data?.totalElements} onClose={toggleFollowers}>
+            <Overlay isOpen={viewFollowers && isHasAccess.data && !!followersCount} onClose={toggleFollowers}>
                 <UserConnections userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>

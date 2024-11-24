@@ -24,15 +24,14 @@ import { useAuthStore } from "../store/zustand";
 
 export const useGetPosts = () => {
 
-    const user = getSignedUser();
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
     return useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
             return await fetchPosts(authData.accessToken);
         },
-        enabled: !!user?.id, // if userQuery could fetch the current user
+        enabled: isAuthenticated, // if userQuery could fetch the current user
         staleTime: 1000 * 60 * 3, // keep data fresh up to 3 minutes, it won't refetch on trigger events, defult 0
         refetchInterval: 1000 * 60 * 6, // refetch data irregardless of a trigger event, default infinite, defult false
         gcTime: 1000 * 60 * 15, // clear the cache after 15 minutes of component inactivity, default 5 minutes
@@ -49,7 +48,7 @@ export const useGetPagedPosts = () => {
     return useInfiniteQuery({
         queryKey: ["posts"],
         queryFn: async ({ pageParam }) => {
-            const pageParams = buildPageParams(pageParam, 2);
+            const pageParams = buildPageParams(pageParam, 9);
             return await fetchPosts(authData.accessToken, pageParams);
         },
         initialPageParam: 0,
@@ -66,15 +65,14 @@ export const useGetPagedPosts = () => {
 
 export const useGetPostById = (postId: ResId) => {
 
-    const user = getSignedUser();
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
     return useQuery({
         queryKey: ["posts", { id: postId }],
         queryFn: async (): Promise<Post> => {
             return await fetchPostById(postId, authData.accessToken);
         },
-        enabled: !!user?.id,
+        enabled: isAuthenticated,
         staleTime: 1000 * 60 * 3,
         refetchInterval: 1000 * 60 * 6,
         gcTime: 1000 * 60 * 15,
@@ -86,15 +84,17 @@ export const useGetPostById = (postId: ResId) => {
 
 export const useGetSavedPostsByUserId = (userId: ResId) => {
 
-    const user = getSignedUser();
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["posts/saved", { id: userId }],
-        queryFn: async (): Promise<PostPage> => {
-            return await fetchSavedPostsByUser(authData.accessToken);
+        queryFn: async ({ pageParam }): Promise<PostPage> => {
+            const pageParams = buildPageParams(pageParam, 9);
+            return await fetchSavedPostsByUser(authData.accessToken, pageParams);
         },
-        enabled: !!user?.id,
+        initialPageParam: 0,
+        getNextPageParam,
+        enabled: isAuthenticated,
         staleTime: 1000 * 60 * 3,
         refetchInterval: 1000 * 60 * 6,
         gcTime: 1000 * 60 * 15,
@@ -106,15 +106,17 @@ export const useGetSavedPostsByUserId = (userId: ResId) => {
 
 export const useGetRepliedPostsByUserId = (userId: ResId) => {
 
-    const user = getSignedUser();
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["posts/user/replied", { id: userId }],
-        queryFn: async (): Promise<PostPage> => {
-            return await fetchRepliedPostsByUserId(userId, authData.accessToken);
+        queryFn: async ({ pageParam }): Promise<PostPage> => {
+            const pageParams = buildPageParams(pageParam, 9);
+            return await fetchRepliedPostsByUserId(userId, authData.accessToken, pageParams);
         },
-        enabled: !!user?.id,
+        initialPageParam: 0,
+        getNextPageParam,
+        enabled: isAuthenticated,
         staleTime: 1000 * 60 * 3,
         refetchInterval: 1000 * 60 * 6,
         gcTime: 1000 * 60 * 15,
@@ -127,15 +129,17 @@ export const useGetRepliedPostsByUserId = (userId: ResId) => {
 
 export const useGetPostsByUserId = (userId: ResId) => {
 
-    const user = getSignedUser();
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["posts/user", { id: userId }],
-        queryFn: async (): Promise<PostPage> => {
-            return await fetchPostsByUserId(userId, authData.accessToken);
+        queryFn: async ({ pageParam }): Promise<PostPage> => {
+            const pageParams = buildPageParams(pageParam, 9);
+            return await fetchPostsByUserId(userId, authData.accessToken, pageParams);
         },
-        enabled: !!user?.id,
+        initialPageParam: 0,
+        getNextPageParam,
+        enabled: isAuthenticated,
         staleTime: 1000 * 60 * 3,
         refetchInterval: 1000 * 60 * 6,
         gcTime: 1000 * 60 * 15,

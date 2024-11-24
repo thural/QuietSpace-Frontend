@@ -36,15 +36,23 @@ const useUserProfile = (userId: ResId) => {
             setIsHasAccss({ ...isHasAccess, isError: true });
             return;
         }
-        const isFollowing = followers.data.content.some(user => user.id === signedUser.id);
+        const followersContent = followers.data?.pages.flatMap((page) => page.content);
+        const isFollowing = followersContent.some(user => user.id === signedUser.id);
         setIsHasAccss({ ...isHasAccess, isLoading: false, data: (!user.data.isPrivateAccount || isFollowing) })
     }
+
+    const postsCount = userPosts.data?.pages[0].totalElements;
+    const followingsCount = followings.data?.pages[0].totalElements;
+    const followersCount = followers.data?.pages[0].totalElements;
 
     useEffect(updateState, [user.data, followers.data]);
 
 
     return {
         user,
+        postsCount,
+        followingsCount,
+        followersCount,
         followers,
         followings,
         isHasAccess,
@@ -75,12 +83,18 @@ export const useCurrentProfile = () => {
 
     const handleSignout = () => navigatePath("/signout");
 
+    const postsCount = userPosts.data?.pages[0].totalElements;
+    const followingsCount = followings.data?.pages[0].totalElements;
+    const followersCount = followers.data?.pages[0].totalElements;
 
     return {
         signedUser,
         userPosts,
         followers,
         followings,
+        postsCount,
+        followingsCount,
+        followersCount,
         viewFollowers,
         viewFollowings,
         toggleFollowings,

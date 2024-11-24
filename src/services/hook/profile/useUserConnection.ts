@@ -1,18 +1,19 @@
-import { UserPage, UserList } from "@/api/schemas/inferred/user";
+import { UserList, UserPage } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { UseQueryResult } from "@tanstack/react-query";
+import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
 
-const useUserConnection = (userFetch: UseQueryResult<UserPage>) => {
+const useUserConnection = (userFetch: UseInfiniteQueryResult<InfiniteData<UserPage>>) => {
 
     if (userFetch.data === undefined) throw nullishValidationdError({ userFetch });
 
-    const [queryResult, setQueryResult] = useState<UserList>(userFetch.data.content);
+    const content = userFetch.data?.pages.flatMap((page) => page.content);
+
+    const [queryResult, setQueryResult] = useState<UserList>(content);
 
 
     const filterByQuery = (value: string): UserList => {
-        return userFetch.data.content
-            .filter(f => (f.username.includes(value) || f.email.includes(value)));
+        return content.filter(f => (f.username.includes(value) || f.email.includes(value)));
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +22,7 @@ const useUserConnection = (userFetch: UseQueryResult<UserPage>) => {
         if (value.length) {
             setQueryResult(filterByQuery(value));
         } else {
-            setQueryResult(userFetch.data.content);
+            setQueryResult(content);
         }
     }
 

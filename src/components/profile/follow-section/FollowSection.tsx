@@ -1,42 +1,36 @@
-import FlexStyled from "@components/shared/FlexStyled";
-import Typography from "@components/shared/Typography";
 import styles from "@/styles/profile/followSectionStyles";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
-import { UseQueryResult } from "@tanstack/react-query";
-import { PostPage } from "@/api/schemas/inferred/post";
-import { UserPage } from "@/api/schemas/inferred/user";
 import { ProcedureFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
+import FlexStyled from "@components/shared/FlexStyled";
+import Typography from "@components/shared/Typography";
 
 export interface FollowSectionProps extends GenericWrapper {
-    posts: UseQueryResult<PostPage>
-    followings: UseQueryResult<UserPage>
-    followers: UseQueryResult<UserPage>
+    postsCount?: number
+    followingsCount?: number
+    followersCount?: number
     toggleFollowings: ProcedureFn
     toggleFollowers: ProcedureFn
 }
 
-const FollowsSection: React.FC<FollowSectionProps> = ({ posts, followings, followers, toggleFollowings, toggleFollowers, children }) => {
+const FollowsSection: React.FC<FollowSectionProps> = ({ postsCount, followingsCount, followersCount, toggleFollowings, toggleFollowers, children }) => {
 
     const classes = styles();
 
-    if (!followers || !followings || !posts) return <FullLoadingOverlay />
-
     return (
         <FlexStyled className={classes.followSection}>
-            <Typography style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{posts.data?.totalElements} posts</Typography>
+            <Typography style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{postsCount} posts</Typography>
             <FlexStyled style={{ justifyContent: "space-around", gap: "2rem" }}>
                 <Typography
                     ta="center"
                     style={{ cursor: "pointer" }}
                     fw="400" onClick={toggleFollowings}>
-                    {followings.data?.totalElements} followings
+                    {followingsCount} followings
                 </Typography>
                 <Typography
                     ta="center"
                     style={{ cursor: "pointer" }}
                     fw="400" onClick={toggleFollowers}>
-                    {followers.data?.totalElements} followers
+                    {followersCount} followers
                 </Typography>
             </FlexStyled>
             {children}
