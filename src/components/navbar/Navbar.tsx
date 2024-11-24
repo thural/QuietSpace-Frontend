@@ -44,6 +44,8 @@ const NavBar = () => {
 
   const { hasPendingNotification, hasUnreadChat } = data;
 
+
+
   const itemList: Array<NavItemProps> = [
     {
       linkTo: "/feed",
@@ -79,6 +81,7 @@ const NavBar = () => {
     icon: <PiChatCircle />,
     iconFill: <PiChatCircleFill />
   }
+
 
 
   return (
