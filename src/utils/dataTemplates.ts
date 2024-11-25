@@ -28,3 +28,13 @@ export const getInitPageObject = (pageSize: number, content: Array<any>) => {
         "empty": false
     }
 }
+
+export const getInitInfinitePagesObject = (pageSize: number, content: Array<any>) => {
+
+    const pageObject = getInitPageObject(pageSize, content);
+
+    return {
+        "pages": [pageObject],
+        "pageParams": [0, pageSize]
+    }
+}
