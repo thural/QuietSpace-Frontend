@@ -52,7 +52,7 @@ export const transformInfinetePages = <T extends HasId>(
     return { ...data, pages: updatedPages };
 };
 
-export const setMessageContentSeen: PageTransformer = <T extends HasId>(
+export const setEntityContentSeen: PageTransformer = <T extends HasId>(
     page: Page<T>,
     messageId: ResId
 ): Page<T> => ({

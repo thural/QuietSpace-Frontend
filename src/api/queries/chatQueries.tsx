@@ -1,6 +1,6 @@
 import { DEFAULT_PAGE_SIZE } from "@/constants/params";
 import { getInitInfinitePagesObject } from "@/utils/dataTemplates";
-import { filterPageContentById, isPageIncludesEntity, pushToPageContent, setMessageContentSeen, transformInfinetePages } from "@/utils/dataUtils";
+import { filterPageContentById, isPageIncludesEntity, pushToPageContent, setNotificationContentSeen, transformInfinetePages } from "@/utils/dataUtils";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Chat, ChatEvent, ChatList, Message, PagedMessage } from "../schemas/inferred/chat";
 import { Page } from "../schemas/inferred/common";
@@ -18,31 +18,27 @@ const chatQueries = () => {
 
     const updateChatCache = (message: Message) => {
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
-            const updatedChats = oldData.map(chat => {
+            return oldData.map(chat => {
                 if (chat.id !== message.chatId) return chat;
                 chat.recentMessage = message;
                 return chat;
             });
-            return updatedChats;
         });
     }
 
     const updateInitChatCache = (chatBody: Chat) => {
         console.log("inserting chat: ", chatBody);
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
-            const updatedChats = oldData.map(chat => {
-                if (chat.id === "-1") return chatBody
-                else return chat
+            return oldData.map(chat => {
+                if (chat.id === "-1") return chatBody;
+                else return chat;
             });
-            return updatedChats;
         });
     }
 
     const insertInitChatCache = (chatBody: Chat) => {
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
-            const updatedChats = [...oldData, chatBody];
-            console.log("updated chat data on chat creation: ", updatedChats);
-            return updatedChats;
+            return [...oldData, chatBody];;
         });
     }
 
@@ -64,7 +60,7 @@ const chatQueries = () => {
     const setMessageSeenCache = (chatEvent: ChatEvent) => {
         const { messageId, chatId } = chatEvent;
         queryClient.setQueryData(['messages', { id: chatId }], (data: InfiniteData<PagedMessage>) => {
-            return transformInfinetePages(data, messageId as ResId, isPageIncludesEntity, setMessageContentSeen);
+            return transformInfinetePages(data, messageId as ResId, isPageIncludesEntity, setNotificationContentSeen);
         });
     }
 
