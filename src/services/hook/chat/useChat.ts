@@ -16,7 +16,18 @@ export const useChat = (chatId: ResId) => {
     if (currentChat === undefined) throw nullishValidationdError({ currentChat });
     const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== senderId) || {};
 
-    const { data: messages, isError, isLoading, isSuccess } = useGetMessagesByChatId(chatId);
+    const {
+        data: messages,
+        isError,
+        isLoading,
+        isSuccess,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage
+    } = useGetMessagesByChatId(chatId);
+
+    const messageList = messages;
+    const messageCount = messages?.length;
 
     const [text, setText] = useState('');
     const formBody = { chatId, senderId, recipientId, text };
@@ -55,6 +66,11 @@ export const useChat = (chatId: ResId) => {
         recipientName,
         signedUserId: senderId,
         messages,
+        messageList,
+        messageCount,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage,
         isError,
         isLoading,
         isInputEnabled,

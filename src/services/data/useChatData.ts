@@ -1,14 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "../store/zustand";
+import chatQueries from "@/api/queries/chatQueries";
+import { Chat, ChatList, CreateChat, Message, MessageBody, PagedMessage } from "@/api/schemas/inferred/chat";
+import { ResId } from "@/api/schemas/inferred/common";
+import { ConsumerFn } from "@/types/genericTypes";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { fetchChatById, fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../../api/requests/chatRequests";
 import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../../api/requests/messageRequests";
-import { ResId } from "@/api/schemas/inferred/common";
-import { ChatList, Chat, CreateChat, MessageBody, Message, PagedMessage } from "@/api/schemas/inferred/chat";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { ConsumerFn } from "@/types/genericTypes";
-import { useNavigate } from "react-router-dom";
-import { getSignedUser } from "@/api/queries/userQueries";
-import chatQueries from "@/api/queries/chatQueries";
+import { useAuthStore } from "../store/zustand";
 
 
 export const useGetChats = () => {
@@ -74,21 +74,20 @@ export const useCreateChat = () => {
 
 export const useGetMessagesByChatId = (chatId: ResId) => {
 
-    const { data: authData } = useAuthStore();
+    const { data: authData, isAuthenticated } = useAuthStore();
 
-    const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
-
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["messages", { id: chatId }],
-        queryFn: async (): Promise<PagedMessage> => {
-            const responseData = await fetchMessages(chatId, authData.accessToken);
-            console.log("messages response data: ", responseData);
-            return responseData;
+        queryFn: async ({ pageParam }): Promise<PagedMessage> => {
+            const pageParams = buildPageParams(pageParam, 9);
+            return await fetchMessages(chatId, authData.accessToken, pageParams);
         },
+        select: (data) => data?.pages.flatMap((page) => page.content),
         retry: 3,
+        initialPageParam: 0,
+        getNextPageParam,
         retryDelay: 1000,
-        enabled: !!user.id && !!chatId,
+        enabled: isAuthenticated && !!chatId,
         staleTime: 1000 * 60 * 3,
         refetchInterval: 1000 * 60 * 6
     });

@@ -11,6 +11,7 @@ import ChatHeadline from "@/components/chat/message/ChatHeadline";
 import MessageInput from "@/components/chat/message/MessageInput";
 import MessagesList from "@/components/chat/message/MessageList";
 import Placeholder from "@/components/chat/message/Placeholder";
+import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
 
 const ChatPanel = () => {
 
@@ -34,9 +35,13 @@ const ChatPanel = () => {
         chats,
         signedUserId,
         recipientName,
-        messages,
+        messageList,
+        messageCount,
         isError,
         isLoading,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage,
         handeSendMessgae,
         handleInputChange,
         handleDeleteChat,
@@ -49,10 +54,16 @@ const ChatPanel = () => {
     if (!chats.data?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
 
     const RenderResult = () => {
-        if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
+        if (isLoading || !messageList) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
         if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
-        if (messages?.totalElements === 0) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
-        return <MessagesList signedUserId={signedUserId} messages={messages.content} />;
+        if (messageCount === 0) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
+        return <MessagesList
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            signedUserId={signedUserId}
+            fetchNextPage={fetchNextPage}
+            messages={messageList}
+        />
     }
 
 

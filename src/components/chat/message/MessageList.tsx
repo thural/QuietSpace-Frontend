@@ -5,13 +5,20 @@ import { extractId } from "@/utils/stringUtils";
 import BoxStyled from "@shared/BoxStyled";
 import MessageBox from "./MessageBox";
 import styles from "@/styles/chat/messageListStyles";
+import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/components/shared/InfinateScrollContainer";
 
-interface MessageListProps {
+interface MessageListProps extends InfinateScrollContainerProps {
     messages: Array<Message>
     signedUserId: ResId
 }
 
-const MessagesList: React.FC<MessageListProps> = ({ messages, signedUserId }) => {
+const MessagesList: React.FC<MessageListProps> = ({
+    messages,
+    signedUserId,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage
+}) => {
 
     const classes = styles();
 
@@ -30,11 +37,17 @@ const MessagesList: React.FC<MessageListProps> = ({ messages, signedUserId }) =>
 
     return (
         <BoxStyled className={classes.messages}>
-            {messages.map((message, key) => {
-                const appliedStyle = getAppliedStyle(message.senderId, signedUserId);
-                return message.text.startsWith("##MP##") ? <PostMessageCard key={key} style={appliedStyle} postId={extractId(message.text)} />
-                    : <MessageBox style={appliedStyle} key={key} message={message} />
-            })}
+            <InfinateScrollContainer
+                isFetchingNextPage={isFetchingNextPage}
+                hasNextPage={hasNextPage}
+                fetchNextPage={fetchNextPage}
+            >
+                {messages.map((message, key) => {
+                    const appliedStyle = getAppliedStyle(message.senderId, signedUserId);
+                    return message.text.startsWith("##MP##") ? <PostMessageCard key={key} style={appliedStyle} postId={extractId(message.text)} />
+                        : <MessageBox style={appliedStyle} key={key} message={message} />
+                })}
+            </InfinateScrollContainer>
         </BoxStyled>
     );
 };

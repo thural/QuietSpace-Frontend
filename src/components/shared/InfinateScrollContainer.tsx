@@ -8,7 +8,7 @@ import BoxStyled from "./BoxStyled";
 import Conditional from "./Conditional";
 import LoaderStyled from "./LoaderStyled";
 
-interface InfinateScrollContainerProps extends GenericWrapper {
+export interface InfinateScrollContainerProps extends GenericWrapper {
     hasNextPage: boolean
     isFetchingNextPage: boolean
     fetchNextPage: ConsumerFn
