@@ -21,12 +21,25 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         poll: null
     });
 
+    const [previewUrl, setPreviewUrl] = useState(null);
+
     const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
 
     const handleChange = (event: React.ChangeEvent<any>) => {
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
     };
+
+    const handleFileChange = (file: File | null) => {
+
+        setPostData((prevState) => ({ ...prevState, file, }));
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewUrl(reader.result);
+        };
+        if (file) { reader.readAsDataURL(file); }
+    }
 
     const handleViewSelect = (option: "friends" | "all") => {
         setPostData({ ...postData, viewAccess: option });
@@ -55,9 +68,11 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
     return {
         postData,
         pollView,
+        previewUrl,
         handleChange,
         handleSubmit,
         handleViewSelect,
+        handleFileChange,
         togglePoll,
         avatarPlaceholder,
         addPost,
