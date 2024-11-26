@@ -31,3 +31,26 @@ export const extractId = (text: string) => {
     const idEnd = idStart + 36;
     return text.substring(idStart, idEnd);
 }
+
+export enum FileSizeUnit {
+    B = "B",
+    KB = "KB",
+    MB = "MB",
+    GB = "GB",
+    TB = "TB",
+}
+
+export const formatFileSize = (fileSizeInBytes: number): string => {
+    const units: FileSizeUnit[] =
+        [FileSizeUnit.B, FileSizeUnit.KB, FileSizeUnit.MB, FileSizeUnit.GB, FileSizeUnit.TB];
+    let size = fileSizeInBytes;
+    let unitIndex = 0;
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+    }
+
+    return `${size.toFixed(2)} ${units[unitIndex]}`;
+};
+
