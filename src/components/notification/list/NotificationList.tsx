@@ -17,6 +17,8 @@ const NotificationList = () => {
     const { data: pagedData, isFetchingNextPage, hasNextPage, fetchNextPage } = useGetNotifications();
     const content: Array<Notification> = pagedData.pages.flatMap((page) => page.content);
 
+    console.log("notifications list unfiltered: ", content);
+
     if (content.length == 0) return <Center>
         <Typography ta="center">You have no Notifications yet</Typography>
     </Center>;

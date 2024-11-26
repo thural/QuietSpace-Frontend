@@ -5,27 +5,27 @@ const chatHandler = () => {
 
     const { deleteMessageCache, insertMessageCache, setMessageSeenCache, updateChatCache } = chatQueries();
 
-    const handleChatException = (message: ChatEvent) => {
-        console.log("error on receiving message: ", message)
+    const handleChatException = (event: ChatEvent) => {
+        console.log("error on receiving message: ", event)
     }
 
-    const handleOnlineUser = (chatEvent: ChatEvent) => {
+    const handleOnlineUser = (event: ChatEvent) => {
         // TODO: implement online badge
     }
 
-    const handleChatDelete = (chatEvent: ChatEvent) => {
+    const handleChatDelete = (event: ChatEvent) => {
         // TODO: mutate chat cache
     }
 
-    const handleDeleteMessage = (chatEvent: ChatEvent) => {
-        deleteMessageCache(chatEvent);
+    const handleDeleteMessage = (event: ChatEvent) => {
+        deleteMessageCache(event);
     }
 
-    const handleSeenMessage = (chatEvent: ChatEvent) => {
-        setMessageSeenCache(chatEvent);
+    const handleSeenMessage = (event: ChatEvent) => {
+        setMessageSeenCache(event);
     }
 
-    const handleLeftChat = (chatEvent: ChatEvent) => {
+    const handleLeftChat = (event: ChatEvent) => {
         // TODO: mutate chat cache
     }
 

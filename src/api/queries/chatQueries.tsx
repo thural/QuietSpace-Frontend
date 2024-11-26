@@ -1,6 +1,6 @@
 import { DEFAULT_PAGE_SIZE } from "@/constants/params";
 import { getInitInfinitePagesObject } from "@/utils/dataTemplates";
-import { filterPageContentById, isPageIncludesEntity, pushToPageContent, setNotificationContentSeen, transformInfinetePages } from "@/utils/dataUtils";
+import { filterPageContentById, isPageIncludesEntity, pushToPageContent, setEntityContentSeen, transformInfinetePages } from "@/utils/dataUtils";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Chat, ChatEvent, ChatList, Message, PagedMessage } from "../schemas/inferred/chat";
 import { Page } from "../schemas/inferred/common";
@@ -11,6 +11,7 @@ import { ResId } from "../schemas/native/common";
 const chatQueries = () => {
 
     const queryClient = useQueryClient();
+
 
     const getChatsCache = (): Array<Chat> | undefined => {
         return queryClient.getQueryData(['chats']);
@@ -27,7 +28,6 @@ const chatQueries = () => {
     }
 
     const updateInitChatCache = (chatBody: Chat) => {
-        console.log("inserting chat: ", chatBody);
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             return oldData.map(chat => {
                 if (chat.id === "-1") return chatBody;
@@ -60,13 +60,9 @@ const chatQueries = () => {
     const setMessageSeenCache = (chatEvent: ChatEvent) => {
         const { messageId, chatId } = chatEvent;
         queryClient.setQueryData(['messages', { id: chatId }], (data: InfiniteData<PagedMessage>) => {
-            return transformInfinetePages(data, messageId as ResId, isPageIncludesEntity, setNotificationContentSeen);
+            return transformInfinetePages(data, messageId as ResId, isPageIncludesEntity, setEntityContentSeen);
         });
     }
-
-
-
-
 
 
     return {

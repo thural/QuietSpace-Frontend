@@ -14,6 +14,17 @@ export interface StompHeaders {
     host?: string | undefined;
 }
 
+export enum SocketEventType {
+    CONNECT = "CONNECT",
+    DISCONNECT = "DISCONNECT",
+    DELETE_MESSAGE = "DELETE_MESSAGE",
+    SEEN_MESSAGE = "SEEN_MESSAGE",
+    SEEN_NOTIFICATION = "SEEN_NOTIFICATION",
+    JOINED_CHAT = "JOINED_CHAT",
+    LEFT_CHAT = "LEFT_CHAT",
+    EXCEPTION = "EXCEPTION"
+}
+
 export type ConnectCallback = (frame?: Frame) => any;
 export type ErrorCallback = (error: Frame | string) => any;
 export type SubscribeCallback = (frame?: Frame) => any;

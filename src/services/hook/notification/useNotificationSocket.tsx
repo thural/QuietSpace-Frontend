@@ -1,12 +1,11 @@
 import notificationQueries from "@/api/queries/notificationQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
-import { ChatEvent } from "@/api/schemas/inferred/chat";
-import { Notification } from "@/api/schemas/inferred/notification";
+import { Notification, NotificationEvent } from "@/api/schemas/inferred/notification";
 import { ResId } from "@/api/schemas/native/common";
-import { ChatEventSchema } from "@/api/schemas/zod/chatZod";
+import { NotificationEventSchema } from "@/api/schemas/zod/notificationZod";
+import { useNotificationStore, useStompStore } from "@/services/store/zustand";
 import { useEffect } from "react";
 import { Frame } from "stompjs";
-import { useNotificationStore, useStompStore } from "@/services/store/zustand";
 
 
 const useNotificationSocket = () => {
@@ -19,9 +18,9 @@ const useNotificationSocket = () => {
 
 
     const onSubscribe = (message: Frame) => {
-        const messageBody: ChatEvent | Notification = JSON.parse(message.body);
-        if (ChatEventSchema.safeParse(messageBody).success)
-            handleSeenNotification(messageBody as ChatEvent);
+        const messageBody: Notification | NotificationEvent = JSON.parse(message.body);
+        if (NotificationEventSchema.safeParse(messageBody).success)
+            handleSeenNotification(messageBody as NotificationEvent);
         else handleReceivedNotifcation(messageBody as Notification);
     }
 

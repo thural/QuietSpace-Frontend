@@ -54,12 +54,12 @@ export const transformInfinetePages = <T extends HasId>(
 
 export const setEntityContentSeen: PageTransformer = <T extends HasId>(
     page: Page<T>,
-    messageId: ResId
+    entityId: ResId
 ): Page<T> => ({
     ...page,
-    content: page.content.map(message => {
-        if (message.id !== messageId) return message;
-        return { ...message, isSeen: true } as T;
+    content: page.content.map(entity => {
+        if (entity.id !== entityId) return entity;
+        return { ...entity, isSeen: true } as T;
     })
 });
 

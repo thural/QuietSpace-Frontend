@@ -1,15 +1,8 @@
 import { z } from "zod";
 import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
 import { UserSchema } from "./userZod";
-import { ChatEventType } from "@/api/schemas/native/chat";
+import { BaseEventSchema } from "./websocket";
 
-export const ChatEventTypeSchema = z.nativeEnum(ChatEventType);
-
-export const BaseEventSchema = z.object({
-    message: z.string().optional(),
-    eventBody: z.record(z.any()).optional(),
-    type: ChatEventTypeSchema
-});
 
 export const ChatEventSchema = BaseEventSchema.extend({
     chatId: ResIdSchema,

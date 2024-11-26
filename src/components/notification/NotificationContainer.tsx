@@ -24,14 +24,11 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
         return <ErrorComponent message={errorMessage} />;
     }
 
-    const { data: pagedData, isLoading, isError, error } = data;
+    const { isLoading, isError, error } = data;
 
 
     if (isLoading) return <LoaderStyled />;
     if (isError) return <ErrorComponent message={error.message} />;
-
-    const content = pagedData.pages.flatMap((page) => page.content);
-    console.log("paged notification data content: ", content)
 
 
     const navigateToPage = (buttonValue: string) => {
