@@ -1,7 +1,7 @@
 import styles from "../../styles/shared/userQueryItemStyles";
 
 import { getSignedUser } from "@/api/queries/userQueries";
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
@@ -16,7 +16,7 @@ import UserDetails from "./UserDetails";
 
 
 interface UserQueryItemProps extends GenericWrapper {
-    data: User
+    data: UserResponse
     hasFollowToggle?: boolean
 }
 
@@ -24,7 +24,7 @@ const UserQueryItem: React.FC<UserQueryItemProps> = ({ data, hasFollowToggle = t
 
     const classes = styles();
     const navigate = useNavigate();
-    const signedUser: User | undefined = getSignedUser();
+    const signedUser: UserResponse | undefined = getSignedUser();
     if (signedUser === undefined) throw nullishValidationdError({ signedUser });
 
 

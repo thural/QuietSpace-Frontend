@@ -1,11 +1,11 @@
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import { useToggleFollow } from "@/services/data/useUserData";
 import LightButton from "@components/shared/buttons/LightButton";
 import React from "react";
 import { GenericWrapper } from "../../types/sharedComponentTypes";
 
 interface FollowToggleProps extends GenericWrapper {
-    user: User
+    user: UserResponse
     Button?: React.ComponentType
 }
 

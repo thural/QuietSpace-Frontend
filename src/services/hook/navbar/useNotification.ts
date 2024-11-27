@@ -1,6 +1,6 @@
 import chatQueries from "@/api/queries/chatQueries";
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { Notification } from "@/api/schemas/inferred/notification";
+import { NotificationResponse } from "@/api/schemas/inferred/notification";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import { useMemo } from "react";
 
@@ -13,7 +13,7 @@ const useNotification = () => {
     const { data, isLoading } = useGetNotifications();
 
     const flatPages = () => !!data ? data.pages.flatMap((page) => page.content) : [];
-    const content: Array<Notification> = useMemo(flatPages, [isLoading]);
+    const content: Array<NotificationResponse> = useMemo(flatPages, [isLoading]);
 
     const hasUnreadChat = useMemo(() => {
         if (!chats) return false;

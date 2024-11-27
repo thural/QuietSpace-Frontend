@@ -1,5 +1,5 @@
 import chatQueries from "@/api/queries/chatQueries";
-import { ChatEvent, Message } from "@/api/schemas/inferred/chat"
+import { ChatEvent, MessageResponse } from "@/api/schemas/inferred/chat"
 
 const chatHandler = () => {
 
@@ -29,7 +29,7 @@ const chatHandler = () => {
         // TODO: mutate chat cache
     }
 
-    const hadnleRecievedMessage = (messageBody: Message) => {
+    const hadnleRecievedMessage = (messageBody: MessageResponse) => {
         insertMessageCache(messageBody);
         updateChatCache(messageBody);
     }

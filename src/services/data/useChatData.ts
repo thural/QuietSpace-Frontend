@@ -1,5 +1,5 @@
 import chatQueries from "@/api/queries/chatQueries";
-import { Chat, ChatList, CreateChat, Message, MessageBody, PagedMessage } from "@/api/schemas/inferred/chat";
+import { ChatResponse, ChatList, CreateChatRequest, MessageResponse, MessageRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -35,7 +35,7 @@ export const useGetChatById = (chatId: ResId) => {
 
     return useQuery({
         queryKey: ["chats", { id: chatId }],
-        queryFn: async (): Promise<Chat> => {
+        queryFn: async (): Promise<ChatResponse> => {
             return await fetchChatById(chatId, authData.accessToken);
         },
         retry: 3,
@@ -52,7 +52,7 @@ export const useCreateChat = () => {
     const navigate = useNavigate();
     const { updateInitChatCache } = chatQueries();
 
-    const onSuccess = (data: Chat) => {
+    const onSuccess = (data: ChatResponse) => {
         console.log("chat created successfully:", data);
         updateInitChatCache(data);
         navigate(`/chat/${data.id}`);
@@ -63,7 +63,7 @@ export const useCreateChat = () => {
     }
 
     return useMutation({
-        mutationFn: async (chatBody: CreateChat): Promise<Chat> => {
+        mutationFn: async (chatBody: CreateChatRequest): Promise<ChatResponse> => {
             return await fetchCreateChat(chatBody, authData.accessToken);
         },
         onSuccess,
@@ -98,7 +98,7 @@ export const usePostNewMessage = (setMessageData: ConsumerFn) => {
     const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();
 
-    const onSuccess = (data: Message, variables: MessageBody) => {
+    const onSuccess = (data: MessageResponse, variables: MessageRequest) => {
         queryClient.invalidateQueries({ queryKey: ["messages", data.chatId] });
         setMessageData({ ...variables, text: '' });
         console.log("message sent successfully:", data);
@@ -109,7 +109,7 @@ export const usePostNewMessage = (setMessageData: ConsumerFn) => {
     };
 
     return useMutation({
-        mutationFn: async (messageData): Promise<Message> => {
+        mutationFn: async (messageData): Promise<MessageResponse> => {
             console.log("current chat id on sending: ", messageData.chatId);
             return await fetchCreateMessage(messageData, authData["accessToken"]);
         },

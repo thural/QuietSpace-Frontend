@@ -1,5 +1,5 @@
 import { fetchReaction } from "@//api/requests/postRequests";
-import { UserReaction } from "@/api/schemas/inferred/reaction";
+import { ReactionRequest } from "@/api/schemas/inferred/reaction";
 import { ResId } from "@/api/schemas/native/common";
 import { useAuthStore } from "@/services/store/zustand";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ export const useToggleReaction = (postId: ResId) => {
     }
 
     return useMutation({
-        mutationFn: async (reactionBody: UserReaction): Promise<Response> => {
+        mutationFn: async (reactionBody: ReactionRequest): Promise<Response> => {
             return await fetchReaction(reactionBody, authData.accessToken);
         },
         onSuccess,

@@ -6,38 +6,19 @@ import UserAvatar from "@/components/shared/UserAvatar";
 import useCreatePostForm from "@/services/hook/feed/useCreatePostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { FileInput, Image, Input } from "@mantine/core";
-import { PiChartBarHorizontalFill } from "react-icons/pi";
+import { FileInput, Image } from "@mantine/core";
+import { PiChartBarHorizontalFill, PiImage } from "react-icons/pi";
 import ComboMenu from "../fragments/ComboMenu";
 import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
 import PollForm from "./PollForm";
-import { PiImage } from "react-icons/pi";
-import { createUseStyles } from "react-jss";
-
-const useStyles = createUseStyles({
-    inputStyled: {
-        '& input': {
-            backgroundColor: '#e2e8f0',
-            border: '1px solid #e2e8f0',
-            borderRadius: '10px'
-        },
-        '& input:focus': {
-            outline: 'none',
-            borderColor: '#a7abb1',
-        },
-    },
-    inputUnstyled: {}
-});
 
 export interface CreatePostFormProps extends GenericWrapper {
     toggleForm: ConsumerFn
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
-
-    const classes = useStyles();
 
     const {
         postData,
@@ -80,7 +61,6 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
                         variant="unstyled"
                         leftSection={<PiImage />}
                         placeholder="add photo"
-                        className={classes.inputStyled}
                         onChange={handleFileChange}
                     />
                 </FormControls>

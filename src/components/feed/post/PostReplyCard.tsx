@@ -1,4 +1,4 @@
-import { Post } from "@/api/schemas/inferred/post"
+import { PostResponse } from "@/api/schemas/inferred/post"
 import { ResId } from "@/api/schemas/native/common"
 import PostCard from "@/components/feed/post/PostCard"
 import BoxStyled from "@/components/shared/BoxStyled"
@@ -11,7 +11,7 @@ import styles from "@/styles/feed/replyCardStyles"
 import { nullishValidationdError } from "@/utils/errorUtils"
 
 interface PostReplyCardProps {
-    post: Post
+    post: PostResponse
     userId: ResId
 }
 

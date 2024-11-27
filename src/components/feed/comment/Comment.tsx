@@ -1,4 +1,4 @@
-import { Comment } from "@/api/schemas/inferred/comment";
+import { CommentResponse } from "@/api/schemas/inferred/comment";
 import Overlay from "@/components/shared/Overlay";
 import useComment from "@/services/hook/feed/useComment";
 import styles from "@/styles/feed/commentStyles";
@@ -12,7 +12,7 @@ import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
 interface CommentProps extends GenericWrapper {
-    comment: Comment
+    comment: CommentResponse
 }
 
 const CommentBox: React.FC<CommentProps> = ({ comment }) => {
@@ -29,7 +29,7 @@ const CommentBox: React.FC<CommentProps> = ({ comment }) => {
     } = useComment(comment);
 
 
-    const CommentBody: React.FC<{ comment: Comment }> = ({ comment }) => (
+    const CommentBody: React.FC<{ comment: CommentResponse }> = ({ comment }) => (
         <FlexStyled className={classes.commentElement}>
             <BoxStyled key={comment.id} className={classes.textBody}>
                 <EmojiText text={comment.text} />

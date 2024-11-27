@@ -1,7 +1,7 @@
 import chatQueries from "@/api/queries/chatQueries";
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { Chat, Message } from "@/api/schemas/inferred/chat";
-import { User } from "@/api/schemas/inferred/user";
+import { ChatResponse, MessageResponse } from "@/api/schemas/inferred/chat";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import { useGetChats } from "@/services/data/useChatData";
 import { useQueryUsers } from "@/services/data/useUserData";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -22,7 +22,7 @@ const useQueryContainer = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
-    const handleChatCreation = async (event: React.MouseEvent, clickedUser: User) => {
+    const handleChatCreation = async (event: React.MouseEvent, clickedUser: UserResponse) => {
         event.preventDefault();
 
         if (isLoading || isError) throw nullishValidationdError({ chats });
@@ -32,7 +32,7 @@ const useQueryContainer = () => {
 
         if (isExistingChat) return;
 
-        const newMessage: Message = {
+        const newMessage: MessageResponse = {
             id: crypto.randomUUID(),
             createDate: String(new Date),
             updateDate: String(new Date),
@@ -44,7 +44,7 @@ const useQueryContainer = () => {
             isSeen: true,
             senderName: user.username
         }
-        const newChat: Chat = {
+        const newChat: ChatResponse = {
             id: "-1",
             createDate: String(new Date),
             userIds: [user.id, clickedUser.id],

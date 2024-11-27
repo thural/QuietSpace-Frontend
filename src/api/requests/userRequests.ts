@@ -1,14 +1,14 @@
 import { USER_PATH, USER_PROFILE_URL } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "../schemas/inferred/common";
-import { UserPage, User, ProfileSettingsRequest, ProfileSettingsResponse } from "../schemas/inferred/user";
+import { UserPage, UserResponse, ProfileSettingsRequest, ProfileSettingsResponse } from "../schemas/inferred/user";
 
 
-export const fetchUser = async (token: JwtToken): Promise<User> => (
+export const fetchUser = async (token: JwtToken): Promise<UserResponse> => (
     await getWrappedApiResponse(USER_PROFILE_URL, 'GET', null, token)
 ).json();
 
-export const fetchUserById = async (userId: ResId, token: JwtToken): Promise<User> => (
+export const fetchUserById = async (userId: ResId, token: JwtToken): Promise<UserResponse> => (
     await getWrappedApiResponse(USER_PATH + `/${userId}`, 'GET', null, token)
 ).json();
 

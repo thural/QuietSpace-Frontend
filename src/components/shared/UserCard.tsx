@@ -12,7 +12,7 @@ import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 
 export interface UserCardProps extends GenericWrapper {
     userId: ResId
@@ -24,7 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId, isDisplayEmail = false, isD
 
     const classes = styles();
     const navigate = useNavigate();
-    const signedUser: User = getSignedUserElseThrow();
+    const signedUser: UserResponse = getSignedUserElseThrow();
 
     const { data: user, isLoading } = useGetUserById(userId);
 

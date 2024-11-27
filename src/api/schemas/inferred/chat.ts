@@ -3,20 +3,20 @@ import {
     AtLeastTwoElemSchema,
     ChatEventSchema,
     ChatListSchema,
-    ChatSchema,
+    ChatResponseSchema,
     CreateChatSchema,
-    MessageFormSchema,
+    MessageRequestSchema,
     MessageListSchema,
     MessagePageSchema,
-    MessageSchema
+    MessageResponseSchema
 } from "../zod/chatZod";
 
 
 export type ChatEvent = z.infer<typeof ChatEventSchema>;
-export type MessageBody = z.infer<typeof MessageFormSchema>;
-export type Message = z.infer<typeof MessageSchema>;
-export type Chat = z.infer<typeof ChatSchema>;
-export type CreateChat = z.infer<typeof CreateChatSchema>;
+export type MessageRequest = z.infer<typeof MessageRequestSchema>;
+export type MessageResponse = z.infer<typeof MessageResponseSchema>;
+export type ChatResponse = z.infer<typeof ChatResponseSchema>;
+export type CreateChatRequest = z.infer<typeof CreateChatSchema>;
 export type MessageList = z.infer<typeof MessageListSchema>;
 export type PagedMessage = z.infer<typeof MessagePageSchema>;
 export type ChatList = z.infer<typeof ChatListSchema>;

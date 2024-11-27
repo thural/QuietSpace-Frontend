@@ -1,4 +1,4 @@
-import { Post, PostList, PostPage } from "@/api/schemas/inferred/post";
+import { PostResponse, PostList, PostPage } from "@/api/schemas/inferred/post";
 import PostCard from "@/components/feed/post/PostCard";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
@@ -13,7 +13,7 @@ export interface PostQueryProps extends GenericWrapper {
 const PostQuery: React.FC<PostQueryProps> = ({ fetchPostQuery, postQueryList }) => (
     fetchPostQuery.isPending ? <LoaderStyled />
         : fetchPostQuery.isError ? <Typography type="h1">{fetchPostQuery.error.message}</Typography>
-            : postQueryList?.map((post: Post, index: number) => <PostCard key={index} postId={post.id} />)
+            : postQueryList?.map((post: PostResponse, index: number) => <PostCard key={index} postId={post.id} />)
 )
 
 export default PostQuery

@@ -1,6 +1,6 @@
 import notificationQueries from "@/api/queries/notificationQueries";
 import { getSignedUser } from "@/api/queries/userQueries";
-import { Notification, NotificationEvent } from "@/api/schemas/inferred/notification";
+import { NotificationResponse, NotificationEvent } from "@/api/schemas/inferred/notification";
 import { ResId } from "@/api/schemas/native/common";
 import { NotificationEventSchema } from "@/api/schemas/zod/notificationZod";
 import { useNotificationStore, useStompStore } from "@/services/store/zustand";
@@ -18,10 +18,10 @@ const useNotificationSocket = () => {
 
 
     const onSubscribe = (message: Frame) => {
-        const messageBody: Notification | NotificationEvent = JSON.parse(message.body);
+        const messageBody: NotificationResponse | NotificationEvent = JSON.parse(message.body);
         if (NotificationEventSchema.safeParse(messageBody).success)
             handleSeenNotification(messageBody as NotificationEvent);
-        else handleReceivedNotifcation(messageBody as Notification);
+        else handleReceivedNotifcation(messageBody as NotificationResponse);
     }
 
     const setNotificationSeen = (notificationId: ResId) => {

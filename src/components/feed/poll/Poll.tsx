@@ -5,7 +5,7 @@ import styles from "@/styles/feed/pollStyles";
 import usePoll from "@/services/hook/feed/usePoll";
 import { ResId } from "@/api/schemas/inferred/common";
 import { isDateExpired } from "@/utils/dateUtils";
-import { Poll } from "@/api/schemas/inferred/post";
+import { PollResponse } from "@/api/schemas/inferred/post";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -13,7 +13,7 @@ import React from "react";
 
 
 interface PollProps {
-    pollData: Poll | null
+    pollData: PollResponse | null
     postId: ResId
 }
 

@@ -9,7 +9,7 @@ import './styles/App.css';
 
 import { useEffect } from "react";
 import { Frame } from "stompjs";
-import { Auth } from "./api/schemas/inferred/auth";
+import { AuthResponse } from "./api/schemas/inferred/auth";
 import ActivationForm from "./components/auth/ActivationForm";
 import ChatPanel from "./components/chat/message/ChatPanel";
 import ChatPlaceholder from "./components/chat/message/ChatPlaceholder";
@@ -53,7 +53,7 @@ const App = () => {
     useGetChats();
 
 
-    const onSuccessFn = (data: Auth) => {
+    const onSuccessFn = (data: AuthResponse) => {
         setAuthData(data);
         setIsAuthenticated(true);
     }

@@ -1,4 +1,4 @@
-import { Auth } from '@/api/schemas/inferred/auth';
+import { AuthResponse } from '@/api/schemas/inferred/auth';
 import { UseAuthStoreProps } from '@/types/authStoreTypes';
 import { ActiveChatId, ChatStoreProps } from '@/types/chatStoreTypes';
 import { NotificationStoreProps } from '@/types/notificationStore';
@@ -17,7 +17,7 @@ export const useAuthStore = create<UseAuthStoreProps>(set => ({
     resetAuthData: () => set({
         data: { id: "", message: "", accessToken: "", userId: "" }
     }),
-    setAuthData: (authData: Auth) => set({ data: authData }),
+    setAuthData: (authData: AuthResponse) => set({ data: authData }),
     setIsActivationStage: (value: boolean) => set({ isActivationStage: value }),
     setIsAuthenticated: (value: boolean) => set({ isAuthenticated: value }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),

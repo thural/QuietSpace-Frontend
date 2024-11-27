@@ -1,4 +1,4 @@
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import FormStyled from "@/components/shared/FormStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
 import UserAvatar from "@/components/shared/UserAvatar";
@@ -12,7 +12,7 @@ import PostCardBase from "../post/PostCardBase";
 
 interface CreateRepostProps extends GenericWrapper {
     toggleForm: ConsumerFn
-    post: Post
+    post: PostResponse
 }
 
 const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => {

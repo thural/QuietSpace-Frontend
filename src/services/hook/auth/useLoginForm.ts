@@ -3,7 +3,7 @@ import { useAuthStore } from "@/services/store/zustand";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthFormProps, AuthPages } from "@/types/authTypes";
-import { Auth } from "@/api/schemas/inferred/auth";
+import { AuthResponse } from "@/api/schemas/inferred/auth";
 
 
 export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
@@ -18,7 +18,7 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
 
     const onLoadFn = () => setIsAuthenticating(true);
 
-    const onSuccessFn = (data: Auth): void => {
+    const onSuccessFn = (data: AuthResponse): void => {
         setIsAuthenticating(false);
         setIsAuthenticated(true);
         setAuthData(data);

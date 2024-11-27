@@ -1,16 +1,16 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { Post, RepostBody } from "@/api/schemas/inferred/post";
+import { PostResponse, RepostRequest } from "@/api/schemas/inferred/post";
 import { useCreateRepost } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useState } from "react";
 
-const useCreateRepostForm = (toggleForm: ConsumerFn, post: Post) => {
+const useCreateRepostForm = (toggleForm: ConsumerFn, post: PostResponse) => {
 
     const signedUser = getSignedUserElseThrow();
 
 
-    const [repostData, setRepostData] = useState<RepostBody>({ text: "", postId: post.id });
+    const [repostData, setRepostData] = useState<RepostRequest>({ text: "", postId: post.id });
     const handleChange = (event: React.ChangeEvent<any>) => {
         const { name, value } = event.target;
         setRepostData({ ...repostData, [name]: value });

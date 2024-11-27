@@ -1,4 +1,4 @@
-import { Auth, AuthBody } from "@/api/schemas/inferred/auth";
+import { AuthResponse, AuthRequest } from "@/api/schemas/inferred/auth";
 import { JwtToken } from "@/api/schemas/inferred/common";
 import { AnyFunction } from "@/types/genericTypes";
 import { getRefreshToken } from "@/utils/authUtils";
@@ -13,7 +13,7 @@ export const usePostLogin = (authenticationNotice: Function) => {
     const { setAuthData } = useAuthStore();
     const navigate = useNavigate();
 
-    const onSuccess = (data: Auth) => {
+    const onSuccess = (data: AuthResponse) => {
         console.log("auth response was success");
         localStorage.setItem("refreshToken", data.refreshToken);
         setAuthData(data);
@@ -26,7 +26,7 @@ export const usePostLogin = (authenticationNotice: Function) => {
     }
 
     return useMutation({
-        mutationFn: async (formData: AuthBody) => {
+        mutationFn: async (formData: AuthRequest) => {
             return fetchLogin(formData);
         },
         onSuccess,
@@ -70,7 +70,7 @@ export const useRefreshToken = () => {
     const { setAuthData } = useAuthStore();
     const refreshToken: JwtToken | null = getRefreshToken();
 
-    const onSuccess = (data: Auth) => {
+    const onSuccess = (data: AuthResponse) => {
         console.log("access token refresh was success");
         setAuthData(data)
     }

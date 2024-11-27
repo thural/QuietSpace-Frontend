@@ -1,11 +1,11 @@
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import { parseCount } from "@/utils/stringUtils";
 import { createUseStyles } from "react-jss";
 
 interface PostStatsProps {
-    post: Post
+    post: PostResponse
     commentCount: number
 }
 

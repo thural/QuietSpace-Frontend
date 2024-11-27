@@ -1,17 +1,16 @@
 import { z } from "zod";
-import { PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
+import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
+import { PhotoResponseSchema } from "./photoZod";
 
 
-export const UserSchema = z.object({
-    id: ResIdSchema,
+export const UserResponseSchema = BaseSchema.extend({
     role: z.string(),
     username: z.string(),
     email: z.string().email(),
+    photo: PhotoResponseSchema.optional(),
     isPrivateAccount: z.boolean(),
     isFollower: z.boolean().nullable(),
     isFollowing: z.boolean().nullable(),
-    createDate: z.date(),
-    updateDate: z.date()
 });
 
 export const ProfileSettingsRequestSchema = z.object({
@@ -24,16 +23,9 @@ export const ProfileSettingsRequestSchema = z.object({
     isHideLikeCounts: z.boolean().nullable(),
 });
 
-export const ProfileSettingsResponseSchema = z.object({
-    bio: z.string(),
+export const ProfileSettingsResponseSchema = BaseSchema.extend({
     blockedUserids: z.array(ResIdSchema),
-    isPrivateAccount: z.boolean(),
-    isNotificationsMuted: z.boolean(),
-    isAllowPublicGroupChatInvite: z.boolean(),
-    isAllowPublicMessageRequests: z.boolean(),
-    isAllowPublicComments: z.boolean(),
-    isHideLikeCounts: z.boolean(),
-});
+}).and(ProfileSettingsRequestSchema);
 
-export const UserListSchema = PageContentSchema(UserSchema);
-export const UserPageSchema = PageSchema(UserSchema);
+export const UserListSchema = PageContentSchema(UserResponseSchema);
+export const UserPageSchema = PageSchema(UserResponseSchema);

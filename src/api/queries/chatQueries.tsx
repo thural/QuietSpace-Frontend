@@ -2,7 +2,7 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/params";
 import { getInitInfinitePagesObject } from "@/utils/dataTemplates";
 import { filterPageContentById, isPageIncludesEntity, pushToPageContent, setEntityContentSeen, transformInfinetePages } from "@/utils/dataUtils";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
-import { Chat, ChatEvent, ChatList, Message, PagedMessage } from "../schemas/inferred/chat";
+import { ChatResponse, ChatEvent, ChatList, MessageResponse, PagedMessage } from "../schemas/inferred/chat";
 import { Page } from "../schemas/inferred/common";
 import { ResId } from "../schemas/native/common";
 
@@ -13,11 +13,11 @@ const chatQueries = () => {
     const queryClient = useQueryClient();
 
 
-    const getChatsCache = (): Array<Chat> | undefined => {
+    const getChatsCache = (): Array<ChatResponse> | undefined => {
         return queryClient.getQueryData(['chats']);
     }
 
-    const updateChatCache = (message: Message) => {
+    const updateChatCache = (message: MessageResponse) => {
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             return oldData.map(chat => {
                 if (chat.id !== message.chatId) return chat;
@@ -27,7 +27,7 @@ const chatQueries = () => {
         });
     }
 
-    const updateInitChatCache = (chatBody: Chat) => {
+    const updateInitChatCache = (chatBody: ChatResponse) => {
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             return oldData.map(chat => {
                 if (chat.id === "-1") return chatBody;
@@ -36,16 +36,16 @@ const chatQueries = () => {
         });
     }
 
-    const insertInitChatCache = (chatBody: Chat) => {
+    const insertInitChatCache = (chatBody: ChatResponse) => {
         queryClient.setQueryData(['chats'], (oldData: ChatList) => {
             return [...oldData, chatBody];;
         });
     }
 
-    const insertMessageCache = (messageBody: Message) => {
+    const insertMessageCache = (messageBody: MessageResponse) => {
         queryClient.setQueryData(['messages', { id: messageBody.chatId }], (data: InfiniteData<PagedMessage>) => {
             const lastPageNumber = data.pages[0]?.number;
-            const predicate = (page: Page<Message>) => page.number === lastPageNumber;
+            const predicate = (page: Page<MessageResponse>) => page.number === lastPageNumber;
             if (data !== undefined) return pushToPageContent(data, messageBody, predicate);
             else return getInitInfinitePagesObject(DEFAULT_PAGE_SIZE, [messageBody]);
         });

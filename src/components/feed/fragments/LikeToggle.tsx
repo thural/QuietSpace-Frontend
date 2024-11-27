@@ -1,4 +1,4 @@
-import { UserReaction } from "@/api/schemas/inferred/reaction";
+import { ReactionRequest } from "@/api/schemas/inferred/reaction";
 import { Reactiontype } from "@/api/schemas/native/reaction";
 import { ConsumerFn } from "@/types/genericTypes";
 import {
@@ -6,7 +6,7 @@ import {
 } from "react-icons/pi";
 
 interface LikeToggleProps {
-    userReaction: UserReaction
+    userReaction: ReactionRequest
     handleLike: ConsumerFn
 }
 

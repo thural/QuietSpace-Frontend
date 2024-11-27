@@ -1,10 +1,10 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { Poll, PollOption, VoteBody } from "@/api/schemas/inferred/post";
+import { PollResponse, PollOption, VoteBody } from "@/api/schemas/inferred/post";
 import { useVotePoll } from "@/services/data/usePostData";
 import { parseCount } from "@/utils/stringUtils";
 
-const usePoll = (pollData: Poll, postId: ResId) => {
+const usePoll = (pollData: PollResponse, postId: ResId) => {
 
     const user = getSignedUserElseThrow();
 

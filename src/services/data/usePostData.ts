@@ -13,7 +13,7 @@ import {
     fetchVotePoll
 } from "@/api/requests/postRequests";
 import { ResId } from "@/api/schemas/inferred/common";
-import { Post, PostBody, PostPage, RepostBody, VoteBody } from "@/api/schemas/inferred/post";
+import { PostResponse, PostBody, PostPage, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
@@ -69,7 +69,7 @@ export const useGetPostById = (postId: ResId) => {
 
     return useQuery({
         queryKey: ["posts", { id: postId }],
-        queryFn: async (): Promise<Post> => {
+        queryFn: async (): Promise<PostResponse> => {
             return await fetchPostById(postId, authData.accessToken);
         },
         enabled: isAuthenticated,
@@ -168,7 +168,7 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
     }
 
     return useMutation({
-        mutationFn: async (postData: PostBody): Promise<Post> => {
+        mutationFn: async (postData: PostBody): Promise<PostResponse> => {
             return await fetchCreatePost(postData, authData.accessToken);
         },
         onSuccess,
@@ -193,7 +193,7 @@ export const useCreateRepost = (toggleForm: ConsumerFn) => {
     }
 
     return useMutation({
-        mutationFn: async (repostData: RepostBody): Promise<Post> => {
+        mutationFn: async (repostData: RepostRequest): Promise<PostResponse> => {
             console.log("repost data on request", repostData);
             return await fetchCreateRepost(repostData, authData.accessToken);
         },

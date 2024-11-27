@@ -1,4 +1,4 @@
-import { Comment } from "@/api/schemas/inferred/comment";
+import { CommentResponse } from "@/api/schemas/inferred/comment";
 import BoxStyled from "@/components/shared/BoxStyled";
 import EmojiText from "@/components/shared/EmojiText";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
@@ -13,8 +13,8 @@ import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
 interface CommentReplyProps {
-    comment: Comment
-    repliedComment: Comment | undefined
+    comment: CommentResponse
+    repliedComment: CommentResponse | undefined
 }
 
 const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) => {

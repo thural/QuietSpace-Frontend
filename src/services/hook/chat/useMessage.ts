@@ -1,10 +1,10 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { Message } from "@/api/schemas/inferred/chat";
+import { MessageResponse } from "@/api/schemas/inferred/chat";
 import useWasSeen from "@/services/hook/common/useWasSeen";
 import { useChatStore } from "@/services/store/zustand";
 import { useEffect, useState } from "react";
 
-const useMessage = (message: Message) => {
+const useMessage = (message: MessageResponse) => {
 
     const user = getSignedUserElseThrow();
     const [wasSeen, wasSeenRef] = useWasSeen();

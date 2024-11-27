@@ -1,4 +1,4 @@
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
 import Typography from "@/components/shared/Typography";
@@ -7,7 +7,7 @@ import PollBox from "../poll/Poll";
 
 interface PostContentProps {
     handleContentClick: ConsumerFn
-    post: Post
+    post: PostResponse
 }
 
 const PostContent: React.FC<PostContentProps> = ({ handleContentClick, post }) => (

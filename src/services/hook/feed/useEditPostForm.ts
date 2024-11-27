@@ -1,6 +1,6 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PollBody, PostBody } from "@/api/schemas/inferred/post";
+import { PollRequest, PostBody } from "@/api/schemas/inferred/post";
 import { useEditPost, useGetPostById } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -13,7 +13,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
     const { data: editedPost, isLoading, isError } = useGetPostById(postId);
     if (editedPost === undefined) throw nullishValidationdError({ editedPost });
 
-    const pollData: PollBody | null = editedPost.poll ? {
+    const pollData: PollRequest | null = editedPost.poll ? {
         options: editedPost.poll.options.map(option => option.label),
         dueDate: editedPost.poll.dueDate
     } : null;

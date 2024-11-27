@@ -1,4 +1,4 @@
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import BoxStyled from "@/components/shared/BoxStyled";
 import { ConsumerFn } from "@/types/genericTypes";
 import ShareMenu from "./ShareMenu";
@@ -9,7 +9,7 @@ import PostStats from "./PostStats";
 import { createUseStyles } from "react-jss";
 
 interface PostStatSectionProps {
-    post: Post
+    post: PostResponse
     commentCount: number
     hasCommented: boolean
     handleLike: ConsumerFn

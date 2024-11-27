@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
-import { UserSchema } from "./userZod";
+import { UserResponseSchema } from "./userZod";
 import { BaseEventSchema } from "./websocket";
+import { PhotoResponseSchema } from "./photoZod";
 
 
 export const ChatEventSchema = BaseEventSchema.extend({
@@ -11,23 +12,25 @@ export const ChatEventSchema = BaseEventSchema.extend({
     recipientId: ResIdSchema.optional()
 });
 
-export const MessageFormSchema = z.object({
+export const MessageRequestSchema = z.object({
     chatId: ResIdSchema,
     senderId: ResIdSchema,
     recipientId: ResIdSchema,
+    photoData: z.any().optional(),
     text: z.string()
 });
 
-export const MessageSchema = MessageFormSchema.extend({
+export const MessageResponseSchema = MessageRequestSchema.extend({
     ...BaseSchema.shape,
     senderName: z.string(),
-    isSeen: z.boolean()
+    isSeen: z.boolean(),
+    photo: PhotoResponseSchema.optional(),
 });
 
-export const ChatSchema = BaseSchema.extend({
+export const ChatResponseSchema = BaseSchema.extend({
     userIds: z.array(ResIdSchema),
-    members: z.array(UserSchema),
-    recentMessage: MessageSchema.optional()
+    members: z.array(UserResponseSchema),
+    recentMessage: MessageResponseSchema.optional()
 });
 
 export const AtLeastTwoElemSchema = <T extends z.ZodType>(schema: T) =>
@@ -42,6 +45,6 @@ export const CreateChatSchema = z.object({
     text: z.string()
 });
 
-export const MessageListSchema = PageContentSchema(MessageSchema);
-export const MessagePageSchema = PageSchema(MessageSchema);
-export const ChatListSchema = PageContentSchema(ChatSchema);
+export const MessageListSchema = PageContentSchema(MessageResponseSchema);
+export const MessagePageSchema = PageSchema(MessageResponseSchema);
+export const ChatListSchema = PageContentSchema(ChatResponseSchema);

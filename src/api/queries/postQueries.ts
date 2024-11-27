@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Post, PostPage } from "../schemas/inferred/post";
+import { PostResponse, PostPage } from "../schemas/inferred/post";
 import { ResId } from "../schemas/native/common";
 
 
@@ -14,6 +14,6 @@ export const getPosts = (): PostPage | undefined => {
     return queryClient.getQueryData(["posts"]);
 }
 
-export const getPostById = (postId: ResId): Post | undefined => {
+export const getPostById = (postId: ResId): PostResponse | undefined => {
     return getPosts()?.content.find(p => p.id === postId);
 }

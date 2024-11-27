@@ -5,11 +5,11 @@ import UserAvatar from "@/components/shared/UserAvatar";
 import styles from "@/styles/profile/userDetailsSectionStyles";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 export interface UserDetailsSectionProps extends GenericWrapper {
-    user: User
+    user: UserResponse
 }
 
 const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {

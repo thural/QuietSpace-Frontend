@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
-import { UserReactionSchema } from "./reactionZod";
+import { ReactionResponseSchema } from "./reactionZod";
+import { PhotoResponseSchema } from "./photoZod";
 
 
 export const VoteBodySchema = z.object({
@@ -10,45 +11,44 @@ export const VoteBodySchema = z.object({
 });
 
 export const PollOptionSchema = z.object({
-    id: ResIdSchema,
     label: z.string(),
     voteShare: z.string()
 });
 
-export const PollSchema = z.object({
-    id: ResIdSchema,
+export const PollResponseSchema = BaseSchema.extend({
     votedOption: z.string(),
     voteCount: z.number(),
     options: z.array(PollOptionSchema),
     dueDate: z.string().nullable()
 });
 
-export const PollBodySchema = z.object({
+export const PollRequestSchema = BaseSchema.extend({
     dueDate: z.string().nullable(),
     options: z.array(z.string())
 });
 
-export const PostBodySchema = z.object({
+export const PostRequestSchema = z.object({
     title: z.string().optional(),
     text: z.string(),
     userId: ResIdSchema,
     viewAccess: z.enum(['friends', 'all']),
-    poll: PollBodySchema.nullable()
+    poll: PollRequestSchema.nullable(),
+    photoData: z.any().optional()
 });
 
-export const PostSchema = z.object({
-    ...BaseSchema.shape,
+export const PostResponseSchema = BaseSchema.extend({
     userId: ResIdSchema,
     repostId: ResIdSchema.nullable(),
     repostText: ResIdSchema.nullable(),
+    photo: PhotoResponseSchema.optional(),
     username: z.string(),
     title: z.string(),
     text: z.string(),
-    poll: z.nullable(PollSchema),
+    poll: z.nullable(PollResponseSchema),
     likeCount: z.number(),
     dislikeCount: z.number(),
     commentCount: z.number(),
-    userReaction: UserReactionSchema,
+    userReaction: ReactionResponseSchema,
 });
 
 export const RepostBodySchema = z.object({
@@ -56,5 +56,5 @@ export const RepostBodySchema = z.object({
     postId: ResIdSchema
 })
 
-export const PostListSchema = PageContentSchema(PostSchema);
-export const PostPageSchema = PageSchema(PostSchema);
+export const PostListSchema = PageContentSchema(PostResponseSchema);
+export const PostPageSchema = PageSchema(PostResponseSchema);

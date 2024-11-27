@@ -1,4 +1,4 @@
-import { Post } from "@/api/schemas/inferred/post"
+import { PostResponse } from "@/api/schemas/inferred/post"
 import BoxStyled from "@/components/shared/BoxStyled"
 import ErrorComponent from "@/components/shared/errors/ErrorComponent"
 import FlexStyled from "@/components/shared/FlexStyled"
@@ -15,7 +15,7 @@ import styles from "@/styles/feed/repostCardStyles"
 
 interface RepostCardProps {
     isPostsLoading?: boolean
-    post: Post
+    post: PostResponse
 }
 
 const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false }) => {

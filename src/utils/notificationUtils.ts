@@ -1,4 +1,4 @@
-import { Notification } from "@/api/schemas/inferred/notification";
+import { NotificationResponse } from "@/api/schemas/inferred/notification";
 import { NotificationType } from "@/api/schemas/native/notification";
 
 export const genNotificationText = (type: string) => {
@@ -36,10 +36,10 @@ export const genNotificationText = (type: string) => {
 export type Category = "all" | "requests" | "replies" | "reposts" | "mentions";
 
 const noFilter = () => true;
-const repostFilter = (n: Notification) => n.type === NotificationType.REPOST;
-const mentionFilter = (n: Notification) => n.type === NotificationType.MENTION;
-const requestFilter = (n: Notification) => n.type === NotificationType.FOLLOW_REQUEST;
-const replyFilter = (n: Notification) => n.type === NotificationType.COMMENT_REPLY || n.type === NotificationType.COMMENT;
+const repostFilter = (n: NotificationResponse) => n.type === NotificationType.REPOST;
+const mentionFilter = (n: NotificationResponse) => n.type === NotificationType.MENTION;
+const requestFilter = (n: NotificationResponse) => n.type === NotificationType.FOLLOW_REQUEST;
+const replyFilter = (n: NotificationResponse) => n.type === NotificationType.COMMENT_REPLY || n.type === NotificationType.COMMENT;
 
 export const pickNotificationFilter = (category: Category) => {
     switch (category) {

@@ -1,7 +1,7 @@
 import { isPageIncludesEntity, pushToPageContent, setEntityContentSeen, transformInfinetePages } from "@/utils/dataUtils";
 import { InfiniteData, UseInfiniteQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Page } from "../schemas/inferred/common";
-import { Notification, NotificationEvent, NotificationPage } from "../schemas/inferred/notification";
+import { NotificationResponse, NotificationEvent, NotificationPage } from "../schemas/inferred/notification";
 
 
 
@@ -10,10 +10,10 @@ const notificationQueries = () => {
     const queryClient = useQueryClient();
 
 
-    const handleReceivedNotifcation = (notification: Notification) => {
+    const handleReceivedNotifcation = (notification: NotificationResponse) => {
         queryClient.setQueryData(['notifications'], (data: InfiniteData<NotificationPage>) => {
             const lastPageNumber = data.pages[0]?.number;
-            const predicate = (page: Page<Notification>) => page.number === lastPageNumber;
+            const predicate = (page: Page<NotificationResponse>) => page.number === lastPageNumber;
             return pushToPageContent(data, notification, predicate);
         });
     };
@@ -24,7 +24,7 @@ const notificationQueries = () => {
         });
     };
 
-    const getNotificationsCache = (): UseInfiniteQueryResult<Page<Notification>> | undefined => {
+    const getNotificationsCache = (): UseInfiniteQueryResult<Page<NotificationResponse>> | undefined => {
         return queryClient.getQueryData(["notifications"]);
     }
 

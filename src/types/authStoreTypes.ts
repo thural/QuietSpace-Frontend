@@ -1,14 +1,14 @@
-import { Auth, RefreshToken } from "@/api/schemas/inferred/auth";
+import { AuthResponse, RefreshTokenResponse } from "@/api/schemas/inferred/auth";
 
 export interface UseAuthStoreProps {
     isAuthenticated: boolean,
     isLoading: boolean,
     isError: boolean,
     error: null | Error,
-    data: RefreshToken,
+    data: RefreshTokenResponse,
     isActivationStage: boolean,
     resetAuthData: () => void,
-    setAuthData: (authData: Auth) => void,
+    setAuthData: (authData: AuthResponse) => void,
     setIsActivationStage: (value: boolean) => void,
     setIsAuthenticated: (value: boolean) => void,
     setIsLoading: (value: boolean) => void,

@@ -1,5 +1,5 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { PollBody, PostBody } from "@/api/schemas/inferred/post";
+import { PollRequest, PostBody } from "@/api/schemas/inferred/post";
 import { useCreatePost } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { getOffsetDateTime } from "@/utils/dateUtils";
@@ -53,7 +53,7 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
     const handleSubmit = (event: SubmitEvent) => {
         event.preventDefault();
         const formattedDate = getOffsetDateTime(810000);
-        const poll: PollBody = { dueDate: formattedDate, options: [] };
+        const poll: PollRequest = { dueDate: formattedDate, options: [] };
 
         Object.entries(postData).forEach(([key, value]: any) => {
             if (key.includes("option")) poll.options.push(value);

@@ -1,4 +1,4 @@
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import BoxStyled from "./BoxStyled";
 import styles from "../../styles/shared/userDetailsStyles";
 import { GenericWrapper } from "../../types/sharedComponentTypes";
@@ -6,7 +6,7 @@ import Typography, { headingSize } from "./Typography";
 import Conditional from "./Conditional";
 
 interface UserDetailsProps extends GenericWrapper {
-    user: User
+    user: UserResponse
     isDisplayEmail?: boolean
     isDisplayName?: boolean
     scale?: number

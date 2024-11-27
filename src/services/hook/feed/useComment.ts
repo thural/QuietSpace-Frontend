@@ -1,12 +1,12 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { Comment } from "@/api/schemas/inferred/comment";
+import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { ContentType } from "@/api/schemas/native/common";
 import { Reactiontype } from "@/api/schemas/native/reaction";
 import { useDeleteComment } from "@/services/data/useCommentData";
 import useReaction from "@/services/hook/feed/useReaction";
 import { useState } from "react";
 
-const useComment = (comment: Comment) => {
+const useComment = (comment: CommentResponse) => {
 
     const user = getSignedUserElseThrow();
     const deleteComment = useDeleteComment(comment.postId);

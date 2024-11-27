@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
 import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLatestComment } from "../../api/requests/commentRequests";
 import { ResId } from "@/api/schemas/inferred/common";
-import { CommentBody, Comment, PagedComment } from "@/api/schemas/inferred/comment";
+import { CommentRequest, CommentResponse, PagedComment } from "@/api/schemas/inferred/comment";
 
 
 export const useGetComments = (postId: ResId) => {
@@ -25,7 +25,7 @@ export const useGetLatestComment = (userId: ResId, postId: ResId) => {
 
     return useQuery({
         queryKey: ["comments/latest", { id: postId, userId }],
-        queryFn: async (): Promise<Comment> => {
+        queryFn: async (): Promise<CommentResponse> => {
             return await fetchLatestComment(userId, postId, authData.accessToken);
         },
         staleTime: 1000 * 60 * 6,
@@ -39,7 +39,7 @@ export const usePostComment = (postId: ResId) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Comment) => {
+    const onSuccess = (data: CommentResponse) => {
         console.log("added comment response data: ", data);
         queryClient.invalidateQueries({ queryKey: ["comments", { id: postId }] })
             .then(() => console.log("post comments were invalidated"));
@@ -50,7 +50,7 @@ export const usePostComment = (postId: ResId) => {
     }
 
     return useMutation({
-        mutationFn: async (commentData: CommentBody): Promise<Comment> => {
+        mutationFn: async (commentData: CommentRequest): Promise<CommentResponse> => {
             return await fetchCreateComment(commentData, authData.accessToken);
         },
         onSuccess,

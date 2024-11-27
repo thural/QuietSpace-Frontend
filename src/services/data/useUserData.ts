@@ -1,6 +1,6 @@
 import { getSignedUser } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { ProfileSettingsRequest, ProfileSettingsResponse, User, UserPage } from "@/api/schemas/inferred/user";
+import { ProfileSettingsRequest, ProfileSettingsResponse, UserResponse, UserPage } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
@@ -15,7 +15,7 @@ export const useGetCurrentUser = () => {
 
     return useQuery({
         queryKey: ["user"],
-        queryFn: async (): Promise<User> => {
+        queryFn: async (): Promise<UserResponse> => {
             return await fetchUser(authData.accessToken);
         },
         enabled: isAuthenticated,
@@ -62,7 +62,7 @@ export const useGetUserById = (userId: ResId) => {
 
     return useQuery({
         queryKey: ["users", { id: userId }],
-        queryFn: async (): Promise<User> => {
+        queryFn: async (): Promise<UserResponse> => {
             return await fetchUserById(userId, authData.accessToken);
         },
         staleTime: Infinity,

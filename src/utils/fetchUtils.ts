@@ -1,12 +1,12 @@
 import { Page } from "@/api/schemas/inferred/common";
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import { UserPage } from "@/api/schemas/inferred/user";
 
 export const buildPageParams = (pageNumber: number, pageSize: number = 9): string => (
     `?page-number=${pageNumber}&page-size=${pageSize}`
 );
 
-export const getNextPageParam = (lastPage: Page<Post>) => {
+export const getNextPageParam = (lastPage: Page<PostResponse>) => {
     if (lastPage.last) return undefined;
     return lastPage.pageable.pageNumber + 1;
 }

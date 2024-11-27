@@ -1,6 +1,6 @@
 import { Center } from "@mantine/core";
 
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/native/common";
 import UserQueryList from "@/components/profile/connections/UserQueryList";
 import SearchBar from "@/components/profile/searchbar/SearchBar";
@@ -59,7 +59,7 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
 
     if (fetchUserQuery.isPending) return <FullLoadingOverlay />
 
-    const SelectableUserItem: React.FC<{ data: User }> = ({ data }) => (
+    const SelectableUserItem: React.FC<{ data: UserResponse }> = ({ data }) => (
         <UserQueryItem hasFollowToggle={false} data={data}>
             <CheckBox value={data.id} onChange={handleUserSelect} />
         </UserQueryItem>

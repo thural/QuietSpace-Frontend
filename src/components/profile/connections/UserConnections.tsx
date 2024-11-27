@@ -1,7 +1,7 @@
 import { Center } from "@mantine/core";
 import React from "react";
 
-import { User, UserPage } from "@/api/schemas/inferred/user";
+import { UserResponse, UserPage } from "@/api/schemas/inferred/user";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import Typography from "@/components/shared/Typography";
@@ -35,7 +35,7 @@ const UserConnections: React.FC<ConnectionsProps> = ({ userFetch, title }) => {
 
 
 
-    const UserItem: React.FC<{ data: User }> = ({ data }) => <UserQueryItem data={data} />;
+    const UserItem: React.FC<{ data: UserResponse }> = ({ data }) => <UserQueryItem data={data} />;
 
     return (
         <BoxStyled className={classes.container} >

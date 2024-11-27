@@ -1,7 +1,7 @@
 import { NOTIFICATION_PATH } from "../../constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "../schemas/inferred/common";
-import { Notification, NotificationPage } from "../schemas/inferred/notification";
+import { NotificationResponse, NotificationPage } from "../schemas/inferred/notification";
 import { ReactionType } from "../schemas/inferred/reaction";
 
 
@@ -17,6 +17,6 @@ export const fetchCountOfPendingNotifications = async (token: JwtToken): Promise
     await getWrappedApiResponse(NOTIFICATION_PATH + "/count-pending", 'GET', null, token)
 ).json();
 
-export const fetchSeenNotification = async (contentId: ResId, token: JwtToken): Promise<Notification> => (
+export const fetchSeenNotification = async (contentId: ResId, token: JwtToken): Promise<NotificationResponse> => (
     await getWrappedApiResponse(NOTIFICATION_PATH + `/seen/${contentId}`, 'POST', null, token)
 ).json();

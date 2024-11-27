@@ -1,4 +1,4 @@
-import { CreateChat } from "@/api/schemas/inferred/chat";
+import { CreateChatRequest } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
 import { useCreateChat, useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
 import { useAuthStore, useChatStore } from "@/services/store/zustand";
@@ -37,7 +37,7 @@ export const useChat = (chatId: ResId) => {
 
     const createChatMutation = useCreateChat();
     const handleChatCreation = (recipientId: ResId, text: string, isGroupChat: boolean) => {
-        const createChatRequestBody: CreateChat = { isGroupChat, recipientId, text, "userIds": [senderId, recipientId] };
+        const createChatRequestBody: CreateChatRequest = { isGroupChat, recipientId, text, "userIds": [senderId, recipientId] };
         createChatMutation.mutate(createChatRequestBody);
     };
 

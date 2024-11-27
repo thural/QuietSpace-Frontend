@@ -1,4 +1,4 @@
-import { Message } from "@/api/schemas/inferred/chat";
+import { MessageResponse } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@shared/BoxStyled";
 import Conditional from "@shared/Conditional";
 import Typography from "@shared/Typography";
@@ -6,7 +6,7 @@ import useMessage from "@/services/hook/chat/useMessage";
 import styles from "@/styles/chat/messageStyles";
 
 interface MessageBoxProps {
-    message: Message
+    message: MessageResponse
     style: React.CSSProperties
 }
 

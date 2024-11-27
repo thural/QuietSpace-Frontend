@@ -1,4 +1,4 @@
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import UserCard from "@/components/shared/UserCard";
 import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
 });
 
 interface PostHeadlineProps extends GenericWrapper {
-    post: Post
+    post: PostResponse
 }
 
 const PostHeadline: React.FC<PostHeadlineProps> = ({ post, children }) => {

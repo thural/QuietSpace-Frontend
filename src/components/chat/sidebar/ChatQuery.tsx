@@ -1,4 +1,4 @@
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import AnchorStyled from "@shared/AnchorStyled";
@@ -45,7 +45,7 @@ const ChatQuery = () => {
     const RenderResult = () => {
         if (makeQueryMutation.isPending) return <LoaderStyled />
         if (queryResult.length === 0) return <RecentQueries />
-        return queryResult.map((user: User, key: number) =>
+        return queryResult.map((user: UserResponse, key: number) =>
             <UserCard
                 key={key}
                 userId={user.id}

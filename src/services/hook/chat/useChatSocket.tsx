@@ -1,11 +1,11 @@
 import chatHandler from "./chatHandler.js";
 
 import { getSignedUser } from "@/api/queries/userQueries.js";
-import { ChatEvent, Message, MessageBody } from "@/api/schemas/inferred/chat.js";
+import { ChatEvent, MessageResponse, MessageRequest } from "@/api/schemas/inferred/chat.js";
 import { ResId } from "@/api/schemas/inferred/common.js";
 import { StompMessage } from "@/api/schemas/inferred/websocket.js";
 import { SocketEventType } from "@/api/schemas/native/websocket.js";
-import { ChatEventSchema, MessageSchema } from "@/api/schemas/zod/chatZod.js";
+import { ChatEventSchema, MessageResponseSchema } from "@/api/schemas/zod/chatZod.js";
 import { useEffect } from "react";
 import { ZodError } from "zod";
 import { fromZodError } from 'zod-validation-error';
@@ -32,10 +32,10 @@ const useChatSocket = () => {
 
 
     const onSubscribe = (message: StompMessage) => {
-        const messageBody: Message | ChatEvent = JSON.parse(message.body);
+        const messageBody: MessageResponse | ChatEvent = JSON.parse(message.body);
 
-        if (MessageSchema.safeParse(messageBody).success)
-            return hadnleRecievedMessage(messageBody as Message);
+        if (MessageResponseSchema.safeParse(messageBody).success)
+            return hadnleRecievedMessage(messageBody as MessageResponse);
 
         try {
             const chatEvent: ChatEvent = ChatEventSchema.parse(messageBody);
@@ -63,7 +63,7 @@ const useChatSocket = () => {
     }
 
 
-    const sendChatMessage = (inputData: MessageBody) => sendMessage("/app/private/chat", inputData);
+    const sendChatMessage = (inputData: MessageRequest) => sendMessage("/app/private/chat", inputData);
     const deleteChatMessage = (messageId: ResId) => sendMessage(`/app/private/chat/delete/${messageId}`);
     const setMessageSeen = (messageId: ResId) => sendMessage(`/app/private/chat/seen/${messageId}`);
 

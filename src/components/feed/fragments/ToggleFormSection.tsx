@@ -1,4 +1,4 @@
-import { User } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/api/schemas/inferred/user";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FlexStyled from "@/components/shared/FlexStyled";
 import InputStyled from "@/components/shared/InputStyled";
@@ -8,7 +8,7 @@ import { ProcedureFn } from "@/types/genericTypes";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 
 interface CreatePostSection {
-    user: User
+    user: UserResponse
     handleClick: ProcedureFn
 }
 

@@ -1,5 +1,5 @@
-import { Comment } from "@/api/schemas/inferred/comment";
-import { Post } from "@/api/schemas/inferred/post";
+import { CommentResponse } from "@/api/schemas/inferred/comment";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import FlexStyled from "@/components/shared/FlexStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
 import UserAvatar from "@/components/shared/UserAvatar";
@@ -11,7 +11,7 @@ import ReplyInput from "../fragments/ReplyInput";
 import FormControls from "../fragments/FormControls";
 
 interface CreateCommentFormProps extends GenericWrapper {
-    postItem: Post | Comment
+    postItem: PostResponse | CommentResponse
     isSecondaryMode?: boolean
 }
 

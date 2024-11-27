@@ -1,7 +1,7 @@
 import { POST_URL, REACTION_PATH } from "../../constants/apiPath";
 import { JwtToken, ResId } from "../schemas/inferred/common";
-import { Post, PostBody, PostPage, RepostBody, VoteBody } from "../schemas/inferred/post";
-import { UserReaction } from "../schemas/inferred/reaction";
+import { PostResponse, PostBody, PostPage, RepostRequest, VoteBody } from "../schemas/inferred/post";
+import { ReactionRequest } from "../schemas/inferred/reaction";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 
 
@@ -9,7 +9,7 @@ export const fetchPosts = async (token: JwtToken, pageParams?: string | undefine
     await getWrappedApiResponse(POST_URL + (pageParams || ""), 'GET', null, token)
 ).json();
 
-export const fetchPostById = async (postId: ResId, token: JwtToken): Promise<Post> => (
+export const fetchPostById = async (postId: ResId, token: JwtToken): Promise<PostResponse> => (
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'GET', null, token)
 ).json();
 
@@ -25,11 +25,11 @@ export const fetchPostQuery = async (queryText: string, token: JwtToken, pagePar
     await getWrappedApiResponse(POST_URL + `/search?query=${queryText}` + (pageParams || ""), 'GET', null, token)
 ).json();
 
-export const fetchCreateRepost = async (body: RepostBody, token: JwtToken): Promise<Post> => (
+export const fetchCreateRepost = async (body: RepostRequest, token: JwtToken): Promise<PostResponse> => (
     await getWrappedApiResponse(POST_URL + "/repost", 'POST', body, token)
 ).json();
 
-export const fetchCreatePost = async (body: PostBody, token: JwtToken): Promise<Post> => (
+export const fetchCreatePost = async (body: PostBody, token: JwtToken): Promise<PostResponse> => (
     await getWrappedApiResponse(POST_URL, 'POST', body, token)
 ).json();
 
@@ -45,7 +45,7 @@ export const fetchDeletePost = async (postId: ResId, token: JwtToken): Promise<R
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'DELETE', null, token)
 );
 
-export const fetchReaction = async (reaction: UserReaction, token: JwtToken): Promise<Response> => (
+export const fetchReaction = async (reaction: ReactionRequest, token: JwtToken): Promise<Response> => (
     await getWrappedApiResponse(REACTION_PATH + "/toggle-reaction", 'POST', reaction, token)
 );
 

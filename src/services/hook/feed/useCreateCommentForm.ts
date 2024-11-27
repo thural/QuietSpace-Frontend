@@ -1,18 +1,18 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { Comment } from "@/api/schemas/inferred/comment";
-import { Post } from "@/api/schemas/inferred/post";
+import { CommentResponse } from "@/api/schemas/inferred/comment";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import { usePostComment } from "@/services/data/useCommentData";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useEffect, useRef, useState } from "react";
 
 
-const useCreateCommentForm = (postItem: Post | Comment) => {
+const useCreateCommentForm = (postItem: PostResponse | CommentResponse) => {
 
     const signedUser = getSignedUserElseThrow();
     let initState = undefined;
 
 
-    const isComment = (object: Post | Comment): object is Comment => {
+    const isComment = (object: PostResponse | CommentResponse): object is CommentResponse => {
         return "replyCount" in object;
     }
 

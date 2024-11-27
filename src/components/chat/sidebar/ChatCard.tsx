@@ -1,4 +1,4 @@
-import { Chat } from "@/api/schemas/inferred/chat";
+import { ChatResponse } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@shared/BoxStyled";
 import Typography from "@shared/Typography";
 import UserAvatar from "@shared/UserAvatar";
@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import useChatCard from "@/styles/chat/useChatCard";
 import styles from "@/styles/chat/chatCardStyles";
 
-const ChatCard: React.FC<{ chat: Chat }> = ({ chat }) => {
+const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
 
     const classes = styles();
 

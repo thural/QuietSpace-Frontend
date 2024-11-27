@@ -1,10 +1,10 @@
-import { Post } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import { Text } from "@mantine/core";
 import PostHeadline from "../fragments/PostHeadline";
 
 
 interface PostCardBaseProps {
-    post: Post
+    post: PostResponse
     lineClamp?: number
 }
 

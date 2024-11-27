@@ -1,6 +1,6 @@
 import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '@/api/requests/authRequests';
-import { Auth } from '@/api/schemas/inferred/auth';
+import { AuthResponse } from '@/api/schemas/inferred/auth';
 
 var refreshIntervalId: number | undefined = undefined;
 
@@ -17,7 +17,7 @@ export const register = ({ setAuthState, formData, onErrorFn }: any) => {
 
 export const authenticate = ({ formData, onSuccessFn, onErrorFn, onLoadFn }: any) => {
     onLoadFn();
-    const onSuccess = (data: Auth) => {
+    const onSuccess = (data: AuthResponse) => {
         setRefreshToken(data.refreshToken)
         onSuccessFn(data);
     }

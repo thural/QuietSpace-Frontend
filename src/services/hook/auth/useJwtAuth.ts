@@ -1,7 +1,7 @@
 import { AuthPages, SetAuthState, SignupBody, LoginBody } from '@/types/authTypes';
 import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '@/api/requests/authRequests';
 import { JwtAuthProps } from '@/types/hookPropTypes';
-import { RefreshToken, Auth } from '@/api/schemas/inferred/auth';
+import { RefreshTokenResponse, AuthResponse } from '@/api/schemas/inferred/auth';
 import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
 
 var refreshIntervalId: number;
@@ -24,7 +24,7 @@ const useJwtAuth = ({
 
     const authenticate = (formData: LoginBody) => {
         onLoadFn();
-        const onSuccess = (data: Auth) => {
+        const onSuccess = (data: AuthResponse) => {
             setRefreshToken(data.refreshToken)
             onSuccessFn(data);
         }
@@ -33,7 +33,7 @@ const useJwtAuth = ({
 
     const getAccessToken = () => {
         const refreshToken = getRefreshToken();
-        const onSuccess = (data: RefreshToken) => onSuccessFn(data);
+        const onSuccess = (data: RefreshTokenResponse) => onSuccessFn(data);
         const onError = (error: Error) => onErrorFn(error);
         fetchAccessToken(refreshToken).then(onSuccess).catch(onError);
     }

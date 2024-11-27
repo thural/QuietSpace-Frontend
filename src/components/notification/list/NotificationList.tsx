@@ -1,4 +1,4 @@
-import { Notification } from "@/api/schemas/inferred/notification";
+import { NotificationResponse } from "@/api/schemas/inferred/notification";
 import { NotificationType } from "@/api/schemas/native/notification";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import { Category, pickNotificationFilter } from "@/utils/notificationUtils";
@@ -15,7 +15,7 @@ const NotificationList = () => {
     const { category }: { category: Category } = useParams();
 
     const { data: pagedData, isFetchingNextPage, hasNextPage, fetchNextPage } = useGetNotifications();
-    const content: Array<Notification> = pagedData.pages.flatMap((page) => page.content);
+    const content: Array<NotificationResponse> = pagedData.pages.flatMap((page) => page.content);
 
     if (content.length == 0) return <Center>
         <Typography ta="center">You have no Notifications yet</Typography>
@@ -26,7 +26,7 @@ const NotificationList = () => {
     const notifications = content.filter(appliedFilter);
 
 
-    const getNotificationCard = (notification: Notification) => {
+    const getNotificationCard = (notification: NotificationResponse) => {
         const { type, id } = notification;
 
         const {
