@@ -1,5 +1,5 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { PollRequest, PostBody } from "@/api/schemas/inferred/post";
+import { PollRequest, PostRequest } from "@/api/schemas/inferred/post";
 import { useCreatePost } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { getOffsetDateTime } from "@/utils/dateUtils";
@@ -12,33 +12,28 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
     const user = getSignedUserElseThrow();
     const viewAccessOptions = ["friends", "anyone"];
-
-    const [postData, setPostData] = useState<PostBody>({
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
+    const [postData, setPostData] = useState<PostRequest>({
         text: "",
         title: "",
         userId: user.id,
         viewAccess: 'all',
-        poll: null
+        poll: null,
+        photoData: null
     });
 
-    const [previewUrl, setPreviewUrl] = useState(null);
-
-    const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
 
     const handleChange = (event: React.ChangeEvent<any>) => {
         const { name, value } = event.target;
         setPostData({ ...postData, [name]: value });
     };
 
-    const handleFileChange = (file: File | null) => {
-
-        setPostData((prevState) => ({ ...prevState, file, }));
-
+    const handleFileChange = (photoData: File | null) => {
+        setPostData((prevState) => ({ ...prevState, photoData, }));
         const reader = new FileReader();
-        reader.onloadend = () => {
-            setPreviewUrl(reader.result);
-        };
-        if (file) { reader.readAsDataURL(file); }
+        reader.onloadend = () => setPreviewUrl(reader.result);
+        if (photoData) reader.readAsDataURL(photoData);
     }
 
     const handleViewSelect = (option: "friends" | "all") => {
@@ -49,8 +44,9 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         setPollView({ ...pollView, enabled: !pollView.enabled });
     };
 
+
     const addPost = useCreatePost(toggleForm);
-    const handleSubmit = (event: SubmitEvent) => {
+    const handleSubmit = async (event: SubmitEvent) => {
         event.preventDefault();
         const formattedDate = getOffsetDateTime(810000);
         const poll: PollRequest = { dueDate: formattedDate, options: [] };
@@ -59,9 +55,17 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
             if (key.includes("option")) poll.options.push(value);
         });
 
-        const requestBody: PostBody = poll.options.length ? { ...postData, poll } : postData;
-        addPost.mutate(requestBody);
+        const formData = new FormData();
+        formData.append('userId', user.id.toString());
+        formData.append('title', postData.title);
+        formData.append('text', postData.text);
+
+        if (poll.options.length) formData.append('poll', JSON.stringify(poll));
+        if (postData.photoData !== null) formData.append('photoData', postData.photoData);
+
+        addPost.mutate(formData);
     };
+
 
     const avatarPlaceholder = toUpperFirstChar(user.username);
 

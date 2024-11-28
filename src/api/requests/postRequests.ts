@@ -1,6 +1,6 @@
 import { POST_URL, REACTION_PATH } from "../../constants/apiPath";
 import { JwtToken, ResId } from "../schemas/inferred/common";
-import { PostResponse, PostBody, PostPage, RepostRequest, VoteBody } from "../schemas/inferred/post";
+import { PostResponse, PostRequest, PostPage, RepostRequest, VoteBody } from "../schemas/inferred/post";
 import { ReactionRequest } from "../schemas/inferred/reaction";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 
@@ -29,15 +29,15 @@ export const fetchCreateRepost = async (body: RepostRequest, token: JwtToken): P
     await getWrappedApiResponse(POST_URL + "/repost", 'POST', body, token)
 ).json();
 
-export const fetchCreatePost = async (body: PostBody, token: JwtToken): Promise<PostResponse> => (
-    await getWrappedApiResponse(POST_URL, 'POST', body, token)
+export const fetchCreatePost = async (body: PostRequest | FormData, token: JwtToken): Promise<PostResponse> => (
+    await getWrappedApiResponse(POST_URL, 'POST', body, token, null)
 ).json();
 
 export const fetchRepliedPostsByUserId = async (userId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<PostPage> => (
     await getWrappedApiResponse(POST_URL + `/user/${userId}/commented` + (pageParams || ""), 'GET', null, token)
 ).json()
 
-export const fetchEditPost = async (body: PostBody, token: JwtToken, postId: ResId): Promise<Response> => (
+export const fetchEditPost = async (body: PostRequest, token: JwtToken, postId: ResId): Promise<Response> => (
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'PUT', body, token)
 );
 

@@ -15,7 +15,7 @@ export const JwtTokenSchema = z.string();
 export const FetchOptionsSchema = z.object({
     method: z.string(),
     headers: z.instanceof(Headers),
-    body: z.string().nullable()
+    body: z.union([z.string(), z.instanceof(FormData), z.null(), z.record(z.any())]),
 });
 
 export const ContentTypeEnum = z.nativeEnum(ContentType);

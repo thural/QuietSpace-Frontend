@@ -31,13 +31,25 @@ function genericFetchErrorWrapper(fn: GenericApiResponseFn) {
 export async function getApiResponse(
     url: string,
     method: string,
-    requestBody: string | Record<string, any> | null,
-    token: JwtToken | null
+    requestBody: string | Record<string, any> | FormData | null,
+    token: JwtToken | null,
+    customHeaders?: Headers | null,
 ): Promise<Response> {
 
-    const headers = new Headers({ 'content-type': 'application/json' });
-    headers.append("Access-Control-Allow-Headers", "Location");
+    const headers = new Headers();
+
+    if (customHeaders === undefined || customHeaders !== null) {
+        headers.append('content-type', 'application/json');
+        headers.append("Access-Control-Allow-Headers", "Location");
+    }
+
     if (token != null) headers.append("Authorization", "Bearer " + token);
+
+    if (customHeaders) {
+        customHeaders.forEach((value, key) => {
+            headers.set(key, value);
+        });
+    }
 
     const options: FetchOptions = {
         method: method,
@@ -45,12 +57,14 @@ export async function getApiResponse(
         body: null
     };
 
-    if (requestBody != null) options.body = JSON.stringify(requestBody);
+    if (requestBody != null)
+        options.body = (customHeaders === null && requestBody instanceof FormData) ? requestBody
+            : JSON.stringify(requestBody);
 
     const response = await fetch(url, options);
     if (response.ok) return response;
     else return Promise.reject(response);
-
 }
+
 
 export const getWrappedApiResponse = genericFetchErrorWrapper(getApiResponse);

@@ -22,7 +22,7 @@ export const PollResponseSchema = BaseSchema.extend({
     dueDate: z.string().nullable()
 });
 
-export const PollRequestSchema = BaseSchema.extend({
+export const PollRequestSchema = z.object({
     dueDate: z.string().nullable(),
     options: z.array(z.string())
 });
@@ -31,7 +31,7 @@ export const PostRequestSchema = z.object({
     title: z.string().optional(),
     text: z.string(),
     userId: ResIdSchema,
-    viewAccess: z.enum(['friends', 'all']),
+    viewAccess: z.enum(['friends', 'all']).optional(),
     poll: PollRequestSchema.nullable(),
     photoData: z.any().optional()
 });

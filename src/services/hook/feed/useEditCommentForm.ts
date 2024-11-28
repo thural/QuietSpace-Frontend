@@ -1,6 +1,6 @@
 import { getPostById, getPosts } from "@/api/queries/postQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PollRequest, PostResponse, PostBody } from "@/api/schemas/inferred/post";
+import { PollRequest, PostResponse, PostRequest } from "@/api/schemas/inferred/post";
 import { useEditPost } from "@/services/data/usePostData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { useState } from "react";
@@ -19,14 +19,14 @@ const useEditCommentForm = (postId: ResId) => {
         dueDate: editedPost.poll.dueDate
     }
 
-    const requestBody: PostBody = {
+    const requestBody: PostRequest = {
         text: editedPost.text,
         userId: editedPost.userId,
         poll: pollData,
         viewAccess: "all"
     }
 
-    const [postData, setPostData] = useState<PostBody>(requestBody);
+    const [postData, setPostData] = useState<PostRequest>(requestBody);
     const editCurrentPost = useEditPost(postId);
 
     const handleSubmit = (event: Event) => {

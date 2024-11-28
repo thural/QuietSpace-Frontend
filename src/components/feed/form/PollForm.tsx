@@ -1,4 +1,4 @@
-import { PostBody } from "@/api/schemas/inferred/post";
+import { PostRequest } from "@/api/schemas/inferred/post";
 import Clickable from "@/components/shared/Clickable";
 import FlexStyled from "@/components/shared/FlexStyled";
 import InputBoxStyled from "@/components/shared/InputBoxStyled";
@@ -8,7 +8,7 @@ import styles from "@/styles/feed/pollIFormStyles";
 import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
 
 interface PollForm {
-    postData: PostBody
+    postData: PostRequest
     handleChange: AnyFunction
     togglePoll: ProcedureFn
     pollView: PollView

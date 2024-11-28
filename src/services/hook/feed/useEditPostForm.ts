@@ -1,6 +1,6 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PollRequest, PostBody } from "@/api/schemas/inferred/post";
+import { PollRequest, PostRequest } from "@/api/schemas/inferred/post";
 import { useEditPost, useGetPostById } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
@@ -18,7 +18,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         dueDate: editedPost.poll.dueDate
     } : null;
 
-    const requestBody: PostBody = {
+    const requestBody: PostRequest = {
         title: editedPost.title,
         text: editedPost.text,
         userId: editedPost.userId,
@@ -26,7 +26,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         viewAccess: "all"
     }
 
-    const [postData, setPostData] = useState<PostBody>(requestBody);
+    const [postData, setPostData] = useState<PostRequest>(requestBody);
     const editCurrentPost = useEditPost(postId, toggleForm);
 
     const handleSubmit = (event: Event) => {

@@ -13,7 +13,7 @@ import {
     fetchVotePoll
 } from "@/api/requests/postRequests";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PostResponse, PostBody, PostPage, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
+import { PostResponse, PostRequest, PostPage, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
@@ -168,7 +168,7 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
     }
 
     return useMutation({
-        mutationFn: async (postData: PostBody): Promise<PostResponse> => {
+        mutationFn: async (postData: PostRequest | FormData): Promise<PostResponse> => {
             return await fetchCreatePost(postData, authData.accessToken);
         },
         onSuccess,
@@ -246,7 +246,7 @@ export const useEditPost = (postId: ResId, toggleForm: ConsumerFn) => {
     }
 
     return useMutation({
-        mutationFn: async (postData: PostBody) => {
+        mutationFn: async (postData: PostRequest) => {
             return await fetchEditPost(postData, authData.accessToken, postId);
         },
         onSuccess,
