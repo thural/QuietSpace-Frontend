@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss"
 import FlexStyled from "./FlexStyled"
-import { GenericWrapper } from "../../types/sharedComponentTypes"
+import { GenericWrapper } from "@/types/sharedComponentTypes"
 
 const ModalStyled: React.FC<GenericWrapper> = ({ children, ...props }) => {
 
@@ -12,6 +12,7 @@ const ModalStyled: React.FC<GenericWrapper> = ({ children, ...props }) => {
             left: '50%',
             color: 'black',
             width: '640px',
+            maxHeight: '100vh',
             border: '1px solid gray',
             margin: 'auto',
             display: 'flex',

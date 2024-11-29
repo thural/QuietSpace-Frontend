@@ -13,6 +13,7 @@ import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
 import PollForm from "./PollForm";
+import Conditional from "@/components/shared/Conditional";
 
 export interface CreatePostFormProps extends GenericWrapper {
     toggleForm: ConsumerFn
@@ -42,8 +43,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
             <UserAvatar radius="10rem" chars={avatarPlaceholder} />
             <FormStyled>
                 <TitleInput value={postData.title} handleChange={handleChange} />
-                <TextInput value={postData.text} handleChange={handleChange} />
-                <Image radius="md" src={previewUrl} />
+                <TextInput minHeight="5rem" value={postData.text} handleChange={handleChange} />
+                <Image radius="md" w="auto" fit="scale-down" style={{ maxHeight: "50vh" }} src={previewUrl} />
                 <PollForm
                     postData={postData}
                     handleChange={handleChange}
@@ -51,18 +52,23 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
                     pollView={pollView}
                 />
                 <FormControls isDisabled={!postData.text} isLoading={addPost.isPending} handleSubmit={handleSubmit}>
-                    <ComboMenu options={viewAccessOptions}
+                    <ComboMenu
+                        options={viewAccessOptions}
                         selectedOption={postData.viewAccess}
                         handleSelect={handleViewSelect}
                         textContent={"can view"}
                     />
-                    <PiChartBarHorizontalFill style={{ cursor: 'pointer' }} onClick={togglePoll} />
-                    <FileInput
-                        variant="unstyled"
-                        leftSection={<PiImage />}
-                        placeholder="add photo"
-                        onChange={handleFileChange}
-                    />
+                    <Conditional isEnabled={!previewUrl}>
+                        <PiChartBarHorizontalFill style={{ cursor: 'pointer' }} onClick={togglePoll} />
+                    </Conditional>
+                    <Conditional isEnabled={!pollView.enabled}>
+                        <FileInput
+                            variant="unstyled"
+                            leftSection={<PiImage />}
+                            placeholder="add photo"
+                            onChange={handleFileChange}
+                        />
+                    </Conditional>
                 </FormControls>
             </FormStyled>
         </ModalStyled>
