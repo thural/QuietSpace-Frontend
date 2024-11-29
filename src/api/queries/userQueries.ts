@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { ResId } from "../schemas/native/common";
-import { UserResponse, UserPage } from "../schemas/inferred/user";
+import { UserResponse, UserPage, UserProfileResponse } from "../schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
 
 
@@ -10,9 +10,9 @@ export const getSignedUser = (): UserResponse | undefined => {
     return queryClient.getQueryData(["user"]);
 }
 
-export const getSignedUserElseThrow = (): UserResponse => {
+export const getSignedUserElseThrow = (): UserProfileResponse => {
     const queryClient = useQueryClient();
-    const user: UserResponse | undefined = queryClient.getQueryData(["user"]);
+    const user: UserProfileResponse | undefined = queryClient.getQueryData(["user"]);
     if (user === undefined) throw nullishValidationdError({ user });
     return user;
 }

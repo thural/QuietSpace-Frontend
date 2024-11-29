@@ -55,10 +55,9 @@ export const useGetPagedPosts = () => {
         getNextPageParam,
         enabled: isAuthenticated,
         staleTime: 1000 * 60 * 3,
-        refetchInterval: 1000 * 60 * 6,
         gcTime: 1000 * 60 * 15,
         refetchOnMount: true,
-        refetchOnWindowFocus: true,
+        refetchOnWindowFocus: false,
         refetchIntervalInBackground: false,
     });
 }
@@ -77,7 +76,7 @@ export const useGetPostById = (postId: ResId) => {
         refetchInterval: 1000 * 60 * 6,
         gcTime: 1000 * 60 * 15,
         refetchOnMount: true,
-        refetchOnWindowFocus: true,
+        refetchOnWindowFocus: false,
         refetchIntervalInBackground: false,
     });
 }

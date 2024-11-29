@@ -1,11 +1,11 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUser, getSignedUserElseThrow } from "@/api/queries/userQueries";
+import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings, fetchToggleFollow, fetchUploadPhoto, fetchUser, fetchUserById, fetchUsersByQuery } from "@/api/requests/userRequests";
 import { ResId } from "@/api/schemas/inferred/common";
-import { ProfileSettingsRequest, ProfileSettingsResponse, UserResponse, UserPage } from "@/api/schemas/inferred/user";
+import { ProfileSettingsRequest, ProfileSettingsResponse, UserPage, UserResponse } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings, fetchToggleFollow, fetchUser, fetchUserById, fetchUsersByQuery } from "@/api/requests/userRequests";
 import { useAuthStore } from "../store/zustand";
 
 
@@ -181,6 +181,33 @@ export const useSaveProfileSettings = (userId: ResId) => {
     return useMutation({
         mutationFn: async (settingsForm: ProfileSettingsRequest): Promise<ProfileSettingsResponse> => {
             return await fetchSaveSettings(settingsForm, authData.accessToken);
+        },
+        onSuccess,
+        onError,
+    });
+}
+
+export const useUploadProfilePhoto = (toggleForm: ConsumerFn) => {
+
+    const queryClient = useQueryClient();
+    const { data: authData } = useAuthStore();
+    const user = getSignedUserElseThrow();
+
+    const onSuccess = (data: Response) => {
+        console.log("upload profile photo success response:", data);
+        queryClient.invalidateQueries({ queryKey: ["users", { id: user.id }] });
+        toggleForm();
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on uploading user profile photo: ", error.message);
+        alert(`error on uploading user profile photo: ", ${error.message}`);
+        toggleForm();
+    }
+
+    return useMutation({
+        mutationFn: async (formData: FormData): Promise<string> => {
+            return await fetchUploadPhoto(formData, authData.accessToken);
         },
         onSuccess,
         onError,

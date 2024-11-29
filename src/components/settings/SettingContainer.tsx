@@ -4,9 +4,20 @@ import DefaultContainer from "@components/shared/DefaultContainer";
 import Typography from "@components/shared/Typography";
 import { useNavigate } from "react-router-dom";
 import ProfileSettings from "./ProfileSettings";
+import BoxStyled from "../shared/BoxStyled";
+import { createUseStyles } from "react-jss";
 
+const useStyles = createUseStyles({
+    panel: {
+        width: "100%",
+        margin: "0 2rem"
+    },
+    tabs: { margin: '0' }
+});
 
 function SettingsContainer() {
+
+    const classes = useStyles();
 
     const navigate = useNavigate();
 
@@ -21,7 +32,7 @@ function SettingsContainer() {
 
             <Typography type="h2">settings</Typography>
 
-            <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile" style={{ margin: '1rem 0' }}>
+            <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile">
 
                 <Tabs.List justify="center" grow>
                     <Tabs.Tab value="profile" leftSection={<PiUserCircle size={24} />}>
@@ -45,24 +56,26 @@ function SettingsContainer() {
                 </Tabs.List>
 
 
-                <Tabs.Panel value="profile">
-                    <ProfileSettings />
-                </Tabs.Panel>
-                <Tabs.Panel value="privacy">
-                    <Text ta="center">privacy settings</Text>
-                </Tabs.Panel>
-                <Tabs.Panel value="mentions">
-                    <Text ta="center">mention settings</Text>
-                </Tabs.Panel>
-                <Tabs.Panel value="sharing">
-                    <Text ta="center">sharing settings</Text>
-                </Tabs.Panel>
-                <Tabs.Panel value="replies">
-                    <Text ta="center">profile settings</Text>
-                </Tabs.Panel>
-                <Tabs.Panel value="blocking">
-                    <Text ta="center">blocking settings</Text>
-                </Tabs.Panel>
+                <BoxStyled className={classes.panel}>
+                    <Tabs.Panel value="profile">
+                        <ProfileSettings />
+                    </Tabs.Panel>
+                    <Tabs.Panel value="privacy">
+                        <Text ta="center">privacy settings</Text>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="mentions">
+                        <Text ta="center">mention settings</Text>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="sharing">
+                        <Text ta="center">sharing settings</Text>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="replies">
+                        <Text ta="center">profile settings</Text>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="blocking">
+                        <Text ta="center">blocking settings</Text>
+                    </Tabs.Panel>
+                </BoxStyled>
 
             </Tabs>
         </DefaultContainer>

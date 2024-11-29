@@ -11,7 +11,7 @@ import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
 import PassInput from "@components/shared/PassInput";
 import Typography from "@components/shared/Typography";
 import React from "react";
-import { useLoginForm } from "../../services/hook/auth/useLoginForm";
+import { useLoginForm } from "@/services/hook/auth/useLoginForm";
 import styles from "@/styles/auth/formStyles";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {

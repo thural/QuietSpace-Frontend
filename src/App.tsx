@@ -16,16 +16,13 @@ import ChatPlaceholder from "./components/chat/message/ChatPlaceholder";
 import FeedContainer from "./components/feed/FeedContainer";
 import PostContainer from "./components/feed/PostContainer";
 import NavBar from "./components/navbar/Navbar";
+import NotificationList from "./components/notification/list/NotificationList";
 import ProfileContainer from "./components/profile/ProfileContainer";
 import UserProfileContainer from "./components/profile/UserProfileContainer";
 import ErrorComponent from "./components/shared/errors/ErrorComponent";
 import FullLoadingOverlay from "./components/shared/FullLoadingOverlay";
 import SignoutPage from "./pages/auth/signout/SignoutPage";
-import AllNotifications from "./pages/notification/AllNotifications";
 import NotificationPage from "./pages/notification/NotifiactionPage";
-import ReplyNotifications from "./pages/notification/ReplyNotifications";
-import RepostNotifications from "./pages/notification/RepostNotifications";
-import RequestNotifications from "./pages/notification/RequestNotifications";
 import ProfilePage from "./pages/profile/ProfilePage";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useGetChats } from "./services/data/useChatData";
@@ -36,7 +33,6 @@ import useChatSocket from "./services/hook/chat/useChatSocket";
 import useNotificationSocket from "./services/hook/notification/useNotificationSocket";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
-import NotificationList from "./components/notification/list/NotificationList";
 
 const App = () => {
 

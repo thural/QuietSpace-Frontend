@@ -1,4 +1,4 @@
-import { USER_PATH, USER_PROFILE_URL } from "../../constants/apiPath";
+import { PHOTO_PATH, USER_PATH, USER_PROFILE_URL } from "@/constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { JwtToken, ResId } from "../schemas/inferred/common";
 import { UserPage, UserResponse, ProfileSettingsRequest, ProfileSettingsResponse } from "../schemas/inferred/user";
@@ -39,3 +39,7 @@ export const fetchRemoveFollower = async (userId: ResId, token: JwtToken): Promi
 export const fetchBlockUserById = async (userId: ResId, token: JwtToken): Promise<Response> => (
     await getWrappedApiResponse(USER_PROFILE_URL + `/block/${userId}`, 'POST', null, token)
 );
+
+export const fetchUploadPhoto = async (body: FormData, token: JwtToken): Promise<string> => (
+    await getWrappedApiResponse(PHOTO_PATH + "/profile", 'POST', body, token, null)
+).json();

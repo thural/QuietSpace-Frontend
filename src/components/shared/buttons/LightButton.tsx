@@ -1,6 +1,6 @@
-import withForwardedRefAndErrBoundary from "../../../services/hook/shared/withForwardedRef"
+import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef"
 import { Button } from "@mantine/core"
-import { GenericWrapperWithRef } from "../../../types/sharedComponentTypes"
+import { GenericWrapperWithRef } from "@/types/sharedComponentTypes"
 
 const LightButton: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
@@ -8,6 +8,7 @@ const LightButton: React.FC<GenericWrapperWithRef> = ({
     radius = "xl",
     size = "sm",
     color = "rgba(0, 0, 0, 1)",
+    variant = "light",
     handleClick,
     ...props
 }) => {
@@ -15,7 +16,7 @@ const LightButton: React.FC<GenericWrapperWithRef> = ({
     return (
         <Button
             ref={forwardedRef}
-            variant="light"
+            variant={variant}
             color={color}
             radius={radius}
             size={size}

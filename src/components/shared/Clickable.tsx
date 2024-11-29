@@ -12,7 +12,7 @@ const Clickable: React.FC<ClickableProps> = ({ forwardedRef, handleClick, altTex
 
     return (
         <div ref={forwardedRef} className="clickable" onClick={handleClick} {...props}>
-            <p>{text}</p>
+            {text && <p>{text}</p>}
             {children}
         </div>
     )

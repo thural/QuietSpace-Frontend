@@ -80,3 +80,5 @@ export const pushToPageContent = <T extends HasId>(
 
     return { ...data, pages: updatedPages };
 }
+
+export const formatPhotoData = (type: string, data: string) => `data:${type};base64,${data}`;
