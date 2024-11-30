@@ -18,6 +18,7 @@ export const ProfileSettingsResponseSchema = BaseSchema.extend({
 }).and(ProfileSettingsRequestSchema);
 
 export const UserResponseSchema = BaseSchema.extend({
+    bio: z.string(),
     role: z.string(),
     username: z.string(),
     email: z.string().email(),

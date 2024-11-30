@@ -3,12 +3,13 @@ import { ConsumerFn } from "@/types/genericTypes";
 import { createUseStyles } from "react-jss";
 
 interface TextInputProps {
+    name?: string
     value: string
     minHeight?: string,
     handleChange: ConsumerFn
 }
 
-const TextInput: React.FC<TextInputProps> = ({ value, handleChange, minHeight = "18vh" }) => {
+const TextInput: React.FC<TextInputProps> = ({ name = "text", value, handleChange, minHeight = "18vh" }) => {
 
 
     const useStyles = createUseStyles({
@@ -35,7 +36,7 @@ const TextInput: React.FC<TextInputProps> = ({ value, handleChange, minHeight = 
     return (
         <TextAreaStyled
             className={classes.textarea}
-            name="text"
+            name={name}
             value={value}
             handleChange={handleChange}
             placeholder="what's on your mind?"

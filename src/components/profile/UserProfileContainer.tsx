@@ -13,6 +13,8 @@ import ProfileControls from "./profile-controls/ProfileControls";
 import UserDetailsSection from "./user-details/UserDetailsSection";
 import UserProfileTabs from "./tabs/UserProfileTabs";
 import { useCurrentProfile } from "@/services/hook/profile/useUserProfile";
+import TextAreaStyled from "../shared/TextAreaStyled";
+import Typography from "../shared/Typography";
 
 
 const UserProfileContainer = () => {

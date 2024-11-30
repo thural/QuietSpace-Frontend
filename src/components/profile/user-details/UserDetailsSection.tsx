@@ -3,22 +3,28 @@ import FlexStyled from "@/components/shared/FlexStyled";
 import Typography from "@/components/shared/Typography";
 import styles from "@/styles/profile/userDetailsSectionStyles";
 
-import { UserResponse } from "@/api/schemas/inferred/user";
+import { UserProfileResponse, UserResponse } from "@/api/schemas/inferred/user";
 import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { isUserProfile } from "@/utils/typeUtils";
 
 export interface UserDetailsSectionProps extends GenericWrapper {
-    user: UserResponse
+    user: UserResponse | UserProfileResponse
 }
 
 const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {
 
     const classes = styles();
 
+    const bio = isUserProfile(user) ? user.settings.bio : user.bio;
+
     return (
         <FlexStyled className={classes.detailsSection}>
-            <BoxStyled className="profileName"><Typography fw={700}>{user.username}</Typography></BoxStyled>
-            <UserAvatarPhoto size="4.5rem" userId={user.id} />
+            <BoxStyled>
+                <Typography type="h2" fw={700}>{user.username}</Typography>
+                <Typography style={{ whiteSpace: "pre-wrap" }} size="1.1rem" lineclamp={4}>{bio}</Typography>
+            </BoxStyled>
+            <UserAvatarPhoto size="6rem" userId={user.id} />
         </FlexStyled>
     )
 };
