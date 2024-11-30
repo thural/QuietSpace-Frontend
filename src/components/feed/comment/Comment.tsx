@@ -1,13 +1,12 @@
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import Overlay from "@/components/shared/Overlay";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
 import styles from "@/styles/feed/commentStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { toUpperFirstChar } from "@/utils/stringUtils";
 import BoxStyled from "@components/shared/BoxStyled";
 import EmojiText from "@components/shared/EmojiText";
 import FlexStyled from "@components/shared/FlexStyled";
-import UserAvatar from "@components/shared/UserAvatar";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
@@ -47,7 +46,7 @@ const CommentBox: React.FC<CommentProps> = ({ comment }) => {
     return (
         <BoxStyled className={classes.commentWrapper}>
             <FlexStyled className={classes.mainElement}>
-                <UserAvatar size="1.75rem" chars={toUpperFirstChar(comment.username)} />
+                <UserAvatarPhoto size="2rem" userId={comment.userId} />
                 <CommentBody comment={comment} />
             </FlexStyled>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>

@@ -1,19 +1,15 @@
 import styles from "@/styles/chat/userCardStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { UserProfileResponse } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/native/common";
 import BoxStyled from "@/components/shared/BoxStyled";
 import { useGetCurrentUser, useGetUserById } from "@/services/data/useUserData";
 import { LoadingOverlay } from "@mantine/core";
 import FlexStyled from "@shared/FlexStyled";
-import UserAvatar from "@shared/UserAvatar";
 import UserDetails from "@shared/UserDetails";
-import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { formatPhotoData } from "@/utils/dataUtils";
+import UserAvatarPhoto from "./UserAvatarPhoto";
 
 export interface UserCardProps extends GenericWrapper {
     userId?: ResId
@@ -45,11 +41,9 @@ const UserCard: React.FC<UserCardProps> = ({
 
     if (isLoading || !user) return <LoadingOverlay />;
 
-    const photoData = formatPhotoData(user.photo?.type, user.photo?.data);
-
     return (
         <FlexStyled onClick={handleUserNavigation} className={classes.queryCard} {...props}>
-            <UserAvatar size="2.5rem" radius="10rem" src={photoData} chars={toUpperFirstChar(user.username)} />
+            <UserAvatarPhoto userId={userId} />
             <BoxStyled>
                 <UserDetails user={user} scale={5} isDisplayEmail={isDisplayEmail} isDisplayName={isDisplayName} />
                 <BoxStyled className={classes.detailsSection}>

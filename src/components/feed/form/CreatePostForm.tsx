@@ -14,6 +14,7 @@ import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
 import PollForm from "./PollForm";
 import Conditional from "@/components/shared/Conditional";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 
 export interface CreatePostFormProps extends GenericWrapper {
     toggleForm: ConsumerFn
@@ -30,7 +31,6 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
         handleViewSelect,
         handleFileChange,
         togglePoll,
-        avatarPlaceholder,
         addPost,
         viewAccessOptions,
     } = useCreatePostForm(toggleForm);
@@ -40,7 +40,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
         <ModalStyled>
             <CloseButtonStyled handleToggle={toggleForm} />
             <Typography style={{ alignSelf: "center" }} type="h4">Create Post</Typography>
-            <UserAvatar radius="10rem" chars={avatarPlaceholder} />
+            <UserAvatarPhoto userId={postData.userId} />
             <FormStyled>
                 <TitleInput value={postData.title} handleChange={handleChange} />
                 <TextInput minHeight="5rem" value={postData.text} handleChange={handleChange} />

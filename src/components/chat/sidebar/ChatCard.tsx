@@ -1,11 +1,10 @@
 import { ChatResponse } from "@/api/schemas/inferred/chat";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import styles from "@/styles/chat/chatCardStyles";
+import useChatCard from "@/styles/chat/useChatCard";
 import BoxStyled from "@shared/BoxStyled";
 import Typography from "@shared/Typography";
-import UserAvatar from "@shared/UserAvatar";
-import { toUpperFirstChar } from "@utils/stringUtils";
 import { useParams } from "react-router-dom";
-import useChatCard from "@/styles/chat/useChatCard";
-import styles from "@/styles/chat/chatCardStyles";
 
 const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
 
@@ -26,7 +25,7 @@ const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
 
     return (
         <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick} style={cardStyle}>
-            <UserAvatar chars={toUpperFirstChar(username)} />
+            <UserAvatarPhoto userId={contactId} />
             <BoxStyled className={classes.chatDetails} style={appliedStyle}>
                 <Typography size="sm" lineClamp={1}>{username}</Typography>
                 <Typography size="xs" lineClamp={1}>{recentText}</Typography>

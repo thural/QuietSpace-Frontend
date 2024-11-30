@@ -11,6 +11,7 @@ import styles from "@/styles/feed/commentStyles";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 
 interface CommentReplyProps {
     comment: CommentResponse
@@ -65,7 +66,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
     return (
         <FlexStyled className={classes.commentWrapper}>
             <CommentBody />
-            <UserAvatar chars={toUpperFirstChar(user.username)} />
+            <UserAvatarPhoto userId={user.id} />
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm postItem={comment} />
             </Overlay>

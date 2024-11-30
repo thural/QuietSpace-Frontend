@@ -3,7 +3,8 @@ import { createUseStyles } from "react-jss";
 const styles = createUseStyles({
     queryCard: {
         display: 'flex',
-        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         width: '100%'
     },
     detailsSection: {

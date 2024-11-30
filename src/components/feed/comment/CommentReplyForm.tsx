@@ -7,6 +7,7 @@ import styles from "@/styles/feed/commentReplyFormStyles";
 import useReplyForm from "@/services/hook/feed/useReplyForm";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 
 interface CommentReplyForm {
     postId: ResId
@@ -29,7 +30,7 @@ const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggle
 
     return (
         <FlexStyled className={classes.wrapper} >
-            <UserAvatar size="1.5rem" chars={toUpperFirstChar(user.username)} />
+            <UserAvatarPhoto userId={user.id} />
             <FormStyled className={classes.inputWrapper}>
                 <EmojiInput
                     className={classes.commentInput}

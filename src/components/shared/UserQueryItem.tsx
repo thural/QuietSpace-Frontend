@@ -3,14 +3,13 @@ import styles from "../../styles/shared/userQueryItemStyles";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { nullishValidationdError } from "@/utils/errorUtils";
-import { toUpperFirstChar } from "@utils/stringUtils";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { GenericWrapper } from "../../types/sharedComponentTypes";
 import Conditional from "./Conditional";
 import FlexStyled from "./FlexStyled";
 import FollowToggle from "./FollowToggle";
-import UserAvatar from "./UserAvatar";
+import UserAvatarPhoto from "./UserAvatarPhoto";
 import UserDetails from "./UserDetails";
 
 
@@ -38,7 +37,7 @@ const UserQueryItem: React.FC<UserQueryItemProps> = ({ data, hasFollowToggle = t
 
     return (
         <FlexStyled className={classes.userCard} onClick={handleClick}>
-            <UserAvatar radius="10rem" chars={toUpperFirstChar(data.username)} />
+            <UserAvatarPhoto userId={data.id} />
             <UserDetails scale={4} user={data} />
             <Conditional isEnabled={hasFollowToggle}>
                 <FollowToggle user={data} />

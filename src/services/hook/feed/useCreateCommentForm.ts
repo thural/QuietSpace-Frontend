@@ -47,6 +47,8 @@ const useCreateCommentForm = (postItem: PostResponse | CommentResponse) => {
         commentData,
         handleChange,
         handleSubmit,
+        userId: signedUser.id,
+        authorId: postItem.userId,
         userAvatarPlaceholder,
         authorAvatarPlaceholder,
     };

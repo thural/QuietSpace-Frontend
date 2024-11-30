@@ -2,13 +2,13 @@ import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { PostResponse } from "@/api/schemas/inferred/post";
 import FlexStyled from "@/components/shared/FlexStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useCreateCommentForm from "@/services/hook/feed/useCreateCommentForm";
 import styles from "@/styles/feed/commentFormStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { Text } from "@mantine/core";
-import ReplyInput from "../fragments/ReplyInput";
 import FormControls from "../fragments/FormControls";
+import ReplyInput from "../fragments/ReplyInput";
 
 interface CreateCommentFormProps extends GenericWrapper {
     postItem: PostResponse | CommentResponse
@@ -23,15 +23,17 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem, isSecon
         inputRef,
         addComment,
         commentData,
+        userId,
+        authorId,
         handleChange,
         handleSubmit,
         userAvatarPlaceholder,
-        authorAvatarPlaceholder,
     } = useCreateCommentForm(postItem);
 
 
 
     const replyInputProps = {
+        userId,
         inputRef,
         handleChange,
         handleSubmit,
@@ -47,7 +49,7 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem, isSecon
                     :
                     <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
                         <FlexStyled className={classes.card}>
-                            <UserAvatar radius="10rem" chars={authorAvatarPlaceholder} />
+                            <UserAvatarPhoto userId={authorId} />
                             <Text className={classes.content} truncate="end">{postItem.text}</Text>
                         </FlexStyled>
                         <ReplyInput {...replyInputProps} />

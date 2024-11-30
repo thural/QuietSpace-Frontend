@@ -1,3 +1,7 @@
+import ChatHeadline from "@/components/chat/message/ChatHeadline";
+import MessageInput from "@/components/chat/message/MessageInput";
+import MessagesList from "@/components/chat/message/MessageList";
+import Placeholder from "@/components/chat/message/Placeholder";
 import BoxStyled from "@/components/shared/BoxStyled";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import Typography from "@/components/shared/Typography";
@@ -7,11 +11,6 @@ import styles from "@/styles/chat/chatPanelStyles";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { PiChatsCircle } from "react-icons/pi";
 import { useParams } from "react-router-dom";
-import ChatHeadline from "@/components/chat/message/ChatHeadline";
-import MessageInput from "@/components/chat/message/MessageInput";
-import MessagesList from "@/components/chat/message/MessageList";
-import Placeholder from "@/components/chat/message/Placeholder";
-import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
 
 const ChatPanel = () => {
 
@@ -34,6 +33,7 @@ const ChatPanel = () => {
         text,
         chats,
         signedUserId,
+        recipientId,
         recipientName,
         messageList,
         messageCount,
@@ -69,7 +69,10 @@ const ChatPanel = () => {
 
     return (
         <BoxStyled className={classes.chatboard}>
-            <ChatHeadline recipientName={recipientName} handleDeleteChat={handleDeleteChat} />
+            <ChatHeadline
+                userId={recipientId}
+                recipientName={recipientName}
+                handleDeleteChat={handleDeleteChat} />
             <RenderResult />
             <MessageInput
                 value={text}

@@ -1,7 +1,7 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import FormStyled from "@/components/shared/FormStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useCreateRepostForm from "@/services/hook/feed/useCreateRepostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
@@ -18,7 +18,6 @@ interface CreateRepostProps extends GenericWrapper {
 const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => {
 
     const {
-        avatarPlaceholder,
         repostData,
         addRepost,
         handleChange,
@@ -28,7 +27,7 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
     return (
         <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
             <FormStyled>
-                <UserAvatar radius="10rem" chars={avatarPlaceholder} />
+                <UserAvatarPhoto userId={userId} />
                 <TextInput minHeight="3rem" value={repostData.text} handleChange={handleChange} />
             </FormStyled>
             <PostCardBase post={post} />

@@ -64,6 +64,7 @@ export const useChat = (chatId: ResId) => {
         text,
         chats,
         recipientName,
+        recipientId,
         signedUserId: senderId,
         messages,
         messageList,

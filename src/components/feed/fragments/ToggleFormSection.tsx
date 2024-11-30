@@ -2,10 +2,9 @@ import { UserResponse } from "@/api/schemas/inferred/user";
 import BoxStyled from "@/components/shared/BoxStyled";
 import FlexStyled from "@/components/shared/FlexStyled";
 import InputStyled from "@/components/shared/InputStyled";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import LightButton from "@/components/shared/buttons/LightButton";
 import { ProcedureFn } from "@/types/genericTypes";
-import { toUpperFirstChar } from "@/utils/stringUtils";
 
 interface CreatePostSection {
     user: UserResponse
@@ -15,7 +14,7 @@ interface CreatePostSection {
 const ToggleFormSection: React.FC<CreatePostSection> = ({ user, handleClick }) => (
     <BoxStyled style={{ margin: "1rem 0" }}>
         <FlexStyled justify="space-between" gap="1rem">
-            <UserAvatar radius="10rem" chars={toUpperFirstChar(user.username)} />
+            <UserAvatarPhoto userId={user.id} />
             <InputStyled
                 variant="unstyled"
                 style={{ width: "100%" }}

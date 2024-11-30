@@ -2,7 +2,7 @@ import Conditional from "@/components/shared/Conditional";
 import EmojiInput from "@/components/shared/EmojiInput";
 import FlexStyled from "@/components/shared/FlexStyled";
 import FormStyled from "@/components/shared/FormStyled";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
 import { RefObject } from "react";
@@ -37,6 +37,7 @@ export interface ReplyInputProps extends GenericWrapperWithRef {
     placeholder?: string,
     borderColor?: string,
     inputValue: string,
+    userId: string,
 }
 
 const ReplyInput: React.FC<ReplyInputProps> = ({
@@ -45,6 +46,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
     handleChange,
     handleSubmit,
     isWithAvatar = true,
+    userId,
     avatarPlaceholder = "",
     avatarSize = "10rem",
     placeholder = "type a comment",
@@ -56,7 +58,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
     return (
         <FlexStyled onClick={(e: Event) => e.stopPropagation()} className={classes.replyWrapper}>
             <Conditional isEnabled={isWithAvatar}>
-                <UserAvatar radius={avatarSize} chars={avatarPlaceholder} />
+                <UserAvatarPhoto size="2rem" userId={userId} />
             </Conditional>
             <FormStyled>
                 <EmojiInput

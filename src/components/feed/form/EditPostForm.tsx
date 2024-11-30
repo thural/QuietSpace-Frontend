@@ -8,7 +8,7 @@ import FormStyled from "@/components/shared/FormStyled";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import ModalStyled from "@/components/shared/ModalStyled";
 import Typography from "@/components/shared/Typography";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useEditPostForm from "@/services/hook/feed/useEditPostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
@@ -35,7 +35,6 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
     editCurrentPost,
     handleSubmit,
     handleChange,
-    avatarPlaceholder
   } = data;
 
 
@@ -47,7 +46,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
     <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
       <CloseButtonStyled handleToggle={toggleForm} />
       <Typography style={{ alignSelf: "center" }} type="h4">Edit Post</Typography>
-      <UserAvatar radius="10rem" chars={avatarPlaceholder} />
+      <UserAvatarPhoto userId={postData.userId} />
       <FormStyled>
         <TitleInput value={postData.title} handleChange={handleChange} />
         <TextInput value={postData.text} handleChange={handleChange} />
