@@ -5,3 +5,5 @@ export type AnyPredicate = (...args: any[]) => boolean;
 export type ConsumerFn = (...args: any[]) => void;
 export type ProducerFn = () => any;
 export type ProcedureFn = () => void
+export type ChangeEventFn = (event: React.ChangeEvent) => void
+export type SubmitEventFn = (event: SubmitEvent) => void

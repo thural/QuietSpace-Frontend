@@ -38,3 +38,7 @@ export const getInitInfinitePagesObject = (pageSize: number, content: Array<any>
         "pageParams": [0, pageSize]
     }
 }
+
+export const PRIVACY_DESCRIPTION = (
+    "When your account is public, your profile and posts can be seen by anyone, When your account is private, only your followers can see your content, including your followers and following lists. Your profile info, like your profile picture and username, is visible to everyone"
+);

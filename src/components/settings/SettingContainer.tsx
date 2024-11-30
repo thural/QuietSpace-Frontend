@@ -1,11 +1,17 @@
-import { Tabs, Text } from "@mantine/core";
+import { Switch, Tabs, Text } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import Typography from "@components/shared/Typography";
 import { useNavigate } from "react-router-dom";
-import ProfileSettings from "./ProfileSettings";
+import SettingsPanel from "./SettingsPanel";
 import BoxStyled from "../shared/BoxStyled";
 import { createUseStyles } from "react-jss";
+import useProfileSettings from "@/services/hook/profile/useProfileSettings";
+import ErrorComponent from "../shared/errors/ErrorComponent";
+import ProfilePhotoModifier from "./ProfilePhotoModifier";
+import TextInput from "../feed/fragments/TextInput";
+import SwitchStyled from "../shared/SwitchStyled";
+import { PRIVACY_DESCRIPTION } from "@/utils/dataTemplates";
 
 const useStyles = createUseStyles({
     panel: {
@@ -18,7 +24,6 @@ const useStyles = createUseStyles({
 function SettingsContainer() {
 
     const classes = useStyles();
-
     const navigate = useNavigate();
 
     const redirectToPage = (tabValue: string | null) => {
@@ -26,14 +31,23 @@ function SettingsContainer() {
         console.error("selected settings tab is null");
     };
 
+    let settingsData = undefined;
+
+    try {
+        settingsData = useProfileSettings();
+    } catch (error: unknown) {
+        console.error(error);
+        const errorMessage = `error loading settings: ${(error as Error).message}`;
+        return <ErrorComponent message={errorMessage} />
+    }
+
+    const { settings, handleChange, handleSwitchChange, handleSubmit } = settingsData;
+
 
     return (
         <DefaultContainer>
-
             <Typography type="h2">settings</Typography>
-
             <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile">
-
                 <Tabs.List justify="center" grow>
                     <Tabs.Tab value="profile" leftSection={<PiUserCircle size={24} />}>
                         Profile
@@ -55,13 +69,30 @@ function SettingsContainer() {
                     </Tabs.Tab>
                 </Tabs.List>
 
-
                 <BoxStyled className={classes.panel}>
                     <Tabs.Panel value="profile">
-                        <ProfileSettings />
+                        <SettingsPanel label="Profile Settings" handleSubmit={handleSubmit}>
+                            <ProfilePhotoModifier />
+                            <BoxStyled>
+                                <Typography type="h4">Bio</Typography>
+                                <TextInput name="bio" minHeight="5rem" handleChange={handleChange} value={settings.bio} />
+                            </BoxStyled>
+                        </SettingsPanel>
                     </Tabs.Panel>
                     <Tabs.Panel value="privacy">
-                        <Text ta="center">privacy settings</Text>
+                        <SettingsPanel label="Privacy Settings" handleSubmit={handleSubmit}>
+                            <SwitchStyled
+                                color="blue"
+                                name="isPrivateAccount"
+                                labelPosition="left"
+                                label="private account"
+                                description={PRIVACY_DESCRIPTION}
+                                size="md"
+                                name="isPrivateAccount"
+                                checked={settings.isPrivateAccount}
+                                onChange={handleSwitchChange}
+                            />
+                        </SettingsPanel>
                     </Tabs.Panel>
                     <Tabs.Panel value="mentions">
                         <Text ta="center">mention settings</Text>
@@ -76,7 +107,6 @@ function SettingsContainer() {
                         <Text ta="center">blocking settings</Text>
                     </Tabs.Panel>
                 </BoxStyled>
-
             </Tabs>
         </DefaultContainer>
     )

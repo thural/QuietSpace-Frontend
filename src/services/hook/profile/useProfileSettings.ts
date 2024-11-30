@@ -16,13 +16,20 @@ const useProfileSettings = () => {
         setSetting({ ...settings, [name]: value });
     };
 
+    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const target = event.currentTarget;
+        const { name, checked } = target;
+        setSetting({ ...settings, [name]: checked });
+    }
+
     const handleSubmit = () => saveSettings.mutate(settings);
 
     return {
         user,
         settings,
         handleChange,
-        handleSubmit
+        handleSubmit,
+        handleSwitchChange
     }
 }
 
