@@ -82,7 +82,7 @@ export const useRefreshToken = () => {
 
     return useMutation({
         mutationFn: async () => {
-            if (refreshToken === null) throw new Error("(!) refresh token is null");
+            if (!refreshToken) throw new Error("(!) refresh token is null");
             return await fetchAccessToken(refreshToken);
         },
         onSuccess,

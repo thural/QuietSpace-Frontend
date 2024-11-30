@@ -24,7 +24,7 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
     let data = undefined;
 
     try {
-        if (pollData === null) throw nullishValidationdError({ pollData });
+        if (!pollData) throw nullishValidationdError({ pollData });
         data = usePoll(pollData, postId);
     } catch (error: unknown) {
         return <ErrorComponent message={(error as Error).message} />
