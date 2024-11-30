@@ -2,6 +2,7 @@ import InputEmoji from "react-input-emoji";
 import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef";
 import { GenericWrapperWithRef } from "../../types/sharedComponentTypes";
 import { createUseStyles } from "react-jss";
+import BoxStyled from "./BoxStyled";
 
 export const styles = createUseStyles({
     emojiInputWrapper: {
@@ -33,7 +34,7 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
     const classes = styles();
 
     return (
-        <div className={classes.emojiInputWrapper}>
+        <BoxStyled className={classes.emojiInputWrapper}>
             <InputEmoji
                 ref={forwardedRef}
                 value={value}
@@ -48,7 +49,7 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
                 enabled={isEnabled}
                 {...props}
             />
-        </div>
+        </BoxStyled>
     );
 }
 

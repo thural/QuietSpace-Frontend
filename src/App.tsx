@@ -33,11 +33,15 @@ import useChatSocket from "./services/hook/chat/useChatSocket";
 import useNotificationSocket from "./services/hook/notification/useNotificationSocket";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
+import { ThemeProvider } from "react-jss";
+import useTheme from "./services/hook/shared/useTheme";
+
 
 const App = () => {
 
     const navigate = useNavigate();
 
+    const { theme } = useTheme();
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
 
@@ -73,7 +77,7 @@ const App = () => {
 
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             {isAuthenticated && !isUserError && <NavBar />}
             <Routes>
                 <Route path="/" element={<FeedContainer />} />
@@ -99,7 +103,7 @@ const App = () => {
                 <Route path="/activation" element={<ActivationForm />} />
                 <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
             </Routes>
-        </>
+        </ThemeProvider>
     )
 }
 

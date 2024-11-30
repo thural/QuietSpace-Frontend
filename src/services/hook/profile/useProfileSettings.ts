@@ -27,6 +27,7 @@ const useProfileSettings = () => {
     return {
         user,
         settings,
+        isPending: saveSettings.isPending,
         handleChange,
         handleSubmit,
         handleSwitchChange

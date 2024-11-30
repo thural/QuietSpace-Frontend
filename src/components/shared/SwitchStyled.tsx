@@ -7,7 +7,7 @@ const SwitchStyled = ({
   name = "switchName",
   description = "switch description",
   size = "md",
-  checked = undefined,
+  checked = false,
   onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     console.log("mising change event for switch: ", event.target.value)
 }) => {

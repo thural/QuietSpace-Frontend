@@ -1,5 +1,6 @@
 import { viewStore } from "@/services/store/zustand";
 import styles from "../../styles/shared/overlayStyles";
+import BoxStyled from "./BoxStyled";
 
 
 const OverlayWithStore = ({ closable }: { closable: Object }) => {
@@ -12,7 +13,7 @@ const OverlayWithStore = ({ closable }: { closable: Object }) => {
   }
 
   return (
-    <div className={classes.overlay} onClick={handleClick}></div>
+    <BoxStyled className={classes.overlay} onClick={handleClick}></BoxStyled>
   )
 }
 

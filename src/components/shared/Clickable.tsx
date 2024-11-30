@@ -1,6 +1,7 @@
 import { MouseEventHandler } from "react"
 import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef"
 import { GenericWrapperWithRef } from "../../types/sharedComponentTypes"
+import BoxStyled from "./BoxStyled"
 
 interface ClickableProps extends GenericWrapperWithRef {
     handleClick: MouseEventHandler<HTMLDivElement>,
@@ -11,10 +12,10 @@ interface ClickableProps extends GenericWrapperWithRef {
 const Clickable: React.FC<ClickableProps> = ({ forwardedRef, handleClick, altText = "", text, children, ...props }) => {
 
     return (
-        <div ref={forwardedRef} className="clickable" onClick={handleClick} {...props}>
+        <BoxStyled ref={forwardedRef} className="clickable" onClick={handleClick} {...props}>
             {text && <p>{text}</p>}
             {children}
-        </div>
+        </BoxStyled>
     )
 }
 

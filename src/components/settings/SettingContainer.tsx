@@ -1,17 +1,17 @@
-import { Switch, Tabs, Text } from "@mantine/core";
-import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
+import useProfileSettings from "@/services/hook/profile/useProfileSettings";
+import { PRIVACY_DESCRIPTION } from "@/utils/dataTemplates";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import Typography from "@components/shared/Typography";
-import { useNavigate } from "react-router-dom";
-import SettingsPanel from "./SettingsPanel";
-import BoxStyled from "../shared/BoxStyled";
+import { Tabs, Text } from "@mantine/core";
+import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 import { createUseStyles } from "react-jss";
-import useProfileSettings from "@/services/hook/profile/useProfileSettings";
-import ErrorComponent from "../shared/errors/ErrorComponent";
-import ProfilePhotoModifier from "./ProfilePhotoModifier";
+import { useNavigate } from "react-router-dom";
 import TextInput from "../feed/fragments/TextInput";
+import BoxStyled from "../shared/BoxStyled";
+import ErrorComponent from "../shared/errors/ErrorComponent";
 import SwitchStyled from "../shared/SwitchStyled";
-import { PRIVACY_DESCRIPTION } from "@/utils/dataTemplates";
+import ProfilePhotoModifier from "./ProfilePhotoModifier";
+import SettingsPanel from "./SettingsPanel";
 
 const useStyles = createUseStyles({
     panel: {
@@ -41,7 +41,7 @@ function SettingsContainer() {
         return <ErrorComponent message={errorMessage} />
     }
 
-    const { settings, handleChange, handleSwitchChange, handleSubmit } = settingsData;
+    const { settings, isPending, handleChange, handleSwitchChange, handleSubmit } = settingsData;
 
 
     return (
@@ -70,8 +70,9 @@ function SettingsContainer() {
                 </Tabs.List>
 
                 <BoxStyled className={classes.panel}>
+
                     <Tabs.Panel value="profile">
-                        <SettingsPanel label="Profile Settings" handleSubmit={handleSubmit}>
+                        <SettingsPanel isPending={isPending} label="Profile Settings" handleSubmit={handleSubmit}>
                             <ProfilePhotoModifier />
                             <BoxStyled>
                                 <Typography type="h4">Bio</Typography>
@@ -79,8 +80,9 @@ function SettingsContainer() {
                             </BoxStyled>
                         </SettingsPanel>
                     </Tabs.Panel>
+
                     <Tabs.Panel value="privacy">
-                        <SettingsPanel label="Privacy Settings" handleSubmit={handleSubmit}>
+                        <SettingsPanel isPending={isPending} label="Privacy Settings" handleSubmit={handleSubmit}>
                             <SwitchStyled
                                 color="blue"
                                 name="isPrivateAccount"
@@ -88,12 +90,12 @@ function SettingsContainer() {
                                 label="private account"
                                 description={PRIVACY_DESCRIPTION}
                                 size="md"
-                                name="isPrivateAccount"
                                 checked={settings.isPrivateAccount}
                                 onChange={handleSwitchChange}
                             />
                         </SettingsPanel>
                     </Tabs.Panel>
+
                     <Tabs.Panel value="mentions">
                         <Text ta="center">mention settings</Text>
                     </Tabs.Panel>

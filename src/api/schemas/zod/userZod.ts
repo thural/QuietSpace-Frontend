@@ -5,12 +5,12 @@ import { PhotoResponseSchema } from "./photoZod";
 
 export const ProfileSettingsRequestSchema = z.object({
     bio: z.string(),
-    isPrivateAccount: z.boolean().nullable(),
-    isNotificationsMuted: z.boolean().nullable(),
-    isAllowPublicGroupChatInvite: z.boolean().nullable(),
-    isAllowPublicMessageRequests: z.boolean().nullable(),
-    isAllowPublicComments: z.boolean().nullable(),
-    isHideLikeCounts: z.boolean().nullable(),
+    isPrivateAccount: z.boolean(),
+    isNotificationsMuted: z.boolean(),
+    isAllowPublicGroupChatInvite: z.boolean(),
+    isAllowPublicMessageRequests: z.boolean(),
+    isAllowPublicComments: z.boolean(),
+    isHideLikeCounts: z.boolean(),
 });
 
 export const ProfileSettingsResponseSchema = BaseSchema.extend({

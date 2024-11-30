@@ -6,10 +6,11 @@ import LightButton from "../shared/buttons/LightButton"
 
 interface SettingsPanelProps extends GenericWrapper {
     label: string
+    isPending: boolean
     handleSubmit: ProcedureFn
 }
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ label, handleSubmit, children }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ label, isPending, handleSubmit, children }) => {
 
 
     return (
@@ -17,6 +18,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ label, handleSubmit, chil
             <Typography type="h3">{label}</Typography>
             {children}
             <LightButton
+                loading={isPending}
                 radius="10px"
                 variant="filled"
                 color="black"
