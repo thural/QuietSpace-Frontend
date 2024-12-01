@@ -1,37 +1,18 @@
 import TextAreaStyled from "@/components/shared/TextAreaStyled";
+import useStyles from "@/styles/feed/textInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
-import { createUseStyles } from "react-jss";
 
-interface TextInputProps {
+export interface TextInputProps {
     name?: string
     value: string
     minHeight?: string,
     handleChange: ConsumerFn
 }
 
-const TextInput: React.FC<TextInputProps> = ({ name = "text", value, handleChange, minHeight = "18vh" }) => {
+const TextInput: React.FC<TextInputProps> = (props) => {
 
-
-    const useStyles = createUseStyles({
-
-        textarea: {
-            width: '100%',
-            resize: 'none',
-            outline: 'none',
-            boxSizing: 'border-box',
-            border: 'none',
-            minHeight,
-        },
-
-        '@media (max-width: 720px)': {
-            textarea: {
-                height: '100%'
-            },
-        }
-    });
-
-
-    const classes = useStyles();
+    const { name = "text", value, handleChange } = props;
+    const classes = useStyles(props);
 
     return (
         <TextAreaStyled

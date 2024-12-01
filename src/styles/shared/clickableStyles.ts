@@ -1,5 +1,7 @@
 import { createUseStyles } from "react-jss"
 
+// TODO: refactor for themes after decoupling the component
+
 const styles = createUseStyles(
 	{
 		menu: {

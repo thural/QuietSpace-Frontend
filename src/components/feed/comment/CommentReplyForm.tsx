@@ -1,13 +1,11 @@
+import { ResId } from "@/api/schemas/inferred/common";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import useReplyForm from "@/services/hook/feed/useReplyForm";
+import styles from "@/styles/feed/commentReplyFormStyles";
+import { ConsumerFn } from "@/types/genericTypes";
 import EmojiInput from "@shared/EmojiInput";
 import FlexStyled from "@shared/FlexStyled";
 import FormStyled from "@shared/FormStyled";
-import UserAvatar from "@shared/UserAvatar";
-import { toUpperFirstChar } from "@utils/stringUtils";
-import styles from "@/styles/feed/commentReplyFormStyles";
-import useReplyForm from "@/services/hook/feed/useReplyForm";
-import { ResId } from "@/api/schemas/inferred/common";
-import { ConsumerFn } from "@/types/genericTypes";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 
 interface CommentReplyForm {
     postId: ResId

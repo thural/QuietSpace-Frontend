@@ -2,7 +2,7 @@ import { Center } from "@mantine/core"
 import { RxLockClosed } from "react-icons/rx"
 import FlexStyled from "@/components/shared/FlexStyled"
 import Typography, { TypographyProps } from "@/components/shared/Typography"
-import styles from "../../styles/profile/privateBlockStyles"
+import styles from "@/styles/profile/privateBlockStyles"
 import { GenericWrapper } from "@/types/sharedComponentTypes"
 
 export interface PrivateBlockProps extends TypographyProps, GenericWrapper {

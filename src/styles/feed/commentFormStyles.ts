@@ -1,34 +1,20 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
-  commentInput: {
-    width: '100%',
-    border: 'none',
-    height: 'auto',
-    resize: 'none',
-    outline: 'none',
-    padding: '10px',
-    overflow: 'hidden',
-    boxSizing: 'border-box',
-    maxHeight: '200px',
-    borderRadius: '4px',
-    backgroundColor: 'transparent'
-  },
-
+const useStyles = createUseStyles((theme: Theme) => ({
   card: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem'
+    gap: theme.spacing(theme.spacingFactor.md)
   },
 
   content: {
     maxWidth: '100%',
-    marginRight: '1rem'
+    marginRight: theme.spacing(theme.spacingFactor.md)
   },
 
   controls: {
     justifyContent: 'flex-end'
   }
-});
+}));
 
-export default styles
+export default useStyles

@@ -5,13 +5,11 @@ import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import FlexStyled from "@/components/shared/FlexStyled";
 import Overlay from "@/components/shared/Overlay";
 import Typography from "@/components/shared/Typography";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
 import styles from "@/styles/feed/commentStyles";
-import { toUpperFirstChar } from "@/utils/stringUtils";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 
 interface CommentReplyProps {
     comment: CommentResponse

@@ -1,8 +1,9 @@
 import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
+import Conditional from "@/components/shared/Conditional";
 import FormStyled from "@/components/shared/FormStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
 import Typography from "@/components/shared/Typography";
-import UserAvatar from "@/components/shared/UserAvatar";
+import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useCreatePostForm from "@/services/hook/feed/useCreatePostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
@@ -13,8 +14,6 @@ import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
 import PollForm from "./PollForm";
-import Conditional from "@/components/shared/Conditional";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 
 export interface CreatePostFormProps extends GenericWrapper {
     toggleForm: ConsumerFn
@@ -43,7 +42,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
             <UserAvatarPhoto userId={postData.userId} />
             <FormStyled>
                 <TitleInput value={postData.title} handleChange={handleChange} />
-                <TextInput minHeight="5rem" value={postData.text} handleChange={handleChange} />
+                <TextInput minHeight="7rem" value={postData.text} handleChange={handleChange} />
                 <Image radius="md" w="auto" fit="scale-down" style={{ maxHeight: "50vh" }} src={previewUrl} />
                 <PollForm
                     postData={postData}

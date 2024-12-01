@@ -3,7 +3,7 @@ import { Image } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
 interface PhotoDisplayProps {
-    photoResponse: PhotoResponse;
+    photoResponse: PhotoResponse | undefined;
 }
 
 const PhotoDisplay: React.FC<PhotoDisplayProps> = ({ photoResponse }) => {

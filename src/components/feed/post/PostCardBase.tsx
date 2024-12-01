@@ -1,6 +1,6 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { Text } from "@mantine/core";
-import PostHeadline from "../fragments/PostHeadline";
+import PostHeader from "../fragments/PostHeader";
 
 
 interface PostCardBaseProps {
@@ -11,7 +11,7 @@ interface PostCardBaseProps {
 
 const PostCardBase: React.FC<PostCardBaseProps> = ({ post, lineClamp = 5 }) => (
     <>
-        <PostHeadline post={post} />
+        <PostHeader post={post} />
         <Text lineClamp={lineClamp} >{post.text}</Text>
     </>
 );

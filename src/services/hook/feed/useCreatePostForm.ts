@@ -18,7 +18,7 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         text: "",
         title: "",
         userId: user.id,
-        viewAccess: 'all',
+        viewAccess: 'anyone',
         poll: null,
         photoData: null
     });

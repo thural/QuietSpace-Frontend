@@ -1,6 +1,6 @@
 import { Container } from "@mantine/core";
-import styles from "../../styles/shared/defaultContainerStyles";
-import { GenericWrapper } from "../../types/sharedComponentTypes";
+import styles from "@/styles/shared/defaultContainerStyles";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 const DefaultContainer: React.FC<GenericWrapper> = ({ forwardRef, size = "600px", children, ...props }) => {
 

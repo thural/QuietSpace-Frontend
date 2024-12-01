@@ -1,12 +1,12 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles(
+const styles = createUseStyles((theme: Theme) => (
     {
         menu: {
-            position: 'relative',
-            cursor: 'pointer',
-            alignItems: 'center',
             display: 'flex',
+            position: 'relative',
+            alignItems: 'center',
+            cursor: 'pointer',
             margin: '0',
             padding: '0'
         },
@@ -21,42 +21,32 @@ const styles = createUseStyles(
             width: '100vw',
             height: '100vh'
         },
-        icon: {
-            '& svg': {
-                // display: 'block',
-                // fontSize: '1.8rem',
-                // width: '2.5rem',
-                // margin: '0 1.8rem',
-                // color: 'black'
-            }
-        },
         menuList: {
-            color: 'black',
-            width: '10rem',
-            border: '1px solid #f1f1f1',
-            bottom: '2rem',
             margin: '0',
             display: 'none',
-            padding: '.5rem',
-            zIndex: '1',
             position: 'relative',
-            boxShadow: 'rgb(0 0 0 / 16%) 0px 0px 24px -6px',
             boxSizing: 'border-box',
-            borderRadius: '1rem',
-            backgroundColor: 'white',
+            color: theme.colors.textMax,
+            width: theme.spacing(theme.spacingFactor.md * 9),
+            border: `1px solid ${theme.colors.borderSecondary}`,
+            bottom: theme.spacing(theme.spacingFactor.md * 2),
+            padding: theme.spacing(theme.spacingFactor.sm),
+            boxShadow: theme.shadows.light,
+            borderRadius: theme.radius.md,
+            backgroundColor: theme.colors.backgroundMax,
             '& .clickable:hover': {
                 margin: '0rem',
-                background: 'var(--mantine-color-gray-1)',
-                borderRadius: '1rem',
-                padding: '.5rem',
+                background: theme.colors.backgroundSecondary,
+                borderRadius: theme.radius.sm,
+                padding: theme.spacing(theme.spacingFactor.sm),
                 boxSizing: 'border-box'
             },
             '& .clickable': {
-                padding: '.5rem',
                 display: 'flex',
-                fontSize: '1.35rem',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                padding: theme.spacing(theme.spacingFactor.sm),
+                fontSize: theme.typography.fontSize.secondary,
             },
             '& a, a:hover, a:focus, a:active': {
                 textDecoration: 'none',
@@ -66,12 +56,12 @@ const styles = createUseStyles(
                 margin: '0',
                 padding: '0',
                 alignSelf: 'center',
-                fontWeight: '300',
-                lineHeight: '0'
+                lineHeight: '0',
+                fontWeight: theme.typography.fontWeightRegular,
             }
         }
     }
-);
+));
 
 
 export default styles

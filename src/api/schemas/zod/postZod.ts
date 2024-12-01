@@ -31,7 +31,7 @@ export const PostRequestSchema = z.object({
     title: z.string().optional(),
     text: z.string(),
     userId: ResIdSchema,
-    viewAccess: z.enum(['friends', 'all']).optional(),
+    viewAccess: z.enum(['friends', 'anyone']),
     poll: PollRequestSchema.nullable(),
     photoData: z.any().optional()
 });

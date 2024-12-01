@@ -7,6 +7,7 @@ import { useDeletePost, useGetPostById } from "@/services/data/usePostData";
 import { useState } from "react";
 import useReaction from "./useReaction";
 import useNavigation from "../shared/useNavigation";
+import { nullishValidationdError } from "@/utils/errorUtils";
 
 
 
@@ -14,6 +15,7 @@ export const usePost = (postId: ResId) => {
 
     const signedUser = getSignedUserElseThrow();
     const { data: post, isLoading, isError } = useGetPostById(postId);
+    if (isError) throw nullishValidationdError({ post });
     const { navigatePath } = useNavigation();
 
     const handleNavigation = (e: React.MouseEvent) => {

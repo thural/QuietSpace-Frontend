@@ -1,38 +1,40 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const useStyles = createUseStyles({
-	wrapper: {
-		display: 'flex',
-		alignItems: 'center',
-		margin: '0.5rem 0'
-	},
-	roundedCheckbox: {
-		width: '20px',
-		height: '20px',
-		appearance: 'none',
-		backgroundColor: '#fff',
-		border: '1px solid #a1a1a1',
-		borderRadius: '50%',
-		outline: 'none',
-		cursor: 'pointer',
-		marginRight: '10px',
-		position: 'relative',
-		'&:checked': {
-			backgroundColor: 'blue',
+const useStyles = createUseStyles((theme: Theme) => (
+	{
+		wrapper: {
+			display: 'flex',
+			alignItems: 'center',
+			margin: `${theme.spacing(0.5)} 0`
 		},
-		'&:checked::before': {
-			content: '""',
-			display: 'block',
-			width: '10px',
-			height: '10px',
-			backgroundColor: 'orange',
-			borderRadius: '50%',
-			position: 'absolute',
-			top: '50%',
-			left: '50%',
-			transform: 'translate(-50%, -50%)',
+		roundedCheckbox: {
+			width: '20px',
+			height: '20px',
+			appearance: 'none',
+			backgroundColor: theme.colors.background,
+			border: `1px solid ${theme.colors.border}`,
+			borderRadius: theme.radius.round,
+			outline: 'none',
+			cursor: 'pointer',
+			marginRight: '10px',
+			position: 'relative',
+			'&:checked': {
+				backgroundColor: theme.colors.checkBox,
+			},
+			'&:checked::before': {
+				content: '""',
+				display: 'block',
+				width: '10px',
+				height: '10px',
+				backgroundColor: theme.colors.checkBox,
+				borderRadius: theme.radius.round,
+				position: 'absolute',
+				top: '50%',
+				left: '50%',
+				transform: 'translate(-50%, -50%)',
+			}
 		}
 	}
-});
+));
 
 export default useStyles;

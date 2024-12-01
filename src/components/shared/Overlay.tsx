@@ -1,7 +1,7 @@
 import { ConsumerFn } from "@/types/genericTypes";
 import BoxStyled from "./BoxStyled";
 import DarkButton from "./buttons/DarkButton ";
-import { GenericWrapper } from "../../types/sharedComponentTypes";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 import styles from "@/styles/shared/overlayStyles";
 
 interface OverlayProps extends GenericWrapper {

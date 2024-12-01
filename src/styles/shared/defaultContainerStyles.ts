@@ -7,7 +7,7 @@ const styles = createUseStyles({
         '& hr': {
             border: 'none',
             height: '0.5px',
-            backgroundColor: 'rgb(204 204 204)'
+            backgroundColor: 'rgb(222 222 222)'
         }
     },
 

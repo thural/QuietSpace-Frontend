@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { GenericWrapper } from "../../types/sharedComponentTypes";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 
 const PassInput: React.FC<GenericWrapper> = ({ name, value, handleChange, ...props }) => {

@@ -13,9 +13,9 @@ import CreateCommentForm from "../form/CreateCommentForm";
 import CreateRepostForm from "../form/CreateRepostForm";
 import EditPostForm from "../form/EditPostForm";
 import PostContent from "../fragments/PostContent";
-import PostHeadline from "../fragments/PostHeadline";
+import PostHeader from "../fragments/PostHeader";
+import PostInteractions from "../fragments/PostInteractions";
 import PostMenu from "../fragments/PostMenu";
-import PostStatSection from "../fragments/PostStatSection";
 
 
 interface PostCardProps extends GenericWrapper {
@@ -27,19 +27,19 @@ interface PostCardProps extends GenericWrapper {
 
 
 const PostCard: React.FC<PostCardProps> = ({
-    isPostsLoading = false,
-    postId, isBaseCard = false,
+    postId,
+    isBaseCard = false,
     isMenuHidden = false,
+    isPostsLoading = false,
     children
 }) => {
 
     const classes = styles();
-
-    let data = undefined;
+    let postData = undefined;
 
     try {
         if (postId === undefined) throw nullishValidationdError({ postId });
-        data = usePost(postId);
+        postData = usePost(postId);
     } catch (error) {
         return <ErrorComponent message={(error as Error).message} />;
     }
@@ -47,44 +47,23 @@ const PostCard: React.FC<PostCardProps> = ({
     const {
         post,
         isLoading,
-        isError,
-        comments,
-        hasCommented,
         shareFormview,
-        handleDeletePost,
-        handleLike,
-        handleDislike,
         isMutable,
         isOverlayOpen,
         commentFormView,
         repostFormView,
+        handleDeletePost,
         toggleShareForm,
         toggleRepostForm,
         toggleEditForm,
         toggleCommentForm,
         handleNavigation,
-    } = data;
-
-
-
-    if (isError) return <ErrorComponent message="could not load post" />;
-
-
-    const postStatSectionProps = {
-        post,
-        commentCount: comments.data?.totalElements,
-        hasCommented,
-        toggleShareForm,
-        handleLike,
-        handleDislike,
-        toggleCommentForm,
-        toggleRepostForm
-    }
+    } = postData;
 
 
     const MainContent = () => (
         <>
-            <PostHeadline post={post}>
+            <PostHeader post={post}>
                 <Conditional isEnabled={!isMenuHidden}>
                     <PostMenu
                         postId={post.id}
@@ -93,10 +72,10 @@ const PostCard: React.FC<PostCardProps> = ({
                         isMutable={isMutable}
                     />
                 </Conditional>
-            </PostHeadline>
+            </PostHeader>
             <PostContent post={post} handleContentClick={handleNavigation} />
             <Conditional isEnabled={!isBaseCard}>
-                <PostStatSection{...postStatSectionProps} />
+                <PostInteractions{...postData} />
             </Conditional>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} toggleForm={toggleEditForm} />

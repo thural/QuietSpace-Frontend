@@ -1,6 +1,6 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
     userCard: {
         display: 'flex',
@@ -20,10 +20,10 @@ const styles = createUseStyles({
             fontWeight: '500',
             marginLeft: 'auto',
             borderRadius: '.75rem',
-            backgroundColor: 'rgb(250, 250, 250)'
+            backgroundColor: theme.colors.background
         },
     },
 
-})
+}))
 
 export default styles

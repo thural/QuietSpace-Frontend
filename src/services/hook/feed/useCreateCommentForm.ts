@@ -37,8 +37,11 @@ const useCreateCommentForm = (postItem: PostResponse | CommentResponse) => {
     const userAvatarPlaceholder = toUpperFirstChar(signedUser.username);
     const authorAvatarPlaceholder = toUpperFirstChar(postItem.username);
 
+    const inputValue = commentData.text;
+
     return {
         inputRef,
+        inputValue,
         addComment,
         commentData,
         handleChange,

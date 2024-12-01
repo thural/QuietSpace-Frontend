@@ -1,3 +1,4 @@
+import { ResId } from "@/api/schemas/inferred/common";
 import Conditional from "@/components/shared/Conditional";
 import EmojiInput from "@/components/shared/EmojiInput";
 import FlexStyled from "@/components/shared/FlexStyled";
@@ -6,26 +7,6 @@ import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
 import { RefObject } from "react";
-import { createUseStyles } from "react-jss";
-
-const useStyles = createUseStyles({
-    replyWrapper: {
-        alignItems: 'center',
-    },
-    replyInput: {
-        width: '100%',
-        border: 'none',
-        height: 'auto',
-        resize: 'none',
-        outline: 'none',
-        padding: '10px',
-        overflow: 'hidden',
-        maxHeight: '200px',
-        borderRadius: '4px',
-        boxSizing: 'border-box',
-        backgroundColor: 'transparent'
-    },
-});
 
 export interface ReplyInputProps extends GenericWrapperWithRef {
     inputRef: RefObject<HTMLInputElement>,
@@ -37,7 +18,7 @@ export interface ReplyInputProps extends GenericWrapperWithRef {
     placeholder?: string,
     borderColor?: string,
     inputValue: string,
-    userId: string,
+    userId: ResId,
 }
 
 const ReplyInput: React.FC<ReplyInputProps> = ({
@@ -47,22 +28,17 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
     handleSubmit,
     isWithAvatar = true,
     userId,
-    avatarPlaceholder = "",
-    avatarSize = "10rem",
     placeholder = "type a comment",
     borderColor = "transparent",
 }) => {
 
-    const classes = useStyles();
-
     return (
-        <FlexStyled onClick={(e: Event) => e.stopPropagation()} className={classes.replyWrapper}>
+        <FlexStyled onClick={(e: Event) => e.stopPropagation()} style={{ alignItems: 'center' }}>
             <Conditional isEnabled={isWithAvatar}>
                 <UserAvatarPhoto size="2rem" userId={userId} />
             </Conditional>
             <FormStyled>
                 <EmojiInput
-                    className={classes.replyInput}
                     value={inputValue}
                     onChange={handleChange}
                     cleanOnEnter

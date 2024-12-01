@@ -15,7 +15,7 @@ const PostContent: React.FC<PostContentProps> = ({ handleContentClick, post }) =
 
     return (
         <BoxStyled onClick={handleContentClick}>
-            <Typography style={{ marginBottom: "1rem" }}>{post.text}</Typography>
+            <Typography style={{ margin: "1rem 0" }}>{post.text}</Typography>
             <Conditional isEnabled={!!post.photo}>
                 <PhotoDisplay photoResponse={post.photo} />
             </Conditional>

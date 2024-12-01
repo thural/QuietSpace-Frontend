@@ -1,4 +1,4 @@
-import styles from "@/styles/feed/commentFormStyles";
+import useStyles from "@/styles/feed/commentFormStyles";
 import useCommentForm from "@/services/hook/feed/useCommentForm";
 import FormStyled from "@/components/shared/FormStyled";
 import EmojiInput from "@/components/shared/EmojiInput";
@@ -6,7 +6,7 @@ import { ResId } from "@/api/schemas/inferred/common";
 
 const CommentForm = ({ postId }: { postId: ResId }) => {
 
-    const classes = styles();
+    const classes = useStyles();
 
     const {
         commentInput,

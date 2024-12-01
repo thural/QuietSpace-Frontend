@@ -1,5 +1,5 @@
 import React from "react";
-import { GenericWrapper } from "../../types/sharedComponentTypes";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 interface ComponentListProps extends GenericWrapper {
     Component: React.ComponentType<any>

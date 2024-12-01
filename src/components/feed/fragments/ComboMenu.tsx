@@ -1,7 +1,6 @@
 import BoxStyled from "@/components/shared/BoxStyled";
 import Clickable from "@/components/shared/Clickable";
 import ListMenu from "@/components/shared/ListMenu";
-import styles from "@/styles/feed/comboMenuStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 
 interface ComboMenu {
@@ -13,10 +12,8 @@ interface ComboMenu {
 
 const ComboMenu: React.FC<ComboMenu> = ({ options, selectedOption, textContent, handleSelect }) => {
 
-    const classes = styles();
-
     return (
-        <BoxStyled className={classes.comboMenu}>
+        <BoxStyled style={{ position: "relative" }}>
             <ListMenu styleUpdate={{}} menuIcon={selectedOption.concat(" ").concat(textContent)}>
                 {options.map((option, index) =>
                     <Clickable

@@ -18,6 +18,7 @@ interface CreateRepostProps extends GenericWrapper {
 const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => {
 
     const {
+        signedUser,
         repostData,
         addRepost,
         handleChange,
@@ -27,7 +28,7 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
     return (
         <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
             <FormStyled>
-                <UserAvatarPhoto userId={userId} />
+                <UserAvatarPhoto userId={signedUser.id} />
                 <TextInput minHeight="3rem" value={repostData.text} handleChange={handleChange} />
             </FormStyled>
             <PostCardBase post={post} />

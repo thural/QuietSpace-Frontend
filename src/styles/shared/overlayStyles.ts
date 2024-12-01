@@ -1,6 +1,6 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
     overlay: {
         top: '0',
@@ -27,22 +27,22 @@ const styles = createUseStyles({
     // },
 
     overlayContent: {
-        background: "white",
-        padding: "20px",
-        borderRadius: "5px",
+        background: theme.colors.background,
+        padding: theme.spacing(theme.spacingFactor.md),
+        borderRadius: theme.radius.xs,
         position: "relative",
     },
 
     closeButton: {
         position: "absolute",
-        top: "10px",
-        right: "10px",
+        top: theme.spacing(0.6),
+        right: theme.spacing(0.6),
         background: "none",
         border: "none",
-        fontSize: "20px",
+        fontSize: theme.typography.fontSize.primary,
         cursor: "pointer",
     }
 
-})
+}))
 
 export default styles

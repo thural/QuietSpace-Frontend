@@ -1,7 +1,7 @@
 import DefaultContainer from "@/components/shared/DefaultContainer";
 import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import ChatSidebar from "./sidebar/ChatSidebar"
-import styles from "../../styles/chat/chatContainerStyles";
+import styles from "@/styles/chat/chatContainerStyles";
 import { useGetChats } from "@/services/data/useChatData";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

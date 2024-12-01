@@ -1,14 +1,14 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import BoxStyled from "@/components/shared/BoxStyled";
+import FlexStyled from "@/components/shared/FlexStyled";
 import { ConsumerFn } from "@/types/genericTypes";
-import ShareMenu from "./ShareMenu";
 import CommentToggle from "./CommentToggle";
 import DislikeToggle from "./DislikeToggle";
 import LikeToggle from "./LikeToggle";
 import PostStats from "./PostStats";
-import { createUseStyles } from "react-jss";
+import ShareMenu from "./ShareMenu";
+import useStyles from "@/styles/feed/postInteractionStyles";
 
-interface PostStatSectionProps {
+interface PostInteractionsProps {
     post: PostResponse
     commentCount: number
     hasCommented: boolean
@@ -19,20 +19,7 @@ interface PostStatSectionProps {
     toggleRepostForm: ConsumerFn
 }
 
-const useStyles = createUseStyles({
-    statsSection: {
-        gap: '.5rem',
-        height: '1.5rem',
-        display: 'flex',
-        flexFlow: 'row nowrap',
-        justifyContent: 'start',
-        alignItems: 'center',
-        fontSize: '1.3rem',
-        margin: '1rem 0'
-    }
-})
-
-const PostStatSection: React.FC<PostStatSectionProps> = ({
+const PostInteractions: React.FC<PostInteractionsProps> = ({
     post,
     commentCount,
     hasCommented,
@@ -46,14 +33,14 @@ const PostStatSection: React.FC<PostStatSectionProps> = ({
     const classes = useStyles();
 
     return (
-        <BoxStyled className={classes.statsSection}>
+        <FlexStyled className={classes.statsSection}>
             <LikeToggle userReaction={post?.userReaction} handleLike={handleLike} />
             <DislikeToggle userReaction={post?.userReaction} handleDislike={handleDislike} />
             <CommentToggle hasCommented={hasCommented} toggleForm={toggleCommentForm} />
             <ShareMenu handleShareClick={toggleShareForm} handleRepostClick={toggleRepostForm} />
             <PostStats post={post} commentCount={commentCount} />
-        </BoxStyled>
+        </FlexStyled>
     );
 }
 
-export default PostStatSection
+export default PostInteractions

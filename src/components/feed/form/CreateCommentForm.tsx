@@ -1,14 +1,12 @@
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { PostResponse } from "@/api/schemas/inferred/post";
-import FlexStyled from "@/components/shared/FlexStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
 import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useCreateCommentForm from "@/services/hook/feed/useCreateCommentForm";
-import styles from "@/styles/feed/commentFormStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { Text } from "@mantine/core";
 import FormControls from "../fragments/FormControls";
 import ReplyInput from "../fragments/ReplyInput";
+import TruncatedContent from "../fragments/TruncatedContent";
 
 interface CreateCommentFormProps extends GenericWrapper {
     postItem: PostResponse | CommentResponse
@@ -17,42 +15,22 @@ interface CreateCommentFormProps extends GenericWrapper {
 
 const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem, isSecondaryMode = false }) => {
 
-    const classes = styles();
-
-    const {
-        inputRef,
-        addComment,
-        commentData,
-        userId,
-        authorId,
-        handleChange,
-        handleSubmit,
-        userAvatarPlaceholder,
-    } = useCreateCommentForm(postItem);
-
-
-
-    const replyInputProps = {
-        userId,
-        inputRef,
-        handleChange,
-        handleSubmit,
-        avatarPlaceholder: userAvatarPlaceholder,
-        inputValue: commentData.text
-    };
+    const useComment = useCreateCommentForm(postItem);
+    const { addComment, commentData, authorId, handleSubmit } = useComment
 
 
     return (
         <>
             {
-                isSecondaryMode ? <ReplyInput{...replyInputProps} />
+                isSecondaryMode ? <ReplyInput{...useComment} />
                     :
                     <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
-                        <FlexStyled className={classes.card}>
-                            <UserAvatarPhoto userId={authorId} />
-                            <Text className={classes.content} truncate="end">{postItem.text}</Text>
-                        </FlexStyled>
-                        <ReplyInput {...replyInputProps} />
+                        <TruncatedContent
+                            lineClamp={3}
+                            text={postItem.text}
+                            Avatar={<UserAvatarPhoto userId={authorId} />}
+                        />
+                        <ReplyInput {...useComment} />
                         <FormControls
                             isLoading={addComment.isPending}
                             isDisabled={!commentData.text}

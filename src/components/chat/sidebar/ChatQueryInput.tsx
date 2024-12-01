@@ -1,23 +1,7 @@
 import { ConsumerFn } from "@/types/genericTypes";
+import useStyles from "@/styles/chat/chatQueryInputStyles"
 import InputStyled from "@shared/InputStyled";
 import React from "react";
-import { createUseStyles } from "react-jss";
-
-const styles = createUseStyles({
-    inputStyled: {
-        gap: '1rem',
-        color: 'black',
-        width: '100%',
-        height: 'fit-content',
-        margin: 'auto',
-        display: 'flex',
-        padding: '.5rem',
-        flexFlow: 'row nowrap',
-        boxSizing: 'border-box',
-        alignItems: 'center',
-        backgroundColor: 'white',
-    },
-});
 
 interface QueryInputProps {
     handleInputFocus: ConsumerFn,
@@ -32,7 +16,7 @@ const ChatQueryInput: React.FC<QueryInputProps> = ({
     handleInputChange,
 }) => {
 
-    const classes = styles();
+    const classes = useStyles();
 
     return (
         <InputStyled

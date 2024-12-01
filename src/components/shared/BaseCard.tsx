@@ -1,15 +1,6 @@
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import FlexStyled from "./FlexStyled";
-import { createUseStyles } from "react-jss";
-
-const useStyles = createUseStyles({
-    baseCard: {
-        alignItems: "center",
-        background: "#e2e8f0",
-        padding: ".5rem",
-        borderRadius: "1.25rem",
-    }
-})
+import useStyles from "@/styles/shared/baseCardStyles"
 
 const BaseCard: React.FC<GenericWrapper> = ({ children }) => {
 

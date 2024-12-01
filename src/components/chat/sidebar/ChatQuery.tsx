@@ -6,7 +6,7 @@ import BoxStyled from "@shared/BoxStyled";
 import FlexStyled from "@shared/FlexStyled";
 import Typography from "@shared/Typography";
 import ChatQueryInput from "./ChatQueryInput";
-import UserCard from "../../shared/UserCard";
+import UserCard from "@shared/UserCard";
 import useQueryContainer from "@/services/hook/chat/useQueryContainer";
 import styles from "@/styles/chat/chatQueryStyles";
 

@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react"
-import withForwardedRefAndErrBoundary from "../../services/hook/shared/withForwardedRef"
-import { GenericWrapperWithRef } from "../../types/sharedComponentTypes"
+import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef"
+import { GenericWrapperWithRef } from "@/types/sharedComponentTypes"
 import BoxStyled from "./BoxStyled"
 
 interface ClickableProps extends GenericWrapperWithRef {

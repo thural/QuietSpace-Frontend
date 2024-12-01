@@ -1,7 +1,7 @@
 import { ConsumerFn } from "@/types/genericTypes";
 import React from "react";
 import { createUseStyles } from "react-jss";
-import { GenericWrapper } from "../../types/sharedComponentTypes";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 interface TextAreaStyledProps extends GenericWrapper {
     name: string,

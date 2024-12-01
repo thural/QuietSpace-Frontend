@@ -1,6 +1,6 @@
-import TextInputStyled from "@/components/shared/TextInputStyled"
+import TextInputStyled from "@/components/shared/TextInputStyled";
+import useStyles from "@/styles/feed/titleInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
-import { createUseStyles } from "react-jss";
 
 interface TitleInputProps {
     value: string | undefined
@@ -8,24 +8,6 @@ interface TitleInputProps {
 }
 
 const TitleInput: React.FC<TitleInputProps> = ({ value = "", handleChange }) => {
-
-
-    const useStyles = createUseStyles({
-
-        titleInput: {
-            width: '100%',
-            fontWeight: '600',
-            border: 'none',
-            height: '1.8rem',
-            boxSizing: 'border-box',
-            marginBottom: '0.5rem',
-
-            '&:focus': {
-                outline: 'none',
-                borderColor: '#a7abb1',
-            },
-        },
-    });
 
 
     const classes = useStyles();
