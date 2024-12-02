@@ -1,32 +1,32 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles(
+const styles = createUseStyles((theme: Theme) => (
 	{
 		navbar: {
 			top: '0',
-			color: 'white',
+			zIndex: '4',
 			width: '100%',
-			height: '4rem',
 			margin: '0px',
 			display: 'flex',
-			padding: '0.5rem 1rem 0.5rem 1rem',
-			zIndex: '2',
 			position: 'fixed',
 			flexWrap: 'nowrap',
-			boxSizing: 'border-box',
 			alignItems: 'center',
-			fontWeight: '400',
-			justifyContent: 'space-between',
-			backgroundColor: 'rgba(255, 255,255,0.85)',
+			boxSizing: 'border-box',
 			backdropFilter: 'blur(8px)',
-			WebkitBackdropFilter: 'blur(10px)',
+			color: theme.colors.textMax,
+			justifyContent: 'space-between',
+			WebkitBackdropFilter: 'blur(8px)',
+			backgroundColor: 'rgba(255, 255,255,0.85)',
+			fontWeight: theme.typography.fontWeightThin,
+			height: theme.spacing(theme.spacingFactor.md * 4),
+			padding: `${theme.spacing(theme.spacingFactor.sm)} ${theme.spacing(theme.spacingFactor.md)}`,
 			'& .badge': {
-				height: '.8rem',
-				width: '.8rem',
 				position: 'absolute',
-				left: '1.5rem',
-				bottom: '1rem',
-				backgroundColor: '#ff4848'
+				backgroundColor: '#ff4848',
+				height: theme.spacing(theme.spacingFactor.ms),
+				width: theme.spacing(theme.spacingFactor.ms),
+				left: theme.spacing(theme.spacingFactor.xl),
+				bottom: theme.spacing(theme.spacingFactor.md),
 			},
 			'& .navbar-item>a>img': {
 				width: '100%',
@@ -35,57 +35,57 @@ const styles = createUseStyles(
 			},
 			'& nav': {
 				margin: '0',
-				display: 'flex',
 				padding: '0',
+				display: 'flex',
 				alignItems: 'center',
-				fontWeight: '500',
-				justifyContent: 'center'
+				justifyContent: 'center',
+				fontWeight: theme.typography.fontWeightRegular,
 			},
 			'& .navbar-item': {
-				width: '2.5rem',
-				margin: '0 1.8rem',
 				display: 'flex',
 				position: 'relative',
 				alignItems: 'center',
-				justifyContent: 'center'
+				justifyContent: 'center',
+				width: theme.spacing(theme.spacingFactor.md * 2.5),
+				margin: `0 ${theme.spacing(theme.spacingFactor.md * 1.75)}`,
 			},
 			'& .navbar-item > a > svg': {
 				display: 'block',
-				fontSize: '1.8rem',
-				width: '2.5rem',
-				margin: '0 1.8rem',
-				color: 'black'
+				color: theme.colors.textMax,
+				width: theme.spacing(theme.spacingFactor.md * 2.5),
+				fontSize: theme.spacing(theme.spacingFactor.md * 1.8),
+				margin: `0 ${theme.spacing(theme.spacingFactor.md * 1.75)}`,
 			},
 			'& .navbar-item.menu': {
 				margin: 'auto'
 			},
 			'& .title': {
-				color: '#3e3e3e',
-				margin: 'auto'
+				margin: 'auto',
+				color: theme.colors.text,
 			},
 			'& a, a:hover, a:focus, a:active': {
-				textDecoration: 'none',
 				color: 'inherit',
+				textDecoration: 'none',
 			},
 			'& ul': {
-				display: 'flex',
-				fontSize: '1.6rem',
-				alignItems: 'center',
-				fontWeight: '400',
-				justifyContent: 'center',
 				margin: '0',
 				padding: '0',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				fontSize: theme.typography.fontSize.xLarge,
+				fontWeight: theme.typography.fontWeightThin,
 			},
 			'& li:first-of-type': {
 				marginLeft: 0
 			},
 			'& li': {
 				listStyle: "none",
-				margin: '0 1.5rem'
+				margin: `0 ${theme.spacing(theme.spacingFactor.xl)}`,
 			}
 		}
 	}
-);
+));
 
 
 export default styles

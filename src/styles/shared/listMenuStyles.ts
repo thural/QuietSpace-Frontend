@@ -1,5 +1,7 @@
 import { createUseStyles } from "react-jss";
 
+// TODO: decouple and reuse by components
+
 const styles = createUseStyles(
 	{
 		menuIcon: {

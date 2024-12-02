@@ -11,9 +11,12 @@ export interface Colors {
     checkBox: string;
     border: string;
     borderSecondary: string;
+    borderExtra: string;
     danger: string;
     warning: string;
     info: string;
+    hrDivider: string;
+    buttonBorder: string;
     success: string;
     gradient: string;
 }
@@ -23,6 +26,7 @@ export interface FontSize {
     secondary: string;
     small: string;
     large: string;
+    xLarge: string;
 }
 
 export interface Typography {
@@ -42,6 +46,8 @@ export interface Shadows {
     light: string;
     medium: string;
     dark: string;
+    inset: string;
+    paper: string;
     extra: string;
 }
 

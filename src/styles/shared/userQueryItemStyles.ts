@@ -1,29 +1,26 @@
 import { createUseStyles, Theme } from "react-jss";
 
 const styles = createUseStyles((theme: Theme) => ({
-
     userCard: {
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
-        margin: '.5rem 0',
-        width: '100%',
-
+        margin: `${theme.spacing(theme.spacingFactor.sm)} 0`,
         '& button': {
-            color: 'black',
-            height: '2rem',
+            color: theme.colors.textMax,
             width: '8rem',
-            cursor: 'pointer',
-            border: '1px solid #afafaf',
+            height: '2rem',
             display: 'block',
-            padding: '0 1rem',
-            fontSize: '.85rem',
-            fontWeight: '500',
+            cursor: 'pointer',
             marginLeft: 'auto',
-            borderRadius: '.75rem',
-            backgroundColor: theme.colors.background
+            border: '1px solid #afafaf',
+            borderRadius: theme.radius.ms,
+            backgroundColor: theme.colors.background,
+            fontSize: theme.typography.fontSize.small,
+            fontWeight: theme.typography.fontWeightRegular,
+            padding: `0 ${theme.spacing(theme.spacingFactor.md)}`,
         },
-    },
-
-}))
+    }
+}));
 
 export default styles

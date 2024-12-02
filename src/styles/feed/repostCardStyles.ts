@@ -1,14 +1,14 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
-  wrapper: {
-    position: 'relative',
+  repostCard: {
     padding: '0',
-    fontSize: '1rem',
-    margin: '1rem 0',
+    position: 'relative',
     alignItems: 'center',
-    gap: '.8rem',
+    fontSize: theme.typography.fontSize.primary,
+    margin: `${theme.spacing(theme.spacingFactor.md)} 0`,
+    gap: theme.spacing(theme.spacingFactor.md * 0.8),
   },
 
   replytSection: {
@@ -16,24 +16,24 @@ const styles = createUseStyles({
   },
 
   postHeadline: {
-    fontSize: '1rem',
     position: 'relative',
-    gap: '.8rem',
     alignItems: 'center',
+    fontSize: theme.typography.fontSize.primary,
+    gap: theme.spacing(theme.spacingFactor.xs),
     '& .repost-icon': {
-      fontSize: '1.75rem'
+      fontSize: '1.5rem'
     }
   },
 
   username: {
-    fontSize: '2rem',
+    fontSize: theme.typography.fontSize.large,
   },
 
   replyText: {
-    fontWeight: '300',
-    fontSize: '1rem',
+    fontWeight: theme.typography.fontWeightThin,
+    fontSize: theme.typography.fontSize.primary,
   }
-})
+}));
 
 
 export default styles

@@ -1,30 +1,24 @@
-import { ChangeEvent, useState } from "react"
-import BaseCard from "../shared/BaseCard"
-import LightButton from "../shared/buttons/LightButton"
-import ModalStyled from "../shared/ModalStyled"
-import Overlay from "../shared/Overlay"
-import UserCard from "../shared/UserCard"
-import HiddenFileInput from "../shared/HiddenFileInput"
-import Clickable from "../shared/Clickable"
 import { getSignedUserElseThrow } from "@/api/queries/userQueries"
 import { useUploadProfilePhoto } from "@/services/data/useUserData"
-import LoaderStyled from "../shared/LoaderStyled"
-import Typography from "../shared/Typography"
-import BoxStyled from "../shared/BoxStyled"
+import useStyles from "@/styles/settings/profileModifierStyles"
 import { GenericWrapper } from "@/types/sharedComponentTypes"
-import { createUseStyles } from "react-jss"
+import { ChangeEvent, useState } from "react"
+import BaseCard from "../shared/BaseCard"
+import BoxStyled from "../shared/BoxStyled"
+import LightButton from "../shared/buttons/LightButton"
+import Clickable from "../shared/Clickable"
+import HiddenFileInput from "../shared/HiddenFileInput"
+import LoaderStyled from "../shared/LoaderStyled"
+import ModalStyled from "../shared/ModalStyled"
+import Overlay from "../shared/Overlay"
+import Typography from "../shared/Typography"
+import UserCard from "../shared/UserCard"
 
-const useStyles = createUseStyles({
-    listItem: {
-        padding: '10px 20px',
-        '&:not(:last-child)': { borderBottom: '1px solid #ccc', },
-    },
-});
+
 
 const ProfilePhotoModifier = () => {
 
     const classes = useStyles();
-
     const signedUser = getSignedUserElseThrow();
     const [modalDisplay, setModalDisplay] = useState<boolean>(false);
 

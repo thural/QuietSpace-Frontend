@@ -3,22 +3,22 @@ import { createUseStyles, Theme } from "react-jss";
 const styles = createUseStyles((theme: Theme) => (
     {
         container: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             width: "100%",
             height: "100%",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            boxSizing: "border-box",
+            justifyContent: "center",
+            padding: theme.spacing(theme.spacingFactor.lg),
             backgroundColor: theme.colors.backgroundSecondary,
             color: theme.colors.textSecondary,
             border: `1px solid ${theme.colors.backgroundSecondary}`,
-            borderRadius: "4px",
-            padding: "20px",
-            boxSizing: "border-box",
-            flexDirection: "row",
-            gap: "5rem'",
+            borderRadius: theme.radius.xs,
+            gap: theme.spacing(theme.spacingFactor.md * 5),
             "& svg": {
                 fontSize: "3rem",
-                margin: "1rem"
+                margin: theme.spacing(theme.spacingFactor.md)
             }
         }
     }

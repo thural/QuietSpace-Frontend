@@ -1,14 +1,12 @@
 import { PostResponse } from "@/api/schemas/inferred/post"
 import { ResId } from "@/api/schemas/native/common"
 import PostCard from "@/components/feed/post/PostCard"
-import BoxStyled from "@/components/shared/BoxStyled"
 import ErrorComponent from "@/components/shared/errors/ErrorComponent"
 import PostSkeleton from "@/components/shared/PostSkeleton"
 import { useGetLatestComment } from "@/services/data/useCommentData"
 import { useGetUserById } from "@/services/data/useUserData"
-import CommentBox from "../comment/Comment"
-import styles from "@/styles/feed/replyCardStyles"
 import { nullishValidationdError } from "@/utils/errorUtils"
+import CommentBox from "../comment/Comment"
 
 interface PostReplyCardProps {
     post: PostResponse
@@ -16,8 +14,6 @@ interface PostReplyCardProps {
 }
 
 const PostReplyCard: React.FC<PostReplyCardProps> = ({ post, userId }) => {
-
-    const classes = styles();
 
     let userData = undefined;
     let commentData = undefined;
@@ -48,9 +44,7 @@ const PostReplyCard: React.FC<PostReplyCardProps> = ({ post, userId }) => {
     );
 
     return (
-        <BoxStyled className={classes.wrapper} >
-            <RenderResult />
-        </BoxStyled>
+        <RenderResult />
     )
 }
 

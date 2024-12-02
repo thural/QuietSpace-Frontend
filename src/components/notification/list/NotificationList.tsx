@@ -1,5 +1,6 @@
 import { NotificationResponse } from "@/api/schemas/inferred/notification";
 import { NotificationType } from "@/api/schemas/native/notification";
+import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import { Category, pickNotificationFilter } from "@/utils/notificationUtils";
 import Typography from "@components/shared/Typography";
@@ -8,7 +9,6 @@ import { useParams } from "react-router-dom";
 import CommentNotification from "../fragments/CommentNotification";
 import FollowNotification from "../fragments/FollowNotification";
 import PostNotification from "../fragments/PostNotification";
-import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
 
 const NotificationList = () => {
 
@@ -40,7 +40,6 @@ const NotificationList = () => {
         } = NotificationType;
 
         switch (type) {
-
             case COMMENT_REACTION:
                 return <CommentNotification key={id} notification={notification} />;
             case COMMENT_REPLY:

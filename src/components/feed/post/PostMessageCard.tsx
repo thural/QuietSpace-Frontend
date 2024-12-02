@@ -27,7 +27,7 @@ const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7
         justifyItems: 'center',
         backgroundColor: 'white',
         boxShadow: '0px 0px 16px -16px'
-    }
+    } // TODO: refactor for jss
 
     const mergedStyle = { ...componentStyle, ...style, backgroundColor: 'white' };
 

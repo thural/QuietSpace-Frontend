@@ -1,29 +1,29 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
     notificationCard: {
         display: 'flex',
         alignItems: 'center',
         width: '100%',
         borderBottom: ".1rem solid #e3e3e3",
-        padding: ".5rem 0",
+        padding: `${theme.spacing(theme.spacingFactor.sm)} 0`,
 
         '& button': {
-            color: 'black',
             height: '2rem',
             width: '8rem',
             cursor: 'pointer',
-            border: '1px solid #afafaf',
             display: 'block',
-            padding: '0 1rem',
-            fontSize: '.85rem',
-            fontWeight: '500',
             marginLeft: 'auto',
-            borderRadius: '.75rem',
-            backgroundColor: 'rgb(250, 250, 250)'
+            color: theme.colors.textMax,
+            border: `1px solid ${theme.colors.buttonBorder}`,
+            padding: `0 ${theme.spacing(theme.spacingFactor.md)}`,
+            fontSize: theme.spacing(0.9),
+            fontWeight: theme.typography.fontWeightBold,
+            borderRadius: theme.radius.ms,
+            backgroundColor: theme.colors.backgroundSecondary
         },
     },
-})
+}));
 
 export default styles

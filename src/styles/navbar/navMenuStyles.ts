@@ -1,54 +1,54 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles(
+const styles = createUseStyles((theme: Theme) => (
 	{
 		menuOverlay: {
 			top: '0',
 			left: '0',
 			right: '0',
 			bottom: '0',
-			display: 'none',
 			zIndex: '0',
-			position: 'fixed',
 			width: '100vw',
-			height: '100vh'
+			height: '100vh',
+			display: 'none',
+			position: 'fixed',
 		},
 		icon: {
 			'& svg': {
+				color: 'black',
 				display: 'block',
-				fontSize: '1.8rem',
-				width: '2.5rem',
-				margin: '0 1.8rem',
-				color: 'black'
+				fontSize: theme.typography.fontSize.xLarge,
+				width: theme.spacing(theme.spacingFactor.md * 2.5),
+				margin: `0 ${theme.spacing(theme.spacingFactor.md * 1.8)}`,
 			}
 		},
 		menuList: {
 			top: '0',
-			color: 'black',
 			right: '0',
-			width: '12rem',
-			margin: '0',
-			display: 'none',
-			padding: '.5rem',
 			zIndex: '1',
+			margin: '0',
+			color: 'black',
+			width: '12rem',
+			display: 'none',
 			position: 'absolute',
-			fontSize: '1.75rem',
-			boxShadow: 'rgb(0 0 0 / 16%) 0px 0px 32px -4px',
 			boxSizing: 'border-box',
-			borderRadius: '1rem',
 			backgroundColor: 'white',
+			fontSize: theme.typography.fontSize.xLarge,
+			padding: theme.spacing(theme.spacingFactor.sm),
+			borderRadius: theme.spacing(theme.spacingFactor.md),
+			boxShadow: 'rgb(0 0 0 / 16%) 0px 0px 32px -4px',
 			'& .clickable:hover': {
 				margin: '0rem',
-				background: 'var(--mantine-color-gray-1)',
-				borderRadius: '1rem',
-				padding: '.5rem',
-				boxSizing: 'border-box'
+				boxSizing: 'border-box',
+				padding: theme.radius.sm,
+				borderRadius: theme.radius.sm,
+				background: theme.colors.backgroundSecondary,
 			},
 			'& .clickable': {
-				padding: '.5rem',
 				display: 'flex',
 				alignItems: 'center',
-				justifyContent: 'space-between'
+				justifyContent: 'space-between',
+				padding: theme.spacing(theme.spacingFactor.sm),
 			},
 			'& a, a:hover, a:focus, a:active': {
 				textDecoration: 'none',
@@ -57,13 +57,13 @@ const styles = createUseStyles(
 			'& p': {
 				margin: '0',
 				padding: '0',
+				lineHeight: '0',
 				alignSelf: 'center',
-				fontWeight: '300',
-				lineHeight: '0'
+				fontWeight: theme.typography.fontWeightThin,
 			}
 		}
 	}
-);
+));
 
 
 export default styles

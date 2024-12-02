@@ -20,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ style, handleKeyDown, handleInput
 
     return (
         <Box className={classes.searchbar} style={style}>
-            <PiMagnifyingGlassBold className={classes.searchIcon} />
+            <PiMagnifyingGlassBold className={classes.searchIconLarge} />
             <InputStyled
                 variant="unstyled"
                 className={classes.searchInput}
@@ -31,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ style, handleKeyDown, handleInput
                 onBlur={handleInputBlur}
                 ref={queryInputRef}
             />
-            <PiMicrophone className={classes.searchIcon} />
+            <PiMicrophone className={classes.searchIconLarge} />
         </Box>
     )
 };

@@ -4,26 +4,26 @@ const styles = createUseStyles((theme: Theme) => ({
 
     userDetails: {
         width: '100%',
-        fontWeight: theme.typography.fontWeightRegular,
-        boxSizing: 'border-box',
         alignItems: 'center',
         alignContent: 'center',
+        boxSizing: 'border-box',
+        fontWeight: theme.typography.fontWeightRegular,
         '& .username': {
+            alignSelf: 'center',
+            alignItems: 'center',
             margin: `0 ${theme.spacing(0.5)}`,
             fontWeight: theme.typography.fontWeightBold,
-            alignSelf: 'center',
-            alignItems: 'center'
         },
         '& .email': {
+            maxWidth: '50%',
+            alignSelf: 'center',
+            alignItems: 'center',
             margin: `0 ${theme.spacing(0.5)}`,
             fontSize: theme.typography.fontSize,
             fontWeight: theme.typography.fontWeightRegular,
-            maxWidth: '50%',
-            alignSelf: 'center',
-            alignItems: 'center'
         }
     }
 
-}))
+}));
 
 export default styles

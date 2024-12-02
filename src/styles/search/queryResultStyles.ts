@@ -1,20 +1,19 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
-
+const styles = createUseStyles((theme: Theme) => ({
     resultContainer: {
         width: '100%',
         height: '50vh',
         display: 'none',
-        zIndex: '3',
-        padding: '1rem',
-        boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)',
-        borderRadius: "1rem 1rem 1rem 1rem",
-        borderBottom: '1px solid gainsboro',
         boxSizing: 'border-box',
-        backgroundColor: 'rgb(250, 250, 250)'
+        zIndex: theme.zIndex.modal,
+        borderRadius: theme.radius.md,
+        boxShadow: theme.shadows.paper,
+        backgroundColor: theme.colors.background,
+        padding: theme.spacing(theme.spacingFactor.md),
+        borderBottom: `1px solid ${theme.colors.border}`,
     }
 
-});
+}));
 
 export default styles

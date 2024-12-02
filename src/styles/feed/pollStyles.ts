@@ -1,67 +1,66 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
   pollContainer: {
-    gap: '.5rem',
     display: 'flex',
     flexFlow: 'column nowrap',
-    margin: '1rem 0',
+    gap: theme.spacing(theme.spacingFactor.sm),
+    margin: `${theme.spacing(theme.spacingFactor.md)} 0`,
   },
 
   progressContainer: {
-    position: 'relative',
     width: '100%',
-    borderRadius: '1rem',
-    alignItems: 'center'
+    alignItems: 'center',
+    position: 'relative',
+    borderRadius: theme.radius.md,
   },
 
   progress: {
-    height: '2.75rem',
     width: '100%',
+    height: '2.75rem',
     borderRadius: 'inherit',
-    backgroundColor: 'white',
-    boxShadow: '0px 0px 0px 1px #dee2e6 inset'
+    backgroundColor: theme.colors.backgroundMax,
+    boxShadow: theme.shadows.inset
   },
 
   progressBox: {
     width: '100%',
-    borderRadius: '1rem',
+    borderRadius: theme.radius.md,
   },
 
   optionDesc: {
+    zIndex: '1',
     position: 'absolute',
-    left: '1rem',
     fontSize: '.9rem',
-    fontWeight: '500',
-    color: 'white',
     mixBlendMode: 'difference',
-    zIndex: '1'
+    left: theme.spacing(theme.spacingFactor.md),
+    fontWeight: theme.typography.fontWeightRegular,
+    color: theme.colors.backgroundMax,
   },
 
   optionPerc: {
-    position: 'absolute',
-    right: '1rem',
-    fontSize: '.9rem',
-    fontWeight: '500',
+    zIndex: '1',
     color: 'white',
+    fontSize: '.9rem',
+    position: 'absolute',
     mixBlendMode: 'difference',
-    zIndex: '1'
+    right: theme.spacing(theme.spacingFactor.md),
+    fontWeight: theme.typography.fontWeightRegular,
   },
 
   pollStatus: {
-    opacity: '0.7',
-    marginLeft: 'auto',
-    display: 'flex',
-    justifyContent: 'flex-end',
     gap: '10px',
-    fontSize: '14px',
+    opacity: '0.7',
+    display: 'flex',
+    marginLeft: 'auto',
+    justifyContent: 'flex-end',
+    fontSize: theme.typography.fontSize.primary,
     '& .votes': {
-      fontSize: '.8rem',
-      marginRight: "auto"
+      marginRight: "auto",
+      fontSize: theme.typography.fontSize.small,
     }
   },
-
-});
+}));
 
 
 export default styles

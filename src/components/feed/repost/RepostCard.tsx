@@ -49,7 +49,7 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
                 <FlexStyled className={classes.postHeadline}>
                     <PiArrowsClockwiseBold className="repost-icon" />
                     <UserDetails scale={5} user={user} isDisplayEmail={false} />
-                    <Typography style={{ margin: '0 .5rem' }}>reposted</Typography>
+                    <Typography>reposted</Typography>
                     <PostMenu postId={post.id} isRepost={true} handleDeletePost={handleDeletePost} toggleEditForm={toggleEditForm} isMutable={isMutable} />
                 </FlexStyled>
                 <Typography className={classes.repostText}>{post.repostText}</Typography>
@@ -61,8 +61,9 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
     const RenderResult = () => (
         isPostsLoading || isLoading || user === undefined ? <PostSkeleton /> : <PostContent />
     );
+
     return (
-        <BoxStyled className={classes.wrapper} >
+        <BoxStyled className={classes.repostCard} >
             <RenderResult />
         </BoxStyled>
     )

@@ -1,11 +1,11 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
     profileControlsSection: {
         '& button': {
-            borderColor: "rgba(150, 150, 150, 1)"
+            borderColor: theme.colors.borderExtra
         },
     },
-})
+}));
 
 export default styles

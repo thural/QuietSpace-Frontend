@@ -12,7 +12,6 @@ interface SettingsPanelProps extends GenericWrapper {
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ label, isPending, handleSubmit, children }) => {
 
-
     return (
         <FormStyled style={{ gap: "2rem" }}>
             <Typography type="h3">{label}</Typography>

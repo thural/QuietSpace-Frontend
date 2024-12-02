@@ -1,24 +1,24 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
     container: {
-        paddingTop: '2.5rem',
-        gap: '.5rem',
+        paddingTop: theme.spacing(theme.spacingFactor.ms * 2.5),
         top: '50%',
         left: '50%',
         color: 'black',
         height: '50vh',
-        border: '1px solid gray',
         margin: 'auto',
         display: 'block',
-        padding: '1rem',
-        zIndex: '3',
         position: 'fixed',
         flexFlow: 'row nowrap',
         transform: 'translate(-50%, -50%)',
-        borderRadius: '1em',
-        backgroundColor: 'white',
+        zIndex: theme.zIndex.modal,
+        borderRadius: theme.radius.md,
+        backgroundColor: theme.colors.backgroundMax,
+        gap: theme.spacing(theme.spacingFactor.sm),
+        border: `1px solid ${theme.colors.borderExtra}`,
+        padding: theme.spacing(theme.spacingFactor.md),
     },
-});
+}));
 
 export default styles

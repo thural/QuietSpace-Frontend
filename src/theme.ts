@@ -24,7 +24,7 @@ const sharedTheme: Omit<Theme, 'colors'> = {
         ms: '.75rem',
         md: '1rem',
         lg: '1.25rem',
-        xl: '1.5rem',
+        xl: '2rem',
         square: '0',
         round: '50%'
     },
@@ -54,27 +54,35 @@ const sharedTheme: Omit<Theme, 'colors'> = {
         light: '0 1px 3px rgba(0, 0, 0, 0.1)',
         medium: '0 3px 6px rgba(0, 0, 0, 0.15)',
         dark: '0 10px 20px rgba(0, 0, 0, 0.2)',
+        inset: '0px 0px 0px 1px #dee2e6 inset',
+        paper: '0 4px 8px -4px rgba(72, 72, 72, 0.3)',
         extra: 'rgb(0 0 0 / 16%) 0px 0px 24px -6px',
     },
     typography: {
-        fontFamily: '"Roboto", sans-serif',
-        fontSize: { primary: '1rem', secondary: '1.25rem', small: '0.75rem', large: '1.5rem' },
-        fontWeightThin: 300,
-        fontWeightRegular: 400,
-        fontWeightBold: 700,
         lineHeight: '1.5',
+        fontWeightThin: 300,
+        fontWeightBold: 700,
+        fontWeightRegular: 400,
+        fontFamily: '"Roboto", sans-serif',
         h1: { fontSize: '2rem', fontWeight: 700 },
         h2: { fontSize: '1.75rem', fontWeight: 700 },
         body1: { fontSize: '1rem', fontWeight: 400 },
         body2: { fontSize: '0.875rem', fontWeight: 400 },
+        fontSize: {
+            primary: '1rem',
+            secondary: '1.25rem',
+            small: '0.75rem',
+            large: '1.5rem',
+            xLarge: '1.75rem'
+        },
     },
 };
 
 export const lightTheme: Theme = {
     ...sharedTheme,
     colors: {
-        background: '#f7f7f7', // Light gray
-        backgroundSecondary: "#f1f6f5", // #f0f2f5Light muted gray
+        background: '#fafafa', // Light gray
+        backgroundSecondary: "#E9EFEE", // #f0f2f5Light muted gray
         backgroundMax: 'white',
         text: '#333333', // Dark gray
         textSecondary: '#5a5a5a', // Medium gray
@@ -83,12 +91,15 @@ export const lightTheme: Theme = {
         secondary: '#10b981', // Green
         inputField: '#e2e8f0', // Light blue-gray
         checkBox: '#3b82f6', // Blue
-        border: '#d1d5db', // Gray
-        borderSecondary: "#f1f1f1", // Light Gray
+        border: '#dcdcdc', // Gray
+        borderSecondary: "#f1f1f1", // Light gray
+        borderExtra: "#909090", // Medium gray
         danger: '#e57373', // Soft red
         warning: '#ffa726', // Soft orange
         info: '#64b5f6', // Soft blue
         success: '#81c784', // Soft green
+        hrDivider: '#cccccc', // Soft silver
+        buttonBorder: '#888888', // Slate gray
         gradient: 'linear-gradient(45deg, #3b82f6, #10b981)' // Muted gradient
     }
 } as Theme;
@@ -108,10 +119,13 @@ export const darkTheme: Theme = {
         checkBox: '#6c757d', // Muted gray
         border: '#6c757d', // Gray
         borderSecondary: '#4a4b4b', // Dark gray
+        borderExtra: "#404040", // Smoky gray
         danger: '#e57373', // Soft red
         warning: '#ffa726', // Soft orange
         info: '#64b5f6', // Soft blue
         success: '#81c784', // Soft green
+        hrDivider: '#333333', // Midnight gray
+        buttonBorder: "#111111", // Eclipse black
         gradient: 'linear-gradient(45deg, #495057, #adb5bd)' // Muted gradient
     }
 } as Theme;

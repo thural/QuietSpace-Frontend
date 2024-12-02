@@ -1,7 +1,7 @@
 import BoxStyled from "@/components/shared/BoxStyled";
 import InputStyled from "@/components/shared/InputStyled";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import styles from "@/styles/profile/searchbarStyles";
+import styles from "@/styles/search/searchBarStyles";
 import { ChangeEventHandler, FocusEventHandler, useRef } from "react";
 import { PiMagnifyingGlassBold } from "react-icons/pi";
 
@@ -18,7 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ handleInputBlur, handleInputChang
     const queryInputRef = useRef();
 
     return (
-        <BoxStyled className={classes.searchbar} >
+        <BoxStyled className={classes.searchbarSecondary} >
             <PiMagnifyingGlassBold className={classes.searchIcon} />
             <InputStyled
                 className={classes.searchInput}

@@ -1,14 +1,14 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
   form: {
-    width: '100%',
-    height: '100%',
     gap: '1rem',
     margin: '0',
+    width: '100%',
+    height: '100%',
     display: 'flex',
-    flexFlow: 'column nowrap'
+    flexFlow: 'column nowrap',
   },
-});
+}));
 
 export default styles

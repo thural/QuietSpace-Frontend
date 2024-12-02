@@ -1,6 +1,7 @@
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import Overlay from "@/components/shared/Overlay";
+import { useCurrentProfile } from "@/services/hook/profile/useUserProfile";
+import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import OutlineButton from "@components/shared/buttons/OutlineButton";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import { PiSignOut } from "react-icons/pi";
@@ -10,11 +11,8 @@ import FullLoadingOverlay from "../shared/FullLoadingOverlay";
 import UserConnections from "./connections/UserConnections";
 import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";
-import UserDetailsSection from "./user-details/UserDetailsSection";
 import UserProfileTabs from "./tabs/UserProfileTabs";
-import { useCurrentProfile } from "@/services/hook/profile/useUserProfile";
-import TextAreaStyled from "../shared/TextAreaStyled";
-import Typography from "../shared/Typography";
+import UserDetailsSection from "./user-details/UserDetailsSection";
 
 
 const UserProfileContainer = () => {

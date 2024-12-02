@@ -4,7 +4,7 @@ const useStyles = createUseStyles((theme: Theme) => ({
     titleInput: {
         width: '100%',
         border: 'none',
-        height: '1.8rem',
+        height: theme.spacing(1.8),
         boxSizing: 'border-box',
         fontWeight: theme.typography.fontWeightBold,
         marginBottom: theme.spacing(theme.spacingFactor.sm),

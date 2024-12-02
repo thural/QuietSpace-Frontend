@@ -1,16 +1,11 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
-
-  container: {
-    paddingTop: '4rem',
-    '& hr': {
-      border: 'none',
-      height: '0.5px',
-      backgroundColor: 'rgb(204 204 204)'
-    }
+const useStyles = createUseStyles((theme: Theme) => ({
+  panel: {
+    width: "100%",
+    margin: `0 ${theme.spacing(theme.spacingFactor.xl)}`
   },
+  tabs: { margin: '0' }
+}));
 
-})
-
-export default styles
+export default useStyles

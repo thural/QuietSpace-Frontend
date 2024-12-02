@@ -1,29 +1,29 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
   postCard: {
-    position: 'relative',
     padding: '0',
-    fontSize: '1rem',
-    margin: '1rem 0',
+    position: 'relative',
+    fontSize: theme.typography.fontSize.primary,
+    margin: `${theme.spacing(theme.spacingFactor.md)} 0`,
 
     '& .badge': {
-      left: '0.85rem',
-      bottom: '1.15rem',
       position: 'absolute',
-      minWidth: '.8rem',
-      maxHeight: '.8rem'
+      left: theme.spacing(theme.spacingFactor.md * 0.85),
+      bottom: theme.spacing(theme.spacingFactor.md * 1.15),
+      minWidth: theme.spacing(theme.spacingFactor.md * 0.8),
+      maxHeight: theme.spacing(theme.spacingFactor.md * 0.8)
     },
     '& hr': {
       border: 'none',
       height: '0.5px',
-      marginTop: '1rem',
       marginBottom: '0',
-      backgroundColor: 'rgb(204 204 204)'
+      backgroundColor: theme.colors.hrDivider,
+      marginTop: theme.spacing(theme.spacingFactor.md),
     }
   },
-})
+}));
 
 
 export default styles
