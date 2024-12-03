@@ -2,11 +2,16 @@
 import Clickable from "@/components/shared/Clickable";
 import ListMenu from "@/components/shared/ListMenu";
 import CustomLink, { CustomLinkProps } from "@/components/shared/routes/CustomLink";
-import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiSignOut } from "react-icons/pi";
+import useTheme from "@/services/hook/shared/useTheme";
+import { Switch } from "@mantine/core";
+import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiMoon, PiSignOut, PiSun } from "react-icons/pi";
 import { RiMenu3Fill } from "react-icons/ri";
 
 
+
 const NavMenu = () => {
+
+    const { isDarkMode, setThemeMode } = useTheme();
 
     const links: Array<CustomLinkProps> = [
         { to: "/saved", text: "saved", Component: <PiBookmarkSimple /> },
@@ -27,6 +32,12 @@ const NavMenu = () => {
                         </Clickable>}
                     />)
             }
+            <Switch
+                checked={isDarkMode}
+                onChange={(event) => setThemeMode(event.currentTarget.checked)}
+                onLabel={<PiSun />}
+                offLabel={<PiMoon />}
+            />
         </ListMenu>
     )
 }

@@ -1,8 +1,8 @@
+import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLatestComment } from "@/api/requests/commentRequests";
+import { CommentRequest, CommentResponse, PagedComment } from "@/api/schemas/inferred/comment";
+import { ResId } from "@/api/schemas/inferred/common";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
-import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLatestComment } from "../../api/requests/commentRequests";
-import { ResId } from "@/api/schemas/inferred/common";
-import { CommentRequest, CommentResponse, PagedComment } from "@/api/schemas/inferred/comment";
 
 
 export const useGetComments = (postId: ResId) => {

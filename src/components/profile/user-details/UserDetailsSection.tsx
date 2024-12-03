@@ -22,7 +22,7 @@ const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {
         <FlexStyled className={classes.detailsSection}>
             <BoxStyled>
                 <Typography type="h2" fw={700}>{user.username}</Typography>
-                <Typography style={{ whiteSpace: "pre-wrap" }} size="1.1rem" lineclamp={4}>{bio}</Typography>
+                <Typography style={{ whiteSpace: "pre-wrap", lineHeight: "1.25rem" }} size="1rem" lineclamp={4}>{bio}</Typography>
             </BoxStyled>
             <UserAvatarPhoto size="6rem" userId={user.id} />
         </FlexStyled>

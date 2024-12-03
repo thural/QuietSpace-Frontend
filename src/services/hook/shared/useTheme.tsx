@@ -1,17 +1,23 @@
-import { lightTheme, darkTheme } from "@/theme";
-import { useState } from "react";
+import { useThemeStore } from "@/services/store/zustand";
+import { darkTheme, lightTheme } from "@/theme";
+import { getLocalThemeMode, setLocalThemeMode } from "@/utils/localStorageUtils";
+import { useEffect } from "react";
 
 
 
 const useTheme = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const { data: isDarkMode, setThemeStore } = useThemeStore();
+    const themeMode: boolean = getLocalThemeMode();
 
-    const toggleTheme = () => {
-        setIsDarkMode((prevMode) => !prevMode);
+    useEffect(() => setThemeStore(themeMode), []);
+
+    const setThemeMode = (isChecked: boolean) => {
+        setLocalThemeMode(isChecked);
+        setThemeStore(isChecked);
     };
 
     const theme = isDarkMode ? darkTheme : lightTheme;
-    return { theme, toggleTheme };
+    return { theme, setThemeMode, isDarkMode, setLocalThemeMode };
 };
 
 export default useTheme;

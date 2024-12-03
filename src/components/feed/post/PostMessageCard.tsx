@@ -25,11 +25,11 @@ const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7
         flexFlow: 'column nowrap',
         borderRadius: '1rem',
         justifyItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'blue',
         boxShadow: '0px 0px 16px -16px'
     } // TODO: refactor for jss
 
-    const mergedStyle = { ...componentStyle, ...style, backgroundColor: 'white' };
+    const mergedStyle = { ...componentStyle, ...style, backgroundColor: '#333333' };
 
 
     const { data: post, isLoading, isError, error } = useGetPostById(postId);
