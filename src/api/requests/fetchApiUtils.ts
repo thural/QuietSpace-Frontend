@@ -1,7 +1,7 @@
 import { FetchOptions, JwtToken } from "../schemas/inferred/common";
 import { CustomError } from "../schemas/inferred/errors";
 
-export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'CONNECT' | 'DELETE';
+export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'CONNECT';
 
 
 export type ApiResponseFn = (

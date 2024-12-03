@@ -1,7 +1,9 @@
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import InputBoxStyled from "@/components/shared/InputBoxStyled";
 import TextInputStyled from "@/components/shared/TextInputStyled";
+import { useLoginForm } from "@/services/hook/auth/useLoginForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import styles from "@/styles/auth/formStyles";
 import { AuthFormProps } from "@/types/authTypes";
 import BoxStyled from "@components/shared/BoxStyled";
 import GradientButton from "@components/shared/buttons/GradientButton";
@@ -11,8 +13,6 @@ import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
 import PassInput from "@components/shared/PassInput";
 import Typography from "@components/shared/Typography";
 import React from "react";
-import { useLoginForm } from "@/services/hook/auth/useLoginForm";
-import styles from "@/styles/auth/formStyles";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 

@@ -29,7 +29,7 @@ const ChatMenu: React.FC<ChatMenuProps> = ({ isMutable, handleDeleteChat }) => {
     }
 
     return (
-        <ListMenu menuIcon={<PiDotsThreeVertical />}>
+        <ListMenu menuIcon={<PiDotsThreeVertical />} >
             <Conditional isEnabled={isMutable}>
                 <Clickable handleClick={handleChatMute} alt="mute chat" text="mute" />
                 <Clickable handleClick={handleChatRemove} alt="remove chat" text="remove" />

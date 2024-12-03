@@ -1,13 +1,13 @@
-import DefaultContainer from "@/components/shared/DefaultContainer";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
-import ChatSidebar from "./sidebar/ChatSidebar"
-import styles from "@/styles/chat/chatContainerStyles";
-import { useGetChats } from "@/services/data/useChatData";
-import { nullishValidationdError } from "@/utils/errorUtils";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import { getSignedUser } from "@/api/queries/userQueries";
+import DefaultContainer from "@/components/shared/DefaultContainer";
+import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import { useGetChats } from "@/services/data/useChatData";
+import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import styles from "@/styles/chat/chatContainerStyles";
+import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { nullishValidationdError } from "@/utils/errorUtils";
+import LoaderStyled from "../shared/LoaderStyled";
+import ChatSidebar from "./sidebar/ChatSidebar";
 
 const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
@@ -28,7 +28,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     const { data: chats, isLoading, isError } = data;
 
 
-    if (isLoading) return <FullLoadingOverlay />;
+    if (isLoading) return <LoaderStyled />;
     if (isError || chats === undefined) return <ErrorComponent message='could not fetch chat data!' />;
 
     return (

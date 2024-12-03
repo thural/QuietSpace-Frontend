@@ -3,18 +3,18 @@ import Clickable from "@/components/shared/Clickable";
 import ListMenu from "@/components/shared/ListMenu";
 import { ConsumerFn } from "@/types/genericTypes";
 
-interface ComboMenu {
+interface ComboMenuProps {
     options: Array<string>
     selectedOption: string
     textContent: string
     handleSelect: ConsumerFn
 }
 
-const ComboMenu: React.FC<ComboMenu> = ({ options, selectedOption, textContent, handleSelect }) => {
+const ComboMenu: React.FC<ComboMenuProps> = ({ options, selectedOption, textContent, handleSelect }) => {
 
     return (
         <BoxStyled style={{ position: "relative" }}>
-            <ListMenu styleUpdate={{}} menuIcon={selectedOption.concat(" ").concat(textContent)}>
+            <ListMenu menuIcon={selectedOption.concat(" ").concat(textContent)}>
                 {options.map((option, index) =>
                     <Clickable
                         key={index}

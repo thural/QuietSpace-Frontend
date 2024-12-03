@@ -1,9 +1,9 @@
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import styles from "@/styles/auth/authStyles";
 import { AuthPages, AuthState } from "@/types/authTypes";
 import BoxStyled from "@components/shared/BoxStyled";
 import Typography from "@components/shared/Typography";
 import { useState } from "react";
-import styles from "@/styles/auth/authStyles";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";

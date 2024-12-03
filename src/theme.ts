@@ -57,6 +57,7 @@ const sharedTheme: Omit<Theme, 'colors'> = {
         inset: '0px 0px 0px 1px #dee2e6 inset',
         paper: '0 4px 8px -4px rgba(72, 72, 72, 0.3)',
         extra: 'rgb(0 0 0 / 16%) 0px 0px 24px -6px',
+        wide: 'rgb(0 0 0 / 16%) 0px 0px 32px -4px',
     },
     typography: {
         lineHeight: '1.5',

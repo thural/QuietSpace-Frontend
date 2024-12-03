@@ -28,7 +28,7 @@ const PostMenu: React.FC<PostMenu> = ({ postId, handleDeletePost, toggleEditForm
 
 
     return (
-        <ListMenu styleUpdate={{}} menuIcon={<PiDotsThreeVertical />}>
+        <ListMenu menuIcon={<PiDotsThreeVertical />}>
             <Conditional isEnabled={isMutable && !isRepost}>
                 <Clickable handleClick={toggleEditForm} alt="edit post" text="edit" />
             </Conditional>

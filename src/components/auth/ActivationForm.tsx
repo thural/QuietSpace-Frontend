@@ -1,6 +1,8 @@
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import { useActivationForm } from "@/services/hook/auth/useActivationForm";
 import { CountDownDisplay } from "@/services/hook/common/useTimer";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import styles from "@/styles/auth/activationFormStyles";
 import { ActivationFormProps } from "@/types/authTypes";
 import BoxStyled from "@components/shared/BoxStyled";
 import GradientButton from "@components/shared/buttons/GradientButton";
@@ -9,8 +11,6 @@ import FormStyled from "@components/shared/FormStyled";
 import Typography from "@components/shared/Typography";
 import { PinInput } from "@mantine/core";
 import React from "react";
-import { useActivationForm } from "@/services/hook/auth/useActivationForm";
-import styles from "@/styles/auth/activationFormStyles";
 
 const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
     <FormStyled className="timer">

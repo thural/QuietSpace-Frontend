@@ -1,14 +1,14 @@
 import { UserResponse } from "@/api/schemas/inferred/user";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import useQueryContainer from "@/services/hook/chat/useQueryContainer";
+import styles from "@/styles/chat/chatQueryStyles";
 import AnchorStyled from "@shared/AnchorStyled";
 import BoxStyled from "@shared/BoxStyled";
 import FlexStyled from "@shared/FlexStyled";
 import Typography from "@shared/Typography";
-import ChatQueryInput from "./ChatQueryInput";
 import UserCard from "@shared/UserCard";
-import useQueryContainer from "@/services/hook/chat/useQueryContainer";
-import styles from "@/styles/chat/chatQueryStyles";
+import ChatQueryInput from "./ChatQueryInput";
 
 const ChatQuery = () => {
 

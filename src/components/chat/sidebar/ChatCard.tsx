@@ -9,7 +9,6 @@ import { useParams } from "react-router-dom";
 const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
 
     const classes = styles();
-
     const { chatId } = useParams();
 
     const {

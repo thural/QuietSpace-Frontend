@@ -49,6 +49,7 @@ export interface Shadows {
     inset: string;
     paper: string;
     extra: string;
+    wide: string;
 }
 
 export interface Transitions {

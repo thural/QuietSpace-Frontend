@@ -2,10 +2,10 @@ import { ChatResponse } from "@/api/schemas/inferred/chat";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Typography from "@/components/shared/Typography";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import styles from "@/styles/chat/chatSidebarStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import ChatCard from "./ChatCard";
 import ChatQuery from "./ChatQuery";
-import styles from "@/styles/chat/chatSidebarStyles";
 
 interface ChatSidebarProps extends GenericWrapper {
     chats: Array<ChatResponse>
