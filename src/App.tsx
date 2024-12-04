@@ -35,6 +35,7 @@ import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
 import { ThemeProvider } from "react-jss";
 import useTheme from "./services/hook/shared/useTheme";
+import BoxStyled from "./components/shared/BoxStyled";
 
 
 const App = () => {
@@ -77,32 +78,34 @@ const App = () => {
 
 
     return (
-        <ThemeProvider theme={theme}>
-            {isAuthenticated && !isUserError && <NavBar />}
-            <Routes>
-                <Route path="/" element={<FeedContainer />} />
-                <Route path="/feed/*" element={<FeedPage />}>
-                    <Route index element={<FeedContainer />} />
-                    <Route path=":postId" element={<PostContainer />} />
-                </Route>
-                <Route path="/search/*" element={<SearchPage />} />
-                <Route path="/chat/*" element={<ChatPage />} >
-                    <Route index element={<ChatPlaceholder />} />
-                    <Route path=":chatId" element={<ChatPanel />} />
-                </Route>
-                <Route path="/profile" element={<ProfilePage />}>
-                    <Route index element={<UserProfileContainer />} />
-                    <Route path=":userId" element={<ProfileContainer />} />
-                </Route>
-                <Route path="/notification/*" element={<NotificationPage />}>
-                    <Route path=":category" element={<NotificationList />} />
-                </Route>
-                <Route path="/settings/*" element={<SettingsPage />} />
-                <Route path="/signin" element={<AuthPage />} />
-                <Route path="/signout" element={<SignoutPage />} />
-                <Route path="/activation" element={<ActivationForm />} />
-                <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
-            </Routes>
+        <ThemeProvider theme={theme} >
+            <BoxStyled styles={{ backgroundColor: "red" }}>
+                {isAuthenticated && !isUserError && <NavBar />}
+                <Routes>
+                    <Route path="/" element={<FeedContainer />} />
+                    <Route path="/feed/*" element={<FeedPage />}>
+                        <Route index element={<FeedContainer />} />
+                        <Route path=":postId" element={<PostContainer />} />
+                    </Route>
+                    <Route path="/search/*" element={<SearchPage />} />
+                    <Route path="/chat/*" element={<ChatPage />} >
+                        <Route index element={<ChatPlaceholder />} />
+                        <Route path=":chatId" element={<ChatPanel />} />
+                    </Route>
+                    <Route path="/profile" element={<ProfilePage />}>
+                        <Route index element={<UserProfileContainer />} />
+                        <Route path=":userId" element={<ProfileContainer />} />
+                    </Route>
+                    <Route path="/notification/*" element={<NotificationPage />}>
+                        <Route path=":category" element={<NotificationList />} />
+                    </Route>
+                    <Route path="/settings/*" element={<SettingsPage />} />
+                    <Route path="/signin" element={<AuthPage />} />
+                    <Route path="/signout" element={<SignoutPage />} />
+                    <Route path="/activation" element={<ActivationForm />} />
+                    <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
+                </Routes>
+            </BoxStyled>
         </ThemeProvider>
     )
 }

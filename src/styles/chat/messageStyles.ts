@@ -1,64 +1,54 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
   message: {
     maxWidth: '200px',
     position: 'relative',
-    border: '#a1a1a1 solid 1px',
-    margin: '.3rem 0',
     display: 'flex',
-    padding: '0.8rem',
     cursor: 'pointer',
     flexFlow: 'column nowrap',
-    borderRadius: '1rem',
     justifyItems: 'center',
-    backgroundColor: 'white',
     boxShadow: '0px 0px 16px -16px',
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.background,
+    border: `${theme.colors.border} solid 1px`,
+    padding: theme.spacing(theme.spacingFactor.md * 0.8),
+    margin: `${theme.spacing(theme.spacingFactor.md * 0.3)} 0`,
     '& .buttons': {
       display: 'flex',
-      flexFlow: 'row nowrap',
+      marginLeft: 'auto',
       alignItems: 'center',
-      gap: '4px',
-      marginLeft: 'auto'
+      flexFlow: 'row nowrap',
+      gap: theme.spacing(theme.spacingFactor.xs),
     },
     '& button': {
-      color: 'white',
-      backgroundColor: 'black',
-      borderRadius: '1rem',
-      padding: '0.2rem 0.6rem'
+      color: theme.colors.text,
+      backgroundColor: theme.colors.background,
+      borderRadius: theme.radius.md,
+      padding: `${theme.spacing(theme.spacingFactor.xs)} ${theme.spacing(theme.spacingFactor.md)}`
     }
   },
-  sender: {
-    cursor: 'pointer',
-    width: '100%',
-    fontSize: '.7rem',
-    fontWeight: '400',
-    marginBottom: '0.2rem',
-    color: '#404040',
-    position: 'absolute',
-    top: '-1.3rem',
-  },
   delete: {
-    cursor: 'pointer',
-    color: '#404040',
     width: '100%',
     right: '2.5rem',
+    cursor: 'pointer',
     position: 'absolute',
-    fontSize: '.7rem',
-    fontWeight: '400',
-    marginBottom: '0.2rem'
+    color: theme.colors.text,
+    fontSize: theme.typography.fontSize.small,
+    fontWeight: theme.typography.fontWeightThin,
+    marginBottom: theme.spacing(theme.spacingFactor.md * 0.2)
   },
   text: {
-    margin: '0px',
+    margin: '0',
     padding: '0',
     fontSize: '.9rem',
-    lineHeight: '1.4',
     fontWeight: '400',
+    lineHeight: theme.typography.fontWeightThin,
     '& p': {
       margin: '0',
       padding: '0',
     }
   },
-})
+}))
 
 export default styles

@@ -6,13 +6,13 @@ import { createUseStyles, Theme } from "react-jss";
 const styles = createUseStyles((theme: Theme) => (
 	{
 		menuIcon: (props: MenuListStyleProps) => ({
-			fontSize: props?.iconSize || 'inherit',
 			margin: '0',
 			padding: '0',
 			display: 'flex',
 			cursor: 'pointer',
 			position: 'relative',
 			alignItems: 'center',
+			fontSize: props?.iconSize || 'inherit',
 		}),
 
 		menuOverlay: {
@@ -30,23 +30,23 @@ const styles = createUseStyles((theme: Theme) => (
 		menuList: (props: MenuListStyleProps) => ({
 			top: '0',
 			right: '0',
-			zIndex: '1',
 			margin: '0',
-			bottom: '2rem',
 			display: 'none',
 			cursor: 'pointer',
 			height: 'fit-content',
 			boxSizing: 'border-box',
-			backgroundColor: 'white',
-			border: '1px solid #f1f1f1',
-			width: props?.width || '10rem',
 			color: theme.colors.textMax,
-			borderRadius: props?.radius || theme.radius.md,
+			zIndex: theme.zIndex.tooltip,
+			width: props?.width || '10rem',
 			boxShadow: theme.shadows.light,
 			position: props?.position || 'absolute',
-			fontSize: props?.fontSize || theme.typography.fontSize.secondary,
 			fonstWeight: props?.fontWeight || '400',
+			backgroundColor: theme.colors.background,
+			border: `1px solid ${theme.colors.border}`,
+			borderRadius: props?.radius || theme.radius.md,
+			bottom: theme.spacing(theme.spacingFactor.md * 2),
 			padding: props?.padding || theme.spacing(theme.spacingFactor.sm),
+			fontSize: props?.fontSize || theme.typography.fontSize.secondary,
 		})
 	}
 ));

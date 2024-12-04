@@ -1,47 +1,45 @@
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 import FlexStyled from "./FlexStyled";
 
 const ModalStyled: React.FC<GenericWrapperWithRef> = ({ children, ...props }) => {
 
 
-    const useStyles = createUseStyles({
+    const useStyles = createUseStyles((theme: Theme) => ({
         modal: {
             gap: '.5rem',
             top: '50%',
             left: '50%',
-            color: 'black',
+            color: theme.colors.text,
             width: '640px',
             maxHeight: '100vh',
-            border: '1px solid gray',
+            border: `1px solid ${theme.colors.border}`,
             margin: 'auto',
             display: 'flex',
             padding: '1.5rem',
-            zIndex: '3',
+            zIndex: theme.zIndex.modal,
             position: 'fixed',
             flexFlow: 'column nowrap',
             transform: 'translate(-50%, -50%)',
-            borderRadius: '1em',
-            backgroundColor: 'white',
+            borderRadius: theme.radius.md,
+            background: theme.colors.background
         },
         '@media (max-width: 720px)': {
             modal: {
                 gap: '.5rem',
-                color: 'black',
                 width: '100%',
                 border: 'none',
                 height: '100%',
                 margin: 'auto',
                 display: 'flex',
                 padding: '1rem',
-                zIndex: '3',
                 position: 'fixed',
-                flexFlow: 'column nowrap',
                 borderRadius: 'unset',
-                backgroundColor: 'white',
+                flexFlow: 'column nowrap',
+                background: theme.colors.background,
             },
         },
-    });
+    }));
 
     const classes = useStyles();
 

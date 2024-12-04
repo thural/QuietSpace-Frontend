@@ -1,6 +1,6 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
   pollForm: {
     display: 'none',
@@ -8,18 +8,18 @@ const styles = createUseStyles({
 
     '& input:focus': {
       outline: 'none',
-      borderColor: '#a7abb1',
+      borderColor: theme.colors.borderExtra,
     },
 
     '& input': {
       width: '100%',
       height: '2.5rem',
-      fontWeight: '500',
-      padding: '0 0.75rem',
       boxSizing: 'border-box',
-      border: '1px solid #e5e5e5',
-      backgroundColor: '#fbfbfb',
-      borderRadius: '10px',
+      fontWeight: theme.typography.fontWeightBold,
+      padding: `0 ${theme.spacing(theme.spacingFactor.ms)}`,
+      border: `1px solid ${theme.colors.border}`,
+      backgroundColor: theme.colors.backgroundSecondary,
+      borderRadius: theme.radius.sm,
     },
 
     '& .close-poll': {
@@ -28,7 +28,7 @@ const styles = createUseStyles({
       marginLeft: 'auto',
     },
   },
-});
+}));
 
 
 export default styles

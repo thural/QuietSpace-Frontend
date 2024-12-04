@@ -8,6 +8,7 @@ const useStyles = createUseStyles((theme: Theme) => ({
         boxSizing: 'border-box',
         fontWeight: theme.typography.fontWeightBold,
         marginBottom: theme.spacing(theme.spacingFactor.sm),
+        backgroundColor: theme.colors.background,
 
         '&:focus': {
             outline: 'none',

@@ -84,6 +84,7 @@ export const lightTheme: Theme = {
     colors: {
         background: '#fafafa', // Light gray
         backgroundSecondary: "#E9EFEE", // #f0f2f5Light muted gray
+        backgroundTransparent: 'rgba(255, 255,255,0.85)',
         backgroundMax: 'white',
         text: '#333333', // Dark gray
         textSecondary: '#5a5a5a', // Medium gray
@@ -108,25 +109,26 @@ export const lightTheme: Theme = {
 export const darkTheme: Theme = {
     ...sharedTheme,
     colors: {
-        background: '#343a40', // Dark gray
-        backgroundSecondary: '#4b5563', // Darker gray
-        backgroundMax: 'black',
-        text: '#f8f9fa', // Almost white
-        textSecondary: '#ced4da', // Light gray
-        textMax: 'white',
-        primary: '#6c757d', // Muted gray
-        secondary: '#adb5bd', // Light gray
-        inputField: '#495057', // Dark gray
-        checkBox: '#6c757d', // Muted gray
-        border: '#6c757d', // Gray
-        borderSecondary: '#4a4b4b', // Dark gray
-        borderExtra: "#404040", // Smoky gray
-        danger: '#e57373', // Soft red
-        warning: '#ffa726', // Soft orange
-        info: '#64b5f6', // Soft blue
-        success: '#81c784', // Soft green
-        hrDivider: '#333333', // Midnight gray
-        buttonBorder: "#111111", // Eclipse black
-        gradient: 'linear-gradient(45deg, #495057, #adb5bd)' // Muted gradient
+        background: '#121212', // Dark background
+        backgroundSecondary: "#1E1E1E", // Darker secondary background
+        backgroundTransparent: 'rgba(30, 30, 30, 0.85)',
+        backgroundMax: '#000000',
+        text: '#E0E0E0', // Light gray text
+        textSecondary: '#A0A0A0', // Medium light gray
+        textMax: "white",
+        primary: '#4b93ff', // Brighter blue for contrast
+        secondary: '#2ecc71', // Brighter green
+        inputField: '#2C2C2C', // Dark input field
+        checkBox: '#4b93ff', // Brighter blue
+        border: '#3A3A3A', // Dark border
+        borderSecondary: "#2A2A2A", // Darker secondary border
+        borderExtra: "#606060", // Medium dark gray
+        danger: '#ff6b6b', // Brighter soft red
+        warning: '#ffa726', // Maintained orange 
+        info: '#54a0ff', // Brighter soft blue
+        success: '#2ecc71', // Brighter soft green
+        hrDivider: '#444444', // Dark divider
+        buttonBorder: '#666666', // Dark slate gray
+        gradient: 'linear-gradient(45deg, #4b93ff, #2ecc71)' // Adjusted gradient
     }
 } as Theme;

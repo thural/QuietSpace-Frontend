@@ -4,8 +4,8 @@ import { ActiveChatId, ChatStoreProps } from '@/types/chatStoreTypes';
 import { NotificationStoreProps } from '@/types/notificationStore';
 import { StompStore } from '@/types/stompStoreTypes';
 import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
-import { boolean } from 'zod';
-import { create } from 'zustand'
+import { bool } from 'prop-types';
+import { create } from 'zustand';
 
 
 export const useAuthStore = create<UseAuthStoreProps>(set => ({
@@ -52,12 +52,14 @@ export const viewStore = create<ViewStoreProps>(set => ({
     })),
 }));
 
+
 export const useThemeStore = create<{ data: boolean, setThemeStore: (checked: boolean) => void }>(set => ({
     data: false,
     setThemeStore: (checked: boolean) => set(state => ({
         data: checked
     })),
 }));
+
 
 export const useChatStore = create<ChatStoreProps>(set => ({
     data: { activeChatId: null, messageInput: {} },

@@ -14,10 +14,11 @@ const useTheme = () => {
     const setThemeMode = (isChecked: boolean) => {
         setLocalThemeMode(isChecked);
         setThemeStore(isChecked);
+        window.location.reload();
     };
 
     const theme = isDarkMode ? darkTheme : lightTheme;
     return { theme, setThemeMode, isDarkMode, setLocalThemeMode };
 };
 
-export default useTheme;
+export default useTheme

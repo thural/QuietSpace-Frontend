@@ -3,6 +3,7 @@ import { createUseStyles, Theme } from "react-jss";
 const styles = createUseStyles((theme: Theme) => ({
 
     userDetails: {
+        color: theme.colors.text,
         width: '100%',
         alignItems: 'center',
         alignContent: 'center',

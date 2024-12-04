@@ -37,6 +37,7 @@ const UserConnections: React.FC<ConnectionsProps> = ({ userFetch, title }) => {
 
     const UserItem: React.FC<{ data: UserResponse }> = ({ data }) => <UserQueryItem data={data} />;
 
+    // TODO: convert container to reusable secondary modal
     return (
         <BoxStyled className={classes.container} >
             <Center><Typography type="h3">{title}</Typography></Center>

@@ -1,6 +1,7 @@
 export interface Colors {
     background: string;
     backgroundSecondary: string;
+    backgroundTransparent: string;
     backgroundMax: string;
     text: string;
     textSecondary: string;

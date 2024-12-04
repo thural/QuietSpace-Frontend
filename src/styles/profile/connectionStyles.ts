@@ -5,7 +5,7 @@ const styles = createUseStyles((theme: Theme) => ({
         paddingTop: theme.spacing(theme.spacingFactor.ms * 2.5),
         top: '50%',
         left: '50%',
-        color: 'black',
+        color: theme.colors.text,
         height: '50vh',
         margin: 'auto',
         display: 'block',
@@ -16,7 +16,7 @@ const styles = createUseStyles((theme: Theme) => ({
         borderRadius: theme.radius.md,
         backgroundColor: theme.colors.backgroundMax,
         gap: theme.spacing(theme.spacingFactor.sm),
-        border: `1px solid ${theme.colors.borderExtra}`,
+        border: `1px solid ${theme.colors.border}`,
         padding: theme.spacing(theme.spacingFactor.md),
     },
 }));

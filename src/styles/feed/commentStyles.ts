@@ -1,32 +1,32 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
   commentWrapper: {
     fontSize: '.9rem',
-    margin: '.8rem 0 1.2rem 0',
-    gap: '.5rem',
+    gap: theme.spacing(theme.spacingFactor.md),
+    margin: `${theme.spacing(theme.spacingFactor.ms)}, 0 ${theme.spacing(theme.spacingFactor.lg)} 0`,
     '& .right-section': {
       flexDirection: 'column',
-      gap: '1.2rem'
+      gap: theme.spacing(theme.spacingFactor.lg)
     }
   },
 
   mainElement: {
     display: 'flex',
-    gap: '.5rem'
+    gap: theme.spacing(theme.spacingFactor.md),
   },
 
   commentElement: {
     display: 'flex',
     flexFlow: 'column nowrap',
-    gap: '.5rem'
+    gap: theme.spacing(theme.spacingFactor.md),
   },
 
   avatar: {
-    color: 'black',
-    borderRadius: '10rem',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
+    color: theme.colors.text,
+    borderRadius: theme.radius.round,
   },
 
   textBody: {
@@ -36,7 +36,7 @@ const styles = createUseStyles({
     width: 'fit-content',
     position: 'relative',
     boxSizing: 'border-box',
-    backgroundColor: '#edeeef',
+    backgroundColor: theme.colors.background,
     borderRadius: '0rem 1rem 1rem 1rem'
   },
 
@@ -45,16 +45,16 @@ const styles = createUseStyles({
     '& .reply-card-indicator': {
       width: '.35rem',
       height: '2rem',
-      borderRadius: '1rem 0rem 0rem 1rem',
-      backgroundColor: '#000000'
+      borderRadius: `${theme.radius.md} 0 0 ${theme.radius.md}`,
+      backgroundColor: theme.colors.backgroundSecondary
     },
     '& .reply-card-text': {
       width: '100%',
       fontSize: '.9rem',
       height: '2rem',
-      borderRadius: '0 .5rem .5rem .0',
-      backgroundColor: '#dbe2e8',
-      padding: '0 0.5rem'
+      borderRadius: `0 ${theme.radius.sm} ${theme.radius.sm} 0`,
+      backgroundColor: theme.colors.backgroundMax,
+      padding: `0 ${theme.spacing(theme.spacingFactor.md)}`
     }
 
   },
@@ -76,13 +76,13 @@ const styles = createUseStyles({
   },
 
   commentBody: {
-    backgroundColor: '#F0F2F4',
+    backgroundColor: theme.colors.background,
     boxSizing: 'border-box',
-    borderRadius: '1rem 0rem 1rem 0rem',
+    borderRadius: `${theme.radius.md} 0 ${theme.radius.md} 0`,
     padding: '10px 10px',
   },
 
-});
+}));
 
 
 export default styles

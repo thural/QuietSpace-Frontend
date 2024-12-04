@@ -1,25 +1,25 @@
 import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
 import { Input } from "@mantine/core";
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles((theme: Theme) => ({
     inputStyled: {
         '& input': {
             width: '100%',
-            padding: '10px',
+            padding: theme.spacing(theme.spacingFactor.ms),
             height: '1.8rem',
-            backgroundColor: '#e2e8f0',
-            border: '1px solid #e2e8f0',
+            backgroundColor: theme.colors.backgroundSecondary,
+            border: `1px solid ${theme.colors.border}`,
             borderRadius: '10px'
         },
         '& input:focus': {
             outline: 'none',
-            borderColor: '#a7abb1',
+            borderColor: theme.colors.borderExtra,
         },
     },
     inputUnstyled: {}
-});
+}));
 
 const InputStyled: React.FC<GenericWrapperWithRef> = ({
     isStyled = false,

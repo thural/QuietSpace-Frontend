@@ -16,7 +16,7 @@ const styles = createUseStyles((theme: Theme) => (
 			color: theme.colors.textMax,
 			justifyContent: 'space-between',
 			WebkitBackdropFilter: 'blur(8px)',
-			backgroundColor: 'rgba(255, 255,255,0.85)',
+			backgroundColor: theme.colors.backgroundTransparent,
 			fontWeight: theme.typography.fontWeightThin,
 			height: theme.spacing(theme.spacingFactor.md * 4),
 			padding: `${theme.spacing(theme.spacingFactor.sm)} ${theme.spacing(theme.spacingFactor.md)}`,

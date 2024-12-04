@@ -1,6 +1,6 @@
 import { ConsumerFn } from "@/types/genericTypes";
 import React from "react";
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 interface TextAreaStyledProps extends GenericWrapper {
@@ -25,18 +25,18 @@ const TextAreaStyled: React.FC<TextAreaStyledProps> = ({
     ...props
 }) => {
 
-    const useStyles = createUseStyles({
+    const useStyles = createUseStyles((theme: Theme) => ({
         textarea: {
             width: '100%',
             resize: 'none',
             outline: 'none',
             boxSizing: 'border-box',
-            padding: '.75rem',
-            // backgroundColor: '#e2e8f0',
-            border: '1px solid #e2e8f0',
-            borderRadius: '.5rem',
+            borderRadius: theme.radius.md,
+            padding: theme.spacing(theme.spacingFactor.ms),
+            backgroundColor: theme.colors.background,
+            border: `1px solid ${theme.colors.border}`,
         },
-    });
+    }));
 
     const classes = useStyles();
 

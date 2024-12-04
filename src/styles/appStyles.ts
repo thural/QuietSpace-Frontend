@@ -1,12 +1,12 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles(
+const styles = createUseStyles((theme: Theme) => (
 	{
 		app: {
 			height: '100vh',
-			backgroundColor: 'whitesmoke',
+			backgroundColor: theme.colors.backgroundSecondary,
 		}
 	}
-);
+));
 
 export default styles

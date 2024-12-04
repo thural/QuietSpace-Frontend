@@ -18,18 +18,26 @@ const FollowsSection: React.FC<FollowSectionProps> = ({ postsCount, followingsCo
 
     return (
         <FlexStyled className={classes.followSection}>
-            <Typography style={{ cursor: "pointer" }} ta="center" fw="400" size="lg">{postsCount} posts</Typography>
+            <Typography
+                style={{ cursor: "pointer" }}
+                ta="center"
+                fw="600"
+                fz="1.1rem"
+                size="lg">{postsCount} posts
+            </Typography>
             <FlexStyled style={{ justifyContent: "space-around", gap: "2rem" }}>
                 <Typography
                     ta="center"
+                    fz="1.1rem"
                     style={{ cursor: "pointer" }}
-                    fw="400" onClick={toggleFollowings}>
+                    fw="600" onClick={toggleFollowings}>
                     {followingsCount} followings
                 </Typography>
                 <Typography
                     ta="center"
                     style={{ cursor: "pointer" }}
-                    fw="400" onClick={toggleFollowers}>
+                    fz="1.1rem"
+                    fw="600" onClick={toggleFollowers}>
                     {followersCount} followers
                 </Typography>
             </FlexStyled>

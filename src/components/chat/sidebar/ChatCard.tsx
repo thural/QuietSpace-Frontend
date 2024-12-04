@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 
 const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
 
-    const classes = styles();
+
     const { chatId } = useParams();
 
     const {
@@ -20,10 +20,12 @@ const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
     } = useChatCard(chat);
 
 
-    const cardStyle = chatId == chat.id ? { background: "#e2e8f0" } : {};
+    const isSelected = chatId == chat.id;
+
+    const classes = styles(isSelected);
 
     return (
-        <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick} style={cardStyle}>
+        <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick}>
             <UserAvatarPhoto userId={contactId} />
             <BoxStyled className={classes.chatDetails} style={appliedStyle}>
                 <Typography size="sm" lineClamp={1}>{username}</Typography>
