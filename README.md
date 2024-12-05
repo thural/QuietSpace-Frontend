@@ -2,18 +2,18 @@
 
 ## Overview
 
-QuietSpace is a user-friendly, privacy-focused social media application designed to foster meaningful digital interactions through a minimalist and intuitive interface. Built with modern web technologies, the platform prioritizes user experience, performance, and developer extensibility.
+QuietSpace is a user-friendly, privacy-focused social media application designed for meaningful digital interactions through a minimalist and intuitive interface. Built with modern web technologies, the platform prioritizes user experience, performance, and developer extensibility.
 
 ## Key Features
 
 ### User Experience
 - **Secure Authentication**: Robust, token-based user registration and login
-- **Responsive Design**: Fully responsive UI supporting multiple device sizes
+- **Responsive Design**: Responsive UI supporting multiple device sizes
 - **Dark Mode**: Intelligent theme switching with user preferences persistence
 
 ### Communication Capabilities
-- **Feed Management**: Create, edit, and delete posts with rich text support
-- **WebSocket Communication**: Low-latency real-time chat and notifications
+- **Feed Management**: Create, edit, and delete posts with text, poll and image support
+- **WebSocket Communication**: Real-time chat and notifications, event-driven updates
 - **Infinite Scrolling**: Efficient data loading using cursor-based pagination
 
 ## Authentication & Security Model
@@ -24,9 +24,8 @@ QuietSpace is a user-friendly, privacy-focused social media application designed
   - Short-lived access tokens (typically 15-30 minutes)
   - Persistent refresh tokens for seamless user experience
   - Background token refresh without user intervention
-  - Secure token storage and transmission
 
-## Comprehensive Technology Stack
+## Technology Stack
 
 ### Frontend Framework
 - **React 18.3** with TypeScript 5.5
@@ -38,32 +37,27 @@ QuietSpace is a user-friendly, privacy-focused social media application designed
 - **React Query (TanStack Query v5)**: 
   - Server state synchronization
   - Caching and background updates
-  - Infinite query and paginations support
+  - Infinite query and pagination support
 
 ### UI Components & Styling
-- **Mantine UI v7.7**:
-  - Comprehensive component library
-  - Responsive design components
-  - Built-in hooks and utilities
+- **Mantine UI v7.7**: Responsive component library
 - **React-JSS**: Dynamic styling with prop-based theming
-- **PostCSS** with Mantine preset for advanced styling
 
 ### Real-Time Communication
 - **SockJS & StompJS**: 
   - WebSocket implementation
-  - Robust messaging protocol
+  - Secure messaging protocol
   - Fallback mechanisms for connectivity
 
 ### Form Handling & Validation
 - **Zod**: 
   - Runtime type checking
   - Schema-based validation
-  - Comprehensive error handling with `zod-validation-error`
-- **Mantine Forms**: Integrated form management
+  - Error handling with `zod-validation-error`
 
 ### Development & Build Tools
 - **Vite 5.4**: 
-  - Lightning-fast development server
+  - Fast development server
   - Optimized production builds
   - Console output removal plugin
 - **ESLint 9**: 
@@ -79,7 +73,7 @@ QuietSpace is a user-friendly, privacy-focused social media application designed
 
 ### Error Handling
 - **React Error Boundary**: Graceful error management
-- Comprehensive type definitions
+- Component level crash isolation with retry option
 
 ## Project Structure
 
@@ -152,12 +146,6 @@ yarn dev
 ```bash
 docker-compose up --build
 ```
-
-## Security Considerations
-
-- Token-based authentication
-- WebSocket connection security
-- Input validation at client and server levels
 
 ## Licensing
 
