@@ -81,7 +81,7 @@ const PostCard: React.FC<PostCardProps> = ({
                 <EditPostForm postId={postId} toggleForm={toggleEditForm} />
             </Overlay>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
-                <CreateCommentForm postItem={post} />
+                <CreateCommentForm handleClose={toggleCommentForm} postItem={post} />
             </Overlay>
             <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
                 <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
@@ -91,7 +91,7 @@ const PostCard: React.FC<PostCardProps> = ({
             </Overlay>
             <Conditional isEnabled={!!children}>
                 <hr />
-                <CreateCommentForm postItem={post} isSecondaryMode={true} />
+                <CreateCommentForm handleClose={toggleCommentForm} postItem={post} isSecondaryMode={true} />
             </Conditional>
             {children}
         </>

@@ -1,12 +1,13 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { usePostComment } from "@/services/data/useCommentData";
+import { ConsumerFn } from "@/types/genericTypes";
 import { useEffect, useRef, useState } from "react";
 
-const useCommentForm = (postId: ResId) => {
+const useCommentForm = (postId: ResId, onClose?: ConsumerFn) => {
 
     const signedUser = getSignedUserElseThrow();
-    const addNewComment = usePostComment(postId);
+    const addNewComment = usePostComment(postId, onClose);
 
     const [commentInput, setCommentData] = useState({ postId: postId, userId: signedUser.id, text: '' });
     const cursorPosition = useRef(commentInput.text.length);

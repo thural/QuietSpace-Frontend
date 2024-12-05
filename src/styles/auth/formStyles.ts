@@ -1,22 +1,26 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
-  wrapper: {
-    gap: '1rem',
-    color: 'black',
+const styles = createUseStyles((theme: Theme) => ({
+  form: {
+    gap: theme.spacing(theme.spacingFactor.md),
+    color: theme.colors.textMax,
     display: 'flex',
-    padding: '1rem',
-    margin: '2rem',
+    padding: theme.spacing(theme.spacingFactor.md),
+    margin: theme.spacing(theme.spacingFactor.md * 2),
     flexFlow: 'column nowrap',
     minWidth: '256px',
-    boxShadow: 'rgb(0 0 0 / 16%) 0px 0px 32px -8px',
-    borderRadius: '1rem',
-    backgroundColor: 'white',
+    boxShadow: theme.shadows.medium,
+    borderRadius: theme.radius.ms,
+    backgroundColor: theme.colors.background,
     '& .prompt': {
-      fontWeight: '500',
+      fontWeight: theme.typography.fontWeightRegular,
       fontSize: '1.1rem'
-    }
+    },
+    '&:focus': {
+      outline: 'none',
+      borderColor: theme.colors.borderExtra,
+    },
   },
-});
+}));
 
 export default styles

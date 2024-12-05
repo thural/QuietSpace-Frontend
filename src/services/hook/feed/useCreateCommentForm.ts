@@ -2,12 +2,13 @@ import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { usePostComment } from "@/services/data/useCommentData";
-import { isComment } from "@/utils/typeUtils";
+import { ConsumerFn } from "@/types/genericTypes";
 import { toUpperFirstChar } from "@/utils/stringUtils";
+import { isComment } from "@/utils/typeUtils";
 import { useEffect, useRef, useState } from "react";
 
 
-const useCreateCommentForm = (postItem: PostResponse | CommentResponse) => {
+const useCreateCommentForm = (postItem: PostResponse | CommentResponse, handleClose?: ConsumerFn) => {
 
     const signedUser = getSignedUserElseThrow();
     let initState = undefined;
@@ -31,7 +32,7 @@ const useCreateCommentForm = (postItem: PostResponse | CommentResponse) => {
         setCommentData({ ...commentData, text: inputText });
     };
 
-    const addComment = usePostComment(postItem.id);
+    const addComment = usePostComment(postItem.id, handleClose);
     const handleSubmit = () => addComment.mutate(commentData);
 
     const userAvatarPlaceholder = toUpperFirstChar(signedUser.username);

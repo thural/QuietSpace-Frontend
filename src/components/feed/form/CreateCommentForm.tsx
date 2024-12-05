@@ -3,6 +3,7 @@ import { PostResponse } from "@/api/schemas/inferred/post";
 import ModalStyled from "@/components/shared/ModalStyled";
 import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
 import useCreateCommentForm from "@/services/hook/feed/useCreateCommentForm";
+import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import FormControls from "../fragments/FormControls";
 import ReplyInput from "../fragments/ReplyInput";
@@ -11,11 +12,12 @@ import TruncatedContent from "../fragments/TruncatedContent";
 interface CreateCommentFormProps extends GenericWrapper {
     postItem: PostResponse | CommentResponse
     isSecondaryMode?: boolean
+    handleClose?: ConsumerFn
 }
 
-const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem, isSecondaryMode = false }) => {
+const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ postItem, isSecondaryMode = false, handleClose }) => {
 
-    const useComment = useCreateCommentForm(postItem);
+    const useComment = useCreateCommentForm(postItem, handleClose);
     const { addComment, commentData, authorId, handleSubmit } = useComment
 
 

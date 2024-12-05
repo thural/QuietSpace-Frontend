@@ -4,7 +4,7 @@ const styles = createUseStyles((theme: Theme) => ({
     followSection: {
         justifyContent: 'space-between',
         alignItems: 'center',
-        fontSize: theme.typography.fontSize.large,
+        fontSize: theme.typography.fontSize.secondary,
         margin: `${theme.spacing(theme.spacingFactor.xl)} 0`,
         '& .signout-icon': {
             padding: '0',

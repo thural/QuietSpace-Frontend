@@ -14,9 +14,9 @@ const styles = createUseStyles((theme: Theme) => ({
         transform: 'translate(-50%, -50%)',
         zIndex: theme.zIndex.modal,
         borderRadius: theme.radius.md,
-        backgroundColor: theme.colors.backgroundMax,
+        backgroundColor: theme.colors.background,
         gap: theme.spacing(theme.spacingFactor.sm),
-        border: `1px solid ${theme.colors.border}`,
+        border: `1px solid ${theme.colors.borderExtra}`,
         padding: theme.spacing(theme.spacingFactor.md),
     },
 }));

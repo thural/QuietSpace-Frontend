@@ -10,8 +10,8 @@ const styles = createUseStyles((theme: Theme) => ({
     justifyItems: 'center',
     boxShadow: '0px 0px 16px -16px',
     borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.background,
-    border: `${theme.colors.border} solid 1px`,
+    backgroundColor: theme.colors.backgroundTransparentMax,
+    border: `${theme.colors.borderExtra} solid 1px`,
     padding: theme.spacing(theme.spacingFactor.md * 0.8),
     margin: `${theme.spacing(theme.spacingFactor.md * 0.3)} 0`,
     '& .buttons': {

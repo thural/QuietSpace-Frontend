@@ -7,7 +7,7 @@ import DefaultContainer from "@components/shared/DefaultContainer";
 import { PiSignOut } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import BoxStyled from "../shared/BoxStyled";
-import FullLoadingOverlay from "../shared/FullLoadingOverlay";
+import LoaderStyled from "../shared/LoaderStyled";
 import UserConnections from "./connections/UserConnections";
 import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";
@@ -43,7 +43,7 @@ const UserProfileContainer = () => {
     } = data;
 
 
-    if (signedUser === undefined || userPosts.isLoading || followers.isLoading || followings.isLoading) return <FullLoadingOverlay />;
+    if (signedUser === undefined || userPosts.isLoading || followers.isLoading || followings.isLoading) return <LoaderStyled />;
 
 
     return (

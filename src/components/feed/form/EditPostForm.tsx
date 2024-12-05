@@ -5,7 +5,7 @@ import TitleInput from "@/components/feed/fragments/TitleInput";
 import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import FormStyled from "@/components/shared/FormStyled";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 import ModalStyled from "@/components/shared/ModalStyled";
 import Typography from "@/components/shared/Typography";
 import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
@@ -38,7 +38,7 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
   } = data;
 
 
-  if (isLoading) return <FullLoadingOverlay />;
+  if (isLoading) return <LoaderStyled />;
   if (isError) return <ErrorComponent message="could not load post" />;
 
 

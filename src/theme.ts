@@ -85,6 +85,7 @@ export const lightTheme: Theme = {
         background: '#fafafa', // Light gray
         backgroundSecondary: "#E9EFEE", // #f0f2f5Light muted gray
         backgroundTransparent: 'rgba(255, 255,255,0.85)',
+        backgroundTransparentMax: 'rgba(255,255,255, 0)',
         backgroundMax: 'white',
         text: '#333333', // Dark gray
         textSecondary: '#5a5a5a', // Medium gray
@@ -95,7 +96,7 @@ export const lightTheme: Theme = {
         checkBox: '#3b82f6', // Blue
         border: '#dcdcdc', // Gray
         borderSecondary: "#f1f1f1", // Light gray
-        borderExtra: "#909090", // Medium gray
+        borderExtra: "#bbbbbb", // Medium gray
         danger: '#e57373', // Soft red
         warning: '#ffa726', // Soft orange
         info: '#64b5f6', // Soft blue
@@ -112,8 +113,9 @@ export const darkTheme: Theme = {
         background: '#121212', // Dark background
         backgroundSecondary: "#1E1E1E", // Darker secondary background
         backgroundTransparent: 'rgba(30, 30, 30, 0.85)',
+        backgroundTransparentMax: 'rgba(255,255,255, 0)',
         backgroundMax: '#000000',
-        text: '#E0E0E0', // Light gray text
+        text: '#f2f2f2', // Light gray text
         textSecondary: '#A0A0A0', // Medium light gray
         textMax: "white",
         primary: '#4b93ff', // Brighter blue for contrast

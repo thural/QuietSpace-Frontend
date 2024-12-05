@@ -1,17 +1,17 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
   auth: {
     display: 'flex',
     flexFlow: 'row nowrap',
-    background: 'white',
+    background: theme.colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
     fontFamily: 'inherit',
     '& .greeting-text': {
       display: 'flex',
-      padding: '2rem',
+      padding: theme.spacing(theme.spacingFactor.md * 2),
       flexFlow: 'column nowrap',
       minWidth: 'min-content',
       // textAlign: 'center',
@@ -20,7 +20,7 @@ const styles = createUseStyles({
       justifyContent: 'flex-start',
       fontSize: '3.2rem',
       alignSelf: 'center',
-      gap: '3rem',
+      gap: theme.spacing(theme.spacingFactor.md * 3),
       height: '360px',
       textWrap: 'nowrap'
     },
@@ -39,7 +39,7 @@ const styles = createUseStyles({
   },
   '@media (max-width: 720px)': {
     auth: {
-      background: 'white',
+      background: theme.colors.background,
       flexDirection: 'column',
       justifyContent: 'space-around',
       '& .greeting-text': {
@@ -55,7 +55,7 @@ const styles = createUseStyles({
       },
     },
   },
-})
+}));
 
 
 export default styles

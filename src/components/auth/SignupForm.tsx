@@ -42,7 +42,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
     if (isError) return <ErrorComponent message={`(!) could not authenticate! error: ${error}`} />
 
     return (
-        <BoxStyled className={classes.wrapper}>
+        <BoxStyled className={classes.form}>
             <Typography type="h2">signup</Typography>
             <FormStyled>
                 <InputBoxStyled>

@@ -1,21 +1,21 @@
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import Overlay from "@/components/shared/Overlay";
+import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { nullishValidationdError } from "@/utils/errorUtils";
 import OutlineButton from "@components/shared/buttons/OutlineButton";
 import Conditional from "@components/shared/Conditional";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import FollowToggle from "@components/shared/FollowToggle";
-import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
 import Typography from "@components/shared/Typography";
 import { useParams } from "react-router-dom";
+import useUserProfile from "../../services/hook/profile/useUserProfile";
+import LoaderStyled from "../shared/LoaderStyled";
+import PrivateBlock from "../shared/PrivateBlock";
 import UserConnections from "./connections/UserConnections";
 import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";
 import ProfileTabs from "./tabs/ProfileTabs";
-import PrivateBlock from "../shared/PrivateBlock";
 import UserDetailsSection from "./user-details/UserDetailsSection";
-import useUserProfile from "../../services/hook/profile/useUserProfile";
 
 
 function ProfileContainer() {
@@ -48,10 +48,10 @@ function ProfileContainer() {
     } = data;
 
 
-    if (user.isLoading || userPosts.isLoading || followers.isLoading || followings.isLoading || !user.data) return <FullLoadingOverlay />;
+    if (user.isLoading || userPosts.isLoading || followers.isLoading || followings.isLoading || !user.data) return <LoaderStyled />;
 
     const OutlineButtonStyled = ({ ...props }) => (
-        <OutlineButton color="rgba(32, 32, 32, 1)" fullWidth {...props} />
+        <OutlineButton color="gray" fullWidth {...props} />
     )
 
     return (
@@ -66,10 +66,10 @@ function ProfileContainer() {
                 toggleFollowers={toggleFollowers}
             />
             <Overlay isOpen={viewFollowings && isHasAccess.data && !!followingsCount} onClose={toggleFollowings}>
-                <UserConnections userFetch={followings} title="followings" />
+                <UserConnections toggleView={toggleFollowings} userFetch={followings} title="followings" />
             </Overlay>
             <Overlay isOpen={viewFollowers && isHasAccess.data && !!followersCount} onClose={toggleFollowers}>
-                <UserConnections userFetch={followers} title="followers" />
+                <UserConnections toggleView={toggleFollowers} userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>
                 <FollowToggle followers={followers} Button={OutlineButtonStyled} user={user.data} />

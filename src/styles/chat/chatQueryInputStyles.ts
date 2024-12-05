@@ -1,7 +1,7 @@
 import { createUseStyles, Theme } from "react-jss";
 
 const useStyles = createUseStyles((theme: Theme) => ({
-    inputStyled: {
+    chatQuery: {
         width: '100%',
         margin: 'auto',
         display: 'flex',
@@ -10,7 +10,7 @@ const useStyles = createUseStyles((theme: Theme) => ({
         flexFlow: 'row nowrap',
         boxSizing: 'border-box',
         color: theme.colors.text,
-        backgroundColor: theme.colors.backgroundTransparent,
+        backgroundColor: theme.colors.backgroundTransparentMax,
         gap: theme.spacing(theme.spacingFactor.md),
         padding: theme.spacing(theme.spacingFactor.sm),
     },

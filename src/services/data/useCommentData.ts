@@ -3,6 +3,7 @@ import { CommentRequest, CommentResponse, PagedComment } from "@/api/schemas/inf
 import { ResId } from "@/api/schemas/inferred/common";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
+import { ConsumerFn, ProcedureFn } from "@/types/genericTypes";
 
 
 export const useGetComments = (postId: ResId) => {
@@ -34,7 +35,7 @@ export const useGetLatestComment = (userId: ResId, postId: ResId) => {
 }
 
 
-export const usePostComment = (postId: ResId) => {
+export const usePostComment = (postId: ResId, handleClose?: ConsumerFn) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
@@ -43,6 +44,7 @@ export const usePostComment = (postId: ResId) => {
         console.log("added comment response data: ", data);
         queryClient.invalidateQueries({ queryKey: ["comments", { id: postId }] })
             .then(() => console.log("post comments were invalidated"));
+        handleClose && handleClose();
     }
 
     const onError = (error: Error) => {

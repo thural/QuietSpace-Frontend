@@ -8,7 +8,7 @@ const styles = createUseStyles((theme: Theme) => ({
     justifyItems: 'flex-start',
     gap: theme.spacing(theme.spacingFactor.sm),
     padding: theme.spacing(theme.spacingFactor.sm),
-    backgroundColor: isSelected ? theme.colors.background : theme.colors.backgroundSecondary,
+    backgroundColor: isSelected ? theme.colors.backgroundSecondary : theme.colors.backgroundTransparentMax,
     borderRadius: `${theme.radius.md} 0 0 ${theme.radius.md}`,
   }),
   chatCardAlt: {

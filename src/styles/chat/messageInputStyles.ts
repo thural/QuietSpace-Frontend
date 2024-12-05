@@ -30,17 +30,6 @@ const styles = createUseStyles({
     boxSizing: 'border-box',
     alignItems: 'center',
     backgroundColor: 'white',
-    '& .react-input-emoji--button': {
-      color: 'white',
-      right: '0rem',
-      width: 'fit-content',
-      display: 'flex',
-      padding: '.95rem',
-      position: 'absolute',
-      fontSize: '1rem',
-      fontWeight: '500',
-      zIndex: '1'
-    },
     '& button': {
       color: 'white',
       width: 'fit-content',

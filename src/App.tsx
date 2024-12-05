@@ -7,10 +7,11 @@ import SearchPage from "./pages/search/SearchPage";
 import '@mantine/core/styles.css';
 import './styles/App.css';
 
+import { darkTheme, lightTheme } from "@/theme";
 import { useEffect } from "react";
+import { ThemeProvider } from "react-jss";
 import { Frame } from "stompjs";
 import { AuthResponse } from "./api/schemas/inferred/auth";
-import ActivationForm from "./components/auth/ActivationForm";
 import ChatPanel from "./components/chat/message/ChatPanel";
 import ChatPlaceholder from "./components/chat/message/ChatPlaceholder";
 import FeedContainer from "./components/feed/FeedContainer";
@@ -31,20 +32,23 @@ import { useGetCurrentUser } from "./services/data/useUserData";
 import useJwtAuth from "./services/hook/auth/useJwtAuth";
 import useChatSocket from "./services/hook/chat/useChatSocket";
 import useNotificationSocket from "./services/hook/notification/useNotificationSocket";
+import useTheme from "./services/hook/shared/useTheme";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
-import { ThemeProvider } from "react-jss";
-import useTheme from "./services/hook/shared/useTheme";
+import { getLocalThemeMode } from "./utils/localStorageUtils";
 import BoxStyled from "./components/shared/BoxStyled";
 
 
 const App = () => {
 
     const navigate = useNavigate();
-
     const { theme } = useTheme();
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
     const { isAuthenticated, setIsAuthenticated, setAuthData } = useAuthStore();
+
+
+    const isDarkMode = getLocalThemeMode();
+    const storedTheme = isDarkMode ? darkTheme : lightTheme;
 
 
     useStompClient({ onError: (message: Frame | string) => console.error(message) });
@@ -73,41 +77,38 @@ const App = () => {
     useEffect(initAuth, []);
 
 
-    if (isUserLoading) return <FullLoadingOverlay />;
-    if (!isAuthenticated || isUserError) return <AuthPage />; // TODO: handle Auth using routing instead
-
-
-    return (
-        <ThemeProvider theme={theme} >
-            <BoxStyled styles={{ backgroundColor: "red" }}>
-                {isAuthenticated && !isUserError && <NavBar />}
-                <Routes>
-                    <Route path="/" element={<FeedContainer />} />
-                    <Route path="/feed/*" element={<FeedPage />}>
-                        <Route index element={<FeedContainer />} />
-                        <Route path=":postId" element={<PostContainer />} />
-                    </Route>
-                    <Route path="/search/*" element={<SearchPage />} />
-                    <Route path="/chat/*" element={<ChatPage />} >
-                        <Route index element={<ChatPlaceholder />} />
-                        <Route path=":chatId" element={<ChatPanel />} />
-                    </Route>
-                    <Route path="/profile" element={<ProfilePage />}>
-                        <Route index element={<UserProfileContainer />} />
-                        <Route path=":userId" element={<ProfileContainer />} />
-                    </Route>
-                    <Route path="/notification/*" element={<NotificationPage />}>
-                        <Route path=":category" element={<NotificationList />} />
-                    </Route>
-                    <Route path="/settings/*" element={<SettingsPage />} />
-                    <Route path="/signin" element={<AuthPage />} />
-                    <Route path="/signout" element={<SignoutPage />} />
-                    <Route path="/activation" element={<ActivationForm />} />
-                    <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
-                </Routes>
-            </BoxStyled>
-        </ThemeProvider>
-    )
+    return <ThemeProvider theme={(theme ? theme : storedTheme)} >
+        {
+            isUserLoading ? <FullLoadingOverlay /> :
+                (!isAuthenticated || isUserError) ? <AuthPage /> :
+                    <BoxStyled>
+                        <NavBar />
+                        <Routes>
+                            <Route path="/" element={<FeedContainer />} />
+                            <Route path="/feed/*" element={<FeedPage />}>
+                                <Route index element={<FeedContainer />} />
+                                <Route path=":postId" element={<PostContainer />} />
+                            </Route>
+                            <Route path="/search/*" element={<SearchPage />} />
+                            <Route path="/chat/*" element={<ChatPage />} >
+                                <Route index element={<ChatPlaceholder />} />
+                                <Route path=":chatId" element={<ChatPanel />} />
+                            </Route>
+                            <Route path="/profile" element={<ProfilePage />}>
+                                <Route index element={<UserProfileContainer />} />
+                                <Route path=":userId" element={<ProfileContainer />} />
+                            </Route>
+                            <Route path="/notification/*" element={<NotificationPage />}>
+                                <Route path=":category" element={<NotificationList />} />
+                            </Route>
+                            <Route path="/settings/*" element={<SettingsPage />} />
+                            <Route path="/signin" element={<AuthPage />} />
+                            <Route path="/signout" element={<SignoutPage />} />
+                            <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
+                        </Routes>
+                    </BoxStyled>
+        }
+    </ThemeProvider>
 }
 
 export default App

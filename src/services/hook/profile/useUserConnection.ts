@@ -26,8 +26,10 @@ const useUserConnection = (userFetch: UseInfiniteQueryResult<InfiniteData<UserPa
         }
     }
 
-    const handleItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const handleItemClick = (event: React.MouseEvent) => {
         event.preventDefault();
+        event.stopPropagation();
+        console.log("connections item was clicked");
         // TODO: implement and call follow feature
     }
 

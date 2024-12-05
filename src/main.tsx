@@ -31,10 +31,6 @@ const queryClient = new QueryClient({});
 //     }).catch(err => console.log(err));
 
 const isDarkMode = getLocalThemeMode();
-
-
-// const { data: isDarkMode } = useThemeStore();
-
 const colorScheme = isDarkMode ? "dark" : "light"
 
 createRoot(document.getElementById('root')!).render(

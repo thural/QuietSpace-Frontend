@@ -7,3 +7,4 @@ export type ProducerFn = () => any;
 export type ProcedureFn = () => void
 export type ChangeEventFn = (event: React.ChangeEvent) => void
 export type SubmitEventFn = (event: SubmitEvent) => void
+export type MouseEventFn = (event: React.MouseEvent) => void

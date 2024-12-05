@@ -37,7 +37,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
             <Conditional isEnabled={isWithAvatar}>
                 <UserAvatarPhoto size="2rem" userId={userId} />
             </Conditional>
-            <FormStyled>
+            <FormStyled style={{ width: "100%" }}>
                 <EmojiInput
                     value={inputValue}
                     onChange={handleChange}

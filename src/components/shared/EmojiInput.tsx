@@ -1,11 +1,14 @@
 import InputEmoji from "react-input-emoji";
 import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 import BoxStyled from "./BoxStyled";
 
-export const styles = createUseStyles({
+export const styles = createUseStyles((theme: Theme) => ({
     emojiInputWrapper: {
+        "& .react-input-emoji--container": {
+            background: theme.colors.backgroundTransparentMax
+        },
         "& .react-emoji-picker--wrapper": {
             position: 'absolute',
             top: '3rem',
@@ -13,10 +16,22 @@ export const styles = createUseStyles({
             height: '435px',
             width: '352px',
             overflow: 'hidden',
-            zIndex: 10
-        }
-    }
-})
+            zIndex: 10,
+            backgroundColor: theme.colors.backgroundTransparentMax
+        },
+        '& .react-input-emoji--button': {
+            color: theme.colors.textMax,
+            right: '0rem',
+            width: 'fit-content',
+            display: 'flex',
+            padding: theme.spacing(theme.spacingFactor.md),
+            position: 'absolute',
+            fontSize: '1rem',
+            fontWeight: theme.typography.fontWeightRegular,
+            zIndex: '1'
+        },
+    },
+}));
 
 const EmojiInput: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
@@ -42,7 +57,7 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
                 fontSize={fontSize}
                 maxLength={maxLength}
                 cleanOnEnter
-                buttonElement
+                // buttonElement
                 borderColor={borderColor}
                 onEnter={onEnter}
                 theme={theme}

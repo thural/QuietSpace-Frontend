@@ -1,7 +1,7 @@
-import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
+import LoaderStyled from "@/components/shared/LoaderStyled";
+import { useAuthStore } from "@/services/store/zustand";
 import Typography from "@components/shared/Typography";
 import { useSignout } from "./hooks/useSignout";
-import { useAuthStore } from "@/services/store/zustand";
 
 
 const SignoutPage = () => {
@@ -12,7 +12,7 @@ const SignoutPage = () => {
 
     const { isLoading, isError, error } = useSignout(); // TODO: adjust routing to disable Navbar on signout
 
-    if (isLoading) return <FullLoadingOverlay />;
+    if (isLoading) return <LoaderStyled />;
     if (isError) return <Typography type="h1">{`error in signout! 🔥 error: ${error}`}</Typography>;
 }
 

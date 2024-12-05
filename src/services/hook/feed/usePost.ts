@@ -19,21 +19,22 @@ export const usePost = (postId: ResId) => {
     const { navigatePath } = useNavigation();
 
     const handleNavigation = (e: React.MouseEvent) => {
-        e.stopPropagation();
+        e && e.stopPropagation();
         navigatePath(`/feed/${postId}`);
     }
 
     const deletePost = useDeletePost(postId);
     const handleDeletePost = async (e: React.MouseEvent) => {
-        e.stopPropagation();
+        e && e.stopPropagation();
         deletePost.mutate();
     }
 
     const handleReaction = useReaction(postId);
-    const handleLike = (event: React.MouseEvent) => {
-        event.stopPropagation();
+    const handleLike = (e: React.MouseEvent) => {
+        e && e.stopPropagation();
         handleReaction(ContentType.POST, Reactiontype.LIKE);
     }
+
     const handleDislike = (event: React.MouseEvent) => {
         event.stopPropagation();
         handleReaction(ContentType.POST, Reactiontype.DISLIKE);
@@ -41,25 +42,25 @@ export const usePost = (postId: ResId) => {
 
     const [commentFormView, setCommentFormView] = useState(false);
     const toggleCommentForm = (e: React.MouseEvent) => {
-        e.stopPropagation();
+        e && e.stopPropagation();
         setCommentFormView(!commentFormView);
     }
 
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const toggleEditForm = (e: React.MouseEvent) => {
-        if (!!e) e.stopPropagation();
+        e && e.stopPropagation();
         setIsOverlayOpen(!isOverlayOpen);
     };
 
     const [repostFormView, setRepostFormView] = useState(false);
     const toggleRepostForm = (e: Event) => {
-        if (!!e) e.stopPropagation();
+        e && e.stopPropagation();
         setRepostFormView(!repostFormView);
     }
 
     const [shareFormview, setShareFormView] = useState(false);
     const toggleShareForm = (e: Event) => {
-        if (!!e) e.stopPropagation();
+        e && e.stopPropagation();
         setShareFormView(!shareFormview);
     }
 

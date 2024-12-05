@@ -13,7 +13,7 @@ const ModalStyled: React.FC<GenericWrapperWithRef> = ({ children, ...props }) =>
             color: theme.colors.text,
             width: '640px',
             maxHeight: '100vh',
-            border: `1px solid ${theme.colors.border}`,
+            border: `1px solid ${theme.colors.borderExtra}`,
             margin: 'auto',
             display: 'flex',
             padding: '1.5rem',

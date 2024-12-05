@@ -8,8 +8,8 @@ import BoxStyled from "@/components/shared/BoxStyled";
 import DarkButton from "@/components/shared/buttons/DarkButton ";
 import CheckBox from "@/components/shared/CheckBox";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
 import InputStyled from "@/components/shared/InputStyled";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 import Typography from "@/components/shared/Typography";
 import UserQueryItem from "@/components/shared/UserQueryItem";
 import useBatchShareForm from "@/services/hook/chat/useBatchShareForm";
@@ -57,7 +57,7 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
 
 
 
-    if (fetchUserQuery.isPending) return <FullLoadingOverlay />
+    if (fetchUserQuery.isPending) return <LoaderStyled />
 
     const SelectableUserItem: React.FC<{ data: UserResponse }> = ({ data }) => (
         <UserQueryItem hasFollowToggle={false} data={data}>

@@ -27,7 +27,7 @@ const ChatQueryInput: React.FC<QueryInputProps> = ({
             placeholder="search a user ..."
             maxLength="128"
             onChange={handleInputChange}
-            className={classes.inputStyled}
+            className={classes.chatQuery}
         />
     )
 }

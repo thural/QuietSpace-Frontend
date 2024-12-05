@@ -9,10 +9,10 @@ import BoxStyled from "@components/shared/BoxStyled";
 import GradientButton from "@components/shared/buttons/GradientButton";
 import OutlineButton from "@components/shared/buttons/OutlineButton";
 import FormStyled from "@components/shared/FormStyled";
-import FullLoadingOverlay from "@components/shared/FullLoadingOverlay";
 import PassInput from "@components/shared/PassInput";
 import Typography from "@components/shared/Typography";
 import React from "react";
+import LoaderStyled from "../shared/LoaderStyled";
 
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 
@@ -37,21 +37,21 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
         handleSignupBtn,
     } = data;
 
-    if (isAuthenticating) return <FullLoadingOverlay />;
+    if (isAuthenticating) return <LoaderStyled />;
     if (isError) return <ErrorComponent message={`(!) could not authenticate! error: ${error}`} />;
 
     return (
-        <BoxStyled className={classes.wrapper}>
+        <BoxStyled className={classes.form}>
             <Typography type="h2">login</Typography>
-            <FormStyled>
+            <FormStyled >
                 <InputBoxStyled>
-                    <TextInputStyled name='email' value={formData.email} handleChange={handleFormChange} />
+                    <TextInputStyled placeholder="username or email" name='email' value={formData.email} handleChange={handleFormChange} />
                     <PassInput name='password' value={formData.password} handleChange={handleFormChange} />
                 </InputBoxStyled>
-                <GradientButton onClick={handleLoginForm} />
-                <Typography type="h4">don't have an account?</Typography>
-                <OutlineButton name="signup" onClick={handleSignupBtn} />
             </FormStyled>
+            <GradientButton onClick={handleLoginForm} />
+            <Typography type="h4">don't have an account?</Typography>
+            <OutlineButton name="signup" onClick={handleSignupBtn} />
         </BoxStyled>
     );
 };
