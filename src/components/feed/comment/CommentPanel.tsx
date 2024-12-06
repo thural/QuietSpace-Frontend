@@ -1,9 +1,9 @@
 import { ResId } from "@/api/schemas/native/common";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import FlexStyled from "@/components/shared/FlexStyled";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 import { useGetComments } from "@/services/data/useCommentData";
 import styles from "@/styles/feed/commentPanelStyles";
-import BoxStyled from "@components/shared/BoxStyled";
 import CommentBox from "./Comment";
 import CommentReply from "./CommentReply";
 
@@ -39,9 +39,9 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
 
 
     return (
-        <BoxStyled className={classes.commentSection}>
+        <FlexStyled className={classes.commentSection}>
             <CommentList />
-        </BoxStyled>
+        </FlexStyled>
     )
 }
 

@@ -38,9 +38,7 @@ const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggle
                     fontSize={15}
                     cleanOnEnter
                     buttonElement
-                    borderColor="#FFFFFF"
                     onEnter={handleSubmit}
-                    theme="light"
                     placeholder="type a comment"
                     ref={inputRef}
                 />

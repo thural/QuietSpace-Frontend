@@ -1,6 +1,6 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
 
   wrapper: {
     display: 'flex',
@@ -11,7 +11,7 @@ const styles = createUseStyles({
   inputWrapper: {
     position: 'relative',
     width: '16rem',
-    background: '#edeeef',
+    background: theme.colors.background,
     borderRadius: '1rem',
     minHeight: '4rem',
 
@@ -24,17 +24,17 @@ const styles = createUseStyles({
       height: '2.5rem',
       margin: '.5rem 0',
       alignSelf: 'flex-start',
-      background: '#F0F2F4 !important'
+      background: theme.colors.background,
     },
 
     '& .react-input-emoji--container': {
-      background: '#F0F2F4 !important',
+      background: theme.colors.background,
       margin: '.25rem .75rem',
       border: 0
     },
 
     '& .react-input-emoji--wrapper': {
-      background: '#edeeef'
+      background: theme.colors.background,
     }
   },
 
@@ -49,12 +49,12 @@ const styles = createUseStyles({
     boxSizing: 'border-box',
     maxHeight: '200px',
     borderRadius: '4px',
-    backgroundColor: 'transparent',
+    backgroundColor: theme.colors.background,
     position: 'relative',
     top: '10rem',
-    background: 'blue'
+    background: theme.colors.background,
   },
-})
+}))
 
 
 export default styles

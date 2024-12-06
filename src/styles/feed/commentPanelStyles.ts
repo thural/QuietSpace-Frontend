@@ -1,29 +1,31 @@
-import { createUseStyles } from "react-jss"
+import { createUseStyles, Theme } from "react-jss"
 
-const styles = createUseStyles({
+const styles = createUseStyles((theme: Theme) => ({
   commentSection: {
-    fontSize: '1rem',
-    marginTop: '12px',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    fontSize: theme.typography.fontSize.primary,
+    marginTop: theme.spacing(theme.spacingFactor.ms),
     '& .react-input-emoji--container': {
-      fontSize: '1rem',
+      fontSize: theme.typography.fontSize.primary,
       fontFamily: 'sans-serif',
       padding: '0',
-      margin: '8px'
+      margin: theme.spacing(theme.spacingFactor.sm)
     },
     '& .react-input-emoji--button': {
       display: "flex",
       font: 'inherit',
       cursor: 'pointer',
-      fontSize: '1rem',
+      fontSize: theme.typography.fontSize.primary,
       marginLeft: '0',
-      borderColor: 'white',
-      borderRadius: '1rem',
-      backgroundColor: 'white'
+      borderColor: theme.colors.border,
+      borderRadius: theme.radius.md,
+      backgroundColor: theme.colors.background
     },
     '& .react-input-emoji--input': {
       margin: '0',
       padding: '0',
-      fontWeight: '400',
+      fontWeight: theme.typography.fontWeightThin,
       maxHeight: '100px',
       minHeight: '20px',
       outline: 'none',
@@ -48,14 +50,14 @@ const styles = createUseStyles({
     height: 'auto',
     resize: 'none',
     outline: 'none',
-    padding: '10px',
+    padding: theme.spacing(theme.spacingFactor.ms),
     overflow: 'hidden',
     boxSizing: 'border-box',
     maxHeight: '200px',
-    borderRadius: '4px',
+    borderRadius: theme.radius.xs,
     backgroundColor: 'transparent'
   },
-})
+}))
 
 
 export default styles

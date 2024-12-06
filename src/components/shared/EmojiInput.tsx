@@ -1,6 +1,6 @@
-import InputEmoji from "react-input-emoji";
 import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
+import InputEmoji from "react-input-emoji";
 import { createUseStyles, Theme } from "react-jss";
 import BoxStyled from "./BoxStyled";
 
@@ -41,12 +41,12 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
     maxLength = "255",
     fontSize = 15,
     onEnter,
-    theme = "light",
-    borderColor = "white",
+    theme,
     ...props
 }) => {
 
     const classes = styles();
+
 
     return (
         <BoxStyled className={classes.emojiInputWrapper}>
@@ -58,9 +58,9 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
                 maxLength={maxLength}
                 cleanOnEnter
                 // buttonElement
-                borderColor={borderColor}
+                background={"transparent"}
                 onEnter={onEnter}
-                theme={theme}
+                theme={"auto"}
                 enabled={isEnabled}
                 {...props}
             />

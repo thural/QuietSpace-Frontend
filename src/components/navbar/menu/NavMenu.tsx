@@ -50,6 +50,7 @@ const NavMenu = () => {
             <Switch
                 size="xl"
                 checked={isDarkMode}
+                color="gray"
                 onChange={(event) => setThemeMode(event.currentTarget.checked)}
                 onLabel={<PiSun size="1.75rem" />}
                 offLabel={<PiMoon size="1.75rem" />}

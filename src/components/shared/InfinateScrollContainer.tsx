@@ -1,4 +1,3 @@
-import Typography from "@/components/shared/Typography";
 import useWasSeen from "@/services/hook/common/useWasSeen";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { ConsumerFn } from "@/types/genericTypes";
@@ -32,9 +31,6 @@ const InfinateScrollContainer: React.FC<InfinateScrollContainerProps> = ({
         <>
             {children}
             <BoxStyled ref={wasSeenRef} />
-            <Conditional isEnabled={!hasNextPage}>
-                <Typography style={{ margin: '1rem' }} ta="center">end of the stream has been reached</Typography>
-            </Conditional>
             <Conditional isEnabled={isFetchingNextPage}>
                 <LoaderStyled />
             </Conditional>

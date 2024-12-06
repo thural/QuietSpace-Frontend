@@ -83,54 +83,54 @@ export const lightTheme: Theme = {
     ...sharedTheme,
     colors: {
         background: '#fafafa', // Light gray
-        backgroundSecondary: "#E9EFEE", // #f0f2f5Light muted gray
-        backgroundTransparent: 'rgba(255, 255,255,0.85)',
-        backgroundTransparentMax: 'rgba(255,255,255, 0)',
+        backgroundSecondary: "#e9ecef", // #f0f2f5Light muted gray
+        backgroundTransparent: 'rgba(255, 255, 255, 0.85)',
+        backgroundTransparentMax: 'rgba(255, 255, 255, 0)',
         backgroundMax: 'white',
         text: '#333333', // Dark gray
         textSecondary: '#5a5a5a', // Medium gray
         textMax: "black",
-        primary: '#3b82f6', // Blue
-        secondary: '#10b981', // Green
-        inputField: '#e2e8f0', // Light blue-gray
-        checkBox: '#3b82f6', // Blue
+        primary: '#ff6f61', // Warmer blue (Coral)
+        secondary: '#ffb74d', // Warmer green (Peach)
+        inputField: '#ffe0b2', // Warmer light blue-gray (Peach)
+        checkBox: '#ff6f61', // Warmer blue (Coral)
         border: '#dcdcdc', // Gray
         borderSecondary: "#f1f1f1", // Light gray
         borderExtra: "#bbbbbb", // Medium gray
         danger: '#e57373', // Soft red
-        warning: '#ffa726', // Soft orange
-        info: '#64b5f6', // Soft blue
-        success: '#81c784', // Soft green
+        warning: '#ffb74d', // Warmer orange (Peach)
+        info: '#ff8a65', // Warmer blue (Coral)
+        success: '#ffb74d', // Warmer green (Peach)
         hrDivider: '#cccccc', // Soft silver
         buttonBorder: '#888888', // Slate gray
-        gradient: 'linear-gradient(45deg, #3b82f6, #10b981)' // Muted gradient
+        gradient: 'linear-gradient(45deg, #ff6f61, #ffb74d)' // Warmer gradient
     }
 } as Theme;
 
 export const darkTheme: Theme = {
     ...sharedTheme,
     colors: {
-        background: '#121212', // Dark background
-        backgroundSecondary: "#1E1E1E", // Darker secondary background
-        backgroundTransparent: 'rgba(30, 30, 30, 0.85)',
-        backgroundTransparentMax: 'rgba(255,255,255, 0)',
-        backgroundMax: '#000000',
-        text: '#f2f2f2', // Light gray text
-        textSecondary: '#A0A0A0', // Medium light gray
-        textMax: "white",
-        primary: '#4b93ff', // Brighter blue for contrast
-        secondary: '#2ecc71', // Brighter green
-        inputField: '#2C2C2C', // Dark input field
-        checkBox: '#4b93ff', // Brighter blue
-        border: '#3A3A3A', // Dark border
-        borderSecondary: "#2A2A2A", // Darker secondary border
-        borderExtra: "#606060", // Medium dark gray
-        danger: '#ff6b6b', // Brighter soft red
-        warning: '#ffa726', // Maintained orange 
-        info: '#54a0ff', // Brighter soft blue
-        success: '#2ecc71', // Brighter soft green
-        hrDivider: '#444444', // Dark divider
+        background: '#1a1a1a', // Dark background
+        backgroundSecondary: '#1f1f1f', // Slightly lighter dark background
+        backgroundTransparent: 'rgba(18, 18, 18, 0.85)',
+        backgroundTransparentMax: 'rgba(18, 18, 18, 0)',
+        backgroundMax: '#0d0d0d', // Darkest background
+        text: '#f5f5f5', // Light text
+        textSecondary: '#bbbbbb', // Lighter gray text
+        textMax: "#ffffff", // White text
+        primary: '#bb86fc', // Purple
+        secondary: '#03dac6', // Teal
+        inputField: '#333333', // Dark input field
+        checkBox: '#bb86fc', // Purple
+        border: '#444444', // Dark gray border
+        borderSecondary: "#666666", // Lighter dark gray border
+        borderExtra: "#888888", // Medium gray border
+        danger: '#cf6679', // Soft red
+        warning: '#ffb74d', // Orange
+        info: '#2196f3', // Blue
+        success: '#4caf50', // Green
+        hrDivider: '#4d4d4d', // Dark gray divider
         buttonBorder: '#666666', // Dark slate gray
-        gradient: 'linear-gradient(45deg, #4b93ff, #2ecc71)' // Adjusted gradient
+        gradient: 'linear-gradient(45deg, #bb86fc, #03dac6)' // Purple to teal gradient
     }
 } as Theme;

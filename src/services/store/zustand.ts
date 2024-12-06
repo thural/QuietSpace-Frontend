@@ -4,7 +4,6 @@ import { ActiveChatId, ChatStoreProps } from '@/types/chatStoreTypes';
 import { NotificationStoreProps } from '@/types/notificationStore';
 import { StompStore } from '@/types/stompStoreTypes';
 import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
-import { bool } from 'prop-types';
 import { create } from 'zustand';
 
 

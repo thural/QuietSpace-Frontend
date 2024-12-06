@@ -36,7 +36,6 @@ import useTheme from "./services/hook/shared/useTheme";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
 import { getLocalThemeMode } from "./utils/localStorageUtils";
-import BoxStyled from "./components/shared/BoxStyled";
 
 
 const App = () => {
@@ -81,7 +80,7 @@ const App = () => {
         {
             isUserLoading ? <FullLoadingOverlay /> :
                 (!isAuthenticated || isUserError) ? <AuthPage /> :
-                    <BoxStyled>
+                    <>
                         <NavBar />
                         <Routes>
                             <Route path="/" element={<FeedContainer />} />
@@ -106,7 +105,7 @@ const App = () => {
                             <Route path="/signout" element={<SignoutPage />} />
                             <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
                         </Routes>
-                    </BoxStyled>
+                    </>
         }
     </ThemeProvider>
 }

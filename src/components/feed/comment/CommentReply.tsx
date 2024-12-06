@@ -18,7 +18,7 @@ interface CommentReplyProps {
 
 const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) => {
 
-    const classes = styles();
+    const classes = styles(true);
 
     let data = undefined;
 
@@ -43,7 +43,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
 
 
     const CommentBody = () => (
-        <FlexStyled key={comment.id} className={classes.comment} style={appliedStyle}>
+        <BoxStyled key={comment.id} className={classes.comment} style={appliedStyle}>
             <BoxStyled className={classes.commentBody}>
                 <FlexStyled className={classes.replyCard}>
                     <BoxStyled className="reply-card-indicator"></BoxStyled>
@@ -58,7 +58,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
                 handleReply={toggleCommentForm}
                 hanldeDelete={handleDeleteComment}
             />
-        </FlexStyled>
+        </BoxStyled>
     );
 
     return (
