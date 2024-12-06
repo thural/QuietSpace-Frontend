@@ -1,68 +1,90 @@
-import { AuthPages, SetAuthState, SignupBody, LoginBody } from '@/types/authTypes';
-import { fetchAccessToken, fetchLogin, fetchLogout, fetchSignup } from '@/api/requests/authRequests';
+import {
+    LoginBody,
+    SetAuthState,
+    SignupBody
+} from '@/types/authTypes';
 import { JwtAuthProps } from '@/types/hookPropTypes';
-import { RefreshTokenResponse, AuthResponse } from '@/api/schemas/inferred/auth';
-import { clearAuthTokens, getRefreshToken, setRefreshToken } from '@/utils/authUtils';
+import {
+    authenticateUser,
+    createTokenRefreshManager,
+    registerUser,
+    signoutUser,
+    signupUser
+} from '@/utils/jwtAuthUtils';
+import { useCallback, useMemo } from 'react';
 
-var refreshIntervalId: number;
+interface UseJwtAuthReturn {
+    loadAccessToken: () => void;
+    signup: (formData: SignupBody) => void;
+    signout: () => void;
+    authenticate: (formData: LoginBody) => void;
+    register: (setAuthState: SetAuthState, formData: SignupBody) => void;
+}
 
 const useJwtAuth = ({
     refreshInterval = 490000,
-    onSuccessFn = () => { console.error("onSuccess handler is not supplied") },
-    onErrorFn = (e: Error) => { console.error("error on JwtAuth client: ", e) },
-    onLoadFn = () => { console.error("onLoad handler is not supplied") }
-}: JwtAuthProps) => {
+    onSuccessFn = () => { console.warn("No onSuccess handler provided"); },
+    onErrorFn = (e: Error) => { console.error("Error in JwtAuth client:", e); },
+    onLoadFn = () => { console.warn("No onLoad handler provided"); }
+}: JwtAuthProps): UseJwtAuthReturn => {
+    // Create token refresh manager
+    const { stopTokenAutoRefresh, startTokenAutoRefresh } = useMemo(
+        () => createTokenRefreshManager(),
+        []
+    );
 
+    // Register user and move to activation page
+    const register = useCallback(async (setAuthState: SetAuthState, formData: SignupBody) => {
+        await registerUser({
+            setAuthState,
+            formData,
+            onErrorFn
+        });
+    }, [onErrorFn]);
 
-    const register = (setAuthState: SetAuthState, formData: SignupBody) => {
-        const onSuccess = (response: Response) => {
-            setAuthState({ page: AuthPages.ACTIVATION, formData });
-            onSuccessFn(response);
-        }
-        fetchSignup(formData).then(onSuccess).catch(onErrorFn);
-    }
+    // Authenticate user
+    const authenticate = useCallback(async (formData: LoginBody) => {
+        await authenticateUser({
+            formData,
+            onSuccessFn,
+            onErrorFn,
+            onLoadFn
+        });
+    }, [onSuccessFn, onErrorFn, onLoadFn]);
 
-    const authenticate = (formData: LoginBody) => {
-        onLoadFn();
-        const onSuccess = (data: AuthResponse) => {
-            setRefreshToken(data.refreshToken)
-            onSuccessFn(data);
-        }
-        fetchLogin(formData).then(onSuccess).catch(onErrorFn);
-    }
+    // Signup user
+    const signup = useCallback(async (formData: SignupBody) => {
+        await signupUser({
+            formData,
+            onSuccessFn,
+            onErrorFn,
+            onLoadFn
+        });
+    }, [onSuccessFn, onErrorFn, onLoadFn]);
 
-    const getAccessToken = () => {
-        const refreshToken = getRefreshToken();
-        const onSuccess = (data: RefreshTokenResponse) => onSuccessFn(data);
-        const onError = (error: Error) => onErrorFn(error);
-        fetchAccessToken(refreshToken).then(onSuccess).catch(onError);
-    }
-
-    const loadAccessToken = () => {
-        getAccessToken();
-        refreshIntervalId = window.setInterval(getAccessToken, refreshInterval);
-    }
-
-    const stopTokenAutoRefresh = () => clearInterval(refreshIntervalId);
-
-    const signout = () => {
-        const refreshToken = getRefreshToken();
+    // Sign out user
+    const signout = useCallback(async () => {
+        // Stop token refresh before signing out
         stopTokenAutoRefresh();
-        onLoadFn();
-        const onSignout = () => {
-            clearAuthTokens();
-            onSuccessFn();
-        }
-        fetchLogout(refreshToken).then(onSignout).catch(onErrorFn);
-    }
 
-    const signup = (formData: SignupBody) => {
-        onLoadFn();
-        const onSuccess = () => onSuccessFn();
-        const onError = (error: Error) => onErrorFn(error);
-        fetchSignup(formData).then(onSuccess).catch(onError);
-    }
+        await signoutUser({
+            onSuccessFn,
+            onErrorFn,
+            onLoadFn
+        });
+    }, [stopTokenAutoRefresh, onSuccessFn, onErrorFn, onLoadFn]);
 
+    // Load and start auto-refreshing access token
+    const loadAccessToken = useCallback(() => {
+        startTokenAutoRefresh({
+            refreshInterval,
+            onSuccessFn,
+            onErrorFn: (error) => {
+                stopTokenAutoRefresh();
+                onErrorFn(error);
+            }
+        });
+    }, [refreshInterval, startTokenAutoRefresh, onSuccessFn, onErrorFn, stopTokenAutoRefresh]);
 
     return {
         loadAccessToken,
@@ -70,7 +92,7 @@ const useJwtAuth = ({
         signout,
         authenticate,
         register,
-    }
-}
+    };
+};
 
-export default useJwtAuth
+export default useJwtAuth;

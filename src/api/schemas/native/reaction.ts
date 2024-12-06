@@ -1,4 +1,4 @@
-import { ContentType } from "@/utils/enumClasses"
+import { ContentType } from "../inferred/reaction"
 import { BaseSchema } from "./common"
 
 export enum Reactiontype {

@@ -14,7 +14,6 @@ import { ResId } from "@/api/schemas/native/common";
 import { ClientContextType } from "@/types/stompStoreTypes";
 
 export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }: StompClientProps) => {
-
     const { setClientContext } = useStompStore();
     const { isAuthenticated, data } = useAuthStore();
 
@@ -25,13 +24,11 @@ export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }
     const [isError, setIsError] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
-
-
     const handleError = (message: string) => {
-        if (!onError) onError = (message: Frame | string) => console.error(message);
+        const errorHandler = onError || ((msg: Frame | string) => console.error(msg));
         setError(new Error(message));
         setIsError(true);
-        onError(message);
+        errorHandler(message);
         console.log(message);
     }
 
@@ -124,8 +121,6 @@ export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }
         stompClient.unsubscribe(destination);
     }
 
-
-
     const methods = {
         subscribe,
         disconnect,
@@ -143,11 +138,7 @@ export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }
         error
     };
 
-
-
     const setContext = (recentContext: ClientContextType) => setClientContext({ ...methods, ...recentContext });
-
-
 
     const onAuthenticated = () => {
         if (!isAuthenticated) return;
@@ -168,14 +159,9 @@ export const useStompClient = ({ onConnect, onSubscribe, onError, onDisconnect }
         setContext(recentContext);
     }
 
-
-
     useEffect(onAuthenticated, [isAuthenticated])
     useEffect(onClientChange, [stompClient])
     useEffect(onConnnectionChange, [isClientConnected]);
-
-
-
 
     return {
         stompClient,

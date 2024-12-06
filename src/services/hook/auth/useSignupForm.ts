@@ -53,7 +53,7 @@ export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) 
                 return newData;
             });
         } else {
-            signup(formData, setAuthState);
+            signup(formData);
         }
     };
 
