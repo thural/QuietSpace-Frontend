@@ -31,20 +31,13 @@ const PostReplyCard: React.FC<PostReplyCardProps> = ({ post, userId }) => {
     const { data: user, isLoading: isUserLoading } = userData;
     const { data: comment, isLoading: isCommentLoading } = commentData;
 
-
-    const PostContent = () => (
-        <>
-            <PostCard postId={post.id} isMenuHidden={true} />
-            <CommentBox comment={comment} />
-        </>
-    );
-
-    const RenderResult = () => (
-        isCommentLoading || isUserLoading || user === undefined ? <PostSkeleton /> : <PostContent />
-    );
+    if (isCommentLoading || isUserLoading || !user || !comment) return <PostSkeleton />
 
     return (
-        <RenderResult />
+        <>
+            <PostCard post={post} isMenuHidden={true} />
+            <CommentBox comment={comment} />
+        </>
     )
 }
 

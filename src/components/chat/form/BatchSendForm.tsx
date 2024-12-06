@@ -56,7 +56,6 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
 
 
 
-
     if (fetchUserQuery.isPending) return <LoaderStyled />
 
     const SelectableUserItem: React.FC<{ data: UserResponse }> = ({ data }) => (

@@ -12,7 +12,7 @@ const PostListBox: React.FC<PostListBoxProps> = ({ posts, isLoading }) => {
     if (isLoading) return <LoaderStyled />;
 
     return posts.map((post, index) => {
-        if (!post.repostId) return <PostCard isPostsLoading={isLoading} key={index} postId={post.id} />;
+        if (!post.repostId) return <PostCard key={index} post={post} />;
         return <RepostCard isPostsLoading={isLoading} post={post} key={index} />
     });
 };

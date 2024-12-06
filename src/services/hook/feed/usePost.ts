@@ -1,22 +1,20 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
-import { ResId } from "@/api/schemas/inferred/common";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import { ContentType } from "@/api/schemas/native/common";
 import { Reactiontype } from "@/api/schemas/native/reaction";
 import { useGetComments } from "@/services/data/useCommentData";
-import { useDeletePost, useGetPostById } from "@/services/data/usePostData";
+import { useDeletePost } from "@/services/data/usePostData";
 import { useState } from "react";
-import useReaction from "./useReaction";
 import useNavigation from "../shared/useNavigation";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import useReaction from "./useReaction";
 
 
 
-export const usePost = (postId: ResId) => {
+export const usePost = (post: PostResponse) => {
 
     const signedUser = getSignedUserElseThrow();
-    const { data: post, isLoading, isError } = useGetPostById(postId);
-    if (isError) throw nullishValidationdError({ post });
     const { navigatePath } = useNavigation();
+    const postId = post.id;
 
     const handleNavigation = (e: React.MouseEvent) => {
         e && e.stopPropagation();
@@ -66,16 +64,15 @@ export const usePost = (postId: ResId) => {
 
 
     const comments = useGetComments(postId);
-    const isMutable = signedUser?.role === "ADMIN" || post?.userId === signedUser?.id;
-    const hasCommented = comments.data?.content.some(comment => comment.userId === signedUser.id);
+    const commentCount = comments.data ? comments.data?.totalElements : 0;
+    const isMutable = signedUser?.role.toUpperCase() === "ADMIN" || post?.userId === signedUser?.id;
+    const hasCommented = comments.data ? comments.data.content.some(comment => comment.userId === signedUser.id) : false;
 
 
 
     return {
-        post,
-        isLoading,
-        isError,
         comments,
+        commentCount,
         hasCommented,
         shareFormview,
         handleDeletePost,

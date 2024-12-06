@@ -15,13 +15,15 @@ const styles = createUseStyles((theme: Theme) => ({
       minWidth: theme.spacing(theme.spacingFactor.md * 0.8),
       maxHeight: theme.spacing(theme.spacingFactor.md * 0.8)
     },
+
     '& hr': {
       border: 'none',
-      height: '0.5px',
-      marginBottom: '0',
+      height: '0.1px',
       backgroundColor: theme.colors.hrDivider,
       marginTop: theme.spacing(theme.spacingFactor.md),
-    }
+    },
+
+    '&:not(:last-child)': { borderBottom: `.1px solid ${theme.colors.hrDivider}`, },
   },
 }));
 

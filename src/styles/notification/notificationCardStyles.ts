@@ -6,7 +6,7 @@ const styles = createUseStyles((theme: Theme) => ({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        borderBottom: ".1rem solid #e3e3e3",
+        borderBottom: `.1rem solid ${theme.colors.hrDivider}`,
         padding: `${theme.spacing(theme.spacingFactor.sm)} 0`,
 
         '& button': {

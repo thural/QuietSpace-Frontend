@@ -1,16 +1,16 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles, Theme } from "react-jss";
 
-const styles = createUseStyles({
-
+const styles = createUseStyles((theme: Theme) => ({
     wrapper: {
-        paddingTop: '4rem',
+        paddingTop: theme.spacing(theme.spacingFactor.md * 4),
         '& hr': {
             border: 'none',
-            height: '0.5px',
-            backgroundColor: 'rgb(222 222 222)'
-        }
-    },
-
-})
+            height: '0.1px',
+            backgroundColor: theme.colors.hrDivider,
+            marginTop: theme.spacing(theme.spacingFactor.md),
+        },
+        '&:not(:last-child)': { borderBottom: '.1px solid #ccc', },
+    }
+}));
 
 export default styles

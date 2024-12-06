@@ -2,7 +2,6 @@ import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import BoxStyled from "@components/shared/BoxStyled";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
@@ -37,7 +36,7 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
     };
 
     const ControlPanel = () => (
-        <BoxStyled>
+        <>
             <SegmentedControl
                 style={{ zIndex: 1 }}
                 fullWidth
@@ -53,7 +52,7 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
                 ]}
             />
             {children}
-        </BoxStyled>
+        </>
     );
 
     return (

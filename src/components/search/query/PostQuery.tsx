@@ -13,7 +13,7 @@ export interface PostQueryProps extends GenericWrapper {
 const PostQuery: React.FC<PostQueryProps> = ({ fetchPostQuery, postQueryList }) => (
     fetchPostQuery.isPending ? <LoaderStyled />
         : fetchPostQuery.isError ? <Typography type="h1">{fetchPostQuery.error.message}</Typography>
-            : postQueryList?.map((post: PostResponse, index: number) => <PostCard key={index} postId={post.id} />)
+            : postQueryList?.map((post: PostResponse, index: number) => <PostCard key={index} post={post} />)
 )
 
 export default PostQuery

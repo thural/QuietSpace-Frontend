@@ -6,9 +6,7 @@ import { useState } from "react";
 const useUserConnection = (userFetch: UseInfiniteQueryResult<InfiniteData<UserPage>>) => {
 
     if (userFetch.data === undefined) throw nullishValidationdError({ userFetch });
-
     const content = userFetch.data?.pages.flatMap((page) => page.content);
-
     const [queryResult, setQueryResult] = useState<UserList>(content);
 
 

@@ -32,7 +32,6 @@ const UserProfileContainer = () => {
         userPosts,
         followers,
         followings,
-        postsCount,
         followingsCount,
         followersCount,
         viewFollowers,
@@ -49,14 +48,7 @@ const UserProfileContainer = () => {
     return (
         <DefaultContainer>
             <UserDetailsSection user={signedUser} />
-            <FollowsSection
-                userId={0}
-                postsCount={postsCount}
-                followingsCount={followingsCount}
-                followersCount={followersCount}
-                toggleFollowings={toggleFollowings}
-                toggleFollowers={toggleFollowers}
-            >
+            <FollowsSection {...data}>
                 <BoxStyled className="signout-icon" onClick={handleSignout}><PiSignOut /></BoxStyled>
             </FollowsSection>
             <Overlay isOpen={viewFollowings && !!followingsCount} onClose={toggleFollowings}>

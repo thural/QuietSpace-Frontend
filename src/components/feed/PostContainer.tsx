@@ -1,19 +1,21 @@
 import DefaultContainer from "@/components/shared/DefaultContainer";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { nullishValidationdError } from "@/utils/errorUtils";
 import { useParams } from "react-router-dom";
 import CommentPanel from "./comment/CommentPanel";
-import PostCard from "./post/PostCard";
+import PostLoader from "./post/PostLoader";
 
 const PostContainer: React.FC<GenericWrapper> = () => {
 
     const { postId } = useParams();
+    if (postId === undefined) throw nullishValidationdError({ postId });
 
     return (
         <DefaultContainer>
-            <PostCard postId={postId}>
+            <PostLoader postId={postId}>
                 <CommentPanel postId={postId} />
-            </PostCard>
+            </PostLoader>
         </DefaultContainer>
     );
 }

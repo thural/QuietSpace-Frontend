@@ -21,7 +21,7 @@ const styles = createUseStyles((theme: Theme) => ({
     fontSize: theme.typography.fontSize.primary,
     gap: theme.spacing(theme.spacingFactor.xs),
     '& .repost-icon': {
-      fontSize: '1.5rem'
+      fontSize: theme.typography.fontSize.large
     }
   },
 

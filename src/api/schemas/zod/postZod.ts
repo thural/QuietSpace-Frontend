@@ -38,8 +38,8 @@ export const PostRequestSchema = z.object({
 
 export const PostResponseSchema = BaseSchema.extend({
     userId: ResIdSchema,
-    repostId: ResIdSchema.nullable(),
-    repostText: ResIdSchema.nullable(),
+    repostId: ResIdSchema.optional(),
+    repostText: ResIdSchema.optional(),
     photo: PhotoResponseSchema.optional(),
     username: z.string(),
     title: z.string(),

@@ -29,8 +29,7 @@ const useJwtAuth = ({
 }: JwtAuthProps): UseJwtAuthReturn => {
     // Create token refresh manager
     const { stopTokenAutoRefresh, startTokenAutoRefresh } = useMemo(
-        () => createTokenRefreshManager(),
-        []
+        () => createTokenRefreshManager(), []
     );
 
     // Register user and move to activation page

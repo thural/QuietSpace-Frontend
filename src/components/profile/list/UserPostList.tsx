@@ -44,7 +44,7 @@ const UserPostList: React.FC<UserPostListProps> = ({ userId, isReposts = false, 
                 .filter(post => (!!post.repostId === isReposts))
                 .map((post, index) => {
                     if (isRepliedPosts) return <PostReplyCard post={post} userId={userId} key={index} />;
-                    if (!post.repostId) return <PostCard key={index} postId={post.id} />;
+                    if (!post.repostId) return <PostCard key={index} post={post} />;
                     return <RepostCard post={post} key={index} />;
                 })}
         </InfinateScrollContainer>

@@ -1,14 +1,12 @@
-import { ResId } from "@/api/schemas/inferred/common";
+import { PostResponse } from "@/api/schemas/inferred/post";
 import BatchShareForm from "@/components/chat/form/BatchSendForm";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import Overlay from "@/components/shared/Overlay";
-import PostSkeleton from "@/components/shared/PostSkeleton";
 import { usePost } from "@/services/hook/feed/usePost";
 import styles from "@/styles/feed/postStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CreateRepostForm from "../form/CreateRepostForm";
 import EditPostForm from "../form/EditPostForm";
@@ -19,34 +17,30 @@ import PostMenu from "../fragments/PostMenu";
 
 
 interface PostCardProps extends GenericWrapper {
-    postId: ResId | undefined
+    post: PostResponse
     isBaseCard?: boolean
     isMenuHidden?: boolean
-    isPostsLoading?: boolean
 }
 
 
 const PostCard: React.FC<PostCardProps> = ({
-    postId,
+    post,
     isBaseCard = false,
     isMenuHidden = false,
-    isPostsLoading = false,
     children
 }) => {
 
     const classes = styles();
+    const postId = post.id;
     let postData = undefined;
 
     try {
-        if (postId === undefined) throw nullishValidationdError({ postId });
-        postData = usePost(postId);
+        postData = usePost(post);
     } catch (error) {
         return <ErrorComponent message={(error as Error).message} />;
     }
 
     const {
-        post,
-        isLoading,
         shareFormview,
         isMutable,
         isOverlayOpen,
@@ -61,8 +55,8 @@ const PostCard: React.FC<PostCardProps> = ({
     } = postData;
 
 
-    const MainContent = () => (
-        <>
+    return (
+        <BoxStyled id={postId} className={classes.postCard} onClick={handleNavigation} >
             <PostHeader post={post}>
                 <Conditional isEnabled={!isMenuHidden}>
                     <PostMenu
@@ -75,7 +69,7 @@ const PostCard: React.FC<PostCardProps> = ({
             </PostHeader>
             <PostContent post={post} handleContentClick={handleNavigation} />
             <Conditional isEnabled={!isBaseCard}>
-                <PostInteractions{...postData} />
+                <PostInteractions{...postData} post={post} />
             </Conditional>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} toggleForm={toggleEditForm} />
@@ -90,25 +84,10 @@ const PostCard: React.FC<PostCardProps> = ({
                 <BatchShareForm toggleForm={toggleShareForm} postId={post.id} />
             </Overlay>
             <Conditional isEnabled={!!children}>
-                <hr />
                 <CreateCommentForm handleClose={toggleCommentForm} postItem={post} isSecondaryMode={true} />
             </Conditional>
             {children}
-        </>
-    );
-
-    const RenderResult = () => (
-        isPostsLoading || isLoading ? <PostSkeleton /> : <MainContent />
-    );
-
-
-    return (
-        <>
-            <BoxStyled id={postId} className={classes.postCard} onClick={handleNavigation} >
-                <RenderResult />
-            </BoxStyled>
-            {!children && <hr />}
-        </>
+        </BoxStyled>
     );
 };
 
