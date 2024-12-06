@@ -1,61 +1,72 @@
-import { UserList } from "@/api/schemas/inferred/user";
-import { useQueryPosts } from "@/services/data/usePostData";
-import { useQueryUsers } from "@/services/data/useUserData";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import useUserSearch from "./useUserSearch";
+import usePostSearch from "./usePostSearch";
 
+/**
+ * Custom hook for search functionality.
+ *
+ * @returns {Object} - An object containing search-related states and handlers.
+ */
 const useSearch = () => {
-
     const queryInputRef = useRef<HTMLInputElement>(null);
     const [focused, setFocused] = useState(false);
-    const [userQueryList, setUserQueryResult] = useState<UserList>([]);
-    const [postQueryList, setPostQueryResult] = useState([]);
-    const fetchUserQuery = useQueryUsers(setUserQueryResult);
-    const fetchPostQuery = useQueryPosts(setPostQueryResult);
+    const [userQuery, setUserQuery] = useState('');
+    const [postQuery, setPostQuery] = useState('');
 
+    const { userQueryList, fetchUserQuery } = useUserSearch(userQuery);
+    const { postQueryList, fetchPostQuery } = usePostSearch(postQuery);
 
-    const initUserQuery = () => {
-        // TODO: limit to few page requests
-        fetchUserQuery.mutate(".");
-    }
-    useEffect(initUserQuery, []);
-
-
-    const unfocusOnEmptyList = () => {
+    useEffect(() => {
         if (!userQueryList.length) setFocused(false);
-    }
-    useEffect(unfocusOnEmptyList, [userQueryList]);
+    }, [userQueryList]);
 
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    /**
+     * Handle input change event.
+     *
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The input change event.
+     */
+    const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        const stringValue = event.target.value;
-        if (stringValue.length) {
-            setFocused(true);
-            fetchUserQuery.mutate(stringValue);
-        } else {
-            setFocused(false);
-            setUserQueryResult([]);
-        }
-    };
+        const value = event.target.value.trim();
+        setUserQuery(value);
+        setFocused(!!value);
+    }, []);
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    /**
+     * Handle key down event in input.
+     *
+     * @param {React.KeyboardEvent<HTMLInputElement>} event - The key down event.
+     */
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Escape') setFocused(false);
         if (queryInputRef.current === null || !queryInputRef.current.value.length) return;
-        if (event.key === 'Enter') fetchPostQuery.mutate(queryInputRef.current.value);
-    };
+        if (event.key === 'Enter') {
+            const value = queryInputRef.current.value.trim();
+            setPostQuery(value);
+        }
+    }, []);
 
-    const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    /**
+     * Handle input focus event.
+     *
+     * @param {React.FocusEvent<HTMLInputElement>} event - The input focus event.
+     */
+    const handleInputFocus = useCallback((event: React.FocusEvent<HTMLInputElement>) => {
         event.preventDefault();
         event.stopPropagation();
         if (event.target.value.length) setFocused(true);
-    };
+    }, []);
 
-    const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    /**
+     * Handle input blur event.
+     *
+     * @param {React.FocusEvent<HTMLInputElement>} event - The input blur event.
+     */
+    const handleInputBlur = useCallback((event: React.FocusEvent<HTMLInputElement>) => {
         // TODO: implement logic to handle input blur events
-        console.log("(!) unhandled input blur event", event.target.value)
-    };
-
+        console.log("(!) unhandled input blur event", event.target.value);
+    }, []);
 
     return {
         queryInputRef,
@@ -66,10 +77,9 @@ const useSearch = () => {
         handleKeyDown,
         handleInputFocus,
         handleInputBlur,
-        setUserQueryResult,
-        setPostQueryResult,
-        fetchPostQuery,
-        fetchUserQuery
+        setUserQuery,
+        fetchUserQuery,
+        fetchPostQuery
     };
 };
 
