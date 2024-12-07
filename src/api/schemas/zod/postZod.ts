@@ -27,6 +27,20 @@ export const PollRequestSchema = z.object({
     options: z.array(z.string())
 });
 
+export const RepostResponseSchema = z.object({
+    id: ResIdSchema,
+    text: ResIdSchema,
+    userId: ResIdSchema,
+    parentId: ResIdSchema,
+    username: z.string(),
+    isRepost: z.literal(true),
+});
+
+export const RepostBodySchema = z.object({
+    text: z.string(),
+    postId: ResIdSchema
+});
+
 export const PostRequestSchema = z.object({
     title: z.string().optional(),
     text: z.string(),
@@ -38,28 +52,17 @@ export const PostRequestSchema = z.object({
 
 export const PostResponseSchema = BaseSchema.extend({
     userId: ResIdSchema,
-    repostId: ResIdSchema.optional(),
-    repostText: ResIdSchema.optional(),
     photo: PhotoResponseSchema.optional(),
     username: z.string(),
     title: z.string(),
     text: z.string(),
     poll: z.nullable(PollResponseSchema),
+    repost: RepostResponseSchema.optional(),
     likeCount: z.number(),
     dislikeCount: z.number(),
     commentCount: z.number(),
     userReaction: ReactionResponseSchema,
 });
-
-export const RepostResponseSchema = PostResponseSchema.extend({
-    repostId: ResIdSchema,
-    repostText: ResIdSchema,
-});
-
-export const RepostBodySchema = z.object({
-    text: z.string(),
-    postId: ResIdSchema
-})
 
 export const PostListSchema = PageContentSchema(PostResponseSchema);
 export const PostPageSchema = PageSchema(PostResponseSchema);

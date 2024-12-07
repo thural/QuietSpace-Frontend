@@ -5,12 +5,13 @@ import { GenericWrapper } from "@/types/sharedComponentTypes";
 import styles from "@/styles/shared/overlayStyles";
 
 interface OverlayProps extends GenericWrapper {
-  isOpen: boolean
-  onClose: ConsumerFn
+  isOpen?: boolean
+  onClose?: ConsumerFn
 }
 
 const Overlay: React.FC<OverlayProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
+  if (!onClose) throw new Error("onClose handler is not provided");
 
   const classes = styles();
 

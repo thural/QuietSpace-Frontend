@@ -14,6 +14,7 @@ import PostContent from "../fragments/PostContent";
 import PostHeader from "../fragments/PostHeader";
 import PostInteractions from "../fragments/PostInteractions";
 import PostMenu from "../fragments/PostMenu";
+import { isRepost } from "@/utils/typeUtils";
 
 
 export interface PostCardProps extends GenericWrapper {
@@ -35,6 +36,7 @@ const PostCard: React.FC<PostCardProps> = ({
     let postData = undefined;
 
     try {
+        if (isRepost(post)) throw new TypeError("object is not post");
         postData = usePost(post);
     } catch (error) {
         return <ErrorComponent message={(error as Error).message} />;

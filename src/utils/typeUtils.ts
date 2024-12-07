@@ -11,5 +11,5 @@ export const isUserProfile = (object: UserResponse | UserProfileResponse): objec
 }
 
 export const isRepost = (object: PostResponse | RepostResponse): object is RepostResponse => {
-    return "repostId" in object && "repostText" in object
+    return "isRepost" in object && object.isRepost === true
 }

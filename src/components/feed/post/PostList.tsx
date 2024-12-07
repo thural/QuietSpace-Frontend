@@ -25,7 +25,7 @@ const PostListBox: React.FC<PostListBoxProps> = ({ posts, isLoading }) => {
     };
 
     return posts.map((post, index) => {
-        if (!post.repostId) return <PostCard key={index} post={post} />;
+        if (!post.repost) return <PostCard key={index} post={post} />;
         return <RepostCard post={post} key={index} />;
     });
 };

@@ -6,13 +6,12 @@ import PostSkeleton from "@/components/shared/PostSkeleton"
 import Typography from "@/components/shared/Typography"
 import UserDetails from "@/components/shared/UserDetails"
 import { useGetUserById } from "@/services/data/useUserData"
-import { usePost } from "@/services/hook/feed/usePost"
+import { useRepost } from "@/services/hook/feed/useRepost"
 import styles from "@/styles/feed/repostCardStyles"
-import { nullishValidationdError } from "@/utils/errorUtils"
+import { isRepost } from "@/utils/typeUtils"
 import { PiArrowsClockwiseBold } from "react-icons/pi"
 import PostMenu from "../fragments/PostMenu"
-import PostLoader from "../post/PostLoader"
-import { isRepost } from "@/utils/typeUtils"
+import PostCard from "../post/PostCard"
 
 interface RepostCardProps {
     isPostsLoading?: boolean
@@ -21,20 +20,18 @@ interface RepostCardProps {
 
 const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false }) => {
 
-    let data = undefined;
-    const postId = post.id;
     const classes = styles();
+    let data = undefined;
 
     try {
-        if (!isRepost(post)) throw new TypeError('object is not repost');
-        if (postId === undefined) throw nullishValidationdError({ postId });
-        data = usePost(post);
+        if (!post.repost || !isRepost(post.repost)) throw new TypeError('object is not repost');
+        data = useRepost(post.repost);
     } catch (error) {
         return <ErrorComponent message={(error as Error).message} />;
     }
 
 
-    const { data: user, isLoading, isError, error } = useGetUserById(post.userId);
+    const { data: user, isLoading, isError, error } = useGetUserById(post.repost.userId);
     if (isError) return <ErrorComponent message={error?.message} />;
     if (isPostsLoading || isLoading || user === undefined) return <PostSkeleton />;
 
@@ -45,10 +42,10 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
                 <PiArrowsClockwiseBold className="repost-icon" />
                 <UserDetails scale={5} user={user} isDisplayEmail={false} />
                 <Typography>reposted</Typography>
-                <PostMenu postId={post.id} isRepost={true} {...data} />
+                <PostMenu postId={post.repost.id} isRepost={true} {...data} />
             </FlexStyled>
-            <Typography className={classes.replyText}>{post.repostText}</Typography>
-            <PostLoader postId={post.repostId} isMenuHidden={true} />
+            <Typography className={classes.replyText}>{post.repost.text}</Typography>
+            <PostCard post={post} isMenuHidden={true} />
         </BoxStyled>
     )
 }
