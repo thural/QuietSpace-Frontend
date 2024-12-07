@@ -69,7 +69,7 @@ export const useSocket = (): SocketHookReturn => {
      * @param frame - Connection frame
      * @param callback - Optional callback function
      */
-    const onConnect = useCallback((frame: Frame, callback?: ConnectCallback) => {
+    const onConnect = useCallback((frame: Frame | undefined, callback?: ConnectCallback) => {
         logger.current.log('Connected to WebSocket', frame);
         if (callback) callback(frame);
     }, []);

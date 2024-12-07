@@ -75,7 +75,10 @@ export const useChatStore = create<ChatStoreProps>(set => ({
 }));
 
 
-export const useStompStore = create<StompStore>(set => ({
+export const useStompStore = create<StompStore>((set) => ({
     clientContext: {},
-    setClientContext: (methods) => set({ clientContext: methods }),
+    setClientContext: (methods) => set({
+        clientContext: { ...methods }
+    }),
+    resetClientContext: () => set({ clientContext: {} })
 }));
