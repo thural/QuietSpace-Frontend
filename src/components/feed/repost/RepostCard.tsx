@@ -11,7 +11,8 @@ import styles from "@/styles/feed/repostCardStyles"
 import { nullishValidationdError } from "@/utils/errorUtils"
 import { PiArrowsClockwiseBold } from "react-icons/pi"
 import PostMenu from "../fragments/PostMenu"
-import PostCard from "../post/PostCard"
+import PostLoader from "../post/PostLoader"
+import { isRepost } from "@/utils/typeUtils"
 
 interface RepostCardProps {
     isPostsLoading?: boolean
@@ -21,13 +22,13 @@ interface RepostCardProps {
 const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false }) => {
 
     let data = undefined;
-
+    const postId = post.id;
     const classes = styles();
 
     try {
-        const postId = post.id;
+        if (!isRepost(post)) throw new TypeError('object is not repost');
         if (postId === undefined) throw nullishValidationdError({ postId });
-        data = usePost(postId);
+        data = usePost(post);
     } catch (error) {
         return <ErrorComponent message={(error as Error).message} />;
     }
@@ -40,16 +41,14 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
 
     return (
         <BoxStyled className={classes.repostCard} >
-            <BoxStyled>
-                <FlexStyled className={classes.postHeadline}>
-                    <PiArrowsClockwiseBold className="repost-icon" />
-                    <UserDetails scale={5} user={user} isDisplayEmail={false} />
-                    <Typography>reposted</Typography>
-                    <PostMenu postId={post.id} isRepost={true} {...data} />
-                </FlexStyled>
-                <Typography className={classes.replyText}>{post.repostText}</Typography>
-            </BoxStyled>
-            <PostCard post={post} isMenuHidden={true} />
+            <FlexStyled className={classes.postHeadline}>
+                <PiArrowsClockwiseBold className="repost-icon" />
+                <UserDetails scale={5} user={user} isDisplayEmail={false} />
+                <Typography>reposted</Typography>
+                <PostMenu postId={post.id} isRepost={true} {...data} />
+            </FlexStyled>
+            <Typography className={classes.replyText}>{post.repostText}</Typography>
+            <PostLoader postId={post.repostId} isMenuHidden={true} />
         </BoxStyled>
     )
 }

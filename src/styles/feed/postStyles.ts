@@ -23,7 +23,7 @@ const styles = createUseStyles((theme: Theme) => ({
       marginTop: theme.spacing(theme.spacingFactor.md),
     },
 
-    '&:not(:last-child)': { borderBottom: `.1px solid ${theme.colors.hrDivider}`, },
+    '&:not(:last-child)': { borderBottom: `.1px solid ${theme.colors.hrDivider}` },
   },
 }));
 

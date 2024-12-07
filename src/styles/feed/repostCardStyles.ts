@@ -9,6 +9,14 @@ const styles = createUseStyles((theme: Theme) => ({
     fontSize: theme.typography.fontSize.primary,
     margin: `${theme.spacing(theme.spacingFactor.md)} 0`,
     gap: theme.spacing(theme.spacingFactor.md * 0.8),
+    '& hr': {
+      border: 'none',
+      height: '0.1px',
+      backgroundColor: theme.colors.hrDivider,
+      marginTop: theme.spacing(theme.spacingFactor.md),
+    },
+
+    '&:not(:last-child)': { borderBottom: `.1px solid ${theme.colors.hrDivider}` },
   },
 
   replytSection: {

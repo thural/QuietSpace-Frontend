@@ -6,15 +6,16 @@ import PostCard from "./PostCard";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 export interface PostLoaderProps extends GenericWrapper {
-    postId: ResId
+    postId: ResId,
+    isMenuHidden?: boolean
 }
 
-export const PostLoader: React.FC<PostLoaderProps> = ({ postId, children }) => {
+export const PostLoader: React.FC<PostLoaderProps> = ({ postId, isMenuHidden, children }) => {
 
     const { data: post, isLoading, isError, error } = useGetPostById(postId);
     if (post === undefined || isLoading) return <PostSkeleton />;
     if (isError) return <ErrorComponent message={error.message} />;
-    return <PostCard post={post}>{children}</PostCard>
+    return <PostCard post={post} isMenuHidden={isMenuHidden}>{children}</PostCard>
 
 }
 

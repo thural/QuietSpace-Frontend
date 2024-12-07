@@ -51,6 +51,11 @@ export const PostResponseSchema = BaseSchema.extend({
     userReaction: ReactionResponseSchema,
 });
 
+export const RepostResponseSchema = PostResponseSchema.extend({
+    repostId: ResIdSchema,
+    repostText: ResIdSchema,
+});
+
 export const RepostBodySchema = z.object({
     text: z.string(),
     postId: ResIdSchema

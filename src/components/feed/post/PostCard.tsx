@@ -16,7 +16,7 @@ import PostInteractions from "../fragments/PostInteractions";
 import PostMenu from "../fragments/PostMenu";
 
 
-interface PostCardProps extends GenericWrapper {
+export interface PostCardProps extends GenericWrapper {
     post: PostResponse
     isBaseCard?: boolean
     isMenuHidden?: boolean
