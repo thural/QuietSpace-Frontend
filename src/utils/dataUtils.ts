@@ -2,7 +2,6 @@ import { Page } from "@/api/schemas/inferred/common";
 import { BaseSchema, ResId } from "@/api/schemas/native/common";
 import { AnyPredicate } from "@/types/genericTypes";
 import { InfiniteData } from "@tanstack/react-query";
-import { assertNullisValues } from "./errorUtils";
 
 export interface HasId { id: ResId }
 
@@ -42,7 +41,7 @@ export const transformInfinetePages = <T extends HasId>(
 ): InfiniteData<Page<T>> => {
     const pageIndex = data.pages.findIndex(page => pagePredicate(page, entityId));
 
-    if (pageIndex === -1) throw assertNullisValues({ lastPage: null });
+    if (pageIndex === -1) throw new Error("page not found");
 
     const updatedPages = data.pages.map((page, index) =>
         index === pageIndex
@@ -70,7 +69,7 @@ export const pushToPageContent = <T extends HasId>(
 ): InfiniteData<Page<T>> => {
     const pageIndex = data.pages.findIndex(pagePredicate);
 
-    if (pageIndex === -1) throw assertNullisValues({ lastPage: null });
+    if (pageIndex === -1) throw new Error("page not found");
 
     const updatedPages = data.pages.map((page, index) =>
         index === pageIndex

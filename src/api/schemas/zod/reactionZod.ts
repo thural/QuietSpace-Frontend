@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { BaseSchema, ContentTypeEnum, ResIdSchema } from "./commonZod";
-import { Reactiontype } from "../native/reaction";
+import { ReactionType } from "../native/reaction";
 
-export const ReactionTypeSchema = z.nativeEnum(Reactiontype);
+export const ReactionTypeSchema = z.nativeEnum(ReactionType);
 
 export const ReactionRequestSchema = z.object({
     userId: ResIdSchema,

@@ -1,8 +1,7 @@
-import { assertNullisValues } from "./errorUtils";
 
 export const getRefreshToken = (): string => {
     const refreshToken: string | null = localStorage.getItem("refreshToken");
-    if (!refreshToken) throw assertNullisValues({ refreshToken });
+    if (!refreshToken) throw new Error("refreshToken is undefined");
     return refreshToken;
 }
 

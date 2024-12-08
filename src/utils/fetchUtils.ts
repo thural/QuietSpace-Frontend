@@ -1,17 +1,16 @@
 import { Page } from "@/api/schemas/inferred/common";
-import { PostResponse } from "@/api/schemas/inferred/post";
-import { UserPage } from "@/api/schemas/inferred/user";
+import { DEFAULT_PAGE_SIZE } from "@/constants/params";
 
-export const buildPageParams = (pageNumber: number, pageSize: number = 9): string => (
+export const buildPageParams = (pageNumber: number, pageSize: number = DEFAULT_PAGE_SIZE): string => (
     `?page-number=${pageNumber}&page-size=${pageSize}`
 );
 
-export const getNextPageParam = (lastPage: Page<PostResponse>) => {
+export const getNextPageParam = (lastPage: Page<any>) => {
     if (lastPage.last) return undefined;
     return lastPage.pageable.pageNumber + 1;
 }
 
-export const getPreviousPageParam = (lastPage: UserPage) => {
+export const getPreviousPageParam = (lastPage: Page<any>) => {
     if (lastPage.first) return undefined;
     return lastPage.pageable.pageNumber - 1;
 }

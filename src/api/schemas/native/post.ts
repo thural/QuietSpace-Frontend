@@ -1,5 +1,5 @@
 import { BaseSchema, ContentResponse, PagedResponse, ResId } from "./common"
-import { Reactiontype } from "./reaction"
+import { ReactionType } from "./reaction"
 
 export interface VoteBody {
     userId: ResId
@@ -50,7 +50,7 @@ export interface PostSchema extends BaseSchema {
     likeCount: number
     dislikeCount: number
     commentCount: number
-    userReaction: Reactiontype
+    userReaction: ReactionType
 }
 
 export type PostListResponse = ContentResponse<PostSchema>

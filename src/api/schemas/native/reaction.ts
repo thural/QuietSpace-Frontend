@@ -1,7 +1,7 @@
 import { ContentType } from "../inferred/reaction"
 import { BaseSchema } from "./common"
 
-export enum Reactiontype {
+export enum ReactionType {
     LIKE = "LIKE",
     DISLIKE = "DISLIKE"
 }
@@ -9,7 +9,7 @@ export enum Reactiontype {
 export interface UserReaction {
     userId: string | number
     contentId: string | number
-    reactionType: Reactiontype
+    reactionType: ReactionType
     contentType: ContentType
 }
 
