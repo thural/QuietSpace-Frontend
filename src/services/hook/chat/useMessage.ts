@@ -21,7 +21,8 @@ const useMessage = (message: MessageResponse) => {
     };
 
     const handleSeenMessage = () => {
-        if (!isClientConnected || message.senderId === user.id) return;
+        if (!isClientConnected) return console.error("stomp client is not connected yet");
+        if (message.senderId === user.id) return;
         if (message.isSeen || !wasSeen) return;
         setMessageSeen(message.id);
     };

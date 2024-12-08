@@ -1,11 +1,11 @@
 import { UserList, UserPage } from "@/api/schemas/inferred/user";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
 
 const useUserConnection = (userFetch: UseInfiniteQueryResult<InfiniteData<UserPage>>) => {
 
-    if (userFetch.data === undefined) throw nullishValidationdError({ userFetch });
+    if (userFetch.data === undefined) throw assertNullisValues({ userFetch });
     const content = userFetch.data?.pages.flatMap((page) => page.content);
     const [queryResult, setQueryResult] = useState<UserList>(content);
 

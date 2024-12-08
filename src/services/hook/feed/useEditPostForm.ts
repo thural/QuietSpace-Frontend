@@ -3,7 +3,7 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { PollRequest, PostRequest } from "@/api/schemas/inferred/post";
 import { useEditPost, useGetPostById } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useState } from "react";
 
@@ -11,7 +11,7 @@ import { useState } from "react";
 const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
 
     const { data: editedPost, isLoading, isError } = useGetPostById(postId);
-    if (editedPost === undefined) throw nullishValidationdError({ editedPost });
+    if (editedPost === undefined) throw assertNullisValues({ editedPost });
 
     const pollData: PollRequest | null = editedPost.poll ? {
         options: editedPost.poll.options.map(option => option.label),

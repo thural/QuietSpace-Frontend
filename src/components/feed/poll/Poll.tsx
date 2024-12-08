@@ -8,7 +8,7 @@ import { isDateExpired } from "@/utils/dateUtils";
 import { PollResponse } from "@/api/schemas/inferred/post";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import React from "react";
 
 
@@ -24,7 +24,7 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
     let data = undefined;
 
     try {
-        if (!pollData) throw nullishValidationdError({ pollData });
+        if (!pollData) throw assertNullisValues({ pollData });
         data = usePoll(pollData, postId);
     } catch (error: unknown) {
         return <ErrorComponent message={(error as Error).message} />

@@ -17,7 +17,7 @@ import useSearch from "@/services/hook/search/useSearch";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/profile/connectionStyles";
 import { ConsumerFn } from "@/types/genericTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 
 interface BatchShareFormProps {
     postId: ResId
@@ -31,7 +31,7 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
     let formData = undefined;
 
     try {
-        if (postId === undefined) throw nullishValidationdError({ postId });
+        if (postId === undefined) throw assertNullisValues({ postId });
         searchData = useSearch();
         formData = useBatchShareForm(postId, toggleForm);
     } catch (error) {

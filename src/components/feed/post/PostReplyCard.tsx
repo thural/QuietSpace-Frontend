@@ -5,7 +5,7 @@ import ErrorComponent from "@/components/shared/errors/ErrorComponent"
 import PostSkeleton from "@/components/shared/PostSkeleton"
 import { useGetLatestComment } from "@/services/data/useCommentData"
 import { useGetUserById } from "@/services/data/useUserData"
-import { nullishValidationdError } from "@/utils/errorUtils"
+import { assertNullisValues } from "@/utils/errorUtils"
 import CommentBox from "../comment/Comment"
 
 interface PostReplyCardProps {
@@ -19,7 +19,7 @@ const PostReplyCard: React.FC<PostReplyCardProps> = ({ post, userId }) => {
     let commentData = undefined;
 
     try {
-        if (!post || !userId) throw nullishValidationdError({ post, userId });
+        if (!post || !userId) throw assertNullisValues({ post, userId });
         userData = useGetUserById(userId);
         commentData = useGetLatestComment(userId, post.id);
         if (userData.isError) throw userData.error;

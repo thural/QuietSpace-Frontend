@@ -1,24 +1,27 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import SockJS from 'sockjs-client';
-import { Client, Frame, over } from "stompjs";
 import { useAuthStore, useStompStore } from "@/services/store/zustand";
+import {
+    createStompClient,
+    openStompConnection,
+    handleStompError,
+    sendStompMessage,
+    subscribeToDestination,
+    disconnectStompClient,
+    setStompAutoReconnect,
+    ExtendedClient
+} from '@/utils/stomptUtils';
 import {
     StompHeaders,
     StompClientProps,
     ConnectCallback,
     SubscribeCallback,
     DisconnectCallback,
-    ErrorCallback,
     StompMessage,
     Headers
 } from "@/api/schemas/native/websocket";
 import { ResId } from "@/api/schemas/native/common";
 import { UseStompClientReturn } from '@/types/stompStoreTypes';
-
-// Extend the Client type to include reconnect_delay
-interface ExtendedClient extends Client {
-    reconnect_delay?: number;
-}
+import { Frame } from 'stompjs'; // Add explicit import for Frame
 
 /**
  * Custom hook to handle STOMP client connection and operations.
@@ -49,41 +52,19 @@ export const useStompClient = ({
      * @returns {Error} - The created Error object.
      */
     const handleError = useCallback((errorMessage: string | Frame) => {
-        const errorHandler = onError || ((msg) => console.error(msg));
-
-        const newError = new Error(
-            typeof errorMessage === 'string'
-                ? errorMessage
-                : errorMessage.toString()
+        const newError = handleStompError(
+            errorMessage,
+            onError || ((msg) => {
+                console.error(msg);
+                return undefined; // Explicitly return undefined to match ErrorCallback
+            })
         );
 
         setError(newError);
         setIsError(true);
-        errorHandler(errorMessage);
 
         return newError;
     }, [onError]);
-
-    /**
-     * Create a new STOMP client.
-     *
-     * @returns {ExtendedClient} - The created STOMP client.
-     */
-    const createStompClient = useCallback((): ExtendedClient => {
-        const socket = new SockJS('http://localhost:8080/ws');
-        return over(socket) as ExtendedClient;
-    }, []);
-
-    /**
-     * Set automatic reconnection with a delay.
-     *
-     * @param {number} [delay=5000] - The reconnection delay in milliseconds.
-     */
-    const setAutoReconnect = useCallback((delay = 5000) => {
-        if (stompClient) {
-            (stompClient as ExtendedClient).reconnect_delay = delay;
-        }
-    }, [stompClient]);
 
     /**
      * Open a connection with authentication headers.
@@ -92,7 +73,11 @@ export const useStompClient = ({
      * @param {StompHeaders} [params.headers] - The connection headers.
      */
     const openConnection = useCallback(
-        ({ headers = { "Authorization": `Bearer ${data?.accessToken}` } } = {}) => {
+        ({ headers = {
+            Authorization: `Bearer ${data?.accessToken}`,
+            login: '', // Add required empty login 
+            passcode: '' // Add required empty passcode
+        } } = {}) => {
             if (!stompClient) {
                 return handleError("Client is not ready");
             }
@@ -100,19 +85,22 @@ export const useStompClient = ({
             const defaultConnect: ConnectCallback = (frame) =>
                 console.log("STOMP client connected", frame);
 
-            stompClient.connect(
+            openStompConnection(stompClient, {
                 headers,
-                (frame) => {
+                onConnect: (frame) => {
                     setError(null);
                     setIsError(false);
                     setIsConnecting(false);
                     setIsClientConnected(true);
                     (onConnect || defaultConnect)(frame);
                 },
-                (error) => handleError(error)
-            );
+                onError: (error) => {
+                    handleError(error);
+                    return undefined; // Explicitly return undefined
+                }
+            });
         },
-        [stompClient, data?.accessToken, onConnect, handleError]
+        [stompClient, data?.accessToken, onConnect]
     );
 
     /**
@@ -126,12 +114,12 @@ export const useStompClient = ({
         const defaultDisconnect: DisconnectCallback = () =>
             console.log("Client disconnected");
 
-        stompClient?.disconnect(
-            () => {
+        if (stompClient) {
+            disconnectStompClient(stompClient, () => {
                 setIsDisconnected(true);
                 (onDisconnect || defaultDisconnect)();
-            }
-        );
+            });
+        }
     }, [stompClient, isClientConnected, onDisconnect]);
 
     /**
@@ -149,7 +137,10 @@ export const useStompClient = ({
         if (!isClientConnected) {
             return handleError("Cannot send message, client not connected");
         }
-        stompClient?.send(destination, headers, JSON.stringify(body));
+
+        if (stompClient) {
+            sendStompMessage(stompClient, destination, body, headers);
+        }
     }, [stompClient, isClientConnected]);
 
     /**
@@ -170,7 +161,7 @@ export const useStompClient = ({
             console.log(`Received message at ${destination}`, message);
         };
 
-        stompClient.subscribe(destination, callback || defaultCallback);
+        subscribeToDestination(stompClient, destination, callback || defaultCallback);
     }, [stompClient]);
 
     /**
@@ -194,7 +185,8 @@ export const useStompClient = ({
             }
         };
 
-        stompClient.subscribe(
+        subscribeToDestination(
+            stompClient,
             destination,
             onSubscribe || defaultSubscribe,
             { id: subscriptionId }
@@ -211,6 +203,17 @@ export const useStompClient = ({
             return handleError("Cannot unsubscribe, client not ready");
         }
         stompClient.unsubscribe(destination);
+    }, [stompClient]);
+
+    /**
+     * Set automatic reconnection with a delay.
+     *
+     * @param {number} [delay=5000] - The reconnection delay in milliseconds.
+     */
+    const setAutoReconnect = useCallback((delay = 5000) => {
+        if (stompClient) {
+            setStompAutoReconnect(stompClient, delay);
+        }
     }, [stompClient]);
 
     // Memoized context for store
@@ -245,7 +248,7 @@ export const useStompClient = ({
         if (!isAuthenticated) return;
         const newClient = createStompClient();
         setStompClient(newClient);
-    }, [isAuthenticated, createStompClient]);
+    }, [isAuthenticated]);
 
     // Client change effect
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { AuthResponse } from '@/api/schemas/inferred/auth';
 import { UseAuthStoreProps } from '@/types/authStoreTypes';
-import { ActiveChatId, ChatStoreProps } from '@/types/chatStoreTypes';
+import { ActiveChatId, ChatClientMethods, ChatStoreProps } from '@/types/chatStoreTypes';
 import { NotificationStoreProps } from '@/types/notificationStore';
 import { StompStore } from '@/types/stompStoreTypes';
 import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
@@ -54,21 +54,25 @@ export const viewStore = create<ViewStoreProps>(set => ({
 
 export const useThemeStore = create<{ data: boolean, setThemeStore: (checked: boolean) => void }>(set => ({
     data: false,
-    setThemeStore: (checked: boolean) => set(state => ({
-        data: checked
-    })),
+    setThemeStore: (checked: boolean) => set({ data: checked }),
 }));
+
 
 
 export const useChatStore = create<ChatStoreProps>(set => ({
     data: { activeChatId: null, messageInput: {} },
-    clientMethods: {},
+    clientMethods: {
+        sendChatMessage: () => console.error("client method is not ready"),
+        deleteChatMessage: () => console.error("client method is not ready"),
+        setMessageSeen: () => console.error("client method is not ready"),
+        isClientConnected: false
+    },
     isLoading: false,
     isError: false,
     error: null,
     setActiveChatId: (activeChatId: ActiveChatId) => set(state => ({ data: { ...state.data, activeChatId } })),
     setMessageInput: (messageInput: Record<string, string>) => set(state => ({ data: { ...state.data, messageInput } })),
-    setClientMethods: (methods: Record<string, Function>) => set({ clientMethods: methods }),
+    setClientMethods: (methods: ChatClientMethods) => set({ clientMethods: methods }),
     setIsLoading: (isLoading: boolean) => set({ isLoading }),
     setIsError: (isError: boolean) => set({ isError }),
     setError: (error: Error) => set({ error })

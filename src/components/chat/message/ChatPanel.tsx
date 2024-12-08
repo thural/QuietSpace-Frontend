@@ -8,7 +8,7 @@ import Typography from "@/components/shared/Typography";
 import { useChat } from "@/services/hook/chat/useChat";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/chat/chatPanelStyles";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import { PiChatsCircle } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const ChatPanel = () => {
     let data = undefined;
 
     try {
-        if (!chatId) throw nullishValidationdError({ chatId });
+        if (!chatId) throw assertNullisValues({ chatId });
         data = useChat(chatId);
     } catch (error: unknown) {
         console.error(error);

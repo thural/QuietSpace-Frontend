@@ -37,15 +37,12 @@ export type SubscribeCallback = (message: Frame) => void | Promise<void>; // Cha
 export type CloseCallback = () => void | Promise<void>;
 export type DisconnectCallback = () => void | Promise<void>;
 
-// Enhanced StompClientProps with more optional configurations
+// Recreate the full type definitions from the original file
 export interface StompClientProps {
     onConnect?: ConnectCallback;
     onSubscribe?: SubscribeCallback;
-    onClose?: CloseCallback;
     onError?: ErrorCallback;
     onDisconnect?: DisconnectCallback;
-    reconnectAttempts?: number; // Optional reconnection configuration
-    reconnectDelay?: number;    // Optional reconnection delay
 }
 
 // Optional: Create a type for WebSocket connection configuration

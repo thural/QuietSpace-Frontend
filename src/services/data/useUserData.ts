@@ -3,7 +3,7 @@ import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings,
 import { ResId } from "@/api/schemas/inferred/common";
 import { ProfileSettingsRequest, ProfileSettingsResponse, UserPage, UserResponse } from "@/api/schemas/inferred/user";
 import { ConsumerFn } from "@/types/genericTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
@@ -32,7 +32,7 @@ export const useQueryUsers = (callBackFunc: ConsumerFn) => {
     const signedUser = getSignedUser();
 
     if (signedUser === undefined) {
-        throw nullishValidationdError({ signedUser }, "could not perform user query:");
+        throw assertNullisValues({ signedUser }, "could not perform user query:");
     }
 
     const { data: authData } = useAuthStore();

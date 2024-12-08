@@ -72,7 +72,10 @@ export const openStompConnection = (
     const {
         headers = {},
         onConnect = (frame) => console.log("STOMP client connected", frame),
-        onError = (error) => handleStompError(error)
+        onError = (error) => {
+            console.error(error);
+            return undefined;
+        }
     } = options;
 
     return new Promise((resolve, reject) => {
@@ -84,7 +87,14 @@ export const openStompConnection = (
             },
             (error) => {
                 const processedError = onError(error);
-                reject(processedError);
+
+                // Ensure we always reject with a Frame or Error
+                if (error instanceof Frame) {
+                    reject(error);
+                } else {
+                    const fallbackFrame = new Frame('ERROR', {}, error.toString());
+                    reject(fallbackFrame);
+                }
             }
         );
     });

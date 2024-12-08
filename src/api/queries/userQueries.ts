@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { ResId } from "../schemas/native/common";
 import { UserResponse, UserPage, UserProfileResponse } from "../schemas/inferred/user";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 
 
 
@@ -13,7 +13,7 @@ export const getSignedUser = (): UserResponse | undefined => {
 export const getSignedUserElseThrow = (): UserProfileResponse => {
     const queryClient = useQueryClient();
     const user: UserProfileResponse | undefined = queryClient.getQueryData(["user"]);
-    if (user === undefined) throw nullishValidationdError({ user });
+    if (user === undefined) throw assertNullisValues({ user });
     return user;
 }
 

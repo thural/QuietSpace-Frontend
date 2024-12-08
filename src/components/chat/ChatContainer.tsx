@@ -5,7 +5,7 @@ import { useGetChats } from "@/services/data/useChatData";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/chat/chatContainerStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import LoaderStyled from "../shared/LoaderStyled";
 import ChatSidebar from "./sidebar/ChatSidebar";
 
@@ -17,7 +17,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
     try {
         const user = getSignedUser();
-        if (user === undefined) throw nullishValidationdError({ user });
+        if (user === undefined) throw assertNullisValues({ user });
         data = useGetChats();
     } catch (error: unknown) {
         console.error(error);

@@ -15,7 +15,7 @@ import {
 import { ResId } from "@/api/schemas/inferred/common";
 import { PostResponse, PostRequest, PostPage, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
 import { ConsumerFn } from "@/types/genericTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -205,7 +205,7 @@ export const useSavePost = () => {
 
     const queryClient = useQueryClient();
     const user = getSignedUser();
-    if (user === undefined) throw nullishValidationdError({ user });
+    if (user === undefined) throw assertNullisValues({ user });
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {

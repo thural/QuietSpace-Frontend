@@ -1,7 +1,7 @@
 import DefaultContainer from "@/components/shared/DefaultContainer";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import { useParams } from "react-router-dom";
 import CommentPanel from "./comment/CommentPanel";
 import PostLoader from "./post/PostLoader";
@@ -9,7 +9,7 @@ import PostLoader from "./post/PostLoader";
 const PostContainer: React.FC<GenericWrapper> = () => {
 
     const { postId } = useParams();
-    if (postId === undefined) throw nullishValidationdError({ postId });
+    if (postId === undefined) throw assertNullisValues({ postId });
 
     return (
         <DefaultContainer>

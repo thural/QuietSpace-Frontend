@@ -3,7 +3,7 @@ import styles from "@/styles/shared/userQueryItemStyles";
 import { getSignedUser } from "@/api/queries/userQueries";
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { nullishValidationdError } from "@/utils/errorUtils";
+import { assertNullisValues } from "@/utils/errorUtils";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Conditional from "./Conditional";
@@ -26,7 +26,7 @@ const UserQueryItem: React.FC<UserQueryItemProps> = ({ data, hasFollowToggle = t
     const classes = styles();
     const navigate = useNavigate();
     const signedUser: UserResponse | undefined = getSignedUser();
-    if (signedUser === undefined) throw nullishValidationdError({ signedUser });
+    if (signedUser === undefined) throw assertNullisValues({ signedUser });
 
 
     const handleClick = (event: React.MouseEvent) => {

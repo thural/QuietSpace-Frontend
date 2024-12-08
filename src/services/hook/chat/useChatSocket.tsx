@@ -10,13 +10,12 @@ import { useEffect } from "react";
 import { ZodError } from "zod";
 import { fromZodError } from 'zod-validation-error';
 import { useChatStore, useStompStore } from "@/services/store/zustand.js";
+import { assertNullisValues } from "@/utils/errorUtils.js";
 
 
 
 const useChatSocket = () => {
-
     const user = getSignedUser();
-
     const { setClientMethods } = useChatStore();
 
     const {
@@ -28,8 +27,8 @@ const useChatSocket = () => {
         handleSeenMessage
     } = chatHandler();
 
-    const { clientContext: { subscribe, sendMessage, isClientConnected } } = useStompStore();
-
+    const { clientContext } = useStompStore();
+    const { subscribe, sendMessage, isClientConnected } = clientContext;
 
     const onSubscribe = (message: StompMessage) => {
         const messageBody: MessageResponse | ChatEvent = JSON.parse(message.body);
@@ -43,7 +42,6 @@ const useChatSocket = () => {
 
             switch (eventType) {
                 case SocketEventType.CONNECT:
-                    return handleOnlineUser(chatEvent);
                 case SocketEventType.DISCONNECT:
                     return handleOnlineUser(chatEvent);
                 case SocketEventType.DELETE_MESSAGE:
@@ -54,31 +52,44 @@ const useChatSocket = () => {
                     return handleLeftChat(chatEvent);
                 case SocketEventType.EXCEPTION:
                     return handleChatException(chatEvent);
-                default: throw new Error("(!) ChatEventType value is unknown");
+                default:
+                    throw new Error("(!) ChatEventType value is unknown");
             }
         } catch (error: unknown) {
-            if (error instanceof ZodError) console.error(fromZodError(error).message)
-            else console.error("caught error on processing chat event: ", (error as Error).message);
+            if (error instanceof ZodError) {
+                console.error(fromZodError(error).message);
+            } else {
+                console.error("Caught error on processing chat event: ", (error as Error).message);
+            }
         }
-    }
+    };
 
+    const sendChatMessage = (inputData: MessageRequest) => {
+        if (sendMessage) sendMessage("/app/private/chat", inputData);
+        else throw assertNullisValues({ sendMessage });
+    };
 
-    const sendChatMessage = (inputData: MessageRequest) => sendMessage("/app/private/chat", inputData);
-    const deleteChatMessage = (messageId: ResId) => sendMessage(`/app/private/chat/delete/${messageId}`);
-    const setMessageSeen = (messageId: ResId) => sendMessage(`/app/private/chat/seen/${messageId}`);
+    const deleteChatMessage = (messageId: ResId) => {
+        if (sendMessage) sendMessage(`/app/private/chat/delete/${messageId}`);
+        else throw assertNullisValues({ sendMessage });
+    };
 
-    const clientMethods = { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected }
+    const setMessageSeen = (messageId: ResId) => {
+        if (sendMessage) sendMessage(`/app/private/chat/seen/${messageId}`);
+        else throw assertNullisValues({ sendMessage });
+    };
+
+    const clientMethods = { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected };
 
     const setup = () => {
-        if (!isClientConnected || !user) return;
+        if (!isClientConnected || !user || !subscribe) return;
         subscribe(`/user/${user.id}/private/chat/event`, onSubscribe);
         subscribe(`/user/${user.id}/private/chat`, onSubscribe);
         setClientMethods(clientMethods);
-    }
+    };
 
-
-    useEffect(setup, [isClientConnected, user]);
+    useEffect(setup, [subscribe, sendMessage, isClientConnected, user]);
     return clientMethods;
-}
+};
 
-export default useChatSocket
+export default useChatSocket;

@@ -1,8 +1,8 @@
-import { nullishValidationdError } from "./errorUtils";
+import { assertNullisValues } from "./errorUtils";
 
 export const getRefreshToken = (): string => {
     const refreshToken: string | null = localStorage.getItem("refreshToken");
-    if (!refreshToken) throw nullishValidationdError({ refreshToken });
+    if (!refreshToken) throw assertNullisValues({ refreshToken });
     return refreshToken;
 }
 
