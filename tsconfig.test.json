@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "module": "node16",
+        "moduleResolution": "node16",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "types": [
+            "jest",
+            "node",
+            "@testing-library/jest-dom"
+        ]
+    }
+}

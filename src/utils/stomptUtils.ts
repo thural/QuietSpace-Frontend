@@ -1,5 +1,5 @@
 import SockJS from 'sockjs-client';
-import { Client, Frame, over } from "stompjs";
+import { Client, Frame, over } from 'stompjs';
 import {
     StompHeaders,
     ConnectCallback,
@@ -83,7 +83,11 @@ export const openStompConnection = (
             headers,
             (frame) => {
                 onConnect(frame);
-                resolve(frame);
+                if (frame) {
+                    resolve(frame);
+                } else {
+                    reject(new Error('Frame is undefined'));
+                }
             },
             (error) => {
                 const processedError = onError(error);
@@ -91,6 +95,8 @@ export const openStompConnection = (
                 // Ensure we always reject with a Frame or Error
                 if (error instanceof Frame) {
                     reject(error);
+                } else if (processedError instanceof Frame) {
+                    reject(processedError);
                 } else {
                     const fallbackFrame = new Frame('ERROR', {}, error.toString());
                     reject(fallbackFrame);
