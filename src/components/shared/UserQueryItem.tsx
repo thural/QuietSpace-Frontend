@@ -2,8 +2,8 @@ import styles from "@/styles/shared/userQueryItemStyles";
 
 import { getSignedUser } from "@/api/queries/userQueries";
 import { UserResponse } from "@/api/schemas/inferred/user";
+import { MouseEventFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { assertNullisValues } from "@/utils/errorUtils";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Conditional from "./Conditional";
@@ -11,7 +11,6 @@ import FlexStyled from "./FlexStyled";
 import FollowToggle from "./FollowToggle";
 import UserAvatarPhoto from "./UserAvatarPhoto";
 import UserDetails from "./UserDetails";
-import { MouseEventFn } from "@/types/genericTypes";
 
 
 
@@ -26,7 +25,7 @@ const UserQueryItem: React.FC<UserQueryItemProps> = ({ data, hasFollowToggle = t
     const classes = styles();
     const navigate = useNavigate();
     const signedUser: UserResponse | undefined = getSignedUser();
-    if (signedUser === undefined) throw assertNullisValues({ signedUser });
+    if (signedUser === undefined) throw new Error("signedUser is undefined");
 
 
     const handleClick = (event: React.MouseEvent) => {

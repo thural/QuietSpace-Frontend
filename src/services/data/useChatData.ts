@@ -1,8 +1,7 @@
 import chatQueries from "@/api/queries/chatQueries";
-import { ChatResponse, ChatList, CreateChatRequest, MessageResponse, MessageRequest, PagedMessage } from "@/api/schemas/inferred/chat";
+import { ChatList, ChatResponse, CreateChatRequest, MessageRequest, MessageResponse, PagedMessage } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ConsumerFn } from "@/types/genericTypes";
-import { assertNullisValues } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -146,7 +145,7 @@ export const useDeleteMessage = (chatId: ResId) => {
 
 export const useDeleteChat = (chatId: ResId | undefined) => {
 
-    if (chatId === undefined) throw assertNullisValues({ chatId });
+    if (chatId === undefined) throw new Error("chatId is undefined");
 
     const { data: authData } = useAuthStore();
     const queryClient = useQueryClient();

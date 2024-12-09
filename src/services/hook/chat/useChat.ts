@@ -2,7 +2,6 @@ import { CreateChatRequest } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
 import { useCreateChat, useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
 import { useAuthStore, useChatStore } from "@/services/store/zustand";
-import { assertNullisValues } from "@/utils/errorUtils";
 import { ChangeEvent, useState } from "react";
 
 export const useChat = (chatId: ResId) => {
@@ -13,7 +12,7 @@ export const useChat = (chatId: ResId) => {
 
     const chats = useGetChats();
     const currentChat = chats.data?.find(chat => chat.id === chatId);
-    if (currentChat === undefined) throw assertNullisValues({ currentChat });
+    if (currentChat === undefined) throw new Error("currentChat is undefined");
     const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== senderId) || {};
 
     const {
@@ -42,7 +41,7 @@ export const useChat = (chatId: ResId) => {
     };
 
     const createChat = () => {
-        if (recipientId === undefined) throw assertNullisValues({ recipientId });
+        if (recipientId === undefined) throw new Error("recipientId is undefined");
         handleChatCreation(recipientId, text, false);
     };
 

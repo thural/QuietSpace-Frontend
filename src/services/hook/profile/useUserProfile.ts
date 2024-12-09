@@ -2,20 +2,19 @@ import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { useGetPostsByUserId } from "@/services/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
-import { assertNullisValues } from "@/utils/errorUtils";
 import { useEffect, useState } from "react";
 import useNavigation from "../shared/useNavigation";
 
 const useUserProfile = (userId: ResId) => {
 
     const signedUser = getSignedUserElseThrow();
-    if (userId === undefined) throw assertNullisValues({ userId });
+    if (userId === undefined) throw new Error("userId is undefined");
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
 
 
     const user = useGetUserById(userId);
     const userPosts = useGetPostsByUserId(userId);
-    if (signedUser === undefined || user === undefined) throw assertNullisValues({ signedUser, user });
+    if (signedUser === undefined || user === undefined) throw new Error("signedUser is undefined");;
     const followers = useGetFollowers(userId); // TODO: fetch conditionally on user profile privacy
     const followings = useGetFollowings(userId); // TODO: fetch conditionally on user profile privacy
 

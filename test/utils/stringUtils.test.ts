@@ -57,8 +57,8 @@ describe('stringUtils', () => {
 
     describe('toUpperFirstChar', () => {
         it('should return the first character in uppercase', () => {
-            expect(toUpperFirstChar("hello")).toBe("Hello");
-            expect(toUpperFirstChar("world")).toBe("World");
+            expect(toUpperFirstChar("hello")).toBe("H");
+            expect(toUpperFirstChar("world")).toBe("W");
         });
 
         it('should return undefined for an empty string', () => {

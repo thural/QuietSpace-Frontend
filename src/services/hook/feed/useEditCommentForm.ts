@@ -1,18 +1,17 @@
 import { getPostById, getPosts } from "@/api/queries/postQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PollRequest, PostResponse, PostRequest } from "@/api/schemas/inferred/post";
+import { PollRequest, PostRequest, PostResponse } from "@/api/schemas/inferred/post";
 import { useEditPost } from "@/services/data/usePostData";
-import { assertNullisValues } from "@/utils/errorUtils";
 import { useState } from "react";
 
 const useEditCommentForm = (postId: ResId) => {
 
     const posts = getPosts();
-    if (posts === undefined) throw assertNullisValues({ posts });
+    if (posts === undefined) throw new Error("posts is undefined");;
 
     const editedPost: PostResponse | undefined = getPostById(postId);
 
-    if (editedPost === undefined) throw assertNullisValues({ editedPostData: editedPost });
+    if (editedPost === undefined) throw new Error("editPosts is undefined");
 
     const pollData: PollRequest = {
         options: editedPost.poll.options.map(option => option.label),
@@ -23,7 +22,7 @@ const useEditCommentForm = (postId: ResId) => {
         text: editedPost.text,
         userId: editedPost.userId,
         poll: pollData,
-        viewAccess: "all"
+        viewAccess: "anyone"
     }
 
     const [postData, setPostData] = useState<PostRequest>(requestBody);

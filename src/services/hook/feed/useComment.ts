@@ -1,7 +1,7 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { ContentType } from "@/api/schemas/native/common";
-import { Reactiontype } from "@/api/schemas/native/reaction";
+import { ReactionType } from "@/api/schemas/native/reaction";
 import { useDeleteComment } from "@/services/data/useCommentData";
 import useReaction from "@/services/hook/feed/useReaction";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const useComment = (comment: CommentResponse) => {
     const handleReaction = useReaction(comment.id);
     const handleLikeToggle = (event: Event) => {
         event.preventDefault();
-        handleReaction(ContentType.COMMENT, Reactiontype.LIKE);
+        handleReaction(ContentType.COMMENT, ReactionType.LIKE);
     };
 
     const handleDeleteComment = () => {
@@ -27,7 +27,7 @@ const useComment = (comment: CommentResponse) => {
         setCommentFormView(!commentFormView);
     };
 
-    const isLiked = comment.userReaction?.reactionType === Reactiontype.LIKE;
+    const isLiked = comment.userReaction?.reactionType === ReactionType.LIKE;
     const isOwner = comment.userId === user.id;
 
     const appliedStyle = isOwner ? {

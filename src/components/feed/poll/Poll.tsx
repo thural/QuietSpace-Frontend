@@ -1,14 +1,13 @@
-import { Progress } from "@mantine/core";
-import FlexStyled from "@/components/shared/FlexStyled";
-import Typography from "@/components/shared/Typography";
-import styles from "@/styles/feed/pollStyles";
-import usePoll from "@/services/hook/feed/usePoll";
 import { ResId } from "@/api/schemas/inferred/common";
-import { isDateExpired } from "@/utils/dateUtils";
 import { PollResponse } from "@/api/schemas/inferred/post";
 import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import { assertNullisValues } from "@/utils/errorUtils";
+import FlexStyled from "@/components/shared/FlexStyled";
+import Typography from "@/components/shared/Typography";
+import usePoll from "@/services/hook/feed/usePoll";
+import styles from "@/styles/feed/pollStyles";
+import { isDateExpired } from "@/utils/dateUtils";
+import { Progress } from "@mantine/core";
 import React from "react";
 
 
@@ -24,7 +23,7 @@ const PollBox: React.FC<PollProps> = ({ pollData, postId }) => {
     let data = undefined;
 
     try {
-        if (!pollData) throw assertNullisValues({ pollData });
+        if (!pollData) throw new Error("pollData is undefined");
         data = usePoll(pollData, postId);
     } catch (error: unknown) {
         return <ErrorComponent message={(error as Error).message} />

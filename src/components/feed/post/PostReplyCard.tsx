@@ -5,7 +5,6 @@ import ErrorComponent from "@/components/shared/errors/ErrorComponent"
 import PostSkeleton from "@/components/shared/PostSkeleton"
 import { useGetLatestComment } from "@/services/data/useCommentData"
 import { useGetUserById } from "@/services/data/useUserData"
-import { assertNullisValues } from "@/utils/errorUtils"
 import CommentBox from "../comment/Comment"
 
 interface PostReplyCardProps {
@@ -19,7 +18,8 @@ const PostReplyCard: React.FC<PostReplyCardProps> = ({ post, userId }) => {
     let commentData = undefined;
 
     try {
-        if (!post || !userId) throw assertNullisValues({ post, userId });
+        if (!userId) throw new Error("userId is undefined");
+        if (!post) throw new Error("post is undefined");
         userData = useGetUserById(userId);
         commentData = useGetLatestComment(userId, post.id);
         if (userData.isError) throw userData.error;

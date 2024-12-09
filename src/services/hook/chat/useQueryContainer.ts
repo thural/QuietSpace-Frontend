@@ -4,7 +4,6 @@ import { ChatResponse, MessageResponse } from "@/api/schemas/inferred/chat";
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { useGetChats } from "@/services/data/useChatData";
 import { useQueryUsers } from "@/services/data/useUserData";
-import { assertNullisValues } from "@/utils/errorUtils";
 import React, { useRef, useState } from "react";
 import useNavigation from "../shared/useNavigation";
 
@@ -25,7 +24,7 @@ const useQueryContainer = () => {
     const handleChatCreation = async (event: React.MouseEvent, clickedUser: UserResponse) => {
         event.preventDefault();
 
-        if (isLoading || isError) throw assertNullisValues({ chats });
+        if (isLoading || isError) throw new Error("chats has not loaded");;
 
         const isExistingChat = chats?.some(chat => chat.members
             .some(user => user.id === clickedUser.id));

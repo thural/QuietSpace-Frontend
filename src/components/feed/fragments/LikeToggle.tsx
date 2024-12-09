@@ -1,5 +1,5 @@
 import { ReactionRequest } from "@/api/schemas/inferred/reaction";
-import { Reactiontype } from "@/api/schemas/native/reaction";
+import { ReactionType } from "@/api/schemas/native/reaction";
 import { ConsumerFn } from "@/types/genericTypes";
 import {
     PiArrowFatUp, PiArrowFatUpFill
@@ -11,7 +11,7 @@ interface LikeToggleProps {
 }
 
 const LikeToggle: React.FC<LikeToggleProps> = ({ userReaction, handleLike }) => (
-    (!!userReaction && userReaction.reactionType === Reactiontype.LIKE)
+    (!!userReaction && userReaction.reactionType === ReactionType.LIKE)
         ? <PiArrowFatUpFill className="posticon" onClick={handleLike} />
         : <PiArrowFatUp className="posticon" onClick={handleLike} />
 );

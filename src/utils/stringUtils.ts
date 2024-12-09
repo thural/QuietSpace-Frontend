@@ -24,7 +24,7 @@ export const parseCount = (number: number) => {
 };
 
 export const toUpperFirstChar = (name: string) => {
-    return name ? name.charAt(0).toUpperCase() + name.slice(1) : undefined;
+    return name ? name.charAt(0).toUpperCase() : undefined;
 };
 
 export const processRecentText = (text: string) => text.startsWith("##MP##") ? "shared a post" : text;

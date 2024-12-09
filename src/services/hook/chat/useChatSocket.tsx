@@ -1,16 +1,15 @@
 import chatHandler from "./chatHandler.js";
 
 import { getSignedUser } from "@/api/queries/userQueries.js";
-import { ChatEvent, MessageResponse, MessageRequest } from "@/api/schemas/inferred/chat.js";
+import { ChatEvent, MessageRequest, MessageResponse } from "@/api/schemas/inferred/chat.js";
 import { ResId } from "@/api/schemas/inferred/common.js";
 import { StompMessage } from "@/api/schemas/inferred/websocket.js";
 import { SocketEventType } from "@/api/schemas/native/websocket.js";
 import { ChatEventSchema, MessageResponseSchema } from "@/api/schemas/zod/chatZod.js";
+import { useChatStore, useStompStore } from "@/services/store/zustand.js";
 import { useEffect } from "react";
 import { ZodError } from "zod";
 import { fromZodError } from 'zod-validation-error';
-import { useChatStore, useStompStore } from "@/services/store/zustand.js";
-import { assertNullisValues } from "@/utils/errorUtils.js";
 
 
 
@@ -66,17 +65,17 @@ const useChatSocket = () => {
 
     const sendChatMessage = (inputData: MessageRequest) => {
         if (sendMessage) sendMessage("/app/private/chat", inputData);
-        else throw assertNullisValues({ sendMessage });
+        else throw new Error("sendMessage is undefined");;
     };
 
     const deleteChatMessage = (messageId: ResId) => {
         if (sendMessage) sendMessage(`/app/private/chat/delete/${messageId}`);
-        else throw assertNullisValues({ sendMessage });
+        else throw new Error("sendMessage is undefined");;
     };
 
     const setMessageSeen = (messageId: ResId) => {
         if (sendMessage) sendMessage(`/app/private/chat/seen/${messageId}`);
-        else throw assertNullisValues({ sendMessage });
+        else throw new Error("sendMessage is undefined");;
     };
 
     const clientMethods = { sendChatMessage, deleteChatMessage, setMessageSeen, isClientConnected };

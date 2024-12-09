@@ -1,7 +1,6 @@
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import Overlay from "@/components/shared/Overlay";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import { assertNullisValues } from "@/utils/errorUtils";
 import OutlineButton from "@components/shared/buttons/OutlineButton";
 import Conditional from "@components/shared/Conditional";
 import DefaultContainer from "@components/shared/DefaultContainer";
@@ -24,7 +23,7 @@ function ProfileContainer() {
     let data = undefined;
 
     try {
-        if (userId === undefined) throw assertNullisValues({ userId });
+        if (userId === undefined) throw new Error("userId is undefined");
         data = useUserProfile(userId);
     } catch (error: unknown) {
         console.error(error);

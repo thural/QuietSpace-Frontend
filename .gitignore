@@ -29,4 +29,10 @@ dist-ssr
 # directories
 /public
 
+# storybook
 *storybook.log
+
+# jest
+/coverage/
+/jest-report/
+**/__snapshots__/

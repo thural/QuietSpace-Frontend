@@ -13,9 +13,8 @@ import {
     fetchVotePoll
 } from "@/api/requests/postRequests";
 import { ResId } from "@/api/schemas/inferred/common";
-import { PostResponse, PostRequest, PostPage, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
+import { PostPage, PostRequest, PostResponse, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
 import { ConsumerFn } from "@/types/genericTypes";
-import { assertNullisValues } from "@/utils/errorUtils";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -205,7 +204,7 @@ export const useSavePost = () => {
 
     const queryClient = useQueryClient();
     const user = getSignedUser();
-    if (user === undefined) throw assertNullisValues({ user });
+    if (user === undefined) throw new Error("user is undefined");
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {

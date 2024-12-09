@@ -5,12 +5,12 @@ import {
     StompHeaders
 } from '@/api/schemas/native/websocket';
 import { AnyFunction } from '@/types/genericTypes';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client, Frame, over } from 'stompjs';
 
 interface SocketHookReturn {
-    createClient: () => Client;
+    createClient: (url?: string) => Client;
     openConnection: (
         client: Client,
         headers: StompHeaders,
@@ -38,17 +38,17 @@ interface SocketHookReturn {
     unsubscribe: (client: Client, subscriptionId: string) => void;
 }
 
-export const useSocket = (): SocketHookReturn => {
-    // Create a logger that can be easily configured or disabled
-    const logger = useRef({
-        log: (message: string, ...args: unknown[]) => {
-            console.log(`[Socket] ${message}`, ...args);
-        },
-        error: (message: string, ...args: unknown[]) => {
-            console.error(`[Socket] ${message}`, ...args);
-        }
-    });
+// Extract logger to be independent of React hooks
+const logger = {
+    log: (message: string, ...args: unknown[]) => {
+        console.log(`[Socket] ${message}`, ...args);
+    },
+    error: (message: string, ...args: unknown[]) => {
+        console.error(`[Socket] ${message}`, ...args);
+    }
+};
 
+export const useSocket = (): SocketHookReturn => {
     /**
      * Create a new SockJS WebSocket client
      * @param url - WebSocket server URL
@@ -59,7 +59,7 @@ export const useSocket = (): SocketHookReturn => {
             const socket = new SockJS(url);
             return over(socket);
         } catch (error) {
-            logger.current.error('Failed to create WebSocket client', error);
+            logger.error('Failed to create WebSocket client', error);
             throw error;
         }
     }, []);
@@ -70,7 +70,7 @@ export const useSocket = (): SocketHookReturn => {
      * @param callback - Optional callback function
      */
     const onConnect = useCallback((frame: Frame | undefined, callback?: ConnectCallback) => {
-        logger.current.log('Connected to WebSocket', frame);
+        logger.log('Connected to WebSocket', frame);
         if (callback) callback(frame);
     }, []);
 
@@ -80,7 +80,7 @@ export const useSocket = (): SocketHookReturn => {
      * @param callback - Optional error callback function
      */
     const onError = useCallback((error: Frame | string, callback?: ErrorCallback) => {
-        logger.current.error('WebSocket connection error', error);
+        logger.error('WebSocket connection error', error);
         if (callback) callback(error);
     }, []);
 
@@ -97,7 +97,7 @@ export const useSocket = (): SocketHookReturn => {
         onConnectCallback?: ConnectCallback,
         onErrorCallback?: ErrorCallback
     ) => {
-        logger.current.log('Connecting STOMP client...');
+        logger.log('Connecting STOMP client...');
 
         try {
             client.connect(
@@ -106,7 +106,7 @@ export const useSocket = (): SocketHookReturn => {
                 (error) => onError(error, onErrorCallback)
             );
         } catch (error) {
-            logger.current.error('Failed to open WebSocket connection', error);
+            logger.error('Failed to open WebSocket connection', error);
             throw error;
         }
     }, [onConnect, onError]);
@@ -120,15 +120,15 @@ export const useSocket = (): SocketHookReturn => {
         client: Client,
         onDisconnectCallback?: AnyFunction
     ) => {
-        logger.current.log('Disconnecting STOMP client...');
+        logger.log('Disconnecting STOMP client...');
 
         try {
             client.disconnect(() => {
-                logger.current.log('WebSocket disconnected');
+                logger.log('WebSocket disconnected');
                 if (onDisconnectCallback) onDisconnectCallback();
             });
         } catch (error) {
-            logger.current.error('Failed to disconnect WebSocket', error);
+            logger.error('Failed to disconnect WebSocket', error);
             throw error;
         }
     }, []);
@@ -148,9 +148,9 @@ export const useSocket = (): SocketHookReturn => {
     ) => {
         try {
             client.send(destination, headers, JSON.stringify(body));
-            logger.current.log('Message sent', { destination, body });
+            logger.log('Message sent', { destination, body });
         } catch (error) {
-            logger.current.error('Failed to send message', error);
+            logger.error('Failed to send message', error);
             throw error;
         }
     }, []);
@@ -172,12 +172,12 @@ export const useSocket = (): SocketHookReturn => {
                     const parsedBody = JSON.parse(message.body);
                     callback(parsedBody);
                 } catch (parseError) {
-                    logger.current.error('Failed to parse message', parseError);
+                    logger.error('Failed to parse message', parseError);
                 }
             });
-            logger.current.log('Subscribed to destination', destination);
+            logger.log('Subscribed to destination', destination);
         } catch (error) {
-            logger.current.error('Failed to subscribe', error);
+            logger.error('Failed to subscribe', error);
             throw error;
         }
     }, []);
@@ -203,14 +203,14 @@ export const useSocket = (): SocketHookReturn => {
                         const parsedBody = JSON.parse(message.body);
                         callback(parsedBody);
                     } catch (parseError) {
-                        logger.current.error('Failed to parse message', parseError);
+                        logger.error('Failed to parse message', parseError);
                     }
                 },
                 { id: subscriptionId }
             );
-            logger.current.log('Subscribed to destination with ID', { destination, subscriptionId });
+            logger.log('Subscribed to destination with ID', { destination, subscriptionId });
         } catch (error) {
-            logger.current.error('Failed to subscribe with ID', error);
+            logger.error('Failed to subscribe with ID', error);
             throw error;
         }
     }, []);
@@ -226,9 +226,9 @@ export const useSocket = (): SocketHookReturn => {
     ) => {
         try {
             client.unsubscribe(subscriptionId);
-            logger.current.log('Unsubscribed from destination', subscriptionId);
+            logger.log('Unsubscribed from destination', subscriptionId);
         } catch (error) {
-            logger.current.error('Failed to unsubscribe', error);
+            logger.error('Failed to unsubscribe', error);
             throw error;
         }
     }, []);

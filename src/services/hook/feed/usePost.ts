@@ -1,7 +1,7 @@
 import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { ContentType } from "@/api/schemas/native/common";
-import { Reactiontype } from "@/api/schemas/native/reaction";
+import { ReactionType } from "@/api/schemas/native/reaction";
 import { useGetComments } from "@/services/data/useCommentData";
 import { useDeletePost } from "@/services/data/usePostData";
 import { useState } from "react";
@@ -30,12 +30,12 @@ export const usePost = (post: PostResponse) => {
     const handleReaction = useReaction(postId);
     const handleLike = (e: React.MouseEvent) => {
         e && e.stopPropagation();
-        handleReaction(ContentType.POST, Reactiontype.LIKE);
+        handleReaction(ContentType.POST, ReactionType.LIKE);
     }
 
     const handleDislike = (event: React.MouseEvent) => {
         event.stopPropagation();
-        handleReaction(ContentType.POST, Reactiontype.DISLIKE);
+        handleReaction(ContentType.POST, ReactionType.DISLIKE);
     }
 
     const [commentFormView, setCommentFormView] = useState(false);
