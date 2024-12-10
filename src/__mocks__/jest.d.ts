@@ -1,5 +1,3 @@
-// src/__mocks__/jest.d.ts
-
 // Declare the global jest type for TypeScript
 declare global {
     const jest: {

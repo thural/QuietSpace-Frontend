@@ -8,7 +8,7 @@ import React, { useRef, useState } from "react";
 import useNavigation from "../shared/useNavigation";
 
 
-const useQueryContainer = () => {
+const useChatQuery = () => {
 
     const user = getSignedUserElseThrow();
     const { navigatePath } = useNavigation();
@@ -101,4 +101,4 @@ const useQueryContainer = () => {
     };
 };
 
-export default useQueryContainer
+export default useChatQuery

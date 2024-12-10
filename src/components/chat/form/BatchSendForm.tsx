@@ -1,5 +1,3 @@
-import { Center } from "@mantine/core";
-
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/native/common";
 import UserQueryList from "@/components/profile/connections/UserQueryList";
@@ -17,6 +15,8 @@ import useSearch from "@/services/hook/search/useSearch";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/profile/connectionStyles";
 import { ConsumerFn } from "@/types/genericTypes";
+import { assertIsNotNullish } from "@/utils/assertions";
+import { Center } from "@mantine/core";
 
 interface BatchShareFormProps {
     postId: ResId
@@ -30,7 +30,7 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
     let formData = undefined;
 
     try {
-        if (postId === undefined) throw new Error("postId is undefined");
+        assertIsNotNullish({ postId });
         searchData = useSearch();
         formData = useBatchShareForm(postId, toggleForm);
     } catch (error) {
@@ -48,7 +48,6 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
     const {
         isClientConnected,
         handleUserSelect,
-        handleInputClick,
         handleMessageChange,
         handleSend
     } = formData;

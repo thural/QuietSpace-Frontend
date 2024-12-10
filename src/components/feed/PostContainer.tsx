@@ -4,15 +4,16 @@ import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { useParams } from "react-router-dom";
 import CommentPanel from "./comment/CommentPanel";
 import PostLoader from "./post/PostLoader";
+import { validateIsNotUndefined } from "@/utils/validations";
 
 const PostContainer: React.FC<GenericWrapper> = () => {
 
     const { postId } = useParams();
-    if (postId === undefined) throw new Error("postId is undefined");
+    const { postId: validPostId } = validateIsNotUndefined({ postId });
 
     return (
         <DefaultContainer>
-            <PostLoader postId={postId}>
+            <PostLoader postId={validPostId}>
                 <CommentPanel postId={postId} />
             </PostLoader>
         </DefaultContainer>

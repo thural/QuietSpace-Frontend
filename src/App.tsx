@@ -13,7 +13,7 @@ import { useGetChats } from "./services/data/useChatData";
 import { useGetNotifications } from "./services/data/useNotificationData";
 import { useGetCurrentUser } from "./services/data/useUserData";
 import useJwtAuth from "./services/hook/auth/useJwtAuth";
-import useChatSocket from "./services/hook/chat/useChatSocket";
+import useChatSocket from "./services/socket/useChatSocket";
 import useNotificationSocket from "./services/hook/notification/useNotificationSocket";
 import useTheme from "./services/hook/shared/useTheme";
 import { useStompClient } from "./services/socket/useStompClient";

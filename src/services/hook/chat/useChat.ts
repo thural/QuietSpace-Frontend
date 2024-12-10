@@ -1,19 +1,19 @@
-import { CreateChatRequest } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
-import { useCreateChat, useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
-import { useAuthStore, useChatStore } from "@/services/store/zustand";
-import { ChangeEvent, useState } from "react";
+import { useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
+import { useAuthStore } from "@/services/store/zustand";
+import { useChatMessaging } from "./useChatMessaging";
+import useFormInput from "../shared/useFormInput";
 
 export const useChat = (chatId: ResId) => {
-
     const { data: { userId: senderId } } = useAuthStore();
-    const { clientMethods } = useChatStore();
-    const { sendChatMessage, isClientConnected } = clientMethods;
+    const { sendMessage, isClientConnected } = useChatMessaging();
 
     const chats = useGetChats();
     const currentChat = chats.data?.find(chat => chat.id === chatId);
     if (currentChat === undefined) throw new Error("currentChat is undefined");
-    const { username: recipientName, id: recipientId } = currentChat.members.find(member => member.id !== senderId) || {};
+
+    const { username: recipientName, id: recipientId } =
+        currentChat.members.find(member => member.id !== senderId) || {};
 
     const {
         data: messages,
@@ -25,39 +25,26 @@ export const useChat = (chatId: ResId) => {
         fetchNextPage
     } = useGetMessagesByChatId(chatId);
 
-    const messageList = messages;
-    const messageCount = messages?.length;
-
-    const [text, setText] = useState('');
-    const formBody = { chatId, senderId, recipientId, text };
-    const handleInputChange = (eventData: string) => {
-        setText(eventData);
-    };
-
-    const createChatMutation = useCreateChat();
-    const handleChatCreation = (recipientId: ResId, text: string, isGroupChat: boolean) => {
-        const createChatRequestBody: CreateChatRequest = { isGroupChat, recipientId, text, "userIds": [senderId, recipientId] };
-        createChatMutation.mutate(createChatRequestBody);
-    };
-
-    const createChat = () => {
-        if (recipientId === undefined) throw new Error("recipientId is undefined");
-        handleChatCreation(recipientId, text, false);
-    };
+    const { value: text, handleChange: handleInputChange, setValue: setText } = useFormInput('');
 
     const handeSendMessgae = () => {
-        if (chatId === "-1") createChat();
-        sendChatMessage(formBody);
+        if (!recipientId) throw new Error("recipientId is undefined");
+
+        sendMessage({
+            recipientId,
+            text
+        });
+
+        setText('');
     };
 
     const deleteChat = useDeleteChat(chatId);
-    const handleDeleteChat = (event: ChangeEvent) => {
+    const handleDeleteChat = (event: React.ChangeEvent) => {
         event.preventDefault();
         deleteChat.mutate();
     };
 
     const isInputEnabled: boolean = isSuccess && !!isClientConnected;
-
 
     return {
         text,
@@ -66,8 +53,8 @@ export const useChat = (chatId: ResId) => {
         recipientId,
         signedUserId: senderId,
         messages,
-        messageList,
-        messageCount,
+        messageList: messages,
+        messageCount: messages?.length,
         hasNextPage,
         isFetchingNextPage,
         fetchNextPage,
@@ -78,4 +65,4 @@ export const useChat = (chatId: ResId) => {
         handleInputChange,
         handleDeleteChat,
     };
-}
+};

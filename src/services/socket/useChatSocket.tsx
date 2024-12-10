@@ -1,4 +1,4 @@
-import chatHandler from "./chatHandler.js";
+import chatHandler from "../hook/chat/chatHandler.js";
 
 import { getSignedUser } from "@/api/queries/userQueries.js";
 import { ChatEvent, MessageRequest, MessageResponse } from "@/api/schemas/inferred/chat.js";

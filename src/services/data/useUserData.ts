@@ -26,7 +26,7 @@ export const useGetCurrentUser = () => {
 }
 
 
-export const useQueryUsers = (callBackFunc: ConsumerFn) => {
+export const useQueryUsers = (callBackFunc?: ConsumerFn) => {
 
     const signedUser = getSignedUser();
 
@@ -38,7 +38,8 @@ export const useQueryUsers = (callBackFunc: ConsumerFn) => {
 
     const onSuccess = (pagedData: UserPage) => {
         console.log("user query success:", pagedData);
-        callBackFunc(pagedData.content.filter(user => user.id !== signedUser.id));
+        if (callBackFunc) callBackFunc(
+            pagedData.content.filter(user => user.id !== signedUser.id));
     }
 
     const onError = (error: Error) => {

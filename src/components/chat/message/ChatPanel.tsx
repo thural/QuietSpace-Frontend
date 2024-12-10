@@ -8,6 +8,7 @@ import Typography from "@/components/shared/Typography";
 import { useChat } from "@/services/hook/chat/useChat";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/chat/chatPanelStyles";
+import { validateIsNotUndefined } from "@/utils/validations";
 import { PiChatsCircle } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 
@@ -15,13 +16,11 @@ const ChatPanel = () => {
 
     const classes = styles();
     const { chatId } = useParams();
-
-
     let data = undefined;
 
     try {
-        if (!chatId) throw new Error("chatId is undefined");
-        data = useChat(chatId);
+        const { chatId: validatedChatId } = validateIsNotUndefined({ chatId });
+        data = useChat(validatedChatId);
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `error loading messages: ${(error as Error).message}`;

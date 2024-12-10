@@ -1,4 +1,4 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import DefaultContainer from "@/components/shared/DefaultContainer";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import { useGetChats } from "@/services/data/useChatData";
@@ -15,8 +15,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     let data = undefined;
 
     try {
-        const user = getSignedUser();
-        if (user === undefined) throw new Error("user is undefined");
+        getSignedUserElseThrow();
         data = useGetChats();
     } catch (error: unknown) {
         console.error(error);

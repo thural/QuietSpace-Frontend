@@ -2,35 +2,56 @@ import { getSignedUserElseThrow } from "@/api/queries/userQueries";
 import { MessageResponse } from "@/api/schemas/inferred/chat";
 import useWasSeen from "@/services/hook/common/useWasSeen";
 import { useChatStore } from "@/services/store/zustand";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
+import useHoverState from "../shared/useHoverState";
 
-const useMessage = (message: MessageResponse) => {
 
+export const useMessage = (message: MessageResponse) => {
     const user = getSignedUserElseThrow();
     const [wasSeen, wasSeenRef] = useWasSeen();
     const { clientMethods } = useChatStore();
     const { deleteChatMessage, setMessageSeen, isClientConnected } = clientMethods;
 
 
-    const [isHovering, setIsHovering] = useState(false);
-    const handleMouseOver = () => {
-        setIsHovering(true);
-    };
-    const handleMouseOut = () => {
-        setIsHovering(false);
-    };
+    const {
+        isHovering,
+        handleMouseOver,
+        handleMouseOut
+    } = useHoverState();
 
-    const handleSeenMessage = () => {
-        if (!isClientConnected) return console.error("stomp client is not connected yet");
-        if (message.senderId === user.id) return;
-        if (message.isSeen || !wasSeen) return;
+    const handleSeenMessage = useCallback(() => {
+
+        if (!isClientConnected) {
+            console.error("stomp client is not connected yet");
+            return;
+        }
+
+        if (
+            message.senderId === user.id ||
+            message.isSeen ||
+            !wasSeen
+        ) return;
+
         setMessageSeen(message.id);
-    };
+    }, [
+        isClientConnected,
+        message.senderId,
+        message.id,
+        message.isSeen,
+        user.id,
+        wasSeen,
+        setMessageSeen
+    ]);
 
-    const handleDeleteMessage = () => deleteChatMessage(message.id);
 
-    useEffect(handleSeenMessage, [wasSeen, isClientConnected]);
+    const handleDeleteMessage = useCallback(() => {
+        deleteChatMessage(message.id);
+    }, [deleteChatMessage, message.id]);
 
+
+    useEffect(() => {
+        handleSeenMessage();
+    }, [wasSeen, isClientConnected, handleSeenMessage]);
 
     return {
         user,

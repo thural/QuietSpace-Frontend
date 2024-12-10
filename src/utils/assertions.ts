@@ -10,6 +10,16 @@ export function assertAllConditions<T extends Record<string, unknown>, U>(
     }
 }
 
+function generateMessage(defaultMessage: string, variableName?: string): string {
+    return variableName ? `${variableName} - ${defaultMessage}` : defaultMessage;
+}
+
+export function assertCondition(condition: unknown, defaultMessage: string, variableName?: string): asserts condition {
+    if (!condition) {
+        throw new Error(generateMessage(defaultMessage, variableName));
+    }
+}
+
 export function assertTypeOfObject<T extends Record<string, unknown>, U>(
     variables: T,
     typeGuard: (value: unknown) => value is U,

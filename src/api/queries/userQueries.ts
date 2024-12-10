@@ -1,10 +1,11 @@
+import { validateIsNotUndefined } from "@/utils/validations";
 import { useQueryClient } from "@tanstack/react-query";
+import { UserPage, UserProfileResponse, UserResponse } from "../schemas/inferred/user";
 import { ResId } from "../schemas/native/common";
-import { UserResponse, UserPage, UserProfileResponse } from "../schemas/inferred/user";
 
 
 
-export const getSignedUser = (): UserResponse | undefined => {
+export const getSignedUser = (): UserResponse | undefined | UserProfileResponse => {
     const queryClient = useQueryClient();
     return queryClient.getQueryData(["user"]);
 }
@@ -12,8 +13,7 @@ export const getSignedUser = (): UserResponse | undefined => {
 export const getSignedUserElseThrow = (): UserProfileResponse => {
     const queryClient = useQueryClient();
     const user: UserProfileResponse | undefined = queryClient.getQueryData(["user"]);
-    if (user === undefined) throw new Error("user is undefined");
-    return user;
+    return validateIsNotUndefined({ user }).user;
 }
 
 export const getFollowingsByUserId = (userId: ResId): UserPage | undefined => {
