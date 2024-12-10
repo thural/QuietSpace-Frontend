@@ -33,6 +33,6 @@ dist-ssr
 *storybook.log
 
 # jest
-/coverage/
+/coverage
 /jest-report/
 **/__snapshots__/

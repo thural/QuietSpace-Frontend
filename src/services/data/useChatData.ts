@@ -1,19 +1,15 @@
-import chatQueries from "@/api/queries/chatQueries";
-import { ChatList, ChatResponse, CreateChatRequest, MessageRequest, MessageResponse, PagedMessage } from "@/api/schemas/inferred/chat";
+import { fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "@/api/requests/chatRequests";
+import { fetchMessages } from "@/api/requests/messageRequests";
+import { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/inferred/common";
-import { ConsumerFn } from "@/types/genericTypes";
+import { QueryProps } from "@/types/hookPropTypes";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { fetchChatById, fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../../api/requests/chatRequests";
-import { fetchCreateMessage, fetchDeleteMessage, fetchMessages } from "../../api/requests/messageRequests";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
 
 
 export const useGetChats = () => {
-
     const { data: authData, isAuthenticated } = useAuthStore();
-
     return useQuery({
         queryKey: ["chats"],
         queryFn: async (): Promise<ChatList> => {
@@ -28,38 +24,14 @@ export const useGetChats = () => {
 }
 
 
-export const useGetChatById = (chatId: ResId) => {
-
+export const useCreateChat = ({
+    onSuccess,
+    onError,
+}: {
+    onSuccess?: (data: ChatResponse) => void;
+    onError?: (error: Error) => void;
+}) => {
     const { data: authData } = useAuthStore();
-
-    return useQuery({
-        queryKey: ["chats", { id: chatId }],
-        queryFn: async (): Promise<ChatResponse> => {
-            return await fetchChatById(chatId, authData.accessToken);
-        },
-        retry: 3,
-        retryDelay: 1000,
-        staleTime: 1000 * 60 * 6,
-        refetchInterval: 1000 * 60 * 3,
-    });
-}
-
-
-export const useCreateChat = () => {
-
-    const { data: authData } = useAuthStore();
-    const navigate = useNavigate();
-    const { updateInitChatCache } = chatQueries();
-
-    const onSuccess = (data: ChatResponse) => {
-        console.log("chat created successfully:", data);
-        updateInitChatCache(data);
-        navigate(`/chat/${data.id}`);
-    }
-
-    const onError = (error: Error) => {
-        console.log("error on fetching created chat: ", error.message);
-    }
 
     return useMutation({
         mutationFn: async (chatBody: CreateChatRequest): Promise<ChatResponse> => {
@@ -67,14 +39,12 @@ export const useCreateChat = () => {
         },
         onSuccess,
         onError,
-    })
-}
+    });
+};
 
 
 export const useGetMessagesByChatId = (chatId: ResId) => {
-
     const { data: authData, isAuthenticated } = useAuthStore();
-
     return useInfiniteQuery({
         queryKey: ["messages", { id: chatId }],
         queryFn: async ({ pageParam }): Promise<PagedMessage> => {
@@ -93,72 +63,14 @@ export const useGetMessagesByChatId = (chatId: ResId) => {
 }
 
 
-export const usePostNewMessage = (setMessageData: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
-    const queryClient = useQueryClient();
-
-    const onSuccess = (data: MessageResponse, variables: MessageRequest) => {
-        queryClient.invalidateQueries({ queryKey: ["messages", data.chatId] });
-        setMessageData({ ...variables, text: '' });
-        console.log("message sent successfully:", data);
-    };
-
-    const onError = (error: Error) => {
-        console.log("error on sending message: ", error.message);
-    };
-
-    return useMutation({
-        mutationFn: async (messageData): Promise<MessageResponse> => {
-            console.log("current chat id on sending: ", messageData.chatId);
-            return await fetchCreateMessage(messageData, authData["accessToken"]);
-        },
-        onSuccess,
-        onError,
-    });
-};
-
-
-export const useDeleteMessage = (chatId: ResId) => {
-
-    const { data: authData } = useAuthStore();
-    const queryClient = useQueryClient();
-
-    const onSuccess = () => {
-        queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
-        console.log("delete message success");
-    }
-
-    const onError = (error: Error) => {
-        console.log("error on deleting message: ", error.message);
-    }
-
-    return useMutation({
-        mutationFn: async (messageId: ResId): Promise<Response> => {
-            return await fetchDeleteMessage(authData["accessToken"], messageId);
-        },
-        onSuccess,
-        onError,
-    });
-
+export interface UseDeleteChatProps extends QueryProps {
+    chatId: ResId;
 }
-
-
-export const useDeleteChat = (chatId: ResId | undefined) => {
-
+export const useDeleteChat = ({
+    chatId, onSuccess, onError,
+}: UseDeleteChatProps) => {
     if (chatId === undefined) throw new Error("chatId is undefined");
-
     const { data: authData } = useAuthStore();
-    const queryClient = useQueryClient();
-
-    const onSuccess = () => {
-        queryClient.invalidateQueries({ queryKey: ["chats"] })
-            .then(() => console.log("chat cache was invalidated"));
-    }
-
-    const onError = (error: Error) => {
-        console.log("error on deleting chat: ", error.message);
-    }
-
     return useMutation({
         mutationFn: async (): Promise<Response> => {
             return await fetchDeleteChat(chatId, authData.accessToken);

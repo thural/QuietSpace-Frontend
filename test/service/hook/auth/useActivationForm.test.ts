@@ -1,15 +1,21 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { useActivationForm } from '@/services/hook/auth/useActivationForm';
-import { useActivation } from '@/services/data/useAuthData';
-import { displayCountdown } from '@/services/hook/common/useTimer';
 import { fetchResendCode } from '@/api/requests/authRequests';
+import useJwtAuth from "@/services/hook/auth//useJwtAuth";
+import { useActivationForm } from '@/services/hook/auth/useActivationForm';
+import { displayCountdown } from '@/services/hook/common/useTimer';
 import { AuthPages } from '@/types/authTypes';
+import { act, renderHook } from '@testing-library/react';
 
 jest.mock('@/services/data/useAuthData');
 jest.mock('@/services/hook/common/useTimer');
 jest.mock('@/api/requests/authRequests');
 
-const mockUseActivation = useActivation as jest.Mock;
+
+const { acitvate } = useJwtAuth({
+    onSuccessFn: () => console.log("simulating success"),
+    onErrorFn: () => console.log("simulating error")
+});
+
+const mockUseActivation = acitvate as jest.Mock;
 const mockDisplayCountdown = displayCountdown as jest.Mock;
 const mockFetchResendCode = fetchResendCode as jest.Mock;
 

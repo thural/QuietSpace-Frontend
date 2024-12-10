@@ -1,8 +1,8 @@
-import { useActivation } from "@/services/data/useAuthData";
-import { displayCountdown } from "@/services/hook/common/useTimer";
 import { fetchResendCode } from "@/api/requests/authRequests";
-import { useState } from "react";
+import { displayCountdown } from "@/services/hook/common/useTimer";
 import { ActivationFormProps, AuthPages } from "@/types/authTypes";
+import { useState } from "react";
+import useJwtAuth from "./useJwtAuth";
 
 export const useActivationForm = ({ setAuthState, authState }: ActivationFormProps) => {
 
@@ -10,17 +10,17 @@ export const useActivationForm = ({ setAuthState, authState }: ActivationFormPro
     const [formData, setFormData] = useState({ activationCode: "" });
     const tokenTimer = displayCountdown(15 * 60 * 1000, "code has expired");
 
-    const onSuccess = () => {
+    const onSuccessFn = () => {
         console.log("account activation success");
         activationNotice("account has been activated, please login to continue");
         setAuthState({ ...authState, page: AuthPages.LOGIN });
     }
 
-    const onError = (error: Error) => {
+    const onErrorFn = (error: Error) => {
         console.log("error on account activation:", error.message);
     }
 
-    const activation = useActivation(onSuccess, onError);
+    const { acitvate } = useJwtAuth({ onSuccessFn, onErrorFn });
 
     const handleResendCode = (): void => {
         fetchResendCode(authState.formData.email);
@@ -29,7 +29,7 @@ export const useActivationForm = ({ setAuthState, authState }: ActivationFormPro
 
     const handleSubmit = async (event: Event): Promise<void> => {
         event.preventDefault();
-        activation.mutate(formData.activationCode);
+        acitvate(formData.activationCode);
     };
 
     const handleChange = (value: string): void => {
@@ -40,8 +40,8 @@ export const useActivationForm = ({ setAuthState, authState }: ActivationFormPro
         formData,
         tokenTimer,
         authState,
-        handleResendCode,
         handleSubmit,
         handleChange,
+        handleResendCode,
     }
 };

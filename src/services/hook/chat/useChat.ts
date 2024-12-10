@@ -1,8 +1,9 @@
 import { ResId } from "@/api/schemas/inferred/common";
 import { useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
 import { useAuthStore } from "@/services/store/zustand";
-import { useChatMessaging } from "./useChatMessaging";
+import { useQueryClient } from "@tanstack/react-query";
 import useFormInput from "../shared/useFormInput";
+import { useChatMessaging } from "./useChatMessaging";
 
 export const useChat = (chatId: ResId) => {
     const { data: { userId: senderId } } = useAuthStore();
@@ -38,7 +39,18 @@ export const useChat = (chatId: ResId) => {
         setText('');
     };
 
-    const deleteChat = useDeleteChat(chatId);
+    const queryClient = useQueryClient();
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries({ queryKey: ["chats"] })
+            .then(() => console.log("chat cache was invalidated"));
+    }
+
+    const onError = (error: Error) => {
+        console.log("error on deleting chat: ", error.message);
+    }
+
+    const deleteChat = useDeleteChat({ chatId, onSuccess, onError });
     const handleDeleteChat = (event: React.ChangeEvent) => {
         event.preventDefault();
         deleteChat.mutate();

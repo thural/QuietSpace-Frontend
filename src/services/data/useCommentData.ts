@@ -4,12 +4,11 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
 import { ConsumerFn, ProcedureFn } from "@/types/genericTypes";
+import { QueryProps } from "@/types/hookPropTypes";
 
 
 export const useGetComments = (postId: ResId) => {
-
     const { data: authData } = useAuthStore();
-
     return useQuery({
         queryKey: ["comments", { id: postId }],
         queryFn: async (): Promise<PagedComment> => {
@@ -20,10 +19,9 @@ export const useGetComments = (postId: ResId) => {
     })
 }
 
+
 export const useGetLatestComment = (userId: ResId, postId: ResId) => {
-
     const { data: authData } = useAuthStore();
-
     return useQuery({
         queryKey: ["comments/latest", { id: postId, userId }],
         queryFn: async (): Promise<CommentResponse> => {
@@ -34,9 +32,13 @@ export const useGetLatestComment = (userId: ResId, postId: ResId) => {
     })
 }
 
-
-export const usePostComment = (postId: ResId, handleClose?: ConsumerFn) => {
-
+interface usePostCommentProps extends QueryProps {
+    postId: ResId,
+    handleClose?: ConsumerFn,
+}
+export const usePostComment = ({
+    postId, handleClose
+}: usePostCommentProps) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 

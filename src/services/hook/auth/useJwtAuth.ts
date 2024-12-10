@@ -5,6 +5,7 @@ import {
 } from '@/types/authTypes';
 import { JwtAuthProps } from '@/types/hookPropTypes';
 import {
+    activateUser,
     authenticateUser,
     createTokenRefreshManager,
     registerUser,
@@ -16,6 +17,7 @@ import { useCallback, useMemo } from 'react';
 interface UseJwtAuthReturn {
     loadAccessToken: () => void;
     signup: (formData: SignupBody) => void;
+    acitvate: (code: string) => void;
     signout: () => void;
     authenticate: (formData: LoginBody) => void;
     register: (setAuthState: SetAuthState, formData: SignupBody) => void;
@@ -61,6 +63,16 @@ const useJwtAuth = ({
         });
     }, [onSuccessFn, onErrorFn, onLoadFn]);
 
+    // Acivate user
+    const acitvate = useCallback(async (code: string) => {
+        await activateUser({
+            code,
+            onSuccessFn,
+            onErrorFn,
+            onLoadFn
+        });
+    }, [onSuccessFn, onErrorFn, onLoadFn]);
+
     // Sign out user
     const signout = useCallback(async () => {
         // Stop token refresh before signing out
@@ -88,6 +100,7 @@ const useJwtAuth = ({
     return {
         loadAccessToken,
         signup,
+        acitvate,
         signout,
         authenticate,
         register,

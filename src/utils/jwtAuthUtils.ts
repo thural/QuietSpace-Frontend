@@ -5,6 +5,7 @@ import {
 } from '@/utils/authStoreUtils';
 import {
     fetchAccessToken,
+    fetchActivation,
     fetchLogin,
     fetchLogout,
     fetchSignup
@@ -175,6 +176,30 @@ export const signupUser = async ({
     try {
         onLoadFn();
         await fetchSignup(formData);
+        onSuccessFn();
+    } catch (error) {
+        onErrorFn(error instanceof Error ? error : new Error(String(error)));
+    }
+};
+
+/**
+ * Acitvate user
+ * @param options - Activation options
+ */
+export const activateUser = async ({
+    code,
+    onSuccessFn,
+    onErrorFn,
+    onLoadFn
+}: {
+    code: string;
+    onSuccessFn: () => void;
+    onErrorFn: (error: Error) => void;
+    onLoadFn: () => void;
+}): Promise<void> => {
+    try {
+        onLoadFn();
+        await fetchActivation(code);
         onSuccessFn();
     } catch (error) {
         onErrorFn(error instanceof Error ? error : new Error(String(error)));
