@@ -1,7 +1,7 @@
 import { isPageIncludesEntity, pushToPageContent, setEntityContentSeen, transformInfinetePages } from "@/utils/dataUtils";
 import { InfiniteData, UseInfiniteQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Page } from "../schemas/inferred/common";
-import { NotificationResponse, NotificationEvent, NotificationPage } from "../schemas/inferred/notification";
+import { NotificationEvent, NotificationPage, NotificationResponse } from "../schemas/inferred/notification";
 
 
 

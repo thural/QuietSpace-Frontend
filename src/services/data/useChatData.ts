@@ -46,7 +46,7 @@ export const useCreateChat = ({
 export const useGetMessagesByChatId = (chatId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
     return useInfiniteQuery({
-        queryKey: ["messages", { id: chatId }],
+        queryKey: ["chats", chatId, "messages"],
         queryFn: async ({ pageParam }): Promise<PagedMessage> => {
             const pageParams = buildPageParams(pageParam, 9);
             return await fetchMessages(chatId, authData.accessToken, pageParams);

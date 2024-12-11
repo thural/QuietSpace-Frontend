@@ -12,7 +12,7 @@ export const useToggleReaction = (postId: ResId) => {
 
     const onSuccess = (data: Response) => {
         console.log("response data on user reaction: ", data);
-        queryClient.invalidateQueries({ queryKey: ["posts", { id: postId }] });
+        queryClient.invalidateQueries({ queryKey: ["posts", postId] });
     }
 
     const onError = (error: Error) => {

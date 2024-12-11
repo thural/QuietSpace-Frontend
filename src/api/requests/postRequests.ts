@@ -37,9 +37,9 @@ export const fetchRepliedPostsByUserId = async (userId: ResId, token: JwtToken, 
     await getWrappedApiResponse(POST_URL + `/user/${userId}/commented` + (pageParams || ""), 'GET', null, token)
 ).json()
 
-export const fetchEditPost = async (body: PostRequest, token: JwtToken, postId: ResId): Promise<Response> => (
+export const fetchEditPost = async (body: PostRequest, token: JwtToken, postId: ResId): Promise<PostResponse> => (
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'PUT', body, token)
-);
+).json();
 
 export const fetchDeletePost = async (postId: ResId, token: JwtToken): Promise<Response> => (
     await getWrappedApiResponse(POST_URL + `/${postId}`, 'DELETE', null, token)

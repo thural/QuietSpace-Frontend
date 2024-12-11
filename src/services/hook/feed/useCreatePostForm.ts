@@ -12,7 +12,7 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
     const user = getSignedUserElseThrow();
     const viewAccessOptions = ["friends", "anyone"];
-    const [previewUrl, setPreviewUrl] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(null);
     const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
     const [postData, setPostData] = useState<PostRequest>({
         text: "",
@@ -36,7 +36,7 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         if (photoData) reader.readAsDataURL(photoData);
     }
 
-    const handleViewSelect = (option: "friends" | "all") => {
+    const handleViewSelect = (option: "friends" | "anyone") => {
         setPostData({ ...postData, viewAccess: option });
     };
 
@@ -60,7 +60,7 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         formData.append('title', postData.title);
         formData.append('text', postData.text);
 
-        if (poll.options.length) formData.append('poll', JSON.stringify(poll));
+        if (poll.options.length) formData.append('poll', JSON.stringify(poll)); // TODO: test poll data on submit
         if (postData.photoData !== null) formData.append('photoData', postData.photoData);
 
         addPost.mutate(formData);

@@ -19,26 +19,8 @@ import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/zustand";
+import usePostQueries from "@/api/queries/usePostQueries";
 
-
-export const useGetPosts = () => {
-
-    const { data: authData, isAuthenticated } = useAuthStore();
-
-    return useQuery({
-        queryKey: ["posts"],
-        queryFn: async () => {
-            return await fetchPosts(authData.accessToken);
-        },
-        enabled: isAuthenticated, // if userQuery could fetch the current user
-        staleTime: 1000 * 60 * 3, // keep data fresh up to 3 minutes, it won't refetch on trigger events, defult 0
-        refetchInterval: 1000 * 60 * 6, // refetch data irregardless of a trigger event, default infinite, defult false
-        gcTime: 1000 * 60 * 15, // clear the cache after 15 minutes of component inactivity, default 5 minutes
-        refetchOnMount: true, // refetch on component mount, default true
-        refetchOnWindowFocus: true, // default true
-        refetchIntervalInBackground: false, // by default refetch paused for refetchInterval, dault false
-    });
-}
 
 export const useGetPagedPosts = () => {
 
@@ -52,12 +34,13 @@ export const useGetPagedPosts = () => {
         },
         initialPageParam: 0,
         getNextPageParam,
-        enabled: isAuthenticated,
-        staleTime: 1000 * 60 * 3,
-        gcTime: 1000 * 60 * 15,
-        refetchOnMount: true,
-        refetchOnWindowFocus: false,
-        refetchIntervalInBackground: false,
+        enabled: isAuthenticated, // if userQuery could fetch the current user
+        staleTime: 1000 * 60 * 3, // keep data fresh up to 3 minutes, it won't refetch on trigger events, default 0
+        refetchInterval: 1000 * 60 * 6, // refetch data irregardless of a trigger event, default infinite, defult false
+        gcTime: 1000 * 60 * 15, // clear the cache after 15 minutes of component inactivity, default 5 minutes
+        refetchOnMount: false, // refetch on component mount, default true
+        refetchOnWindowFocus: false, // default true
+        refetchIntervalInBackground: false, // by default refetch paused for refetchInterval, dafult false
     });
 }
 
@@ -66,7 +49,7 @@ export const useGetPostById = (postId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
 
     return useQuery({
-        queryKey: ["posts", { id: postId }],
+        queryKey: ["posts", postId],
         queryFn: async (): Promise<PostResponse> => {
             return await fetchPostById(postId, authData.accessToken);
         },
@@ -85,7 +68,7 @@ export const useGetSavedPostsByUserId = (userId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
 
     return useInfiniteQuery({
-        queryKey: ["posts/saved", { id: userId }],
+        queryKey: ["posts", "saved", userId],
         queryFn: async ({ pageParam }): Promise<PostPage> => {
             const pageParams = buildPageParams(pageParam, 9);
             return await fetchSavedPostsByUser(authData.accessToken, pageParams);
@@ -107,7 +90,7 @@ export const useGetRepliedPostsByUserId = (userId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
 
     return useInfiniteQuery({
-        queryKey: ["posts/user/replied", { id: userId }],
+        queryKey: ["posts", "replied", userId],
         queryFn: async ({ pageParam }): Promise<PostPage> => {
             const pageParams = buildPageParams(pageParam, 9);
             return await fetchRepliedPostsByUserId(userId, authData.accessToken, pageParams);
@@ -130,7 +113,7 @@ export const useGetPostsByUserId = (userId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
 
     return useInfiniteQuery({
-        queryKey: ["posts/user", { id: userId }],
+        queryKey: ["posts", userId],
         queryFn: async ({ pageParam }): Promise<PostPage> => {
             const pageParams = buildPageParams(pageParam, 9);
             return await fetchPostsByUserId(userId, authData.accessToken, pageParams);
@@ -150,13 +133,13 @@ export const useGetPostsByUserId = (userId: ResId) => {
 
 export const useCreatePost = (toggleForm: ConsumerFn) => {
 
-    const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
+    const { insertPostCache } = usePostQueries();
 
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: PostResponse) => {
         console.log("post added successfully:", data);
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+        insertPostCache(data)
         toggleForm();
     }
 
@@ -176,12 +159,12 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
 
 export const useCreateRepost = (toggleForm: ConsumerFn) => {
 
-    const queryClient = useQueryClient();
+    const { insertPostCache } = usePostQueries();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: PostResponse) => {
         console.log("post added successfully:", data);
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+        insertPostCache(data)
         toggleForm();
     }
 
@@ -202,19 +185,21 @@ export const useCreateRepost = (toggleForm: ConsumerFn) => {
 
 export const useSavePost = () => {
 
-    const queryClient = useQueryClient();
+    const { insertPostCache, getPostById } = usePostQueries();
     const user = getSignedUser();
     if (user === undefined) throw new Error("user is undefined");
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
-        console.log("post saved successfully:", data);
-        queryClient.invalidateQueries({ queryKey: ["posts/saved", { id: user.id }] });
+    const onSuccess = (data: Response, variables: ResId) => {
+        const postId = variables;
+        const userId = user.id;
+        const post = getPostById(postId);
+        console.assert(post !== undefined, "post cache is undefined");
+        if (post !== undefined) insertPostCache(post, ["posts", "user", userId]);
     }
 
     const onError = (error: Error) => {
         console.log("error on repost: ", error.message);
-        console.log("access token on saving post: ", authData.accessToken);
         alert("error on saving post, try again later");
     }
 
@@ -230,12 +215,12 @@ export const useSavePost = () => {
 
 export const useEditPost = (postId: ResId, toggleForm: ConsumerFn) => {
 
-    const queryClient = useQueryClient();
+    const { updatePostCache } = usePostQueries();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = () => {
-        queryClient.invalidateQueries({ queryKey: ["posts", { id: postId }] });
-        console.log("post edit was success");
+    const onSuccess = (data: PostResponse, variables: PostRequest) => {
+        console.log("post edit request was success");
+        if (data !== undefined) updatePostCache(data);
         toggleForm();
     }
 
@@ -258,7 +243,7 @@ export const useQueryPosts = (setPostQueryResult: ConsumerFn) => {
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: PostPage) => {
-        console.log("post query result: ", data["content"]);
+        console.log("post query result: ", data.content);
         setPostQueryResult(data.content);
     }
 
@@ -278,7 +263,7 @@ export const useQueryPosts = (setPostQueryResult: ConsumerFn) => {
 
 export const useDeletePost = (postId: ResId) => {
 
-    const queryClient = useQueryClient();
+    const { deletePostCache } = usePostQueries();
     const { data: authData } = useAuthStore();
 
     const { postId: id } = useParams();
@@ -286,7 +271,7 @@ export const useDeletePost = (postId: ResId) => {
 
     const onSuccess = (data: Response) => {
         console.log("response data on post delete: ", data);
-        queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+        deletePostCache(postId);
         if (id === postId) navigate("/feed");
     }
 
@@ -306,12 +291,13 @@ export const useDeletePost = (postId: ResId) => {
 
 export const useVotePoll = (postId: ResId) => {
 
-    const queryClient = useQueryClient();
+    const { updatePostCache, getPostById } = usePostQueries();
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {
         console.log("response data on poll vote success: ", data);
-        queryClient.invalidateQueries({ queryKey: ["posts", { id: postId }] });
+        const post = getPostById(postId);
+        if (post !== undefined) updatePostCache(post)
     }
 
     const onError = (error: Error) => {

@@ -1,14 +1,15 @@
-import { getPostById, getPosts } from "@/api/queries/postQueries";
+import usePostQueries from "@/api/queries/usePostQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollRequest, PostRequest, PostResponse } from "@/api/schemas/inferred/post";
 import { useEditPost } from "@/services/data/usePostData";
+import { assertIsNotUndefined } from "@/utils/assertions";
 import { useState } from "react";
 
 const useEditCommentForm = (postId: ResId) => {
 
+    const { getPostById, getPosts } = usePostQueries()
     const posts = getPosts();
-    if (posts === undefined) throw new Error("posts is undefined");;
-
+    assertIsNotUndefined({ posts });
     const editedPost: PostResponse | undefined = getPostById(postId);
 
     if (editedPost === undefined) throw new Error("editPosts is undefined");

@@ -7,7 +7,7 @@ export interface HasId { id: ResId }
 
 type PagePredicate = <T extends HasId>(page: Page<T>, entityId: ResId) => boolean;
 
-type PageTransformer = <T extends HasId>(page: Page<T>, entityId: ResId) => Page<T>;
+type PageTransformer = <T extends HasId>(page: Page<T>, entityId: ResId, entity?: T) => Page<T>;
 
 export const isMatchingEntity = <T extends BaseSchema>(entity: T, entityId: string): boolean => {
     return entity.id === entityId;
@@ -37,15 +37,16 @@ export const transformInfinetePages = <T extends HasId>(
     data: InfiniteData<Page<T>>,
     entityId: ResId,
     pagePredicate: PagePredicate,
-    transformer: PageTransformer
+    transformer: PageTransformer,
+    entity?: T
 ): InfiniteData<Page<T>> => {
     const pageIndex = data.pages.findIndex(page => pagePredicate(page, entityId));
 
     if (pageIndex === -1) throw new Error("page not found");
 
     const updatedPages = data.pages.map((page, index) =>
-        index === pageIndex
-            ? transformer(page, entityId) : page
+        index === pageIndex ?
+            transformer(page, entityId, entity) : page
     );
 
     return { ...data, pages: updatedPages };
@@ -61,6 +62,19 @@ export const setEntityContentSeen: PageTransformer = <T extends HasId>(
         return { ...entity, isSeen: true } as T;
     })
 });
+
+
+export const updateEntityContent: PageTransformer = <T extends HasId>(
+    page: Page<T>,
+    entityId: ResId,
+    entity?: T
+): Page<T> => ({
+    ...page,
+    content: page.content.map((foundEntity) =>
+        foundEntity.id !== entityId ? foundEntity : (entity ?? foundEntity)
+    ),
+});
+
 
 export const pushToPageContent = <T extends HasId>(
     data: InfiniteData<Page<T>>,

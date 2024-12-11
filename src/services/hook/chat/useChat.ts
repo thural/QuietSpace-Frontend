@@ -2,7 +2,7 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { useDeleteChat, useGetChats, useGetMessagesByChatId } from "@/services/data/useChatData";
 import { useAuthStore } from "@/services/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
-import useFormInput from "../shared/useFormInput";
+import { useCallback, useState } from "react";
 import { useChatMessaging } from "./useChatMessaging";
 
 export const useChat = (chatId: ResId) => {
@@ -26,16 +26,16 @@ export const useChat = (chatId: ResId) => {
         fetchNextPage
     } = useGetMessagesByChatId(chatId);
 
-    const { value: text, handleChange: handleInputChange, setValue: setText } = useFormInput('');
+    const [text, setText] = useState<string>("");
+
+    const handleInputChange = useCallback((value: string) => {
+        setText(value);
+    }, []);
 
     const handeSendMessgae = () => {
         if (!recipientId) throw new Error("recipientId is undefined");
-
-        sendMessage({
-            recipientId,
-            text
-        });
-
+        sendMessage({ recipientId, text });
+        console.log("message sent: ", { recipientId, text })
         setText('');
     };
 

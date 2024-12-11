@@ -10,7 +10,7 @@ import { QueryProps } from "@/types/hookPropTypes";
 export const useGetComments = (postId: ResId) => {
     const { data: authData } = useAuthStore();
     return useQuery({
-        queryKey: ["comments", { id: postId }],
+        queryKey: ["comments", postId],
         queryFn: async (): Promise<PagedComment> => {
             return await fetchCommentsByPostId(postId, authData.accessToken);
         },
@@ -44,7 +44,7 @@ export const usePostComment = ({
 
     const onSuccess = (data: CommentResponse) => {
         console.log("added comment response data: ", data);
-        queryClient.invalidateQueries({ queryKey: ["comments", { id: postId }] })
+        queryClient.invalidateQueries({ queryKey: ["comments", postId] })
             .then(() => console.log("post comments were invalidated"));
         handleClose && handleClose();
     }
@@ -70,7 +70,7 @@ export const useDeleteComment = (postId: ResId) => {
 
     const onSuccess = (data: Response) => {
         console.log("response data on comment deletion: ", data);
-        queryClient.invalidateQueries({ queryKey: ["comments", { id: postId }] })
+        queryClient.invalidateQueries({ queryKey: ["comments", postId] })
             .then(() => console.log("post comments were invalidated"));
     }
 
