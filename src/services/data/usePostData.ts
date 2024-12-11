@@ -195,7 +195,7 @@ export const useSavePost = () => {
         const userId = user.id;
         const post = getPostById(postId);
         console.assert(post !== undefined, "post cache is undefined");
-        if (post !== undefined) insertPostCache(post, ["posts", "user", userId]);
+        if (post !== undefined) insertPostCache(post, ["posts", userId]);
     }
 
     const onError = (error: Error) => {

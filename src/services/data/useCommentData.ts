@@ -5,12 +5,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/zustand";
 import { ConsumerFn, ProcedureFn } from "@/types/genericTypes";
 import { QueryProps } from "@/types/hookPropTypes";
+import useCommentCache from "@/api/queries/useCommentCache"
 
 
 export const useGetComments = (postId: ResId) => {
     const { data: authData } = useAuthStore();
     return useQuery({
-        queryKey: ["comments", postId],
+        queryKey: ["posts", postId, "comments"],
         queryFn: async (): Promise<PagedComment> => {
             return await fetchCommentsByPostId(postId, authData.accessToken);
         },
@@ -23,7 +24,7 @@ export const useGetComments = (postId: ResId) => {
 export const useGetLatestComment = (userId: ResId, postId: ResId) => {
     const { data: authData } = useAuthStore();
     return useQuery({
-        queryKey: ["comments/latest", { id: postId, userId }],
+        queryKey: ["posts", postId, "comments", "latest"],
         queryFn: async (): Promise<CommentResponse> => {
             return await fetchLatestComment(userId, postId, authData.accessToken);
         },
@@ -32,6 +33,7 @@ export const useGetLatestComment = (userId: ResId, postId: ResId) => {
     })
 }
 
+
 interface usePostCommentProps extends QueryProps {
     postId: ResId,
     handleClose?: ConsumerFn,
@@ -39,13 +41,12 @@ interface usePostCommentProps extends QueryProps {
 export const usePostComment = ({
     postId, handleClose
 }: usePostCommentProps) => {
-    const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: CommentResponse) => {
         console.log("added comment response data: ", data);
-        queryClient.invalidateQueries({ queryKey: ["comments", postId] })
-            .then(() => console.log("post comments were invalidated"));
+        const { insertCommentCache } = useCommentCache();
+        insertCommentCache(data);
         handleClose && handleClose();
     }
 
@@ -63,15 +64,15 @@ export const usePostComment = ({
 }
 
 
-export const useDeleteComment = (postId: ResId) => {
+export const useDeleteComment = () => {
 
-    const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: Response, variables: ResId) => {
+        const commentId = variables;
         console.log("response data on comment deletion: ", data);
-        queryClient.invalidateQueries({ queryKey: ["comments", postId] })
-            .then(() => console.log("post comments were invalidated"));
+        const { deleteCommentCache } = useCommentCache();
+        deleteCommentCache(commentId)
     }
 
     const onError = (error: Error) => {

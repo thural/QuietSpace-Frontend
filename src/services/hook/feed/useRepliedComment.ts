@@ -9,7 +9,7 @@ const useRepliedComment = (comment: CommentResponse) => {
 
     const user = getSignedUserElseThrow();
 
-    const deleteComment = useDeleteComment(comment.id);
+    const deleteComment = useDeleteComment();
     const handleDeleteComment = () => deleteComment.mutate(comment.id);
 
     const handleReaction = useReaction(comment.id);

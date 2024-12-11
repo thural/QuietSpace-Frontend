@@ -19,16 +19,16 @@ const usePostQueries = () => {
 
     const queryClient = useQueryClient();
 
-    const getPostsByUserId = (userId: ResId): PostPage | undefined => {
-        return queryClient.getQueryData(["posts", "user", userId]);
-    }
-
     const getPosts = (): PostPage | undefined => {
         return queryClient.getQueryData(["posts"]);
     }
 
+    const getPostsByUserId = (userId: ResId): PostPage | undefined => {
+        return queryClient.getQueryData(["posts", userId]);
+    }
+
     const getPostById = (postId: ResId): PostResponse | undefined => {
-        return getPosts()?.content?.find(p => p.id === postId);
+        return queryClient.getQueryData(["posts", postId]);
     }
 
     const insertPostCache = (post: PostResponse, queryKeys?: Array<string | ResId>) => {

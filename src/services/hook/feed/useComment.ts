@@ -9,7 +9,7 @@ import { useState } from "react";
 const useComment = (comment: CommentResponse) => {
 
     const user = getSignedUserElseThrow();
-    const deleteComment = useDeleteComment(comment.postId);
+    const deleteComment = useDeleteComment();
 
     const handleReaction = useReaction(comment.id);
     const handleLikeToggle = (event: Event) => {
