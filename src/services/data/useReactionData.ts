@@ -3,6 +3,7 @@ import { ReactionRequest } from "@/api/schemas/inferred/reaction";
 import { ResId } from "@/api/schemas/native/common";
 import { useAuthStore } from "@/services/store/zustand";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import usePostQueries from "@/api/queries/usePostQueries";
 
 
 export const useToggleReaction = (postId: ResId) => {

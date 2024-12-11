@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { usePostComment } from "@/services/data/useCommentData";
 import { ConsumerFn } from "@/types/genericTypes";
@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 const useCommentForm = (postId: ResId, onClose?: ConsumerFn) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     const addNewComment = usePostComment(postId, onClose);
 

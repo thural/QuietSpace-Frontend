@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { ChatResponse } from "@/api/schemas/inferred/chat";
 import { processRecentText } from "@/utils/stringUtils";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ const useChatCard = (chat: ChatResponse) => {
     const handleClick = () => navigate(`/chat/${chat.id}`);
 
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
 
 

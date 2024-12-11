@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import DefaultContainer from "@/components/shared/DefaultContainer";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import { useGetChats } from "@/services/data/useChatData";
@@ -13,6 +13,8 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
     const classes = styles();
 
     let data = undefined;
+
+    const { getSignedUserElseThrow } = useUserQueries();
 
     try {
         getSignedUserElseThrow();

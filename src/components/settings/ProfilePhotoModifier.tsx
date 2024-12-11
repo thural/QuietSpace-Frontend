@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries"
+import useUserQueries from "@/api/queries/userQueries"
 import { useUploadProfilePhoto } from "@/services/data/useUserData"
 import useStyles from "@/styles/settings/profileModifierStyles"
 import { GenericWrapper } from "@/types/sharedComponentTypes"
@@ -19,6 +19,7 @@ import UserCard from "../shared/UserCard"
 const ProfilePhotoModifier = () => {
 
     const classes = useStyles();
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     const [modalDisplay, setModalDisplay] = useState<boolean>(false);
 

@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { PostResponse, RepostRequest } from "@/api/schemas/inferred/post";
 import { useCreateRepost } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
@@ -7,6 +7,7 @@ import { useState } from "react";
 
 const useCreateRepostForm = (toggleForm: ConsumerFn, post: PostResponse) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
 
 

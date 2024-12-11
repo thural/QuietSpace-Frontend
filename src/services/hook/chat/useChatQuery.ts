@@ -1,5 +1,5 @@
 import chatQueries from "@/api/queries/chatQueries";
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { ChatResponse, MessageResponse } from "@/api/schemas/inferred/chat";
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { useGetChats } from "@/services/data/useChatData";
@@ -10,6 +10,7 @@ import useNavigation from "../shared/useNavigation";
 
 const useChatQuery = () => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
     const { navigatePath } = useNavigation();
     const { insertMessageCache, insertInitChatCache } = chatQueries();

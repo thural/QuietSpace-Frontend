@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollRequest, PostRequest } from "@/api/schemas/inferred/post";
 import { useEditPost, useGetPostById } from "@/services/data/usePostData";
@@ -38,6 +38,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         setPostData({ ...postData, [name]: value });
     };
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     const avatarPlaceholder = toUpperFirstChar(signedUser.username);
 

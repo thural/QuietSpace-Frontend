@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { usePostComment } from "@/services/data/useCommentData";
@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 
 const useCreateCommentForm = (postItem: PostResponse | CommentResponse, handleClose?: ConsumerFn) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     let initState = undefined;
 

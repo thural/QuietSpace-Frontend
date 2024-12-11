@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { ContentType } from "@/api/schemas/native/common";
 import { ReactionType } from "@/api/schemas/native/reaction";
@@ -7,6 +7,7 @@ import useReaction from "./useReaction";
 
 const useRepliedComment = (comment: CommentResponse) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
 
     const deleteComment = useDeleteComment();

@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { MessageResponse } from "@/api/schemas/inferred/chat";
 import useWasSeen from "@/services/hook/common/useWasSeen";
 import { useChatStore } from "@/services/store/zustand";
@@ -7,6 +7,7 @@ import useHoverState from "../shared/useHoverState";
 
 
 export const useMessage = (message: MessageResponse) => {
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
     const [wasSeen, wasSeenRef] = useWasSeen();
     const { clientMethods } = useChatStore();

@@ -1,4 +1,4 @@
-import { getSignedUser } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import {
     fetchCreatePost,
     fetchCreateRepost,
@@ -16,7 +16,7 @@ import { ResId } from "@/api/schemas/inferred/common";
 import { PostPage, PostRequest, PostResponse, RepostRequest, VoteBody } from "@/api/schemas/inferred/post";
 import { ConsumerFn } from "@/types/genericTypes";
 import { buildPageParams, getNextPageParam } from "@/utils/fetchUtils";
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/zustand";
 import usePostQueries from "@/api/queries/usePostQueries";
@@ -186,6 +186,7 @@ export const useCreateRepost = (toggleForm: ConsumerFn) => {
 export const useSavePost = () => {
 
     const { insertPostCache, getPostById } = usePostQueries();
+    const { getSignedUser } = useUserQueries();
     const user = getSignedUser();
     if (user === undefined) throw new Error("user is undefined");
     const { data: authData } = useAuthStore();

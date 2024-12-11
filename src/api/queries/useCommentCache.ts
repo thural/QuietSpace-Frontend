@@ -51,7 +51,7 @@ const useCommentCache = () => {
     }
 
     const deleteCommentCache = (postId: ResId, queryKeys?: Array<string | ResId>) => {
-        queryClient.setQueryData((queryKeys ?? ['comments']), (oldData: InfiniteData<Page<PostResponse>>) => {
+        queryClient.setQueryData((queryKeys ?? ['comments']), (oldData: InfiniteData<Page<CommentResponse>>) => {
             return transformInfinetePages(oldData, postId, isPageIncludesEntity, filterPageContentById)
         });
     }

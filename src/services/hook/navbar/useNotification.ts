@@ -1,5 +1,5 @@
 import chatQueries from "@/api/queries/chatQueries";
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { NotificationResponse } from "@/api/schemas/inferred/notification";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import { useMemo } from "react";
@@ -9,6 +9,7 @@ const useNotification = () => {
 
     const { getChatsCache } = chatQueries();
     const chats = getChatsCache();
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
     const { data, isLoading } = useGetNotifications();
 

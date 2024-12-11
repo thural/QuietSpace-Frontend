@@ -1,5 +1,5 @@
 import notificationQueries from "@/api/queries/notificationQueries";
-import { getSignedUser } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { NotificationResponse, NotificationEvent } from "@/api/schemas/inferred/notification";
 import { ResId } from "@/api/schemas/native/common";
 import { NotificationEventSchema } from "@/api/schemas/zod/notificationZod";
@@ -10,6 +10,7 @@ import { Frame } from "stompjs";
 
 const useNotificationSocket = () => {
 
+    const { getSignedUser } = useUserQueries();
     const user = getSignedUser();
     const { setClientMethods } = useNotificationStore();
     const { handleReceivedNotifcation, handleSeenNotification } = notificationQueries();
@@ -25,13 +26,13 @@ const useNotificationSocket = () => {
     }
 
     const setNotificationSeen = (notificationId: ResId) => {
-        sendMessage(`/app/private/notifications/seen/${notificationId}`);
+        if (sendMessage) sendMessage(`/app/private/notifications/seen/${notificationId}`);
     }
 
     const clientMethods = { setNotificationSeen, isClientConnected };
 
     const setup = () => {
-        if (!isClientConnected || !user) return;
+        if (!isClientConnected || !user || !subscribe) return;
         subscribe(`/user/${user.id}/private/notifications`, onSubscribe);
         subscribe(`/user/${user.id}/private/notifications/event`, onSubscribe);
         setClientMethods(clientMethods);

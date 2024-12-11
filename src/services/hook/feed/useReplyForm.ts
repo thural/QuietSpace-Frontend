@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/native/common";
 import { usePostComment } from "@/services/data/useCommentData";
 import { ConsumerFn } from "@/types/genericTypes";
@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 const useReplyForm = (postId: ResId, parentId: ResId, toggleView: ConsumerFn) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
 
     const [commentInput, setCommentData] = useState({

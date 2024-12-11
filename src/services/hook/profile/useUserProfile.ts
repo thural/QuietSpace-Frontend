@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
 import { useGetPostsByUserId } from "@/services/data/usePostData";
 import { useGetFollowers, useGetFollowings, useGetUserById } from "@/services/data/useUserData";
@@ -7,6 +7,7 @@ import useNavigation from "../shared/useNavigation";
 
 const useUserProfile = (userId: ResId) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     if (userId === undefined) throw new Error("userId is undefined");
     const [isHasAccess, setIsHasAccss] = useState({ data: false, isLoading: true, isError: false });
@@ -68,6 +69,7 @@ const useUserProfile = (userId: ResId) => {
 export const useCurrentProfile = () => {
 
     const { navigatePath } = useNavigation();
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     const userPosts = useGetPostsByUserId(signedUser.id);
 

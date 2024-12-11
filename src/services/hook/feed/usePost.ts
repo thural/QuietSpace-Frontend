@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { ContentType } from "@/api/schemas/native/common";
 import { ReactionType } from "@/api/schemas/native/reaction";
@@ -12,6 +12,7 @@ import useReaction from "./useReaction";
 
 export const usePost = (post: PostResponse) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     const { navigatePath } = useNavigation();
     const postId = post.id;

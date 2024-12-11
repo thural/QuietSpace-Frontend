@@ -1,4 +1,4 @@
-import { getSignedUser, getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { fetchBlockUserById, fetchFollowers, fetchFollowings, fetchSaveSettings, fetchToggleFollow, fetchUploadPhoto, fetchUser, fetchUserById, fetchUsersByQuery } from "@/api/requests/userRequests";
 import { ResId } from "@/api/schemas/inferred/common";
 import { ProfileSettingsRequest, ProfileSettingsResponse, UserPage, UserResponse } from "@/api/schemas/inferred/user";
@@ -28,6 +28,8 @@ export const useGetCurrentUser = () => {
 
 export const useQueryUsers = (callBackFunc?: ConsumerFn) => {
 
+
+    const { getSignedUser } = useUserQueries();
     const signedUser = getSignedUser();
 
     if (signedUser === undefined) {
@@ -61,7 +63,7 @@ export const useGetUserById = (userId: ResId) => {
     const { data: authData } = useAuthStore();
 
     return useQuery({
-        queryKey: ["users", { id: userId }],
+        queryKey: ["users", userId],
         queryFn: async (): Promise<UserResponse> => {
             return await fetchUserById(userId, authData.accessToken);
         },
@@ -77,7 +79,7 @@ export const useGetFollowers = (userId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
 
     return useInfiniteQuery({
-        queryKey: ["followers", { id: userId }],
+        queryKey: ["users", "followers", userId],
         queryFn: async ({ pageParam }): Promise<UserPage> => {
             const pageParams = buildPageParams(pageParam, 9);
             return await fetchFollowers(userId, authData.accessToken, pageParams);
@@ -98,7 +100,7 @@ export const useGetFollowings = (userId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
 
     return useInfiniteQuery({
-        queryKey: ["followings", { id: userId }],
+        queryKey: ["users", "followings", userId],
         queryFn: async ({ pageParam }): Promise<UserPage> => {
             const pageParams = buildPageParams(pageParam, 9);
             return await fetchFollowings(userId, authData.accessToken, pageParams);
@@ -121,9 +123,7 @@ export const useToggleFollow = (userId: ResId) => {
 
     const onSuccess = (data: Response) => {
         console.log("toggle follow success response:", data);
-        queryClient.invalidateQueries({ queryKey: ["followings", { id: userId }] });
-        queryClient.invalidateQueries({ queryKey: ["followers", { id: userId }] });
-        queryClient.invalidateQueries({ queryKey: ["users", { id: userId }] });
+        queryClient.invalidateQueries({ queryKey: ["followings", userId] });
     }
 
     const onError = (error: Error) => {
@@ -145,10 +145,9 @@ export const useBlockUser = (userId: ResId) => {
     const { data: authData } = useAuthStore();
 
     const onSuccess = (data: Response) => {
-        console.log("toggle follow success response:", data);
-        queryClient.invalidateQueries({ queryKey: ["followings", { id: userId }] });
-        queryClient.invalidateQueries({ queryKey: ["followers", { id: userId }] });
-        queryClient.invalidateQueries({ queryKey: ["users", { id: userId }] });
+        console.log("block user response:", data);
+        queryClient.invalidateQueries({ queryKey: ["followings", userId] });
+        queryClient.invalidateQueries({ queryKey: ["followers", userId] });
     }
 
     const onError = (error: Error) => {
@@ -171,7 +170,7 @@ export const useSaveProfileSettings = (userId: ResId) => {
 
     const onSuccess = (data: Response) => {
         console.log("save profile settings success response:", data);
-        queryClient.invalidateQueries({ queryKey: ["users", { id: userId }] });
+        queryClient.invalidateQueries({ queryKey: ["user"] });
     }
 
     const onError = (error: Error) => {
@@ -191,11 +190,10 @@ export const useUploadProfilePhoto = (toggleForm: ConsumerFn) => {
 
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
-    const user = getSignedUserElseThrow();
 
     const onSuccess = (data: Response) => {
         console.log("upload profile photo success response:", data);
-        queryClient.invalidateQueries({ queryKey: ["users", { id: user.id }] });
+        queryClient.invalidateQueries({ queryKey: ["user"] });
         toggleForm();
     }
 

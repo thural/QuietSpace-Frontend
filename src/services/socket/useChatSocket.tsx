@@ -1,6 +1,6 @@
 import chatHandler from "../hook/chat/chatHandler.js";
 
-import { getSignedUser } from "@/api/queries/userQueries.js";
+import useUserQueries from "@/api/queries/userQueries.js";
 import { ChatEvent, MessageRequest, MessageResponse } from "@/api/schemas/inferred/chat.js";
 import { ResId } from "@/api/schemas/inferred/common.js";
 import { StompMessage } from "@/api/schemas/inferred/websocket.js";
@@ -14,6 +14,7 @@ import { fromZodError } from 'zod-validation-error';
 
 
 const useChatSocket = () => {
+    const { getSignedUser } = useUserQueries();
     const user = getSignedUser();
     const { setClientMethods } = useChatStore();
 

@@ -1,10 +1,11 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries"
+import useUserQueries from "@/api/queries/userQueries"
 import { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user"
 import { useSaveProfileSettings } from "@/services/data/useUserData"
 import { useState } from "react"
 
 const useProfileSettings = () => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const user: UserProfileResponse = getSignedUserElseThrow();
     const saveSettings = useSaveProfileSettings(user.id);
     const [settings, setSetting] = useState<ProfileSettingsRequest>(user.settings);

@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { PollRequest, PostRequest } from "@/api/schemas/inferred/post";
 import { useCreatePost } from "@/services/data/usePostData";
 import { ConsumerFn } from "@/types/genericTypes";
@@ -10,6 +10,7 @@ export interface PollView { enabled: boolean, extraOption: boolean }
 
 const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
     const viewAccessOptions = ["friends", "anyone"];
     const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(null);

@@ -1,4 +1,4 @@
-import { getSignedUserElseThrow } from "@/api/queries/userQueries";
+import useUserQueries from "@/api/queries/userQueries";
 import { RepostResponse } from "@/api/schemas/inferred/post";
 import { useDeletePost } from "@/services/data/usePostData";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import useNavigation from "../shared/useNavigation";
 
 export const useRepost = (repost: RepostResponse) => {
 
+    const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
     const { navigatePath } = useNavigation();
     const repostId = repost.id;
