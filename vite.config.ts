@@ -20,7 +20,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    removeConsole()
+    removeConsole(),
   ],
   server: {
     host: true,
