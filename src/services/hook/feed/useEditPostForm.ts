@@ -22,7 +22,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         text: editedPost.text,
         userId: editedPost.userId,
         poll: pollData,
-        viewAccess: "all"
+        viewAccess: "anyone"
     }
 
     const [postData, setPostData] = useState<PostRequest>(requestBody);

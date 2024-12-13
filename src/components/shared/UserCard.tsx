@@ -10,6 +10,7 @@ import UserDetails from "@shared/UserDetails";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import UserAvatarPhoto from "./UserAvatarPhoto";
+import useUserQueries from "@/api/queries/userQueries";
 
 export interface UserCardProps extends GenericWrapper {
     userId?: ResId
@@ -29,13 +30,15 @@ const UserCard: React.FC<UserCardProps> = ({
 
     const classes = styles();
     const navigate = useNavigate();
+    const { getSignedUser } = useUserQueries();
+    const signedUser = getSignedUser();
 
     const { data: user, isLoading } = userId ? useGetUserById(userId) : useGetCurrentUser();
 
     const handleUserNavigation = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (isIgnoreNavigation) return;
-        if (userId === user?.id) return navigate(`/profile`);
+        if (userId === signedUser?.id) return navigate(`/profile`);
         navigate(`/profile/${userId}`);
     }
 

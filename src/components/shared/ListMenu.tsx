@@ -11,6 +11,7 @@ export interface MenuListStyleProps {
     radius?: string,
     iconSize?: string,
     padding?: string
+    display?: string
 }
 
 export interface ListMenuProps extends GenericWrapperWithRef {

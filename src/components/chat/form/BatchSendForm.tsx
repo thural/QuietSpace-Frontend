@@ -17,6 +17,7 @@ import styles from "@/styles/profile/connectionStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 import { assertIsNotNullish } from "@/utils/assertions";
 import { Center } from "@mantine/core";
+import React, { memo, useMemo, useCallback } from 'react';
 
 interface BatchShareFormProps {
     postId: ResId
@@ -24,18 +25,23 @@ interface BatchShareFormProps {
 }
 
 const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) => {
-
     const classes = styles();
-    let searchData = undefined;
-    let formData = undefined;
 
-    try {
-        assertIsNotNullish({ postId });
-        searchData = useSearch();
-        formData = useBatchShareForm(postId, toggleForm);
-    } catch (error) {
-        return <ErrorComponent message={(error as Error).message} />;
+    const errorCheck = useMemo(() => {
+        try {
+            assertIsNotNullish({ postId });
+            return null;
+        } catch (error) {
+            return error as Error;
+        }
+    }, [postId]);
+
+    if (errorCheck) {
+        return <ErrorComponent message={errorCheck.message} />;
     }
+
+    const searchData = useSearch();
+    const formData = useBatchShareForm(postId, toggleForm);
 
     const {
         userQueryList,
@@ -53,18 +59,26 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
     } = formData;
 
 
-
-    if (fetchUserQuery.isPending) return <LoaderStyled />
-
-    const SelectableUserItem: React.FC<{ data: UserResponse }> = ({ data }) => (
+    const SelectableUserItem = useCallback(({ data }: { data: UserResponse }) => (
         <UserQueryItem hasFollowToggle={false} data={data}>
             <CheckBox value={data.id} onChange={handleUserSelect} />
         </UserQueryItem>
-    );
+    ), [handleUserSelect]);
+
+    const handleContainerClick = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
+    }, []);
+
+    if (fetchUserQuery.isPending) return <LoaderStyled />;
 
     return (
-        <BoxStyled className={classes.container} >
-            <Center><Typography type="h3">share</Typography></Center>
+        <BoxStyled
+            className={classes.container}
+            onClick={handleContainerClick}
+        >
+            <Center>
+                <Typography type="h3">share</Typography>
+            </Center>
             <SearchBar
                 placeHolder="search a user"
                 handleInputBlur={handleInputBlur}
@@ -80,12 +94,16 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
                 variant="unstyled"
                 style={{ width: "100%", margin: "1rem 0" }}
                 placeholder="write a message"
-                onClick={handleInputClick}
                 onChange={handleMessageChange}
             />
-            <DarkButton loading={!isClientConnected} style={{ width: "100%" }} name="send" handleClick={handleSend} />
+            <DarkButton
+                loading={!isClientConnected}
+                style={{ width: "100%" }}
+                name="send"
+                handleClick={handleSend}
+            />
         </BoxStyled>
-    )
-}
+    );
+};
 
 export default withErrorBoundary(BatchShareForm);

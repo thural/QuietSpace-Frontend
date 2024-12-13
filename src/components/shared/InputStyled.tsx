@@ -4,7 +4,7 @@ import { Input } from "@mantine/core";
 import { createUseStyles, Theme } from "react-jss";
 
 const useStyles = createUseStyles((theme: Theme) => ({
-    chatQuery: {
+    inputStyled: {
         '& input': {
             width: '100%',
             padding: theme.spacing(theme.spacingFactor.ms),
@@ -17,7 +17,9 @@ const useStyles = createUseStyles((theme: Theme) => ({
             outline: 'none',
             borderColor: theme.colors.borderExtra,
         },
+
     },
+    inputUnstyled: {}
 }));
 
 const InputStyled: React.FC<GenericWrapperWithRef> = ({
