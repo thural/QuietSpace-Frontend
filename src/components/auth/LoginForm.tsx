@@ -14,16 +14,24 @@ import Typography from "@components/shared/Typography";
 import React from "react";
 import LoaderStyled from "../shared/LoaderStyled";
 
+/**
+ * LoginForm component for user authentication.
+ *
+ * @param {AuthFormProps} props - The props for the LoginForm component.
+ * @param {function} props.setAuthState - Function to set the authentication state.
+ * @param {object} props.authState - The current authentication state.
+ * @returns {JSX.Element} - The rendered login form component.
+ */
 const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
-    let data = undefined;
+    let data;
 
     try {
         data = useLoginForm({ setAuthState, authState });
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error on activation form: ${(error as Error).message}`;
+        const errorMessage = `error on login form: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />;
     }
 
@@ -38,15 +46,24 @@ const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
     } = data;
 
     if (isAuthenticating) return <LoaderStyled />;
-    if (isError) return <ErrorComponent message={`(!) could not authenticate! error: ${error}`} />;
+    if (isError) return <ErrorComponent message={`could not authenticate! error: ${error}`} />;
 
     return (
         <BoxStyled className={classes.form}>
             <Typography type="h2">login</Typography>
-            <FormStyled >
+            <FormStyled>
                 <InputBoxStyled>
-                    <TextInputStyled placeholder="username or email" name='email' value={formData.email} handleChange={handleFormChange} />
-                    <PassInput name='password' value={formData.password} handleChange={handleFormChange} />
+                    <TextInputStyled
+                        placeholder="username or email"
+                        name='email'
+                        value={formData.email}
+                        handleChange={handleFormChange}
+                    />
+                    <PassInput
+                        name='password'
+                        value={formData.password}
+                        handleChange={handleFormChange}
+                    />
                 </InputBoxStyled>
             </FormStyled>
             <GradientButton onClick={handleLoginForm} />

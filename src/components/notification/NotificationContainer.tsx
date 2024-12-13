@@ -8,33 +8,58 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoaderStyled from "../shared/LoaderStyled";
 
+/**
+ * NotificationContainer component.
+ * 
+ * This component serves as a wrapper for displaying notifications. It manages the loading state 
+ * and error handling for fetching notifications. Users can navigate between different types of 
+ * notifications (all, requests, replies, reposts, mentions) using a segmented control interface.
+ * If there is an error fetching notifications, an error component is displayed.
+ * 
+ * @param {GenericWrapper} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to be rendered within the container.
+ * @returns {JSX.Element} - The rendered NotificationContainer component.
+ */
 const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
-
     const navigate = useNavigate();
     const [value, setValue] = useState('/notification/all');
 
-    let data = undefined;
+    let data;
 
     try {
-        data = useGetNotifications();
+        data = useGetNotifications(); // Fetch notifications data
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error loading notification data: ${(error as Error).message}`;
+        const errorMessage = `Error loading notification data: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />;
     }
 
     const { isLoading, isError, error } = data;
 
-
+    // Display a loading indicator while fetching data
     if (isLoading) return <LoaderStyled />;
+
+    // Display an error component if there was an error fetching notifications
     if (isError) return <ErrorComponent message={error.message} />;
 
-
+    /**
+     * Navigates to a specified notification page based on the segmented control value.
+     * 
+     * @param {string} buttonValue - The value of the button clicked in the segmented control.
+     */
     const navigateToPage = (buttonValue: string) => {
-        setValue(buttonValue);
-        navigate(buttonValue);
+        setValue(buttonValue); // Update the current value
+        navigate(buttonValue); // Navigate to the selected notification type
     };
 
+    /**
+     * ControlPanel component.
+     * 
+     * This component renders a segmented control for selecting notification categories
+     * and displays any child components passed to the NotificationContainer.
+     * 
+     * @returns {JSX.Element} - The rendered ControlPanel component.
+     */
     const ControlPanel = () => (
         <>
             <SegmentedControl
@@ -51,7 +76,7 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
                     { label: 'mentions', value: '/notification/mentions' },
                 ]}
             />
-            {children}
+            {children} {/* Render child components */}
         </>
     );
 
@@ -59,7 +84,7 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
         <DefaultContainer>
             <ControlPanel />
         </DefaultContainer>
-    )
+    );
 }
 
 export default withErrorBoundary(NotificationContainer);

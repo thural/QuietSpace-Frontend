@@ -3,7 +3,6 @@ import { ChatResponse, CreateChatRequest } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/native/common";
 import { useCreateChat, useGetChats } from "@/services/data/useChatData";
 import { useAuthStore, useChatStore } from "@/services/store/zustand";
-import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -32,7 +31,7 @@ export const useChatMessaging = () => {
 
 
 
-    const findOrCreateChat = useCallback((recipientId: ResId, text?: string) => {
+    const findOrCreateChat = (recipientId: ResId, text?: string) => {
         const existingChat = chats.data?.find(chat =>
             chat.members.some(member => member.id === recipientId)
         );
@@ -48,11 +47,11 @@ export const useChatMessaging = () => {
         createChatMutation.mutate(createChatRequestBody);
 
         return undefined;
-    }, [chats.data, senderId, createChatMutation]);
+    }
 
 
 
-    const sendMessage = useCallback((params: {
+    const sendMessage = (params: {
         recipientId: ResId,
         text: string,
         postId?: ResId
@@ -67,7 +66,7 @@ export const useChatMessaging = () => {
                 sendChatMessage({ chatId, senderId, recipientId, text: `##MP## ${postId}` });
             }
         }
-    }, [senderId, sendChatMessage, findOrCreateChat]);
+    }
 
 
 

@@ -1,4 +1,3 @@
-
 import Clickable from "@/components/shared/Clickable";
 import ListMenu from "@/components/shared/ListMenu";
 import CustomLink, { CustomLinkProps } from "@/components/shared/routes/CustomLink";
@@ -8,8 +7,13 @@ import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiMoon, PiSignOut
 import { RiMenu3Fill } from "react-icons/ri";
 import { createUseStyles } from "react-jss";
 
-
-
+/**
+ * Custom styles for the NavMenu component.
+ * 
+ * @function useStyles
+ * @param {boolean} isDarkMode - Flag indicating whether dark mode is enabled.
+ * @returns {object} - The styles object for the component.
+ */
 const useStyles = createUseStyles({
     themeSwitch: (isDarkMode: boolean) => ({
         padding: '.5rem .25rem',
@@ -20,20 +24,26 @@ const useStyles = createUseStyles({
     })
 });
 
-
+/**
+ * NavMenu component.
+ * 
+ * This component renders a navigation menu with links to various sections of the application.
+ * It includes links for saved items, activity, settings, and logout, each represented by an icon.
+ * Additionally, it features a switch to toggle between light and dark themes.
+ * 
+ * @returns {JSX.Element} - The rendered NavMenu component containing the list of links and theme switch.
+ */
 const NavMenu = () => {
-
     const { isDarkMode, setThemeMode } = useTheme();
     const classes = useStyles(isDarkMode);
 
+    // Define the navigation links with their properties
     const links: Array<CustomLinkProps> = [
         { to: "/saved", text: "saved", Component: <PiBookmarkSimple /> },
         { to: "/activity", text: "activity", Component: <PiClockCounterClockwise /> },
         { to: "/settings", text: "settings", Component: <PiGearSix /> },
         { to: "/signout", text: "logout", Component: <PiSignOut /> },
     ];
-
-
 
     return (
         <ListMenu menuIcon={<RiMenu3Fill />} styleProps={{ iconSize: '1.75rem', fontSize: '1.75rem', width: "12.5rem" }}>
@@ -42,9 +52,11 @@ const NavMenu = () => {
                     <CustomLink
                         key={key}
                         {...linkData}
-                        Component={<Clickable styleProps={{ padding: '1.25rem' }} text={linkData.text}>
-                            {linkData.Component}
-                        </Clickable>}
+                        Component={
+                            <Clickable styleProps={{ padding: '1.25rem' }} text={linkData.text}>
+                                {linkData.Component}
+                            </Clickable>
+                        }
                     />)
             }
             <Switch
@@ -57,7 +69,7 @@ const NavMenu = () => {
                 className={classes.themeSwitch}
             />
         </ListMenu>
-    )
+    );
 }
 
-export default NavMenu
+export default NavMenu;

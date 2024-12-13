@@ -6,11 +6,28 @@ import { ConsumerFn } from "@/types/genericTypes";
 import { toUpperFirstChar } from "@/utils/stringUtils";
 import { useState } from "react";
 
-
+/**
+ * Custom hook for managing the state and logic of an edit post form.
+ *
+ * This hook retrieves the current post data for editing, initializes the form state,
+ * and provides handlers for input changes and form submission.
+ *
+ * @param {ResId} postId - The ID of the post to be edited.
+ * @param {ConsumerFn} toggleForm - Function to toggle the visibility of the form.
+ * @returns {{
+ *     postData: PostRequest,                          // The current state of the post data for editing.
+ *     isError: boolean,                               // Indicates if there was an error fetching the post.
+ *     isLoading: boolean,                             // Indicates if the post data is currently loading.
+ *     editCurrentPost: object,                        // Object containing the mutation function for editing the post.
+ *     handleSubmit: (event: Event) => void,          // Handler for submitting the edited post.
+ *     handleChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void // Handler for input changes.
+ *     signedUser: object,                             // The signed-in user object.
+ *     avatarPlaceholder: string                       // Placeholder for the user's avatar.
+ * }} - An object containing the edit post form state and handler functions.
+ */
 const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
-
     const { data: editedPost, isLoading, isError } = useGetPostById(postId);
-    if (editedPost === undefined) throw new Error("editPost is undefined");;
+    if (editedPost === undefined) throw new Error("editedPost is undefined");
 
     const pollData: PollRequest | null = editedPost.poll ? {
         options: editedPost.poll.options.map(option => option.label),
@@ -23,7 +40,7 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
         userId: editedPost.userId,
         poll: pollData,
         viewAccess: "anyone"
-    }
+    };
 
     const [postData, setPostData] = useState<PostRequest>(requestBody);
     const editCurrentPost = useEditPost(postId, toggleForm);
@@ -54,4 +71,4 @@ const useEditPostForm = (postId: ResId, toggleForm: ConsumerFn) => {
     };
 };
 
-export default useEditPostForm
+export default useEditPostForm;

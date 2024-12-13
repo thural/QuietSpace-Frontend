@@ -18,7 +18,7 @@ export interface ActivationData {
 
 export enum AuthPages {
     LOGIN = "LOGIN",
-    SIGNNUP = "SIGNNUP",
+    SIGNUP = "SIGNUP",
     ACTIVATION = "ACTIVATION"
 }
 

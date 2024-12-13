@@ -6,6 +6,21 @@ import { StompHeaders, Headers, StompClientProps } from "@/api/schemas/native/we
 import { AnyFunction } from "@/types/genericTypes";
 import { ResId } from "@/api/schemas/native/common";
 
+/**
+ * Custom hook to manage a STOMP client using SockJS for WebSocket connections.
+ * 
+ * @param {StompClientProps} props - The STOMP client properties including callbacks.
+ * @returns {Object} - An object containing client state and methods.
+ * @returns {Client | null} client - The STOMP client instance.
+ * @returns {boolean} isConnecting - Indicates if the client is currently connecting.
+ * @returns {boolean} isError - Indicates if there was an error.
+ * @returns {Error | null} error - The error encountered, if any.
+ * @returns {function} subscribe - Function to subscribe to a destination.
+ * @returns {function} disconnect - Function to disconnect the client.
+ * @returns {function} unSubscribe - Function to unsubscribe from a destination.
+ * @returns {function} sendMessage - Function to send a message.
+ * @returns {function} subscribeWithId - Function to subscribe to a destination with a specific ID.
+ */
 export const useStompClient = ({
     onConnect,
     onSubscribe,
@@ -21,13 +36,20 @@ export const useStompClient = ({
     const [isError, setIsError] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
-
-
+    /**
+     * Create a new STOMP client.
+     * 
+     * @returns {Client} - The STOMP client instance.
+     */
     const createStompClient = useCallback((): Client => {
         return over(new SockJS('http://localhost:8080/ws'));
     }, []);
 
-
+    /**
+     * Handle errors.
+     * 
+     * @param {string} message - The error message.
+     */
     const handleError = useCallback((message: string) => {
         const errorHandler = onError || ((message: Frame | string) => console.error(message));
         setError(new Error(message));
@@ -36,7 +58,12 @@ export const useStompClient = ({
         console.log(message);
     }, [onError]);
 
-
+    /**
+     * Handle successful connection.
+     * 
+     * @param {Frame | undefined} frame - The connection frame.
+     * @param {NonNullable<StompClientProps['onConnect']>} callBackFn - The connection callback function.
+     */
     const handleConnect = useCallback((frame: Frame | undefined, callBackFn: NonNullable<StompClientProps['onConnect']>) => {
         setError(null);
         setIsError(false);
@@ -44,7 +71,12 @@ export const useStompClient = ({
         setIsConnecting(false);
     }, []);
 
-
+    /**
+     * Open a WebSocket connection.
+     * 
+     * @param {Object} params - Parameters for opening the connection.
+     * @param {StompHeaders} params.headers - Connection headers.
+     */
     const openConnection = useCallback(({
         headers = { "Authorization": "Bearer " + data?.accessToken }
     }) => {
@@ -63,7 +95,9 @@ export const useStompClient = ({
         client.connect(headers, (frame) => handleConnect(frame, connectCallback));
     }, [client, data?.accessToken, handleConnect, handleError, onConnect]);
 
-
+    /**
+     * Disconnect the STOMP client.
+     */
     const disconnect = useCallback(() => {
         if (!client) {
             console.error("client is not ready");
@@ -80,7 +114,13 @@ export const useStompClient = ({
         client.disconnect(disconnectCallback);
     }, [client, handleError, onDisconnect]);
 
-
+    /**
+     * Send a message via WebSocket.
+     * 
+     * @param {string} destination - The destination to send the message to.
+     * @param {any} body - The message body.
+     * @param {StompHeaders | Headers} [headers={}] - Optional message headers.
+     */
     const sendMessage = useCallback((destination: string, body: any, headers: StompHeaders | Headers = {}) => {
         if (!client) {
             console.error("client is not ready");
@@ -93,7 +133,12 @@ export const useStompClient = ({
         client.send(destination, headers, JSON.stringify(body));
     }, [client, handleError]);
 
-
+    /**
+     * Subscribe to a destination.
+     * 
+     * @param {string} destination - The subscription destination.
+     * @param {AnyFunction} subscribeCallback - The callback to handle messages.
+     */
     const subscribe = useCallback((destination: string, subscribeCallback: AnyFunction) => {
         if (!client) {
             console.error("client is not ready");
@@ -110,7 +155,12 @@ export const useStompClient = ({
         client.subscribe(destination, callback);
     }, [client, handleError]);
 
-
+    /**
+     * Subscribe to a destination with a specific ID.
+     * 
+     * @param {string} destination - The subscription destination.
+     * @param {ResId} subscriptionId - The unique subscription identifier.
+     */
     const subscribeWithId = useCallback((destination: string, subscriptionId: ResId) => {
         if (!client) {
             console.error("client is not ready");
@@ -127,7 +177,11 @@ export const useStompClient = ({
         client.subscribe(destination, callback, { id: subscriptionId });
     }, [client, handleError, onSubscribe]);
 
-
+    /**
+     * Unsubscribe from a destination.
+     * 
+     * @param {string} destination - The subscription destination to unsubscribe from.
+     */
     const unSubscribe = useCallback((destination: string) => {
         if (!client) {
             console.error("client is not ready");
@@ -140,8 +194,6 @@ export const useStompClient = ({
         client.unsubscribe(destination);
     }, [client, handleError]);
 
-
-
     const methods = {
         subscribe,
         disconnect,
@@ -149,8 +201,6 @@ export const useStompClient = ({
         sendMessage,
         subscribeWithId
     };
-
-
 
     useEffect(() => {
         if (!isAuthenticated) return;
@@ -181,8 +231,6 @@ export const useStompClient = ({
 
         setClientContext({ ...methods, ...recentContext });
     }, [client, methods, isConnecting, isError, error, openConnection]);
-
-
 
     return {
         client,

@@ -10,12 +10,24 @@ import FlexStyled from "@components/shared/FlexStyled";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
+/**
+ * Props for the CommentBox component, extending GenericWrapper.
+ *
+ * @interface CommentProps
+ * @extends GenericWrapper
+ * @property {CommentResponse} comment - The comment data to display.
+ */
 interface CommentProps extends GenericWrapper {
-    comment: CommentResponse
+    comment: CommentResponse;
 }
 
+/**
+ * CommentBox component that displays a comment with options to interact with it.
+ *
+ * @param {CommentProps} props - The props for the CommentBox component.
+ * @returns {JSX.Element} - The rendered comment box component.
+ */
 const CommentBox: React.FC<CommentProps> = ({ comment }) => {
-
     const classes = styles();
 
     const {
@@ -27,7 +39,12 @@ const CommentBox: React.FC<CommentProps> = ({ comment }) => {
         isLiked,
     } = useComment(comment);
 
-
+    /**
+     * CommentBody component that renders the body of the comment.
+     *
+     * @param {{ comment: CommentResponse }} props - The props for the CommentBody component.
+     * @returns {JSX.Element} - The rendered comment body.
+     */
     const CommentBody: React.FC<{ comment: CommentResponse }> = ({ comment }) => (
         <FlexStyled className={classes.commentElement}>
             <BoxStyled key={comment.id} className={classes.textBody}>
@@ -56,4 +73,4 @@ const CommentBox: React.FC<CommentProps> = ({ comment }) => {
     );
 };
 
-export default CommentBox
+export default CommentBox;

@@ -18,7 +18,11 @@ export const createTokenRefreshManager = () => {
     const refreshIntervalRef = { current: 0 };
 
     /**
-     * Stops the automatic token refresh process
+     * Stops the automatic token refresh process.
+     *
+     * This function clears the interval set for refreshing the access token
+     * and resets the interval reference to zero. It should be called when
+     * the token refresh is no longer needed.
      */
     const stopTokenAutoRefresh = (): void => {
         if (refreshIntervalRef.current) {
@@ -28,8 +32,12 @@ export const createTokenRefreshManager = () => {
     };
 
     /**
-     * Start automatic access token refresh
-     * @param options - Token refresh options
+     * Starts the automatic access token refresh process.
+     *
+     * @param {Object} options - Token refresh options.
+     * @param {number} [options.refreshInterval=540000] - The interval (in milliseconds) at which to refresh the token (default is 9 minutes).
+     * @param {(data: unknown) => void} options.onSuccessFn - Callback function to be called on successful token refresh.
+     * @param {(error: Error) => void} options.onErrorFn - Callback function to be called if an error occurs during the token refresh.
      */
     const startTokenAutoRefresh = ({
         refreshInterval = 540000,
@@ -60,8 +68,17 @@ export const createTokenRefreshManager = () => {
 };
 
 /**
- * Register a new user
- * @param options - Registration options
+ * Registers a new user.
+ *
+ * This function handles the user registration process. It attempts to register the user
+ * with the provided form data. On success, it sets the application state to prompt
+ * for account activation.
+ *
+ * @param {Object} options - Registration options.
+ * @param {(state: { page: string, formData: SignupBody }) => void} options.setAuthState - Function to update the authentication state.
+ * @param {SignupBody} options.formData - The data for user signup.
+ * @param {(error: Error) => void} options.onErrorFn - Callback function to handle errors during the registration process.
+ * @returns {Promise<void>} - A promise that resolves when the registration is complete.
  */
 export const registerUser = async ({
     setAuthState,
@@ -81,8 +98,17 @@ export const registerUser = async ({
 };
 
 /**
- * Authenticate user with login credentials
- * @param options - Authentication options
+ * Authenticates a user with login credentials.
+ *
+ * This function logs in the user using the provided credentials. On successful login,
+ * it stores the refresh token and invokes the success callback.
+ *
+ * @param {Object} options - Authentication options.
+ * @param {LoginBody} options.formData - The login credentials.
+ * @param {(data: AuthResponse) => void} options.onSuccessFn - Callback function to be called on successful login.
+ * @param {(error: Error) => void} options.onErrorFn - Callback function to handle errors during authentication.
+ * @param {() => void} options.onLoadFn - Callback function to indicate loading state.
+ * @returns {Promise<void>} - A promise that resolves when authentication is complete.
  */
 export const authenticateUser = async ({
     formData,
@@ -106,8 +132,16 @@ export const authenticateUser = async ({
 };
 
 /**
- * Retrieve a new access token using refresh token
- * @param options - Access token retrieval options
+ * Retrieves a new access token using the refresh token.
+ *
+ * This function fetches a new access token by sending the stored refresh token to the server.
+ * On success, it invokes the success callback with the new token data.
+ *
+ * @param {Object} options - Access token retrieval options.
+ * @param {(data: unknown) => void} options.onSuccessFn - Callback function to be called on successful retrieval of the access token.
+ * @param {(error: Error) => void} options.onErrorFn - Callback function to handle errors during token retrieval.
+ * @returns {Promise<void>} - A promise that resolves when the token retrieval is complete.
+ * @throws {Error} - Throws an error if no refresh token is available.
  */
 export const getAccessToken = async ({
     onSuccessFn,
@@ -131,8 +165,16 @@ export const getAccessToken = async ({
 };
 
 /**
- * Sign out the current user
- * @param options - Signout options
+ * Signs out the current user.
+ *
+ * This function logs out the user by sending a logout request to the server and clearing
+ * the stored authentication tokens. On success, it invokes the success callback.
+ *
+ * @param {Object} options - Signout options.
+ * @param {(response?: Response) => void} options.onSuccessFn - Callback function to be called on successful signout.
+ * @param {(error: Error) => void} options.onErrorFn - Callback function to handle errors during signout.
+ * @param {() => void} options.onLoadFn - Callback function to indicate loading state.
+ * @returns {Promise<void>} - A promise that resolves when signout is complete.
  */
 export const signoutUser = async ({
     onSuccessFn,
@@ -159,8 +201,17 @@ export const signoutUser = async ({
 };
 
 /**
- * Signup a new user
- * @param options - Signup options
+ * Signs up a new user.
+ *
+ * This function handles the user signup process. It sends the user's signup data to the
+ * server and invokes the appropriate callback functions based on the outcome.
+ *
+ * @param {Object} options - Signup options.
+ * @param {SignupBody} options.formData - The data for user signup.
+ * @param {() => void} options.onSuccessFn - Callback function to be called on successful signup.
+ * @param {(error: Error) => void} options.onErrorFn - Callback function to handle errors during signup.
+ * @param {() => void} options.onLoadFn - Callback function to indicate loading state.
+ * @returns {Promise<void>} - A promise that resolves when signup is complete.
  */
 export const signupUser = async ({
     formData,
@@ -183,8 +234,17 @@ export const signupUser = async ({
 };
 
 /**
- * Acitvate user
- * @param options - Activation options
+ * Activates a user account.
+ *
+ * This function sends an activation code to the server to activate a user account.
+ * On success, it invokes the success callback.
+ *
+ * @param {Object} options - Activation options.
+ * @param {string} options.code - The activation code.
+ * @param {() => void} options.onSuccessFn - Callback function to be called on successful activation.
+ * @param {(error: Error) => void} options.onErrorFn - Callback function to handle errors during activation.
+ * @param {() => void} options.onLoadFn - Callback function to indicate loading state.
+ * @returns {Promise<void>} - A promise that resolves when activation is complete.
  */
 export const activateUser = async ({
     code,

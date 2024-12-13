@@ -14,6 +14,16 @@ import {
 } from '@/utils/jwtAuthUtils';
 import { useCallback, useMemo } from 'react';
 
+/**
+ * @interface UseJwtAuthReturn
+ * @property {function} loadAccessToken - Loads and starts auto-refreshing the access token.
+ * @property {function} signup - Signs up a user with the provided form data.
+ * @property {function} acitvate - Activates a user account using a code.
+ * @property {function} signout - Signs out the current user.
+ * @property {function} authenticate - Authenticates a user with the provided form data.
+ * @property {function} register - Registers a new user and updates the authentication state.
+ */
+
 interface UseJwtAuthReturn {
     loadAccessToken: () => void;
     signup: (formData: SignupBody) => void;
@@ -34,7 +44,11 @@ const useJwtAuth = ({
         () => createTokenRefreshManager(), []
     );
 
-    // Register user and move to activation page
+    /**
+     * Registers a new user and moves to the activation page.
+     * @param {SetAuthState} setAuthState - Function to set the authentication state.
+     * @param {SignupBody} formData - The form data for signing up the user.
+     */
     const register = useCallback(async (setAuthState: SetAuthState, formData: SignupBody) => {
         await registerUser({
             setAuthState,
@@ -43,7 +57,10 @@ const useJwtAuth = ({
         });
     }, [onErrorFn]);
 
-    // Authenticate user
+    /**
+     * Authenticates a user with the provided form data.
+     * @param {LoginBody} formData - The form data for user authentication.
+     */
     const authenticate = useCallback(async (formData: LoginBody) => {
         await authenticateUser({
             formData,
@@ -53,7 +70,10 @@ const useJwtAuth = ({
         });
     }, [onSuccessFn, onErrorFn, onLoadFn]);
 
-    // Signup user
+    /**
+     * Signs up a user with the provided form data.
+     * @param {SignupBody} formData - The form data for signing up the user.
+     */
     const signup = useCallback(async (formData: SignupBody) => {
         await signupUser({
             formData,
@@ -63,7 +83,10 @@ const useJwtAuth = ({
         });
     }, [onSuccessFn, onErrorFn, onLoadFn]);
 
-    // Acivate user
+    /**
+     * Activates a user account using the provided code.
+     * @param {string} code - The activation code for the user.
+     */
     const acitvate = useCallback(async (code: string) => {
         await activateUser({
             code,
@@ -73,7 +96,9 @@ const useJwtAuth = ({
         });
     }, [onSuccessFn, onErrorFn, onLoadFn]);
 
-    // Sign out user
+    /**
+     * Signs out the current user.
+     */
     const signout = useCallback(async () => {
         // Stop token refresh before signing out
         stopTokenAutoRefresh();
@@ -85,7 +110,9 @@ const useJwtAuth = ({
         });
     }, [stopTokenAutoRefresh, onSuccessFn, onErrorFn, onLoadFn]);
 
-    // Load and start auto-refreshing access token
+    /**
+     * Loads and starts auto-refreshing the access token.
+     */
     const loadAccessToken = useCallback(() => {
         startTokenAutoRefresh({
             refreshInterval,

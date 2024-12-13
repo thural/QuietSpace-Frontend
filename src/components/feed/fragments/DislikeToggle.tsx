@@ -5,15 +5,32 @@ import {
     PiArrowFatDown, PiArrowFatDownFill
 } from "react-icons/pi";
 
-interface DisikeToggleProps {
-    userReaction: ReactionRequest
-    handleDislike: ConsumerFn
+/**
+ * Props for the DislikeToggle component.
+ * 
+ * @interface DislikeToggleProps
+ * @property {ReactionRequest} userReaction - The user's current reaction to the post.
+ * @property {ConsumerFn} handleDislike - Function to handle the dislike action.
+ */
+interface DislikeToggleProps {
+    userReaction: ReactionRequest;
+    handleDislike: ConsumerFn;
 }
 
-const DislikeToggle: React.FC<DisikeToggleProps> = ({ userReaction, handleDislike }) => (
+/**
+ * DislikeToggle component.
+ * 
+ * This component renders a toggle button for users to express a dislike reaction to a post.
+ * It shows a filled dislike icon if the user has already disliked the post, and an outlined
+ * icon if they have not. Clicking on the icon triggers the `handleDislike` function.
+ * 
+ * @param {DislikeToggleProps} props - The component props.
+ * @returns {JSX.Element} - The rendered DislikeToggle component.
+ */
+const DislikeToggle: React.FC<DislikeToggleProps> = ({ userReaction, handleDislike }) => (
     (!!userReaction && userReaction.reactionType === ReactionType.DISLIKE)
         ? <PiArrowFatDownFill className="posticon" onClick={handleDislike} />
         : <PiArrowFatDown className="posticon" onClick={handleDislike} />
 );
 
-export default DislikeToggle
+export default DislikeToggle;

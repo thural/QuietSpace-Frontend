@@ -11,16 +11,30 @@ import styles from "@/styles/feed/commentStyles";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
+/**
+ * Props for the CommentReply component.
+ *
+ * @interface CommentReplyProps
+ * @property {CommentResponse} comment - The reply comment data.
+ * @property {CommentResponse | undefined} repliedComment - The comment being replied to.
+ */
 interface CommentReplyProps {
-    comment: CommentResponse
-    repliedComment: CommentResponse | undefined
+    comment: CommentResponse;
+    repliedComment: CommentResponse | undefined;
 }
 
+/**
+ * CommentReply component that displays a reply to a comment.
+ *
+ * It fetches comment data and handles rendering the reply, along with controls for liking, replying, and deleting.
+ *
+ * @param {CommentReplyProps} props - The props for the CommentReply component.
+ * @returns {JSX.Element} - The rendered comment reply component.
+ */
 const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) => {
-
     const classes = styles(true);
 
-    let data = undefined;
+    let data;
 
     try {
         data = useComment(comment);
@@ -39,8 +53,6 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
         commentFormView,
         isLiked,
     } = data;
-
-
 
     const CommentBody = () => (
         <BoxStyled key={comment.id} className={classes.comment} style={appliedStyle}>
@@ -72,4 +84,4 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
     );
 };
 
-export default CommentReply
+export default CommentReply;

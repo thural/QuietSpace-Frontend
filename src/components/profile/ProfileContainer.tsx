@@ -16,19 +16,26 @@ import ProfileControls from "./profile-controls/ProfileControls";
 import ProfileTabs from "./tabs/ProfileTabs";
 import UserDetailsSection from "./user-details/UserDetailsSection";
 
-
+/**
+ * ProfileContainer component.
+ * 
+ * This component fetches and displays the user profile based on the user ID obtained from the URL parameters.
+ * It handles loading states, errors, and conditional rendering of various sections based on user access and data availability.
+ * 
+ * @returns {JSX.Element} - The rendered ProfileContainer component wrapped with error boundary handling.
+ */
 function ProfileContainer() {
-
-    const { userId } = useParams();
+    const { userId } = useParams(); // Get userId from URL parameters
     let data = undefined;
 
+    // Attempt to fetch user profile data
     try {
-        if (userId === undefined) throw new Error("userId is undefined");
-        data = useUserProfile(userId);
+        if (userId === undefined) throw new Error("userId is undefined"); // Ensure userId is defined
+        data = useUserProfile(userId); // Fetch user profile data
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `error loading user profile data: ${(error as Error).message}`;
-        return <ErrorComponent message={errorMessage} />;
+        return <ErrorComponent message={errorMessage} />; // Display error component if fetching fails
     }
 
     const {
@@ -46,44 +53,51 @@ function ProfileContainer() {
         toggleFollowings,
     } = data;
 
+    // Display a loader while data is being fetched
+    if (user.isLoading || userPosts.isLoading || followers.isLoading || followings.isLoading || !user.data) {
+        return <LoaderStyled />;
+    }
 
-    if (user.isLoading || userPosts.isLoading || followers.isLoading || followings.isLoading || !user.data) return <LoaderStyled />;
-
+    // Styled OutlineButton component for consistency
     const OutlineButtonStyled = ({ ...props }) => (
         <OutlineButton color="gray" fullWidth {...props} />
-    )
+    );
 
     return (
         <DefaultContainer>
-            <UserDetailsSection user={user.data} />
+            <UserDetailsSection user={user.data} /> {/* Display user details */}
             <FollowsSection
                 userId={userId}
                 postsCount={postsCount}
                 followingsCount={followingsCount}
                 followersCount={followersCount}
-                toggleFollowings={toggleFollowings}
-                toggleFollowers={toggleFollowers}
+                toggleFollowings={toggleFollowings} // Function to toggle followings view
+                toggleFollowers={toggleFollowers} // Function to toggle followers view
             />
+            {/* Overlay for followings */}
             <Overlay isOpen={viewFollowings && isHasAccess.data && !!followingsCount} onClose={toggleFollowings}>
                 <UserConnections toggleView={toggleFollowings} userFetch={followings} title="followings" />
             </Overlay>
-            <Overlay isOpen={viewFollowers && isHasAccess.data && !!followersCount} onClose={toggleFollowers}>
-                <UserConnections toggleView={toggleFollowers} userFetch={followers} title="followers" />
+            {/* Overlay for followers */}
+            <Overlay isOpen={viewFollowers && isHasAccess.data && !!followersCount} onClose={toggleFollowings}>
+                <UserConnections toggleView={toggleFollowings} userFetch={followers} title="followers" />
             </Overlay>
             <ProfileControls>
                 <FollowToggle followers={followers} Button={OutlineButtonStyled} user={user.data} />
             </ProfileControls>
+            {/* Conditionally render ProfileTabs if the user has access */}
             <Conditional isEnabled={isHasAccess.data}>
                 <ProfileTabs userId={userId} />
             </Conditional>
-            <Conditional isEnabled={!isHasAccess.data} >
-                <PrivateBlock message="this account is private" >
+            {/* Render PrivateBlock if the account is private */}
+            <Conditional isEnabled={!isHasAccess.data}>
+                <PrivateBlock message="this account is private">
                     <Typography>follow user to see their content</Typography>
                     <FollowToggle Button={OutlineButtonStyled} user={user.data} />
                 </PrivateBlock>
             </Conditional>
         </DefaultContainer>
-    )
+    );
 }
 
 export default withErrorBoundary(ProfileContainer);

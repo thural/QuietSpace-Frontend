@@ -4,11 +4,24 @@ import Conditional from "@shared/Conditional";
 import ListMenu from "@shared/ListMenu";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
+/**
+ * Props for the ChatMenu component.
+ *
+ * @interface ChatMenuProps
+ * @property {boolean} isMutable - Indicates if the chat menu can be modified.
+ * @property {ProcedureFn} handleDeleteChat - Function to handle chat deletion.
+ */
 interface ChatMenuProps {
-    isMutable: boolean
-    handleDeleteChat: ProcedureFn
+    isMutable: boolean;
+    handleDeleteChat: ProcedureFn;
 }
 
+/**
+ * ChatMenu component that provides options for managing a chat.
+ *
+ * @param {ChatMenuProps} props - The props for the ChatMenu component.
+ * @returns {JSX.Element} - The rendered chat menu component.
+ */
 const ChatMenu: React.FC<ChatMenuProps> = ({ isMutable, handleDeleteChat }) => {
 
     const handleChatMute = () => {
@@ -40,4 +53,4 @@ const ChatMenu: React.FC<ChatMenuProps> = ({ isMutable, handleDeleteChat }) => {
     )
 }
 
-export default ChatMenu
+export default ChatMenu;

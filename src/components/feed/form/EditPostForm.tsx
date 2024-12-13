@@ -13,14 +13,32 @@ import useEditPostForm from "@/services/hook/feed/useEditPostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 
+/**
+ * Props for the EditPostForm component.
+ * 
+ * @interface EditPostFormProps
+ * @extends GenericWrapper
+ * @property {ResId} postId - The ID of the post being edited.
+ * @property {ConsumerFn} toggleForm - Function to toggle the visibility of the form.
+ */
 interface EditPostFormProps extends GenericWrapper {
-  postId: ResId,
-  toggleForm: ConsumerFn
+  postId: ResId;
+  toggleForm: ConsumerFn;
 }
 
+/**
+ * EditPostForm component.
+ * 
+ * This component provides a form for users to edit an existing post.
+ * It includes fields for the post title and text, as well as controls for
+ * submitting the changes. The component handles loading and error states 
+ * during the data fetching process.
+ * 
+ * @param {EditPostFormProps} props - The component props.
+ * @returns {JSX.Element} - The rendered EditPostForm component.
+ */
 const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
-
-  let data = undefined;
+  let data;
 
   try {
     data = useEditPostForm(postId, toggleForm);
@@ -37,10 +55,8 @@ const EditPostForm: React.FC<EditPostFormProps> = ({ postId, toggleForm }) => {
     handleChange,
   } = data;
 
-
   if (isLoading) return <LoaderStyled />;
-  if (isError) return <ErrorComponent message="could not load post" />;
-
+  if (isError) return <ErrorComponent message="Could not load post" />;
 
   return (
     <ModalStyled onClick={(e: Event) => e.stopPropagation()}>

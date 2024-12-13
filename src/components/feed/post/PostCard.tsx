@@ -16,21 +16,38 @@ import PostInteractions from "../fragments/PostInteractions";
 import PostMenu from "../fragments/PostMenu";
 import { isRepost } from "@/utils/typeUtils";
 
-
+/**
+ * Props for the PostCard component.
+ * 
+ * @interface PostCardProps
+ * @extends GenericWrapper
+ * @property {PostResponse} post - The post data object containing details of the post.
+ * @property {boolean} [isBaseCard] - Flag to indicate if the card is a base card.
+ * @property {boolean} [isMenuHidden] - Flag to control visibility of the post menu.
+ */
 export interface PostCardProps extends GenericWrapper {
-    post: PostResponse
-    isBaseCard?: boolean
-    isMenuHidden?: boolean
+    post: PostResponse;
+    isBaseCard?: boolean;
+    isMenuHidden?: boolean;
 }
 
-
+/**
+ * PostCard component.
+ * 
+ * This component renders a card for displaying a post, including its content, header,
+ * interactions, and various forms for editing, commenting, reposting, and sharing.
+ * It handles error states when retrieving post data and manages the visibility of overlays
+ * for different forms.
+ * 
+ * @param {PostCardProps} props - The component props.
+ * @returns {JSX.Element} - The rendered PostCard component.
+ */
 const PostCard: React.FC<PostCardProps> = ({
     post,
     isBaseCard = false,
     isMenuHidden = false,
     children
 }) => {
-
     const classes = styles();
     const postId = post.id;
     let postData = undefined;
@@ -56,9 +73,8 @@ const PostCard: React.FC<PostCardProps> = ({
         handleNavigation,
     } = postData;
 
-
     return (
-        <BoxStyled id={postId} className={classes.postCard} onClick={handleNavigation} >
+        <BoxStyled id={postId} className={classes.postCard} onClick={handleNavigation}>
             <PostHeader post={post}>
                 <Conditional isEnabled={!isMenuHidden}>
                     <PostMenu
@@ -71,7 +87,7 @@ const PostCard: React.FC<PostCardProps> = ({
             </PostHeader>
             <PostContent post={post} handleContentClick={handleNavigation} />
             <Conditional isEnabled={!isBaseCard}>
-                <PostInteractions{...postData} post={post} />
+                <PostInteractions {...postData} post={post} />
             </Conditional>
             <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
                 <EditPostForm postId={postId} toggleForm={toggleEditForm} />

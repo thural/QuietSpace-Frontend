@@ -6,13 +6,31 @@ import { useDeleteComment } from "@/services/data/useCommentData";
 import useReaction from "@/services/hook/feed/useReaction";
 import { useState } from "react";
 
+/**
+ * Custom hook for managing comment-related actions and state.
+ *
+ * This hook provides functionality to handle reactions, delete comments, 
+ * and manage the visibility of the comment reply form for a given comment.
+ *
+ * @param {CommentResponse} comment - The comment object to manage.
+ * @returns {{
+ *     user: object,                     // The signed-in user object.
+ *     isOwner: boolean,                 // Indicates if the current user is the comment owner.
+ *     appliedStyle: object,             // Styles to apply if the user is the owner.
+ *     commentFormView: boolean,         // State indicating if the comment form is visible.
+ *     toggleCommentForm: (e: React.MouseEvent) => void, // Function to toggle the comment form visibility.
+ *     handleDeleteComment: () => void,  // Function to delete the comment.
+ *     handleLikeToggle: (event: Event) => void,       // Function to toggle the like reaction.
+ *     isLiked: boolean                   // Indicates if the comment is liked by the user.
+ * }} - An object containing comment management functionalities.
+ */
 const useComment = (comment: CommentResponse) => {
-
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
     const deleteComment = useDeleteComment();
 
     const handleReaction = useReaction(comment.id);
+
     const handleLikeToggle = (event: Event) => {
         event.preventDefault();
         handleReaction(ContentType.COMMENT, ReactionType.LIKE);
@@ -23,6 +41,7 @@ const useComment = (comment: CommentResponse) => {
     };
 
     const [commentFormView, setCommentFormView] = useState(false);
+
     const toggleCommentForm = (e: React.MouseEvent) => {
         e.stopPropagation();
         setCommentFormView(!commentFormView);
@@ -36,8 +55,6 @@ const useComment = (comment: CommentResponse) => {
         marginLeft: 'auto'
     } : {};
 
-
-
     return {
         user,
         isOwner,
@@ -50,4 +67,4 @@ const useComment = (comment: CommentResponse) => {
     };
 };
 
-export default useComment
+export default useComment;

@@ -7,14 +7,29 @@ import EmojiInput from "@shared/EmojiInput";
 import FlexStyled from "@shared/FlexStyled";
 import FormStyled from "@shared/FormStyled";
 
-interface CommentReplyForm {
-    postId: ResId
-    parentId: ResId
-    toggleView: ConsumerFn
+/**
+ * Props for the CommentReplyForm component.
+ *
+ * @interface CommentReplyFormProps
+ * @property {ResId} postId - The ID of the post to which the reply is being made.
+ * @property {ResId} parentId - The ID of the parent comment being replied to.
+ * @property {ConsumerFn} toggleView - Function to toggle the visibility of the reply form.
+ */
+interface CommentReplyFormProps {
+    postId: ResId;
+    parentId: ResId;
+    toggleView: ConsumerFn;
 }
 
-const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggleView }) => {
-
+/**
+ * CommentReplyForm component that allows users to input and submit a reply to a comment.
+ *
+ * This component uses the `useReplyForm` hook to manage the reply input state and submission logic.
+ *
+ * @param {CommentReplyFormProps} props - The props for the CommentReplyForm component.
+ * @returns {JSX.Element} - The rendered reply form component.
+ */
+const CommentReplyForm: React.FC<CommentReplyFormProps> = ({ postId, parentId, toggleView }) => {
     const classes = styles();
 
     const {
@@ -27,7 +42,7 @@ const CommentReplyForm: React.FC<CommentReplyForm> = ({ postId, parentId, toggle
     } = useReplyForm(postId, parentId, toggleView);
 
     return (
-        <FlexStyled className={classes.wrapper} >
+        <FlexStyled className={classes.wrapper}>
             <UserAvatarPhoto userId={user.id} />
             <FormStyled className={classes.inputWrapper}>
                 <EmojiInput

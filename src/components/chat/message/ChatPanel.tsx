@@ -12,11 +12,15 @@ import { validateIsNotUndefined } from "@/utils/validations";
 import { PiChatsCircle } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 
+/**
+ * ChatPanel component that handles displaying and sending messages in a chat.
+ *
+ * @returns {JSX.Element} - The rendered chat panel component.
+ */
 const ChatPanel = () => {
-
     const classes = styles();
     const { chatId } = useParams();
-    let data = undefined;
+    let data;
 
     try {
         const { chatId: validatedChatId } = validateIsNotUndefined({ chatId });
@@ -46,11 +50,14 @@ const ChatPanel = () => {
         isInputEnabled,
     } = data;
 
-
-
-    if (isError) throw new Error("(!) unhandler error on chat service");
+    if (isError) throw new Error("(!) unhandled error on chat service");
     if (!chats.data?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
 
+    /**
+     * Renders the appropriate result based on the current chat state.
+     *
+     * @returns {JSX.Element} - The rendered messages list or a loading/error message.
+     */
     const RenderResult = () => {
         if (isLoading || !messageList) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
         if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
@@ -63,7 +70,6 @@ const ChatPanel = () => {
             messages={messageList}
         />
     }
-
 
     return (
         <BoxStyled className={classes.chatboard}>

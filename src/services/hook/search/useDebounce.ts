@@ -8,7 +8,7 @@ import { useCallback, useRef } from "react";
  * @returns {Function} - The debounced function.
  */
 const useDebounce = (func: Function, wait: number) => {
-    const timeoutRef = useRef<number | undefined>();
+    const timeoutRef = useRef<number | undefined>(undefined);
 
     const debouncedFunc = useCallback((...args: [any]) => {
         if (timeoutRef.current) {

@@ -17,10 +17,10 @@ export interface ExtendedClient extends Client {
 }
 
 /**
- * Create a new STOMP client
+ * Creates a new STOMP client.
  * 
- * @param {string} [wsUrl='http://localhost:8080/ws'] - WebSocket URL
- * @returns {ExtendedClient} - The created STOMP client
+ * @param {string} [wsUrl='http://localhost:8080/ws'] - The WebSocket URL to connect to.
+ * @returns {ExtendedClient} - The created STOMP client.
  */
 export const createStompClient = (wsUrl: string = 'http://localhost:8080/ws'): ExtendedClient => {
     const socket = new SockJS(wsUrl);
@@ -28,11 +28,11 @@ export const createStompClient = (wsUrl: string = 'http://localhost:8080/ws'): E
 };
 
 /**
- * Handle STOMP client errors
+ * Handles errors that occur in the STOMP client.
  * 
- * @param {string | Frame} errorMessage - The error message or frame
- * @param {ErrorCallback} [errorHandler] - Optional custom error handler
- * @returns {Error} - The created Error object
+ * @param {string | Frame} errorMessage - The error message or frame to process.
+ * @param {ErrorCallback} [errorHandler] - Optional custom error handler function.
+ * @returns {Error} - The created Error object.
  */
 export const handleStompError = (
     errorMessage: string | Frame,
@@ -52,14 +52,14 @@ export const handleStompError = (
 };
 
 /**
- * Open a STOMP connection
+ * Opens a STOMP connection.
  * 
- * @param {ExtendedClient} client - The STOMP client
- * @param {object} options - Connection options
- * @param {StompHeaders} [options.headers] - Connection headers
- * @param {ConnectCallback} [options.onConnect] - Connection success callback
- * @param {ErrorCallback} [options.onError] - Connection error callback
- * @returns {Promise<Frame>} - A promise that resolves when connection is established
+ * @param {ExtendedClient} client - The STOMP client to use for the connection.
+ * @param {object} options - Connection options.
+ * @param {StompHeaders} [options.headers] - Optional connection headers.
+ * @param {ConnectCallback} [options.onConnect] - Callback executed on successful connection.
+ * @param {ErrorCallback} [options.onError] - Callback executed on connection error.
+ * @returns {Promise<Frame>} - A promise that resolves with the Frame upon successful connection.
  */
 export const openStompConnection = (
     client: ExtendedClient,
@@ -107,12 +107,13 @@ export const openStompConnection = (
 };
 
 /**
- * Send a message via STOMP
+ * Sends a message using STOMP.
  * 
- * @param {ExtendedClient} client - The STOMP client
- * @param {string} destination - Message destination
- * @param {any} body - Message body
- * @param {Headers | StompHeaders} [headers={}] - Message headers
+ * @param {ExtendedClient} client - The STOMP client used to send the message.
+ * @param {string} destination - The destination to send the message to.
+ * @param {any} body - The body of the message being sent.
+ * @param {Headers | StompHeaders} [headers={}] - Optional message headers.
+ * @throws {Error} If the client is not connected.
  */
 export const sendStompMessage = (
     client: ExtendedClient,
@@ -127,14 +128,15 @@ export const sendStompMessage = (
 };
 
 /**
- * Subscribe to a STOMP destination
+ * Subscribes to a STOMP destination.
  * 
- * @param {ExtendedClient} client - The STOMP client
- * @param {string} destination - Subscription destination
- * @param {SubscribeCallback} [callback] - Message receive callback
- * @param {object} [options] - Subscription options
- * @param {ResId} [options.id] - Optional subscription ID
- * @returns {any} - The subscription object
+ * @param {ExtendedClient} client - The STOMP client used to subscribe.
+ * @param {string} destination - The destination to subscribe to.
+ * @param {SubscribeCallback} [callback] - Optional callback for received messages.
+ * @param {object} [options] - Optional subscription options.
+ * @param {ResId} [options.id] - Optional subscription ID.
+ * @returns {any} - The subscription object.
+ * @throws {Error} If the client is not ready.
  */
 export const subscribeToDestination = (
     client: ExtendedClient,
@@ -158,10 +160,11 @@ export const subscribeToDestination = (
 };
 
 /**
- * Disconnect from STOMP
+ * Disconnects the STOMP client.
  * 
- * @param {ExtendedClient} client - The STOMP client
- * @param {DisconnectCallback} [callback] - Disconnect callback
+ * @param {ExtendedClient} client - The STOMP client to disconnect.
+ * @param {DisconnectCallback} [callback] - Optional callback executed on disconnect.
+ * @throws {Error} If the client is already disconnected.
  */
 export const disconnectStompClient = (
     client: ExtendedClient,
@@ -178,10 +181,10 @@ export const disconnectStompClient = (
 };
 
 /**
- * Set auto-reconnect for STOMP client
+ * Sets auto-reconnect functionality for the STOMP client.
  * 
- * @param {ExtendedClient} client - The STOMP client
- * @param {number} [delay=5000] - Reconnection delay in milliseconds
+ * @param {ExtendedClient} client - The STOMP client to configure.
+ * @param {number} [delay=5000] - Reconnection delay in milliseconds.
  */
 export const setStompAutoReconnect = (
     client: ExtendedClient,

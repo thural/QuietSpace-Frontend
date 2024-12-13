@@ -14,17 +14,25 @@ import PassInput from "@components/shared/PassInput";
 import Typography from "@components/shared/Typography";
 import React from "react";
 
+/**
+ * SignupForm component for user registration.
+ *
+ * @param {SignupFormProps} props - The props for the SignupForm component.
+ * @param {function} props.setAuthState - Function to set the authentication state.
+ * @param {object} props.authState - The current authentication state.
+ * @returns {JSX.Element} - The rendered signup form component.
+ */
 const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
 
-    let data = undefined;
+    let data;
 
     try {
         data = useSignupForm(setAuthState, authState);
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = `error on acitvation form: ${(error as Error).message}`;
+        const errorMessage = `error on signup form: ${(error as Error).message}`;
         return <ErrorComponent message={errorMessage} />;
     }
 
@@ -55,7 +63,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
                 </InputBoxStyled>
             </FormStyled>
             <GradientButton onClick={handleSubmit} />
-            <Typography type="h4">already have account?</Typography>
+            <Typography type="h4">already have an account?</Typography>
             <OutlineButton onClick={handleLoginClick} name="login" />
         </BoxStyled>
     );

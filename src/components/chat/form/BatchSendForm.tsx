@@ -17,27 +17,33 @@ import styles from "@/styles/profile/connectionStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 import { assertIsNotNullish } from "@/utils/assertions";
 import { Center } from "@mantine/core";
-import React, { memo, useMemo, useCallback } from 'react';
+import React from 'react';
 
+/**
+ * Props for the BatchShareForm component.
+ *
+ * @interface BatchShareFormProps
+ * @property {ResId} postId - The ID of the post to share.
+ * @property {ConsumerFn} toggleForm - Function to toggle the visibility of the form.
+ */
 interface BatchShareFormProps {
-    postId: ResId
-    toggleForm: ConsumerFn
+    postId: ResId;
+    toggleForm: ConsumerFn;
 }
 
+/**
+ * BatchShareForm component for sharing a post with multiple users.
+ *
+ * @param {BatchShareFormProps} props - The props for the BatchShareForm component.
+ * @returns {JSX.Element} - The rendered batch share form component.
+ */
 const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) => {
     const classes = styles();
 
-    const errorCheck = useMemo(() => {
-        try {
-            assertIsNotNullish({ postId });
-            return null;
-        } catch (error) {
-            return error as Error;
-        }
-    }, [postId]);
-
-    if (errorCheck) {
-        return <ErrorComponent message={errorCheck.message} />;
+    try {
+        assertIsNotNullish({ postId });
+    } catch (error) {
+        return <ErrorComponent message={(error as Error).message} />;
     }
 
     const searchData = useSearch();
@@ -58,16 +64,21 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
         handleSend
     } = formData;
 
-
-    const SelectableUserItem = useCallback(({ data }: { data: UserResponse }) => (
+    /**
+     * Renders a selectable user item component.
+     *
+     * @param {{ data: UserResponse }} props - The props for the SelectableUserItem component.
+     * @returns {JSX.Element} - The rendered user query item.
+     */
+    const SelectableUserItem = ({ data }: { data: UserResponse }) => (
         <UserQueryItem hasFollowToggle={false} data={data}>
             <CheckBox value={data.id} onChange={handleUserSelect} />
         </UserQueryItem>
-    ), [handleUserSelect]);
+    );
 
-    const handleContainerClick = useCallback((e: React.MouseEvent) => {
+    const handleContainerClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-    }, []);
+    }
 
     if (fetchUserQuery.isPending) return <LoaderStyled />;
 

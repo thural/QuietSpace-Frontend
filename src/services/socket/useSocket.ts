@@ -48,11 +48,17 @@ const logger = {
     }
 };
 
+/**
+ * Custom hook to manage WebSocket connections using SockJS and STOMP.
+ * 
+ * @returns {SocketHookReturn} - An object containing WebSocket management methods.
+ */
 export const useSocket = (): SocketHookReturn => {
     /**
-     * Create a new SockJS WebSocket client
-     * @param url - WebSocket server URL
-     * @returns Stomp client instance
+     * Create a new SockJS WebSocket client.
+     * 
+     * @param {string} [url='http://localhost:8080/ws'] - WebSocket server URL.
+     * @returns {Client} - STOMP client instance.
      */
     const createClient = useCallback((url: string = 'http://localhost:8080/ws'): Client => {
         try {
@@ -65,9 +71,10 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Handle connection success
-     * @param frame - Connection frame
-     * @param callback - Optional callback function
+     * Handle connection success.
+     * 
+     * @param {Frame | undefined} frame - Connection frame.
+     * @param {ConnectCallback} [callback] - Optional callback function.
      */
     const onConnect = useCallback((frame: Frame | undefined, callback?: ConnectCallback) => {
         logger.log('Connected to WebSocket', frame);
@@ -75,9 +82,10 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Handle connection errors
-     * @param error - Connection error
-     * @param callback - Optional error callback function
+     * Handle connection errors.
+     * 
+     * @param {Frame | string} error - Connection error.
+     * @param {ErrorCallback} [callback] - Optional error callback function.
      */
     const onError = useCallback((error: Frame | string, callback?: ErrorCallback) => {
         logger.error('WebSocket connection error', error);
@@ -85,11 +93,12 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Open a WebSocket connection
-     * @param client - Stomp client
-     * @param headers - Connection headers
-     * @param onConnectCallback - Optional connection success callback
-     * @param onErrorCallback - Optional error callback
+     * Open a WebSocket connection.
+     * 
+     * @param {Client} client - STOMP client.
+     * @param {StompHeaders} headers - Connection headers.
+     * @param {ConnectCallback} [onConnectCallback] - Optional connection success callback.
+     * @param {ErrorCallback} [onErrorCallback] - Optional error callback.
      */
     const openConnection = useCallback((
         client: Client,
@@ -112,9 +121,10 @@ export const useSocket = (): SocketHookReturn => {
     }, [onConnect, onError]);
 
     /**
-     * Disconnect from WebSocket
-     * @param client - Stomp client
-     * @param onDisconnectCallback - Optional disconnect callback
+     * Disconnect from WebSocket.
+     * 
+     * @param {Client} client - STOMP client.
+     * @param {AnyFunction} [onDisconnectCallback] - Optional disconnect callback.
      */
     const disconnect = useCallback((
         client: Client,
@@ -134,11 +144,12 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Send a message via WebSocket
-     * @param client - Stomp client
-     * @param destination - Message destination
-     * @param body - Message body
-     * @param headers - Optional message headers
+     * Send a message via WebSocket.
+     * 
+     * @param {Client} client - STOMP client.
+     * @param {string} destination - Message destination.
+     * @param {unknown} body - Message body.
+     * @param {StompHeaders | Headers} [headers={}] - Optional message headers.
      */
     const sendMessage = useCallback((
         client: Client,
@@ -156,10 +167,11 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Subscribe to a WebSocket destination
-     * @param client - Stomp client
-     * @param destination - Subscription destination
-     * @param callback - Message handling callback
+     * Subscribe to a WebSocket destination.
+     * 
+     * @param {Client} client - STOMP client.
+     * @param {string} destination - Subscription destination.
+     * @param {function} callback - Message handling callback.
      */
     const subscribe = useCallback((
         client: Client,
@@ -183,11 +195,12 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Subscribe to a WebSocket destination with a specific ID
-     * @param client - Stomp client
-     * @param destination - Subscription destination
-     * @param callback - Message handling callback
-     * @param subscriptionId - Unique subscription identifier
+     * Subscribe to a WebSocket destination with a specific ID.
+     * 
+     * @param {Client} client - STOMP client.
+     * @param {string} destination - Subscription destination.
+     * @param {function} callback - Message handling callback.
+     * @param {string} subscriptionId - Unique subscription identifier.
      */
     const subscribeWithId = useCallback((
         client: Client,
@@ -216,9 +229,10 @@ export const useSocket = (): SocketHookReturn => {
     }, []);
 
     /**
-     * Unsubscribe from a WebSocket destination
-     * @param client - Stomp client
-     * @param subscriptionId - Subscription identifier to unsubscribe
+     * Unsubscribe from a WebSocket destination.
+     * 
+     * @param {Client} client - STOMP client.
+     * @param {string} subscriptionId - Subscription identifier to unsubscribe.
      */
     const unsubscribe = useCallback((
         client: Client,

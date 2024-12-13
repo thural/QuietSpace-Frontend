@@ -8,11 +8,15 @@ import { GenericWrapper } from "@/types/sharedComponentTypes";
 import LoaderStyled from "../shared/LoaderStyled";
 import ChatSidebar from "./sidebar/ChatSidebar";
 
+/**
+ * ChatContainer component that wraps chat-related components and manages chat data fetching.
+ *
+ * @param {GenericWrapper} props - The props for the ChatContainer component.
+ * @returns {JSX.Element} - The rendered chat container component.
+ */
 const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
-
     const classes = styles();
-
-    let data = undefined;
+    let data;
 
     const { getSignedUserElseThrow } = useUserQueries();
 
@@ -27,7 +31,6 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
     const { data: chats, isLoading, isError } = data;
 
-
     if (isLoading) return <LoaderStyled />;
     if (isError || chats === undefined) return <ErrorComponent message='could not fetch chat data!' />;
 
@@ -36,7 +39,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
             <ChatSidebar chats={chats} className={classes.contacts} />
             {children}
         </DefaultContainer>
-    )
+    );
 }
 
 export default withErrorBoundary(ChatContainer);

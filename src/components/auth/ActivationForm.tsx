@@ -1,6 +1,5 @@
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import { useActivationForm } from "@/services/hook/auth/useActivationForm";
-import { CountDownDisplay } from "@/services/hook/common/useTimer";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/activationFormStyles";
 import { ActivationFormProps } from "@/types/authTypes";
@@ -11,19 +10,20 @@ import FormStyled from "@components/shared/FormStyled";
 import Typography from "@components/shared/Typography";
 import { PinInput } from "@mantine/core";
 import React from "react";
+import CountdownTimer from "../shared/CountdownTimer";
 
-const Timer = ({ tokenTimer }: { tokenTimer: CountDownDisplay }) => (
-    <FormStyled className="timer">
-        {!tokenTimer.hasTimeOut ? <Typography>{"code will be expired in:"}</Typography>
-            : <Typography>{"code has expired, get a new code"}</Typography>}
-        {!tokenTimer.hasTimeOut && tokenTimer.component}
-    </FormStyled>
-);
-
+/**
+ * ActivationForm component for user account activation.
+ *
+ * @param {ActivationFormProps} props - The props for the ActivationForm component.
+ * @param {function} props.setAuthState - Function to set the authentication state.
+ * @param {object} props.authState - The current authentication state.
+ * @returns {JSX.Element} - The rendered component.
+ */
 const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState }) => {
 
     const classes = styles();
-    let data = undefined;
+    let data;
 
     try {
         data = useActivationForm({ setAuthState, authState });
@@ -35,7 +35,6 @@ const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState
 
     const {
         formData,
-        tokenTimer,
         handleResendCode,
         handleSubmit,
         handleChange,
@@ -54,7 +53,7 @@ const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState
                     value={formData.activationCode}
                     onChange={handleChange}
                 />
-                <Timer tokenTimer={tokenTimer} />
+                <CountdownTimer period={60000} timeUpMessage="code has expired, get a new code" />
                 <GradientButton onClick={handleSubmit} />
             </FormStyled>
             <Typography size="md">haven't received a code?</Typography>

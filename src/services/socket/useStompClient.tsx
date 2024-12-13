@@ -21,10 +21,13 @@ import {
 } from "@/api/schemas/native/websocket";
 import { ResId } from "@/api/schemas/native/common";
 import { UseStompClientReturn } from '@/types/stompStoreTypes';
-import { Frame } from 'stompjs'; // Add explicit import for Frame
+import { Frame } from 'stompjs';
 
 /**
  * Custom hook to handle STOMP client connection and operations.
+ *
+ * This hook manages the STOMP client for WebSocket communications, handling 
+ * connection, subscription, message sending, and error management.
  *
  * @param {StompClientProps} props - The callbacks for various STOMP client events.
  * @returns {UseStompClientReturn} - An object with the client and connection states and methods.
@@ -48,6 +51,8 @@ export const useStompClient = ({
     /**
      * Handle errors and update state.
      *
+     * This function processes error messages and updates the error state.
+     *
      * @param {string | Frame} errorMessage - The error message or frame.
      * @returns {Error} - The created Error object.
      */
@@ -56,7 +61,7 @@ export const useStompClient = ({
             errorMessage,
             onError || ((msg) => {
                 console.error(msg);
-                return undefined; // Explicitly return undefined to match ErrorCallback
+                return undefined;
             })
         );
 
@@ -69,14 +74,17 @@ export const useStompClient = ({
     /**
      * Open a connection with authentication headers.
      *
+     * This function establishes a STOMP connection using the provided headers,
+     * including authentication tokens.
+     *
      * @param {object} [params] - The parameters including headers.
      * @param {StompHeaders} [params.headers] - The connection headers.
      */
     const openConnection = useCallback(
         ({ headers = {
             Authorization: `Bearer ${data?.accessToken}`,
-            login: '', // Add required empty login 
-            passcode: '' // Add required empty passcode
+            login: '',
+            passcode: ''
         } } = {}) => {
             if (!stompClient) {
                 return handleError("Client is not ready");
@@ -96,7 +104,7 @@ export const useStompClient = ({
                 },
                 onError: (error) => {
                     handleError(error);
-                    return undefined; // Explicitly return undefined
+                    return undefined;
                 }
             });
         },
@@ -105,6 +113,8 @@ export const useStompClient = ({
 
     /**
      * Disconnect the STOMP client.
+     *
+     * This function safely disconnects the STOMP client and updates the connection state.
      */
     const disconnect = useCallback(() => {
         if (!isClientConnected) {
@@ -278,3 +288,5 @@ export const useStompClient = ({
         setAutoReconnect
     };
 };
+
+export default useStompClient;

@@ -15,12 +15,28 @@ import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
 import PollForm from "./PollForm";
 
+/**
+ * Props for the CreatePostForm component.
+ * 
+ * @interface CreatePostFormProps
+ * @extends GenericWrapper
+ * @property {ConsumerFn} toggleForm - Function to toggle the visibility of the form.
+ */
 export interface CreatePostFormProps extends GenericWrapper {
-    toggleForm: ConsumerFn
+    toggleForm: ConsumerFn;
 }
 
+/**
+ * CreatePostForm component.
+ * 
+ * This component provides a form for users to create a new post. It includes 
+ * fields for the post title, text, image upload, and polling options. The 
+ * component manages user input and submits the post upon completion.
+ * 
+ * @param {CreatePostFormProps} props - The component props.
+ * @returns {JSX.Element} - The rendered CreatePostForm component.
+ */
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
-
     const {
         postData,
         pollView,
@@ -33,7 +49,6 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
         addPost,
         viewAccessOptions,
     } = useCreatePostForm(toggleForm);
-
 
     return (
         <ModalStyled>

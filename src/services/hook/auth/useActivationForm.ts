@@ -1,14 +1,14 @@
 import { fetchResendCode } from "@/api/requests/authRequests";
-import { displayCountdown } from "@/services/hook/common/useTimer";
 import { ActivationFormProps, AuthPages } from "@/types/authTypes";
 import { useState } from "react";
+import { useTimer } from "../common/useTimer";
 import useJwtAuth from "./useJwtAuth";
 
 export const useActivationForm = ({ setAuthState, authState }: ActivationFormProps) => {
 
     const activationNotice = (message: string) => alert(message);
     const [formData, setFormData] = useState({ activationCode: "" });
-    const tokenTimer = displayCountdown(15 * 60 * 1000, "code has expired");
+    const tokenTimer = useTimer(15 * 60 * 1000);
 
     const onSuccessFn = () => {
         console.log("account activation success");

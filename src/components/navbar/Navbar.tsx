@@ -24,17 +24,26 @@ import { useLocation } from "react-router-dom";
 import NavItem, { NavItemProps } from "./base/NavItem";
 import NavMenu from "./menu/NavMenu";
 
-
-
-
+/**
+ * NavBar component.
+ * 
+ * This component represents the navigation bar of the application, 
+ * consisting of links to various sections such as the feed, search, 
+ * notifications, profile, and chat. It includes icons for each link 
+ * that change based on the current pathname. The navbar also displays 
+ * badges for unread notifications and chats.
+ * 
+ * @returns {JSX.Element} - The rendered NavBar component containing 
+ *                          navigation items and menus.
+ */
 const NavBar = () => {
-
   const classes = styles();
   const pathName = useLocation().pathname;
 
   let data = undefined;
 
   try {
+    // Fetch notification data using a custom hook
     data = useNotification();
   } catch (error: unknown) {
     console.error(error);
@@ -44,8 +53,7 @@ const NavBar = () => {
 
   const { hasPendingNotification, hasUnreadChat } = data;
 
-
-
+  // Define navigation items with their properties
   const itemList: Array<NavItemProps> = [
     {
       linkTo: "/feed",
@@ -61,28 +69,27 @@ const NavBar = () => {
     },
   ];
 
+  // Define additional navigation items for chat, profile, and notifications
   const notification = {
     linkTo: "/notification/all",
     pathName: pathName,
     icon: <PiBell />,
     iconFill: <PiBellFill />
-  }
+  };
 
   const profile = {
     linkTo: "/profile",
     pathName: pathName,
     icon: <PiUser />,
     iconFill: <PiUserFill />
-  }
+  };
 
   const chat = {
     linkTo: "/chat",
     pathName: pathName,
     icon: <PiChatCircle />,
     iconFill: <PiChatCircleFill />
-  }
-
-
+  };
 
   return (
     <BoxStyled className={classes.navbar}>
