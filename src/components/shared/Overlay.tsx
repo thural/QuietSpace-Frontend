@@ -8,19 +8,19 @@ interface OverlayProps extends GenericWrapper {
 }
 
 const Overlay: React.FC<OverlayProps> = ({ isOpen = false, onClose = () => { }, children }) => {
+  const classes = styles();
+
   if (!isOpen) return null;
   if (!onClose) throw new Error("onClose handler is not provided");
 
-  const classes = styles();
-
   return (
-    <>
+    <div className={classes.overlayWrapper}>
       <div className={classes.overlay} onClick={onClose} />
       <div className={classes.overlayContent}>
         <button className={classes.closeButton} onClick={onClose}>X</button>
         {children}
       </div>
-    </>
+    </div>
   );
 };
 

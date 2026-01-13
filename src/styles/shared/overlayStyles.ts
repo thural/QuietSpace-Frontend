@@ -1,6 +1,14 @@
 import { createUseStyles, Theme } from "react-jss"
 
 const styles = createUseStyles((theme: Theme) => ({
+    overlayWrapper: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 3,
+    },
 
     overlay: {
         top: '0',
