@@ -1,20 +1,9 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import BatchShareForm from "@/components/chat/form/BatchSendForm";
-import BoxStyled from "@/components/shared/BoxStyled";
-import Conditional from "@/components/shared/Conditional";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import Overlay from "@/components/shared/Overlay";
 import { usePost } from "@/services/hook/feed/usePost";
-import styles from "@/styles/feed/postStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import CreateCommentForm from "../form/CreateCommentForm";
-import CreateRepostForm from "../form/CreateRepostForm";
-import EditPostForm from "../form/EditPostForm";
-import PostContent from "../fragments/PostContent";
-import PostHeader from "../fragments/PostHeader";
-import PostInteractions from "../fragments/PostInteractions";
-import PostMenu from "../fragments/PostMenu";
 import { isRepost } from "@/utils/typeUtils";
+import PostCardView from "./PostCardView";
 
 /**
  * Props for the PostCard component.
@@ -42,16 +31,8 @@ export interface PostCardProps extends GenericWrapper {
  * @param {PostCardProps} props - The component props.
  * @returns {JSX.Element} - The rendered PostCard component.
  */
-const PostCard: React.FC<PostCardProps> = ({
-    post,
-    isBaseCard = false,
-    isMenuHidden = false,
-    children
-}) => {
-    const classes = styles();
-    const postId = post.id;
+const PostCard: React.FC<PostCardProps> = ({ post, isBaseCard = false, isMenuHidden = false, children }) => {
     let postData = undefined;
-
     try {
         if (isRepost(post)) throw new TypeError("object is not post");
         postData = usePost(post);
@@ -59,54 +40,9 @@ const PostCard: React.FC<PostCardProps> = ({
         return <ErrorComponent message={(error as Error).message} />;
     }
 
-    const {
-        shareFormview,
-        isMutable,
-        isOverlayOpen,
-        commentFormView,
-        repostFormView,
-        handleDeletePost,
-        toggleShareForm,
-        toggleRepostForm,
-        toggleEditForm,
-        toggleCommentForm,
-        handleNavigation,
-    } = postData;
-
-    return (
-        <BoxStyled id={postId} className={classes.postCard} onClick={handleNavigation}>
-            <PostHeader post={post}>
-                <Conditional isEnabled={!isMenuHidden}>
-                    <PostMenu
-                        postId={post.id}
-                        handleDeletePost={handleDeletePost}
-                        toggleEditForm={toggleEditForm}
-                        isMutable={isMutable}
-                    />
-                </Conditional>
-            </PostHeader>
-            <PostContent post={post} handleContentClick={handleNavigation} />
-            <Conditional isEnabled={!isBaseCard}>
-                <PostInteractions {...postData} post={post} />
-            </Conditional>
-            <Overlay onClose={toggleEditForm} isOpen={isOverlayOpen}>
-                <EditPostForm postId={postId} toggleForm={toggleEditForm} />
-            </Overlay>
-            <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
-                <CreateCommentForm handleClose={toggleCommentForm} postItem={post} />
-            </Overlay>
-            <Overlay onClose={toggleRepostForm} isOpen={repostFormView}>
-                <CreateRepostForm toggleForm={toggleRepostForm} post={post} />
-            </Overlay>
-            <Overlay onClose={toggleShareForm} isOpen={shareFormview}>
-                <BatchShareForm toggleForm={toggleShareForm} postId={post.id} />
-            </Overlay>
-            <Conditional isEnabled={!!children}>
-                <CreateCommentForm handleClose={toggleCommentForm} postItem={post} isSecondaryMode={true} />
-            </Conditional>
-            {children}
-        </BoxStyled>
-    );
+    return <PostCardView post={post} isBaseCard={isBaseCard} isMenuHidden={isMenuHidden} postData={postData}>
+        {children}
+    </PostCardView>;
 };
 
 export default PostCard;

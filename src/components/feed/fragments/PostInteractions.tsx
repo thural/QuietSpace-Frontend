@@ -1,11 +1,9 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import FlexStyled from "@/components/shared/FlexStyled";
 import { ConsumerFn } from "@/types/genericTypes";
-import CommentToggle from "./CommentToggle";
-import DislikeToggle from "./DislikeToggle";
-import LikeToggle from "./LikeToggle";
 import PostStats from "./PostStats";
-import ShareMenu from "./ShareMenu";
+import ReactionGroup from "./ReactionGroup";
+import InteractionActions from "./InteractionActions";
 import useStyles from "@/styles/feed/postInteractionStyles";
 
 /**
@@ -56,10 +54,8 @@ const PostInteractions: React.FC<PostInteractionsProps> = ({
 
     return (
         <FlexStyled className={classes.statsSection}>
-            <LikeToggle userReaction={post?.userReaction} handleLike={handleLike} />
-            <DislikeToggle userReaction={post?.userReaction} handleDislike={handleDislike} />
-            <CommentToggle hasCommented={hasCommented} toggleForm={toggleCommentForm} />
-            <ShareMenu handleShareClick={toggleShareForm} handleRepostClick={toggleRepostForm} />
+            <ReactionGroup userReaction={post?.userReaction} handleLike={handleLike} handleDislike={handleDislike} />
+            <InteractionActions hasCommented={hasCommented} toggleCommentForm={toggleCommentForm} toggleShareForm={toggleShareForm} toggleRepostForm={toggleRepostForm} />
             <PostStats post={post} commentCount={commentCount} />
         </FlexStyled>
     );
