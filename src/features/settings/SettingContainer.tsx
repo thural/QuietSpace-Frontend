@@ -6,10 +6,10 @@ import Typography from "@components/shared/Typography";
 import { Tabs, Text } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-import TextInput from "../feed/fragments/TextInput";
-import BoxStyled from "../shared/BoxStyled";
-import ErrorComponent from "../shared/errors/ErrorComponent";
-import SwitchStyled from "../shared/SwitchStyled";
+import TextInput from "@/features/feed/fragments/TextInput";
+import BoxStyled from "@/components/shared/BoxStyled";
+import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import SwitchStyled from "@/components/shared/SwitchStyled";
 import ProfilePhotoModifier from "./ProfilePhotoModifier";
 import SettingsPanel from "./SettingsPanel";
 
