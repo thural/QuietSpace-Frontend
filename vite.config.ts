@@ -12,7 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@components': path.resolve(__dirname, './src/components'),
-      '@shared': path.resolve(__dirname, './src/components/shared'),
+      '@shared': path.resolve(__dirname, './src/shared'),
       '@utils': path.resolve(__dirname, './src/utils'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@': path.resolve(__dirname, './src'),
