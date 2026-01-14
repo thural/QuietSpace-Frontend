@@ -1,5 +1,5 @@
 import { UserResponse } from "@/api/schemas/inferred/user";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
 import useChatQuery from "@/services/hook/chat/useChatQuery";
 import styles from "@/styles/chat/chatQueryStyles";
 import AnchorStyled from "@shared/AnchorStyled";

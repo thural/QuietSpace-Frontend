@@ -1,5 +1,5 @@
 import { ResId } from "@/api/schemas/inferred/common";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useReplyForm from "@/services/hook/feed/useReplyForm";
 import styles from "@/styles/feed/commentReplyFormStyles";
 import { ConsumerFn } from "@/types/genericTypes";

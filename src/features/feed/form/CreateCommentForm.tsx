@@ -1,7 +1,7 @@
 import { CommentResponse } from "@/api/schemas/inferred/comment";
 import { PostResponse } from "@/api/schemas/inferred/post";
-import ModalStyled from "@/components/shared/ModalStyled";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import ModalStyled from "@/shared/ModalStyled";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useCreateCommentForm from "@/services/hook/feed/useCreateCommentForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

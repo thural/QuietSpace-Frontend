@@ -2,9 +2,9 @@ import { ResId } from "@/api/schemas/native/common";
 import PostCard from "@/features/feed/post/PostCard";
 import PostReplyCard from "@/features/feed/post/PostReplyCard";
 import RepostCard from "@/features/feed/repost/RepostCard";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import InfinateScrollContainer from "@/components/shared/InfinateScrollContainer";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
+import LoaderStyled from "@/shared/LoaderStyled";
 import { useGetPostsByUserId, useGetRepliedPostsByUserId, useGetSavedPostsByUserId } from "@/services/data/usePostData";
 
 /**

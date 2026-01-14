@@ -1,5 +1,5 @@
 import { ChatResponse } from "@/api/schemas/inferred/chat";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import styles from "@/styles/chat/chatCardStyles";
 import useChatCard from "@/styles/chat/useChatCard";
 import BoxStyled from "@shared/BoxStyled";

@@ -1,7 +1,7 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import BatchShareForm from "@/features/chat/form/BatchSendForm";
-import BoxStyled from "@/components/shared/BoxStyled";
-import Conditional from "@/components/shared/Conditional";
+import BoxStyled from "@/shared/BoxStyled";
+import Conditional from "@/shared/Conditional";
 import styles from "@/styles/feed/postStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import PostOverlays from "./PostOverlays";

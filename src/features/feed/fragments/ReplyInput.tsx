@@ -1,9 +1,9 @@
 import { ResId } from "@/api/schemas/inferred/common";
-import Conditional from "@/components/shared/Conditional";
-import EmojiInput from "@/components/shared/EmojiInput";
-import FlexStyled from "@/components/shared/FlexStyled";
-import FormStyled from "@/components/shared/FormStyled";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import Conditional from "@/shared/Conditional";
+import EmojiInput from "@/shared/EmojiInput";
+import FlexStyled from "@/shared/FlexStyled";
+import FormStyled from "@/shared/FormStyled";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
 import { RefObject } from "react";

@@ -8,7 +8,7 @@ import './styles/App.css';
 
 import { darkTheme, lightTheme } from "@/theme";
 import { AuthResponse } from "./api/schemas/inferred/auth";
-import LoaderStyled from "./components/shared/LoaderStyled";
+import LoaderStyled from "./shared/LoaderStyled";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
 import { useGetChats } from "./services/data/useChatData";

@@ -1,5 +1,5 @@
 import { ResId } from "@/api/schemas/native/common";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import styles from "@/styles/chat/chatHeadlineStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 import FlexStyled from "@shared/FlexStyled";

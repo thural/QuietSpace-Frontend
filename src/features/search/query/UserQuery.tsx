@@ -1,6 +1,6 @@
 import { UserList, UserPage } from "@/api/schemas/inferred/user";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import LoaderStyled from "@/shared/LoaderStyled";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import BoxStyled from "@components/shared/BoxStyled";
 import UserQueryItem from "@components/shared/UserQueryItem";

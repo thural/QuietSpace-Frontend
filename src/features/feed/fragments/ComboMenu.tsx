@@ -1,6 +1,6 @@
-import BoxStyled from "@/components/shared/BoxStyled";
-import Clickable from "@/components/shared/Clickable";
-import ListMenu from "@/components/shared/ListMenu";
+import BoxStyled from "@/shared/BoxStyled";
+import Clickable from "@/shared/Clickable";
+import ListMenu from "@/shared/ListMenu";
 import { ConsumerFn } from "@/types/genericTypes";
 
 /**

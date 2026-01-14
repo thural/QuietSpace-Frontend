@@ -1,10 +1,10 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import BoxStyled from "@/components/shared/BoxStyled";
-import Conditional from "@/components/shared/Conditional";
-import Typography from "@/components/shared/Typography";
+import BoxStyled from "@/shared/BoxStyled";
+import Conditional from "@/shared/Conditional";
+import Typography from "@/shared/Typography";
 import { ConsumerFn } from "@/types/genericTypes";
 import PollBox from "../poll/Poll";
-import PhotoDisplay from "@/components/shared/PhotoDisplay";
+import PhotoDisplay from "@/shared/PhotoDisplay";
 
 /**
  * Props for the PostContent component.

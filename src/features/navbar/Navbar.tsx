@@ -1,5 +1,5 @@
-import ComponentList from "@/components/shared/ComponentList";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import ComponentList from "@/shared/ComponentList";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
 import useNotification from "@/services/hook/navbar/useNotification";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/navbar/navbarStyles";

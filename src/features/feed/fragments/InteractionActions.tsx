@@ -1,7 +1,7 @@
 import CommentToggle from "./CommentToggle";
 import ShareMenu from "./ShareMenu";
 import { ConsumerFn } from "@/types/genericTypes";
-import FlexStyled from "@/components/shared/FlexStyled";
+import FlexStyled from "@/shared/FlexStyled";
 
 interface InteractionActionsProps {
     hasCommented: boolean;

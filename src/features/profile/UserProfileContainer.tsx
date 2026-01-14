@@ -1,13 +1,13 @@
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import Overlay from "@/components/shared/Overlay";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import Overlay from "@/shared/Overlay";
 import { useCurrentProfile } from "@/services/hook/profile/useUserProfile";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import OutlineButton from "@components/shared/buttons/OutlineButton";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import { PiSignOut } from "react-icons/pi";
 import { Link } from "react-router-dom";
-import BoxStyled from "@/components/shared/BoxStyled";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import BoxStyled from "@/shared/BoxStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
 import UserConnections from "./connections/UserConnections";
 import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";

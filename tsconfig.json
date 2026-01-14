@@ -29,7 +29,7 @@
         "src/components/*"
       ],
       "@shared/*": [
-        "src/components/shared/*"
+        "src/shared/*"
       ],
       "@hooks/*": [
         "src/hooks/*" // Updated path to match common conventions

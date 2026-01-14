@@ -1,7 +1,7 @@
 import styles from "@/styles/notification/notificationCardStyles";
 import { useEffect } from "react";
 
-import UserCard from "@/components/shared/UserCard";
+import UserCard from "@/shared/UserCard";
 import useWasSeen from "@/services/hook/common/useWasSeen";
 import { useNotificationStore } from "@/services/store/zustand";
 import { NotificationCardProps } from "@/types/notificationTypes";

@@ -1,6 +1,6 @@
-import Clickable from "@/components/shared/Clickable";
-import ListMenu from "@/components/shared/ListMenu";
-import CustomLink, { CustomLinkProps } from "@/components/shared/routes/CustomLink";
+import Clickable from "@/shared/Clickable";
+import ListMenu from "@/shared/ListMenu";
+import CustomLink, { CustomLinkProps } from "@/shared/routes/CustomLink";
 import useTheme from "@/services/hook/shared/useTheme";
 import { Switch } from "@mantine/core";
 import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiMoon, PiSignOut, PiSun } from "react-icons/pi";

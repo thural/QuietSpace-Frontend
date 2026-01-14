@@ -1,4 +1,4 @@
-import FlexStyled from "@/components/shared/FlexStyled";
+import FlexStyled from "@/shared/FlexStyled";
 import styles from "@/styles/profile/profileControlsStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 

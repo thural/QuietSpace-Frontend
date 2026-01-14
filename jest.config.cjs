@@ -18,7 +18,7 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@components/(.*)$': '<rootDir>/src/components/$1',
-        '^@shared/(.*)$': '<rootDir>/src/components/shared/$1',
+        '^@shared/(.*)$': '<rootDir>/src/shared/$1',
         '^stompjs$': '<rootDir>/src/__mocks__/stompjs.ts',
         '^sockjs-client$': '<rootDir>/test/mocks/sockjs-client.js',
         // Handle CSS and other asset imports

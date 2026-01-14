@@ -1,5 +1,5 @@
 import { ReactionRequest } from "@/api/schemas/inferred/reaction";
-import FlexStyled from "@/components/shared/FlexStyled";
+import FlexStyled from "@/shared/FlexStyled";
 import LikeToggle from "./LikeToggle";
 import DislikeToggle from "./DislikeToggle";
 import { ConsumerFn } from "@/types/genericTypes";

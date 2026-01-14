@@ -1,4 +1,4 @@
-import DefaultContainer from "@/components/shared/DefaultContainer";
+import DefaultContainer from "@/shared/DefaultContainer";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { useParams } from "react-router-dom";

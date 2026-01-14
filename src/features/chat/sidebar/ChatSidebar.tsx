@@ -1,6 +1,6 @@
 import { ChatResponse } from "@/api/schemas/inferred/chat";
-import BoxStyled from "@/components/shared/BoxStyled";
-import Typography from "@/components/shared/Typography";
+import BoxStyled from "@/shared/BoxStyled";
+import Typography from "@/shared/Typography";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/chat/chatSidebarStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

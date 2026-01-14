@@ -1,10 +1,10 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import BoxStyled from "@/components/shared/BoxStyled";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import FlexStyled from "@/components/shared/FlexStyled";
-import PostSkeleton from "@/components/shared/PostSkeleton";
-import Typography from "@/components/shared/Typography";
-import UserDetails from "@/components/shared/UserDetails";
+import BoxStyled from "@/shared/BoxStyled";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import FlexStyled from "@/shared/FlexStyled";
+import PostSkeleton from "@/shared/PostSkeleton";
+import Typography from "@/shared/Typography";
+import UserDetails from "@/shared/UserDetails";
 import { useGetUserById } from "@/services/data/useUserData";
 import { useRepost } from "@/services/hook/feed/useRepost";
 import styles from "@/styles/feed/repostCardStyles";

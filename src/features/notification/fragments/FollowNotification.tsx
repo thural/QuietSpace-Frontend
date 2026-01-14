@@ -1,9 +1,9 @@
-import FollowToggle from "@/components/shared/FollowToggle";
+import FollowToggle from "@/shared/FollowToggle";
 import { useGetUserById } from "@/services/data/useUserData";
 import { NotificationItemProps } from "@/types/notificationTypes";
 import { useNavigate } from "react-router-dom";
 import NotificationCard from "../base/NotificationCard";
-import NotificationSkeleton from "@/components/shared/NotificationSkeleton";
+import NotificationSkeleton from "@/shared/NotificationSkeleton";
 
 /**
  * FollowNotification component.

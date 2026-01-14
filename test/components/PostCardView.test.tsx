@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import PostCardView from '@/features/feed/post/PostCardView';
 
-jest.mock('@/components/shared/BoxStyled', () => ({
+jest.mock('@/shared/BoxStyled', () => ({
     __esModule: true,
     default: (props: any) => React.createElement('div', { 'data-testid': 'box', ...props }, props.children)
 }));

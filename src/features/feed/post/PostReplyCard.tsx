@@ -1,8 +1,8 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { ResId } from "@/api/schemas/native/common";
 import PostCard from "@/features/feed/post/PostCard";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import PostSkeleton from "@/components/shared/PostSkeleton";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import PostSkeleton from "@/shared/PostSkeleton";
 import { useGetLatestComment } from "@/services/data/useCommentData";
 import { useGetUserById } from "@/services/data/useUserData";
 import CommentBox from "../comment/Comment";

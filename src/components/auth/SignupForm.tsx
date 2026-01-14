@@ -1,6 +1,6 @@
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import InputBoxStyled from "@/components/shared/InputBoxStyled";
-import TextInputStyled from "@/components/shared/TextInputStyled";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import InputBoxStyled from "@/shared/InputBoxStyled";
+import TextInputStyled from "@/shared/TextInputStyled";
 import { useSignupForm } from "@/services/hook/auth/useSignupForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/formStyles";

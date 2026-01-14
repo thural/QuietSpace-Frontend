@@ -1,11 +1,11 @@
 import useUserQueries from "@/api/queries/userQueries";
-import DefaultContainer from "@/components/shared/DefaultContainer";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import DefaultContainer from "@/shared/DefaultContainer";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { useGetChats } from "@/services/data/useChatData";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/chat/chatContainerStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
 import ChatSidebar from "./sidebar/ChatSidebar";
 
 /**

@@ -1,9 +1,9 @@
 import { UserResponse } from "@/api/schemas/inferred/user";
-import BoxStyled from "@/components/shared/BoxStyled";
-import FlexStyled from "@/components/shared/FlexStyled";
-import InputStyled from "@/components/shared/InputStyled";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
-import LightButton from "@/components/shared/buttons/LightButton";
+import BoxStyled from "@/shared/BoxStyled";
+import FlexStyled from "@/shared/FlexStyled";
+import InputStyled from "@/shared/InputStyled";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
+import LightButton from "@/shared/buttons/LightButton";
 import { ProcedureFn } from "@/types/genericTypes";
 
 /**

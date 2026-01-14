@@ -1,5 +1,5 @@
-import Clickable from "@/components/shared/Clickable";
-import ListMenu, { MenuListStyleProps } from "@/components/shared/ListMenu";
+import Clickable from "@/shared/Clickable";
+import ListMenu, { MenuListStyleProps } from "@/shared/ListMenu";
 import { ConsumerFn } from "@/types/genericTypes";
 import { useState } from "react";
 import { PiArrowsClockwise, PiPaperPlaneTilt, PiShareFat } from "react-icons/pi";

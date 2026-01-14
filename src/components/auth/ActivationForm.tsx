@@ -1,4 +1,4 @@
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { useActivationForm } from "@/services/hook/auth/useActivationForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/activationFormStyles";

@@ -1,7 +1,7 @@
 import { MessageResponse } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/native/common";
 import PostMessageCard from "@/features/feed/post/PostMessageCard";
-import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/components/shared/InfinateScrollContainer";
+import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/shared/InfinateScrollContainer";
 import styles from "@/styles/chat/messageListStyles";
 import { extractId } from "@/utils/stringUtils";
 import BoxStyled from "@shared/BoxStyled";

@@ -1,5 +1,5 @@
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import Overlay from "@/components/shared/Overlay";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import Overlay from "@/shared/Overlay";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import OutlineButton from "@components/shared/buttons/OutlineButton";
 import Conditional from "@components/shared/Conditional";
@@ -8,8 +8,8 @@ import FollowToggle from "@components/shared/FollowToggle";
 import Typography from "@components/shared/Typography";
 import { useParams } from "react-router-dom";
 import useUserProfile from "@/services/hook/profile/useUserProfile";
-import LoaderStyled from "@/components/shared/LoaderStyled";
-import PrivateBlock from "@/components/shared/PrivateBlock";
+import LoaderStyled from "@/shared/LoaderStyled";
+import PrivateBlock from "@/shared/PrivateBlock";
 import UserConnections from "./connections/UserConnections";
 import FollowsSection from "./follow-section/FollowSection";
 import ProfileControls from "./profile-controls/ProfileControls";

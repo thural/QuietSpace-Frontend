@@ -1,9 +1,9 @@
-import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
-import Conditional from "@/components/shared/Conditional";
-import FormStyled from "@/components/shared/FormStyled";
-import ModalStyled from "@/components/shared/ModalStyled";
-import Typography from "@/components/shared/Typography";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import CloseButtonStyled from "@/shared/CloseButtonStyled";
+import Conditional from "@/shared/Conditional";
+import FormStyled from "@/shared/FormStyled";
+import ModalStyled from "@/shared/ModalStyled";
+import Typography from "@/shared/Typography";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useCreatePostForm from "@/services/hook/feed/useCreatePostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

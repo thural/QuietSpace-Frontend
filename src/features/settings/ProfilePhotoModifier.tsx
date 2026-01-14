@@ -3,16 +3,16 @@ import { useUploadProfilePhoto } from "@/services/data/useUserData";
 import useStyles from "@/styles/settings/profileModifierStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { ChangeEvent, useState } from "react";
-import BaseCard from "@/components/shared/BaseCard";
-import BoxStyled from "@/components/shared/BoxStyled";
-import LightButton from "@/components/shared/buttons/LightButton";
-import Clickable from "@/components/shared/Clickable";
-import HiddenFileInput from "@/components/shared/HiddenFileInput";
-import LoaderStyled from "@/components/shared/LoaderStyled";
-import ModalStyled from "@/components/shared/ModalStyled";
-import Overlay from "@/components/shared/Overlay";
-import Typography from "@/components/shared/Typography";
-import UserCard from "@/components/shared/UserCard";
+import BaseCard from "@/shared/BaseCard";
+import BoxStyled from "@/shared/BoxStyled";
+import LightButton from "@/shared/buttons/LightButton";
+import Clickable from "@/shared/Clickable";
+import HiddenFileInput from "@/shared/HiddenFileInput";
+import LoaderStyled from "@/shared/LoaderStyled";
+import ModalStyled from "@/shared/ModalStyled";
+import Overlay from "@/shared/Overlay";
+import Typography from "@/shared/Typography";
+import UserCard from "@/shared/UserCard";
 
 /**
  * ProfilePhotoModifier component.

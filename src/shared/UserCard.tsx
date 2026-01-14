@@ -1,7 +1,7 @@
 import styles from "@/styles/chat/userCardStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { ResId } from "@/api/schemas/native/common";
-import BoxStyled from "@/components/shared/BoxStyled";
+import BoxStyled from "@/shared/BoxStyled";
 import { useGetCurrentUser, useGetUserById } from "@/services/data/useUserData";
 import { LoadingOverlay } from "@mantine/core";
 import FlexStyled from "@shared/FlexStyled";

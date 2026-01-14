@@ -1,7 +1,7 @@
 import { ResId } from "@/api/schemas/native/common";
-import BoxStyled from "@/components/shared/BoxStyled";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import PostMessageSkeleton from "@/components/shared/PostMessageSkeleton";
+import BoxStyled from "@/shared/BoxStyled";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import PostMessageSkeleton from "@/shared/PostMessageSkeleton";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { useGetPostById } from "@/services/data/usePostData";
 import PostCardBase from "./PostCardBase";

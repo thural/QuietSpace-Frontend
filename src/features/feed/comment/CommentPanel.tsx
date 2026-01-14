@@ -1,7 +1,7 @@
 import { ResId } from "@/api/schemas/native/common";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import FlexStyled from "@/components/shared/FlexStyled";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import FlexStyled from "@/shared/FlexStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
 import { useGetComments } from "@/services/data/useCommentData";
 import styles from "@/styles/feed/commentPanelStyles";
 import CommentBox from "./Comment";

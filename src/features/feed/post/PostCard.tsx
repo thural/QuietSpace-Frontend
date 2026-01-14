@@ -1,5 +1,5 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { usePost } from "@/services/hook/feed/usePost";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { isRepost } from "@/utils/typeUtils";

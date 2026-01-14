@@ -1,4 +1,4 @@
-import FullLoadingOverlay from "@/components/shared/FullLoadingOverlay";
+import FullLoadingOverlay from "@/shared/FullLoadingOverlay";
 
 const LoadingFallback = () => <FullLoadingOverlay />;
 

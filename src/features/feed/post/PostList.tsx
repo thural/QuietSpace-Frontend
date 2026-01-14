@@ -1,5 +1,5 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import PostSkeleton from "@/components/shared/PostSkeleton";
+import PostSkeleton from "@/shared/PostSkeleton";
 import usePlaceholderCount from "@/services/hook/shared/usePlaceholderCount";
 import { useIsFetching } from "@tanstack/react-query";
 import RepostCard from "../repost/RepostCard";

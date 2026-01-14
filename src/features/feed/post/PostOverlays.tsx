@@ -1,7 +1,7 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import BatchShareForm from "@/features/chat/form/BatchSendForm";
-import Conditional from "@/components/shared/Conditional";
-import Overlay from "@/components/shared/Overlay";
+import Conditional from "@/shared/Conditional";
+import Overlay from "@/shared/Overlay";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CreateRepostForm from "../form/CreateRepostForm";
 import EditPostForm from "../form/EditPostForm";

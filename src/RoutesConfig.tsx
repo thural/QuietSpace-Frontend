@@ -17,7 +17,7 @@ const NotificationList = lazy(() => import("./features/notification/list/Notific
 const SettingsPage = lazy(() => import("./pages/settings/SettingsPage"));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const SignoutPage = lazy(() => import("./pages/auth/signout/SignoutPage"));
-const ErrorComponent = lazy(() => import("./components/shared/errors/ErrorComponent"));
+const ErrorComponent = lazy(() => import("./shared/errors/ErrorComponent"));
 
 const RoutesConfig = () => (
     <Routes>

@@ -1,9 +1,9 @@
 import { ResId } from "@/api/schemas/inferred/common";
-import FormStyled from "@/components/shared/FormStyled";
-import ModalStyled from "@/components/shared/ModalStyled";
-import TextAreaStyled from "@/components/shared/TextAreaStyled";
-import Typography from "@/components/shared/Typography";
-import DarkButton from "@/components/shared/buttons/DarkButton";
+import FormStyled from "@/shared/FormStyled";
+import ModalStyled from "@/shared/ModalStyled";
+import TextAreaStyled from "@/shared/TextAreaStyled";
+import Typography from "@/shared/Typography";
+import DarkButton from "@/shared/buttons/DarkButton";
 import useEditCommentForm from "@/services/hook/feed/useEditCommentForm";
 
 /**

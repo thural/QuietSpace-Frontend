@@ -1,5 +1,5 @@
-import BoxStyled from "@/components/shared/BoxStyled";
-import InputStyled from "@/components/shared/InputStyled";
+import BoxStyled from "@/shared/BoxStyled";
+import InputStyled from "@/shared/InputStyled";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import styles from "@/styles/search/searchBarStyles";
 import { ChangeEventHandler, FocusEventHandler, useRef } from "react";

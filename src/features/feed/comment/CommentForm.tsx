@@ -1,7 +1,7 @@
 import useStyles from "@/styles/feed/commentFormStyles";
 import useCommentForm from "@/services/hook/feed/useCommentForm";
-import FormStyled from "@/components/shared/FormStyled";
-import EmojiInput from "@/components/shared/EmojiInput";
+import FormStyled from "@/shared/FormStyled";
+import EmojiInput from "@/shared/EmojiInput";
 import { ResId } from "@/api/schemas/inferred/common";
 
 /**

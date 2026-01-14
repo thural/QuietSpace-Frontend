@@ -1,5 +1,5 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import FlexStyled from "@/components/shared/FlexStyled";
+import FlexStyled from "@/shared/FlexStyled";
 import { ConsumerFn } from "@/types/genericTypes";
 import PostStats from "./PostStats";
 import ReactionGroup from "./ReactionGroup";

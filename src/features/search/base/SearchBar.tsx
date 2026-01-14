@@ -1,4 +1,4 @@
-import InputStyled from "@/components/shared/InputStyled";
+import InputStyled from "@/shared/InputStyled";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
 import { Box } from "@mantine/core";
 import { ChangeEventHandler, CSSProperties, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';

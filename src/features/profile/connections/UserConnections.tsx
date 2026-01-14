@@ -2,10 +2,10 @@ import { Center } from "@mantine/core";
 import React from "react";
 
 import { UserPage, UserResponse } from "@/api/schemas/inferred/user";
-import BoxStyled from "@/components/shared/BoxStyled";
-import LoaderStyled from "@/components/shared/LoaderStyled";
-import Typography from "@/components/shared/Typography";
-import UserQueryItem from "@/components/shared/UserQueryItem";
+import BoxStyled from "@/shared/BoxStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
+import Typography from "@/shared/Typography";
+import UserQueryItem from "@/shared/UserQueryItem";
 import useUserConnection from "@/services/hook/profile/useUserConnection";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/profile/connectionStyles";

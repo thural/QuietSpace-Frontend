@@ -1,6 +1,6 @@
 import { CommentResponse } from "@/api/schemas/inferred/comment";
-import Overlay from "@/components/shared/Overlay";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import Overlay from "@/shared/Overlay";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
 import styles from "@/styles/feed/commentStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

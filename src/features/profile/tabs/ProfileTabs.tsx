@@ -1,6 +1,6 @@
 import { ResId } from "@/api/schemas/native/common";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import Typography from "@/components/shared/Typography";
+import Typography from "@/shared/Typography";
 import { Tabs } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiClockClockwise } from "react-icons/pi";
 import UserPostList from "../list/UserPostList";

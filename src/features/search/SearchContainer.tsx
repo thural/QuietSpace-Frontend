@@ -1,4 +1,4 @@
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import DefaultContainer from "@components/shared/DefaultContainer";
 import SearchBar from "./base/SearchBar";

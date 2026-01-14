@@ -1,6 +1,6 @@
 import { ResId } from "@/api/schemas/native/common";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import PostSkeleton from "@/components/shared/PostSkeleton";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import PostSkeleton from "@/shared/PostSkeleton";
 import { useGetPostById } from "@/services/data/usePostData";
 import PostCard from "./PostCard";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

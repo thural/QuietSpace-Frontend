@@ -1,8 +1,8 @@
-import Typography from "@/components/shared/Typography";
+import Typography from "@/shared/Typography";
 import { ProcedureFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import FormStyled from "@/components/shared/FormStyled";
-import LightButton from "@/components/shared/buttons/LightButton";
+import FormStyled from "@/shared/FormStyled";
+import LightButton from "@/shared/buttons/LightButton";
 
 /**
  * SettingsPanelProps interface.

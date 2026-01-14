@@ -1,5 +1,5 @@
-import FlexStyled from "@/components/shared/FlexStyled";
-import PrivateBlock, { PrivateBlockProps } from "@/components/shared/PrivateBlock";
+import FlexStyled from "@/shared/FlexStyled";
+import PrivateBlock, { PrivateBlockProps } from "@/shared/PrivateBlock";
 import styles from "@/styles/chat/chatPlaceholderStyles";
 import { JSXElementConstructor } from "react";
 

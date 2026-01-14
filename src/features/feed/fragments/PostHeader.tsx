@@ -1,7 +1,7 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import FlexStyled from "@/components/shared/FlexStyled";
-import Typography from "@/components/shared/Typography";
-import UserCard from "@/components/shared/UserCard";
+import FlexStyled from "@/shared/FlexStyled";
+import Typography from "@/shared/Typography";
+import UserCard from "@/shared/UserCard";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 
 /**

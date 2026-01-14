@@ -1,4 +1,4 @@
-import TextAreaStyled from "@/components/shared/TextAreaStyled";
+import TextAreaStyled from "@/shared/TextAreaStyled";
 import useStyles from "@/styles/feed/textInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 

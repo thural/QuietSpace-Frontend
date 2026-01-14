@@ -1,7 +1,7 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import FormStyled from "@/components/shared/FormStyled";
-import ModalStyled from "@/components/shared/ModalStyled";
-import UserAvatarPhoto from "@/components/shared/UserAvatarPhoto";
+import FormStyled from "@/shared/FormStyled";
+import ModalStyled from "@/shared/ModalStyled";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useCreateRepostForm from "@/services/hook/feed/useCreateRepostForm";
 import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";

@@ -1,4 +1,4 @@
-import { MenuListStyleProps } from "@/components/shared/ListMenu";
+import { MenuListStyleProps } from "@/shared/ListMenu";
 import { createUseStyles, Theme } from "react-jss";
 
 // TODO: decouple and reuse by components

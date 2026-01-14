@@ -1,9 +1,9 @@
 import { ResId } from "@/api/schemas/inferred/common";
 import { PollResponse } from "@/api/schemas/inferred/post";
-import Conditional from "@/components/shared/Conditional";
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
-import FlexStyled from "@/components/shared/FlexStyled";
-import Typography from "@/components/shared/Typography";
+import Conditional from "@/shared/Conditional";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
+import FlexStyled from "@/shared/FlexStyled";
+import Typography from "@/shared/Typography";
 import usePoll from "@/services/hook/feed/usePoll";
 import styles from "@/styles/feed/pollStyles";
 import { isDateExpired } from "@/utils/dateUtils";

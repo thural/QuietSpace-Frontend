@@ -1,4 +1,4 @@
-import ErrorComponent from "@/components/shared/errors/ErrorComponent";
+import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
@@ -6,7 +6,7 @@ import DefaultContainer from "@components/shared/DefaultContainer";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoaderStyled from "@/components/shared/LoaderStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
 
 /**
  * NotificationContainer component.

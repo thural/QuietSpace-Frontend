@@ -20,7 +20,7 @@ jest.mock('@/features/feed/fragments/ShareMenu', () => ({
 }));
 
 // Mock ListMenu which relies on theme values and jss; provide a simple stub
-jest.mock('@/components/shared/ListMenu', () => ({
+jest.mock('@/shared/ListMenu', () => ({
     __esModule: true,
     default: (props: any) => <div data-testid="listmenu">menu</div>
 }));
