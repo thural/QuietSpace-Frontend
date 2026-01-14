@@ -23,7 +23,8 @@ import PostNotification from "../fragments/PostNotification";
  */
 const NotificationList: React.FC = () => {
     // Retrieve the category from URL parameters
-    const { category }: { category: Category } = useParams();
+    const params = useParams();
+    const category = params.category as Category | undefined;
 
     // Fetch notifications data with pagination
     const { data: pagedData, isFetchingNextPage, hasNextPage, fetchNextPage } = useGetNotifications();
@@ -50,7 +51,7 @@ const NotificationList: React.FC = () => {
      * @param {NotificationResponse} notification - The notification object.
      * @returns {JSX.Element|null} - The rendered notification card or null if no match.
      */
-    const getNotificationCard = (notification: NotificationResponse): JSX.Element | null => {
+    const getNotificationCard = (notification: NotificationResponse): React.ReactElement | null => {
         const { type, id } = notification;
 
         // Destructure notification types for easier access

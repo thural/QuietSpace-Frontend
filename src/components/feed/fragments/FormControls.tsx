@@ -1,5 +1,5 @@
 
-import DarkButton from "@/components/shared/buttons/DarkButton ";
+import DarkButton from "@/components/shared/buttons/DarkButton";
 import FlexStyled from "@/components/shared/FlexStyled";
 import useStyles from "@/styles/feed/formControlStyles";
 import { ConsumerFn } from "@/types/genericTypes";

@@ -1,4 +1,4 @@
-import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "../../constants/apiPath";
+import { ACTIVATE_ACCOUNT, LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN, RESEND_CODE, SIGNUP_URL } from "@/constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest } from "../schemas/inferred/auth";
 import { JwtToken } from "../schemas/inferred/common";

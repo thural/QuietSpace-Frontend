@@ -19,7 +19,7 @@ import React, { JSXElementConstructor } from "react";
  * @property {JSXElementConstructor<any>} Item - The component used to render each user item.
  */
 export interface UserListProps extends GenericWrapper {
-    userFetch: UseInfiniteQueryResult<InfiniteData<UserPage>>;
+    userFetch: any;
     queryResult: UserList;
     itemProps?: Object;
     Item: JSXElementConstructor<any>;

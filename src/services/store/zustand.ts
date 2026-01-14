@@ -31,7 +31,7 @@ export const useNotificationStore = create<NotificationStoreProps>(set => ({
     isLoading: false,
     isError: false,
     error: null,
-    setClientMethods: (methods: Record<string, Function>) => set({ clientMethods: methods }),
+    setClientMethods: (methods: Record<string, any>) => set({ clientMethods: methods }),
     setIsLoading: (value: boolean) => set({ isLoading: value }),
     setIsError: (value: boolean) => set({ isError: value }),
     setError: (value: Error) => set({ error: value })

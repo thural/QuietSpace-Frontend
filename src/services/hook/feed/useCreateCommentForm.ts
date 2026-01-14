@@ -52,7 +52,7 @@ const useCreateCommentForm = (postItem: PostResponse | CommentResponse, handleCl
         setCommentData({ ...commentData, text: inputText });
     };
 
-    const addComment = usePostComment(postItem.id, handleClose);
+    const addComment = usePostComment({ postId: postItem.id, handleClose });
     const handleSubmit = () => addComment.mutate(commentData);
 
     const userAvatarPlaceholder = toUpperFirstChar(signedUser.username);

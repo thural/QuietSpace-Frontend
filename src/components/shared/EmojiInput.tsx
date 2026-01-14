@@ -61,7 +61,8 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
                 background={"transparent"}
                 onEnter={onEnter}
                 theme={"auto"}
-                enabled={isEnabled}
+                shouldReturn={true}
+                shouldConvertEmojiToImage={false}
                 {...props}
             />
         </BoxStyled>

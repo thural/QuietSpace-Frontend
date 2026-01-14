@@ -3,7 +3,7 @@ import { BaseSchema, ResId } from "@/api/schemas/native/common";
 import { AnyPredicate } from "@/types/genericTypes";
 import { InfiniteData } from "@tanstack/react-query";
 
-export interface HasId { id: ResId }
+export interface HasId { id?: ResId }
 
 type PagePredicate = <T extends HasId>(page: Page<T>, entityId: ResId) => boolean;
 

@@ -54,7 +54,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
         return `${normalizedSize}rem`;
     })();
 
-    const heading: headingSize = `h${size}`; // Determine heading type
+    const heading = `h${size}` as headingSize; // Determine heading type
 
     return (
         <BoxStyled key={user.id} className={classes.userDetails}>

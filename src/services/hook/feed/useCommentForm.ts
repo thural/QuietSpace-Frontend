@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "react";
 const useCommentForm = (postId: ResId, onClose?: ConsumerFn) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const signedUser = getSignedUserElseThrow();
-    const addNewComment = usePostComment(postId, onClose);
+    const addNewComment = usePostComment({ postId, handleClose: onClose });
 
     const [commentInput, setCommentData] = useState({ postId: postId, userId: signedUser.id, text: '' });
     const cursorPosition = useRef(commentInput.text.length);

@@ -1,4 +1,4 @@
-import { CHAT_PATH, CHAT_PATH_BY_MEMBER } from "../../constants/apiPath";
+import { CHAT_PATH, CHAT_PATH_BY_MEMBER } from "@/constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { ChatList, CreateChatRequest, ChatResponse } from "../schemas/inferred/chat";
 import { JwtToken, ResId } from "../schemas/inferred/common";

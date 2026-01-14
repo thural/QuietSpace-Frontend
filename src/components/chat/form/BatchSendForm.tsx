@@ -3,7 +3,7 @@ import { ResId } from "@/api/schemas/native/common";
 import UserQueryList from "@/components/profile/connections/UserQueryList";
 import SearchBar from "@/components/profile/searchbar/SearchBar";
 import BoxStyled from "@/components/shared/BoxStyled";
-import DarkButton from "@/components/shared/buttons/DarkButton ";
+import DarkButton from "@/components/shared/buttons/DarkButton";
 import CheckBox from "@/components/shared/CheckBox";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import InputStyled from "@/components/shared/InputStyled";

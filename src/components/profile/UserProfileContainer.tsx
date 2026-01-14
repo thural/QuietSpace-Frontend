@@ -63,11 +63,11 @@ const UserProfileContainer = () => {
             </FollowsSection>
             {/* Overlay for displaying followings */}
             <Overlay isOpen={viewFollowings && !!followingsCount} onClose={toggleFollowings}>
-                <UserConnections userFetch={followings} title="followings" />
+                <UserConnections userFetch={followings} title="followings" toggleView={toggleFollowings} />
             </Overlay>
             {/* Overlay for displaying followers */}
             <Overlay isOpen={viewFollowers && !!followersCount} onClose={toggleFollowers}>
-                <UserConnections userFetch={followers} title="followers" />
+                <UserConnections userFetch={followers} title="followers" toggleView={toggleFollowers} />
             </Overlay>
             <ProfileControls>
                 <Link style={{ width: "100%", textDecoration: "none" }} to="/settings">

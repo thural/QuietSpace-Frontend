@@ -2,8 +2,9 @@ import { ContentType } from "@/api/schemas/native/common";
 import { ReactionType } from "@/api/schemas/native/reaction";
 import { useDeletePost } from "@/services/data/usePostData";
 import useReaction from "./useReaction";
+import { ResId } from "@/api/schemas/inferred/common";
 
-const usePostActions = (postId: string) => {
+const usePostActions = (postId: ResId) => {
     const deletePost = useDeletePost(postId);
 
     const handleDeletePost = async (e: React.MouseEvent) => {

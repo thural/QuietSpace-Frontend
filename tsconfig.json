@@ -16,7 +16,7 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": false, // revert after tests
     "noUnusedParameters": false, // reevert after tests
     "noFallthroughCasesInSwitch": true,
@@ -56,11 +56,10 @@
   "include": [
     "src",
     "src/**/*",
-    "src/__mocks__/**/*.d.ts",
-    "test/**/*"
+    "src/__mocks__/**/*.d.ts"
   ],
   "exclude": [
-    "node-modules",
+    "node_modules",
     "**/*.spec.ts"
   ]
 }

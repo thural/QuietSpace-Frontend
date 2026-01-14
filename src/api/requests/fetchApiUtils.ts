@@ -51,7 +51,7 @@ export async function getApiResponse(
         });
     }
 
-    const options: FetchOptions = {
+    const options: RequestInit = {
         method: method,
         headers: headers,
         body: null

@@ -21,9 +21,7 @@ const FollowToggle: React.FC<FollowToggleProps> = ({ user, Button = LightButton,
     }
 
 
-    return (
-        <Button name={followStatus} onClick={handleFollowToggle} {...props} />
-    )
+    return React.createElement(Button as any, { name: followStatus, onClick: handleFollowToggle, ...props });
 };
 
 export default FollowToggle

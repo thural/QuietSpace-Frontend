@@ -7,7 +7,7 @@ import DefaultContainer from "@components/shared/DefaultContainer";
 import FollowToggle from "@components/shared/FollowToggle";
 import Typography from "@components/shared/Typography";
 import { useParams } from "react-router-dom";
-import useUserProfile from "../../services/hook/profile/useUserProfile";
+import useUserProfile from "@/services/hook/profile/useUserProfile";
 import LoaderStyled from "../shared/LoaderStyled";
 import PrivateBlock from "../shared/PrivateBlock";
 import UserConnections from "./connections/UserConnections";

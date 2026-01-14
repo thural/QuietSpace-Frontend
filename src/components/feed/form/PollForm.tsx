@@ -17,7 +17,7 @@ import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
  * @property {PollView} pollView - Object that controls the visibility of the poll options.
  */
 interface PollFormProps {
-    postData: PostRequest;
+    postData: any;
     handleChange: AnyFunction;
     togglePoll: ProcedureFn;
     pollView: PollView;
@@ -46,26 +46,30 @@ const PollForm: React.FC<PollFormProps> = ({ postData, handleChange, togglePoll,
                     name="option1"
                     className="poll-input"
                     placeholder="yes"
+                    value={postData?.option1 ?? ""}
                     handleChange={handleChange}
                 />
                 <TextInputStyled
                     name="option2"
                     className="poll-input"
                     placeholder="no"
+                    value={postData?.option2 ?? ""}
                     handleChange={handleChange}
                 />
                 <TextInputStyled
                     name="option3"
                     className="poll-input"
                     placeholder="add another option"
+                    value={postData?.option3 ?? ""}
                     handleChange={handleChange}
                 />
                 <TextInputStyled
                     name="option4"
                     className="poll-input"
                     placeholder="add another option"
+                    value={postData?.option4 ?? ""}
                     handleChange={handleChange}
-                    hidden={!postData.option3}
+                    hidden={!postData?.option3}
                 />
             </InputBoxStyled>
             <Clickable className="close-poll" onClick={togglePoll}>remove poll</Clickable>

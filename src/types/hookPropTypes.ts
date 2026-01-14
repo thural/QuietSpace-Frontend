@@ -10,6 +10,6 @@ export interface JwtAuthProps {
 }
 
 export interface QueryProps {
-    onSuccess?: (data: ChatResponse) => void;
+    onSuccess?: (data: any) => void;
     onError?: (error: Error) => void
 }

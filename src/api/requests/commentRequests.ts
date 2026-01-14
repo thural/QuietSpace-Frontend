@@ -1,4 +1,4 @@
-import { COMMENT_PATH } from "../../constants/apiPath";
+import { COMMENT_PATH } from "@/constants/apiPath";
 import { getWrappedApiResponse } from "./fetchApiUtils";
 import { CommentRequest, CommentResponse, PagedComment } from "../schemas/inferred/comment";
 import { JwtToken, ResId } from "../schemas/inferred/common";

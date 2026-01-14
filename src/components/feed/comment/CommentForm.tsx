@@ -33,7 +33,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId }) => {
     return (
         <FormStyled>
             <EmojiInput
-                className={classes.commentInput}
+                className={classes.content}
                 value={commentInput.text}
                 onChange={handleEmojiInput}
                 cleanOnEnter

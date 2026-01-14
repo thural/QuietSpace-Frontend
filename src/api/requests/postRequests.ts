@@ -1,4 +1,4 @@
-import { POST_URL, REACTION_PATH } from "../../constants/apiPath";
+import { POST_URL, REACTION_PATH } from "@/constants/apiPath";
 import { JwtToken, ResId } from "../schemas/inferred/common";
 import { PostResponse, PostRequest, PostPage, RepostRequest, VoteBody } from "../schemas/inferred/post";
 import { ReactionRequest } from "../schemas/inferred/reaction";

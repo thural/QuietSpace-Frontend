@@ -11,12 +11,12 @@ import { useEffect, useRef, useState } from "react";
  *  - `wasSeen`: A boolean indicating if the element has been seen.
  *  - `wasSeenRef`: A ref to be attached to the element to track its visibility.
  */
-function useWasSeen() {
-    const [wasSeen, setWasSeen] = useState(
+function useWasSeen(): [boolean, React.RefObject<Element | null>] {
+    const [wasSeen, setWasSeen] = useState<boolean>(
         typeof IntersectionObserver !== "function"
     );
 
-    const wasSeenRef = useRef(null);
+    const wasSeenRef = useRef<Element | null>(null);
 
     useEffect(() => {
         if (wasSeenRef.current && !wasSeen) {

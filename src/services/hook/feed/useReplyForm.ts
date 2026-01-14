@@ -61,7 +61,7 @@ const useReplyForm = (postId: ResId, parentId: ResId, toggleView: ConsumerFn) =>
         setCommentData({ ...commentInput, text: eventValue });
     };
 
-    const addNewComment = usePostComment(postId);
+    const addNewComment = usePostComment({ postId });
 
     /**
      * Handles the submission of the comment.

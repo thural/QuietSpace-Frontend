@@ -85,7 +85,7 @@ export const registerUser = async ({
     formData,
     onErrorFn
 }: {
-    setAuthState: (state: { page: string, formData: SignupBody }) => void;
+    setAuthState: (state: { page: AuthPages, formData: SignupBody }) => void;
     formData: SignupBody;
     onErrorFn: (error: Error) => void;
 }): Promise<void> => {

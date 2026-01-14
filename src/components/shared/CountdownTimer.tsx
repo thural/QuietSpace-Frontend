@@ -10,7 +10,7 @@ import { ProcedureFn } from "@/types/genericTypes";
 export interface CountDownDisplay {
     hasTimeOut: boolean | undefined;
     resetTimer: ProcedureFn;
-    component: JSX.Element;
+    component: React.ReactElement;
 }
 
 /**
@@ -24,7 +24,7 @@ export interface CountDownDisplay {
 const CountdownTimer: React.FC<{ period?: number, timeUpMessage?: string }> = ({ period = 900000, timeUpMessage = "time's up!" }) => {
     const { timeLeft } = useTimer(period);
 
-    const timerComponents: Array<JSX.Element> = [];
+    const timerComponents: Array<React.ReactElement> = [];
 
     Object.keys(timeLeft).forEach((timeLabel) => {
         const key = timeLabel as keyof TimerData

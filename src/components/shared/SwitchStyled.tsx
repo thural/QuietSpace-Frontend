@@ -15,7 +15,7 @@ const SwitchStyled = ({
     <Switch
       color={color}
       name={name}
-      labelPosition={labelPosition}
+      labelPosition={labelPosition as 'left' | 'right'}
       label={label}
       description={description}
       size={size}

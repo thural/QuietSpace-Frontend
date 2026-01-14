@@ -76,7 +76,7 @@ export const useChat = (chatId: ResId) => {
     /**
      * Callback for successful chat deletion.
      */
-    const onSuccess = () => {
+    const onSuccess = (_data?: Response, _variables?: void) => {
         queryClient.invalidateQueries({ queryKey: ["chats"] })
             .then(() => console.log("chat cache was invalidated"));
     }

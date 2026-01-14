@@ -121,7 +121,7 @@ export const useToggleFollow = (userId: ResId) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: any) => {
         console.log("toggle follow success response:", data);
         queryClient.invalidateQueries({ queryKey: ["followings", userId] });
     }
@@ -144,7 +144,7 @@ export const useBlockUser = (userId: ResId) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: any) => {
         console.log("block user response:", data);
         queryClient.invalidateQueries({ queryKey: ["followings", userId] });
         queryClient.invalidateQueries({ queryKey: ["followers", userId] });
@@ -168,7 +168,7 @@ export const useSaveProfileSettings = (userId: ResId) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: any) => {
         console.log("save profile settings success response:", data);
         queryClient.invalidateQueries({ queryKey: ["user"] });
     }
@@ -191,7 +191,7 @@ export const useUploadProfilePhoto = (toggleForm: ConsumerFn) => {
     const queryClient = useQueryClient();
     const { data: authData } = useAuthStore();
 
-    const onSuccess = (data: Response) => {
+    const onSuccess = (data: any) => {
         console.log("upload profile photo success response:", data);
         queryClient.invalidateQueries({ queryKey: ["user"] });
         toggleForm();
