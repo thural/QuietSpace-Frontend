@@ -1,7 +1,7 @@
 import { ResId } from "@/api/schemas/inferred/common";
-import FormControls from "@/components/feed/fragments/FormControls";
-import TextInput from "@/components/feed/fragments/TextInput";
-import TitleInput from "@/components/feed/fragments/TitleInput";
+import FormControls from "@/features/feed/fragments/FormControls";
+import TextInput from "@/features/feed/fragments/TextInput";
+import TitleInput from "@/features/feed/fragments/TitleInput";
 import CloseButtonStyled from "@/components/shared/CloseButtonStyled";
 import ErrorComponent from "@/components/shared/errors/ErrorComponent";
 import FormStyled from "@/components/shared/FormStyled";

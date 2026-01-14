@@ -1,33 +1,33 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import PostCardView from '@/components/feed/post/PostCardView';
+import PostCardView from '@/features/feed/post/PostCardView';
 
 jest.mock('@/components/shared/BoxStyled', () => ({
     __esModule: true,
     default: (props: any) => React.createElement('div', { 'data-testid': 'box', ...props }, props.children)
 }));
 
-jest.mock('@/components/feed/fragments/PostHeader', () => ({
+jest.mock('@/features/feed/fragments/PostHeader', () => ({
     __esModule: true,
     default: ({ children }: any) => <header data-testid="header">{children}</header>
 }));
 
-jest.mock('@/components/feed/fragments/PostContent', () => ({
+jest.mock('@/features/feed/fragments/PostContent', () => ({
     __esModule: true,
     default: ({ handleContentClick }: any) => <div data-testid="content" onClick={handleContentClick}>content</div>
 }));
 
-jest.mock('@/components/feed/fragments/PostInteractions', () => ({
+jest.mock('@/features/feed/fragments/PostInteractions', () => ({
     __esModule: true,
     default: () => <div data-testid="interactions">interactions</div>
 }));
 
-jest.mock('@/components/feed/fragments/PostMenu', () => ({
+jest.mock('@/features/feed/fragments/PostMenu', () => ({
     __esModule: true,
     default: () => <div data-testid="menu">menu</div>
 }));
 
-jest.mock('@/components/feed/post/PostOverlays', () => ({
+jest.mock('@/features/feed/post/PostOverlays', () => ({
     __esModule: true,
     default: () => <div data-testid="overlays" />
 }));

@@ -1,5 +1,5 @@
 import { PostResponse, PostList, PostPage } from "@/api/schemas/inferred/post";
-import PostCard from "@/components/feed/post/PostCard";
+import PostCard from "@/features/feed/post/PostCard";
 import LoaderStyled from "@/components/shared/LoaderStyled";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import Typography from "@components/shared/Typography";

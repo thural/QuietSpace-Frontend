@@ -36,3 +36,6 @@ dist-ssr
 /coverage
 /jest-report/
 **/__snapshots__/
+
+# Ignore TypeScript build info files
+*.tsbuildinfo

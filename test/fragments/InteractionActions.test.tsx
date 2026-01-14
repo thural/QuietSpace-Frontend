@@ -1,15 +1,15 @@
 import React from 'react';
 import { jest } from '@jest/globals';
 import { render, fireEvent } from '@testing-library/react';
-import InteractionActions from '@/components/feed/fragments/InteractionActions';
+import InteractionActions from '@/features/feed/fragments/InteractionActions';
 import { MantineProvider } from '@mantine/core';
 
-jest.mock('@/components/feed/fragments/CommentToggle', () => ({
+jest.mock('@/features/feed/fragments/CommentToggle', () => ({
     __esModule: true,
     default: ({ toggleForm }: any) => <button data-testid="comment" onClick={toggleForm}>comment</button>
 }));
 
-jest.mock('@/components/feed/fragments/ShareMenu', () => ({
+jest.mock('@/features/feed/fragments/ShareMenu', () => ({
     __esModule: true,
     default: ({ handleShareClick, handleRepostClick }: any) => (
         <div>

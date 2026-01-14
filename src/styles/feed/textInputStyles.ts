@@ -1,4 +1,4 @@
-import { TextInputProps } from "@/components/feed/fragments/TextInput";
+import { TextInputProps } from "@/features/feed/fragments/TextInput";
 import { createUseStyles, Theme } from "react-jss";
 
 const useStyles = createUseStyles((theme: Theme) => ({

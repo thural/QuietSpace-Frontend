@@ -2,7 +2,7 @@ import React from 'react';
 import { jest } from '@jest/globals';
 import { render, fireEvent } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
-import ReactionGroup from '@/components/feed/fragments/ReactionGroup';
+import ReactionGroup from '@/features/feed/fragments/ReactionGroup';
 
 const mockReaction = { reactionType: 'LIKE' } as any;
 

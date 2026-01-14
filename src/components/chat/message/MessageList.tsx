@@ -1,6 +1,6 @@
 import { MessageResponse } from "@/api/schemas/inferred/chat";
 import { ResId } from "@/api/schemas/native/common";
-import PostMessageCard from "@/components/feed/post/PostMessageCard";
+import PostMessageCard from "@/features/feed/post/PostMessageCard";
 import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/components/shared/InfinateScrollContainer";
 import styles from "@/styles/chat/messageListStyles";
 import { extractId } from "@/utils/stringUtils";
