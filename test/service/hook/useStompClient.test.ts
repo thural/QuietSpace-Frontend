@@ -1,9 +1,14 @@
 // test file:
 
 import React from 'react';
+import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { Frame } from 'stompjs';
 import * as zustandStore from '@/services/store/zustand';
+jest.mock('@/services/store/zustand', () => ({
+    useAuthStore: jest.fn(),
+    useStompStore: jest.fn()
+}));
 import * as stomptUtils from '@/utils/stomptUtils';
 import { useStompClient } from '@/services/socket/useStompClient';
 
@@ -49,28 +54,47 @@ describe('useStompClient Hook', () => {
             setClientContext: jest.fn()
         };
 
-        const useAuthStoreMock = jest.fn(() => mockAuthStore) as MockStore<UseAuthStoreProps>;
-        const useStompStoreMock = jest.fn(() => mockStompStore) as MockStore<StompStore>;
-
-        jest.spyOn(zustandStore, 'useAuthStore').mockImplementation(useAuthStoreMock);
-        jest.spyOn(zustandStore, 'useStompStore').mockImplementation(useStompStoreMock);
+        try {
+            (zustandStore.useAuthStore as jest.Mock).mockReturnValue(mockAuthStore);
+            (zustandStore.useStompStore as jest.Mock).mockReturnValue(mockStompStore);
+        } catch (e) {
+            // Fallback: assign jest functions if the module exports aren't mock functions
+            try { (zustandStore as any).useAuthStore = jest.fn(() => mockAuthStore); } catch { }
+            try { (zustandStore as any).useStompStore = jest.fn(() => mockStompStore); } catch { }
+        }
 
         jest.spyOn(stomptUtils, 'createStompClient').mockReturnValue(mockStompClient);
         jest.spyOn(stomptUtils, 'openStompConnection').mockImplementation(
             (client, options) => {
                 const { onConnect, onError } = options || {};
                 return new Promise<Frame>((resolve, reject) => {
-                    if (onConnect) {
-                        const mockFrame = new Frame('CONNECTED', {}, '');
-                        client.connected = true; // Set to true only after connect
-                        onConnect(mockFrame);
-                        resolve(mockFrame);
-                    } else {
-                        const mockErrorFrame = new Frame('ERROR', {}, 'Connection failed');
-                        if (onError) onError(mockErrorFrame);
-                        client.connected = false;
-                        reject(mockErrorFrame);
-                    }
+                    // Allow tests to trigger onError synchronously; only call onConnect
+                    // if an error has not occurred by the time the async tick runs.
+                    let errored = false;
+                    const originalOnError = onError;
+                    const wrappedOnError = (err: Frame) => {
+                        errored = true;
+                        if (originalOnError) originalOnError(err);
+                    };
+
+                    const passedOptions = { ...(options || {}), onError: wrappedOnError };
+
+                    // expose the wrapped onError for tests to invoke directly
+                    (stomptUtils.openStompConnection as any).mockLastOnError = wrappedOnError;
+
+                    setTimeout(() => {
+                        if (!errored && passedOptions.onConnect) {
+                            const mockFrame = new Frame('CONNECTED', {}, '');
+                            client.connected = true; // Set to true only after connect
+                            passedOptions.onConnect!(mockFrame);
+                            resolve(mockFrame);
+                        } else if (errored) {
+                            // If an error was triggered manually, resolve to avoid an
+                            // unhandled rejection in the test environment.
+                            client.connected = false;
+                            resolve(undefined as any);
+                        }
+                    }, 0);
                 });
             }
         );
@@ -176,7 +200,8 @@ describe('useStompClient Hook', () => {
         );
 
         await act(async () => {
-            await (stomptUtils.openStompConnection as jest.Mock).mock.calls[0][1].onError(new Frame('ERROR', {}, 'Test Error'));
+            // invoke the wrapped onError that was exposed by the mock
+            await (stomptUtils.openStompConnection as any).mockLastOnError(new Frame('ERROR', {}, 'Test Error'));
         });
 
         expect(result.current.isError).toBe(true);

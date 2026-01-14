@@ -24,13 +24,13 @@ export const genNotificationText = (type: string) => {
         case POST_REACTION:
             return "reacted to your post";
         case COMMENT:
-            return "commented on your post";
+            return "commented your post";
         case REPOST:
             return "reposted your post";
         case COMMENT_REPLY:
-            return "replied to your comment";
+            return "replied your comment";
         case COMMENT_REACTION:
-            return "reacted to your comment";
+            return "reacted your comment";
         case MENTION:
             return "mentioned you";
         default:

@@ -1,4 +1,17 @@
-export const over = jest.fn();
+// Lightweight mock implementation compatible with ESM and Jest environments
+function createMockFn() {
+    const fn: any = (...args: any[]) => {
+        fn.mock.calls.push(args);
+        if (typeof fn._impl === 'function') return fn._impl(...args);
+    };
+    fn.mock = { calls: [] };
+    fn._isMockFunction = true;
+    fn.mockImplementation = (impl: (...a: any[]) => any) => { fn._impl = impl; };
+    fn.mockClear = () => { fn.mock.calls.length = 0; };
+    return fn;
+}
+
+export const over = createMockFn();
 
 export class Frame {
     constructor(
@@ -14,8 +27,8 @@ export class Frame {
 
 export class Client {
     connected = true;
-    connect = (jest.fn() as jest.MockedFunction<() => void>);
-    send = (jest.fn() as jest.MockedFunction<() => void>);
-    subscribe = (jest.fn() as jest.MockedFunction<() => void>);
-    disconnect = (jest.fn() as jest.MockedFunction<() => void>);
+    connect = createMockFn();
+    send = createMockFn();
+    subscribe = createMockFn();
+    disconnect = createMockFn();
 }

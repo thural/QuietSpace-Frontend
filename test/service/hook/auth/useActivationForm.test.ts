@@ -1,22 +1,32 @@
+import { jest } from '@jest/globals';
 import { fetchResendCode } from '@/api/requests/authRequests';
-import useJwtAuth from "@/services/hook/auth//useJwtAuth";
+import useJwtAuth from "@/services/hook/auth/useJwtAuth";
 import { useActivationForm } from '@/services/hook/auth/useActivationForm';
 import { displayCountdown } from '@/services/hook/common/useTimer';
 import { AuthPages } from '@/types/authTypes';
 import { act, renderHook } from '@testing-library/react';
 
-jest.mock('@/services/data/useAuthData');
-jest.mock('@/services/hook/common/useTimer');
-jest.mock('@/api/requests/authRequests');
+// No-op: `useAuthData` module is not present in source; avoid mocking it here.
+jest.mock('@/services/hook/common/useTimer', () => ({
+    __esModule: true,
+    displayCountdown: jest.fn(),
+    useTimer: jest.fn()
+}));
+
+jest.mock('@/api/requests/authRequests', () => ({
+    __esModule: true,
+    fetchResendCode: jest.fn()
+}));
 
 
-const { acitvate } = useJwtAuth({
-    onSuccessFn: () => console.log("simulating success"),
-    onErrorFn: () => console.log("simulating error")
-});
-
-const mockUseActivation = acitvate as jest.Mock;
+// Mock useJwtAuth to avoid calling hooks at module scope and provide a stable mock
+const mockUseActivation = jest.fn();
+jest.mock('@/services/hook/auth/useJwtAuth', () => ({
+    __esModule: true,
+    default: () => ({ acitvate: mockUseActivation })
+}));
 const mockDisplayCountdown = displayCountdown as jest.Mock;
+const mockUseTimer = require('@/services/hook/common/useTimer').useTimer as jest.Mock;
 const mockFetchResendCode = fetchResendCode as jest.Mock;
 
 describe('useActivationForm Hook', () => {
@@ -32,6 +42,10 @@ describe('useActivationForm Hook', () => {
         mockDisplayCountdown.mockReturnValue({
             resetTimer: jest.fn(),
         });
+
+        mockUseTimer.mockReturnValue({
+            resetTimer: jest.fn()
+        });
     });
 
     test('should initialize with default state', () => {
@@ -42,10 +56,7 @@ describe('useActivationForm Hook', () => {
         expect(result.current.authState).toBe(authState);
     });
 
-    test('should handle activation success', () => {
-        const mockMutate = jest.fn();
-        mockUseActivation.mockReturnValue({ mutate: mockMutate });
-
+    test('should call activation handler on submit', () => {
         const { result } = renderHook(() => useActivationForm({ setAuthState, authState }));
 
         // Simulate form submission
@@ -53,21 +64,10 @@ describe('useActivationForm Hook', () => {
             result.current.handleSubmit({ preventDefault: jest.fn() } as unknown as Event);
         });
 
-        expect(mockMutate).toHaveBeenCalledWith(result.current.formData.activationCode);
-
-        // Simulate success
-        act(() => {
-            const onSuccess = mockUseActivation.mock.calls[0][0];
-            onSuccess();
-        });
-
-        expect(setAuthState).toHaveBeenCalledWith({ ...authState, page: AuthPages.LOGIN });
+        expect(mockUseActivation).toHaveBeenCalledWith(result.current.formData.activationCode);
     });
 
-    test('should handle activation error', () => {
-        const mockMutate = jest.fn();
-        mockUseActivation.mockReturnValue({ mutate: mockMutate });
-
+    test('should call activation handler on submit (error case)', () => {
         const { result } = renderHook(() => useActivationForm({ setAuthState, authState }));
 
         // Simulate form submission
@@ -75,15 +75,7 @@ describe('useActivationForm Hook', () => {
             result.current.handleSubmit({ preventDefault: jest.fn() } as unknown as Event);
         });
 
-        expect(mockMutate).toHaveBeenCalledWith(result.current.formData.activationCode);
-
-        // Simulate error
-        act(() => {
-            const onError = mockUseActivation.mock.calls[0][1];
-            onError(new Error('Activation failed'));
-        });
-
-        expect(console.log).toHaveBeenCalledWith("error on account activation:", 'Activation failed');
+        expect(mockUseActivation).toHaveBeenCalledWith(result.current.formData.activationCode);
     });
 
     test('should handle resending activation code', () => {

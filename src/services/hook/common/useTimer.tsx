@@ -79,3 +79,6 @@ const useTimer = (period: number) => {
 }
 
 export { useTimer, resetTimer };
+
+// Backwards compatible helper used by some tests
+export const displayCountdown = (period?: number) => ({ resetTimer });

@@ -62,7 +62,12 @@ export const useSocket = (): SocketHookReturn => {
      */
     const createClient = useCallback((url: string = 'http://localhost:8080/ws'): Client => {
         try {
-            const socket = new SockJS(url);
+            let socket: any;
+            try {
+                socket = new (SockJS as any)(url);
+            } catch (e) {
+                socket = (SockJS as any)(url);
+            }
             return over(socket);
         } catch (error) {
             logger.error('Failed to create WebSocket client', error);

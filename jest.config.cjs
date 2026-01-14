@@ -8,9 +8,19 @@ module.exports = {
     // Use ESM for module resolution
     extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
+    globals: {
+        'ts-jest': {
+            useESM: true,
+        },
+    },
+
     // Module name mapping for path aliases
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
+        '^@components/(.*)$': '<rootDir>/src/components/$1',
+        '^@shared/(.*)$': '<rootDir>/src/components/shared/$1',
+        '^stompjs$': '<rootDir>/src/__mocks__/stompjs.ts',
+        '^sockjs-client$': '<rootDir>/test/mocks/sockjs-client.js',
         // Handle CSS and other asset imports
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     },
@@ -32,6 +42,7 @@ module.exports = {
     coverageReporters: ['text', 'lcov'],
 
     // Setup files
+    setupFiles: ['<rootDir>/jest.setup.js'],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'], // Correct path to setup file
 
     // Ignore specific paths

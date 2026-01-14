@@ -1,5 +1,5 @@
-const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST
-const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT
+const BACKEND_HOST = (typeof process !== 'undefined' && process.env && process.env.VITE_BACKEND_HOST) || undefined;
+const BACKEND_PORT = (typeof process !== 'undefined' && process.env && process.env.VITE_BACKEND_PORT) || undefined;
 
 // const BACKEND_URL = `http://${BACKEND_HOST}:${BACKEND_PORT}`;
 const BACKEND_URL = `http://localhost:8080`;

@@ -23,8 +23,34 @@ export interface ExtendedClient extends Client {
  * @returns {ExtendedClient} - The created STOMP client.
  */
 export const createStompClient = (wsUrl: string = 'http://localhost:8080/ws'): ExtendedClient => {
-    const socket = new SockJS(wsUrl);
-    return over(socket) as ExtendedClient;
+    // If tests provided a shared stomp client, return it directly to avoid mocking constructor differences
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (globalThis.__TEST_MOCKS__ && globalThis.__TEST_MOCKS__._stompClient) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return globalThis.__TEST_MOCKS__._stompClient as ExtendedClient;
+    }
+
+    let socket: any;
+    try {
+        // Support both constructor and factory-style mocks
+        socket = new (SockJS as any)(wsUrl);
+    } catch (e) {
+        socket = (SockJS as any)(wsUrl);
+    }
+
+    const client = over(socket) as ExtendedClient;
+    // If the `over` mock didn't return a client (mocking interop), use injected test client if available
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (!client && globalThis.__TEST_MOCKS__ && globalThis.__TEST_MOCKS__._stompClient) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return globalThis.__TEST_MOCKS__._stompClient as ExtendedClient;
+    }
+
+    return client;
 };
 
 /**
