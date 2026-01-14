@@ -1,6 +1,6 @@
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { useToggleFollow } from "@/services/data/useUserData";
-import LightButton from "@components/shared/buttons/LightButton";
+import LightButton from "@/shared/buttons/LightButton";
 import React from "react";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 

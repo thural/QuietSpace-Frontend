@@ -3,14 +3,14 @@ import { useActivationForm } from "@/services/hook/auth/useActivationForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/activationFormStyles";
 import { ActivationFormProps } from "@/types/authTypes";
-import BoxStyled from "@components/shared/BoxStyled";
-import GradientButton from "@components/shared/buttons/GradientButton";
-import OutlineButton from "@components/shared/buttons/OutlineButton";
-import FormStyled from "@components/shared/FormStyled";
-import Typography from "@components/shared/Typography";
+import BoxStyled from "@/shared/BoxStyled";
+import GradientButton from "@/shared/buttons/GradientButton";
+import OutlineButton from "@/shared/buttons/OutlineButton";
+import FormStyled from "@/shared/FormStyled";
+import Typography from "@/shared/Typography";
 import { PinInput } from "@mantine/core";
 import React from "react";
-import CountdownTimer from "../shared/CountdownTimer";
+import CountdownTimer from "@/shared/CountdownTimer";
 
 /**
  * ActivationForm component for user account activation.

@@ -1,6 +1,6 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import DefaultContainer from "@components/shared/DefaultContainer";
+import DefaultContainer from "@/shared/DefaultContainer";
 import SearchBar from "./base/SearchBar";
 import PostQuery from "./query/PostQuery";
 import UserQuery from "./query/UserQuery";

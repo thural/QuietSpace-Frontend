@@ -1,6 +1,6 @@
 import LoaderStyled from "@/shared/LoaderStyled";
 import { useAuthStore } from "@/services/store/zustand";
-import Typography from "@components/shared/Typography";
+import Typography from "@/shared/Typography";
 import { useSignout } from "./hooks/useSignout";
 
 /**

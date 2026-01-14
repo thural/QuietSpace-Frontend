@@ -1,8 +1,8 @@
 import useStyles from "@/styles/feed/commentControlStyles";
 import { ConsumerFn } from "@/types/genericTypes";
-import BoxStyled from "@components/shared/BoxStyled";
-import Conditional from "@components/shared/Conditional";
-import Typography from "@components/shared/Typography";
+import BoxStyled from "@/shared/BoxStyled";
+import Conditional from "@/shared/Conditional";
+import Typography from "@/shared/Typography";
 
 /**
  * Props for the CommentControls component.

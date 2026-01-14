@@ -4,9 +4,9 @@ import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
 import styles from "@/styles/feed/commentStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import BoxStyled from "@components/shared/BoxStyled";
-import EmojiText from "@components/shared/EmojiText";
-import FlexStyled from "@components/shared/FlexStyled";
+import BoxStyled from "@/shared/BoxStyled";
+import EmojiText from "@/shared/EmojiText";
+import FlexStyled from "@/shared/FlexStyled";
 import CreateCommentForm from "../form/CreateCommentForm";
 import CommentControls from "./CommentControls";
 

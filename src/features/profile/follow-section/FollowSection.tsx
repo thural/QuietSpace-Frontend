@@ -1,8 +1,8 @@
 import styles from "@/styles/profile/followSectionStyles";
 import { ProcedureFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import FlexStyled from "@components/shared/FlexStyled";
-import Typography from "@components/shared/Typography";
+import FlexStyled from "@/shared/FlexStyled";
+import Typography from "@/shared/Typography";
 
 /**
  * FollowSectionProps interface.

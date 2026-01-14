@@ -1,8 +1,8 @@
 import useProfileSettings from "@/services/hook/profile/useProfileSettings";
 import useStyles from "@/styles/settings/settingContainerStyles";
 import { PRIVACY_DESCRIPTION } from "@/utils/dataTemplates";
-import DefaultContainer from "@components/shared/DefaultContainer";
-import Typography from "@components/shared/Typography";
+import DefaultContainer from "@/shared/DefaultContainer";
+import Typography from "@/shared/Typography";
 import { Tabs, Text } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";

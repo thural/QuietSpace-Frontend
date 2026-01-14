@@ -2,7 +2,7 @@ import { PostResponse, PostList, PostPage } from "@/api/schemas/inferred/post";
 import PostCard from "@/features/feed/post/PostCard";
 import LoaderStyled from "@/shared/LoaderStyled";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import Typography from "@components/shared/Typography";
+import Typography from "@/shared/Typography";
 import { UseMutationResult } from "@tanstack/react-query";
 
 /**

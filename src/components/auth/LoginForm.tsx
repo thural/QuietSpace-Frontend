@@ -5,14 +5,14 @@ import { useLoginForm } from "@/services/hook/auth/useLoginForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/formStyles";
 import { AuthFormProps } from "@/types/authTypes";
-import BoxStyled from "@components/shared/BoxStyled";
-import GradientButton from "@components/shared/buttons/GradientButton";
-import OutlineButton from "@components/shared/buttons/OutlineButton";
-import FormStyled from "@components/shared/FormStyled";
-import PassInput from "@components/shared/PassInput";
-import Typography from "@components/shared/Typography";
+import BoxStyled from "@/shared/BoxStyled";
+import GradientButton from "@/shared/buttons/GradientButton";
+import OutlineButton from "@/shared/buttons/OutlineButton";
+import FormStyled from "@/shared/FormStyled";
+import PassInput from "@/shared/PassInput";
+import Typography from "@/shared/Typography";
 import React from "react";
-import LoaderStyled from "../shared/LoaderStyled";
+import LoaderStyled from "@/shared/LoaderStyled";
 
 /**
  * LoginForm component for user authentication.

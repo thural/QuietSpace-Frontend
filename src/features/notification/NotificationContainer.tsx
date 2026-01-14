@@ -2,7 +2,7 @@ import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { useGetNotifications } from "@/services/data/useNotificationData";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
-import DefaultContainer from "@components/shared/DefaultContainer";
+import DefaultContainer from "@/shared/DefaultContainer";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
