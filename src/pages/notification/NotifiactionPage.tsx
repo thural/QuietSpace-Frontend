@@ -1,4 +1,4 @@
-import NotificationContainer from "./features/notification/NotificationContainer";
+import NotificationContainer from "@/features/notification/NotificationContainer";
 import { Outlet } from "react-router-dom";
 
 
