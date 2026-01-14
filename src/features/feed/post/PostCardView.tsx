@@ -1,5 +1,5 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
-import BatchShareForm from "@/components/chat/form/BatchSendForm";
+import BatchShareForm from "@/features/chat/form/BatchSendForm";
 import BoxStyled from "@/components/shared/BoxStyled";
 import Conditional from "@/components/shared/Conditional";
 import styles from "@/styles/feed/postStyles";

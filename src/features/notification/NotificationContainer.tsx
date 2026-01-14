@@ -6,7 +6,7 @@ import DefaultContainer from "@components/shared/DefaultContainer";
 import { SegmentedControl } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoaderStyled from "../shared/LoaderStyled";
+import LoaderStyled from "@/components/shared/LoaderStyled";
 
 /**
  * NotificationContainer component.
