@@ -7,7 +7,7 @@
 
 import { useCallback, useMemo, useEffect } from "react";
 import { useProfileStore } from "./ProfileStore";
-import { useProfileEnhanced } from "../application";
+import { useProfileEnhanced } from "../application/useProfile";
 import type {
   UserProfileEntity,
   UserProfileStatsEntity,
@@ -80,6 +80,7 @@ export const useProfileWithState = (
     setUserProfile,
     updateUserProfile,
     setUserStats,
+    setProfileAccess,
     setFollowers,
     setFollowings,
     setViewFollowers,
@@ -90,7 +91,10 @@ export const useProfileWithState = (
     setOnlineStatus,
     setLastSyncTime,
     clearError,
-    resetRetryCount
+    incrementRetryCount,
+    resetRetryCount,
+    resetProfileState,
+    resetUIState: resetUIStateStore
   } = useProfileStore();
 
   // Get repository data
@@ -105,7 +109,7 @@ export const useProfileWithState = (
       setUserStats(repositoryData.userStats);
     }
     if (repositoryData.profileAccess && repositoryData.profileAccess !== profileAccess) {
-      profileAccess(repositoryData.profileAccess);
+      setProfileAccess(repositoryData.profileAccess);
     }
     if (repositoryData.userConnections) {
       if (repositoryData.userConnections.followers !== followers) {
@@ -115,7 +119,7 @@ export const useProfileWithState = (
         setFollowings(repositoryData.userConnections.followings);
       }
     }
-  }, [repositoryData, userProfile, userStats, profileAccess, followers, followings, setUserProfile, setUserStats, setFollowers, setFollowings, setProfileAccess]);
+  }, [repositoryData, userProfile, userStats, profileAccess, followers, followings, setUserProfile, setUserStats, setProfileAccess, setFollowers, setFollowings]);
 
   // Real-time sync functionality
   useEffect(() => {
@@ -274,23 +278,33 @@ export const useProfileWithState = (
     
     // Reset actions
     resetProfile: () => {
-      // Reset profile data only
-      setUserProfile(null);
-      setUserStats(null);
-      setProfileAccess(null);
+      resetProfileState();
       clearError();
       resetRetryCount();
     },
     
     resetUIState: () => {
-      // Reset UI state only
-      setViewFollowers(false);
-      setViewFollowings(false);
-      setActiveTab('posts');
+      resetUIStateStore();
     }
   }), [
-    updateUserProfile, setFollowings, setViewFollowers, setViewFollowers, 
-    setActiveTab, setLastSyncTime, clearError, resetRetryCount
+    updateUserProfile,
+    followings,
+    viewFollowers,
+    viewFollowings,
+    error,
+    retryCount,
+    setFollowings,
+    setViewFollowers,
+    setViewFollowings,
+    setActiveTab,
+    setLastSyncTime,
+    setLoading,
+    setError,
+    clearError,
+    incrementRetryCount,
+    resetRetryCount,
+    resetProfileState,
+    resetUIStateStore
   ]);
 
   return {

@@ -10,7 +10,8 @@ import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ResId } from "@/api/schemas/inferred/common";
 import { useProfileData, useProfileDataWithRepository } from "../data";
-import { createProfileRepository, createMockProfileRepository } from "../data/ProfileRepositoryFactory";
+import { useProfileWithState, useRealTimeProfile } from "../state";
+import useUserQueries from "@/api/queries/userQueries";
 import type {
   UserProfileEntity,
   UserProfileStatsEntity,
@@ -239,17 +240,10 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
 
 /**
  * Enhanced profile hook that always uses repository pattern.
- * 
- * This hook provides the full benefits of the repository pattern
- * with additional features like caching and optimization.
- * 
- * @param {ResId} userId - The user ID to fetch profile for
- * @param {ProfileConfig['repositoryConfig']} repositoryConfig - Repository configuration
- * @returns {ReturnType<typeof useProfile>} - Enhanced profile state and actions
  */
 export const useProfileEnhanced = (
-  userId: ResId, 
-  repositoryConfig?: ProfileConfig['repositoryConfig']
+  userId: ResId,
+  repositoryConfig?: ProfileConfig["repositoryConfig"]
 ) => {
   return useProfile(userId, {
     useRepositoryPattern: true,
@@ -257,6 +251,74 @@ export const useProfileEnhanced = (
     enablePersistence: true,
     enableRealTime: true
   });
+};
+
+/**
+ * Enhanced profile hook with state management integration.
+ * 
+ * This hook combines repository pattern with Zustand state management
+ * for the ultimate profile management experience.
+ * 
+ * @param {ResId} userId - The user ID to manage profile for
+ * @param {ProfileConfig['repositoryConfig']} repositoryConfig - Repository configuration
+ * @returns {{
+ *   userProfile: UserProfileEntity | null,
+ *   userStats: UserProfileStatsEntity | null,
+ *   profileAccess: ProfileAccessEntity | null,
+ *   followers: UserConnectionEntity[],
+ *   followings: UserConnectionEntity[],
+ *   isLoading: boolean,
+ *   error: Error | null,
+ *   viewFollowers: boolean,
+ *   viewFollowings: boolean,
+ *   activeTab: string,
+ *   isOnline: boolean,
+ *   needsSync: boolean,
+ *   lastSyncTime: number | null,
+ *   actions: Object,
+ *   computed: Object,
+ *   realTime: Object,
+ *   stateManagement: Object
+ * }} - Enhanced profile state with full state management capabilities
+ */
+export const useProfileAdvanced = (
+  userId: ResId,
+  config: {
+    enableRealTime?: boolean;
+    syncInterval?: number;
+  } = {}
+) => {
+  const navigate = useNavigate();
+
+  const state = useProfileWithState(userId, {
+    enableRealTime: config.enableRealTime ?? true,
+    syncInterval: config.syncInterval ?? 30000
+  });
+
+  const realTime = useRealTimeProfile();
+
+  const navigateToProfile = useCallback(
+    (targetUserId: ResId) => {
+      navigate(`/profile/${targetUserId}`);
+    },
+    [navigate]
+  );
+
+  return {
+    ...state,
+    realTime,
+    navigateToProfile
+  };
+};
+
+/**
+ * Backwards-friendly alias name (enhanced + state management).
+ */
+export const useProfileEnhancedWithState = (
+  userId: ResId,
+  _repositoryConfig?: ProfileConfig["repositoryConfig"]
+) => {
+  return useProfileAdvanced(userId);
 };
 
 /**
@@ -305,6 +367,3 @@ export const useCurrentProfile = (config: ProfileConfig = {}) => {
     updateSettings
   };
 };
-
-// Import useUserQueries for current user hook
-import useUserQueries from "@/api/queries/userQueries";

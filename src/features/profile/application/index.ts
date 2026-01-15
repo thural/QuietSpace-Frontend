@@ -10,6 +10,7 @@
 export { 
   useProfile, 
   useProfileEnhanced, 
-  useCurrentProfile,
+  useProfileEnhancedWithState,
+  useProfileAdvanced,
   type ProfileConfig
 } from "./useProfile";
