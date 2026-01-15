@@ -12,13 +12,30 @@ import type {
   UserConnectionEntity,
   ProfileAccessEntity
 } from "../domain";
-import { useGetUserById, useGetFollowers, useGetFollowings } from "@/services/data/useUserData";
-import { useGetPostsByUserId } from "@/services/data/usePostData";
-import useUserQueries from "@/api/queries/userQueries";
+
+import { ProfileAccessService } from "../domain";
+import {
+  createStatsEntity,
+  mapApiUserToConnectionEntity,
+  mapApiUserToUserProfileEntity
+} from "./mappers/profileMappers";
 
 export class ProfileRepository implements IProfileRepository {
+  supportsFollowMutations = false;
+
   private error: Error | null = null;
   private loading: boolean = false;
+
+  private externalData:
+    | {
+        userId: string | number;
+        user: any;
+        userPosts: any;
+        followers: any;
+        followings: any;
+        signedUser: any;
+      }
+    | null = null;
 
   /**
    * Get user profile by ID.
@@ -28,13 +45,22 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      // This would be called from a hook context in real implementation
-      // For now, we'll create a mock implementation
-      throw new Error("ProfileRepository.getUserProfile must be called from React hook context");
+      if (!this.externalData || this.externalData.userId !== userId) {
+        throw new Error("ProfileRepository not initialized with matching React data");
+      }
+
+      const apiUser = this.externalData.user?.data;
+      if (!apiUser) {
+        throw new Error("User data not available");
+      }
+
+      return mapApiUserToUserProfileEntity(apiUser);
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -46,11 +72,27 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.getCurrentUserProfile must be called from React hook context");
+      if (!this.externalData || !this.externalData.signedUser?.id) {
+        throw new Error("Signed user data not available");
+      }
+
+      const currentUserId = this.externalData.signedUser.id;
+      if (this.externalData.userId !== currentUserId) {
+        throw new Error("Repository initialized for a different userId");
+      }
+
+      const apiUser = this.externalData.user?.data;
+      if (!apiUser) {
+        throw new Error("User data not available");
+      }
+
+      return mapApiUserToUserProfileEntity(apiUser);
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -62,11 +104,21 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.getUserStats must be called from React hook context");
+      if (!this.externalData || this.externalData.userId !== userId) {
+        throw new Error("ProfileRepository not initialized with matching React data");
+      }
+
+      const postsCount = this.externalData.userPosts?.data?.pages?.[0]?.totalElements || 0;
+      const followersCount = this.externalData.followers?.data?.pages?.[0]?.totalElements || 0;
+      const followingsCount = this.externalData.followings?.data?.pages?.[0]?.totalElements || 0;
+
+      return createStatsEntity({ postsCount, followersCount, followingsCount });
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -78,11 +130,21 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.getUserFollowers must be called from React hook context");
+      if (!this.externalData || this.externalData.userId !== userId) {
+        throw new Error("ProfileRepository not initialized with matching React data");
+      }
+
+      const pages = this.externalData.followers?.data?.pages;
+      if (!pages) return [];
+
+      const flattened = pages.flatMap((p: any) => p.content);
+      return flattened.map(mapApiUserToConnectionEntity);
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -94,11 +156,21 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.getUserFollowings must be called from React hook context");
+      if (!this.externalData || this.externalData.userId !== userId) {
+        throw new Error("ProfileRepository not initialized with matching React data");
+      }
+
+      const pages = this.externalData.followings?.data?.pages;
+      if (!pages) return [];
+
+      const flattened = pages.flatMap((p: any) => p.content);
+      return flattened.map(mapApiUserToConnectionEntity);
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -110,11 +182,17 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.getProfileAccess must be called from React hook context");
+      const profile = await this.getUserProfile(userId);
+      const followers = await this.getUserFollowers(userId);
+      const isFollowing = followers.some((f) => f.id === viewerId);
+
+      return ProfileAccessService.create(profile, viewerId, isFollowing);
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -126,11 +204,13 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.updateProfile must be called from React hook context");
+      throw new Error("ProfileRepository.updateProfile is not implemented yet");
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -142,11 +222,13 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.followUser must be called from React hook context");
+      throw new Error("ProfileRepository.followUser is not implemented yet");
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -158,11 +240,13 @@ export class ProfileRepository implements IProfileRepository {
       this.loading = true;
       this.error = null;
 
-      throw new Error("ProfileRepository.unfollowUser must be called from React hook context");
+      throw new Error("ProfileRepository.unfollowUser is not implemented yet");
     } catch (error) {
       this.error = error as Error;
       this.loading = false;
       throw error;
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -192,13 +276,41 @@ export class ProfileRepository implements IProfileRepository {
    * This method should be called from a React hook context.
    */
   initializeWithReactData(hooks: {
+    userId: string | number;
     user: any;
     userPosts: any;
     followers: any;
     followings: any;
     signedUser: any;
   }): void {
-    // Store React hook data for use in repository methods
-    // This is a workaround to use React hooks in class context
+    this.externalData = {
+      userId: hooks.userId,
+      user: hooks.user,
+      userPosts: hooks.userPosts,
+      followers: hooks.followers,
+      followings: hooks.followings,
+      signedUser: hooks.signedUser
+    };
+    this.loading =
+      !!hooks.user?.isLoading ||
+      !!hooks.userPosts?.isLoading ||
+      !!hooks.followers?.isLoading ||
+      !!hooks.followings?.isLoading;
+    this.error =
+      hooks.user?.error || hooks.userPosts?.error || hooks.followers?.error || hooks.followings?.error || null;
+  }
+
+  /**
+   * Update repository data when React hooks data changes.
+   */
+  updateReactData(hooks: {
+    userId: string | number;
+    user: any;
+    userPosts: any;
+    followers: any;
+    followings: any;
+    signedUser: any;
+  }): void {
+    this.initializeWithReactData(hooks);
   }
 }

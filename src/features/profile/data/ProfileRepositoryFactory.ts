@@ -8,6 +8,7 @@
 import type { IProfileRepository } from "../domain";
 import { ProfileRepository } from "./ProfileRepository";
 import { MockProfileRepository } from "./MockProfileRepository";
+import { ReactiveProfileRepository } from "./ReactiveProfileRepository";
 
 interface RepositoryConfig {
   useMockRepositories?: boolean;
@@ -71,7 +72,8 @@ export class ProfileRepositoryFactory {
     if (finalConfig.useMockRepositories || finalConfig.environment === 'test') {
       repository = new MockProfileRepository(finalConfig.mockConfig);
     } else {
-      repository = new ProfileRepository();
+      // Keep React Query hydration in the data layer via a reactive adapter.
+      repository = new ReactiveProfileRepository(new ProfileRepository());
     }
 
     // Cache the repository

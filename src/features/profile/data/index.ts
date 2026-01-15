@@ -24,3 +24,11 @@ export {
   useProfileDataWithRepository,
   useCurrentProfileData
 } from "./useProfileData";
+
+export { useProfileDataEnhanced, type ProfileRepositoryConfig } from "./hooks";
+
+export * as ProfileMappers from "./mappers";
+
+export * as ProfileRepositories from "./repositories";
+
+export { ReactiveProfileRepository, type ProfileExternalData } from "./ReactiveProfileRepository";

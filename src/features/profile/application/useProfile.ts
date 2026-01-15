@@ -155,22 +155,36 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
 
   // Follow user action
   const followUser = useCallback(async () => {
-    if (repository?.followUser && userProfile) {
+    if (!userProfile) return;
+    if (!repository) {
+      console.warn("followUser skipped: repository not available");
+      return;
+    }
+    if (!repository.supportsFollowMutations) {
+      console.warn("followUser skipped: repository does not support follow mutations");
+      return;
+    }
+    if (repository.followUser) {
       await repository.followUser(userProfile.id);
       await refreshProfile();
     }
-    // Fallback to legacy follow logic
-    console.log('Follow user action - would implement follow logic');
   }, [repository, userProfile, refreshProfile]);
 
   // Unfollow user action
   const unfollowUser = useCallback(async () => {
-    if (repository?.unfollowUser && userProfile) {
+    if (!userProfile) return;
+    if (!repository) {
+      console.warn("unfollowUser skipped: repository not available");
+      return;
+    }
+    if (!repository.supportsFollowMutations) {
+      console.warn("unfollowUser skipped: repository does not support follow mutations");
+      return;
+    }
+    if (repository.unfollowUser) {
       await repository.unfollowUser(userProfile.id);
       await refreshProfile();
     }
-    // Fallback to legacy unfollow logic
-    console.log('Unfollow user action - would implement unfollow logic');
   }, [repository, userProfile, refreshProfile]);
 
   // Computed values

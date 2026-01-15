@@ -25,6 +25,8 @@ interface MockProfileConfig {
 }
 
 export class MockProfileRepository implements IProfileRepository {
+  supportsFollowMutations = true;
+
   private error: Error | null = null;
   private loading: boolean = false;
   private config: MockProfileConfig;

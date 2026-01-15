@@ -13,6 +13,7 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
 import type { UserProfileEntity, UserProfileStatsEntity } from '../domain';
 import { calculateEngagementRate, getProfileCompletion, getProfileStrength } from '../domain';
+import { ProfileAccessService, ProfileMetricsService } from '../domain';
 import { useProfileStore } from '../state/ProfileStore';
 
 // Mock data for testing
@@ -72,8 +73,19 @@ describe('Profile Feature', () => {
     expect(completion).toBeLessThanOrEqual(100);
   });
 
+  it('computes profile completion via ProfileMetricsService', () => {
+    const completion = ProfileMetricsService.getCompletion(mockUserProfile);
+    expect(completion).toBeGreaterThanOrEqual(0);
+    expect(completion).toBeLessThanOrEqual(100);
+  });
+
   it('computes engagement rate via domain logic', () => {
     const rate = calculateEngagementRate(mockUserStats);
+    expect(rate).toBeGreaterThanOrEqual(0);
+  });
+
+  it('computes engagement rate via ProfileMetricsService', () => {
+    const rate = ProfileMetricsService.getEngagementRate(mockUserStats);
     expect(rate).toBeGreaterThanOrEqual(0);
   });
 
@@ -81,6 +93,19 @@ describe('Profile Feature', () => {
     const strength = getProfileStrength(mockUserProfile, mockUserStats);
     expect(strength).toBeGreaterThanOrEqual(0);
     expect(strength).toBeLessThanOrEqual(100);
+  });
+
+  it('computes profile strength via ProfileMetricsService', () => {
+    const strength = ProfileMetricsService.getStrength(mockUserProfile, mockUserStats);
+    expect(strength).toBeGreaterThanOrEqual(0);
+    expect(strength).toBeLessThanOrEqual(100);
+  });
+
+  it('creates access entity via ProfileAccessService', () => {
+    const access = ProfileAccessService.create(mockUserProfile, 'viewer-1', false);
+    expect(typeof access.hasAccess).toBe('boolean');
+    expect(typeof ProfileAccessService.canAccess(access)).toBe('boolean');
+    expect(ProfileAccessService.getDeniedReason(access)).toBeDefined();
   });
 
   it('updates Zustand store state', () => {

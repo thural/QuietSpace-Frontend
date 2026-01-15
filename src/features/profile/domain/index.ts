@@ -37,3 +37,9 @@ export {
   createProfileAccess,
   createCompleteProfile
 } from "./profileLogic";
+
+export {
+  ProfileMetricsService,
+  ProfileAccessService,
+  ProfileConnectionsService
+} from "./services";

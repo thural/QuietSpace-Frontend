@@ -5,12 +5,12 @@
  * for efficient data fetching and state management.
  */
 
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useGetUserById, useGetFollowers, useGetFollowings } from "@/services/data/useUserData";
 import { useGetPostsByUserId } from "@/services/data/usePostData";
 import useUserQueries from "@/api/queries/userQueries";
 import { ResId } from "@/api/schemas/inferred/common";
-import { createProfileRepository, createMockProfileRepository } from "./ProfileRepositoryFactory";
+import { useProfileDataEnhanced, type ProfileRepositoryConfig } from "./hooks";
 import type {
   UserProfileEntity,
   UserProfileStatsEntity,
@@ -18,10 +18,7 @@ import type {
   ProfileAccessEntity,
   CompleteProfileEntity
 } from "../domain";
-import {
-  createProfileAccess,
-  createCompleteProfile
-} from "../domain";
+import { createProfileAccess, createCompleteProfile } from "../domain";
 
 /**
  * Legacy profile data hook for backward compatibility.
@@ -182,37 +179,8 @@ export const useProfileData = (userId: ResId) => {
  * and provides additional features like caching and error handling.
  */
 export const useProfileDataWithRepository = (userId: ResId, config?: {
-  useMockRepositories?: boolean;
-  mockConfig?: {
-    simulateLoading?: boolean;
-    simulateError?: boolean;
-    isPrivate?: boolean;
-    isVerified?: boolean;
-    followersCount?: number;
-    followingsCount?: number;
-    postsCount?: number;
-    isFollowing?: boolean;
-  };
-}) => {
-  const repository = useMemo(() => {
-    if (config?.useMockRepositories) {
-      return createMockProfileRepository(config.mockConfig);
-    }
-    return createProfileRepository(config);
-  }, [config]);
-
-  // For now, fall back to legacy hook until repository is fully implemented
-  const legacyData = useProfileData(userId);
-
-  return {
-    ...legacyData,
-    repository,
-    // Repository-specific features would be added here
-    refreshProfile: useCallback(async () => {
-      // Would implement repository refresh logic
-      console.log('Refreshing profile data...');
-    }, [repository])
-  };
+} & ProfileRepositoryConfig) => {
+  return useProfileDataEnhanced(userId, config);
 };
 
 /**

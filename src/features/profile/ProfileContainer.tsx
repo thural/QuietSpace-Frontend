@@ -10,11 +10,13 @@ import { useParams } from "react-router-dom";
 import useUserProfile from "@/services/hook/profile/useUserProfile";
 import LoaderStyled from "@/shared/LoaderStyled";
 import PrivateBlock from "@/shared/PrivateBlock";
-import UserConnections from "./connections/UserConnections";
-import FollowsSection from "./follow-section/FollowSection";
-import ProfileControls from "./profile-controls/ProfileControls";
-import ProfileTabs from "./tabs/ProfileTabs";
-import UserDetailsSection from "./user-details/UserDetailsSection";
+import {
+    ConnectionsList as UserConnections,
+    ProfileHeader as UserDetailsSection,
+    ProfileStats as FollowsSection,
+    ProfileControls,
+    ProfileTabs,
+} from "./components";
 
 /**
  * ProfileContainer component.

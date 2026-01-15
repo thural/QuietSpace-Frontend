@@ -6,6 +6,8 @@
  * by providing a clean abstraction for profile data operations.
  */
 export interface IProfileRepository {
+  supportsFollowMutations?: boolean;
+
   /**
    * Get user profile by ID.
    * 
