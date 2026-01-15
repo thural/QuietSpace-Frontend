@@ -7,7 +7,7 @@
 export { 
   useNavbar, 
   useNavbarEnhanced, 
-  useNavbarLegacy,
+  useNavbarAdvanced,
   type NavbarConfig,
   type NavigationIconConfig,
   type NavigationConfig,

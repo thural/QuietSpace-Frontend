@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useNotificationData, useNotificationDataWithRepo } from "../data";
+import { useNavbarWithState } from "../state";
 import type { NotificationStatusEntity } from "../domain";
 import { NAVBAR_ROUTES } from "../shared";
 
@@ -37,6 +38,10 @@ export interface NavbarConfig {
       simulateError?: boolean;
     };
   };
+  /** Whether to enable state persistence */
+  enablePersistence?: boolean;
+  /** Sync interval in milliseconds */
+  syncInterval?: number;
 }
 
 /**
@@ -151,17 +156,85 @@ export const useNavbarEnhanced = (repositoryConfig?: NavbarConfig['repositoryCon
 };
 
 /**
- * Legacy navbar hook for backward compatibility.
+ * Enhanced navbar hook that uses advanced state management.
  * 
- * @deprecated Use useNavbar with configuration or useNavbarEnhanced for repository pattern
+ * This hook provides the full benefits of:
+ * - Repository Pattern (clean architecture, testability)
+ * - Advanced State Management (caching, persistence, sync)
+ * - Real-time Updates (cross-tab sync, optimistic updates)
+ * - Performance Optimization (computed values, debouncing)
+ * 
+ * @param {NavbarConfig} config - Configuration for navbar behavior
  * @returns {{
- *   notificationData: NotificationStatusEntity,
+ *   notificationData: NotificationStatusEntity | null,
  *   navigationItems: NavigationItems,
- *   error: Error | null
- * }} - Legacy navbar state
+ *   hasUnreadNotifications: boolean,
+ *   hasUnreadChats: boolean,
+ *   isLoading: boolean,
+ *   error: Error | null,
+ *   isConnected: boolean,
+ *   needsSync: boolean,
+ *   actions: Object
+ * }} - Enhanced navbar state with full capabilities
  */
-export const useNavbarLegacy = () => {
-  return useNavbar({ useRepositoryPattern: false });
+export const useNavbarAdvanced = (config: NavbarConfig = {}) => {
+  const pathName = useLocation().pathname;
+  
+  // Use advanced state management with repository pattern
+  const stateManager = useNavbarWithState({
+    useRepositoryPattern: config.useRepositoryPattern ?? true,
+    repositoryConfig: config.repositoryConfig,
+    enablePersistence: config.enablePersistence ?? true,
+    syncInterval: config.syncInterval
+  });
+
+  /**
+   * Creates navigation items with current path state
+   */
+  const navigationItems = useMemo(() => {
+    const mainItems: NavigationConfig[] = [
+      {
+        linkTo: NAVBAR_ROUTES.FEED,
+        pathName,
+        icons: { icon: "PiHouse", iconFill: "PiHouseFill" }
+      },
+      {
+        linkTo: NAVBAR_ROUTES.SEARCH,
+        pathName,
+        icons: { icon: "PiMagnifyingGlass", iconFill: "PiMagnifyingGlassFill" }
+      }
+    ];
+
+    const chat: NavigationConfig = {
+      linkTo: NAVBAR_ROUTES.CHAT,
+      pathName,
+      icons: { icon: "PiChatCircle", iconFill: "PiChatCircleFill" }
+    };
+
+    const profile: NavigationConfig = {
+      linkTo: NAVBAR_ROUTES.PROFILE,
+      pathName,
+      icons: { icon: "PiUser", iconFill: "PiUserFill" }
+    };
+
+    const notification: NavigationConfig = {
+      linkTo: NAVBAR_ROUTES.NOTIFICATIONS,
+      pathName,
+      icons: { icon: "PiBell", iconFill: "PiBellFill" }
+    };
+
+    return {
+      mainItems,
+      chat,
+      profile,
+      notification
+    };
+  }, [pathName]);
+
+  return {
+    ...stateManager,
+    navigationItems
+  };
 };
 
 export type NavigationItems = {

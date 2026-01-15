@@ -4,7 +4,7 @@
  * This file tests the updated useNavbar hook with repository pattern support.
  */
 
-import { useNavbar, useNavbarEnhanced, useNavbarLegacy } from "../application";
+import { useNavbar, useNavbarEnhanced } from "../application";
 import { createMockNotificationRepository } from "../data";
 
 /**
@@ -20,13 +20,11 @@ export const testApplicationLayerIntegration = async (): Promise<void> => {
     console.log("✅ Test 1: Enhanced hook availability");
     console.log("useNavbar exported:", typeof useNavbar === 'function');
     console.log("useNavbarEnhanced exported:", typeof useNavbarEnhanced === 'function');
-    console.log("useNavbarLegacy exported:", typeof useNavbarLegacy === 'function');
 
     // Test 2: Hook signatures
     console.log("✅ Test 2: Hook signatures");
     console.log("useNavbar params:", useNavbar.length);
     console.log("useNavbarEnhanced params:", useNavbarEnhanced.length);
-    console.log("useNavbarLegacy params:", useNavbarLegacy.length);
 
     // Test 3: Configuration support
     console.log("✅ Test 3: Configuration support");
