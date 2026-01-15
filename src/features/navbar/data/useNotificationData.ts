@@ -10,13 +10,56 @@ import {
   hasPendingNotifications 
 } from "../domain";
 import { createNotificationRepository, type RepositoryConfig } from "./RepositoryFactory";
+import { NotificationRepository } from "./NotificationRepository";
 
 /**
- * Data layer hook for managing notification and chat data using repository pattern.
+ * Legacy hook for backward compatibility - WORKING VERSION
  * 
- * This hook now uses repository pattern for better testability and separation of concerns.
- * It creates and manages a repository instance, providing a React-friendly interface
- * to repository's data access methods.
+ * @returns {{ notificationData: NotificationStatusEntity, error: Error | null }} - Legacy notification data
+ */
+export const useNotificationData = () => {
+  const { getChatsCache } = chatQueries();
+  const chats = getChatsCache();
+  const { getSignedUserElseThrow } = useUserQueries();
+  const user = getSignedUserElseThrow();
+  const { data, isLoading, error } = useGetNotifications();
+
+  /**
+   * Flattens paginated notification data into a single array.
+   */
+  const flattenedNotifications = useMemo(() => {
+    return !!data ? data.pages.flatMap((page) => page.content) : [];
+  }, [data]);
+
+  /**
+   * Calculates unread chat status using domain logic.
+   */
+  const hasUnreadChat = useMemo(() => {
+    return hasUnreadMessages(chats, String(user.id));
+  }, [chats, user.id]);
+
+  /**
+   * Calculates pending notification status using domain logic.
+   */
+  const hasPendingNotification = useMemo(() => {
+    return hasPendingNotifications(flattenedNotifications);
+  }, [flattenedNotifications]);
+
+  /**
+   * Creates notification status entity using domain factory function.
+   */
+  const notificationData: NotificationStatusEntity = useMemo(() => {
+    return createNotificationStatus(hasPendingNotification, hasUnreadChat, isLoading);
+  }, [hasPendingNotification, hasUnreadChat, isLoading]);
+
+  return {
+    notificationData,
+    error
+  };
+};
+
+/**
+ * Repository pattern hook for future use - NOT WORKING YET
  * 
  * @param {RepositoryConfig} config - Optional configuration for repository creation
  * @param {INotificationRepository} repository - Optional repository injection for testing
@@ -26,7 +69,7 @@ import { createNotificationRepository, type RepositoryConfig } from "./Repositor
  *   isLoading: boolean
  * }} - Notification status and loading/error states
  */
-export const useNotificationData = (config?: RepositoryConfig, repository?: INotificationRepository) => {
+export const useNotificationDataWithRepository = (config?: RepositoryConfig, repository?: INotificationRepository) => {
   // Use injected repository or create one using factory
   const notificationRepository = repository || createNotificationRepository(config);
   

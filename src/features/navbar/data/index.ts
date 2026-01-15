@@ -17,4 +17,4 @@ export {
 } from "./RepositoryFactory";
 
 // Hooks
-export { useNotificationData, useNotificationDataLegacy } from "./useNotificationData";
+export { useNotificationData, useNotificationDataWithRepository } from "./useNotificationData";

@@ -5,7 +5,7 @@
  * and repository pattern integration.
  */
 
-import { useNotificationData, useNotificationDataLegacy } from "../data";
+import { useNotificationData, useNotificationDataWithRepository } from "../data";
 import { createMockNotificationRepository } from "../data";
 
 /**
@@ -63,15 +63,15 @@ export const testBackwardCompatibility = async (): Promise<void> => {
   try {
     // Test 1: Legacy hook availability
     console.log("✅ Test 1: Legacy hook availability");
-    console.log("Legacy hook exported:", typeof useNotificationDataLegacy === 'function');
+    console.log("Legacy hook exported:", typeof useNotificationData === 'function');
 
     // Test 2: New hook availability
     console.log("✅ Test 2: New hook availability");
-    console.log("New hook exported:", typeof useNotificationData === 'function');
+    console.log("New hook exported:", typeof useNotificationDataWithRepository === 'function');
 
     // Test 3: Hook signature compatibility
     console.log("✅ Test 3: Hook signature compatibility");
-    console.log("New hook supports injection:", useNotificationData.length >= 2);
+    console.log("New hook supports injection:", useNotificationDataWithRepository.length >= 2);
 
     console.log("🎉 All Backward Compatibility tests passed!");
   } catch (error) {

@@ -4,12 +4,11 @@
  * This class implements the INotificationRepository interface and handles
  * actual data fetching from external APIs (React Query, WebSocket, etc.).
  * It transforms raw API responses into domain entities.
+ * 
+ * Note: This implementation is designed to work with React hooks by accepting
+ * hook results as parameters rather than calling hooks directly.
  */
 
-import chatQueries from "@/api/queries/chatQueries";
-import useUserQueries from "@/api/queries/userQueries";
-import { useGetNotifications } from "@/services/data/useNotificationData";
-import { useMemo } from "react";
 import type { INotificationRepository } from "../domain/INotificationRepository";
 import { createNotificationStatus, hasUnreadMessages, hasPendingNotifications, NotificationStatusEntity } from "../domain";
 
@@ -25,36 +24,50 @@ export class NotificationRepository implements INotificationRepository {
   private error: Error | null = null;
 
   constructor() {
-    // Initialize data fetching hooks
-    this.initializeDataFetching();
+    // Constructor is now lightweight - data is initialized via initialize method
   }
 
   /**
-   * Initializes data fetching using React Query hooks.
-   * This method sets up the data sources and manages loading/error states.
+   * Initializes the repository with data from React hooks.
+   * This method should be called with data from React hooks to avoid
+   * calling hooks directly in the class constructor.
+   * 
+   * @param {any} chatData - Chat data from chatQueries()
+   * @param {any} userData - User data from useUserQueries()
+   * @param {any} notificationData - Notification data from useGetNotifications()
    */
-  private initializeDataFetching(): void {
+  initializeWithReactData(chatData: any, userData: any, notificationData: any): void {
     try {
-      // Get chat data
-      const { getChatsCache } = chatQueries();
-      this.chats = getChatsCache();
+      // Store chat data
+      this.chats = chatData;
 
-      // Get user data
-      const { getSignedUserElseThrow } = useUserQueries();
-      this.user = getSignedUserElseThrow();
+      // Store user data
+      this.user = userData;
 
-      // Get notification data
-      const { data, isLoading, error } = useGetNotifications();
-      
-      this.loadingState = isLoading;
-      this.error = error;
-      
-      // Flatten paginated notification data
-      this.notifications = !!data ? data.pages.flatMap((page) => page.content) : [];
+      // Store notification data and loading/error states
+      if (notificationData) {
+        this.notifications = !!notificationData.data 
+          ? notificationData.data.pages.flatMap((page: any) => page.content) 
+          : [];
+        this.loadingState = notificationData.isLoading;
+        this.error = notificationData.error;
+      }
     } catch (err) {
       this.error = err as Error;
       this.loadingState = false;
     }
+  }
+
+  /**
+   * Updates repository data when React hooks data changes.
+   * This method should be called whenever the underlying React Query data changes.
+   * 
+   * @param {any} chatData - Updated chat data
+   * @param {any} userData - Updated user data
+   * @param {any} notificationData - Updated notification data
+   */
+  updateReactData(chatData: any, userData: any, notificationData: any): void {
+    this.initializeWithReactData(chatData, userData, notificationData);
   }
 
   /**
