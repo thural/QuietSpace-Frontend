@@ -16,5 +16,5 @@ export {
   type RepositoryConfig 
 } from "./RepositoryFactory";
 
-// Hook (legacy - will be refactored to use repository pattern)
-export { useNotificationData } from "./useNotificationData";
+// Hooks
+export { useNotificationData, useNotificationDataLegacy } from "./useNotificationData";

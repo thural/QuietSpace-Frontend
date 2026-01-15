@@ -1,21 +1,81 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
 import chatQueries from "@/api/queries/chatQueries";
 import useUserQueries from "@/api/queries/userQueries";
 import { useGetNotifications } from "@/services/data/useNotificationData";
-import { useMemo } from "react";
-import { createNotificationStatus, hasUnreadMessages, hasPendingNotifications, NotificationStatusEntity } from "../domain";
+import type { INotificationRepository } from "../domain/INotificationRepository";
+import { 
+  NotificationStatusEntity, 
+  createNotificationStatus, 
+  hasUnreadMessages, 
+  hasPendingNotifications 
+} from "../domain";
+import { createNotificationRepository, type RepositoryConfig } from "./RepositoryFactory";
 
 /**
- * Data layer hook for managing notification and chat data.
+ * Data layer hook for managing notification and chat data using repository pattern.
  * 
- * This hook handles all external data fetching and transformation,
- * mapping raw API responses to domain entities.
+ * This hook now uses repository pattern for better testability and separation of concerns.
+ * It creates and manages a repository instance, providing a React-friendly interface
+ * to repository's data access methods.
  * 
+ * @param {RepositoryConfig} config - Optional configuration for repository creation
+ * @param {INotificationRepository} repository - Optional repository injection for testing
  * @returns {{
  *   notificationData: NotificationStatusEntity,
- *   error: Error | null
- * }} - Transformed notification data and any errors
+ *   error: Error | null,
+ *   isLoading: boolean
+ * }} - Notification status and loading/error states
  */
-export const useNotificationData = () => {
+export const useNotificationData = (config?: RepositoryConfig, repository?: INotificationRepository) => {
+  // Use injected repository or create one using factory
+  const notificationRepository = repository || createNotificationRepository(config);
+  
+  const [notificationData, setNotificationData] = useState<NotificationStatusEntity | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  /**
+   * Fetches notification data from repository.
+   */
+  const fetchNotificationData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const data = await notificationRepository.getNotificationStatus();
+      setNotificationData(data);
+    } catch (err) {
+      setError(err as Error);
+      setNotificationData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [notificationRepository]);
+
+  // Fetch data on mount and when repository changes
+  useEffect(() => {
+    fetchNotificationData();
+  }, [fetchNotificationData]);
+
+  // Return data and loading/error states
+  return {
+    notificationData: notificationData || {
+      hasPendingNotification: false,
+      hasUnreadChat: false,
+      isLoading: false
+    },
+    error,
+    isLoading: isLoading || notificationRepository.isLoading()
+  };
+};
+
+/**
+ * Legacy hook for backward compatibility.
+ * 
+ * @deprecated Use useNotificationData with repository pattern instead
+ * @returns {{ notificationData: NotificationStatusEntity, error: Error | null }} - Legacy notification data
+ */
+export const useNotificationDataLegacy = () => {
   const { getChatsCache } = chatQueries();
   const chats = getChatsCache();
   const { getSignedUserElseThrow } = useUserQueries();
