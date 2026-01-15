@@ -16,5 +16,18 @@ export {
   type RepositoryConfig 
 } from "./RepositoryFactory";
 
-// Hooks
+// Reactive Repository Pattern
+export { 
+  ReactiveNotificationRepository,
+  useReactiveNotificationRepository,
+  createReactiveNotificationRepository
+} from "./ReactiveNotificationRepository";
+
+// Enhanced hooks with proper React Query integration
+export { 
+  useNotificationDataEnhanced,
+  useNotificationDataWithRepo
+} from "./useNotificationDataEnhanced";
+
+// Legacy hooks
 export { useNotificationData, useNotificationDataWithRepository } from "./useNotificationData";
