@@ -6,9 +6,10 @@
  * These hooks provide the bridge between the data layer and presentation layer.
  */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ResId } from "@/api/schemas/inferred/common";
+import { getProfileRepository, initializeProfileContainer } from "../di";
 import { useProfileData, useProfileDataWithRepository } from "../data";
 import { useProfileWithState, useRealTimeProfile } from "../state";
 import useUserQueries from "@/api/queries/userQueries";
@@ -94,6 +95,14 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
   const [viewFollowers, setViewFollowers] = useState(false);
   const [viewFollowings, setViewFollowings] = useState(false);
 
+  // Initialize DI container from config (idempotent)
+  useEffect(() => {
+    initializeProfileContainer({
+      useMockRepositories: config.repositoryConfig?.useMockRepositories,
+      environment: (process.env.NODE_ENV as any) || "production"
+    });
+  }, [config.repositoryConfig?.useMockRepositories]);
+
   // Choose data source based on configuration
   const data = config.useRepositoryPattern 
     ? useProfileDataWithRepository(userId, config.repositoryConfig)
@@ -110,8 +119,11 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
     error
   } = data;
 
-  // Repository access (if available)
-  const repository = (data as any).repository;
+  // Repository access via DI container (singleton)
+  const repository = useMemo(
+    () => getProfileRepository(),
+    [config.repositoryConfig?.useMockRepositories]
+  );
 
   // Legacy compatibility data
   const {
@@ -144,14 +156,11 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
 
   // Refresh profile data
   const refreshProfile = useCallback(async () => {
-    if (repository?.refreshProfile) {
-      await repository.refreshProfile();
-    }
     // Fallback to React Query refetch if available
     if (user?.refetch) {
       await user.refetch();
     }
-  }, [repository, user]);
+  }, [user]);
 
   // Follow user action
   const followUser = useCallback(async () => {

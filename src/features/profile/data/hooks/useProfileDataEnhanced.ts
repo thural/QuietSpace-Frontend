@@ -4,7 +4,7 @@ import { useGetPostsByUserId } from "@/services/data/usePostData";
 import useUserQueries from "@/api/queries/userQueries";
 import type { ResId } from "@/api/schemas/inferred/common";
 
-import { createMockProfileRepository, createProfileRepository } from "../ProfileRepositoryFactory";
+import { getProfileRepository, initializeProfileContainer } from "../../di";
 import type { IProfileRepository } from "../../domain";
 import { createCompleteProfile } from "../../domain";
 import { ProfileAccessService } from "../../domain";
@@ -30,17 +30,21 @@ export const useProfileDataEnhanced = (userId: ResId, config?: ProfileRepository
   const { getSignedUserElseThrow } = useUserQueries();
   const signedUser = getSignedUserElseThrow();
 
+  // Initialize DI container from config (idempotent)
+  useEffect(() => {
+    initializeProfileContainer({
+      useMockRepositories: config?.useMockRepositories,
+      environment: (process.env.NODE_ENV as any) || "production"
+    });
+  }, [config?.useMockRepositories]);
+
   const user = useGetUserById(userId);
   const userPosts = useGetPostsByUserId(userId);
   const followers = useGetFollowers(userId);
   const followings = useGetFollowings(userId);
 
-  const repository: IProfileRepository = useMemo(() => {
-    if (config?.useMockRepositories) {
-      return createMockProfileRepository(config.mockConfig);
-    }
-    return createProfileRepository(config);
-  }, [config]);
+  // Get repository from DI container (singleton)
+  const repository: IProfileRepository = useMemo(() => getProfileRepository(), [config?.useMockRepositories]);
 
   // Keep repository updated with React Query data (reactive repository pattern)
   useEffect(() => {
