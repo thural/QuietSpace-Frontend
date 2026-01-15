@@ -59,6 +59,19 @@ export interface ProfileState {
   // Cache and performance
   cacheExpiry: number;
   retryCount: number;
+  
+  // Optimistic updates
+  optimisticFollows: Map<string | number, 'follow' | 'unfollow'>;
+  pendingUpdates: Set<string>;
+  
+  // Background sync
+  syncInProgress: boolean;
+  syncQueue: Array<{ type: string; data: any; timestamp: number }>;
+  lastBackgroundSync: number | null;
+  
+  // Real-time subscriptions
+  subscriptions: Map<string, () => void>;
+  realTimeEnabled: boolean;
 }
 
 /**
@@ -116,6 +129,25 @@ export interface ProfileActions {
   resetProfileState: () => void;
   resetUIState: () => void;
   resetAllState: () => void;
+  
+  // Optimistic update actions
+  setOptimisticFollow: (userId: string | number, action: 'follow' | 'unfollow') => void;
+  clearOptimisticFollow: (userId: string | number) => void;
+  addPendingUpdate: (updateId: string) => void;
+  removePendingUpdate: (updateId: string) => void;
+  
+  // Background sync actions
+  setSyncInProgress: (inProgress: boolean) => void;
+  addToSyncQueue: (item: { type: string; data: any }) => void;
+  removeFromSyncQueue: (index: number) => void;
+  clearSyncQueue: () => void;
+  setLastBackgroundSync: (time: number) => void;
+  
+  // Real-time actions
+  addSubscription: (id: string, unsubscribe: () => void) => void;
+  removeSubscription: (id: string) => void;
+  setRealTimeEnabled: (enabled: boolean) => void;
+  clearAllSubscriptions: () => void;
 }
 
 /**
@@ -150,6 +182,19 @@ export const useProfileStore = create<ProfileState & ProfileActions>()(
       lastSyncTime: null,
       cacheExpiry: 5 * 60 * 1000, // 5 minutes
       retryCount: 0,
+      
+      // Optimistic updates
+      optimisticFollows: new Map(),
+      pendingUpdates: new Set(),
+      
+      // Background sync
+      syncInProgress: false,
+      syncQueue: [],
+      lastBackgroundSync: null,
+      
+      // Real-time subscriptions
+      subscriptions: new Map(),
+      realTimeEnabled: false,
 
       // Profile data actions
       setUserProfile: (profile) => {
@@ -338,8 +383,100 @@ export const useProfileStore = create<ProfileState & ProfileActions>()(
           isOnline: navigator.onLine,
           lastSyncTime: Date.now(),
           cacheExpiry: 5 * 60 * 1000,
-          retryCount: 0
+          retryCount: 0,
+          optimisticFollows: new Map(),
+          pendingUpdates: new Set(),
+          syncInProgress: false,
+          syncQueue: [],
+          lastBackgroundSync: null,
+          subscriptions: new Map(),
+          realTimeEnabled: false
         });
+      },
+      
+      // Optimistic update actions
+      setOptimisticFollow: (userId, action) => {
+        const current = get().optimisticFollows;
+        const updated = new Map(current);
+        updated.set(userId, action);
+        set({ optimisticFollows: updated });
+      },
+      
+      clearOptimisticFollow: (userId) => {
+        const current = get().optimisticFollows;
+        const updated = new Map(current);
+        updated.delete(userId);
+        set({ optimisticFollows: updated });
+      },
+      
+      addPendingUpdate: (updateId) => {
+        const current = get().pendingUpdates;
+        const updated = new Set(current);
+        updated.add(updateId);
+        set({ pendingUpdates: updated });
+      },
+      
+      removePendingUpdate: (updateId) => {
+        const current = get().pendingUpdates;
+        const updated = new Set(current);
+        updated.delete(updateId);
+        set({ pendingUpdates: updated });
+      },
+      
+      // Background sync actions
+      setSyncInProgress: (inProgress) => {
+        set({ syncInProgress: inProgress });
+      },
+      
+      addToSyncQueue: (item) => {
+        const current = get().syncQueue;
+        set({ 
+          syncQueue: [...current, { ...item, timestamp: Date.now() }] 
+        });
+      },
+      
+      removeFromSyncQueue: (index) => {
+        const current = get().syncQueue;
+        set({ 
+          syncQueue: current.filter((_, i) => i !== index) 
+        });
+      },
+      
+      clearSyncQueue: () => {
+        set({ syncQueue: [] });
+      },
+      
+      setLastBackgroundSync: (time) => {
+        set({ lastBackgroundSync: time });
+      },
+      
+      // Real-time actions
+      addSubscription: (id, unsubscribe) => {
+        const current = get().subscriptions;
+        const updated = new Map(current);
+        updated.set(id, unsubscribe);
+        set({ subscriptions: updated });
+      },
+      
+      removeSubscription: (id) => {
+        const current = get().subscriptions;
+        const unsubscribe = current.get(id);
+        if (unsubscribe) {
+          unsubscribe();
+        }
+        const updated = new Map(current);
+        updated.delete(id);
+        set({ subscriptions: updated });
+      },
+      
+      setRealTimeEnabled: (enabled) => {
+        set({ realTimeEnabled: enabled });
+      },
+      
+      clearAllSubscriptions: () => {
+        const current = get().subscriptions;
+        current.forEach(unsubscribe => unsubscribe());
+        set({ subscriptions: new Map() });
       }
     }),
     {

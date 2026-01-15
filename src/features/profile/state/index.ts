@@ -15,3 +15,4 @@ export {
   useProfileWithState,
   useRealTimeProfile
 } from "./useProfileState";
+export { useAdvancedProfileState } from "./useAdvancedProfileState";
