@@ -3,5 +3,13 @@
  * Provides a clean public API for the application layer.
  */
 
-export { useNavbar } from "./useNavbar";
-export type { NavigationItems, NavigationConfig, NavigationIconConfig } from "./useNavbar";
+// Enhanced hooks with repository pattern support
+export { 
+  useNavbar, 
+  useNavbarEnhanced, 
+  useNavbarLegacy,
+  type NavbarConfig,
+  type NavigationIconConfig,
+  type NavigationConfig,
+  type NavigationItems
+} from "./useNavbar";
