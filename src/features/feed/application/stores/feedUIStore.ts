@@ -44,7 +44,7 @@ export interface FeedUIState {
     hasPendingOperations: boolean;
     optimisticUpdates: Array<{
         id: string;
-        type: 'create' | 'update' | 'delete';
+        type: 'create' | 'update' | 'delete' | 'repost';
         timestamp: Date;
         data: any;
     }>;
@@ -92,7 +92,7 @@ export interface FeedUIActions {
     // Optimistic Update Actions
     addOptimisticUpdate: (update: {
         id: string;
-        type: 'create' | 'update' | 'delete';
+        type: 'create' | 'update' | 'delete' | 'repost';
         timestamp: Date;
         data: any;
     }) => void;
@@ -103,7 +103,7 @@ export interface FeedUIActions {
 /**
  * Feed UI store using Zustand
  */
-export const useFeedUIStore = create<FeedUIState>((set, get) => ({
+export const useFeedUIStore = create<FeedUIState & FeedUIActions>((set, get) => ({
     // Initial state
     isCreatePostFormOpen: false,
     isFilterPanelOpen: false,
@@ -132,7 +132,61 @@ export const useFeedUIStore = create<FeedUIState>((set, get) => ({
     
     // Optimistic updates state
     hasPendingOperations: false,
-    optimisticUpdates: []
+    optimisticUpdates: [],
+    
+    // UI Actions
+    openCreatePostForm: () => set({ isCreatePostFormOpen: true }),
+    closeCreatePostForm: () => set({ isCreatePostFormOpen: false }),
+    toggleCreatePostForm: () => set(state => ({ isCreatePostFormOpen: !state.isCreatePostFormOpen })),
+    
+    openFilterPanel: () => set({ isFilterPanelOpen: true }),
+    closeFilterPanel: () => set({ isFilterPanelOpen: false }),
+    toggleFilterPanel: () => set(state => ({ isFilterPanelOpen: !state.isFilterPanelOpen })),
+    
+    setActiveFilter: (filter: string) => set({ activeFilter: filter }),
+    setSearchQuery: (query: string) => set({ searchQuery: query }),
+    clearSearchQuery: () => set({ searchQuery: '' }),
+    
+    selectPost: (postId: string) => set({ selectedPostId: postId }),
+    clearSelectedPost: () => set({ selectedPostId: null }),
+    
+    // Pagination Actions
+    setCurrentPage: (page: number) => set({ currentPage: page }),
+    setPageSize: (size: number) => set({ pageSize: size }),
+    setHasNextPage: (hasNext: boolean) => set({ hasNextPage: hasNext }),
+    setFetchingNextPage: (isFetching: boolean) => set({ isFetchingNextPage: isFetching }),
+    
+    // Real-time Actions
+    setConnectionStatus: (status: FeedUIState['connectionStatus']) => set({ connectionStatus: status }),
+    setLastSyncTime: (time: Date | null) => set({ lastSyncTime: time }),
+    
+    // Loading Actions
+    setLoading: (loading: boolean) => set({ isLoading: loading }),
+    setRefreshing: (refreshing: boolean) => set({ isRefreshing: refreshing }),
+    setLoadingMore: (loading: boolean) => set({ isLoadingMore: loading }),
+    
+    // Error Actions
+    setError: (error: string | null) => set({ error }),
+    clearError: () => set({ error: null }),
+    
+    // Optimistic Update Actions
+    addOptimisticUpdate: (update: {
+        id: string;
+        type: 'create' | 'update' | 'delete' | 'repost';
+        timestamp: Date;
+        data: any;
+    }) => set(state => ({
+        optimisticUpdates: [...state.optimisticUpdates, update],
+        hasPendingOperations: true
+    })),
+    removeOptimisticUpdate: (id: string) => set(state => ({
+        optimisticUpdates: state.optimisticUpdates.filter(update => update.id !== id),
+        hasPendingOperations: state.optimisticUpdates.length > 1
+    })),
+    clearOptimisticUpdates: () => set({ 
+        optimisticUpdates: [], 
+        hasPendingOperations: false 
+    })
 }));
 
 /**
