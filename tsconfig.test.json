@@ -7,8 +7,19 @@
         "allowSyntheticDefaultImports": true,
         "types": [
             "jest",
-            "node",
-            "@testing-library/jest-dom"
+            "node"
+        ],
+        "typeRoots": [
+            "./node_modules/@types",
+            "./src/types",
+            "./src/__mocks__"
         ]
-    }
+    },
+    "include": [
+        "src/**/__tests__/**/*",
+        "src/**/*.test.*",
+        "src/**/*.spec.*",
+        "test/**/*",
+        "src/types/**/*.d.ts"
+    ]
 }

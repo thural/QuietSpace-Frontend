@@ -1,7 +1,7 @@
 // jest.config.cjs
 module.exports = {
 
-    preset: 'ts-jest',
+    preset: 'ts-jest/presets/default-esm',
     testEnvironment: 'jsdom',
     roots: ['<rootDir>/src', '<rootDir>/test'],  // Include the test directory
 
@@ -11,6 +11,7 @@ module.exports = {
     globals: {
         'ts-jest': {
             useESM: true,
+            tsconfig: 'tsconfig.test.json', // Use test-specific TypeScript config
         },
     },
 
@@ -49,8 +50,7 @@ module.exports = {
     coverageReporters: ['text', 'lcov'],
 
     // Setup files
-    setupFiles: ['<rootDir>/jest.setup.js'],
-    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'], // Correct path to setup file
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.cjs'],
 
     // Ignore specific paths
     testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/'],

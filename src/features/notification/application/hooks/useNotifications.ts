@@ -33,6 +33,7 @@ export interface NotificationState {
     error: Error | null;
     filters: NotificationFilters;
     searchQuery: string;
+    activeFilter: string | null;
 }
 
 /**
@@ -54,6 +55,7 @@ export interface NotificationActions {
     // State management
     setSelectedNotification: (notification: NotificationResponse | null) => void;
     setFilters: (filters: NotificationFilters) => void;
+    setActiveFilter: (filter: string | null) => void;
     setSearchQuery: (query: string) => void;
     clearError: () => void;
     refresh: () => void;
@@ -76,6 +78,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     const [error, setError] = useState<Error | null>(null);
     const [filters, setFilters] = useState<NotificationFilters>({});
     const [searchQuery, setSearchQuery] = useState('');
+    const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
     // Get authentication token
     const getAuthToken = useCallback((): string => {
@@ -320,6 +323,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
         error,
         filters,
         searchQuery,
+        activeFilter,
         
         // Actions
         fetchNotifications,
@@ -332,6 +336,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
         searchNotifications,
         setSelectedNotification,
         setFilters,
+        setActiveFilter,
         setSearchQuery,
         clearError,
         refresh,
