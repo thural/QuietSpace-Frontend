@@ -22,3 +22,6 @@ export * from './domain';
 
 // Data layer
 export * from './data';
+
+// Dependency Injection
+export * from './di';

@@ -8,6 +8,7 @@
 import { PostList } from "@/api/schemas/inferred/post";
 import { useEffect, useState } from "react";
 import useDebounce from "@/services/hook/search/useDebounce";
+import { useSearchService } from "./useSearchDI";
 
 /**
  * PostSearchState interface.
@@ -45,6 +46,7 @@ const usePostSearch = (query: string) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [prevQuery, setPrevQuery] = useState('');
+    const searchService = useSearchService();
 
     /**
      * Fetches posts based on the provided search query.
@@ -63,11 +65,9 @@ const usePostSearch = (query: string) => {
             setError(null);
             
             try {
-                // TODO: Replace with actual API call through repository
-                // For now, keeping the existing mutation approach
-                // This will be updated in Priority 2 with DI setup
-                console.log('Fetching posts for query:', value);
-                // fetchPostQuery.mutate(value);
+                // Use injected search service
+                const results = await searchService.searchPosts(value);
+                setPostQueryResult(results);
                 
                 // Update the previous query to the current one to track changes
                 setPrevQuery(value);

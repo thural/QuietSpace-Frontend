@@ -1,0 +1,173 @@
+/**
+ * Search Dependency Injection Container.
+ * 
+ * Manages dependency injection for the Search feature.
+ * Provides centralized dependency management and configuration.
+ */
+
+import type { ISearchRepository } from "../data/repositories/SearchRepository";
+import { UserSearchRepository } from "../data/repositories/UserSearchRepository";
+import { PostSearchRepository } from "../data/repositories/PostSearchRepository";
+import { MockSearchRepository } from "../data/repositories/MockSearchRepository";
+import { SearchService } from "../application/services/SearchService";
+import { SearchQueryService } from "../application/services/SearchQueryService";
+
+/**
+ * DI Container configuration options.
+ */
+export interface DIContainerConfig {
+    useMockRepositories?: boolean;
+    enableLogging?: boolean;
+}
+
+/**
+ * Search DI Container.
+ * 
+ * Manages dependency registration and resolution for Search feature.
+ */
+export class SearchDIContainer {
+    private repositories: Map<string, ISearchRepository> = new Map();
+    private services: Map<string, any> = new Map();
+    private config: DIContainerConfig;
+
+    constructor(config: DIContainerConfig = {}) {
+        this.config = {
+            useMockRepositories: true,
+            enableLogging: false,
+            ...config
+        };
+        this.initializeDependencies();
+    }
+
+    /**
+     * Initialize all dependencies based on configuration.
+     */
+    private initializeDependencies(): void {
+        this.registerRepositories();
+        this.registerServices();
+    }
+
+    /**
+     * Register repository dependencies.
+     */
+    private registerRepositories(): void {
+        const repository = this.config.useMockRepositories 
+            ? new MockSearchRepository()
+            : this.createProductionRepositories();
+
+        this.repositories.set('search', repository);
+        this.repositories.set('userSearch', new UserSearchRepository());
+        this.repositories.set('postSearch', new PostSearchRepository());
+    }
+
+    /**
+     * Create production repository instances.
+     */
+    private createProductionRepositories(): ISearchRepository {
+        // TODO: Implement production repositories
+        // This would typically connect to real APIs
+        if (this.config.enableLogging) {
+            console.log('Initializing production repositories');
+        }
+        return new MockSearchRepository(); // Fallback to mock for now
+    }
+
+    /**
+     * Register service dependencies.
+     */
+    private registerServices(): void {
+        const searchRepository = this.repositories.get('search')!;
+
+        this.services.set('searchService', new SearchService(searchRepository));
+        this.services.set('queryService', new SearchQueryService());
+    }
+
+    /**
+     * Get repository by key.
+     */
+    getRepository<T extends ISearchRepository>(key: string): T {
+        const repository = this.repositories.get(key);
+        if (!repository) {
+            throw new Error(`Repository '${key}' not found in container`);
+        }
+        return repository as T;
+    }
+
+    /**
+     * Get service by key.
+     */
+    getService<T>(key: string): T {
+        const service = this.services.get(key);
+        if (!service) {
+            throw new Error(`Service '${key}' not found in container`);
+        }
+        return service as T;
+    }
+
+    /**
+     * Get search service.
+     */
+    getSearchService(): SearchService {
+        return this.getService<SearchService>('searchService');
+    }
+
+    /**
+     * Get query service.
+     */
+    getQueryService(): SearchQueryService {
+        return this.getService<SearchQueryService>('queryService');
+    }
+
+    /**
+     * Get user search repository.
+     */
+    getUserSearchRepository(): UserSearchRepository {
+        return this.getRepository<UserSearchRepository>('userSearch');
+    }
+
+    /**
+     * Get post search repository.
+     */
+    getPostSearchRepository(): PostSearchRepository {
+        return this.getRepository<PostSearchRepository>('postSearch');
+    }
+
+    /**
+     * Update configuration and reinitialize dependencies.
+     */
+    updateConfig(newConfig: Partial<DIContainerConfig>): void {
+        this.config = { ...this.config, ...newConfig };
+        this.repositories.clear();
+        this.services.clear();
+        this.initializeDependencies();
+    }
+
+    /**
+     * Get current configuration.
+     */
+    getConfig(): DIContainerConfig {
+        return { ...this.config };
+    }
+}
+
+/**
+ * Global DI container instance.
+ */
+let globalContainer: SearchDIContainer | null = null;
+
+/**
+ * Get or create global DI container.
+ */
+export const getSearchDIContainer = (config?: DIContainerConfig): SearchDIContainer => {
+    if (!globalContainer || config) {
+        globalContainer = new SearchDIContainer(config);
+    }
+    return globalContainer;
+};
+
+/**
+ * Reset global DI container (useful for testing).
+ */
+export const resetSearchDIContainer = (): void => {
+    globalContainer = null;
+};

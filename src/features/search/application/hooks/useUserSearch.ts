@@ -8,6 +8,7 @@
 import { UserList } from "@/api/schemas/inferred/user";
 import { useEffect, useState } from "react";
 import useDebounce from "@/services/hook/search/useDebounce";
+import { useSearchService } from "./useSearchDI";
 
 /**
  * UserSearchState interface.
@@ -45,6 +46,7 @@ const useUserSearch = (query: string) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [prevQuery, setPrevQuery] = useState('');
+    const searchService = useSearchService();
 
     /**
      * Fetches users based on the provided search query.
@@ -63,11 +65,9 @@ const useUserSearch = (query: string) => {
             setError(null);
             
             try {
-                // TODO: Replace with actual API call through repository
-                // For now, keeping the existing mutation approach
-                // This will be updated in Priority 2 with DI setup
-                console.log('Fetching users for query:', value);
-                // fetchUserQuery.mutate(value);
+                // Use injected search service
+                const results = await searchService.searchUsers(value);
+                setUserQueryResult(results);
                 
                 // Update the previous query to the current one to track changes
                 setPrevQuery(value);

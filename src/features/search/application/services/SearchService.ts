@@ -8,6 +8,7 @@
 import type { UserList } from "@/api/schemas/inferred/user";
 import type { PostList } from "@/api/schemas/inferred/post";
 import type { SearchQuery, SearchResult } from "../../domain/entities";
+import type { ISearchRepository } from "../../data/repositories/SearchRepository";
 
 /**
  * SearchService interface.
@@ -31,10 +32,7 @@ export interface ISearchService {
  */
 export class SearchService implements ISearchService {
     constructor(
-        // TODO: Add repositories through DI in Priority 2
-        // private userSearchRepository: IUserSearchRepository,
-        // private postSearchRepository: IPostSearchRepository,
-        // private searchHistoryService: ISearchHistoryService
+        private searchRepository: ISearchRepository
     ) {}
 
     /**
@@ -44,9 +42,7 @@ export class SearchService implements ISearchService {
      * @returns Promise resolving to list of users
      */
     async searchUsers(query: string): Promise<UserList> {
-        // TODO: Implement through repository in Priority 2
-        console.log('SearchService: Searching users for query:', query);
-        return [];
+        return this.searchRepository.searchUsers(query);
     }
 
     /**
@@ -56,9 +52,7 @@ export class SearchService implements ISearchService {
      * @returns Promise resolving to list of posts
      */
     async searchPosts(query: string): Promise<PostList> {
-        // TODO: Implement through repository in Priority 2
-        console.log('SearchService: Searching posts for query:', query);
-        return [];
+        return this.searchRepository.searchPosts(query);
     }
 
     /**
