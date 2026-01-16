@@ -5,9 +5,9 @@
  * Integrates with existing API endpoints and data sources.
  */
 
-import type { NotificationPage, NotificationResponse, NotificationType } from "@/api/schemas/inferred/notification";
-import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
-import type { ReactionType } from "@/api/schemas/inferred/reaction";
+import type { NotificationPage, NotificationResponse, NotificationType } from "@api/schemas/inferred/notification";
+import type { ResId, JwtToken } from "@api/schemas/inferred/common";
+import type { ReactionType } from "@api/schemas/inferred/reaction";
 import type { INotificationRepository, NotificationQuery, NotificationFilters } from "../../domain/entities/INotificationRepository";
 import { 
     fetchNotifications, 
@@ -15,7 +15,7 @@ import {
     fetchCountOfPendingNotifications, 
     fetchSeenNotification 
 } from "@api/requests/notificationRequests";
-import { buildPageParams } from "@/utils/fetchUtils";
+import { buildPageParams } from "@utils/fetchUtils";
 
 /**
  * Notification Repository implementation.

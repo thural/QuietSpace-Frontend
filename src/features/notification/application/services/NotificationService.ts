@@ -6,8 +6,8 @@
  */
 
 import type { INotificationRepository, NotificationQuery, NotificationFilters } from "../../domain/entities/INotificationRepository";
-import type { NotificationPage, NotificationResponse, NotificationType } from "@/api/schemas/inferred/notification";
-import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
+import type { NotificationPage, NotificationResponse, NotificationType } from "@api/schemas/inferred/notification";
+import type { ResId, JwtToken } from "@api/schemas/inferred/common";
 
 /**
  * Notification Service interface.

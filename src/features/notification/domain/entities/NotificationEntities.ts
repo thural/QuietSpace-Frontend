@@ -5,8 +5,8 @@
  * These are pure TypeScript interfaces with no external dependencies.
  */
 
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { NotificationType, NotificationResponse } from "@/api/schemas/inferred/notification";
+import type { ResId } from "@api/schemas/inferred/common";
+import type { NotificationType, NotificationResponse } from "@api/schemas/inferred/notification";
 
 /**
  * Notification Query entity.

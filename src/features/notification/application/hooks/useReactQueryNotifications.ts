@@ -7,8 +7,8 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
-import type { NotificationPage, NotificationResponse, NotificationType } from "@/api/schemas/inferred/notification";
-import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
+import type { NotificationPage, NotificationResponse, NotificationType } from "@api/schemas/inferred/notification";
+import type { ResId, JwtToken } from "@api/schemas/inferred/common";
 import type { INotificationRepository } from "../../domain/entities/INotificationRepository";
 import { useNotificationDI } from "../../di/useNotificationDI";
 
@@ -56,7 +56,8 @@ export const useReactQueryNotifications = (config?: { useReactQuery?: boolean })
                 setError(null);
                 // This would typically get the current user ID from auth store
                 const userId = 'current-user'; // Placeholder
-                return await notificationRepository.getNotifications({ userId });
+                const token = 'test-token'; // Placeholder
+                return await notificationRepository.getNotifications({ userId }, token);
             } catch (err) {
                 setError(err as Error);
                 throw err;
@@ -155,7 +156,7 @@ export const useReactQueryNotifications = (config?: { useReactQuery?: boolean })
     const prefetchNotifications = useCallback(async (userId: string) => {
         await queryClient.prefetchQuery({
             queryKey: ['notifications'],
-            queryFn: () => notificationRepository.getNotifications({ userId }),
+            queryFn: () => notificationRepository.getNotifications({ userId }, 'test-token'),
             staleTime: 1000 * 60 * 3,
         });
     }, [notificationRepository, queryClient]);

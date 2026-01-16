@@ -25,6 +25,7 @@ module.exports = {
         '^@api/(.*)$': '<rootDir>/src/api/$1',
         '^@features/(.*)$': '<rootDir>/src/features/$1',
         '^@chat/(.*)$': '<rootDir>/src/features/chat/$1',
+        '^@notification/(.*)$': '<rootDir>/src/features/notification/$1',
         '^stompjs$': '<rootDir>/src/__mocks__/stompjs.ts',
         '^sockjs-client$': '<rootDir>/test/mocks/sockjs-client.js',
         // Handle CSS and other asset imports

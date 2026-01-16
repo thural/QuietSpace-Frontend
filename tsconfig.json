@@ -48,6 +48,9 @@
       ],
       "@chat/*": [
         "src/features/chat/*"
+      ],
+      "@notification/*": [
+        "src/features/notification/*"
       ]
     },
     "esModuleInterop": true,

@@ -5,10 +5,10 @@
  * Provides in-memory data storage and simulated API responses.
  */
 
-import type { NotificationPage, NotificationResponse, NotificationType } from "@/api/schemas/inferred/notification";
-import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
+import type { NotificationPage, NotificationResponse, NotificationType } from "@api/schemas/inferred/notification";
+import type { ResId, JwtToken } from "@api/schemas/inferred/common";
 import type { INotificationRepository, NotificationQuery, NotificationFilters } from "../../domain/entities/INotificationRepository";
-import type { ReactionType } from "@/api/schemas/inferred/reaction";
+import type { ReactionType } from "@api/schemas/inferred/reaction";
 
 /**
  * Mock Notification Repository implementation.
