@@ -6,7 +6,8 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useSearchService, useQueryService } from "./useSearchDI";
+import { useSearchService, useQueryService, useSearchDI } from "./useSearchDI";
+import { useReactQuerySearch } from "./useReactQuerySearch";
 
 /**
  * SearchState interface.
@@ -18,6 +19,13 @@ export interface SearchState {
     focused: boolean;
     userQuery: string;
     postQuery: string;
+    userQueryList: any[];
+    postQueryList: any[];
+    isLoading?: boolean;
+    error?: Error | null;
+    invalidateCache?: () => void;
+    prefetchUsers?: (query: string, filters?: any) => Promise<void>;
+    prefetchPosts?: (query: string, filters?: any) => Promise<void>;
 }
 
 /**
@@ -50,7 +58,16 @@ const useSearch = () => {
     const searchService = useSearchService();
     const queryService = useQueryService();
 
-    // Initialize empty states
+    // Get DI container configuration
+    const diContainer = useSearchDI();
+    const config = diContainer.getConfig();
+
+    // Use React Query if enabled, otherwise use traditional approach
+    const reactQuerySearch = config.useReactQuery 
+        ? useReactQuerySearch(userQuery, postQuery)
+        : null;
+
+    // Initialize empty states for traditional approach
     const [userQueryList, setUserQueryList] = useState([]);
     const [postQueryList, setPostQueryList] = useState([]);
 
@@ -132,15 +149,35 @@ const useSearch = () => {
         focused,
         userQuery,
         postQuery,
-        userQueryList,
-        postQueryList,
+        
+        // Use React Query results if enabled, otherwise use traditional state
+        userQueryList: config.useReactQuery ? reactQuerySearch?.userResults.data || [] : userQueryList,
+        postQueryList: config.useReactQuery ? reactQuerySearch?.postResults.data || [] : postQueryList,
+        
+        // Loading state from React Query if enabled, otherwise manual state
+        isLoading: config.useReactQuery ? reactQuerySearch?.isLoading || false : false,
+        
+        // Error state from React Query if enabled, otherwise manual state
+        error: config.useReactQuery ? reactQuerySearch?.error || null : null,
+        
         handleInputChange,
         handleKeyDown,
         handleInputFocus,
         handleInputBlur,
         setUserQuery,
-        fetchUserQuery,
-        fetchPostQuery
+        
+        // Use React Query actions if enabled, otherwise traditional actions
+        fetchUserQuery: config.useReactQuery 
+            ? (query: string) => reactQuerySearch?.prefetchUsers(query)
+            : fetchUserQuery,
+        fetchPostQuery: config.useReactQuery 
+            ? (query: string) => reactQuerySearch?.prefetchPosts(query)
+            : fetchPostQuery,
+            
+        // Additional React Query actions
+        invalidateCache: config.useReactQuery ? reactQuerySearch?.invalidateCache : undefined,
+        prefetchUsers: config.useReactQuery ? reactQuerySearch?.prefetchUsers : undefined,
+        prefetchPosts: config.useReactQuery ? reactQuerySearch?.prefetchPosts : undefined
     };
 }
 

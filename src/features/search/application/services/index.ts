@@ -4,5 +4,9 @@
  * Exports all services from the application layer.
  */
 
-export { SearchService } from './SearchService';
-export { SearchQueryService } from './SearchQueryService';
+// Search services
+export { SearchService, type ISearchService } from './SearchService';
+export { SearchQueryService, type ISearchQueryService } from './SearchQueryService';
+
+// React Query services
+export { ReactQuerySearchService, type IReactQuerySearchService } from './ReactQuerySearchService';

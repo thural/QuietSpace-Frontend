@@ -4,12 +4,13 @@
  * Exports all hooks from the application layer.
  */
 
-// Main search hook
+// Main search hooks
 export { default as useSearch } from './useSearch';
-
-// Domain-specific search hooks
 export { default as useUserSearch } from './useUserSearch';
 export { default as usePostSearch } from './usePostSearch';
+
+// React Query hooks
+export { useReactQuerySearch } from './useReactQuerySearch';
 
 // Dependency Injection hooks
 export { useSearchDI, useSearchService, useQueryService, useUserSearchRepository, usePostSearchRepository } from './useSearchDI';
