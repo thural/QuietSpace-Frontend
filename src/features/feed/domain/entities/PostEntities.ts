@@ -61,6 +61,106 @@ export class Post {
         public readonly tags?: string[]
     ) {}
 
+    // Getter methods
+    getId(): ResId {
+        return this.id;
+    }
+
+    getContent(): string {
+        return this.content;
+    }
+
+    getAuthorId(): ResId {
+        return this.authorId;
+    }
+
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    getUpdatedAt(): Date {
+        return this.updatedAt;
+    }
+
+    getEngagement(): PostEngagement {
+        return this.engagement;
+    }
+
+    getPoll(): PollResponse | undefined {
+        return this.poll;
+    }
+
+    getMedia(): string[] | undefined {
+        return this.media;
+    }
+
+    getTags(): string[] | undefined {
+        return this.tags;
+    }
+
+    getVisibility(): PostVisibility {
+        return this.visibility;
+    }
+
+    /**
+     * Calculate engagement score based on various metrics
+     */
+    calculateEngagementScore(): number {
+        return this.engagement.likesCount + 
+               (this.engagement.commentsCount * 2) + 
+               (this.engagement.repostsCount * 3) + 
+               (this.engagement.sharesCount * 1.5) +
+               (this.engagement.pollVotesCount || 0);
+    }
+
+    /**
+     * Validate post content
+     */
+    validateContent(content: string): boolean {
+        return content.length >= POST_VALIDATION.MIN_LENGTH && content.length <= POST_VALIDATION.MAX_LENGTH;
+    }
+
+    /**
+     * Check if post is pinned
+     */
+    isPinned(): boolean {
+        return this.visibility.isPinned;
+    }
+
+    /**
+     * Check if post is featured
+     */
+    isFeatured(): boolean {
+        return this.visibility.isFeatured;
+    }
+
+    /**
+     * Update post content (modifies and returns same instance)
+     */
+    updateContent(newContent: string): Post {
+        (this as any).content = newContent;
+        (this as any).updatedAt = new Date();
+        return this;
+    }
+
+    /**
+     * Toggle pin status (modifies and returns same instance)
+     */
+    togglePin(): Post {
+        (this as any).visibility = {
+            ...this.visibility,
+            isPinned: !this.visibility.isPinned
+        };
+        return this;
+    }
+
+    /**
+     * Check if post has poll (alias for isPoll)
+     */
+    hasPoll(): boolean {
+        return this.isPoll();
+    }
+
     /**
      * Check if post is currently trending
      */
@@ -150,11 +250,16 @@ export class PostFactory {
 /**
  * Post content validation rules
  */
-export const POST_VALIDATION: PostContentValidation = {
+export const POST_VALIDATION = {
     maxLength: 2000,
     allowedFormats: ['text', 'markdown', 'html'],
     hasMediaLimit: true,
-    maxMediaCount: 10
+    maxMediaCount: 10,
+    MIN_LENGTH: 1,
+    MAX_LENGTH: 2000,
+    MIN_TITLE_LENGTH: 1,
+    MAX_TITLE_LENGTH: 200,
+    ALLOWED_TAGS: ['general', 'tech', 'lifestyle']
 };
 
 /**
