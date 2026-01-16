@@ -5,7 +5,7 @@
  */
 
 // Repository interfaces
-export type { IChatRepository } from './entities/ChatRepository';
+export type { IChatRepository } from './entities/IChatRepository';
 
 // Domain entities
 export type {

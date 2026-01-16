@@ -8,7 +8,7 @@
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import type { ResId } from "@/api/schemas/inferred/common";
 import type { JwtToken } from "@/api/schemas/inferred/common";
-import type { IChatRepository } from "../../../domain/entities/ChatRepository";
+import type { IChatRepository } from "../../../domain/entities/IChatRepository";
 import { fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../../../../api/requests/chatRequests";
 import { fetchMessages } from "../../../../api/requests/messageRequests";
 
