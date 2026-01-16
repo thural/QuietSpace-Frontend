@@ -8,6 +8,8 @@
 import type { UserList } from "@/api/schemas/inferred/user";
 import type { SearchFilters } from "../../domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
+import { fetchUsersByQuery } from "../../../../api/requests/userRequests";
+import type { JwtToken } from "@/api/schemas/inferred/common";
 
 /**
  * IUserSearchRepository interface.
@@ -77,7 +79,9 @@ export interface IUserSearchRepository extends BaseSearchRepository {
  * Integrates with existing user search APIs and data sources.
  */
 export class UserSearchRepository extends BaseSearchRepository implements IUserSearchRepository {
-    constructor() {
+    private token: JwtToken | null;
+
+    constructor(token: JwtToken | null = null) {
         super({
             supportsUserSearch: true,
             supportsPostSearch: false,
@@ -89,6 +93,7 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
             supportedAlgorithms: ['fulltext', 'fuzzy'],
             supportsCaching: true
         });
+        this.token = token;
     }
 
     /**
@@ -99,13 +104,22 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
      * @returns Promise resolving to user list
      */
     async searchUsers(query: string, filters?: SearchFilters): Promise<UserList> {
-        // TODO: Implement with actual API calls in Priority 2
-        // For now, keeping the existing approach
-        console.log('UserSearchRepository: Searching users with query:', query, 'filters:', filters);
-        
-        // This will be connected to the existing useQueryUsers hook
-        // and the fetchUsersByQuery API call
-        return [];
+        try {
+            console.log('UserSearchRepository: Searching users with query:', query, 'filters:', filters);
+            
+            // Use existing API function
+            const response = await fetchUsersByQuery(query, this.token);
+            
+            // Extract users from response content
+            const users = response.content || [];
+            
+            console.log('UserSearchRepository: Found', users.length, 'users');
+            
+            return users;
+        } catch (error) {
+            console.error('UserSearchRepository: Error searching users:', error);
+            return [];
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ export const developmentConfig: DIContainerConfig = {
  */
 export const productionConfig: DIContainerConfig = {
     useMockRepositories: false,
-    enableLogging: false
+    enableLogging: true // Enable logging in production for debugging
 };
 
 /**

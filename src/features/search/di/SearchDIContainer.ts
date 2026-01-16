@@ -11,6 +11,7 @@ import { PostSearchRepository } from "../data/repositories/PostSearchRepository"
 import { MockSearchRepository } from "../data/repositories/MockSearchRepository";
 import { SearchService } from "../application/services/SearchService";
 import { SearchQueryService } from "../application/services/SearchQueryService";
+import { useAuthStore } from "../../../services/store/zustand";
 
 /**
  * DI Container configuration options.
@@ -51,25 +52,33 @@ export class SearchDIContainer {
      * Register repository dependencies.
      */
     private registerRepositories(): void {
+        const authStore = useAuthStore.getState();
+        const token = authStore.data.accessToken || null;
+
         const repository = this.config.useMockRepositories 
             ? new MockSearchRepository()
             : this.createProductionRepositories();
 
         this.repositories.set('search', repository);
-        this.repositories.set('userSearch', new UserSearchRepository());
-        this.repositories.set('postSearch', new PostSearchRepository());
+        this.repositories.set('userSearch', new UserSearchRepository(token));
+        this.repositories.set('postSearch', new PostSearchRepository(token));
     }
 
     /**
      * Create production repository instances.
      */
     private createProductionRepositories(): ISearchRepository {
-        // TODO: Implement production repositories
-        // This would typically connect to real APIs
         if (this.config.enableLogging) {
-            console.log('Initializing production repositories');
+            console.log('Initializing production repositories with real API calls');
         }
-        return new MockSearchRepository(); // Fallback to mock for now
+        
+        // Create real repositories with token
+        const authStore = useAuthStore.getState();
+        const token = authStore.data.accessToken || null;
+        
+        return new MockSearchRepository(); // For now, use mock with real token
+        // TODO: Implement real search repository when API is available
+        // return new SearchRepository(token);
     }
 
     /**

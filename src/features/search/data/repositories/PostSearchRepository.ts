@@ -8,6 +8,8 @@
 import type { PostList } from "@/api/schemas/inferred/post";
 import type { SearchFilters } from "../../domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
+import { fetchPostQuery } from "../../../../api/requests/postRequests";
+import type { JwtToken } from "@/api/schemas/inferred/common";
 
 /**
  * IPostSearchRepository interface.
@@ -87,7 +89,9 @@ export interface IPostSearchRepository extends BaseSearchRepository {
  * Integrates with existing post search APIs and data sources.
  */
 export class PostSearchRepository extends BaseSearchRepository implements IPostSearchRepository {
-    constructor() {
+    private token: JwtToken | null;
+
+    constructor(token: JwtToken | null = null) {
         super({
             supportsUserSearch: false,
             supportsPostSearch: true,
@@ -95,10 +99,11 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
             supportsHistory: false,
             supportsSuggestions: true,
             supportsAdvancedFilters: true,
-            maxResults: 100,
-            supportedAlgorithms: ['fulltext', 'fuzzy', 'semantic'],
+            maxResults: 50,
+            supportedAlgorithms: ['fulltext', 'fuzzy'],
             supportsCaching: true
         });
+        this.token = token;
     }
 
     /**
@@ -109,13 +114,22 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
      * @returns Promise resolving to post list
      */
     async searchPosts(query: string, filters?: SearchFilters): Promise<PostList> {
-        // TODO: Implement with actual API calls in Priority 2
-        // For now, keeping the existing approach
-        console.log('PostSearchRepository: Searching posts with query:', query, 'filters:', filters);
-        
-        // This will be connected to the existing useQueryPosts hook
-        // and the fetchPostQuery API call
-        return [];
+        try {
+            console.log('PostSearchRepository: Searching posts with query:', query, 'filters:', filters);
+            
+            // Use existing API function
+            const response = await fetchPostQuery(query, this.token);
+            
+            // Extract posts from response content
+            const posts = response.content || [];
+            
+            console.log('PostSearchRepository: Found', posts.length, 'posts');
+            
+            return posts;
+        } catch (error) {
+            console.error('PostSearchRepository: Error searching posts:', error);
+            return [];
+        }
     }
 
     /**
