@@ -5,13 +5,13 @@
  * These entities represent the domain model and contain business logic.
  */
 
-import type { ResId } from '@api/schemas/inferred/common';
+import type { ResId } from '../../../../api/schemas/inferred/common';
 import type { 
     PostResponse, 
     PollOption, 
     PollResponse,
     ContentPrivacy 
-} from '@api/schemas/inferred/post';
+} from '../../../../api/schemas/inferred/post';
 
 /**
  * Post engagement metrics
