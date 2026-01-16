@@ -6,8 +6,7 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import useUserSearch from "./useUserSearch";
-import usePostSearch from "./usePostSearch";
+import { useSearchService, useQueryService } from "./useSearchDI";
 
 /**
  * SearchState interface.
@@ -48,8 +47,12 @@ const useSearch = () => {
     const [userQuery, setUserQuery] = useState('');
     const [postQuery, setPostQuery] = useState('');
 
-    const { userQueryList, fetchUserQuery } = useUserSearch(userQuery);
-    const { postQueryList, fetchPostQuery } = usePostSearch(postQuery);
+    const searchService = useSearchService();
+    const queryService = useQueryService();
+
+    // Initialize empty states
+    const [userQueryList, setUserQueryList] = useState([]);
+    const [postQueryList, setPostQueryList] = useState([]);
 
     /**
      * Handles changes in user query input.
@@ -105,9 +108,30 @@ const useSearch = () => {
         console.log("(!) unhandled input blur event", event.target.value);
     }, []);
 
+    // Search functions using DI container
+    const fetchUserQuery = useCallback(async (query: string) => {
+        try {
+            const results = await searchService.searchUsers(query);
+            setUserQueryList(results);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    }, [searchService]);
+
+    const fetchPostQuery = useCallback(async (query: string) => {
+        try {
+            const results = await searchService.searchPosts(query);
+            setPostQueryList(results);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+    }, [searchService]);
+
     return {
         queryInputRef,
         focused,
+        userQuery,
+        postQuery,
         userQueryList,
         postQueryList,
         handleInputChange,
