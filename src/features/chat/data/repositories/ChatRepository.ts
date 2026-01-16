@@ -171,7 +171,26 @@ export class ChatRepository implements IChatRepository {
             
             // This would integrate with existing chat search API
             // For now, we'll simulate the response
-            const response: ChatList = []; // Would contain filtered chat results
+            const response: ChatList = {
+                content: [],
+                pageable: {
+                    pageNumber: 0,
+                    pageSize: 10,
+                    sort: { sorted: false, unsorted: true, empty: true },
+                    offset: 0,
+                    paged: true,
+                    unpaged: false
+                },
+                totalPages: 0,
+                totalElements: 0,
+                last: true,
+                first: true,
+                size: 10,
+                number: 0,
+                sort: { sorted: false, unsorted: true, empty: true },
+                numberOfElements: 0,
+                empty: true
+            }; // Would contain filtered chat results
             
             console.log('ChatRepository: Chat search completed successfully');
             return response;
