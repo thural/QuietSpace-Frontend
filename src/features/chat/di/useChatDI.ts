@@ -6,8 +6,10 @@
  */
 
 import { useMemo } from 'react';
-import { ChatDIContainer, type DIContainerConfig } from './ChatDIContainer';
+import { ChatDIContainer } from "@chat/di/ChatDIContainer";
+import type { DIContainerConfig } from '@chat/di/ChatDIContainer';
 import { getChatConfig } from './ChatDIConfig';
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 
 /**
  * DI Container configuration for useChatDI hook.

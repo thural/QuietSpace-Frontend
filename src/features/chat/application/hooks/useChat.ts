@@ -7,8 +7,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
 import type { 
     ChatQuery, 
     ChatFilters, 
@@ -19,8 +18,9 @@ import type {
     ChatStatus,
     ChatTypingIndicator,
     ChatNotification
-} from "../../../domain/entities/ChatEntities";
-import { useChatDI } from "../../di/useChatDI";
+} from "@chat/domain/entities/ChatEntities";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import { useChatDI } from "@chat/di/useChatDI";
 
 /**
  * Chat State interface.
@@ -102,7 +102,7 @@ export const useChat = (
             setIsLoading(true);
             setError(null);
             const result = await chatRepository.createChat(chatData, token || '');
-            setChats(result);
+            setChats((prev) => prev ? {...prev, content: [...prev.content, result]} : {content: [result], totalPages: 0, totalElements: 1, size: 10, number: 0, first: true, last: true, numberOfElements: 1, empty: false, pageable: {pageNumber: 0, pageSize: 10, sort: {sorted: false, unsorted: true, empty: false}, offset: 0, paged: true, unpaged: false}, sort: {sorted: false, unsorted: true, empty: false}});
         } catch (error) {
             setError(error);
         } finally {
@@ -115,7 +115,7 @@ export const useChat = (
             setIsLoading(true);
             setError(null);
             await chatRepository.deleteChat(chatId, token || '');
-            setChats((prev) => prev?.filter(chat => chat.id !== chatId));
+            setChats((prev) => prev ? {...prev, content: prev.content.filter(chat => chat.id !== chatId)} : prev);
         } catch (error) {
             setError(error);
         } finally {
@@ -127,8 +127,7 @@ export const useChat = (
         try {
             setIsLoading(true);
             setError(null);
-            const pageParams = page ? `?page=${page}&size=9` : '';
-            const result = await chatRepository.getMessages(chatId, pageParams, token || '');
+            const result = await chatRepository.getMessages(chatId, page || 1, token || '');
             setMessages(result);
         } catch (error) {
             setError(error);
@@ -166,7 +165,7 @@ export const useChat = (
             setIsLoading(true);
             setError(null);
             const result = await chatRepository.updateChatSettings(chatId, settings, token || '');
-            setChats((prev) => prev ? prev.map(chat => chat.id === chatId ? result : chat) : prev);
+            setChats((prev) => prev ? {...prev, content: prev.content.map(chat => chat.id === chatId ? result : chat)} : prev);
         } catch (error) {
             setError(error);
         } finally {
@@ -231,7 +230,7 @@ export const useChat = (
             setIsLoading(true);
             setError(null);
             await chatRepository.markMessagesAsRead(chatId, messageIds, token || '');
-            setMessages((prev) => prev ? prev.map(msg => messageIds.includes(msg.id) ? { ...msg, isRead: true } : msg) : prev);
+            setMessages((prev) => prev ? { ...prev, content: prev.content.map(msg => messageIds.includes(String(msg.id)) ? { ...msg, isRead: true } : msg) } : prev);
         } catch (error) {
             setError(error);
         } finally {
@@ -271,12 +270,14 @@ export const useChat = (
         deleteChat,
         getMessages,
         sendMessage,
+        getChatDetails,
         updateChatSettings,
         searchChats,
         getChatParticipants,
         addParticipant,
         removeParticipant,
         markMessagesAsRead,
+        getUnreadCount,
         clearError
     };
 };

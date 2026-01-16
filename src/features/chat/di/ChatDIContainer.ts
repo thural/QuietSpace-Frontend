@@ -5,10 +5,10 @@
  * Manages repository and service dependencies.
  */
 
-import type { IChatRepository } from "../domain/entities/IChatRepository";
-import { ChatRepository } from "../data/repositories/ChatRepository";
-import { MockChatRepository } from "../data/repositories/MockChatRepository";
-import { useAuthStore } from "../../../services/store/zustand";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import { ChatRepository } from "@chat/data/repositories/ChatRepository";
+import { MockChatRepository } from "@chat/data/repositories/MockChatRepository";
+import { useAuthStore } from "@services/store/zustand";
 
 /**
  * DI Container configuration options.

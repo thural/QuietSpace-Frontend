@@ -47,4 +47,4 @@ export const CreateChatSchema = z.object({
 
 export const MessageListSchema = PageContentSchema(MessageResponseSchema);
 export const MessagePageSchema = PageSchema(MessageResponseSchema);
-export const ChatListSchema = PageContentSchema(ChatResponseSchema);
+export const ChatListSchema = PageSchema(ChatResponseSchema);

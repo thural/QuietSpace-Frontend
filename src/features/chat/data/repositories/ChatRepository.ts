@@ -8,9 +8,9 @@
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import type { ResId } from "@/api/schemas/inferred/common";
 import type { JwtToken } from "@/api/schemas/inferred/common";
-import type { IChatRepository } from "../../../domain/entities/IChatRepository";
-import { fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "../../../../api/requests/chatRequests";
-import { fetchMessages } from "../../../../api/requests/messageRequests";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import { fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "@api/requests/chatRequests";
+import { fetchMessages } from "@api/requests/messageRequests";
 
 /**
  * Chat Repository implementation.
@@ -171,26 +171,7 @@ export class ChatRepository implements IChatRepository {
             
             // This would integrate with existing chat search API
             // For now, we'll simulate the response
-            const response = {
-                content: [], // Would contain filtered chat results
-                pageable: {
-                    pageNumber: 1,
-                    pageSize: 10,
-                    sort: { sorted: false, unsorted: true, empty: false },
-                    offset: 0,
-                    paged: true,
-                    unpaged: false
-                },
-                totalPages: 0,
-                totalElements: 0,
-                last: false,
-                first: true,
-                size: 0,
-                number: 0,
-                sort: { sorted: false, unsorted: true, empty: false },
-                numberOfElements: 0,
-                empty: true
-            } as ChatList;
+            const response: ChatList = []; // Would contain filtered chat results
             
             console.log('ChatRepository: Chat search completed successfully');
             return response;

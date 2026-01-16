@@ -5,13 +5,14 @@
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ChatRepository } from '../../data/repositories/ChatRepository';
-import type { IChatRepository } from '../../domain/entities/IChatRepository';
+import { ChatRepository } from "@chat/data/repositories/ChatRepository";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/api/schemas/inferred/chat';
 import type { ResId } from '@/api/schemas/inferred/common';
 
 // Mock fetch
-global.fetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 describe('ChatRepository', () => {
     let chatRepository: IChatRepository;

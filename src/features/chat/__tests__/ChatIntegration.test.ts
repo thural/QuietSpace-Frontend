@@ -5,13 +5,13 @@
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ChatDIContainer } from '../../di/ChatDIContainer';
-import type { IChatRepository } from '../../domain/entities/IChatRepository';
-import type { IChatService } from '../../application/services/ChatService';
+import { ChatDIContainer } from "@chat/di/ChatDIContainer";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import type { IChatService } from "@chat/application/services/ChatService";
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/api/schemas/inferred/chat';
 
 // Mock fetch
-const mockFetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 global.fetch = mockFetch;
 
 describe('Chat Feature Integration', () => {
@@ -43,7 +43,7 @@ describe('Chat Feature Integration', () => {
             const config = diContainer.getConfig();
             
             // Assert
-            expect(config.useMockRepository).toBe(true);
+            expect(config.useMockRepositories).toBe(true);
         });
     });
 
@@ -192,13 +192,12 @@ describe('Chat Feature Integration', () => {
                         version: 1,
                         createDate: '2023-01-01',
                         updateDate: '2023-01-01',
-                        senderId: 'user1',
                         chatId: 'chat1',
-                        content: 'Hello world',
-                        type: 'TEXT',
-                        isRead: false,
-                        isSeen: false,
-                        attachments: []
+                        senderId: 'user1',
+                        recipientId: 'user2',
+                        text: 'Hello world',
+                        senderName: 'User One',
+                        isSeen: false
                     }
                 ],
                 totalPages: 1,
@@ -307,7 +306,7 @@ describe('Chat Feature Integration', () => {
 
             // Assert
             expect(config).toBeDefined();
-            expect(typeof config.useMockRepository).toBe('boolean');
+            expect(typeof config.useMockRepositories).toBe('boolean');
             expect(typeof config.useReactQuery).toBe('boolean');
         });
 

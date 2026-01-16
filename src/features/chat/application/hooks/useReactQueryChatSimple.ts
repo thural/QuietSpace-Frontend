@@ -6,18 +6,17 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { JwtToken } from "@/api/schemas/inferred/common";
-import type { IChatRepository } from "../../../domain/entities/IChatRepository";
-import { useChatDI } from "../../di/useChatDI";
+import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import { useChatDI } from "@chat/di/useChatDI";
 
 /**
  * React Query Chat State interface.
  */
 export interface ReactQueryChatState {
-    chats: UseQueryResult<ChatList, Error>;
+    chats: UseQueryResult<ChatResponse[], Error>;
     messages: UseQueryResult<PagedMessage, Error>;
     participants: UseQueryResult<any[], Error>;
     unreadCount: UseQueryResult<number, Error>;
@@ -70,8 +69,9 @@ export const useReactQueryChat = (
     const chats = useQuery({
         queryKey: ['chats', userId],
         queryFn: async () => {
-            if (!token || !chatRepository) return { content: [], totalPages: 0, totalElements: 0, size: 0, number: 0, first: true, last: true, numberOfElements: 0, empty: true, pageable: { pageNumber: 0, pageSize: 0, sort: { sorted: false, unsorted: true, empty: false }, offset: 0, paged: false, unpaged: false }, sort: { sorted: false, unsorted: true, empty: false } };
-            return await chatRepository.getChats(userId, token);
+            if (!token || !chatRepository) return [];
+            const result = await chatRepository.getChats(userId, token);
+            return Array.isArray(result) ? result : [];
         },
         staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
@@ -81,8 +81,7 @@ export const useReactQueryChat = (
     const messages = useQuery({
         queryKey: ['chats', 'chat-id', 'messages'],
         queryFn: async ({ pageParam }) => {
-            const pageParams = `?page=${pageParam}&size=9`;
-            return await chatRepository.getMessages('chat-id', pageParams, token);
+            return await chatRepository.getMessages('chat-id', pageParam as number, token);
         },
         staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
@@ -111,11 +110,14 @@ export const useReactQueryChat = (
 
     // Actions
     const createChat = useMutation({
-        mutationFn: async ({ chatData }) => {
+        mutationFn: async (chatData: CreateChatRequest) => {
             return await chatRepository.createChat(chatData, token);
         },
-        onSuccess: (data, variables) => {
-            queryClient.setQueryData(['chats', variables.userId], (old) => [...(old || []), data: [data] });
+        onSuccess: (data) => {
+            queryClient.setQueryData(['chats', userId], (old: ChatResponse[] | undefined) => {
+                if (!old) return [data];
+                return [...old, data];
+            });
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error creating chat:', error);
@@ -123,12 +125,12 @@ export const useReactQueryChat = (
     });
 
     const deleteChat = useMutation({
-        mutationFn: async ({ chatId }) => {
+        mutationFn: async ({ chatId }: { chatId: string }) => {
             return await chatRepository.deleteChat(chatId, token);
         },
-        onSuccess: (data, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['chats', variables.userId] });
-            queryClient.removeQueries(['chats', chatId]);
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['chats', userId] });
+            queryClient.removeQueries({ queryKey: ['chats', variables.chatId] });
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error deleting chat:', error);
@@ -136,11 +138,14 @@ export const useReactQueryChat = (
     });
 
     const sendMessage = useMutation({
-        mutationFn: async ({ chatId, messageData }) => {
+        mutationFn: async ({ chatId, messageData }: { chatId: string, messageData: any }) => {
             return await chatRepository.sendMessage(chatId, messageData, token);
         },
-        onSuccess: (data, variables) => {
-            queryClient.setQueryData(['chats', variables.userId], (old) => [...(old || []), data: [data] });
+        onSuccess: (data) => {
+            queryClient.setQueryData(['chats', 'chat-id', 'messages'], (old: PagedMessage | undefined) => {
+                if (!old) return { content: [data], totalPages: 1, totalElements: 1, size: 9, number: 0, first: true, last: true, numberOfElements: 1, empty: false, pageable: { pageNumber: 0, pageSize: 9, sort: { sorted: false, unsorted: true, empty: false }, offset: 0, paged: false, unpaged: false }, sort: { sorted: false, unsorted: true, empty: false } };
+                return { ...old, content: [...old.content, data] };
+            });
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error sending message:', error);
@@ -148,11 +153,11 @@ export const useReactQueryChat = (
     });
 
     const updateChatSettings = useMutation({
-        mutationFn: async ({ chatId, settings }) => {
+        mutationFn: async ({ chatId, settings }: { chatId: string, settings: any }) => {
             return await chatRepository.updateChatSettings(chatId, settings, token);
         },
         onSuccess: (data, variables) => {
-            queryClient.setQueryData(['chats', chatId], data);
+            queryClient.setQueryData(['chats', variables.chatId], data);
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error updating chat settings:', error);
@@ -160,10 +165,10 @@ export const useReactQueryChat = (
     });
 
     const searchChats = useMutation({
-        mutationFn: async ({ query }) => {
+        mutationFn: async ({ query }: { query: string }) => {
             return await chatRepository.searchChats(query, userId, token);
         },
-        onSuccess: (data, variables) => {
+        onSuccess: (data) => {
             queryClient.setQueryData(['chats', 'search'], data);
         },
         onError: (error) => {
@@ -172,11 +177,14 @@ export const useReactQueryChat = (
     });
 
     const addParticipant = useMutation({
-        mutationFn: async ({ chatId, participantId }) => {
+        mutationFn: async ({ chatId, participantId }: { chatId: string, participantId: string }) => {
             return await chatRepository.addParticipant(chatId, participantId, token);
         },
-        onSuccess: (data, variables) => {
-            queryClient.setQueryData(['chats', chatId, 'participants'], (old) => [...(old || []), data: [data] });
+        onSuccess: (data) => {
+            queryClient.setQueryData(['chats', 'chat-id', 'participants'], (old: any[] | undefined) => {
+                if (!old) return [data];
+                return [...old, data];
+            });
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error adding participant:', error);
@@ -184,11 +192,14 @@ export const useReactQueryChat = (
     });
 
     const removeParticipant = useMutation({
-        mutationFn: async ({ chatId, participantId }) => {
+        mutationFn: async ({ chatId, participantId }: { chatId: string, participantId: string }) => {
             return await chatRepository.removeParticipant(chatId, participantId, token);
         },
         onSuccess: (data, variables) => {
-            queryClient.setQueryData(['chats', chatId, 'participants'], (old) => [...(old || []), data: [data] });
+            queryClient.setQueryData(['chats', variables.chatId, 'participants'], (old: any[] | undefined) => {
+                if (!old) return [];
+                return old.filter(p => p.id !== variables.participantId);
+            });
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error removing participant:', error);
@@ -196,11 +207,14 @@ export const useReactQueryChat = (
     });
 
     const markMessagesAsRead = useMutation({
-        mutationFn: async ({ messageIds }) => {
-            return await chatRepository.markMessagesAsRead('chat-id', messageIds, token);
+        mutationFn: async ({ chatId, messageIds }: { chatId: string, messageIds: string[] }) => {
+            return await chatRepository.markMessagesAsRead(chatId, messageIds, token);
         },
-        onSuccess: (data, variables) => {
-            queryClient.setQueryData(['chats', 'chat-id', 'messages'], (old) => [...(old || []), data: [data] });
+        onSuccess: (data) => {
+            queryClient.setQueryData(['chats', 'chat-id', 'messages'], (old: PagedMessage | undefined) => {
+                if (!old) return { content: [data], totalPages: 1, totalElements: 1, size: 9, number: 0, first: true, last: true, numberOfElements: 1, empty: false, pageable: { pageNumber: 0, pageSize: 9, sort: { sorted: false, unsorted: true, empty: false }, offset: 0, paged: false, unpaged: false }, sort: { sorted: false, unsorted: true, empty: false } };
+                return { ...old, content: [...old.content, data] };
+            });
         },
         onError: (error) => {
             console.error('ReactQueryChat: Error marking messages as read:', error);

@@ -19,6 +19,12 @@ module.exports = {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@components/(.*)$': '<rootDir>/src/components/$1',
         '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+        '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
+        '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+        '^@services/(.*)$': '<rootDir>/src/services/$1',
+        '^@api/(.*)$': '<rootDir>/src/api/$1',
+        '^@features/(.*)$': '<rootDir>/src/features/$1',
+        '^@chat/(.*)$': '<rootDir>/src/features/chat/$1',
         '^stompjs$': '<rootDir>/src/__mocks__/stompjs.ts',
         '^sockjs-client$': '<rootDir>/test/mocks/sockjs-client.js',
         // Handle CSS and other asset imports

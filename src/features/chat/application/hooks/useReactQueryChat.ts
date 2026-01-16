@@ -20,8 +20,9 @@ import type {
     ChatStatus,
     ChatTypingIndicator,
     ChatNotification
-} from "../../../domain/entities/ChatEntities";
-import { useChatDI } from "../../di/useChatDI";
+} from "@chat/domain/entities/ChatEntities";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import { useChatDI } from "@chat/di/useChatDI";
 
 /**
  * React Query Chat State interface.
@@ -100,28 +101,172 @@ export const useReactQueryChat = (
 
     // Actions
     const createChat = reactQueryService?.createChat() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<ChatResponse, Error, CreateChatRequest>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as ChatResponse),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<ChatResponse, Error, CreateChatRequest>;
     
     const deleteChat = reactQueryService?.deleteChat() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<Response, Error, { chatId: string }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as Response),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<Response, Error, { chatId: string }>;
     
     const sendMessage = reactQueryService?.sendMessage() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<any, Error, { chatId: string, messageData: any }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as any),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<any, Error, { chatId: string, messageData: any }>;
     
     const updateChatSettings = reactQueryService?.updateChatSettings() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as ChatResponse),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }>;
     
     const searchChats = reactQueryService?.searchChats() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<ChatList, Error, { query: string }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as ChatList),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<ChatList, Error, { query: string }>;
     
     const addParticipant = reactQueryService?.addParticipant() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as ChatResponse),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
     
     const removeParticipant = reactQueryService?.removeParticipant() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as ChatResponse),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
     
     const markMessagesAsRead = reactQueryService?.markMessagesAsRead() || 
-        { mutate: () => {}, isPending: false, error: null } as UseMutationResult<any, Error, { chatId: string, messageIds: string[] }>;
+        {
+            mutate: () => {},
+            mutateAsync: async () => ({} as any),
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            isIdle: true,
+            data: undefined,
+            error: null,
+            failureReason: null,
+            errorUpdateCount: 0,
+            failureCount: 0,
+            submittedAt: 0,
+            variables: undefined,
+            reset: () => {},
+            status: 'idle',
+            context: undefined,
+            isPaused: false
+        } as UseMutationResult<any, Error, { chatId: string, messageIds: string[] }>;
 
     // Additional React Query methods
     const prefetchChats = useCallback(async (userId: string) => {

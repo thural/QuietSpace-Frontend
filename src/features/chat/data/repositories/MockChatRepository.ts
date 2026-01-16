@@ -8,7 +8,7 @@
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import type { ResId } from "@/api/schemas/inferred/common";
 import type { JwtToken } from "@/api/schemas/inferred/common";
-import type { IChatRepository } from "../../../domain/entities/ChatRepository";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { 
     ChatMessage, 
     ChatAttachment, 
@@ -18,7 +18,7 @@ import type {
     ChatStatus,
     ChatTypingIndicator,
     ChatNotification
-} from "../../../domain/entities/ChatEntities";
+} from "@chat/domain/entities/ChatEntities";
 
 /**
  * Mock Chat Repository implementation.

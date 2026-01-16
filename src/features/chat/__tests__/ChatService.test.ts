@@ -5,11 +5,22 @@
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ChatService } from '../../application/services/ChatService';
-import type { IChatService } from '../../application/services/ChatService';
-import type { IChatRepository } from '../../domain/entities/IChatRepository';
+import { ChatService } from "@chat/application/services/ChatService";
+import type { IChatService } from "@chat/application/services/ChatService";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/api/schemas/inferred/chat';
 import type { ResId } from '@/api/schemas/inferred/common';
+
+// Mock the Zustand store
+jest.mock('@services/store/zustand', () => ({
+    useAuthStore: {
+        getState: () => ({
+            data: {
+                accessToken: 'test-token'
+            }
+        })
+    }
+}));
 
 // Mock repository
 const mockChatRepository: jest.Mocked<IChatRepository> = {
@@ -40,7 +51,6 @@ describe('ChatService', () => {
         it('should get chats successfully', async () => {
             // Arrange
             const userId = 'user1';
-            const token = 'token123';
             const mockChats: ChatList = {
                 content: [],
                 totalPages: 0,
@@ -61,15 +71,14 @@ describe('ChatService', () => {
                 },
                 sort: { sorted: false, unsorted: true, empty: false }
             };
-
             mockChatRepository.getChats.mockResolvedValue(mockChats);
 
             // Act
-            const result = await chatService.getChats(userId, token);
+            const result = await chatService.getChats(userId);
 
             // Assert
-            expect(mockChatRepository.getChats).toHaveBeenCalledWith(userId, token);
             expect(result).toEqual(mockChats);
+            expect(mockChatRepository.getChats).toHaveBeenCalledWith(userId, 'test-token');
         });
 
         it('should handle getChats error', async () => {
@@ -80,7 +89,7 @@ describe('ChatService', () => {
             mockChatRepository.getChats.mockRejectedValue(error);
 
             // Act & Assert
-            await expect(chatService.getChats(userId, token)).rejects.toThrow('Repository error');
+            await expect(chatService.getChats(userId)).rejects.toThrow('Repository error');
         });
     });
 
@@ -107,10 +116,10 @@ describe('ChatService', () => {
             mockChatRepository.createChat.mockResolvedValue(mockResponse);
 
             // Act
-            const result = await chatService.createChat(chatData, token);
+            const result = await chatService.createChat(chatData);
 
             // Assert
-            expect(mockChatRepository.createChat).toHaveBeenCalledWith(chatData, token);
+            expect(mockChatRepository.createChat).toHaveBeenCalledWith(chatData, 'test-token');
             expect(result).toEqual(mockResponse);
         });
 
@@ -125,7 +134,7 @@ describe('ChatService', () => {
             const token = 'token123';
 
             // Act & Assert
-            await expect(chatService.createChat(invalidChatData, token)).rejects.toThrow();
+            await expect(chatService.createChat(invalidChatData)).rejects.toThrow();
         });
     });
 
@@ -137,10 +146,10 @@ describe('ChatService', () => {
             mockChatRepository.deleteChat.mockResolvedValue({} as Response);
 
             // Act
-            const result = await chatService.deleteChat(chatId, token);
+            const result = await chatService.deleteChat(chatId);
 
             // Assert
-            expect(mockChatRepository.deleteChat).toHaveBeenCalledWith(chatId, token);
+            expect(mockChatRepository.deleteChat).toHaveBeenCalledWith(chatId, 'test-token');
             expect(result).toBeDefined();
         });
 
@@ -150,7 +159,7 @@ describe('ChatService', () => {
             const token = 'token123';
 
             // Act & Assert
-            await expect(chatService.deleteChat(invalidChatId, token)).rejects.toThrow();
+            await expect(chatService.deleteChat(invalidChatId)).rejects.toThrow();
         });
     });
 
@@ -166,10 +175,10 @@ describe('ChatService', () => {
             mockChatRepository.sendMessage.mockResolvedValue({ id: 'msg1' });
 
             // Act
-            const result = await chatService.sendMessage(chatId, messageData, token);
+            const result = await chatService.sendMessage(chatId, messageData);
 
             // Assert
-            expect(mockChatRepository.sendMessage).toHaveBeenCalledWith(chatId, messageData, token);
+            expect(mockChatRepository.sendMessage).toHaveBeenCalledWith(chatId, messageData, 'test-token');
             expect(result).toBeDefined();
         });
 
@@ -183,7 +192,7 @@ describe('ChatService', () => {
             const token = 'token123';
 
             // Act & Assert
-            await expect(chatService.sendMessage(chatId, invalidMessageData, token)).rejects.toThrow();
+            await expect(chatService.sendMessage(chatId, invalidMessageData)).rejects.toThrow();
         });
     });
 
@@ -217,10 +226,10 @@ describe('ChatService', () => {
             mockChatRepository.searchChats.mockResolvedValue(mockChats);
 
             // Act
-            const result = await chatService.searchChats(query, userId, token);
+            const result = await chatService.searchChats(query, userId);
 
             // Assert
-            expect(mockChatRepository.searchChats).toHaveBeenCalledWith(query, userId, token);
+            expect(mockChatRepository.searchChats).toHaveBeenCalledWith(query, userId, 'test-token');
             expect(result).toEqual(mockChats);
         });
 
@@ -231,7 +240,7 @@ describe('ChatService', () => {
             const token = 'token123';
 
             // Act & Assert
-            await expect(chatService.searchChats(invalidQuery, userId, token)).rejects.toThrow();
+            await expect(chatService.searchChats(invalidQuery, userId)).rejects.toThrow();
         });
     });
 
@@ -257,10 +266,10 @@ describe('ChatService', () => {
             mockChatRepository.updateChatSettings.mockResolvedValue(mockResponse);
 
             // Act
-            const result = await chatService.updateChatSettings(chatId, settings, token);
+            const result = await chatService.updateChatSettings(chatId, settings);
 
             // Assert
-            expect(mockChatRepository.updateChatSettings).toHaveBeenCalledWith(chatId, settings, token);
+            expect(mockChatRepository.updateChatSettings).toHaveBeenCalledWith(chatId, settings, 'test-token');
             expect(result).toEqual(mockResponse);
         });
 
@@ -271,7 +280,7 @@ describe('ChatService', () => {
             const token = 'token123';
 
             // Act & Assert
-            await expect(chatService.updateChatSettings(chatId, invalidSettings, token)).rejects.toThrow();
+            await expect(chatService.updateChatSettings(chatId, invalidSettings)).rejects.toThrow();
         });
     });
 });

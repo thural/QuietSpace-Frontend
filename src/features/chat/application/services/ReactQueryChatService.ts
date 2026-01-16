@@ -9,7 +9,7 @@ import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMut
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import type { ResId } from "@/api/schemas/inferred/common";
 import type { JwtToken } from "@/api/schemas/inferred/common";
-import type { IChatRepository } from "../../../domain/entities/IChatRepository";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { 
     ChatQuery, 
     ChatFilters, 
@@ -22,7 +22,7 @@ import type {
     ChatStatus,
     ChatTypingIndicator,
     ChatNotification
-} from "../../../domain/entities/ChatEntities";
+} from "@chat/domain/entities/ChatEntities";
 
 /**
  * React Query Chat Service interface.
@@ -30,17 +30,17 @@ import type {
 export interface IReactQueryChatService {
     // Chat operations
     getChats(userId: string, token: JwtToken): UseQueryResult<ChatList, Error>;
-    createChat(): UseMutationResult<ChatResponse, Error, CreateChatRequest>;
-    deleteChat(): UseMutationResult<Response, Error, { chatId: string }>;
+    createChat(chatData: CreateChatRequest): UseMutationResult<ChatResponse, Error, CreateChatRequest>;
+    deleteChat(chatId: string): UseMutationResult<Response, Error, { chatId: string }>;
     getMessages(chatId: ResId, page: number, token: JwtToken): UseQueryResult<PagedMessage, Error>;
-    sendMessage(): UseMutationResult<any, Error, { chatId: string, messageData: any }>;
+    sendMessage(chatId: string, messageData: any): UseMutationResult<any, Error, { chatId: string, messageData: any }>;
     getChatDetails(chatId: ResId, token: JwtToken): UseQueryResult<ChatResponse, Error>;
-    updateChatSettings(): UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }>;
+    updateChatSettings(chatId: string, settings: any): UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }>;
     searchChats(query: string, userId: string, token: JwtToken): UseQueryResult<ChatList, Error>;
     getChatParticipants(chatId: ResId, token: JwtToken): UseQueryResult<any[], Error>;
-    addParticipant(): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
-    removeParticipant(): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
-    markMessagesAsRead(): UseMutationResult<any, Error, { chatId: string, messageIds: string[] }>;
+    addParticipant(chatId: string, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
+    removeParticipant(chatId: string, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
+    markMessagesAsRead(chatId: string, messageIds: string[]): UseMutationResult<any, Error, { chatId: string, messageIds: string[] }>;
     getUnreadCount(userId: string, token: JwtToken): UseQueryResult<number, Error>;
     
     // Cache management
@@ -73,15 +73,15 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Create a new chat.
      */
-    createChat(): UseMutationResult<ChatResponse, Error, CreateChatRequest> {
+    createChat(chatData: CreateChatRequest): UseMutationResult<ChatResponse, Error, CreateChatRequest> {
         return useMutation({
-            mutationFn: async ({ chatData }) => {
+            mutationFn: async (chatData) => {
                 const token = this.getAuthToken();
                 return await this.chatRepository.createChat(chatData, token);
             },
             onSuccess: (data, variables) => {
                 // Update cache with new chat
-                this.queryClient.setQueryData(['chats', variables.userId], data);
+                this.queryClient.setQueryData(['chats', variables.userIds?.[0] || variables.recipientId], data);
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error creating chat:', error);
@@ -92,16 +92,16 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Delete a chat.
      */
-    deleteChat(): UseMutationResult<Response, Error, { chatId: string }> {
+    deleteChat(chatId: string): UseMutationResult<Response, Error, { chatId: string }> {
         return useMutation({
-            mutationFn: async ({ chatId }) => {
+            mutationFn: async () => {
                 const token = this.getAuthToken();
                 return await this.chatRepository.deleteChat(chatId, token);
             },
             onSuccess: (data, variables) => {
                 // Remove from cache
-                this.queryClient.invalidateQueries({ queryKey: ['chats', variables.userId] });
-                this.queryClient.removeQueries(['chats', chatId]);
+                this.queryClient.invalidateQueries({ queryKey: ['chats'] });
+                this.queryClient.removeQueries({ queryKey: ['chats', chatId] });
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error deleting chat:', error);
@@ -117,7 +117,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
             queryKey: ['chats', chatId, 'messages'],
             queryFn: async ({ pageParam }) => {
                 const pageParams = `?page=${pageParam}&size=9`;
-                return await this.chatRepository.getMessages(chatId, pageParams, token);
+                return await this.chatRepository.getMessages(chatId, Number(pageParam), token);
             },
             staleTime: 5 * 60 * 1000, // 5 minutes
             gcTime: 10 * 60 * 1000, // 10 minutes
@@ -128,7 +128,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Send a message in a chat.
      */
-    sendMessage(): UseMutationResult<any, Error, { chatId: string, messageData: any }> {
+    sendMessage(chatId: string, messageData: any): UseMutationResult<any, Error, { chatId: string, messageData: any }> {
         return useMutation({
             mutationFn: async ({ chatId, messageData }) => {
                 const token = this.getAuthToken();
@@ -136,7 +136,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
             },
             onSuccess: (data, variables) => {
                 // Optimistic update - add message to cache immediately
-                this.queryClient.setQueryData(['chats', variables.chatId, 'messages'], (old) => [...(old || []), data: [data] });
+                this.queryClient.setQueryData(['chats', variables.chatId, 'messages'], (old: any) => [...(old || []), data]);
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error sending message:', error);
@@ -160,7 +160,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Update chat settings.
      */
-    updateChatSettings(): UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }> {
+    updateChatSettings(chatId: string, settings: any): UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }> {
         return useMutation({
             mutationFn: async ({ chatId, settings }) => {
                 const token = this.getAuthToken();
@@ -168,7 +168,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
             },
             onSuccess: (data, variables) => {
                 // Update cache with new settings
-                this.queryClient.setQueryData(['chats', chatId], data);
+                this.queryClient.setQueryData(['chats', variables.chatId], data);
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error updating chat settings:', error);
@@ -205,7 +205,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Add participant to chat.
      */
-    addParticipant(chatId: ResId, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }> {
+    addParticipant(chatId: string, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }> {
         return useMutation({
             mutationFn: async ({ chatId, participantId }) => {
                 const token = this.getAuthToken();
@@ -213,7 +213,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
             },
             onSuccess: (data, variables) => {
                 // Update cache with new participant
-                this.queryClient.setQueryData(['chats', chatId, 'participants'], (old) => [...(old || []), data: [data] });
+                this.queryClient.setQueryData(['chats', variables.chatId, 'participants'], (old: any) => [...(old || []), data]);
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error adding participant:', error);
@@ -224,7 +224,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Remove participant from chat.
      */
-    removeParticipant(chatId: ResId, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }> {
+    removeParticipant(chatId: string, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }> {
         return useMutation({
             mutationFn: async ({ chatId, participantId }) => {
                 const token = this.getAuthToken();
@@ -232,7 +232,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
             },
             onSuccess: (data, variables) => {
                 // Update cache without removed participant
-                this.queryClient.setQueryData(['chats', chatId, 'participants'], (old) => [...(old || []), data: [data] });
+                this.queryClient.setQueryData(['chats', variables.chatId, 'participants'], (old: any) => [...(old || []), data]);
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error removing participant:', error);
@@ -243,15 +243,15 @@ export class ReactQueryChatService implements IReactQueryChatService {
     /**
      * Mark messages as read.
      */
-    markMessagesAsRead(chatId: ResId, messageIds: string[]): UseMutationResult<any, Error> {
+    markMessagesAsRead(chatId: string, messageIds: string[]): UseMutationResult<any, Error, { chatId: string, messageIds: string[] }> {
         return useMutation({
-            mutationFn: async ({ messageIds }) => {
+            mutationFn: async ({ chatId, messageIds }) => {
                 const token = this.getAuthToken();
                 return await this.chatRepository.markMessagesAsRead(chatId, messageIds, token);
             },
             onSuccess: (data, variables) => {
                 // Update cache with read status
-                this.queryClient.setQueryData(['chats', chatId, 'messages'], (old) => [...(old || []), data: [data] });
+                this.queryClient.setQueryData(['chats', variables.chatId, 'messages'], (old: any) => [...(old || []), data]);
             },
             onError: (error) => {
                 console.error('ReactQueryChatService: Error marking messages as read:', error);

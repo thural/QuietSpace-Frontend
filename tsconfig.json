@@ -32,13 +32,22 @@
         "src/shared/*"
       ],
       "@hooks/*": [
-        "src/hooks/*" // Updated path to match common conventions
+        "src/hooks/*"
       ],
       "@utils/*": [
         "src/utils/*"
       ],
       "@services/*": [
         "src/services/*"
+      ],
+      "@api/*": [
+        "src/api/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@chat/*": [
+        "src/features/chat/*"
       ]
     },
     "esModuleInterop": true,
