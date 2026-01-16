@@ -1,4 +1,4 @@
-import SearchContainer from "@/features/search/SearchContainer";
+import { SearchContainer } from "@/features/search/presentation";
 
 
 const SearchPage = () => {

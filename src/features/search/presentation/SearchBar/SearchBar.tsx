@@ -1,3 +1,10 @@
+/**
+ * SearchBar Component.
+ * 
+ * Renders a search input field with search and voice icons.
+ * Handles user input events and provides search functionality.
+ */
+
 import InputStyled from "@/shared/InputStyled";
 import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
 import { Box } from "@mantine/core";
@@ -23,7 +30,7 @@ export interface SearchBarProps extends GenericWrapperWithRef {
     handleInputBlur: FocusEventHandler<HTMLInputElement>;
     handleInputFocus: FocusEventHandler<HTMLInputElement>;
     handleInputChange: ChangeEventHandler<HTMLInputElement>;
-    queryInputRef: RefObject<HTMLInputElement>;
+    queryInputRef: RefObject<HTMLInputElement | null>;
 }
 
 /**
@@ -49,16 +56,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <Box className={classes.searchbar} style={style}>
             <PiMagnifyingGlassBold className={classes.searchIconLarge} /> {/* Search icon */}
             <InputStyled
-                variant="unstyled" // No default styling
-                className={classes.searchInput} // Custom styling for the input
-                placeholder="search a topic" // Placeholder text
-                onKeyDown={handleKeyDown} // Handle key down event
-                onFocus={handleInputFocus} // Handle focus event
-                onChange={handleInputChange} // Handle input change event
-                onBlur={handleInputBlur} // Handle blur event
-                ref={queryInputRef} // Reference to the input element
+                placeholder="Search"
+                ref={queryInputRef}
+                onKeyDown={handleKeyDown}
+                onBlur={handleInputBlur}
+                onFocus={handleInputFocus}
+                onChange={handleInputChange}
+                className={classes.searchInput}
             />
-            <PiMicrophone className={classes.searchIconLarge} /> {/* Microphone icon */}
+            <PiMicrophone className={classes.microphoneIcon} /> {/* Voice search icon */}
         </Box>
     );
 };

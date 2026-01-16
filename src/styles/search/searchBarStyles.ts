@@ -44,6 +44,16 @@ const styles = createUseStyles((theme: Theme) => ({
         fontSize: '2rem',
         margin: `0 ${theme.spacing(theme.spacingFactor.md)}`,
         color: theme.colors.borderExtra
+    },
+
+    microphoneIcon: {
+        fontSize: '1.5rem',
+        margin: `0 ${theme.spacing(theme.spacingFactor.md)}`,
+        color: theme.colors.borderExtra,
+        cursor: 'pointer',
+        '&:hover': {
+            color: theme.colors.primary
+        }
     }
 }));
 

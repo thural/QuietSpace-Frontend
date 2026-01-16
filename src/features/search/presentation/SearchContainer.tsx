@@ -1,17 +1,24 @@
+/**
+ * Search Container Component.
+ * 
+ * Main container component for the Search feature.
+ * Orchestrates search functionality and coordinates between search components.
+ */
+
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import DefaultContainer from "@/shared/DefaultContainer";
-import SearchBar from "./base/SearchBar";
-import PostQuery from "./query/PostQuery";
-import UserQuery from "./query/UserQuery";
-import useSearch from "@/services/hook/search/useSearch";
+import SearchBar from "./SearchBar";
+import UserResults from "./UserResults";
+import PostResults from "./PostResults";
+import useSearch from "../application/hooks/useSearch";
 
 /**
  * SearchContainer component.
  * 
- * This component manages the search functionality of the application. It utilizes a custom hook to fetch
- * search-related data and renders a search bar along with user and post query results. It handles errors
- * that may occur during the data fetching process.
+ * This component manages the search functionality of the application.
+ * It utilizes a custom hook to fetch search-related data and renders
+ * a search bar along with user and post query results.
  * 
  * @returns {JSX.Element} - The rendered SearchContainer component wrapped in error boundary handling.
  */
@@ -27,15 +34,15 @@ function SearchContainer() {
         return <ErrorComponent message={errorMessage} />; // Display error component if fetching fails
     }
 
-    // Apply conditional styles based on the search input focus state
+    // Apply conditional styles based on search input focus state
     const resultAppliedStyle = searchMethods.focused ? { display: 'block' } : { display: 'none' };
     const searchAppliedStyle = searchMethods.focused ? { boxShadow: '0 4px 8px -4px rgba(72, 72, 72, 0.3)' } : {};
 
     return (
         <DefaultContainer>
             <SearchBar {...searchMethods} style={searchAppliedStyle} /> {/* Render search bar */}
-            <UserQuery {...searchMethods} style={resultAppliedStyle} /> {/* Render user query results */}
-            <PostQuery {...searchMethods} /> {/* Render post query results */}
+            <UserResults {...searchMethods} style={resultAppliedStyle} /> {/* Render user query results */}
+            <PostResults {...searchMethods} /> {/* Render post query results */}
         </DefaultContainer>
     );
 }

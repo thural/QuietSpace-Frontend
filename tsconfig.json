@@ -36,6 +36,9 @@
       ],
       "@utils/*": [
         "src/utils/*"
+      ],
+      "@services/*": [
+        "src/services/*"
       ]
     },
     "esModuleInterop": true,
