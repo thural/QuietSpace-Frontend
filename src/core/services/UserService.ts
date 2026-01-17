@@ -37,7 +37,7 @@ export class UserRepository implements IUserRepository {
     if (!existing) {
       throw new Error(`User ${id} not found`);
     }
-    const updated = { ...existing, ...updates };
+    const updated = existing.updateProfile(updates);
     this.users.set(id, updated);
     return updated;
   }
