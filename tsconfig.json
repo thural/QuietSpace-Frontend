@@ -20,6 +20,8 @@
     "noUnusedLocals": false, // revert after tests
     "noUnusedParameters": false, // reevert after tests
     "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
