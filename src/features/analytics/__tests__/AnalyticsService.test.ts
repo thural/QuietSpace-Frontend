@@ -927,7 +927,7 @@ describe('Integration Tests', () => {
       // Verify dashboard was saved correctly
       const dashboards = await analyticsRepository.getDashboards();
       const savedDashboard = dashboards.find(d => d.id === dashboard.id);
-      expect(savedDashboard).toMatchObject(dashboard);
+      expect(savedDashboard).toMatchObject(dashboard as unknown as Record<string, unknown>);
     });
   });
 });
