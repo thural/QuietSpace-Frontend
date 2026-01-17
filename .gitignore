@@ -119,3 +119,4 @@ pids
 
 # DynamoDB Local files
 .dynamodb/
+tsconfig.tsbuildinfo
