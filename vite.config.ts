@@ -20,7 +20,12 @@ export default defineConfig({
     }
   },
   plugins: [
-    react(),
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: ['babel-plugin-styled-components']
+      }
+    }),
     removeConsole(),
   ],
   server: {
@@ -42,6 +47,9 @@ export default defineConfig({
             '@mantine/hooks',
             '@mantine/modals',
             '@mantine/nprogress'
+          ],
+          'styled-components': [
+            'styled-components'
           ],
           'react-vendor': [
             'react',
