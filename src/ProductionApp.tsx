@@ -7,6 +7,14 @@ import { FeedService } from './features/feed/application/hooks/useFeedDI';
 import { ProfileService } from './features/profile/application/services/ProfileServiceDI';
 import { SettingsService } from './features/settings/application/services/SettingsServiceDI';
 import { SearchService } from './features/search/application/services/SearchServiceDI';
+import { NotificationService } from './features/notifications/application/services/NotificationServiceDI';
+import { ContentService } from './features/content/application/services/ContentServiceDI';
+import { AnalyticsService } from './features/analytics/application/services/AnalyticsServiceDI';
+import { AnalyticsDashboard as AnalyticsDashboardComponent } from './features/analytics/presentation/components';
+import { CrossFeatureAnalytics } from './features/analytics/presentation/components';
+import { initializeNotificationContainer, getNotificationContainer } from './features/notifications/di';
+import { initializeContentContainer, getContentContainer } from './features/content/di';
+import { initializeAnalyticsContainer, getAnalyticsContainer } from './features/analytics/di';
 import { FEATURE_FLAGS, isFeatureEnabled } from './core/featureFlags';
 
 // Production-ready App with DI integration
@@ -15,6 +23,11 @@ const ProductionApp: React.FC = () => {
   const container = React.useMemo(() => {
     const appContainer = Container.create();
     
+    // Initialize feature-specific containers
+    const notificationContainer = initializeNotificationContainer();
+    const contentContainer = initializeContentContainer();
+    const analyticsContainer = initializeAnalyticsContainer();
+    
     // Register all DI services
     appContainer.registerSingleton(ThemeService);
     appContainer.registerSingleton(UserService);
@@ -22,6 +35,9 @@ const ProductionApp: React.FC = () => {
     appContainer.registerSingleton(ProfileService);
     appContainer.registerSingleton(SettingsService);
     appContainer.registerSingleton(SearchService);
+    appContainer.registerSingleton(NotificationService);
+    appContainer.registerSingleton(ContentService);
+    appContainer.registerSingleton(AnalyticsService);
     
     return appContainer;
   }, []);
@@ -56,22 +72,55 @@ const ProductionApp: React.FC = () => {
                 <li>✅ ProfileService: Registered</li>
                 <li>✅ SettingsService: Registered</li>
                 <li>✅ SearchService: Registered</li>
+                <li>✅ NotificationService: Registered</li>
+                <li>✅ ContentService: Registered</li>
+                <li>✅ AnalyticsService: Registered</li>
                 <li>🎯 New Architecture: {isFeatureEnabled('USE_NEW_ARCHITECTURE') ? 'ACTIVE' : 'INACTIVE'}</li>
                 <li>📱 DI Feed: {isFeatureEnabled('USE_DI_FEED') ? 'ENABLED' : 'PENDING'}</li>
                 <li>💬 DI Chat: {isFeatureEnabled('USE_DI_CHAT') ? 'ENABLED' : 'PENDING'}</li>
                 <li>👤 DI Profile: {isFeatureEnabled('USE_DI_PROFILE') ? 'ENABLED' : 'PENDING'}</li>
                 <li>⚙️ DI Settings: {isFeatureEnabled('USE_DI_SETTINGS') ? 'ENABLED' : 'PENDING'}</li>
                 <li>🔍 DI Search: {isFeatureEnabled('USE_DI_SEARCH') ? 'ENABLED' : 'PENDING'}</li>
+                <li>🔔 DI Notifications: {isFeatureEnabled('USE_DI_NOTIFICATIONS') ? 'ENABLED' : 'PENDING'}</li>
+                <li>📝 DI Content: {isFeatureEnabled('USE_DI_CONTENT') ? 'ENABLED' : 'PENDING'}</li>
+                <li>📊 DI Analytics: {isFeatureEnabled('USE_DI_ANALYTICS') ? 'ENABLED' : 'PENDING'}</li>
               </ul>
               
-              <h4>📊 Architecture Benefits</h4>
+              <h4>🚀 Advanced Features</h4>
               <ul>
-                <li>🏗️ Enterprise-grade DI system</li>
-                <li>📱 Mobile & Wide optimization</li>
-                <li>🎨 Style separation implemented</li>
-                <li>🔧 Type-safe development</li>
-                <li>🚀 Production ready</li>
+                <li>🔔 Real-time Notifications</li>
+                <li>📝 Content Management System</li>
+                <li>📊 Analytics Dashboard</li>
+                <li>🎯 Cross-Feature Integration</li>
+                <li>📱 Multi-Platform Support</li>
+                <li>🔧 Enterprise DI Architecture</li>
               </ul>
+              
+              <h4>📈 Performance Metrics</h4>
+              <ul>
+                <li>⚡ Real-time Analytics</li>
+                <li>🎯 AI-Powered Insights</li>
+                <li>📊 Custom Dashboards</li>
+                <li>🔍 Advanced Search</li>
+                <li>📱 Responsive Design</li>
+                <li>🛡️ Error Handling</li>
+              </ul>
+              
+              {/* Feature Integration Dashboard */}
+              <div style={{
+                background: '#f8f9fa',
+                padding: '16px',
+                margin: '16px 0',
+                borderRadius: '8px',
+                border: '1px solid #e1e4e8'
+              }}>
+                <h4>🚀 Feature Integration Dashboard</h4>
+                <AnalyticsDashboardComponent userId="demo-user" />
+                
+                <div style={{ marginTop: '24px' }}>
+                  <CrossFeatureAnalytics userId="demo-user" />
+                </div>
+              </div>
             </div>
           </div>
         ) : (
