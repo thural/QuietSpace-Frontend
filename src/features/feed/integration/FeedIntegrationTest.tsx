@@ -3,7 +3,7 @@ import { Container } from '../../../core/di';
 import { FeedService } from '../application/hooks/useFeedDI';
 
 // Integration Test Component
-const FeedIntegrationTest: React.FC = () => {
+export const FeedIntegrationTest: React.FC = () => {
   const container = Container.create();
   
   // Register services
