@@ -23,7 +23,11 @@ export default defineConfig({
     react({
       jsxImportSource: '@emotion/react',
       babel: {
-        plugins: ['babel-plugin-styled-components']
+        plugins: [
+          'babel-plugin-styled-components',
+          ['@babel/plugin-proposal-decorators', { legacy: true }],
+          ['@babel/plugin-transform-class-properties', { loose: true }]
+        ]
       }
     }),
     removeConsole(),
