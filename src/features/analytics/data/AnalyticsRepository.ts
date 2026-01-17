@@ -33,6 +33,11 @@ export class AnalyticsRepository {
     return newEvent;
   }
 
+  async createEventWithId(event: AnalyticsEntity): Promise<AnalyticsEntity> {
+    this.events.set(event.id, event);
+    return event;
+  }
+
   async getEventById(id: string): Promise<AnalyticsEntity | null> {
     return this.events.get(id) || null;
   }
@@ -397,5 +402,26 @@ export class AnalyticsRepository {
       }
     }
     return deletedCount;
+  }
+
+  // Additional methods for test utilities
+  async getEvents(): Promise<AnalyticsEntity[]> {
+    return Array.from(this.events.values());
+  }
+
+  async deleteEvent(id: string): Promise<void> {
+    this.events.delete(id);
+  }
+
+  async getDashboards(): Promise<AnalyticsDashboard[]> {
+    return Array.from(this.dashboards.values());
+  }
+
+  async getReports(): Promise<AnalyticsReport[]> {
+    return Array.from(this.reports.values());
+  }
+
+  async getInsights(): Promise<AnalyticsInsight[]> {
+    return Array.from(this.insights.values());
   }
 }

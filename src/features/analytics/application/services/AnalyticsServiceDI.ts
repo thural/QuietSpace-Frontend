@@ -72,6 +72,10 @@ export class AnalyticsService {
     });
   }
 
+  async trackBatchEvents(events: Omit<AnalyticsEntity, 'id'>[]): Promise<AnalyticsEntity[]> {
+    return await Promise.all(events.map(event => this.trackEvent(event)));
+  }
+
   // Metrics calculation
   async getMetrics(dateRange: DateRange, filters: {
     userId?: string;
@@ -79,6 +83,18 @@ export class AnalyticsService {
     eventTypes?: AnalyticsEventType[];
   } = {}): Promise<AnalyticsMetrics> {
     return await this.analyticsRepository.calculateMetrics(dateRange, filters);
+  }
+
+  async calculateMetrics(dateRange?: DateRange, filters: {
+    userId?: string;
+    contentType?: string;
+    eventTypes?: AnalyticsEventType[];
+  } = {}): Promise<AnalyticsMetrics> {
+    const range = dateRange || {
+      start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      end: new Date()
+    };
+    return await this.getMetrics(range, filters);
   }
 
   async getRealTimeMetrics(): Promise<AnalyticsMetrics> {
