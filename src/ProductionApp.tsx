@@ -4,6 +4,9 @@ import { Container } from './core/di';
 import { ThemeService } from './core/services/ThemeService';
 import { UserService } from './core/services/UserService';
 import { FeedService } from './features/feed/application/hooks/useFeedDI';
+import { ProfileService } from './features/profile/application/services/ProfileServiceDI';
+import { SettingsService } from './features/settings/application/services/SettingsServiceDI';
+import { SearchService } from './features/search/application/services/SearchServiceDI';
 import { FEATURE_FLAGS, isFeatureEnabled } from './core/featureFlags';
 
 // Production-ready App with DI integration
@@ -16,6 +19,9 @@ const ProductionApp: React.FC = () => {
     appContainer.registerSingleton(ThemeService);
     appContainer.registerSingleton(UserService);
     appContainer.registerSingleton(FeedService);
+    appContainer.registerSingleton(ProfileService);
+    appContainer.registerSingleton(SettingsService);
+    appContainer.registerSingleton(SearchService);
     
     return appContainer;
   }, []);
@@ -47,9 +53,15 @@ const ProductionApp: React.FC = () => {
                 <li>✅ ThemeService: Registered</li>
                 <li>✅ UserService: Registered</li>
                 <li>✅ FeedService: Registered</li>
+                <li>✅ ProfileService: Registered</li>
+                <li>✅ SettingsService: Registered</li>
+                <li>✅ SearchService: Registered</li>
                 <li>🎯 New Architecture: {isFeatureEnabled('USE_NEW_ARCHITECTURE') ? 'ACTIVE' : 'INACTIVE'}</li>
                 <li>📱 DI Feed: {isFeatureEnabled('USE_DI_FEED') ? 'ENABLED' : 'PENDING'}</li>
                 <li>💬 DI Chat: {isFeatureEnabled('USE_DI_CHAT') ? 'ENABLED' : 'PENDING'}</li>
+                <li>👤 DI Profile: {isFeatureEnabled('USE_DI_PROFILE') ? 'ENABLED' : 'PENDING'}</li>
+                <li>⚙️ DI Settings: {isFeatureEnabled('USE_DI_SETTINGS') ? 'ENABLED' : 'PENDING'}</li>
+                <li>🔍 DI Search: {isFeatureEnabled('USE_DI_SEARCH') ? 'ENABLED' : 'PENDING'}</li>
               </ul>
               
               <h4>📊 Architecture Benefits</h4>
