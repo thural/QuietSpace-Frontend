@@ -43,7 +43,8 @@ export class Container {
         if (typeof dep === 'string' || typeof dep === 'symbol') {
           return container.get(dep);
         }
-        return dep; // Direct constructor injection
+        // For constructor dependencies, resolve from container
+        return container.get(dep);
       });
 
       // Create instance with dependencies

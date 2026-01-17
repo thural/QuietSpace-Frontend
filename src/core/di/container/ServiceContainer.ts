@@ -150,12 +150,8 @@ export class ServiceContainer implements IServiceContainer {
    * Create service instance with dependency injection
    */
   private createInstance<T>(descriptor: ServiceDescriptor, identifier: ServiceIdentifier<T>): T {
-    // Resolve dependencies
-    const dependencies = descriptor.dependencies ? 
-      descriptor.dependencies.map(dep => this.get(dep)) : [];
-
     // Create instance with dependencies
-    return descriptor.factory.apply(this, dependencies);
+    return descriptor.factory(this);
   }
 
   /**
