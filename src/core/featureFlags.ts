@@ -9,6 +9,9 @@ export const FEATURE_FLAGS = {
   USE_DI_PROFILE: process.env.REACT_APP_USE_DI_PROFILE === 'true',
   USE_DI_SEARCH: process.env.REACT_APP_USE_DI_SEARCH === 'true',
   USE_DI_SETTINGS: process.env.REACT_APP_USE_DI_SETTINGS === 'true',
+  USE_DI_NOTIFICATIONS: process.env.REACT_APP_USE_DI_NOTIFICATIONS === 'true',
+  USE_DI_CONTENT: process.env.REACT_APP_USE_DI_CONTENT === 'true',
+  USE_DI_ANALYTICS: process.env.REACT_APP_USE_DI_ANALYTICS === 'true',
   
   // Enable mobile/wide optimization
   USE_RESPONSIVE_DESIGN: process.env.REACT_APP_USE_RESPONSIVE === 'true',
