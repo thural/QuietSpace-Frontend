@@ -14,8 +14,8 @@ import type {
   AnalyticsEventType,
   InsightType,
   GoalType
-} from '../domain';
-import { AnalyticsRepository } from '../data';
+} from '../../domain';
+import { AnalyticsRepository } from '../../data';
 
 @Injectable({ lifetime: 'singleton' })
 export class AnalyticsService {
@@ -553,6 +553,28 @@ export const useAnalyticsDI = (userId?: string) => {
     }
   }, [analyticsService]);
 
+  // Generate report data
+  const generateReportData = React.useCallback(async (report: AnalyticsReport) => {
+    try {
+      return await analyticsService.generateReportData(report);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate report data');
+      throw err;
+    }
+  }, [analyticsService]);
+
+  // Get reports by user
+  const getReportsByUser = React.useCallback(async () => {
+    if (!userId) return [];
+    
+    try {
+      return await analyticsService.getReportsByUser(userId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch reports');
+      return [];
+    }
+  }, [analyticsService, userId]);
+
   // Initial fetch
   React.useEffect(() => {
     fetchMetrics();
@@ -565,6 +587,8 @@ export const useAnalyticsDI = (userId?: string) => {
     fetchMetrics,
     trackEvent,
     getDashboards,
-    getInsights
+    getInsights,
+    generateReportData,
+    getReportsByUser
   };
 };

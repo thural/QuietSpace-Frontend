@@ -1,4 +1,10 @@
 export { AnalyticsDashboard } from './AnalyticsDashboard';
 export { CrossFeatureAnalytics } from './CrossFeatureAnalytics';
+export { AdvancedCharts } from './AdvancedCharts';
+export { ReportBuilder } from './ReportBuilder';
+export { PredictiveAnalytics } from './PredictiveAnalytics';
 export { styles as analyticsDashboardStyles } from './AnalyticsDashboard.styles';
 export { styles as crossFeatureAnalyticsStyles } from './CrossFeatureAnalytics.styles';
+export { styles as advancedChartsStyles } from './AdvancedCharts.styles';
+export { styles as reportBuilderStyles } from './ReportBuilder.styles';
+export { styles as predictiveAnalyticsStyles } from './PredictiveAnalytics.styles';

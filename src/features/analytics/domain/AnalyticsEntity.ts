@@ -134,7 +134,7 @@ export interface WidgetFilters {
 export interface DateRange {
   start: Date;
   end: Date;
-  preset?: 'today' | 'yesterday' | 'last_7_days' | 'last_30_days' | 'last_90_days' | 'custom';
+  preset?: 'today' | 'yesterday' | 'last_24_hours' | 'last_7_days' | 'last_30_days' | 'last_90_days' | 'custom';
 }
 
 export interface VisualizationConfig {
