@@ -217,7 +217,8 @@ export class NotificationService {
       ...notification,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       createdAt: new Date(),
-      read: false
+      read: false,
+      priority: notification.priority || 'medium'
     }));
 
     return await this.notificationRepository.createBatchNotifications(notificationEntities);
