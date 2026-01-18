@@ -9,7 +9,7 @@ export type {
   NotificationStatusEntity,
   NavigationMenuEntity,
   NavigationItemsEntity
-} from "./entities";
+} from "./entities/entities";
 
 // Business logic
 export {
@@ -18,4 +18,4 @@ export {
   hasPendingNotifications,
   isValidNavigationItem,
   createNotificationStatus
-} from "./navigationLogic";
+} from "./services/navigationLogic";

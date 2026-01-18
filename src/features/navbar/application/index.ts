@@ -12,4 +12,4 @@ export {
   type NavigationIconConfig,
   type NavigationConfig,
   type NavigationItems
-} from "./useNavbar";
+} from "./hooks/useNavbar";

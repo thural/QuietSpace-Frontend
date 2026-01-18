@@ -23,7 +23,7 @@ import { useAuthStore } from "./services/store/zustand";
 import { getLocalThemeMode } from "./utils/localStorageUtils";
 
 // Lazy-loaded components for better performance
-const NavBar = lazy(() => import("./features/navbar/presentation/Navbar"));
+const NavBar = lazy(() => import("./features/navbar/presentation/components/Navbar"));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 
 /**
