@@ -1,6 +1,7 @@
 import 'reflect-metadata';
+import { useAuthStore } from '@services/store/zustand';
 import * as React from 'react';
-import { Injectable, Inject, useService } from '../../../../core/di';
+import { Injectable, Inject, useService } from '@core/di';
 
 // Settings service interfaces
 interface ISettingsService {

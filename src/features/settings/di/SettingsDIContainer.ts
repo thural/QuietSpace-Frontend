@@ -9,7 +9,7 @@ import type { ISettingsRepository } from "../domain/entities/SettingsRepository"
 import { SettingsRepository } from "../data/repositories/SettingsRepository";
 import { MockSettingsRepository } from "../data/repositories/MockSettingsRepository";
 import { SettingsService, type ISettingsService } from "../application/services/SettingsService";
-import { useAuthStore } from "../../../services/store/zustand";
+import { useAuthStore } from '@services/store/zustand';
 
 /**
  * DI Container configuration options.

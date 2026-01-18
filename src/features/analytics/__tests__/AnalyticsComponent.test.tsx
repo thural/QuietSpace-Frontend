@@ -7,8 +7,8 @@ import { CacheManager } from '../presentation/components/CacheManager';
 import { ErrorTracker } from '../presentation/components/ErrorTracker';
 import { AdvancedCharts } from '../presentation/components/AdvancedCharts';
 import { createAnalyticsTestUtils, MockAnalyticsService } from './AnalyticsTestUtils';
-import { DIProvider } from '../../../core/di';
-import { renderWithDI } from '../../../shared/utils/testUtils';
+import { Container, DIProvider } from '@core/di';
+import { renderWithDI } from '@shared/utils/testUtils';
 
 /**
  * Component testing utilities for Analytics feature

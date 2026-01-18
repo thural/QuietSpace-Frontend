@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import * as React from 'react';
-import { Injectable, Inject, useService } from '../../../../core/di';
-import { User } from '../../../../shared/domain/entities/User';
+import { Injectable, Inject, useService } from '@core/di';
+import { User } from '@shared/domain/entities/User';
 
 // Profile service interfaces
 interface IProfileService {

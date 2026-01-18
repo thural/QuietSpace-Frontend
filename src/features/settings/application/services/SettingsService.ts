@@ -267,8 +267,9 @@ export class SettingsService implements ISettingsService {
     /**
      * Get authentication token from store.
      */
+    import { useAuthStore } from '../../../services/store/zustand';
     private getToken(): JwtToken {
-        const authStore = require('../../../services/store/zustand').useAuthStore.getState();
+        const authStore = useAuthStore.getState();
         return authStore.data.accessToken || '';
     }
 }

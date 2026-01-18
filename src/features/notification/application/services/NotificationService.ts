@@ -196,15 +196,10 @@ export class NotificationService implements INotificationService {
      * Get authentication token from store.
      */
     private getAuthToken(): string {
+        import { useAuthStore } from '@services/store/zustand';
         try {
-            // Try require first (for CommonJS environments)
-            if (typeof require !== 'undefined') {
-                const authStore = require('@services/store/zustand').useAuthStore.getState();
-                return authStore.data.accessToken || '';
-            } else {
-                // Fallback for test environments
-                return 'test-token';
-            }
+            const authStore = useAuthStore.getState();
+            return authStore.data.accessToken || '';
         } catch (error) {
             console.error('NotificationService: Error getting auth token', error);
             return '';

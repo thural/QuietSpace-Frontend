@@ -55,7 +55,7 @@ export const useReactQuerySearch = (
 
     useEffect(() => {
         // Get token from auth store
-        const authStore = require('../../../services/store/zustand').useAuthStore.getState();
+        const authStore = useAuthStore();
         const currentToken = authStore.data.accessToken || null;
         setToken(currentToken);
 

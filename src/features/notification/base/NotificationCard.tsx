@@ -1,12 +1,12 @@
 import styles from "@/styles/notification/notificationCardStyles";
 import { useEffect } from "react";
 
-import UserCard from "@/shared/UserCard";
-import useWasSeen from "@/services/hook/common/useWasSeen";
-import { useNotificationStore } from "@/services/store/zustand";
-import { NotificationCardProps } from "@/types/notificationTypes";
-import FlexStyled from "@/shared/FlexStyled";
-import Typography from "@/shared/Typography";
+import UserCard from "@shared/UserCard";
+import useWasSeen from "@services/hook/common/useWasSeen";
+import { useNotificationStore } from "@services/store/zustand";
+import { NotificationCardProps } from "@shared-types/notificationTypes";
+import FlexStyled from "@shared/FlexStyled";
+import Typography from "@shared/Typography";
 
 /**
  * NotificationCard component.

@@ -5,13 +5,13 @@
  * These entities represent the domain model and contain business logic.
  */
 
-import type { ResId } from '../../../../api/schemas/inferred/common';
+import type { ResId } from '@api/schemas/inferred/common';
 import type { 
     PostResponse, 
     PollOption, 
-    PollResponse,
-    ContentPrivacy 
-} from '../../../../api/schemas/inferred/post';
+    ContentPrivacy,
+    PollResponse
+} from '@api/schemas/inferred/post';
 
 /**
  * Post engagement metrics
@@ -293,4 +293,23 @@ export enum PostSortOption {
     POPULAR = 'likesCount',
     TRENDING = 'engagementRate',
     DISCUSSED = 'commentsCount'
+}
+
+/**
+ * Vote types
+ */
+export enum VoteType {
+    UP = 'up',
+    DOWN = 'down'
+}
+
+/**
+ * Content types
+ */
+export enum ContentType {
+    TEXT = 'text',
+    IMAGE = 'image',
+    VIDEO = 'video',
+    POLL = 'poll',
+    LINK = 'link'
 }

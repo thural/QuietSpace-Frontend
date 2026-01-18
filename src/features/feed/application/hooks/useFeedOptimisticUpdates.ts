@@ -9,8 +9,8 @@
 import { useCallback } from 'react';
 import { useFeedUIStore } from '../stores/feedUIStore';
 import { useFeedRepository } from '../../di/useFeedDI';
-import type { PostRequest, RepostRequest } from '../../../../api/schemas/inferred/post';
-import type { PostResponse } from '../../../../api/schemas/inferred/post';
+import type { PostRequest, RepostRequest } from '@api/schemas/inferred/post';
+import type { PostResponse } from '@api/schemas/inferred/post';
 
 /**
  * Optimistic update result

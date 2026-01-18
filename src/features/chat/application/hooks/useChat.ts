@@ -8,6 +8,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
 import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
+import { useAuthStore } from '../../../services/store/zustand';
 import type { 
     ChatQuery, 
     ChatFilters, 
@@ -78,7 +79,7 @@ export const useChat = (
     const chatRepository = diContainer.getChatRepository();
 
     useEffect(() => {
-        const authStore = require('../../../services/store/zustand').useAuthStore.getState();
+        const authStore = useAuthStore.getState();
         const currentToken = authStore.data.accessToken || null;
         setToken(currentToken);
     }, [diContainer]);

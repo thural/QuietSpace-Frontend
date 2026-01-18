@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 import { useFeedUIStore } from '../stores/feedUIStore';
-import type { PostResponse } from '../../../../api/schemas/inferred/post';
+import type { PostResponse } from '@api/schemas/inferred/post';
 
 /**
  * Real-time update types

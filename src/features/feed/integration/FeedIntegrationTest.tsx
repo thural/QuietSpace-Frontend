@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container } from '../../../core/di';
+import { Container } from '@core/di';
 import { FeedService } from '../application/hooks/useFeedDI';
 
 // Integration Test Component

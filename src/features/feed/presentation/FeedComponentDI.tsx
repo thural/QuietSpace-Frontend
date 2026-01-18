@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { DIProvider } from '../../../core/di';
-import { Container } from '../../../core/di';
+import { DIProvider, Container } from '@core/di';
 import { FeedService, useFeedDI } from '../application/hooks/useFeedDI';
 
 // DI-enabled Feed Component

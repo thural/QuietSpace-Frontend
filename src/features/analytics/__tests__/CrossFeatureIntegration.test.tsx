@@ -1,8 +1,8 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { DIProvider } from '../../../core/di';
-import { Container } from '../../../core/di';
+import { DIProvider } from '@core/di';
+import { Container } from '@core/di';
 
 /**
  * Cross-feature integration testing for advanced features

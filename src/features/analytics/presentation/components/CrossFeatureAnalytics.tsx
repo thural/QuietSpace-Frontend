@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useAnalyticsDI } from '@/features/analytics/application/services/AnalyticsServiceDI';
-import { useNotificationsDI } from '../../../notifications/application/services/NotificationServiceDI';
-import { useContentDI } from '@features/content/application/services';
+import { useNotificationsDI } from '@notification/application/services/NotificationServiceDI';
+import { useContentDI } from '@content/application/services';
 import { styles } from './CrossFeatureAnalytics.styles.ts';
 
 interface CrossFeatureAnalyticsProps {

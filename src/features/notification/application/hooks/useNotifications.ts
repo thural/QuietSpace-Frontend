@@ -83,12 +83,8 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     // Get authentication token
     const getAuthToken = useCallback((): string => {
         try {
-            if (typeof require !== 'undefined') {
-                const authStore = require('@services/store/zustand').useAuthStore.getState();
-                return authStore.data.accessToken || '';
-            } else {
-                return 'test-token';
-            }
+            const authStore = useAuthStore.getState();
+            return authStore.data.accessToken || '';
         } catch (err) {
             console.error('useNotifications: Error getting auth token', err);
             return '';

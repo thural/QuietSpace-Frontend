@@ -14,6 +14,7 @@ import type {
     PrivacySettings, 
     NotificationSettings 
 } from "../../domain/entities/SettingsEntities";
+import { useAuthStore } from '../../../services/store/zustand';
 
 /**
  * React Query Settings Service interface.

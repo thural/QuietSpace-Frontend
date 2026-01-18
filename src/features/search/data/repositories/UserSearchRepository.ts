@@ -8,8 +8,8 @@
 import type { UserList } from "@/api/schemas/inferred/user";
 import type { SearchFilters } from "../../domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
-import { fetchUsersByQuery } from "../../../../api/requests/userRequests";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import { fetchUsersByQuery } from '@/api/requests/userRequests';
+import type { JwtToken } from "@api/schemas/inferred/common";
 
 /**
  * IUserSearchRepository interface.

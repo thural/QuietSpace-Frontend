@@ -11,7 +11,7 @@ import { PostSearchRepository } from "../data/repositories/PostSearchRepository"
 import { MockSearchRepository } from "../data/repositories/MockSearchRepository";
 import { SearchService } from "../application/services/SearchService";
 import { SearchQueryService } from "../application/services/SearchQueryService";
-import { useAuthStore } from "../../../services/store/zustand";
+import { useAuthStore } from '@services/store/zustand';
 
 /**
  * DI Container configuration options.

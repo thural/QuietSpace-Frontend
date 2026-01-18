@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Injectable, useService } from '../../../../core/di';
+import { Injectable, useService } from '@core/di';
 import { useState, useCallback } from 'react';
 
 // Service interfaces

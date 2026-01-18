@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { Container } from '../../../core/di';
-import { ContentService } from '../application/services/ContentServiceDI';
-import { ContentRepository } from '../data';
+import { Injectable, Container } from '@core/di';
+import { ContentService } from '@features/content/application/services/ContentServiceDI';
+import { ContentRepository } from '@features/content/data';
 
 let containerInstance: Container | null = null;
 

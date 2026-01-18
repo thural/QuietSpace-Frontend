@@ -13,6 +13,7 @@ import type {
     PrivacySettings, 
     NotificationSettings 
 } from "../../domain/entities/SettingsEntities";
+import { useAuthStore } from '@services/store/zustand';
 import { ReactQuerySettingsService, type IReactQuerySettingsService } from "../services/ReactQuerySettingsService";
 import { useSettingsDI } from "../../di/useSettingsDI";
 import type { JwtToken } from "@/api/schemas/inferred/common";
@@ -63,7 +64,7 @@ export const useReactQuerySettings = (
 
     useEffect(() => {
         // Get token from auth store
-        const authStore = require('../../../services/store/zustand').useAuthStore.getState();
+        const authStore = useAuthStore.getState();
         const currentToken = authStore.data.accessToken || null;
         setToken(currentToken);
 

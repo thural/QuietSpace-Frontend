@@ -53,6 +53,33 @@
       ],
       "@notification/*": [
         "src/features/notification/*"
+      ],
+      "@analytics/*": [
+        "src/features/analytics/*"
+      ],
+      "@content/*": [
+        "src/features/content/*"
+      ],
+      "@feed/*": [
+        "src/features/feed/*"
+      ],
+      "@profile/*": [
+        "src/features/profile/*"
+      ],
+      "@search/*": [
+        "src/features/search/*"
+      ],
+      "@settings/*": [
+        "src/features/settings/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@shared-types/*": [
+        "src/types/*"
       ]
     },
     "esModuleInterop": true,

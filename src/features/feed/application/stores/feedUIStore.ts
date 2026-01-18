@@ -7,8 +7,9 @@
  */
 
 import { create } from 'zustand';
+import { useService } from '@core/di';
 import type { PostQuery, PostFilters } from '../../domain/entities/IPostRepository';
-import type { PostResponse } from '../../../../api/schemas/inferred/post';
+import type { ResId } from '@api/schemas/inferred/common';
 
 /**
  * Feed UI state interface

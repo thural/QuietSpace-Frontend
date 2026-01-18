@@ -8,6 +8,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
+import { useAuthStore } from '../../../services/store/zustand';
 import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import { useChatDI } from "@chat/di/useChatDI";
@@ -57,7 +58,7 @@ export const useReactQueryChat = (
     const queryClient = useQueryClient();
 
     useEffect(() => {
-        const authStore = require('../../../services/store/zustand').useAuthStore.getState();
+        const authStore = useAuthStore.getState();
         const currentToken = authStore.data.accessToken || null;
         setToken(currentToken);
     }, [diContainer]);

@@ -10,6 +10,7 @@ import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/
 import type { ResId } from "@/api/schemas/inferred/common";
 import type { JwtToken } from "@/api/schemas/inferred/common";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
+import { useAuthStore } from '@services/store/zustand';
 import type { 
     ChatQuery, 
     ChatFilters, 
@@ -307,7 +308,7 @@ export class ReactQueryChatService implements IReactQueryChatService {
      */
     private getAuthToken(): string {
         try {
-            const authStore = require('../../../services/store/zustand').useAuthStore.getState();
+            const authStore = useAuthStore.getState();
             return authStore.data.accessToken || '';
         } catch (error) {
             console.error('ReactQueryChatService: Error getting auth token', error);

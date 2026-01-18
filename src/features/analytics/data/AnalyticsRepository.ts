@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Injectable } from '../../../core/di';
+import { Injectable } from '@core/di';
 import type { 
   AnalyticsEntity, 
   AnalyticsMetrics, 

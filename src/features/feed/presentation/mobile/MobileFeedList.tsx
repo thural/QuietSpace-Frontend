@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PostCardMobile } from './PostCardMobile';
-import { useService } from '../../../../core/di';
+import { useService } from '@core/di';
 import { FeedService } from '../../application/hooks/useFeedDI';
 import {
   MobileFeedContainer,

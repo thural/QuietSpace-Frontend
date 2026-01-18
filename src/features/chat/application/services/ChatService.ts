@@ -363,7 +363,8 @@ export class ChatService implements IChatService {
         try {
             // Try require first (for CommonJS environments)
             if (typeof require !== 'undefined') {
-                const authStore = require('@services/store/zustand').useAuthStore.getState();
+                const { useAuthStore } = require('../../../services/store/zustand');
+                const authStore = useAuthStore.getState();
                 return authStore.data.accessToken || '';
             } else {
                 // Fallback for test environments

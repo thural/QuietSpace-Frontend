@@ -5,7 +5,7 @@
  * This interface enables dependency injection and mocking for testing.
  */
 
-import type { ResId } from '../../../../api/schemas/inferred/common';
+import type { ResId } from '@api/schemas/inferred/common';
 import type { 
     PostPage, 
     PostResponse, 

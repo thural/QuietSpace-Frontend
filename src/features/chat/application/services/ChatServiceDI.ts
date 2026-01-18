@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as React from 'react';
-import { Injectable, Inject, useService } from '../../../../core/di';
+import { Injectable, Inject, useService } from '@core/di';
 
 // Chat service interfaces
 interface IChatService {

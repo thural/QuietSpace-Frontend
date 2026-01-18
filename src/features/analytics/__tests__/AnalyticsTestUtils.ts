@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Container } from '../../../core/di';
+import { Container } from '@core/di';
 import { AnalyticsService } from '../application/services/AnalyticsServiceDI';
 import { AnalyticsRepository } from '../data';
 import { initializeAnalyticsContainer } from '../di';
