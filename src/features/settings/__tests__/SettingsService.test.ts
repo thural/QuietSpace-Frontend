@@ -4,6 +4,7 @@
  * Tests for Settings service implementations.
  */
 
+import { jest } from '@jest/globals';
 import { SettingsService } from '../application/services/SettingsService';
 import { MockSettingsRepository } from '../data/repositories/MockSettingsRepository';
 import type { ISettingsService } from '../application/services/SettingsService';

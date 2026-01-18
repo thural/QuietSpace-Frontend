@@ -6,6 +6,7 @@
  * and real-time updates work together correctly.
  */
 
+import { jest } from '@jest/globals';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useNavbar, useNavbarEnhanced, useNavbarAdvanced } from '../application';
 import { createMockNotificationRepository } from '../data';

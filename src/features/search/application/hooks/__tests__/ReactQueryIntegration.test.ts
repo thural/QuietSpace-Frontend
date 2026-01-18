@@ -4,6 +4,7 @@
  * Tests the React Query integration with toggle functionality.
  */
 
+import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { useReactQuerySearch } from '../useReactQuerySearch';
 import { useSearchDI } from '../useSearchDI';

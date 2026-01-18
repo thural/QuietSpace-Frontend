@@ -6,6 +6,8 @@
 
 import { UserSearchRepository } from '../UserSearchRepository';
 import { PostSearchRepository } from '../PostSearchRepository';
+import { fetchUsersByQuery } from '../../../../../api/requests/userRequests';
+import { fetchPostQuery } from '../../../../../api/requests/postRequests';
 
 // Mock the auth store
 jest.mock('../../../../../services/store/zustand', () => ({
@@ -16,6 +18,18 @@ jest.mock('../../../../../services/store/zustand', () => ({
         }
     }))
 }));
+
+// Mock the API functions
+jest.mock('../../../../../api/requests/userRequests', () => ({
+    fetchUsersByQuery: jest.fn()
+}));
+
+jest.mock('../../../../../api/requests/postRequests', () => ({
+    fetchPostQuery: jest.fn()
+}));
+
+const mockFetchUsersByQuery = fetchUsersByQuery as jest.MockedFunction<typeof fetchUsersByQuery>;
+const mockFetchPostQuery = fetchPostQuery as jest.MockedFunction<typeof fetchPostQuery>;
 
 describe('Repository Implementation Tests', () => {
     describe('UserSearchRepository', () => {
@@ -30,16 +44,15 @@ describe('Repository Implementation Tests', () => {
         });
 
         it('should search users using real API', async () => {
-            const mockFetch = jest.fn().mockResolvedValue({
+            const mockResponse = {
                 content: [
                     { id: '1', username: 'testuser', email: 'test@example.com' }
                 ],
                 pageable: { pageNumber: 0, pageSize: 10 }
-            });
+            };
 
             // Mock the API function
-            const { fetchUsersByQuery } = require('../../../../../api/requests/userRequests');
-            fetchUsersByQuery.mockImplementation(mockFetch);
+            mockFetchUsersByQuery.mockResolvedValue(mockResponse);
 
             const result = await userRepo.searchUsers('test query');
             
@@ -50,9 +63,7 @@ describe('Repository Implementation Tests', () => {
         });
 
         it('should handle API errors gracefully', async () => {
-            const mockFetch = jest.fn().mockRejectedValue(new Error('API Error'));
-            const { fetchUsersByQuery } = require('../../../../../api/requests/userRequests');
-            fetchUsersByQuery.mockImplementation(mockFetch);
+            mockFetchUsersByQuery.mockRejectedValue(new Error('API Error'));
 
             const result = await userRepo.searchUsers('test query');
             
@@ -72,16 +83,15 @@ describe('Repository Implementation Tests', () => {
         });
 
         it('should search posts using real API', async () => {
-            const mockFetch = jest.fn().mockResolvedValue({
+            const mockResponse = {
                 content: [
                     { id: '1', title: 'Test Post', text: 'Test content' }
                 ],
                 pageable: { pageNumber: 0, pageSize: 10 }
-            });
+            };
 
             // Mock the API function
-            const { fetchPostQuery } = require('../../../../../api/requests/postRequests');
-            fetchPostQuery.mockImplementation(mockFetch);
+            mockFetchPostQuery.mockResolvedValue(mockResponse);
 
             const result = await postRepo.searchPosts('test query');
             
@@ -92,9 +102,7 @@ describe('Repository Implementation Tests', () => {
         });
 
         it('should handle API errors gracefully', async () => {
-            const mockFetch = jest.fn().mockRejectedValue(new Error('API Error'));
-            const { fetchPostQuery } = require('../../../../../api/requests/postRequests');
-            fetchPostQuery.mockImplementation(mockFetch);
+            mockFetchPostQuery.mockRejectedValue(new Error('API Error'));
 
             const result = await postRepo.searchPosts('test query');
             

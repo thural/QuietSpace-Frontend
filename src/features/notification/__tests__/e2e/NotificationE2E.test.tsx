@@ -970,7 +970,7 @@ describe('Notification E2E Tests', () => {
 
     describe('Error Recovery Flows', () => {
         it('should recover from network errors', async () => {
-            const mockUseAdvancedNotifications = require('../../application/hooks/useAdvancedNotifications').useAdvancedNotifications;
+            const mockUseAdvancedNotifications = useAdvancedNotifications as jest.MockedFunction<typeof useAdvancedNotifications>;
             
             // First, return error state
             mockUseAdvancedNotifications.mockReturnValue({

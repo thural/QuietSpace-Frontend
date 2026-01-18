@@ -4,6 +4,7 @@
  * Tests for Settings hooks with dependency injection.
  */
 
+import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { useSettings } from '../application/hooks/useSettings';
 import { useSettingsDI } from '../di/useSettingsDI';

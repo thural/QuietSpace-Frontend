@@ -2,32 +2,31 @@ import { jest } from '@jest/globals';
 import { fetchResendCode } from '@/api/requests/authRequests';
 import useJwtAuth from "@/services/hook/auth/useJwtAuth";
 import { useActivationForm } from '@/services/hook/auth/useActivationForm';
-import { displayCountdown } from '@/services/hook/common/useTimer';
+import { displayCountdown, useTimer } from '@/services/hook/common/useTimer';
 import { AuthPages } from '@/types/authTypes';
 import { act, renderHook } from '@testing-library/react';
 
-// No-op: `useAuthData` module is not present in source; avoid mocking it here.
+// Mock the modules
+const mockDisplayCountdown = jest.fn();
+const mockUseTimer = jest.fn();
+const mockFetchResendCode = jest.fn();
+const mockUseActivation = jest.fn();
+
 jest.mock('@/services/hook/common/useTimer', () => ({
     __esModule: true,
-    displayCountdown: jest.fn(),
-    useTimer: jest.fn()
+    displayCountdown: mockDisplayCountdown,
+    useTimer: mockUseTimer
 }));
 
 jest.mock('@/api/requests/authRequests', () => ({
     __esModule: true,
-    fetchResendCode: jest.fn()
+    fetchResendCode: mockFetchResendCode
 }));
 
-
-// Mock useJwtAuth to avoid calling hooks at module scope and provide a stable mock
-const mockUseActivation = jest.fn();
 jest.mock('@/services/hook/auth/useJwtAuth', () => ({
     __esModule: true,
-    default: () => ({ acitvate: mockUseActivation })
+    default: () => ({ activate: mockUseActivation })
 }));
-const mockDisplayCountdown = displayCountdown as jest.Mock;
-const mockUseTimer = require('@/services/hook/common/useTimer').useTimer as jest.Mock;
-const mockFetchResendCode = fetchResendCode as jest.Mock;
 
 describe('useActivationForm Hook', () => {
     const setAuthState = jest.fn();

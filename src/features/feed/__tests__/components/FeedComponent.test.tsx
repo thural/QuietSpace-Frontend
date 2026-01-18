@@ -167,8 +167,6 @@ describe('Feed Component Tests', () => {
 
     describe('PostFactory Integration', () => {
         it('should create post entities correctly', () => {
-            const { PostFactory } = require('../../domain/entities/PostEntities');
-            
             const mockPost = mockPosts[0];
             const post = PostFactory.fromApiResponse(mockPost);
             

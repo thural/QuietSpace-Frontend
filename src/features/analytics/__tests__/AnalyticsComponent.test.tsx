@@ -5,6 +5,7 @@ import { ReportBuilder } from '../presentation/components/ReportBuilder';
 import { PerformanceMonitor } from '../presentation/components/PerformanceMonitor';
 import { CacheManager } from '../presentation/components/CacheManager';
 import { ErrorTracker } from '../presentation/components/ErrorTracker';
+import { AdvancedCharts } from '../presentation/components/AdvancedCharts';
 import { createAnalyticsTestUtils, MockAnalyticsService } from './AnalyticsTestUtils';
 import { DIProvider } from '../../../core/di';
 import { renderWithDI } from '../../../shared/utils/testUtils';
@@ -265,8 +266,6 @@ describe('AdvancedCharts Component', () => {
 
   describe('Chart Type Selection', () => {
     it('should allow switching between chart types', async () => {
-      const { AdvancedCharts } = require('../presentation/components/AdvancedCharts');
-      
       renderWithDI(<AdvancedCharts userId="test-user" />);
 
       const lineChartButton = screen.getByText('📈 Line');
@@ -290,8 +289,6 @@ describe('AdvancedCharts Component', () => {
     });
 
     it('should update chart data in real-time when live mode is enabled', async () => {
-      const { AdvancedCharts } = require('../presentation/components/AdvancedCharts');
-      
       renderWithDI(<AdvancedCharts userId="test-user" />);
 
       const liveButton = screen.getByText('🔴 LIVE');

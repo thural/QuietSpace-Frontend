@@ -1,6 +1,29 @@
 // jest.setup.js
 require('@testing-library/jest-dom');
 
+// Mock fetch for Node.js test environment
+try {
+    const { fetch, Headers, Request, Response } = require('node-fetch');
+    global.fetch = fetch;
+    global.Headers = Headers;
+    global.Request = Request;
+    global.Response = Response;
+} catch (e) {
+    // Fallback to basic mock if node-fetch is not available
+    global.fetch = jest.fn(() =>
+        Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve({}),
+            text: () => Promise.resolve(''),
+            headers: new Map(),
+        })
+    );
+}
+
+// Mock alert function
+global.alert = jest.fn();
+
 jest.setTimeout(10000);
 
 // Mock browser APIs if needed

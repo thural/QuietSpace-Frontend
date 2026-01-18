@@ -8,11 +8,12 @@ module.exports = {
     // Use ESM for module resolution
     extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
-    globals: {
-        'ts-jest': {
+    // Transform configurations - modern ts-jest syntax
+    transform: {
+        '^.+\\.tsx?$': ['ts-jest', {
             useESM: true,
             tsconfig: 'tsconfig.test.json', // Use test-specific TypeScript config
-        },
+        }],
     },
 
     // Module name mapping for path aliases
@@ -33,11 +34,6 @@ module.exports = {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     },
 
-    // Transform configurations
-    transform: {
-        '^.+\\.tsx?$': 'ts-jest', // Ensure this is included
-    },
-
     // Test file patterns
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
 
@@ -48,6 +44,13 @@ module.exports = {
     collectCoverage: true,
     coverageDirectory: 'coverage',
     coverageReporters: ['text', 'lcov'],
+    collectCoverageFrom: [
+        'src/**/*.{ts,tsx}',
+        '!src/**/*.d.ts',
+        '!src/**/__tests__/**',
+        '!src/**/*.test.{ts,tsx}',
+        '!src/**/*.spec.{ts,tsx}',
+    ],
 
     // Setup files
     setupFilesAfterEnv: ['<rootDir>/jest.setup.cjs'],

@@ -4,6 +4,7 @@
  * Tests the main search hook with DI integration.
  */
 
+import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import useSearch from '../useSearch';
 

@@ -47,17 +47,16 @@ describe('STOMP Utilities', () => {
 
         // Also wire the mapped stompjs mock's `over` implementation to return our per-test client
         try {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const stomp = require('stompjs');
-            if (stomp && typeof stomp.over === 'function') {
+            // Use the imported StompJS instead of require
+            if (StompJS && typeof StompJS.over === 'function') {
                 // prefer mockImplementation
-                if (typeof stomp.over.mockImplementation === 'function') {
-                    stomp.over.mockImplementation(() => mockClient);
+                if (typeof StompJS.over.mockImplementation === 'function') {
+                    StompJS.over.mockImplementation(() => mockClient);
                 } else {
                     // fallback: set internal implementation used by our lightweight mocks
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    stomp.over._impl = () => mockClient;
+                    StompJS.over._impl = () => mockClient;
                 }
             }
         } catch (e) {

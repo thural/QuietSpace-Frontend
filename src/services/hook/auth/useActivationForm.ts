@@ -20,7 +20,7 @@ export const useActivationForm = ({ setAuthState, authState }: ActivationFormPro
         console.log("error on account activation:", error.message);
     }
 
-    const { acitvate } = useJwtAuth({ onSuccessFn, onErrorFn });
+    const { activate } = useJwtAuth({ onSuccessFn, onErrorFn });
 
     const handleResendCode = (): void => {
         fetchResendCode(authState.formData.email);
@@ -29,7 +29,7 @@ export const useActivationForm = ({ setAuthState, authState }: ActivationFormPro
 
     const handleSubmit = async (event: Event): Promise<void> => {
         event.preventDefault();
-        acitvate(formData.activationCode);
+        activate(formData.activationCode);
     };
 
     const handleChange = (value: string): void => {

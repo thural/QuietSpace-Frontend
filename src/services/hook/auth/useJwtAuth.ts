@@ -18,7 +18,7 @@ import { useCallback, useMemo } from 'react';
  * @interface UseJwtAuthReturn
  * @property {function} loadAccessToken - Loads and starts auto-refreshing the access token.
  * @property {function} signup - Signs up a user with the provided form data.
- * @property {function} acitvate - Activates a user account using a code.
+ * @property {function} activate - Activates a user account using a code.
  * @property {function} signout - Signs out the current user.
  * @property {function} authenticate - Authenticates a user with the provided form data.
  * @property {function} register - Registers a new user and updates the authentication state.
@@ -27,7 +27,7 @@ import { useCallback, useMemo } from 'react';
 interface UseJwtAuthReturn {
     loadAccessToken: () => void;
     signup: (formData: SignupBody) => void;
-    acitvate: (code: string) => void;
+    activate: (code: string) => void;
     signout: () => void;
     authenticate: (formData: LoginBody) => void;
     register: (setAuthState: SetAuthState, formData: SignupBody) => void;
@@ -87,7 +87,7 @@ const useJwtAuth = ({
      * Activates a user account using the provided code.
      * @param {string} code - The activation code for the user.
      */
-    const acitvate = useCallback(async (code: string) => {
+    const activate = useCallback(async (code: string) => {
         await activateUser({
             code,
             onSuccessFn,
@@ -127,7 +127,7 @@ const useJwtAuth = ({
     return {
         loadAccessToken,
         signup,
-        acitvate,
+        activate,
         signout,
         authenticate,
         register,

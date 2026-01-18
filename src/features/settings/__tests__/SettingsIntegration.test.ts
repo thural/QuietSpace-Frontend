@@ -4,6 +4,7 @@
  * End-to-end tests for Settings feature with DI container.
  */
 
+import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { SettingsDIContainer } from '../di/SettingsDIContainer';
 import { useSettings } from '../application/hooks/useSettings';
