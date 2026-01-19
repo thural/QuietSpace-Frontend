@@ -5,14 +5,10 @@ import { ThemeService } from './core/services/ThemeService';
 import { UserService } from './core/services/UserService';
 import { FeedService } from './features/feed/application/hooks/useFeedDI';
 import { ProfileService } from './features/profile/application/services/ProfileServiceDI';
-import { SettingsService } from './features/settings/application/services/SettingsServiceDI';
-import { SearchService } from './features/search/application/services/SearchServiceDI';
-import { NotificationService } from './features/notifications/application/services/NotificationServiceDI';
-import { ContentService } from './features/content/application/services/ContentServiceDI';
-import { AnalyticsService } from './features/analytics/application/services/AnalyticsServiceDI';
-import { AnalyticsDashboard as AnalyticsDashboardComponent } from './features/analytics/presentation/components';
-import { CrossFeatureAnalytics } from './features/analytics/presentation/components';
-import { initializeNotificationContainer, getNotificationContainer } from './features/notifications/di';
+import { SettingsService } from './features/settings/application/services/SettingsService';
+import { SearchService } from './features/search/application/services/SearchService';
+import { NotificationServiceDI as NotificationService } from './features/notification/application/services/NotificationServiceDI';
+import { initializeNotificationContainer, getNotificationContainer } from './features/notification/di/NotificationContainerDI';
 import { initializeContentContainer, getContentContainer } from './features/content/di';
 import { initializeAnalyticsContainer, getAnalyticsContainer } from './features/analytics/di';
 import { FEATURE_FLAGS, isFeatureEnabled } from './core/featureFlags';
@@ -36,8 +32,6 @@ const ProductionApp: React.FC = () => {
     appContainer.registerSingleton(SettingsService);
     appContainer.registerSingleton(SearchService);
     appContainer.registerSingleton(NotificationService);
-    appContainer.registerSingleton(ContentService);
-    appContainer.registerSingleton(AnalyticsService);
     
     return appContainer;
   }, []);
@@ -73,8 +67,6 @@ const ProductionApp: React.FC = () => {
                 <li>✅ SettingsService: Registered</li>
                 <li>✅ SearchService: Registered</li>
                 <li>✅ NotificationService: Registered</li>
-                <li>✅ ContentService: Registered</li>
-                <li>✅ AnalyticsService: Registered</li>
                 <li>🎯 New Architecture: {isFeatureEnabled('USE_NEW_ARCHITECTURE') ? 'ACTIVE' : 'INACTIVE'}</li>
                 <li>📱 DI Feed: {isFeatureEnabled('USE_DI_FEED') ? 'ENABLED' : 'PENDING'}</li>
                 <li>💬 DI Chat: {isFeatureEnabled('USE_DI_CHAT') ? 'ENABLED' : 'PENDING'}</li>
@@ -115,11 +107,7 @@ const ProductionApp: React.FC = () => {
                 border: '1px solid #e1e4e8'
               }}>
                 <h4>🚀 Feature Integration Dashboard</h4>
-                <AnalyticsDashboardComponent userId="demo-user" />
-                
-                <div style={{ marginTop: '24px' }}>
-                  <CrossFeatureAnalytics userId="demo-user" />
-                </div>
+                <p>Notification services successfully merged and integrated.</p>
               </div>
             </div>
           </div>
