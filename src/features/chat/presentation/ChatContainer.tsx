@@ -6,7 +6,7 @@ import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/chat/chatContainerStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import LoaderStyled from "@/shared/LoaderStyled";
-import ChatSidebar from "./sidebar/ChatSidebar";
+import ChatSidebar from "./components/sidebar/ChatSidebar";
 
 /**
  * ChatContainer component that wraps chat-related components and manages chat data fetching.

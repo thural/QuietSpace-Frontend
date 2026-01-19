@@ -6,9 +6,9 @@ import { Category, pickNotificationFilter } from "@utils/notificationUtils";
 import Typography from "@shared/Typography";
 import { Center } from "@mantine/core";
 import { useParams } from "react-router-dom";
-import CommentNotification from "../fragments/CommentNotification";
-import FollowNotification from "../fragments/FollowNotification";
-import PostNotification from "../fragments/PostNotification";
+import CommentNotification from "./fragments/CommentNotification";
+import FollowNotification from "./fragments/FollowNotification";
+import PostNotification from "./fragments/PostNotification";
 
 /**
  * NotificationList component.

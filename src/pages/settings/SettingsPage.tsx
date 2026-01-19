@@ -1,4 +1,4 @@
-import SettingsContainer from "@/features/settings/SettingContainer";
+import SettingsContainer from "@/features/settings/presentation/components/SettingContainer";
 
 
 const SettingsPage = () => {

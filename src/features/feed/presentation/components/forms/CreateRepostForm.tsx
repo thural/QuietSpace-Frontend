@@ -7,7 +7,7 @@ import { ConsumerFn } from "@/types/genericTypes";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
-import PostCardBase from "../post/PostCardBase";
+import PostCardBase from "../../../post/PostCardBase";
 
 /**
  * Props for the CreateRepostForm component.

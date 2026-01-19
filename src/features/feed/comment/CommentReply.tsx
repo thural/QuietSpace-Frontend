@@ -8,7 +8,7 @@ import Typography from "@/shared/Typography";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
 import styles from "@/styles/feed/commentStyles";
-import CreateCommentForm from "../form/CreateCommentForm";
+import CreateCommentForm from "../presentation/components/forms/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
 /**

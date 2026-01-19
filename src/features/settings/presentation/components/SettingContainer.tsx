@@ -6,7 +6,7 @@ import Typography from "@/shared/Typography";
 import { Tabs, Text } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-import TextInput from "@/features/feed/fragments/TextInput";
+import TextInput from "@/features/feed/presentation/components/fragments/TextInput";
 import BoxStyled from "@/shared/BoxStyled";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import SwitchStyled from "@/shared/SwitchStyled";

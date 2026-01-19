@@ -7,7 +7,7 @@ import { GenericWrapper } from "@/types/sharedComponentTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import EmojiText from "@/shared/EmojiText";
 import FlexStyled from "@/shared/FlexStyled";
-import CreateCommentForm from "../form/CreateCommentForm";
+import CreateCommentForm from "../presentation/components/forms/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
 /**

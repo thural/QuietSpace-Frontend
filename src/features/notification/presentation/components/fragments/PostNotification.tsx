@@ -1,6 +1,6 @@
 import { NotificationItemProps } from "@shared-types/notificationTypes";
 import { genNotificationText } from "@utils/notificationUtils";
-import NotificationCard from "../base/NotificationCard";
+import NotificationCard from "../NotificationCard";
 
 /**
  * PostNotification component.
