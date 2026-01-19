@@ -2,12 +2,12 @@ import { CommentResponse } from "@/api/schemas/inferred/comment";
 import Overlay from "@/shared/Overlay";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
-import styles from "@/styles/feed/commentStyles";
+import styles from "../styles/commentStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import EmojiText from "@/shared/EmojiText";
 import FlexStyled from "@/shared/FlexStyled";
-import CreateCommentForm from "../presentation/components/forms/CreateCommentForm";
+import CreateCommentForm from "../forms/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
 /**

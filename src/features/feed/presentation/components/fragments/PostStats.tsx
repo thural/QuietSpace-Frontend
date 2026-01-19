@@ -1,7 +1,7 @@
 import { PostResponse } from "@/api/schemas/inferred/post";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
-import useStyles from "@/styles/feed/poststatStyles";
+import useStyles from "../styles/poststatStyles";
 import { parseCount } from "@/utils/stringUtils";
 
 /**

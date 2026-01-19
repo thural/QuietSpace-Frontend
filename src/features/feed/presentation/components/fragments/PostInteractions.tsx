@@ -4,7 +4,7 @@ import { ConsumerFn } from "@/types/genericTypes";
 import PostStats from "./PostStats";
 import ReactionGroup from "./ReactionGroup";
 import InteractionActions from "./InteractionActions";
-import useStyles from "@/styles/feed/postInteractionStyles";
+import useStyles from "../styles/postInteractionStyles";
 
 /**
  * Props for the PostInteractions component.

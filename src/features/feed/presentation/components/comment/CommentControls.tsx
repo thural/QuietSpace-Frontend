@@ -1,4 +1,4 @@
-import useStyles from "@/styles/feed/commentControlStyles";
+import useStyles from "../styles/commentControlStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import Conditional from "@/shared/Conditional";

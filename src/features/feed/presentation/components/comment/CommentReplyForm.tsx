@@ -1,7 +1,7 @@
 import { ResId } from "@/api/schemas/inferred/common";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useReplyForm from "@/services/hook/feed/useReplyForm";
-import styles from "@/styles/feed/commentReplyFormStyles";
+import styles from "../styles/commentReplyFormStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 import EmojiInput from "@shared/EmojiInput";
 import FlexStyled from "@shared/FlexStyled";

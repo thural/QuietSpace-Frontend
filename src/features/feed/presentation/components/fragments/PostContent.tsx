@@ -3,7 +3,7 @@ import BoxStyled from "@/shared/BoxStyled";
 import Conditional from "@/shared/Conditional";
 import Typography from "@/shared/Typography";
 import { ConsumerFn } from "@/types/genericTypes";
-import PollBox from "../../../poll/Poll";
+import PollBox from "../poll/Poll";
 import PhotoDisplay from "@/shared/PhotoDisplay";
 
 /**

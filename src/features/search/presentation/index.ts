@@ -5,6 +5,6 @@
  */
 
 export { default as SearchContainer } from './SearchContainer';
-export { default as SearchBar } from './SearchBar';
-export { default as UserResults } from './UserResults';
-export { default as PostResults } from './PostResults';
+export { default as SearchBar } from './components/SearchBar/SearchBar';
+export { default as UserResults } from './components/UserResults/UserResults';
+export { default as PostResults } from './components/PostResults/PostResults';

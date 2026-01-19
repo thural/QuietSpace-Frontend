@@ -13,7 +13,7 @@ import BoxStyled from "@/shared/BoxStyled";
 import UserQueryItem from "@/shared/UserQueryItem";
 import { UseMutationResult } from "@tanstack/react-query";
 import React, { CSSProperties } from "react";
-import styles from "@/styles/search/queryResultStyles";
+import styles from "../styles/queryResultStyles";
 
 /**
  * UserResultsProps interface.

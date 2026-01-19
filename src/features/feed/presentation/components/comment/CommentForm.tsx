@@ -1,4 +1,4 @@
-import useStyles from "@/styles/feed/commentFormStyles";
+import useStyles from "../styles/commentFormStyles";
 import useCommentForm from "@/services/hook/feed/useCommentForm";
 import FormStyled from "@/shared/FormStyled";
 import EmojiInput from "@/shared/EmojiInput";

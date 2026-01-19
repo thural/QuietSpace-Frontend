@@ -1,5 +1,5 @@
 import FlexStyled from "@/shared/FlexStyled";
-import useStyles from "@/styles/feed/commentFormStyles";
+import useStyles from "../styles/commentFormStyles";
 import { Text } from "@mantine/core";
 
 /**

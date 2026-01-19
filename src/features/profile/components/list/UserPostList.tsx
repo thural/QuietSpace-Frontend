@@ -1,7 +1,7 @@
 import { ResId } from "@/api/schemas/native/common";
-import PostCard from "@/features/feed/post/PostCard";
-import PostReplyCard from "@/features/feed/post/PostReplyCard";
-import RepostCard from "@/features/feed/repost/RepostCard";
+import PostCard from "@/features/feed/presentation/components/post/PostCard";
+import PostReplyCard from "@/features/feed/presentation/components/post/PostReplyCard";
+import RepostCard from "@/features/feed/presentation/components/repost/RepostCard";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
 import LoaderStyled from "@/shared/LoaderStyled";

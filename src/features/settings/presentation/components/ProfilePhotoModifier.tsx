@@ -1,6 +1,6 @@
 import useUserQueries from "@/api/queries/userQueries";
 import { useUploadProfilePhoto } from "@/services/data/useUserData";
-import useStyles from "@/styles/settings/profileModifierStyles";
+import useStyles from "../styles/profileModifierStyles";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { ChangeEvent, useState } from "react";
 import BaseCard from "@/shared/BaseCard";

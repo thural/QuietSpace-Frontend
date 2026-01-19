@@ -8,9 +8,9 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import DefaultContainer from "@/shared/DefaultContainer";
-import SearchBar from "./SearchBar";
-import UserResults from "./UserResults";
-import PostResults from "./PostResults";
+import SearchBar from "./components/SearchBar/SearchBar";
+import UserResults from "./components/UserResults/UserResults";
+import PostResults from "./components/PostResults/PostResults";
 import useSearch from "../application/hooks/useSearch";
 
 /**

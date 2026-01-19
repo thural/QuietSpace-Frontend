@@ -1,7 +1,7 @@
 import { UserResponse } from "@/api/schemas/inferred/user";
 import { ResId } from "@/api/schemas/native/common";
-import UserQueryList from "@/features/profile/connections/UserQueryList";
-import SearchBar from "@/features/profile/searchbar/SearchBar";
+import UserQueryList from "@/features/profile/components/connections/UserQueryList";
+import SearchBar from "@/features/profile/components/searchbar/SearchBar";
 import BoxStyled from "@/shared/BoxStyled";
 import DarkButton from "@/shared/buttons/DarkButton";
 import CheckBox from "@/shared/CheckBox";

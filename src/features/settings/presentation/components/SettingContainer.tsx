@@ -1,5 +1,5 @@
 import useProfileSettings from "@/services/hook/profile/useProfileSettings";
-import useStyles from "@/styles/settings/settingContainerStyles";
+import useStyles from "../styles/settingContainerStyles";
 import { PRIVACY_DESCRIPTION } from "@/utils/dataTemplates";
 import DefaultContainer from "@/shared/DefaultContainer";
 import Typography from "@/shared/Typography";

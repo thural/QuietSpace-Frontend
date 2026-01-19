@@ -4,7 +4,7 @@ import FlexStyled from "@/shared/FlexStyled";
 import InputBoxStyled from "@/shared/InputBoxStyled";
 import TextInputStyled from "@/shared/TextInputStyled";
 import { PollView } from "@/services/hook/feed/useCreatePostForm";
-import styles from "@/styles/feed/pollIFormStyles";
+import styles from "../styles/pollIFormStyles";
 import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
 
 /**

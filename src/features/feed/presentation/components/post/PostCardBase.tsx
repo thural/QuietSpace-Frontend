@@ -1,7 +1,7 @@
 import React from 'react';
 import { PostResponse } from "@/api/schemas/inferred/post";
 import { Text } from "@mantine/core";
-import PostHeader from "../presentation/components/fragments/PostHeader";
+import PostHeader from "../fragments/PostHeader";
 
 
 interface PostCardBaseProps {

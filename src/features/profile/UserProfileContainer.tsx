@@ -8,11 +8,11 @@ import { PiSignOut } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import BoxStyled from "@/shared/BoxStyled";
 import LoaderStyled from "@/shared/LoaderStyled";
-import UserConnections from "./connections/UserConnections";
-import FollowsSection from "./follow-section/FollowSection";
-import ProfileControls from "./profile-controls/ProfileControls";
-import UserProfileTabs from "./tabs/UserProfileTabs";
-import UserDetailsSection from "./user-details/UserDetailsSection";
+import UserConnections from "./components/connections/UserConnections";
+import FollowsSection from "./components/follow-section/FollowSection";
+import ProfileControls from "./components/profile-controls/ProfileControls";
+import UserProfileTabs from "./components/tabs/UserProfileTabs";
+import UserDetailsSection from "./components/user-details/UserDetailsSection";
 
 /**
  * UserProfileContainer component.

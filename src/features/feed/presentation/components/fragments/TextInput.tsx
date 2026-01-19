@@ -1,5 +1,5 @@
 import TextAreaStyled from "@/shared/TextAreaStyled";
-import useStyles from "@/styles/feed/textInputStyles";
+import useStyles from "../styles/textInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 
 /**
