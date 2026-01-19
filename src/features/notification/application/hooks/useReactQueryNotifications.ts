@@ -7,8 +7,8 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
-import type { NotificationPage, NotificationResponse, NotificationType } from "@api/schemas/inferred/notification";
-import type { ResId, JwtToken } from "@api/schemas/inferred/common";
+import type { NotificationPage, NotificationResponse, NotificationType } from '@api/schemas/inferred/notification';
+import type { ResId } from '@api/schemas/inferred/common';
 import type { INotificationRepository } from "../../domain/entities/INotificationRepository";
 import { useNotificationDI } from "../../di/useNotificationDI";
 

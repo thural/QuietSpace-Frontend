@@ -78,6 +78,9 @@
       "@styles/*": [
         "src/styles/*"
       ],
+      "@constants/*": [
+        "src/constants/*"
+      ],
       "@shared-types/*": [
         "src/types/*"
       ]

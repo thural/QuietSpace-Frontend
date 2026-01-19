@@ -16,6 +16,11 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@services': path.resolve(__dirname, './src/services'),
+      '@api': path.resolve(__dirname, './src/api'),
+      '@features': path.resolve(__dirname, './src/features'),
+      '@notification': path.resolve(__dirname, './src/features/notification'),
+      '@core': path.resolve(__dirname, './src/core'),
+      '@constants': path.resolve(__dirname, './src/constants'),
       '@': path.resolve(__dirname, './src'),
     }
   },

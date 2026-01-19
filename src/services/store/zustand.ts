@@ -1,10 +1,10 @@
-import { AuthResponse } from '@/api/schemas/inferred/auth';
-import type { JwtToken } from '@/api/schemas/inferred/common';
-import { UseAuthStoreProps } from '@/types/authStoreTypes';
-import { ActiveChatId, ChatClientMethods, ChatStoreProps } from '@/types/chatStoreTypes';
-import { NotificationStoreProps } from '@/types/notificationStore';
-import { StompStore } from '@/types/stompStoreTypes';
-import { ViewState, ViewStoreProps } from '@/types/viewStoreTypes';
+import { AuthResponse } from '../api/schemas/inferred/auth';
+import type { JwtToken } from '../api/schemas/inferred/common';
+import { UseAuthStoreProps } from '../types/authStoreTypes';
+import { ActiveChatId, ChatClientMethods, ChatStoreProps } from '../types/chatStoreTypes';
+import { NotificationStoreProps } from '../types/notificationStore';
+import { StompStore } from '../types/stompStoreTypes';
+import { ViewState, ViewStoreProps } from '../types/viewStoreTypes';
 import { create } from 'zustand';
 
 

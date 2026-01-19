@@ -1,5 +1,5 @@
-import { Page } from "@/api/schemas/inferred/common";
-import { DEFAULT_PAGE_SIZE } from "@/constants/params";
+import { Page } from "@api/schemas/inferred/common";
+import { DEFAULT_PAGE_SIZE } from "@constants/params";
 
 /**
  * Builds a query string for pagination parameters.

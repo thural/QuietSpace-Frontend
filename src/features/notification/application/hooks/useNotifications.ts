@@ -6,8 +6,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import type { NotificationPage, NotificationResponse, NotificationType } from "@api/schemas/inferred/notification";
-import type { ResId, JwtToken } from "@api/schemas/inferred/common";
+import type { NotificationPage, NotificationResponse, NotificationType } from '@api/schemas/inferred/notification';
+import type { ResId } from '@api/schemas/inferred/common';
+import { useAuthStore } from '@services/store/zustand';
 import type { 
     NotificationQuery, 
     NotificationFilters, 

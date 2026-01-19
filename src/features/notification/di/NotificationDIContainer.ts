@@ -8,7 +8,7 @@
 import type { INotificationRepository } from "../domain/entities/INotificationRepository";
 import { NotificationRepository } from "../data/repositories/NotificationRepository";
 import { MockNotificationRepository } from "../data/repositories/MockNotificationRepository";
-import { useAuthStore } from "@services/store/zustand";
+import { useAuthStore } from '@services/store/zustand';
 
 /**
  * DI Container configuration options.
