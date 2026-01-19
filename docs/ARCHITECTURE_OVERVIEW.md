@@ -117,7 +117,7 @@ src/
 
 ### Module Structure Guidelines
 
-Each feature module follows this structure:
+Each feature module follows this standardized structure:
 
 ```
 feature-name/
@@ -134,13 +134,17 @@ feature-name/
 ├── application/              # Application layer
 │   ├── services/           # Application services
 │   ├── hooks/              # React hooks
+│   ├── stores/             # State management stores
 │   ├── use-cases/          # Use cases
 │   └── dto/                # Data transfer objects
 ├── presentation/             # Presentation layer
-│   ├── components/         # React components
-│   ├── pages/              # Page components
+│   ├── components/         # All React components
+│   │   ├── [component-name].tsx
+│   │   └── subfolders/       # Component categories
 │   ├── hooks/              # Presentation hooks
-│   └── styles/             # Component styles
+│   └── styles/             # Feature-specific styles
+│       ├── [component-name].styles.ts
+│       └── shared.styles.ts
 ├── di/                       # DI container
 │   ├── container.ts         # Feature container
 │   ├── types.ts            # DI types
@@ -150,6 +154,30 @@ feature-name/
     ├── integration/        # Integration tests
     └── e2e/                # End-to-end tests
 ```
+
+### Standardized Presentation Structure
+
+**All features now follow consistent presentation organization:**
+
+```
+presentation/
+├── components/         # All React components (no exceptions)
+│   ├── ComponentA.tsx
+│   ├── ComponentB.tsx
+│   └── subfolder/
+│       └── ComponentC.tsx
+└── styles/             # Feature-specific styles (no cross-feature mixing)
+    ├── ComponentA.styles.ts
+    ├── ComponentB.styles.ts
+    └── shared.styles.ts
+```
+
+**Key Principles:**
+- **All components** must be in `components/` folder
+- **All feature-specific styles** must be in `styles/` folder
+- **Shared styles** remain in `src/styles/shared/`
+- **No components** should be directly under `presentation/`
+- **No feature-specific styles** should be in `src/styles/`
 
 ### Dependency Injection Architecture
 
@@ -801,6 +829,46 @@ async createUser(userData: CreateUserDto): Promise<User> {
  * @apiError {409} User already exists
  */
 ```
+
+---
+
+## 🎯 Recent Architecture Improvements
+
+### 2026 Refactoring Achievements
+
+**Phase 1: Features Directory Refactoring**
+- **Achieved 100% Clean Architecture compliance** across all 9 features
+- **Fixed structural inconsistencies** in feed, profile, and search features
+- **Completed missing architecture layers** in analytics and content features
+- **Standardized component organization** following Clean Architecture principles
+
+**Phase 2: Presentation Structure Standardization**
+- **Implemented consistent presentation structure** across all features
+- **Moved feature-specific styles** from `src/styles/` to feature `presentation/styles/` folders
+- **Organized all components** under `presentation/components/` folders
+- **Updated all import paths** to reflect new standardized structure
+
+### Impact on Development Experience
+
+**Before Refactoring:**
+- Inconsistent directory structures across features
+- Components scattered outside standard locations
+- Feature-specific styles mixed with shared styles
+- Difficult navigation and maintenance
+
+**After Refactoring:**
+- **Perfect consistency** across all 9 features
+- **Predictable file locations** for easier development
+- **Clear separation** of feature-specific vs shared styles
+- **Improved maintainability** and onboarding experience
+
+### Key Architectural Rules Established
+
+1. **All components** must be in `presentation/components/` folders
+2. **All feature-specific styles** must be in `presentation/styles/` folders
+3. **Shared styles** remain in `src/styles/shared/`
+4. **Consistent import patterns** across all features
+5. **No exceptions** to structural standards
 
 ---
 
