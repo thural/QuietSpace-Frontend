@@ -4,6 +4,9 @@
  * Shared types and interfaces used across the notification feature.
  */
 
+// Import API types for use within this file
+import type { NotificationResponse, NotificationType, ResId, JwtToken } from './api';
+
 // Re-export domain entities
 export type { 
   NotificationEntity, 
@@ -28,13 +31,13 @@ export type {
 export type { 
   NotificationPage, 
   NotificationResponse, 
-  NotificationType 
-} from '@api/schemas/inferred/notification';
-
-export type { 
+  NotificationType,
   ResId, 
   JwtToken 
-} from '@api/schemas/inferred/common';
+} from './api';
+
+// Also export the API barrel for direct use
+export * from './api';
 
 // Component prop types
 export interface NotificationCenterProps {

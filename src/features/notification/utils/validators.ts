@@ -4,8 +4,9 @@
  * Validation functions for notification data and inputs.
  */
 
-import type { NotificationResponse, NotificationType } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationResponse } from '../types/api';
+import { NotificationType } from '../types/api';
+import type { ResId } from '../types/api';
 import type { NotificationValidationRule, NotificationValidationError } from '../types';
 
 /**
@@ -58,7 +59,15 @@ export const validateNotificationMessage = (message: string): NotificationValida
  * Validate notification type
  */
 export const validateNotificationType = (type: NotificationType): NotificationValidationError | null => {
-  const validTypes: NotificationType[] = ['message', 'follow', 'like', 'comment', 'mention', 'system'];
+  const validTypes: NotificationType[] = [
+    NotificationType.FOLLOW_REQUEST,
+    NotificationType.POST_REACTION,
+    NotificationType.MENTION,
+    NotificationType.COMMENT,
+    NotificationType.COMMENT_REACTION,
+    NotificationType.COMMENT_REPLY,
+    NotificationType.REPOST
+  ];
   
   if (!type) {
     return {
@@ -138,40 +147,45 @@ export const validateNotification = (notification: Partial<NotificationResponse>
       maxLength: 50
     },
     {
-      field: 'message',
-      required: true,
-      minLength: 1,
-      maxLength: 500
-    },
-    {
       field: 'type',
       required: true,
-      customValidator: validateNotificationType
+      customValidator: (value) => {
+        const error = validateNotificationType(value);
+        return error ? error.message : null;
+      }
     },
     {
-      field: 'createdAt',
+      field: 'createDate',
       required: true,
       customValidator: (value) => {
-        if (!value || !(value instanceof Date)) {
-          return 'Created date is required and must be a Date';
+        if (!value || !(value instanceof Date) && typeof value !== 'string') {
+          return 'Created date is required and must be a Date or string';
         }
         return null;
       }
-    }
     }
   ];
   
   for (const rule of rules) {
     const value = notification[rule.field as keyof NotificationResponse];
-    const error = rule.required && (!value || value === '') 
-      ? { field: rule.field, message: `${rule.field} is required`, value }
-      : rule.minLength && value && value.toString().length < rule.minLength
-      ? { field: rule.field, message: `${rule.field} must be at least ${rule.minLength} characters`, value }
-      : rule.maxLength && value && value.toString().length > rule.maxLength
-      ? { field: rule.field, message: `${rule.field} must be ${rule.maxLength} characters or less`, value }
-      : rule.customValidator && rule.customValidator
-      ? rule.customValidator(value)
-      : null;
+    let error: NotificationValidationError | null = null;
+    
+    if (rule.required && (!value || value === '')) {
+      error = { field: String(rule.field), message: `${rule.field} is required`, value };
+    } else if (rule.minLength && value && value.toString().length < rule.minLength) {
+      error = { field: String(rule.field), message: `${rule.field} must be at least ${rule.minLength} characters`, value };
+    } else if (rule.maxLength && value && value.toString().length > rule.maxLength) {
+      error = { field: String(rule.field), message: `${rule.field} must be ${rule.maxLength} characters or less`, value };
+    } else if (rule.customValidator && rule.customValidator) {
+      const customError = rule.customValidator(value);
+      if (customError) {
+        if (typeof customError === 'string') {
+          error = { field: String(rule.field), message: customError, value };
+        } else {
+          error = customError;
+        }
+      }
+    }
     
     if (error) {
       errors.push(error);
