@@ -2,8 +2,8 @@ import DefaultContainer from "@/shared/DefaultContainer";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import { useParams } from "react-router-dom";
-import CommentPanel from "./components/comment/CommentPanel";
-import PostLoader from "./components/post/PostLoader";
+import CommentPanel from "./comment/CommentPanel";
+import PostLoader from "./post/PostLoader";
 import { validateIsNotUndefined } from "@/utils/validations";
 
 /**

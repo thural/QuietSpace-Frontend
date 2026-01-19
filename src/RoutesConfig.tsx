@@ -2,9 +2,9 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 
-const FeedContainer = lazy(() => import("./features/feed/presentation/FeedContainer"));
+const FeedContainer = lazy(() => import("./features/feed/presentation/components/FeedContainer"));
 const FeedPage = lazy(() => import("./pages/feed/FeedPage"));
-const PostContainer = lazy(() => import("./features/feed/presentation/PostContainer"));
+const PostContainer = lazy(() => import("./features/feed/presentation/components/PostContainer"));
 const SearchPage = lazy(() => import("./pages/search/SearchPage"));
 const ChatPage = lazy(() => import("./pages/chat/ChatPage"));
 const ChatPanel = lazy(() => import("./features/chat/presentation/components/messages/ChatPanel"));

@@ -7,7 +7,7 @@ import Typography from "@/shared/Typography";
 import UserDetails from "@/shared/UserDetails";
 import { useGetUserById } from "@/services/data/useUserData";
 import { useRepost } from "@/services/hook/feed/useRepost";
-import styles from "../styles/repostCardStyles";
+import styles from "../../styles/repostCardStyles";
 import { isRepost } from "@/utils/typeUtils";
 import { PiArrowsClockwiseBold } from "react-icons/pi";
 import PostMenu from "../fragments/PostMenu";

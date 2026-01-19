@@ -1,5 +1,5 @@
 import TextInputStyled from "@/shared/TextInputStyled";
-import useStyles from "../styles/titleInputStyles";
+import useStyles from "../../styles/titleInputStyles";
 import { ConsumerFn } from "@/types/genericTypes";
 
 /**

@@ -5,7 +5,7 @@ import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
 import usePoll from "@/services/hook/feed/usePoll";
-import styles from "../styles/pollStyles";
+import styles from "../../styles/pollStyles";
 import { isDateExpired } from "@/utils/dateUtils";
 import { Progress } from "@mantine/core";
 import React from "react";

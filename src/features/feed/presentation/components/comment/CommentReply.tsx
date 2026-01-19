@@ -7,7 +7,7 @@ import Overlay from "@/shared/Overlay";
 import Typography from "@/shared/Typography";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@/services/hook/feed/useComment";
-import styles from "../styles/commentStyles";
+import styles from "../../styles/commentStyles";
 import CreateCommentForm from "../forms/CreateCommentForm";
 import CommentControls from "./CommentControls";
 

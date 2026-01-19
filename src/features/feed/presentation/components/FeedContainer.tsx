@@ -6,9 +6,9 @@ import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { GenericWrapper } from "@/types/sharedComponentTypes";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
 import LoaderStyled from "@/shared/LoaderStyled";
-import CreatePostForm from "./components/forms/CreatePostForm";
-import ToggleFormSection from "./components/fragments/ToggleFormSection";
-import PostListBox from "./components/post/PostList";
+import CreatePostForm from "./forms/CreatePostForm";
+import ToggleFormSection from "./fragments/ToggleFormSection";
+import PostListBox from "./post/PostList";
 
 /**
  * FeedContainer component.
