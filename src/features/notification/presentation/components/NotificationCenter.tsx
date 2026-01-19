@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNotificationsDI } from '../../application/services/NotificationServiceDI';
-import { styles } from './NotificationCenter.styles.ts';
+import { styles } from './NotificationCenter.styles';
 
 interface NotificationCenterProps {
   userId: string;

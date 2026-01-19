@@ -1,14 +1,15 @@
-import 'reflect-metadata';
 import * as React from 'react';
-import { Injectable, Inject, useService } from '../../../../core/di';
-import type { NotificationEntity, NotificationPreferences, NotificationStats } from '../../domain';
-import { NotificationRepository } from '../../data';
+import { useService } from '../../../../core/di';
+import type { NotificationEntity, NotificationPreferences, NotificationStats } from '../../domain/entities/NotificationEntity';
+import { NotificationRepositoryDI } from '../../data/repositories/NotificationRepositoryDI';
 
-@Injectable({ lifetime: 'singleton' })
-export class NotificationService {
-  constructor(
-    @Inject(NotificationRepository) private notificationRepository: NotificationRepository
-  ) {}
+// Simple service class without decorators for now
+export class NotificationServiceDI {
+  private notificationRepository: NotificationRepositoryDI;
+
+  constructor() {
+    this.notificationRepository = useService(NotificationRepositoryDI);
+  }
 
   // Notification management
   async createNotification(data: Omit<NotificationEntity, 'id' | 'createdAt'>): Promise<NotificationEntity> {
@@ -297,7 +298,7 @@ export class NotificationService {
 
 // DI-enabled Hook
 export const useNotificationsDI = (userId: string) => {
-  const notificationService = useService(NotificationService);
+  const notificationService = useService(NotificationServiceDI);
   const [notifications, setNotifications] = React.useState<NotificationEntity[]>([]);
   const [unreadCount, setUnreadCount] = React.useState(0);
   const [loading, setLoading] = React.useState(false);

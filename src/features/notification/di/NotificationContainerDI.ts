@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container } from '../../../core/di';
-import { NotificationService } from '../application/services/NotificationServiceDI';
-import { NotificationRepository } from '../data/NotificationRepository';
+import { NotificationServiceDI } from '../application/services/NotificationServiceDI';
+import { NotificationRepositoryDI } from '../data/repositories/NotificationRepositoryDI';
 
 let notificationContainerInstance: Container | null = null;
 
@@ -9,8 +9,8 @@ export const initializeNotificationContainer = (): Container => {
   const container = Container.create();
   
   // Register notification services
-  container.registerSingleton(NotificationRepository);
-  container.registerSingleton(NotificationService);
+  container.registerSingleton(NotificationRepositoryDI);
+  container.registerSingleton(NotificationServiceDI);
   
   notificationContainerInstance = container;
   return container;

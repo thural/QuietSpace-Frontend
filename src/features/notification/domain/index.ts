@@ -21,3 +21,6 @@ export type {
     NotificationPriority,
     NotificationChannel
 } from './entities/NotificationEntities';
+
+// DI-specific entities
+export type { NotificationEntity, NotificationPreferences, NotificationStats } from './entities/NotificationEntity';

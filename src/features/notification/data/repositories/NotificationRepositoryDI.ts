@@ -1,9 +1,7 @@
-import 'reflect-metadata';
-import { Injectable } from '../../../core/di';
-import type { NotificationEntity, NotificationPreferences, NotificationStats } from '../domain';
+import type { NotificationEntity, NotificationPreferences, NotificationStats } from '../../domain/entities/NotificationEntity';
 
-@Injectable({ lifetime: 'singleton' })
-export class NotificationRepository {
+// Simple repository class without decorators for now
+export class NotificationRepositoryDI {
   private notifications = new Map<string, NotificationEntity>();
   private preferences = new Map<string, NotificationPreferences>();
   private stats = new Map<string, NotificationStats>();

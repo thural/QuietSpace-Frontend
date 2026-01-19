@@ -16,5 +16,8 @@ export * from './application';
 // DI layer
 export * from './di';
 
-// Presentation components
+// Presentation layer
+export * from './presentation';
+
+// Main components
 export { default as NotificationContainer } from './NotificationContainer';
