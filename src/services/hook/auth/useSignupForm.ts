@@ -1,6 +1,7 @@
-import { AuthPages, AuthState, SetAuthState, SignupBody } from "@/types/authTypes";
+import { AuthPages, SignupBody } from "@/types/authTypes";
 import useJwtAuth from "@/services/hook/auth/useJwtAuth";
 import { ChangeEvent, useEffect, useState } from "react";
+import { useAuthStore } from "@/services/store/zustand";
 
 /**
  * useSignupForm hook.
@@ -13,18 +14,12 @@ import { ChangeEvent, useEffect, useState } from "react";
  * @returns {Object} - An object containing loading status, error information, form data, 
  *                     and functions to handle form events.
  */
-export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) => {
+export const useSignupForm = () => {
+    const { setFormData, formData, setCurrentPage } = useAuthStore();
+    
     const [isLoading, setIsLoading] = useState(false); // Loading state for signup process
     const [isError, setIsError] = useState(false); // Error state for signup process
     const [error, setError] = useState<Error | null>(null); // Error message state
-    const [formData, setFormData] = useState<SignupBody>({
-        username: '',
-        firstname: '',
-        lastname: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    }); // Form data state for signup
 
     /**
      * Function called when signup process starts.
@@ -38,7 +33,7 @@ export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) 
      */
     const onSuccessFn = () => {
         setIsLoading(false); // Set loading state to false
-        setAuthState({ page: AuthPages.ACTIVATION, formData }); // Navigate to activation page
+        setCurrentPage(AuthPages.ACTIVATION); // Navigate to activation page
     };
 
     /**
@@ -55,8 +50,18 @@ export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) 
     const { signup } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
 
     useEffect(() => {
-        setFormData({ ...formData, ...authState.formData }); // Update form data based on authState
-    }, [authState.formData]); // Dependency on authState.formData
+        // Initialize signup form data if empty
+        if (!formData.username) {
+            setFormData({
+                username: '',
+                firstname: '',
+                lastname: '',
+                email: '',
+                password: '',
+                confirmPassword: ''
+            });
+        }
+    }, []);
 
     /**
      * Handles the form submission event.
@@ -69,13 +74,19 @@ export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) 
 
         if (password !== confirmPassword) {
             alert("Passwords don't match, please try again"); // Alert if passwords don't match
-            setFormData((prev) => {
-                const newData: SignupBody = { ...prev };
-                newData.confirmPassword = ''; // Clear confirmPassword field
-                return newData;
+            setFormData({ 
+                ...formData, 
+                confirmPassword: '' // Clear confirmPassword field
             });
         } else {
-            signup(formData); // Call signup function with form data
+            signup({
+                username: formData.username || '',
+                firstname: formData.firstname || '',
+                lastname: formData.lastname || '',
+                email: formData.email || '',
+                password: formData.password || '',
+                confirmPassword: formData.confirmPassword || ''
+            }); // Call signup function with form data
         }
     };
 
@@ -92,7 +103,7 @@ export const useSignupForm = (setAuthState: SetAuthState, authState: AuthState) 
     /**
      * Handles clicking the login button to navigate to the login page.
      */
-    const handleLoginClick = () => setAuthState({ page: AuthPages.LOGIN, formData });
+    const handleLoginClick = () => setCurrentPage(AuthPages.LOGIN);
 
     return {
         isLoading,

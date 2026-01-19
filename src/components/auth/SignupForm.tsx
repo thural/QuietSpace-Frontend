@@ -4,7 +4,6 @@ import TextInputStyled from "@/shared/TextInputStyled";
 import { useSignupForm } from "@/services/hook/auth/useSignupForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/formStyles";
-import { SignupFormProps } from "@/types/authTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import GradientButton from "@/shared/buttons/GradientButton";
 import OutlineButton from "@/shared/buttons/OutlineButton";
@@ -16,20 +15,18 @@ import React from "react";
 
 /**
  * SignupForm component for user registration.
+ * Uses global auth store for state management.
  *
- * @param {SignupFormProps} props - The props for the SignupForm component.
- * @param {function} props.setAuthState - Function to set the authentication state.
- * @param {object} props.authState - The current authentication state.
  * @returns {JSX.Element} - The rendered signup form component.
  */
-const SignupForm: React.FC<SignupFormProps> = ({ setAuthState, authState }) => {
+const SignupForm: React.FC = () => {
 
     const classes = styles();
 
     let data;
 
     try {
-        data = useSignupForm(setAuthState, authState);
+        data = useSignupForm();
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `error on signup form: ${(error as Error).message}`;

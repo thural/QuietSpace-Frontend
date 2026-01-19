@@ -1,19 +1,21 @@
 import { fetchResendCode } from "@/api/requests/authRequests";
-import { ActivationFormProps, AuthPages } from "@/types/authTypes";
+import { AuthPages } from "@/types/authTypes";
 import { useState } from "react";
+import { useAuthStore } from "@/services/store/zustand";
 import { useTimer } from "../common/useTimer";
 import useJwtAuth from "./useJwtAuth";
 
-export const useActivationForm = ({ setAuthState, authState }: ActivationFormProps) => {
-
+export const useActivationForm = () => {
+    const { formData, setCurrentPage } = useAuthStore();
+    
     const activationNotice = (message: string) => alert(message);
-    const [formData, setFormData] = useState({ activationCode: "" });
+    const [activationCode, setActivationCode] = useState("");
     const tokenTimer = useTimer(15 * 60 * 1000);
 
     const onSuccessFn = () => {
         console.log("account activation success");
         activationNotice("account has been activated, please login to continue");
-        setAuthState({ ...authState, page: AuthPages.LOGIN });
+        setCurrentPage(AuthPages.LOGIN);
     }
 
     const onErrorFn = (error: Error) => {
@@ -23,23 +25,22 @@ export const useActivationForm = ({ setAuthState, authState }: ActivationFormPro
     const { activate } = useJwtAuth({ onSuccessFn, onErrorFn });
 
     const handleResendCode = (): void => {
-        fetchResendCode(authState.formData.email);
+        fetchResendCode(formData.email || '');
         tokenTimer.resetTimer();
     };
 
     const handleSubmit = async (event: Event): Promise<void> => {
         event.preventDefault();
-        activate(formData.activationCode);
+        activate(activationCode);
     };
 
     const handleChange = (value: string): void => {
-        setFormData({ ...formData, activationCode: value });
+        setActivationCode(value);
     };
 
     return {
-        formData,
+        formData: { ...formData, activationCode },
         tokenTimer,
-        authState,
         handleSubmit,
         handleChange,
         handleResendCode,

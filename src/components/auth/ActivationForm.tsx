@@ -2,7 +2,6 @@ import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { useActivationForm } from "@/services/hook/auth/useActivationForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/activationFormStyles";
-import { ActivationFormProps } from "@/types/authTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import GradientButton from "@/shared/buttons/GradientButton";
 import OutlineButton from "@/shared/buttons/OutlineButton";
@@ -14,19 +13,17 @@ import CountdownTimer from "@/shared/CountdownTimer";
 
 /**
  * ActivationForm component for user account activation.
+ * Uses global auth store for state management.
  *
- * @param {ActivationFormProps} props - The props for the ActivationForm component.
- * @param {function} props.setAuthState - Function to set the authentication state.
- * @param {object} props.authState - The current authentication state.
  * @returns {JSX.Element} - The rendered component.
  */
-const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState }) => {
+const ActivationForm: React.FC = () => {
 
     const classes = styles();
     let data;
 
     try {
-        data = useActivationForm({ setAuthState, authState });
+        data = useActivationForm();
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `error on activation form: ${(error as Error).message}`;
@@ -44,7 +41,7 @@ const ActivationForm: React.FC<ActivationFormProps> = ({ setAuthState, authState
         <BoxStyled className={classes.activation}>
             <Typography type="h2">Account Activation</Typography>
             <Typography size="md">{"enter code sent to your email: "}</Typography>
-            <Typography size="md">{authState.formData.email}</Typography>
+            <Typography size="md">{formData.email || 'your email'}</Typography>
             <FormStyled className='activation-form'>
                 <PinInput
                     length={6}

@@ -2,7 +2,7 @@ import useJwtAuth from "@/services/hook/auth/useJwtAuth";
 import { useAuthStore } from "@/services/store/zustand";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthFormProps, AuthPages } from "@/types/authTypes";
+import { AuthPages } from "@/types/authTypes";
 import { AuthResponse } from "@/api/schemas/inferred/auth";
 
 /**
@@ -17,9 +17,8 @@ import { AuthResponse } from "@/api/schemas/inferred/auth";
  * @returns {Object} - An object containing form data, authentication status, error information, 
  *                     and functions to handle form events.
  */
-export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
-    const { setAuthData, resetAuthData, setIsAuthenticated } = useAuthStore();
-    const [formData, setFormData] = useState({ email: "", password: "" });
+export const useLoginForm = () => {
+    const { setAuthData, resetAuthData, setIsAuthenticated, formData, setFormData, setCurrentPage } = useAuthStore();
     const navigate = useNavigate();
 
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -58,8 +57,11 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
     const { authenticate } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
 
     useEffect(() => {
-        setFormData({ ...formData, ...authState.formData });
-    }, [authState.formData]); // Dependency on authState.formData
+        // Initialize form data if empty
+        if (!formData.email) {
+            setFormData({ email: "", password: "" });
+        }
+    }, []);
 
     /**
      * Handles the form submission event.
@@ -68,7 +70,10 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
      */
     const handleLoginForm = async (event: Event): Promise<void> => {
         event.preventDefault(); // Prevent default form submission
-        authenticate(formData); // Call the authenticate function with the form data
+        authenticate({ 
+            email: formData.email || '', 
+            password: formData.password || '' 
+        }); // Call the authenticate function with the form data
     };
 
     /**
@@ -85,7 +90,7 @@ export const useLoginForm = ({ setAuthState, authState }: AuthFormProps) => {
     /**
      * Handles navigating to the signup page.
      */
-    const handleSignupBtn = () => setAuthState({ page: AuthPages.SIGNUP, formData });
+    const handleSignupBtn = () => setCurrentPage(AuthPages.SIGNUP);
 
     return {
         formData,

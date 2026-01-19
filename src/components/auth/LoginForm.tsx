@@ -4,7 +4,6 @@ import TextInputStyled from "@/shared/TextInputStyled";
 import { useLoginForm } from "@/services/hook/auth/useLoginForm";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import styles from "@/styles/auth/formStyles";
-import { AuthFormProps } from "@/types/authTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import GradientButton from "@/shared/buttons/GradientButton";
 import OutlineButton from "@/shared/buttons/OutlineButton";
@@ -16,19 +15,17 @@ import LoaderStyled from "@/shared/LoaderStyled";
 
 /**
  * LoginForm component for user authentication.
+ * Uses global auth store for state management.
  *
- * @param {AuthFormProps} props - The props for the LoginForm component.
- * @param {function} props.setAuthState - Function to set the authentication state.
- * @param {object} props.authState - The current authentication state.
  * @returns {JSX.Element} - The rendered login form component.
  */
-const LoginForm: React.FC<AuthFormProps> = ({ setAuthState, authState }) => {
+const LoginForm: React.FC = () => {
 
     const classes = styles();
     let data;
 
     try {
-        data = useLoginForm({ setAuthState, authState });
+        data = useLoginForm();
     } catch (error: unknown) {
         console.error(error);
         const errorMessage = `error on login form: ${(error as Error).message}`;
