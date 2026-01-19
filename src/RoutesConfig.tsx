@@ -1,6 +1,8 @@
 // src/RoutesConfig.tsx
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
+import { ProtectedRoute } from "@/shared/auth/ProtectedRoute";
+import { PERMISSIONS } from "@/shared/auth/permissions";
 
 const FeedContainer = lazy(() => import("./features/feed/presentation/components/FeedContainer"));
 const FeedPage = lazy(() => import("./pages/feed/FeedPage"));
@@ -17,31 +19,70 @@ const NotificationList = lazy(() => import("./features/notification/presentation
 const SettingsPage = lazy(() => import("./pages/settings/SettingsPage"));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const SignoutPage = lazy(() => import("./pages/auth/signout/SignoutPage"));
+const UnauthorizedPage = lazy(() => import("./pages/auth/UnauthorizedPage"));
 const ErrorComponent = lazy(() => import("./shared/errors/ErrorComponent"));
 
 const RoutesConfig = () => (
     <Routes>
-        <Route path="/" element={<FeedContainer />} />
-        <Route path="/feed/*" element={<FeedPage />}>
+        {/* Public routes */}
+        <Route path="/signin" element={<AuthPage />} />
+        <Route path="/signout" element={<SignoutPage />} />
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
+        
+        {/* Protected routes */}
+        <Route path="/" element={
+            <ProtectedRoute>
+                <FeedContainer />
+            </ProtectedRoute>
+        } />
+        
+        <Route path="/feed/*" element={
+            <ProtectedRoute>
+                <FeedPage />
+            </ProtectedRoute>
+        }>
             <Route index element={<FeedContainer />} />
             <Route path=":postId" element={<PostContainer />} />
         </Route>
-        <Route path="/search/*" element={<SearchPage />} />
-        <Route path="/chat/*" element={<ChatPage />}>
+        
+        <Route path="/search/*" element={
+            <ProtectedRoute requiredPermissions={[PERMISSIONS.SEARCH_CONTENT]}>
+                <SearchPage />
+            </ProtectedRoute>
+        } />
+        
+        <Route path="/chat/*" element={
+            <ProtectedRoute requiredPermissions={[PERMISSIONS.READ_MESSAGES]}>
+                <ChatPage />
+            </ProtectedRoute>
+        }>
             <Route index element={<ChatPlaceholder />} />
             <Route path=":chatId" element={<ChatPanel />} />
         </Route>
-        <Route path="/profile" element={<ProfilePage />}>
+        
+        <Route path="/profile" element={
+            <ProtectedRoute requiredPermissions={[PERMISSIONS.VIEW_PROFILES]}>
+                <ProfilePage />
+            </ProtectedRoute>
+        }>
             <Route index element={<UserProfileContainer />} />
             <Route path=":userId" element={<ProfileContainer />} />
         </Route>
-        <Route path="/notification/*" element={<NotificationPage />}>
+        
+        <Route path="/notification/*" element={
+            <ProtectedRoute requiredPermissions={[PERMISSIONS.READ_NOTIFICATIONS]}>
+                <NotificationPage />
+            </ProtectedRoute>
+        }>
             <Route path=":category" element={<NotificationList />} />
         </Route>
-        <Route path="/settings/*" element={<SettingsPage />} />
-        <Route path="/signin" element={<AuthPage />} />
-        <Route path="/signout" element={<SignoutPage />} />
-        <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
+        
+        <Route path="/settings/*" element={
+            <ProtectedRoute requiredPermissions={[PERMISSIONS.EDIT_PROFILE]}>
+                <SettingsPage />
+            </ProtectedRoute>
+        } />
     </Routes>
 );
 

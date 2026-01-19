@@ -15,6 +15,8 @@ export interface User {
   email?: string;
   avatar?: string;
   bio?: string;
+  permissions?: string[];
+  role?: string;
 }
 
 // Consolidated Auth State interface
