@@ -8,7 +8,7 @@ import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
 import LoaderStyled from "@/shared/LoaderStyled";
 import CreatePostForm from "./components/forms/CreatePostForm";
 import ToggleFormSection from "./components/fragments/ToggleFormSection";
-import PostListBox from "../post/PostList";
+import PostListBox from "./components/post/PostList";
 
 /**
  * FeedContainer component.
