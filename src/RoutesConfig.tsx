@@ -2,18 +2,18 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 
-const FeedContainer = lazy(() => import("./features/feed/FeedContainer"));
+const FeedContainer = lazy(() => import("./features/feed/presentation/FeedContainer"));
 const FeedPage = lazy(() => import("./pages/feed/FeedPage"));
-const PostContainer = lazy(() => import("./features/feed/PostContainer"));
+const PostContainer = lazy(() => import("./features/feed/presentation/PostContainer"));
 const SearchPage = lazy(() => import("./pages/search/SearchPage"));
 const ChatPage = lazy(() => import("./pages/chat/ChatPage"));
-const ChatPanel = lazy(() => import("./features/chat/message/ChatPanel"));
-const ChatPlaceholder = lazy(() => import("./features/chat/message/ChatPlaceholder"));
+const ChatPanel = lazy(() => import("./features/chat/presentation/components/messages/ChatPanel"));
+const ChatPlaceholder = lazy(() => import("./features/chat/presentation/components/messages/ChatPlaceholder"));
 const ProfilePage = lazy(() => import("./pages/profile/ProfilePage"));
 const UserProfileContainer = lazy(() => import("./features/profile/UserProfileContainer"));
 const ProfileContainer = lazy(() => import("./features/profile/ProfileContainer"));
 const NotificationPage = lazy(() => import("./pages/notification/NotifiactionPage"));
-const NotificationList = lazy(() => import("./features/notification/list/NotificationList"));
+const NotificationList = lazy(() => import("./features/notification/presentation/components/NotificationList"));
 const SettingsPage = lazy(() => import("./pages/settings/SettingsPage"));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const SignoutPage = lazy(() => import("./pages/auth/signout/SignoutPage"));
