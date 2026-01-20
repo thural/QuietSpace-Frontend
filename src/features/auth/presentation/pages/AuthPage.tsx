@@ -1,4 +1,4 @@
-import AuthContainer from "@features/auth/presentation/components/AuthContainer";
+import AuthContainer from "../components/AuthContainer";
 
 const AuthPage = () => {
 

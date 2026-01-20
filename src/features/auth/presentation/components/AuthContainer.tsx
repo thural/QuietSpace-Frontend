@@ -1,7 +1,7 @@
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import BoxStyled from "@/shared/BoxStyled";
 import Typography from "@/shared/Typography";
-import styles from "@/styles/auth/authStyles";
+import styles from "../styles/authStyles";
 import { useLocation } from "react-router-dom";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";

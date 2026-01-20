@@ -37,6 +37,24 @@ const styles = createUseStyles((theme: Theme) => ({
       fontWeight: '300'
     },
   },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing(theme.spacingFactor.lg),
+    minWidth: '400px',
+    gap: theme.spacing(theme.spacingFactor.md)
+  },
+  activation: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing(theme.spacingFactor.lg),
+    minWidth: '400px',
+    gap: theme.spacing(theme.spacingFactor.md)
+  },
   '@media (max-width: 720px)': {
     auth: {
       background: theme.colors.background,
