@@ -20,29 +20,31 @@ import useChatSocket from "./services/socket/useChatSocket";
 import { useStompClient } from "./services/socket/useStompClient";
 import { useAuthStore } from "./services/store/zustand";
 import { AdvancedSecurityProvider } from "./shared/auth/AdvancedSecurityProvider";
+import { AuthProvider } from "./shared/auth/AuthProvider";
 import { useAuditLogger } from "./shared/auth/auditLogger";
 import AuthGuard from "./shared/auth/AuthGuard";
-import ProtectedRoute from "./shared/auth/ProtectedRoute";
 import { getLocalThemeMode } from "./utils/localStorageUtils";
-import { Navbar } from "./features/navbar";
 
 // Lazy-loaded components for better performance
 const NavBar = lazy(() => import("./features/navbar/presentation/components/Navbar"));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 
 /**
- * Main application component with enterprise-grade security.
+ * Main application component with enterprise-grade security and authentication-first routing.
  * 
- * This component renders either authentication page or main application 
- * based on centralized authentication state from useAuthStore.
- * All security features are automatically handled by AdvancedSecurityProvider.
+ * This component enforces strict authentication-first routing where only authentication-related
+ * pages are accessible without authentication. All other routes require authentication.
  * 
  * Route Structure:
- * - "/" → "/feed" (main feed page)
- * - "/dashboard" → dashboard functionality
- * - "/auth/*" → authentication pages (unauthenticated only)
- * - "/admin/*" → admin routes (admin permissions required)
- * - All other routes → handled by RoutesConfig
+ * - UNAUTHENTICATED ACCESS: /auth/*, /signin, /signout, /unauthorized
+ * - AUTHENTICATED ACCESS: All other routes via RoutesConfig
+ *   - /feed, /dashboard, /search, /chat, /profile, /notification, /settings (basic auth required)
+ *   - /admin/* (requires SYSTEM_ADMIN permission)
+ * 
+ * RoutesConfig handles:
+ * - Permission-based access control for each feature
+ * - Role-based routing with proper permission checks
+ * - Nested routing structure for complex features
  * 
  * Security Features (Automatic):
  * - Session timeout management
@@ -50,8 +52,8 @@ const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
  * - Security audit logging
  * - Anomaly detection
  * - Automatic token refresh
- * - Centralized auth state management
  * - JWT token expiry checking
+ * - Role-based permission mapping
  * 
  * @returns {JSX.Element} - The rendered application component.
  */
@@ -82,45 +84,7 @@ const App = () => {
     // Only initialize sockets when authenticated
     useChatSocket();
     useGetNotifications();
-    useNotificationSocket();
-    useGetChats();
-
-    /**
-     * Enhanced authentication success callback with audit logging
-     * 
-     * @param {AuthResponse} data - The authentication response data.
-     */
-    const onSuccessFn = (data: AuthResponse) => {
-        // Log successful authentication (optional - AdvancedSecurityProvider also logs)
-        auditLog.logLoginSuccess(data.userId || 'unknown', 'user_' + (data.userId || 'unknown'), {
-            timestamp: new Date().toISOString(),
-            sessionId: 'session_' + Date.now()
-        });
-
-        // Update auth state
-        setAuthData(data);
-        setIsAuthenticated(true);
-    };
-
-    /**
-     * Enhanced authentication error callback with audit logging
-     * 
-     * @param {Error} error - The authentication error.
-     */
-    const onErrorFn = (error: Error) => {
-        // Log failed authentication attempt
-        auditLog.logLoginFailed({
-            error: error.message,
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent
-        }, error.message);
-
-        // Handle error
-        console.error('Authentication failed:', error);
-        navigate("/signin");
-    };
-
-    const { loadAccessToken } = useJwtAuth({ onSuccessFn, onErrorFn });
+    const { authenticate, initializeTokenRefresh } = useJwtAuth();
 
     /**
      * Enhanced authentication initialization with improved error handling
@@ -134,8 +98,8 @@ const App = () => {
      */
     const initAuth = () => {
         try {
-            // Just load access token - everything else is automatic
-            loadAccessToken();
+            // Initialize token refresh
+            initializeTokenRefresh();
         } catch (error: unknown) {
             console.error('Authentication initialization failed:', error);
 
@@ -158,29 +122,35 @@ const App = () => {
 
     return (
         <AdvancedSecurityProvider>
-            <ThemeProvider theme={theme ? theme : storedTheme}>
-                <Navbar />
-                <Suspense fallback={<LoadingFallback />}>
-                    <Routes>
-                        {/* === PUBLIC ROUTES === */}
-                        <Route path="/" element={<Navigate to="/feed" replace />} />
+            <AuthProvider>
+                <ThemeProvider theme={theme ? theme : storedTheme}>
+                    <Suspense fallback={<LoadingFallback />}>
+                        <Routes>
+                            {/* === UNAUTHENTICATED ROUTES ONLY === */}
+                            <Route path="/auth/*" element={<AuthGuard requireAuth={false}><AuthPage /></AuthGuard>} />
+                            <Route path="/signin" element={<Navigate to="/auth/login" replace />} />
+                            <Route path="/signout" element={<Navigate to="/auth/logout" replace />} />
+                            <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-                        {/* === AUTHENTICATION ROUTES (Unauthenticated Only) === */}
-                        <Route path="/auth/*" element={<AuthGuard requireAuth={false}><AuthPage /></AuthGuard>} />
+                            {/* === AUTHENTICATION REQUIRED ROUTES === */}
+                            <Route path="/*" element={
+                                <AuthGuard requireAuth={true}>
+                                    <>
+                                        {/* <NavBar /> */}
+                                        <Routes>
+                                            {/* Default redirect for authenticated users */}
+                                            <Route path="/" element={<Navigate to="/feed" replace />} />
 
-                        {/* === PROTECTED ROUTES (All other routes) === */}
-                        <Route path="/*" element={<AuthGuard requireAuth={true}><RoutesConfig /></AuthGuard>} />
-
-                        {/* === ROLE-BASED ROUTES === */}
-                        <Route path="/admin/*" element={<ProtectedRoute requiredPermissions={['system:admin']}><RoutesConfig /></ProtectedRoute>} />
-
-                        {/* === ERROR ROUTES === */}
-                        <Route path="/unauthorized" element={<UnauthorizedPage />} />
-                        <Route path="/signin" element={<AuthPage />} />
-                        <Route path="/signout" element={<div>Signout Page</div>} />
-                    </Routes>
-                </Suspense>
-            </ThemeProvider>
+                                            {/* All authenticated routes handled by RoutesConfig */}
+                                            <Route path="/*" element={<RoutesConfig />} />
+                                        </Routes>
+                                    </>
+                                </AuthGuard>
+                            } />
+                        </Routes>
+                    </Suspense>
+                </ThemeProvider>
+            </AuthProvider>
         </AdvancedSecurityProvider>
     );
 };

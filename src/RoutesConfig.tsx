@@ -16,19 +16,10 @@ const ProfileContainer = lazy(() => import("./features/profile/ProfileContainer"
 const NotificationPage = lazy(() => import("./pages/notification/NotifiactionPage"));
 const NotificationList = lazy(() => import("./features/notification/presentation/components/NotificationList"));
 const SettingsPage = lazy(() => import("./pages/settings/SettingsPage"));
-const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
-const SignoutPage = lazy(() => import("./pages/auth/signout/SignoutPage"));
-const UnauthorizedPage = lazy(() => import("./pages/auth/UnauthorizedPage"));
 const ErrorComponent = lazy(() => import("./shared/errors/ErrorComponent"));
 
 const RoutesConfig = () => (
     <Routes>
-        {/* Public routes */}
-        <Route path="/signin" element={<AuthPage />} />
-        <Route path="/signout" element={<SignoutPage />} />
-        <Route path="/unauthorized" element={<UnauthorizedPage />} />
-        <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
-
         {/* Protected routes */}
         <Route path="/" element={
             <ProtectedRoute>
@@ -88,6 +79,16 @@ const RoutesConfig = () => (
                 <SettingsPage />
             </ProtectedRoute>
         } />
+
+        {/* Admin routes */}
+        <Route path="/admin/*" element={
+            <ProtectedRoute requiredPermissions={[PERMISSIONS.SYSTEM_ADMIN]}>
+                <div>Admin Dashboard</div>
+            </ProtectedRoute>
+        } />
+
+        {/* 404 catch-all */}
+        <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
     </Routes>
 );
 

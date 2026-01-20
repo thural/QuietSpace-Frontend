@@ -16,6 +16,10 @@ interface AuthGuardProps {
  * 
  * Provides layered authentication checking with proper fallbacks
  * and enterprise-standard error handling.
+ * 
+ * Redirects:
+ * - Unauthenticated users (requireAuth=true) → /signin
+ * - Authenticated users on auth pages (requireAuth=false) → /feed
  */
 export const AuthGuard: React.FC<AuthGuardProps> = ({
   children,
@@ -43,7 +47,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
 
   // Authentication not required but authenticated (for login/register pages)
   if (!requireAuth && isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/feed" replace />;
   }
 
   // All checks passed - render children
