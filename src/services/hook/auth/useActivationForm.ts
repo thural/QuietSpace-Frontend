@@ -7,7 +7,7 @@ import useJwtAuth from "./useJwtAuth";
 
 export const useActivationForm = () => {
     const { formData, setCurrentPage } = useAuthStore();
-    
+
     const activationNotice = (message: string) => alert(message);
     const [activationCode, setActivationCode] = useState("");
     const tokenTimer = useTimer(15 * 60 * 1000);
@@ -22,7 +22,16 @@ export const useActivationForm = () => {
         console.log("error on account activation:", error.message);
     }
 
-    const { activate } = useJwtAuth({ onSuccessFn, onErrorFn });
+    const { activate } = useJwtAuth();
+
+    const handleActivate = async (code: string) => {
+        try {
+            await activate(code);
+            onSuccessFn();
+        } catch (error) {
+            onErrorFn(error instanceof Error ? error : new Error(String(error)));
+        }
+    };
 
     const handleResendCode = (): void => {
         fetchResendCode(formData.email || '');
@@ -31,7 +40,7 @@ export const useActivationForm = () => {
 
     const handleSubmit = async (event: Event): Promise<void> => {
         event.preventDefault();
-        activate(activationCode);
+        handleActivate(activationCode);
     };
 
     const handleChange = (value: string): void => {

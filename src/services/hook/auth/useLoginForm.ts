@@ -18,43 +18,10 @@ import { AuthResponse } from "@/api/schemas/inferred/auth";
  *                     and functions to handle form events.
  */
 export const useLoginForm = () => {
-    const { setAuthData, resetAuthData, setIsAuthenticated, formData, setFormData, setCurrentPage } = useAuthStore();
+    const { formData, setFormData, setCurrentPage, isLoading, isError, error } = useAuthStore();
     const navigate = useNavigate();
 
-    const [isAuthenticating, setIsAuthenticating] = useState(false);
-    const [isError, setIsError] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    /**
-     * Function called when authentication starts.
-     */
-    const onLoadFn = () => setIsAuthenticating(true);
-
-    /**
-     * Function called when authentication succeeds.
-     * 
-     * @param {AuthResponse} data - The authentication response data.
-     */
-    const onSuccessFn = (data: AuthResponse): void => {
-        setIsAuthenticating(false);
-        setIsAuthenticated(true);
-        setAuthData(data);
-        navigate("/");
-    };
-
-    /**
-     * Function called when authentication fails.
-     * 
-     * @param {Error} error - The error that occurred during authentication.
-     */
-    const onErrorFn = (error: Error): void => {
-        setIsAuthenticating(false);
-        resetAuthData();
-        setError(error);
-        setIsError(true);
-    };
-
-    const { authenticate } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
+    const { authenticate } = useJwtAuth();
 
     useEffect(() => {
         // Initialize form data if empty
@@ -69,11 +36,17 @@ export const useLoginForm = () => {
      * @param {Event} event - The form submission event.
      */
     const handleLoginForm = async (event: Event): Promise<void> => {
-        event.preventDefault(); // Prevent default form submission
-        authenticate({ 
-            email: formData.email || '', 
-            password: formData.password || '' 
-        }); // Call the authenticate function with the form data
+        event.preventDefault();
+        try {
+            await authenticate({
+                email: formData.email || '',
+                password: formData.password || ''
+            });
+            navigate("/");
+        } catch (error) {
+            // Error is handled by the auth store
+            console.error("Login failed:", error);
+        }
     };
 
     /**
@@ -94,7 +67,7 @@ export const useLoginForm = () => {
 
     return {
         formData,
-        isAuthenticating,
+        isAuthenticating: isLoading,
         isError,
         error,
         handleLoginForm,

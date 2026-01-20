@@ -1,136 +1,130 @@
-import {
-    LoginBody,
-    SetAuthState,
-    SignupBody
-} from '@/types/authTypes';
-import { JwtAuthProps } from '@/types/hookPropTypes';
-import {
-    activateUser,
-    authenticateUser,
-    createTokenRefreshManager,
-    registerUser,
-    signoutUser,
-    signupUser
-} from '@/utils/jwtAuthUtils';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
+import { LoginBody, SignupBody } from '../../../types/authTypes';
+import AuthService from '../../auth/authService';
+import TokenRefreshManager from '../../auth/tokenRefreshManager';
+import { useAuthStore } from '../../store/zustand';
 
 /**
- * @interface UseJwtAuthReturn
- * @property {function} loadAccessToken - Loads and starts auto-refreshing the access token.
- * @property {function} signup - Signs up a user with the provided form data.
- * @property {function} activate - Activates a user account using a code.
- * @property {function} signout - Signs out the current user.
- * @property {function} authenticate - Authenticates a user with the provided form data.
- * @property {function} register - Registers a new user and updates the authentication state.
+ * Clean authentication hook with proper separation of concerns
+ * 
+ * This hook provides authentication operations without:
+ * - Callback orchestration
+ * - Complex state management
+ * - Cross-layer operations
+ * 
+ * @returns Authentication operations bound to auth store
  */
-
-interface UseJwtAuthReturn {
-    loadAccessToken: () => void;
-    signup: (formData: SignupBody) => void;
-    activate: (code: string) => void;
-    signout: () => void;
-    authenticate: (formData: LoginBody) => void;
-    register: (setAuthState: SetAuthState, formData: SignupBody) => void;
-}
-
-const useJwtAuth = ({
-    refreshInterval = 490000,
-    onSuccessFn = () => { console.warn("No onSuccess handler provided"); },
-    onErrorFn = (e: Error) => { console.error("Error in JwtAuth client:", e); },
-    onLoadFn = () => { console.warn("No onLoad handler provided"); }
-}: JwtAuthProps): UseJwtAuthReturn => {
-    // Create token refresh manager
-    const { stopTokenAutoRefresh, startTokenAutoRefresh } = useMemo(
-        () => createTokenRefreshManager(), []
-    );
+export const useJwtAuth = () => {
+    const {
+        login,
+        logout,
+        setLoading,
+        setError,
+        setAuthData,
+        setIsAuthenticated
+    } = useAuthStore();
 
     /**
-     * Registers a new user and moves to the activation page.
-     * @param {SetAuthState} setAuthState - Function to set the authentication state.
-     * @param {SignupBody} formData - The form data for signing up the user.
+     * Authenticates user with credentials
      */
-    const register = useCallback(async (setAuthState: SetAuthState, formData: SignupBody) => {
-        await registerUser({
-            setAuthState,
-            formData,
-            onErrorFn
-        });
-    }, [onErrorFn]);
+    const authenticate = useCallback(async (credentials: LoginBody) => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const authData = await AuthService.authenticate(credentials);
+            setAuthData(authData);
+            setIsAuthenticated(true);
+        } catch (error) {
+            setError(error instanceof Error ? error : new Error(String(error)));
+        } finally {
+            setLoading(false);
+        }
+    }, [login, logout, setLoading, setError, setAuthData, setIsAuthenticated]);
 
     /**
-     * Authenticates a user with the provided form data.
-     * @param {LoginBody} formData - The form data for user authentication.
+     * Registers new user
      */
-    const authenticate = useCallback(async (formData: LoginBody) => {
-        await authenticateUser({
-            formData,
-            onSuccessFn,
-            onErrorFn,
-            onLoadFn
-        });
-    }, [onSuccessFn, onErrorFn, onLoadFn]);
+    const signup = useCallback(async (userData: SignupBody) => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            await AuthService.register(userData);
+            // Registration successful - navigate to activation
+        } catch (error) {
+            setError(error instanceof Error ? error : new Error(String(error)));
+        } finally {
+            setLoading(false);
+        }
+    }, [setLoading, setError]);
 
     /**
-     * Signs up a user with the provided form data.
-     * @param {SignupBody} formData - The form data for signing up the user.
-     */
-    const signup = useCallback(async (formData: SignupBody) => {
-        await signupUser({
-            formData,
-            onSuccessFn,
-            onErrorFn,
-            onLoadFn
-        });
-    }, [onSuccessFn, onErrorFn, onLoadFn]);
-
-    /**
-     * Activates a user account using the provided code.
-     * @param {string} code - The activation code for the user.
+     * Activates user account
      */
     const activate = useCallback(async (code: string) => {
-        await activateUser({
-            code,
-            onSuccessFn,
-            onErrorFn,
-            onLoadFn
-        });
-    }, [onSuccessFn, onErrorFn, onLoadFn]);
+        try {
+            setLoading(true);
+            setError(null);
+
+            await AuthService.activate(code);
+            // Activation successful - navigate to login
+        } catch (error) {
+            setError(error instanceof Error ? error : new Error(String(error)));
+        } finally {
+            setLoading(false);
+        }
+    }, [setLoading, setError]);
 
     /**
-     * Signs out the current user.
+     * Signs out current user
      */
     const signout = useCallback(async () => {
-        // Stop token refresh before signing out
-        stopTokenAutoRefresh();
+        try {
+            setLoading(true);
 
-        await signoutUser({
-            onSuccessFn,
-            onErrorFn,
-            onLoadFn
-        });
-    }, [stopTokenAutoRefresh, onSuccessFn, onErrorFn, onLoadFn]);
+            await AuthService.signout();
+            logout(); // Reset user data using logout action
+            setIsAuthenticated(false);
+        } catch (error) {
+            setError(error instanceof Error ? error : new Error(String(error)));
+        } finally {
+            setLoading(false);
+        }
+    }, [login, setLoading, setError, setIsAuthenticated]);
 
     /**
-     * Loads and starts auto-refreshing the access token.
+     * Initializes token refresh on app startup
      */
-    const loadAccessToken = useCallback(() => {
-        startTokenAutoRefresh({
-            refreshInterval,
-            onSuccessFn,
-            onErrorFn: (error) => {
-                stopTokenAutoRefresh();
-                onErrorFn(error);
+    const initializeTokenRefresh = useCallback(() => {
+        TokenRefreshManager.startRefresh({
+            interval: 490000,
+            onSuccess: (data) => {
+                setAuthData(data);
+                setIsAuthenticated(true);
+            },
+            onError: (error) => {
+                setError(error);
+                setIsAuthenticated(false);
+                TokenRefreshManager.stopRefresh();
             }
         });
-    }, [refreshInterval, startTokenAutoRefresh, onSuccessFn, onErrorFn, stopTokenAutoRefresh]);
+    }, [setAuthData, setIsAuthenticated, setError]);
+
+    /**
+     * Stops token refresh on logout
+     */
+    const stopTokenRefresh = useCallback(() => {
+        TokenRefreshManager.stopRefresh();
+    }, []);
 
     return {
-        loadAccessToken,
+        authenticate,
         signup,
         activate,
         signout,
-        authenticate,
-        register,
+        initializeTokenRefresh,
+        stopTokenRefresh
     };
 };
 

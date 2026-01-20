@@ -9,45 +9,14 @@ import { useAuthStore } from "@/services/store/zustand";
  * This hook manages the signup form state and handles the signup process. It provides 
  * functions for handling form submission, input changes, and navigation to the login page.
  * 
- * @param {SetAuthState} setAuthState - Function to set the authentication state.
  * @param {AuthState} authState - The current authentication state, including form data.
  * @returns {Object} - An object containing loading status, error information, form data, 
  *                     and functions to handle form events.
  */
 export const useSignupForm = () => {
-    const { setFormData, formData, setCurrentPage } = useAuthStore();
-    
-    const [isLoading, setIsLoading] = useState(false); // Loading state for signup process
-    const [isError, setIsError] = useState(false); // Error state for signup process
-    const [error, setError] = useState<Error | null>(null); // Error message state
+    const { setFormData, formData, setCurrentPage, isLoading, isError, error } = useAuthStore();
 
-    /**
-     * Function called when signup process starts.
-     */
-    const onLoadFn = () => {
-        setIsLoading(true); // Set loading state to true
-    };
-
-    /**
-     * Function called when signup succeeds.
-     */
-    const onSuccessFn = () => {
-        setIsLoading(false); // Set loading state to false
-        setCurrentPage(AuthPages.ACTIVATION); // Navigate to activation page
-    };
-
-    /**
-     * Function called when signup fails.
-     * 
-     * @param {Error} error - The error that occurred during signup.
-     */
-    const onErrorFn = (error: Error) => {
-        setIsLoading(false); // Set loading state to false
-        setError(error); // Set error state
-        setIsError(true); // Set error flag
-    };
-
-    const { signup } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
+    const { signup } = useJwtAuth();
 
     useEffect(() => {
         // Initialize signup form data if empty
@@ -74,19 +43,26 @@ export const useSignupForm = () => {
 
         if (password !== confirmPassword) {
             alert("Passwords don't match, please try again"); // Alert if passwords don't match
-            setFormData({ 
-                ...formData, 
+            setFormData({
+                ...formData,
                 confirmPassword: '' // Clear confirmPassword field
             });
         } else {
-            signup({
-                username: formData.username || '',
-                firstname: formData.firstname || '',
-                lastname: formData.lastname || '',
-                email: formData.email || '',
-                password: formData.password || '',
-                confirmPassword: formData.confirmPassword || ''
-            }); // Call signup function with form data
+            try {
+                await signup({
+                    username: formData.username || '',
+                    firstname: formData.firstname || '',
+                    lastname: formData.lastname || '',
+                    email: formData.email || '',
+                    password: formData.password || '',
+                    confirmPassword: formData.confirmPassword || ''
+                });
+                // Navigate to activation page on successful signup
+                setCurrentPage(AuthPages.ACTIVATION);
+            } catch (error) {
+                // Error is handled by the auth store
+                console.error('Signup failed:', error);
+            }
         }
     };
 
