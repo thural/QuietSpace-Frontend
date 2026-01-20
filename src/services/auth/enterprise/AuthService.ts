@@ -28,7 +28,7 @@ import type {
 
 import { IAuthProvider, IAuthValidator } from '../interfaces/authInterfaces';
 
-import { Container, injectable, inject } from 'inversify';
+import { Injectable } from '../../../core/di/index';
 
 /**
  * Enterprise authentication service implementation
@@ -39,7 +39,7 @@ import { Container, injectable, inject } from 'inversify';
  * - Comprehensive logging and metrics
  * - Multiple provider support
  */
-@injectable()
+@Injectable({ lifetime: 'singleton' })
 export class EnterpriseAuthService implements IAuthService {
     private readonly repository: IAuthRepository;
     private readonly logger: IAuthLogger;

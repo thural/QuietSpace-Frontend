@@ -95,7 +95,6 @@ src/features/[feature]/
 - **Day.js 1.11**: Lightweight date utility
 - **React Easy Emoji 1.8**: Emoji rendering
 - **React Input Emoji 5.6**: Enhanced input interactions
-- **Inversify 7.11**: Dependency injection container
 
 ### Testing & Quality Assurance
 - **Jest 29.7**: Unit testing with experimental VM modules
