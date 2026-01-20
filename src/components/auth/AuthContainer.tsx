@@ -1,12 +1,12 @@
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import styles from "@/styles/auth/authStyles";
-import { AuthPages } from "@/types/authTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import Typography from "@/shared/Typography";
-import { useAuthStore } from "@/services/store/zustand";
+import styles from "@/styles/auth/authStyles";
+import { useLocation } from "react-router-dom";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
+
 
 /**
  * AuthContainer component manages authentication forms (Login, Signup, Activation).
@@ -16,22 +16,29 @@ import SignupForm from "./SignupForm";
  */
 const AuthContainer = () => {
     const classes = styles();
-    const { currentPage, formData } = useAuthStore();
+    const location = useLocation();
 
     /**
-     * Renders the appropriate authentication form based on the current auth state.
+     * Renders the appropriate authentication form based on the current path ending.
      *
      * @returns {JSX.Element | null} - The rendered form component based on currentPage.
      */
-    const RenderResult = () => {
-        if (currentPage === AuthPages.SIGNUP)
-            return <SignupForm />;
-        if (currentPage === AuthPages.LOGIN)
-            return <LoginForm />;
-        if (currentPage === AuthPages.ACTIVATION)
-            return <ActivationForm />;
 
-        return null; // Return null if no valid page is matched
+    // Split the path by "/" and take the last segment
+    const segments = location.pathname.split("/");
+    const lastSegment = segments.pop() || ""; // fallback if empty
+
+    const RenderResult = () => {
+        switch (lastSegment) {
+            case "signup":
+                return <SignupForm />;
+            case "login":
+                return <LoginForm />;
+            case "activation":
+                return <ActivationForm />;
+            default:
+                return null;
+        }
     };
 
     return (

@@ -1,4 +1,3 @@
-// src/RoutesConfig.tsx
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 import { ProtectedRoute } from "@/shared/auth/ProtectedRoute";
@@ -29,14 +28,14 @@ const RoutesConfig = () => (
         <Route path="/signout" element={<SignoutPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<ErrorComponent message="error 404 page not found" />} />
-        
+
         {/* Protected routes */}
         <Route path="/" element={
             <ProtectedRoute>
-                <FeedContainer />
+                <FeedPage />
             </ProtectedRoute>
         } />
-        
+
         <Route path="/feed/*" element={
             <ProtectedRoute>
                 <FeedPage />
@@ -45,13 +44,19 @@ const RoutesConfig = () => (
             <Route index element={<FeedContainer />} />
             <Route path=":postId" element={<PostContainer />} />
         </Route>
-        
+
+        <Route path="/dashboard/*" element={
+            <ProtectedRoute>
+                <div>Dashboard Content</div>
+            </ProtectedRoute>
+        } />
+
         <Route path="/search/*" element={
             <ProtectedRoute requiredPermissions={[PERMISSIONS.SEARCH_CONTENT]}>
                 <SearchPage />
             </ProtectedRoute>
         } />
-        
+
         <Route path="/chat/*" element={
             <ProtectedRoute requiredPermissions={[PERMISSIONS.READ_MESSAGES]}>
                 <ChatPage />
@@ -60,8 +65,8 @@ const RoutesConfig = () => (
             <Route index element={<ChatPlaceholder />} />
             <Route path=":chatId" element={<ChatPanel />} />
         </Route>
-        
-        <Route path="/profile" element={
+
+        <Route path="/profile/*" element={
             <ProtectedRoute requiredPermissions={[PERMISSIONS.VIEW_PROFILES]}>
                 <ProfilePage />
             </ProtectedRoute>
@@ -69,7 +74,7 @@ const RoutesConfig = () => (
             <Route index element={<UserProfileContainer />} />
             <Route path=":userId" element={<ProfileContainer />} />
         </Route>
-        
+
         <Route path="/notification/*" element={
             <ProtectedRoute requiredPermissions={[PERMISSIONS.READ_NOTIFICATIONS]}>
                 <NotificationPage />
@@ -77,7 +82,7 @@ const RoutesConfig = () => (
         }>
             <Route path=":category" element={<NotificationList />} />
         </Route>
-        
+
         <Route path="/settings/*" element={
             <ProtectedRoute requiredPermissions={[PERMISSIONS.EDIT_PROFILE]}>
                 <SettingsPage />

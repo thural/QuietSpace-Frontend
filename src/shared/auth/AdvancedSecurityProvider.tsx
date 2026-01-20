@@ -7,6 +7,20 @@ import { useAnomalyDetector } from './anomalyDetector';
 import { SessionManager } from './SessionTimeoutWarning';
 
 /**
+ * Utility function to check if JWT token is expired
+ */
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Date.now() / 1000;
+    return payload.exp < currentTime;
+  } catch (error) {
+    console.error('Error parsing token:', error);
+    return true; // Assume expired if can't parse
+  }
+};
+
+/**
  * AdvancedSecurityProvider component
  * 
  * Integrates all advanced security features:
@@ -16,13 +30,13 @@ import { SessionManager } from './SessionTimeoutWarning';
  * - Anomaly detection
  */
 export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNode }) => {
-  const { 
-    user, 
-    isAuthenticated, 
-    login, 
-    logout, 
+  const {
+    user,
+    isAuthenticated,
+    login,
+    logout,
     setAuthData,
-    setIsAuthenticated 
+    setIsAuthenticated
   } = useAuthStore();
 
   // Session timeout setup
@@ -36,11 +50,11 @@ export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNo
   });
 
   // Multi-tab sync setup
-  const { 
-    syncLogin, 
-    syncLogout, 
-    syncTokenRefresh, 
-    syncSessionTimeout 
+  const {
+    syncLogin,
+    syncLogout,
+    syncTokenRefresh,
+    syncSessionTimeout
   } = useMultiTabSync({
     enabled: true,
     channelName: 'auth-sync'
@@ -108,6 +122,39 @@ export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNo
       return () => window.removeEventListener('popstate', handleNavigation);
     }
   }, [isAuthenticated, user, anomalyDetector, resetTimer]);
+
+  // Token expiry checking
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const checkTokenExpiry = () => {
+        const { token } = useAuthStore.getState();
+
+        if (token && isTokenExpired(token)) {
+          console.warn('Token expired, logging out user');
+
+          // Log token expiry event
+          auditLog.logSuspiciousActivity({
+            type: 'TOKEN_EXPIRED',
+            userId: user.id,
+            timestamp: new Date().toISOString(),
+            details: 'JWT token expired during session'
+          }, 'HIGH');
+
+          // Logout and redirect to login
+          logout();
+          window.location.href = '/auth/login?reason=expired';
+        }
+      };
+
+      // Check token expiry every minute
+      const interval = setInterval(checkTokenExpiry, 60000);
+
+      // Initial check on mount
+      checkTokenExpiry();
+
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, user, auditLog, logout]);
 
   return (
     <SessionManager>
