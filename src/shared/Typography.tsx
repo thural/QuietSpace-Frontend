@@ -1,10 +1,11 @@
 import { Text, Title } from "@mantine/core"
-import { GenericWrapper } from "@/types/sharedComponentTypes"
+import { GenericWrapper } from "@shared-types/sharedComponentTypes"
 
 export type headingSize = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-export interface TypographyProps extends GenericWrapper {
-    type?: headingSize
+export interface TypographyProps extends Omit<React.ComponentProps<typeof Text>, 'type'>, Omit<GenericWrapper, 'children'> {
+    type?: headingSize;
+    children?: React.ReactNode;
 }
 
 const Typography: React.FC<TypographyProps> = ({ type, children, ...props }) => {

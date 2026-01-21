@@ -1,4 +1,4 @@
-import { ConsumerFn } from "@/types/genericTypes"
+import { ConsumerFn } from "@/shared/types/genericTypes"
 import BoxStyled from "./BoxStyled"
 import { createUseStyles } from "react-jss";
 

@@ -2,8 +2,8 @@ import { Center } from "@mantine/core";
 import { RxLockClosed } from "react-icons/rx";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography, { TypographyProps } from "@/shared/Typography";
-import styles from "@/styles/profile/privateBlockStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import styles from "@/features/profile/presentation/styles/privateBlockStyles";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 /**
  * PrivateBlockProps interface.

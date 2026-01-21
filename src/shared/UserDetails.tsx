@@ -1,7 +1,7 @@
-import { UserResponse } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/features/profile/data/models/user";
 import BoxStyled from "./BoxStyled";
-import styles from "@/styles/shared/userDetailsStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import styles from "@/shared/styles/userDetailsStyles";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography, { headingSize } from "./Typography";
 import Conditional from "./Conditional";
 

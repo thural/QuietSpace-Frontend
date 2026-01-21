@@ -1,4 +1,4 @@
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import React, { ChangeEvent, JSXElementConstructor } from "react";
 
 interface HiddenFileInputProps extends GenericWrapper {

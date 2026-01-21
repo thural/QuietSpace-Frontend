@@ -1,6 +1,6 @@
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FlexStyled from "./FlexStyled";
-import useStyles from "@/styles/shared/baseCardStyles"
+import useStyles from "@/shared/styles/baseCardStyles"
 
 const BaseCard: React.FC<GenericWrapper> = ({ children }) => {
 

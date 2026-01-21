@@ -37,7 +37,7 @@
         "src/hooks/*"
       ],
       "@utils/*": [
-        "src/utils/*"
+        "src/shared/utils/*"
       ],
       "@services/*": [
         "src/services/*"
@@ -79,10 +79,10 @@
         "src/styles/*"
       ],
       "@constants/*": [
-        "src/constants/*"
+        "src/shared/constants/*"
       ],
       "@shared-types/*": [
-        "src/types/*"
+        "src/shared/types/*"
       ]
     },
     "esModuleInterop": true,
@@ -104,7 +104,7 @@
     "src",
     "src/**/*",
     "src/__mocks__/**/*.d.ts",
-    "src/types/**/*.d.ts"
+    "src/shared/types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

@@ -1,6 +1,6 @@
-import styles from "@/styles/shared/overlayStyles";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import styles from "@/shared/styles/overlayStyles";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 interface OverlayProps extends GenericWrapper {
   isOpen?: boolean;

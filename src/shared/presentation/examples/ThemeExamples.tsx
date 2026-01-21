@@ -6,10 +6,10 @@
  */
 
 import React from 'react';
-import { 
-  useThemeTokens, 
-  useThemeSwitch, 
-  createStyledComponent 
+import {
+  useThemeTokens,
+  useThemeSwitch,
+  createStyledComponent
 } from '../../../core/theme';
 import { useThemeResponsive } from '../../../platform_shell';
 import { ThemeContainer, ThemeButton, ThemeText, ThemeFlexContainer } from '../../../platform_shell/components/ThemeComponents';
@@ -19,7 +19,7 @@ import { User } from '../../domain/entities/User';
 /**
  * Example Card Component
  */
-const ExampleCard = createStyledComponent('div')<{ variant?: 'default' | 'elevated' | 'bordered' }>`
+const ExampleCard = createStyledComponent('div') <{ variant?: 'default' | 'elevated' | 'bordered' }>`
   ${({ theme, variant = 'default' }) => {
     const baseStyles = `
       padding: ${theme.spacing.lg};
@@ -28,7 +28,7 @@ const ExampleCard = createStyledComponent('div')<{ variant?: 'default' | 'elevat
       color: ${theme.getColor('text.primary')};
       transition: all ${theme.animation.duration.normal} ${theme.animation.easing.ease};
     `;
-    
+
     const variantStyles = {
       default: `
         border: 1px solid ${theme.getColor('border.light')};
@@ -47,7 +47,7 @@ const ExampleCard = createStyledComponent('div')<{ variant?: 'default' | 'elevat
         background: ${theme.getColor('background.secondary')};
       `,
     };
-    
+
     return `
       ${baseStyles}
       ${variantStyles[variant]}
@@ -58,7 +58,7 @@ const ExampleCard = createStyledComponent('div')<{ variant?: 'default' | 'elevat
 /**
  * Example Input Component
  */
-const ExampleInput = createStyledComponent('input')<{ 
+const ExampleInput = createStyledComponent('input') <{
   variant?: 'default' | 'outlined' | 'filled';
   size?: 'sm' | 'md' | 'lg';
   error?: boolean;
@@ -84,7 +84,7 @@ const ExampleInput = createStyledComponent('input')<{
         background: ${theme.getColor('background.secondary')};
       }
     `;
-    
+
     const sizeStyles = {
       sm: `
         padding: ${theme.spacing.xs} ${theme.spacing.sm};
@@ -99,7 +99,7 @@ const ExampleInput = createStyledComponent('input')<{
         font-size: ${theme.typography.fontSize.lg};
       `,
     };
-    
+
     const variantStyles = {
       default: `
         background: ${theme.getColor('background.primary')};
@@ -123,7 +123,7 @@ const ExampleInput = createStyledComponent('input')<{
         }
       `,
     };
-    
+
     return `
       ${baseStyles}
       ${sizeStyles[size]}
@@ -135,7 +135,7 @@ const ExampleInput = createStyledComponent('input')<{
 /**
  * Example Badge Component
  */
-const ExampleBadge = createStyledComponent('span')<{ 
+const ExampleBadge = createStyledComponent('span') <{
   variant?: 'default' | 'success' | 'warning' | 'error';
   size?: 'sm' | 'md' | 'lg';
 }>`
@@ -149,7 +149,7 @@ const ExampleBadge = createStyledComponent('span')<{
       text-transform: uppercase;
       letter-spacing: ${theme.typography.letterSpacing.wide};
     `;
-    
+
     const sizeStyles = {
       sm: `
         padding: ${theme.spacing.xs} ${theme.spacing.sm};
@@ -164,7 +164,7 @@ const ExampleBadge = createStyledComponent('span')<{
         font-size: ${theme.typography.fontSize.base};
       `,
     };
-    
+
     const variantStyles = {
       default: `
         background: ${theme.getColor('neutral.100')};
@@ -183,7 +183,7 @@ const ExampleBadge = createStyledComponent('span')<{
         color: white;
       `,
     };
-    
+
     return `
       ${baseStyles}
       ${sizeStyles[size]}
@@ -195,7 +195,7 @@ const ExampleBadge = createStyledComponent('span')<{
 /**
  * Example Progress Component
  */
-const ExampleProgress = createStyledComponent('div')<{ 
+const ExampleProgress = createStyledComponent('div') <{
   value: number;
   max?: number;
   variant?: 'default' | 'success' | 'warning' | 'error';
@@ -203,7 +203,7 @@ const ExampleProgress = createStyledComponent('div')<{
 }>`
   ${({ theme, value, max = 100, variant = 'default', size = 'md' }) => {
     const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
-    
+
     const baseStyles = `
       width: 100%;
       background: ${theme.getColor('background.secondary')};
@@ -211,7 +211,7 @@ const ExampleProgress = createStyledComponent('div')<{
       overflow: hidden;
       position: relative;
     `;
-    
+
     const sizeStyles = {
       sm: `
         height: 4px;
@@ -223,7 +223,7 @@ const ExampleProgress = createStyledComponent('div')<{
         height: 12px;
       `,
     };
-    
+
     const variantStyles = {
       default: `
         background: ${theme.getColor('brand.500')};
@@ -238,7 +238,7 @@ const ExampleProgress = createStyledComponent('div')<{
         background: ${theme.getColor('semantic.error')};
       `,
     };
-    
+
     return `
       ${baseStyles}
       ${sizeStyles[size]}
@@ -264,7 +264,7 @@ export const ThemeExamples: React.FC = () => {
   const theme = useThemeTokens();
   const { currentVariant, switchTheme, availableVariants } = useThemeSwitch();
   const { isMobile } = useThemeResponsive();
-  
+
   return (
     <ThemeContainer variant="card" responsive>
       <ThemeFlexContainer direction="column" gap="lg">
@@ -286,69 +286,69 @@ export const ThemeExamples: React.FC = () => {
             ))}
           </ThemeFlexContainer>
         </ThemeFlexContainer>
-        
+
         {/* Responsive Info */}
         <ThemeContainer variant="default">
           <ThemeText size="sm">
             Current Display: {isMobile ? 'Mobile' : 'Wide'} | Theme: {currentVariant}
           </ThemeText>
         </ThemeContainer>
-        
+
         {/* Avatar Examples */}
         <ThemeFlexContainer direction="column" gap="md">
           <ThemeText variant="subheading">Avatar Components</ThemeText>
           <ThemeFlexContainer gap="md" align="center">
-            <UserAvatar 
+            <UserAvatar
               user={new User(
                 '1',
                 'john_doe',
+                new Date(),
+                new Date(),
                 'john@example.com',
                 'Software Developer',
                 null,
-                new Date(),
-                new Date(),
                 true,
                 true
-              )} 
+              )}
               size={40}
               variant="circle"
               responsive
             />
-            <UserAvatar 
+            <UserAvatar
               user={new User(
                 '2',
                 'jane_smith',
+                new Date(),
+                new Date(),
                 'jane@example.com',
                 'Product Designer',
                 null,
-                new Date(),
-                new Date(),
                 true,
                 true
-              )} 
+              )}
               size={32}
               variant="square"
               responsive
             />
-            <UserAvatar 
+            <UserAvatar
               user={new User(
                 '3',
                 'bob_wilson',
+                new Date(),
+                new Date(),
                 'bob@example.com',
                 'Data Scientist',
                 null,
-                new Date(),
-                new Date(),
                 true,
                 false
-              )} 
+              )}
               size={48}
               variant="default"
               responsive
             />
           </ThemeFlexContainer>
         </ThemeFlexContainer>
-        
+
         {/* Button Examples */}
         <ThemeFlexContainer direction="column" gap="md">
           <ThemeText variant="subheading">Button Components</ThemeText>
@@ -359,7 +359,7 @@ export const ThemeExamples: React.FC = () => {
             <ThemeButton variant="ghost" size="md">Ghost Medium</ThemeButton>
           </ThemeFlexContainer>
         </ThemeFlexContainer>
-        
+
         {/* Input Examples */}
         <ThemeFlexContainer direction="column" gap="md">
           <ThemeText variant="subheading">Input Components</ThemeText>
@@ -370,7 +370,7 @@ export const ThemeExamples: React.FC = () => {
             <ExampleInput error placeholder="Error state" />
           </ThemeFlexContainer>
         </ThemeFlexContainer>
-        
+
         {/* Badge Examples */}
         <ThemeFlexContainer direction="column" gap="md">
           <ThemeText variant="subheading">Badge Components</ThemeText>
@@ -381,7 +381,7 @@ export const ThemeExamples: React.FC = () => {
             <ExampleBadge variant="error" size="md">Error</ExampleBadge>
           </ThemeFlexContainer>
         </ThemeFlexContainer>
-        
+
         {/* Progress Examples */}
         <ThemeFlexContainer direction="column" gap="md">
           <ThemeText variant="subheading">Progress Components</ThemeText>
@@ -392,7 +392,7 @@ export const ThemeExamples: React.FC = () => {
             <ExampleProgress value={90} variant="error" size="md" />
           </ThemeFlexContainer>
         </ThemeFlexContainer>
-        
+
         {/* Card Examples */}
         <ThemeFlexContainer direction="column" gap="md">
           <ThemeText variant="subheading">Card Components</ThemeText>

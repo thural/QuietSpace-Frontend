@@ -1,5 +1,6 @@
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
-import { createUseStyles, Theme } from "react-jss";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
+import { createUseStyles } from "react-jss";
+import { Theme } from "./types/theme";
 import FlexStyled from "./FlexStyled";
 
 const ModalStyled: React.FC<GenericWrapperWithRef> = ({ children, ...props }) => {

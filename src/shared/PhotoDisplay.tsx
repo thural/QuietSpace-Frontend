@@ -1,4 +1,4 @@
-import { PhotoResponse } from '@/api/schemas/inferred/photo';
+import { PhotoResponse } from '@/shared/api/models/photo';
 import { Image } from '@mantine/core';
 import { useEffect, useState } from 'react';
 

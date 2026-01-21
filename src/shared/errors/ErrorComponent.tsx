@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorContainer from './ErrorContainer';
 import ErrorMessage from './ErrorMessage';
-import styles from '@/styles/shared/errorContainerStyles';
+import styles from '@/shared/styles/errorContainerStyles';
 import { PiWarningCircleBold } from "react-icons/pi";
 
 interface ErrorComponentProps {

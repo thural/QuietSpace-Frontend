@@ -1,8 +1,8 @@
-import styles from "@/styles/shared/userQueryItemStyles";
-import useUserQueries from "@/api/queries/userQueries";
-import { UserProfileResponse, UserResponse } from "@/api/schemas/inferred/user";
-import { MouseEventFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import styles from "@/shared/styles/userQueryItemStyles";
+import useUserQueries from "@/features/profile/data/userQueries";
+import { UserProfileResponse, UserResponse } from "@/features/profile/data/models/user";
+import { MouseEventFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Conditional from "./Conditional";
@@ -24,6 +24,7 @@ interface UserQueryItemProps extends GenericWrapper {
     data: UserResponse;
     hasFollowToggle?: boolean;
     handleItemClick?: MouseEventFn;
+    children?: React.ReactNode;
 }
 
 /**

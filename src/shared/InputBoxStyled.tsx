@@ -1,6 +1,6 @@
 import { createUseStyles } from "react-jss";
 import BoxStyled from "./BoxStyled"
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 const InputBoxStyled: React.FC<GenericWrapper> = ({ children }) => {
     const useStyles = createUseStyles({

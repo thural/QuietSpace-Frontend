@@ -1,5 +1,5 @@
 import LoaderStyled from "@/shared/LoaderStyled";
-import { useAuthStore } from "@/services/store/zustand";
+import { useAuthStore } from "@/core/store/zustand";
 import Typography from "@/shared/Typography";
 import { useSignout } from "./hooks/useSignout";
 

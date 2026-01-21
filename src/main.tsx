@@ -1,8 +1,8 @@
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from 'react-dom/client';
-import RouteSwitch from "./RouteSwitch";
-import { getLocalThemeMode } from "./utils/localStorageUtils";
+import RouteSwitch from "./app/RouteSwitch";
+import { getLocalThemeMode } from "./shared/utils/localStorageUtils";
 
 
 const queryClient = new QueryClient({});

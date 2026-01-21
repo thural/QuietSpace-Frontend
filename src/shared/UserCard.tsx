@@ -1,6 +1,6 @@
-import styles from "@/styles/chat/userCardStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { ResId } from "@/api/schemas/native/common";
+import styles from "@/features/chat/presentation/styles/userCardStyles";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { ResId } from "@/shared/api/models/commonNative";
 import BoxStyled from "@/shared/BoxStyled";
 import { useGetCurrentUser, useGetUserById } from "@/services/data/useUserData";
 import { LoadingOverlay } from "@mantine/core";
@@ -9,7 +9,7 @@ import UserDetails from "@shared/UserDetails";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import UserAvatarPhoto from "./UserAvatarPhoto";
-import useUserQueries from "@/api/queries/userQueries";
+import useUserQueries from "@/core/network/api/queries/userQueries";
 
 /**
  * UserCardProps interface.

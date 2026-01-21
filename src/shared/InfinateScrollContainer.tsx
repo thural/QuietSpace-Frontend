@@ -1,7 +1,7 @@
 import useWasSeen from "@/services/hook/common/useWasSeen";
 import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { useEffect } from "react";
 import BoxStyled from "./BoxStyled";
 import Conditional from "./Conditional";

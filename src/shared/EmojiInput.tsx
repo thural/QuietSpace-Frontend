@@ -1,7 +1,8 @@
-import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef";
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
+import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import InputEmoji from "react-input-emoji";
-import { createUseStyles, Theme } from "react-jss";
+import { createUseStyles } from "react-jss";
+import { Theme } from "./types/theme";
 import BoxStyled from "./BoxStyled";
 
 export const styles = createUseStyles((theme: Theme) => ({

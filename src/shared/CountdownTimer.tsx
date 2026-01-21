@@ -1,6 +1,6 @@
 import React from "react";
 import { useTimer, resetTimer, TimerData } from "@/services/hook/common/useTimer";
-import { ProcedureFn } from "@/types/genericTypes";
+import { ProcedureFn } from "@/shared/types/genericTypes";
 
 /**
  * Display output for the countdown timer.

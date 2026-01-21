@@ -1,7 +1,8 @@
-import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef";
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
+import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { Input } from "@mantine/core";
-import { createUseStyles, Theme } from "react-jss";
+import { createUseStyles } from "react-jss";
+import { Theme } from "./types/theme";
 
 const useStyles = createUseStyles((theme: Theme) => ({
     inputStyled: {

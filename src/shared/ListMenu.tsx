@@ -1,5 +1,5 @@
-import styles from "@/styles/shared/listMenuStyles";
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
+import styles from "@/shared/styles/listMenuStyles";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { useState } from "react";
 import BoxStyled from "./BoxStyled";
 

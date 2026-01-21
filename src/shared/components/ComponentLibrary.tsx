@@ -23,7 +23,7 @@ interface IInput extends IBaseComponent {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
-  error?: string;
+  error?: string | { message: string };
   label?: string;
   required?: boolean;
 }
@@ -275,7 +275,7 @@ export const Card: React.FC<ICard> = ({
 
   const getCardStyles = (): React.CSSProperties => {
     const paddingValue = padding === 'none' ? '0' : padding === 'small' ? spacing.sm : padding === 'large' ? spacing.lg : spacing.md;
-    
+
     return {
       backgroundColor: colors.white,
       borderRadius: borderRadius.lg,
@@ -326,7 +326,7 @@ export const LoadingSpinner: React.FC<ILoadingSpinner> = ({
 }) => {
   const themeService = useService(ComponentThemeService);
   const colors = themeService.getColors();
-  
+
   const spinnerColor = color || colors.primary;
   const spinnerSize = size === 'small' ? '16px' : size === 'large' ? '32px' : '24px';
 
@@ -341,7 +341,7 @@ export const LoadingSpinner: React.FC<ILoadingSpinner> = ({
   };
 
   return (
-    <div 
+    <div
       className={`component-loading-spinner ${className}`}
       style={spinnerStyles}
     />
@@ -499,17 +499,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Export all components
-export {
-  Button,
-  Input,
-  Card,
-  LoadingSpinner,
-  ErrorMessage,
-  Modal,
-  ComponentThemeService
-};
-
+// Export all components (types only - components are already exported inline)
 export type {
   IButton,
   IInput,

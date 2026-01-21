@@ -1,6 +1,6 @@
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
-import withForwardedRefAndErrBoundary from "@/services/hook/shared/withForwardedRef";
-import styles from "@/styles/shared/formStyles";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
+import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
+import styles from "@/shared/styles/formStyles";
 
 const FormStyled: React.FC<GenericWrapperWithRef> = ({ forwardedRef, children, ...props }) => {
     const classes = styles();

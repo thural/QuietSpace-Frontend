@@ -1,8 +1,8 @@
-import { ResId } from "@/api/schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 import { useGetUserById } from "@/services/data/useUserData";
-import { formatPhotoData } from "@/utils/dataUtils";
+import { formatPhotoData } from "@/shared/utils/dataUtils";
 import UserAvatar from "./UserAvatar";
-import { toUpperFirstChar } from "@/utils/stringUtils";
+import { toUpperFirstChar } from "@/shared/utils/stringUtils";
 
 /**
  * UserAvatarPhoto component.

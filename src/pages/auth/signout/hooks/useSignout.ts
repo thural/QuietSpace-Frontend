@@ -1,5 +1,5 @@
 import useJwtAuth from "@/services/hook/auth/useJwtAuth";
-import { useAuthStore } from "@/services/store/zustand";
+import { useAuthStore } from "@/core/store/zustand";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

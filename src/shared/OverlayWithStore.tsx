@@ -1,5 +1,5 @@
-import { viewStore } from "@/services/store/zustand";
-import styles from "@/styles/shared/overlayStyles";
+import { viewStore } from "@/core/store/zustand";
+import styles from "@/shared/styles/overlayStyles";
 import BoxStyled from "./BoxStyled";
 
 

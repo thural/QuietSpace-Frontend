@@ -1,6 +1,6 @@
 import useFileUploader, { FetchCallback } from "@/services/hook/shared/useFileUploader";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { formatFileSize } from "@/utils/stringUtils";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { formatFileSize } from "@/shared/utils/stringUtils";
 import BoxStyled from "./BoxStyled";
 import OutlineButton from "./buttons/OutlineButton";
 import InputStyled from "./InputStyled";

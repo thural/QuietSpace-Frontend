@@ -1,7 +1,7 @@
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import React from "react";
-import useStyles from "@/styles/shared/inputStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import useStyles from "@/shared/styles/inputStyles";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 interface TextInputStyledProps extends GenericWrapper {
     name: string,

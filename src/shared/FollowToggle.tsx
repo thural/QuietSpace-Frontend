@@ -1,8 +1,8 @@
-import { UserResponse } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/features/profile/data/models/user";
 import { useToggleFollow } from "@/services/data/useUserData";
 import LightButton from "@/shared/buttons/LightButton";
 import React from "react";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 interface FollowToggleProps extends GenericWrapper {
     user: UserResponse
