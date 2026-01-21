@@ -51,11 +51,11 @@ export class UserRepository implements IUserRepository {
     return new User(
       id,
       username,
+      new Date(),
+      new Date(),
       `${username}@example.com`,
       'Sample bio',
       'avatar.jpg',
-      new Date(),
-      new Date(),
       true,
       false
     );
@@ -69,7 +69,7 @@ export class UserService implements IUserService {
 
   constructor(
     @Inject(UserRepository) private userRepository: IUserRepository
-  ) {}
+  ) { }
 
   getCurrentUser(): User | null {
     return this.currentUser;
@@ -84,10 +84,10 @@ export class UserService implements IUserService {
     if (!this.currentUser) {
       throw new Error('No user logged in');
     }
-    
+
     const updated = await this.userRepository.update(this.currentUser.id, updates);
     this.currentUser = updated;
-    
+
     console.log(`User profile updated: ${JSON.stringify(updates)}`);
     return updated;
   }

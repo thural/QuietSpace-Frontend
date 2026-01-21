@@ -10,8 +10,8 @@ export { container, initializeContainer, getContainer, createMockContainer } fro
 export { TYPES } from './di/types';
 
 // Network
-export { apiClient } from './network/apiClient';
-export { socketService } from './network/socketService';
+export { apiClient } from './network/rest/clients/apiClient';
+export { socketService } from './network/socket/service/socketService';
 
 // Theme
 export { colors } from './theme/appColors';
@@ -22,19 +22,19 @@ export * from './errors/failures';
 export * from './errors/exceptions';
 
 // Utils
-export { 
-  transformPost, 
-  transformError, 
-  sanitizeInput, 
-  isValidEmail, 
-  formatFileSize 
+export {
+  transformPost,
+  transformError,
+  sanitizeInput,
+  isValidEmail,
+  formatFileSize
 } from './utils/transformers';
-export { 
-  formatRelativeTime, 
-  formatDate, 
-  formatDateTime, 
-  isToday, 
-  isYesterday, 
-  getStartOfDay, 
-  getEndOfDay 
+export {
+  formatRelativeTime,
+  formatDate,
+  formatDateTime,
+  isToday,
+  isYesterday,
+  getStartOfDay,
+  getEndOfDay
 } from './utils/dateFormatter';

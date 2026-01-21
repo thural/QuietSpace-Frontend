@@ -7,14 +7,14 @@
 
 import React from 'react';
 import { useThemeTokens } from './EnhancedThemeProvider';
-import { Colors, Typography, BaseTheme } from '../../types/themeTypes';
+import { Colors, Typography, BaseTheme } from '../../shared/types/themeTypes';
 
 /**
  * Legacy theme adapter for backward compatibility
  */
 export const useLegacyThemeAdapter = (): BaseTheme => {
   const theme = useThemeTokens();
-  
+
   return {
     // Map new theme structure to legacy interface
     colors: {
@@ -41,10 +41,10 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
       success: theme.getColor('semantic.success'),
       gradient: `linear-gradient(45deg, ${theme.getColor('brand.500')}, ${theme.getColor('brand.600')})`,
     },
-    
+
     // Legacy spacing function
     spacing: (factor: number) => `${factor}rem`,
-    
+
     // Map spacing tokens
     spacingFactor: {
       xs: 0.25,
@@ -54,7 +54,7 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
       lg: 1.25,
       xl: 1.5,
     },
-    
+
     // Map breakpoints
     breakpoints: {
       xs: theme.breakpoints.xs,
@@ -64,7 +64,7 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
       lg: theme.breakpoints.lg,
       xl: theme.breakpoints.xl,
     },
-    
+
     // Map radius tokens
     radius: {
       xs: theme.radius.sm,
@@ -76,25 +76,25 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
       square: theme.radius.none,
       round: theme.radius.full,
     },
-    
+
     // Map z-index
     zIndex: {
       modal: 1000,
       tooltip: 2000,
     },
-    
+
     // Map transitions
     transitions: {
       default: `all ${theme.animation.duration.normal} ${theme.animation.easing.ease}`,
       fast: `all ${theme.animation.duration.fast} ${theme.animation.easing.ease}`,
     },
-    
+
     // Map animations
     animations: {
       fadeIn: 'fade-in 0.5s ease-in-out',
       slideUp: 'slide-up 0.3s ease',
     },
-    
+
     // Map keyframes
     keyframes: {
       fadeIn: {
@@ -106,7 +106,7 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
         to: { transform: 'translateY(0)' },
       },
     },
-    
+
     // Map shadows
     shadows: {
       light: theme.shadows.sm,
@@ -117,7 +117,7 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
       extra: theme.shadows.xl,
       wide: theme.shadows['2xl'],
     },
-    
+
     // Map typography
     typography: {
       fontFamily: theme.typography.fontFamily.sans.join(', '),
@@ -132,21 +132,21 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
       fontWeightRegular: parseInt(theme.typography.fontWeight.normal),
       fontWeightBold: parseInt(theme.typography.fontWeight.bold),
       lineHeight: theme.typography.lineHeight.normal,
-      h1: { 
-        fontSize: theme.typography.fontSize['3xl'], 
-        fontWeight: parseInt(theme.typography.fontWeight.bold) 
+      h1: {
+        fontSize: theme.typography.fontSize['3xl'],
+        fontWeight: parseInt(theme.typography.fontWeight.bold)
       },
-      h2: { 
-        fontSize: theme.typography.fontSize['2xl'], 
-        fontWeight: parseInt(theme.typography.fontWeight.semibold) 
+      h2: {
+        fontSize: theme.typography.fontSize['2xl'],
+        fontWeight: parseInt(theme.typography.fontWeight.semibold)
       },
-      body1: { 
-        fontSize: theme.typography.fontSize.base, 
-        fontWeight: parseInt(theme.typography.fontWeight.normal) 
+      body1: {
+        fontSize: theme.typography.fontSize.base,
+        fontWeight: parseInt(theme.typography.fontWeight.normal)
       },
-      body2: { 
-        fontSize: theme.typography.fontSize.sm, 
-        fontWeight: parseInt(theme.typography.fontWeight.normal) 
+      body2: {
+        fontSize: theme.typography.fontSize.sm,
+        fontWeight: parseInt(theme.typography.fontWeight.normal)
       },
     },
   };
@@ -180,7 +180,7 @@ export const migrateColor = (legacyColor: keyof Colors, theme: ReturnType<typeof
     success: theme.getColor('semantic.success'),
     gradient: `linear-gradient(45deg, ${theme.getColor('brand.500')}, ${theme.getColor('brand.600')})`,
   };
-  
+
   return colorMap[legacyColor];
 };
 
@@ -195,24 +195,24 @@ export const migrateTypography = (legacyTypography: keyof Typography, theme: Ret
     fontWeightRegular: parseInt(theme.typography.fontWeight.normal),
     fontWeightBold: parseInt(theme.typography.fontWeight.bold),
     lineHeight: theme.typography.lineHeight.normal,
-    h1: { 
-      fontSize: theme.typography.fontSize['3xl'], 
-      fontWeight: parseInt(theme.typography.fontWeight.bold) 
+    h1: {
+      fontSize: theme.typography.fontSize['3xl'],
+      fontWeight: parseInt(theme.typography.fontWeight.bold)
     },
-    h2: { 
-      fontSize: theme.typography.fontSize['2xl'], 
-      fontWeight: parseInt(theme.typography.fontWeight.semibold) 
+    h2: {
+      fontSize: theme.typography.fontSize['2xl'],
+      fontWeight: parseInt(theme.typography.fontWeight.semibold)
     },
-    body1: { 
-      fontSize: theme.typography.fontSize.base, 
-      fontWeight: parseInt(theme.typography.fontWeight.normal) 
+    body1: {
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: parseInt(theme.typography.fontWeight.normal)
     },
-    body2: { 
-      fontSize: theme.typography.fontSize.sm, 
-      fontWeight: parseInt(theme.typography.fontWeight.normal) 
+    body2: {
+      fontSize: theme.typography.fontSize.sm,
+      fontWeight: parseInt(theme.typography.fontWeight.normal)
     },
   };
-  
+
   return typographyMap[legacyTypography];
 };
 
@@ -223,7 +223,7 @@ export const migrateSpacing = (legacySpacing: number | string, theme: ReturnType
   if (typeof legacySpacing === 'number') {
     return `${legacySpacing}rem`;
   }
-  
+
   // Map legacy spacing keys to new theme
   const spacingMap: Record<string, string> = {
     xs: theme.spacing.xs,
@@ -232,7 +232,7 @@ export const migrateSpacing = (legacySpacing: number | string, theme: ReturnType
     lg: theme.spacing.lg,
     xl: theme.spacing.xl,
   };
-  
+
   return spacingMap[legacySpacing] || legacySpacing;
 };
 

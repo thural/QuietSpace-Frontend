@@ -5,7 +5,7 @@
  * Provides enterprise-grade DI with reflection support.
  */
 
-import { ServiceContainer } from '../container/ServiceContainer';
+import { ServiceContainer } from './ServiceContainer';
 import { getInjectableMetadata, getConstructorDependencies } from '../decorators/Injectable';
 import type { ServiceIdentifier } from '../registry/ServiceRegistry';
 
@@ -32,10 +32,10 @@ export class Container {
   register<T>(serviceClass: new (...args: any[]) => T, options?: { lifetime?: ServiceLifetime }): void {
     // Get injectable metadata
     const metadata = getInjectableMetadata(serviceClass);
-    
+
     // Get constructor dependencies
     const dependencies = getConstructorDependencies(serviceClass);
-    
+
     // Create factory function
     const factory = (container: any) => {
       // Resolve dependencies
@@ -180,7 +180,7 @@ export class Container {
    */
   createChild(): Container {
     const childContainer = new Container();
-    
+
     // Copy parent's singletons to child
     const dependencyGraph = this.container.getStats().dependencyGraph || {};
     const entries = Object.entries(dependencyGraph as Record<string, any>);
@@ -192,7 +192,7 @@ export class Container {
         }
       }
     }
-    
+
     return childContainer;
   }
 }
