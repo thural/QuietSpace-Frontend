@@ -5,8 +5,8 @@
  * Provides immediate UI feedback while server operations are in progress.
  */
 
-import type { NotificationResponse, NotificationPage } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationResponse, NotificationPage } from '@/features/notification/data/models/notification';
+import type { ResId } from '@/shared/api/models/common';
 import type { NotificationQuery } from '../../domain/entities/INotificationRepository';
 import { useNotificationUIStore } from '../stores/notificationUIStore';
 
@@ -47,7 +47,7 @@ export class OptimisticUpdateManager {
      */
     createMarkAsReadUpdate(notificationId: ResId, originalNotification: NotificationResponse): OptimisticUpdateContext {
         const operationId = `mark-read-${notificationId}-${Date.now()}`;
-        
+
         const operation: OptimisticOperation = {
             id: operationId,
             type: 'mark_read',
@@ -78,7 +78,7 @@ export class OptimisticUpdateManager {
      */
     createDeleteUpdate(notificationId: ResId, originalNotification: NotificationResponse): OptimisticUpdateContext {
         const operationId = `delete-${notificationId}-${Date.now()}`;
-        
+
         const operation: OptimisticOperation = {
             id: operationId,
             type: 'delete',
@@ -109,7 +109,7 @@ export class OptimisticUpdateManager {
     createCreateUpdate(notificationData: any): OptimisticUpdateContext {
         const operationId = `create-${Date.now()}`;
         const tempId = `temp-${operationId}`;
-        
+
         const operation: OptimisticOperation = {
             id: operationId,
             type: 'create',
@@ -141,7 +141,7 @@ export class OptimisticUpdateManager {
 
         // Store operation
         this.operations.set(operation.id, operation);
-        
+
         // Add to UI store
         const { addOptimisticUpdate, addPendingOperation, removePendingOperation } = useNotificationUIStore.getState();
         addOptimisticUpdate(operation.id, operation.data);
@@ -215,7 +215,7 @@ export class OptimisticUpdateManager {
      */
     applyOptimisticUpdatesToPage(page: NotificationPage): NotificationPage {
         const { optimisticUpdates } = useNotificationUIStore.getState();
-        
+
         if (optimisticUpdates.size === 0) {
             return page;
         }
@@ -256,7 +256,7 @@ export class OptimisticUpdateManager {
      */
     getNotificationWithOptimisticUpdates(notificationId: ResId, originalNotification: NotificationResponse): NotificationResponse {
         const { optimisticUpdates } = useNotificationUIStore.getState();
-        
+
         let updatedNotification = { ...originalNotification };
 
         // Apply optimistic updates to this specific notification
@@ -285,32 +285,32 @@ export const optimisticUpdateManager = new OptimisticUpdateManager();
  * Hook for using optimistic updates.
  */
 export const useOptimisticUpdates = () => {
-    const { 
-        optimisticUpdates, 
-        pendingOperations, 
-        addOptimisticUpdate, 
+    const {
+        optimisticUpdates,
+        pendingOperations,
+        addOptimisticUpdate,
         removeOptimisticUpdate,
-        clearOptimisticUpdates 
+        clearOptimisticUpdates
     } = useNotificationUIStore();
 
     return {
         // Manager
         manager: optimisticUpdateManager,
-        
+
         // State
         optimisticUpdates,
         pendingOperations,
-        
+
         // Actions
         addOptimisticUpdate,
         removeOptimisticUpdate,
         clearOptimisticUpdates,
-        
+
         // Convenience methods
         applyToPage: (page: NotificationPage) => optimisticUpdateManager.applyOptimisticUpdatesToPage(page),
-        getNotification: (notificationId: ResId, original: NotificationResponse) => 
+        getNotification: (notificationId: ResId, original: NotificationResponse) =>
             optimisticUpdateManager.getNotificationWithOptimisticUpdates(notificationId, original),
-        
+
         // Status
         hasPendingOperations: pendingOperations.size > 0,
         hasOptimisticUpdates: optimisticUpdates.size > 0

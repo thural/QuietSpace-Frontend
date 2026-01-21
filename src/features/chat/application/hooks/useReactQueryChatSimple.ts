@@ -7,9 +7,9 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import { useAuthStore } from '../../../services/store/zustand';
-import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
+import { useAuthStore } from "@services/store/zustand";
+import type { ResId, JwtToken } from "@/shared/api/models/common";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import { useChatDI } from "@chat/di/useChatDI";
 
@@ -23,7 +23,7 @@ export interface ReactQueryChatState {
     unreadCount: UseQueryResult<number, Error>;
     isLoading: boolean;
     error: Error | null;
-    
+
     // Additional React Query specific methods
     prefetchChats?: (userId: string) => Promise<void>;
     prefetchMessages?: (chatId: ResId) => Promise<void>;
@@ -256,12 +256,12 @@ export const useReactQueryChat = (
         unreadCount,
         isLoading,
         error,
-        
+
         // Additional React Query methods
         prefetchChats,
         prefetchMessages,
         invalidateCache,
-        
+
         // Actions
         createChat,
         deleteChat,

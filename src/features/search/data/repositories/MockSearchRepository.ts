@@ -5,12 +5,12 @@
  * Provides in-memory search functionality with mock data.
  */
 
-import type { UserList } from "@/api/schemas/inferred/user";
-import type { PostList } from "@/api/schemas/inferred/post";
+import type { UserList } from "@/features/profile/data/models/user";
+import type { PostList } from "@/features/feed/data/models/post";
 import type { SearchQuery, SearchResult, SearchFilters } from "../../domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
-import { ReactionType } from "@/api/schemas/native/reaction";
-import { ContentType } from "@/api/schemas/native/common";
+import { ReactionType } from "@/api/rest/models/native/reaction";
+import { ContentType } from "@/api/rest/models/native/common";
 
 /**
  * MockSearchRepository implementation.
@@ -79,10 +79,10 @@ export class MockSearchRepository extends BaseSearchRepository {
                 userId: 'user-1',
                 username: 'johndoe',
                 poll: null,
-                userReaction: { 
+                userReaction: {
                     id: 'reaction-1',
-                    userId: 'user-1', 
-                    contentId: 'post-1', 
+                    userId: 'user-1',
+                    contentId: 'post-1',
                     reactionType: ReactionType.LIKE,
                     contentType: ContentType.POST,
                     username: 'johndoe'
@@ -98,10 +98,10 @@ export class MockSearchRepository extends BaseSearchRepository {
                 userId: 'user-2',
                 username: 'janedoe',
                 poll: null,
-                userReaction: { 
+                userReaction: {
                     id: 'reaction-2',
-                    userId: 'user-2', 
-                    contentId: 'post-2', 
+                    userId: 'user-2',
+                    contentId: 'post-2',
                     reactionType: ReactionType.LIKE,
                     contentType: ContentType.POST,
                     username: 'janedoe'
@@ -119,13 +119,13 @@ export class MockSearchRepository extends BaseSearchRepository {
      */
     async searchUsers(query: string, filters?: SearchFilters): Promise<UserList> {
         console.log('MockSearchRepository: Searching users with query:', query, 'filters:', filters);
-        
+
         let results = [...this.mockUsers];
 
         // Apply text search
         if (query) {
             const queryLower = query.toLowerCase();
-            results = results.filter(user => 
+            results = results.filter(user =>
                 user.username.toLowerCase().includes(queryLower) ||
                 user.bio.toLowerCase().includes(queryLower)
             );
@@ -151,13 +151,13 @@ export class MockSearchRepository extends BaseSearchRepository {
      */
     async searchPosts(query: string, filters?: SearchFilters): Promise<PostList> {
         console.log('MockSearchRepository: Searching posts with query:', query, 'filters:', filters);
-        
+
         let results = [...this.mockPosts];
 
         // Apply text search
         if (query) {
             const queryLower = query.toLowerCase();
-            results = results.filter(post => 
+            results = results.filter(post =>
                 post.title.toLowerCase().includes(queryLower) ||
                 post.text.toLowerCase().includes(queryLower)
             );
@@ -217,7 +217,7 @@ export class MockSearchRepository extends BaseSearchRepository {
      */
     async getSuggestions(partialQuery: string): Promise<string[]> {
         console.log('MockSearchRepository: Getting suggestions for:', partialQuery);
-        
+
         if (!partialQuery || partialQuery.length < 2) {
             return [];
         }
@@ -270,16 +270,16 @@ export class MockSearchRepository extends BaseSearchRepository {
      */
     async saveToHistory(query: SearchQuery): Promise<void> {
         console.log('MockSearchRepository: Saving to history:', query);
-        
+
         // Remove existing query with same text
         this.searchHistory = this.searchHistory.filter(q => q.text !== query.text);
-        
+
         // Add new query to the beginning
         this.searchHistory.unshift(query);
-        
+
         // Keep only last 50 queries
         this.searchHistory = this.searchHistory.slice(0, 50);
-        
+
         await this.simulateDelay(50);
     }
 
@@ -302,7 +302,7 @@ export class MockSearchRepository extends BaseSearchRepository {
      */
     async getTrendingSearches(limit: number = 10): Promise<SearchQuery[]> {
         console.log('MockSearchRepository: Getting trending searches');
-        
+
         // Mock trending searches
         const trending = [
             { text: 'react hooks', count: 100, lastUsed: '2024-01-15T10:00:00Z' },
@@ -386,7 +386,7 @@ export class MockSearchRepository extends BaseSearchRepository {
         }
 
         if (filters.custom?.minLikes !== undefined) {
-            results = results.filter(post => 
+            results = results.filter(post =>
                 (post.likeCount || 0) >= filters.custom!.minLikes
             );
         }

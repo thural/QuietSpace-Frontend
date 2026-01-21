@@ -5,10 +5,10 @@ import Placeholder from "./Placeholder";
 import BoxStyled from "@/shared/BoxStyled";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Typography from "@/shared/Typography";
-import { useChat } from "@/services/hook/chat/useChat";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import styles from "@/styles/chat/chatPanelStyles";
-import { validateIsNotUndefined } from "@/utils/validations";
+import { useChat } from "@features/chat/application";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import styles from "../../styles/chatPanelStyles";
+import { validateIsNotUndefined } from "@/shared/utils/validations";
 import { PiChatsCircle } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 
@@ -61,7 +61,7 @@ const ChatPanel = () => {
     const RenderResult = () => {
         if (isLoading || !messageList) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
         if (chatId === null) return <Typography className="system-message" ta="center">you have no messages yet</Typography>;
-        if (messageCount === 0) return <Typography className="system-message" ta="center">{`send your first message to `}<strong>{recipientName}</strong></Typography>;
+        if (messageCount === 0) return <Typography className="system-message" ta="center">send your first message to <strong>{recipientName}</strong></Typography>;
         return <MessagesList
             hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}

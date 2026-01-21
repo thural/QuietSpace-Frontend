@@ -1,6 +1,6 @@
 import BoxStyled from "@/shared/BoxStyled";
 import InputStyled from "@/shared/InputStyled";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import styles from "@/features/search/presentation/styles/searchBarStyles";
 import { ChangeEventHandler, FocusEventHandler, useRef } from "react";
 import { PiMagnifyingGlassBold } from "react-icons/pi";

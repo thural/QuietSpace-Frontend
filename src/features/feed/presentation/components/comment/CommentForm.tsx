@@ -1,8 +1,8 @@
-import useStyles from "../styles/commentFormStyles";
-import useCommentForm from "@/services/hook/feed/useCommentForm";
+import useStyles from "./styles/commentFormStyles";
+import useCommentForm from "@features/feed/application/hooks/useCommentForm";
 import FormStyled from "@/shared/FormStyled";
 import EmojiInput from "@/shared/EmojiInput";
-import { ResId } from "@/api/schemas/inferred/common";
+import { ResId } from "@/shared/api/models/common";
 
 /**
  * Props for the CommentForm component.

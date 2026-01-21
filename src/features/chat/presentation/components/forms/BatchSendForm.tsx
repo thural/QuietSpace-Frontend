@@ -1,5 +1,5 @@
-import { UserResponse } from "@/api/schemas/inferred/user";
-import { ResId } from "@/api/schemas/native/common";
+import { UserResponse } from "@/features/profile/data/models/user";
+import { ResId } from "@/shared/api/models/commonNative";
 import UserQueryList from "@/features/profile/components/connections/UserQueryList";
 import SearchBar from "@/features/profile/components/searchbar/SearchBar";
 import BoxStyled from "@/shared/BoxStyled";
@@ -10,12 +10,12 @@ import InputStyled from "@/shared/InputStyled";
 import LoaderStyled from "@/shared/LoaderStyled";
 import Typography from "@/shared/Typography";
 import UserQueryItem from "@/shared/UserQueryItem";
-import useBatchShareForm from "@/services/hook/chat/useBatchShareForm";
-import useSearch from "@/services/hook/search/useSearch";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import styles from "@/styles/profile/connectionStyles";
-import { ConsumerFn } from "@/types/genericTypes";
-import { assertIsNotNullish } from "@/utils/assertions";
+import useBatchShareForm from "@features/chat/application/hooks/useBatchShareForm";
+import useSearch from "@/features/search/application/hooks/useSearch";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import styles from "@features/profile/components/connections/styles/connectionStyles";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { assertIsNotNullish } from "@/shared/utils/assertions";
 import { Center } from "@mantine/core";
 import React from 'react';
 
@@ -64,16 +64,14 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
         handleSend
     } = formData;
 
-    /**
-     * Renders a selectable user item component.
-     *
-     * @param {{ data: UserResponse }} props - The props for the SelectableUserItem component.
-     * @returns {JSX.Element} - The rendered user query item.
-     */
+    /** Renders a selectable user item with checkbox */
     const SelectableUserItem = ({ data }: { data: UserResponse }) => (
-        <UserQueryItem hasFollowToggle={false} data={data}>
-            <CheckBox value={data.id} onChange={handleUserSelect} />
-        </UserQueryItem>
+        <UserQueryItem
+            hasFollowToggle={false}
+            data={data}
+            handleItemClick={(e) => e.stopPropagation()}
+            children={<CheckBox value={data.id} onChange={handleUserSelect} />}
+        />
     );
 
     const handleContainerClick = (e: React.MouseEvent) => {

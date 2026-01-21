@@ -9,7 +9,7 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { useAdvancedProfileState } from '../state/useAdvancedProfileState';
 import { useProfileStore } from '../state/ProfileStore';
-import type { ResId } from '@/api/schemas/inferred/common';
+import type { ResId } from '@/shared/api/models/common';
 
 // Mock the application hook
 jest.mock('../application/useProfile', () => ({
@@ -64,14 +64,14 @@ describe('Advanced State Management', () => {
     // Reset store state before each test
     const store = useProfileStore.getState();
     store.resetAllState();
-    
+
     // Clear all mocks
     jest.clearAllMocks();
   });
 
   describe('Optimistic Updates', () => {
     it('should handle optimistic follow updates', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableOptimisticUpdates: true
         })
@@ -94,7 +94,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should handle optimistic unfollow updates', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableOptimisticUpdates: true
         })
@@ -113,7 +113,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should not perform optimistic updates when disabled', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableOptimisticUpdates: false
         })
@@ -133,7 +133,7 @@ describe('Advanced State Management', () => {
 
   describe('Background Sync', () => {
     it('should add items to sync queue', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableBackgroundSync: true
         })
@@ -157,7 +157,7 @@ describe('Advanced State Management', () => {
 
     it('should process sync queue when syncNow is called', async () => {
       const mockFollowUser = jest.fn().mockResolvedValue(undefined);
-      
+
       // Mock the useProfile hook to return our mock function
       jest.doMock('../application/useProfile', () => ({
         useProfile: jest.fn(() => ({
@@ -204,7 +204,7 @@ describe('Advanced State Management', () => {
         }))
       }));
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableBackgroundSync: true
         })
@@ -229,7 +229,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should not sync when disabled', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableBackgroundSync: false
         })
@@ -254,7 +254,7 @@ describe('Advanced State Management', () => {
 
   describe('Real-time Features', () => {
     it('should enable real-time updates', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableRealTime: true
         })
@@ -273,7 +273,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should disable real-time updates', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableRealTime: true
         })
@@ -295,7 +295,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should not enable real-time when disabled in config', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           enableRealTime: false
         })
@@ -313,7 +313,7 @@ describe('Advanced State Management', () => {
 
   describe('Performance Optimizations', () => {
     it('should compute cache age correctly', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId)
       );
 
@@ -342,7 +342,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should clear cache properly', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId)
       );
 
@@ -379,7 +379,7 @@ describe('Advanced State Management', () => {
     });
 
     it('should reset state properly', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId)
       );
 
@@ -420,7 +420,7 @@ describe('Advanced State Management', () => {
 
   describe('Online/Offline Detection', () => {
     it('should detect online status changes', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId)
       );
 
@@ -455,7 +455,7 @@ describe('Advanced State Management', () => {
 
   describe('Retry Logic', () => {
     it('should handle retry logic correctly', async () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useAdvancedProfileState(testUserId, {
           maxRetries: 3
         })

@@ -1,7 +1,7 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
-import { useCurrentProfile } from "@/services/hook/profile/useUserProfile";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import { useCurrentProfile } from "@features/feed/application/hooks/useUserProfile";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import OutlineButton from "@/shared/buttons/OutlineButton";
 import DefaultContainer from "@/shared/DefaultContainer";
 import { PiSignOut } from "react-icons/pi";

@@ -1,6 +1,6 @@
 import TextAreaStyled from "@/shared/TextAreaStyled";
 import useStyles from "../../styles/textInputStyles";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 
 /**
  * Props for the TextInput component.

@@ -10,8 +10,8 @@ import { useCallback, useEffect } from 'react';
 import { useFeedUIStore } from '../stores/feedUIStore';
 import { useFeedRepository } from '../../di/useFeedDI';
 import { useService } from '@core/di';
-import type { PostRequest, RepostRequest } from '@api/schemas/inferred/post';
-import type { PostResponse } from '@api/schemas/inferred/post';
+import type { PostRequest, RepostRequest } from '@/features/feed/data/models/post';
+import type { PostResponse } from '@/features/feed/data/models/post';
 
 /**
  * Synchronization conflict types
@@ -70,7 +70,7 @@ export const useFeedStateSync = () => {
         // Check for concurrent modifications
         const clientUpdateDate = new Date(clientData.updateDate);
         const serverUpdateDate = new Date(serverData.updateDate);
-        
+
         if (clientUpdateDate > serverUpdateDate) {
             return {
                 type: 'concurrent_edit',
@@ -112,10 +112,10 @@ export const useFeedStateSync = () => {
 
         // Merge text content (prefer longer, more recent)
         const mergedText = client.text.length > server.text.length ? client.text : server.text;
-        
+
         // Merge title (prefer non-empty)
         const mergedTitle = client.title || server.title;
-        
+
         // Merge engagement metrics (take max)
         const mergedEngagement = {
             likeCount: Math.max(client.likeCount || 0, server.likeCount || 0),
@@ -161,7 +161,7 @@ export const useFeedStateSync = () => {
             return;
         }
 
-        const pendingUpdates = optimisticUpdates.filter(update => 
+        const pendingUpdates = optimisticUpdates.filter(update =>
             update.type === 'create' || update.type === 'update'
         );
 
@@ -201,13 +201,13 @@ export const useFeedStateSync = () => {
      */
     const handleServerUpdate = useCallback((serverUpdate: PostResponse): void => {
         // Check for conflicting optimistic updates
-        const conflictingUpdate = optimisticUpdates.find(update => 
+        const conflictingUpdate = optimisticUpdates.find(update =>
             update.id === serverUpdate.id && update.type === 'update'
         );
 
         if (conflictingUpdate) {
             const conflict = detectConflict(conflictingUpdate.data, serverUpdate);
-            
+
             if (conflict) {
                 // Resolve conflict automatically
                 const resolved = resolveConflictLastWriteWins(conflict);
@@ -217,7 +217,7 @@ export const useFeedStateSync = () => {
                     timestamp: new Date(),
                     data: resolved
                 });
-                
+
                 // Remove conflict resolution after delay
                 setTimeout(() => {
                     removeOptimisticUpdate(String(serverUpdate.id));

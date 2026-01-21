@@ -1,6 +1,6 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import { useActivationForm } from "@/services/hook/auth/useActivationForm";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import { useActivationForm } from "@features/auth/application/hooks/useActivationForm";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import styles from "../styles/authStyles";
 import BoxStyled from "@/shared/BoxStyled";
 import GradientButton from "@/shared/buttons/GradientButton";

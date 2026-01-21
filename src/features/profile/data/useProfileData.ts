@@ -6,10 +6,10 @@
  */
 
 import { useMemo } from "react";
-import { useGetUserById, useGetFollowers, useGetFollowings } from "@/services/data/useUserData";
+import { useGetUserById, useGetFollowers, useGetFollowings } from "@features/profile/data";
 import { useGetPostsByUserId } from "@/services/data/usePostData";
-import useUserQueries from "@/api/queries/userQueries";
-import { ResId } from "@/api/schemas/inferred/common";
+import useUserQueries from "@features/profile/data/userQueries";
+import { ResId } from "@/shared/api/models/common";
 import { useProfileDataEnhanced, type ProfileRepositoryConfig } from "./hooks";
 import type {
   UserProfileEntity,
@@ -44,17 +44,17 @@ export const useProfileData = (userId: ResId) => {
   // Calculate access permissions
   const hasAccess = useMemo(() => {
     if (!user.data || !followers.data) return false;
-    
+
     const followersContent = followers.data?.pages.flatMap((page) => page.content);
     const isFollowing = followersContent.some(user => user.id === signedUser.id);
-    
+
     return !user.data.isPrivateAccount || isFollowing;
   }, [user.data, followers.data, signedUser.id]);
 
   // Transform data to domain entities
   const userProfile = useMemo(() => {
     if (!user.data) return null;
-    
+
     return {
       id: user.data.id,
       username: user.data.username || '',
@@ -101,7 +101,7 @@ export const useProfileData = (userId: ResId) => {
 
   const userConnections = useMemo(() => {
     if (!followers.data || !followings.data) return { followers: [], followings: [] };
-    
+
     const transformConnections = (connections: any[]): UserConnectionEntity[] => {
       return connections.map(conn => ({
         id: conn.id,
@@ -122,7 +122,7 @@ export const useProfileData = (userId: ResId) => {
 
   const profileAccess = useMemo(() => {
     if (!userProfile || !signedUser) return null;
-    
+
     return createProfileAccess(
       userProfile,
       signedUser.id,
@@ -132,7 +132,7 @@ export const useProfileData = (userId: ResId) => {
 
   const completeProfile = useMemo(() => {
     if (!userProfile || !userStats || !profileAccess) return null;
-    
+
     return createCompleteProfile(
       userProfile,
       userStats,
@@ -158,8 +158,8 @@ export const useProfileData = (userId: ResId) => {
     userPosts,
     viewFollowers: false, // Would be managed by state
     viewFollowings: false, // Would be managed by state
-    toggleFollowers: () => {}, // Would be implemented
-    toggleFollowings: () => {}, // Would be implemented
+    toggleFollowers: () => { }, // Would be implemented
+    toggleFollowings: () => { }, // Would be implemented
 
     // New domain entities
     userProfile,
@@ -192,6 +192,6 @@ export const useProfileDataWithRepository = (userId: ResId, config?: {
 export const useCurrentProfileData = () => {
   const { getSignedUserElseThrow } = useUserQueries();
   const signedUser = getSignedUserElseThrow();
-  
+
   return useProfileData(signedUser.id);
 };

@@ -1,4 +1,4 @@
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import BoxStyled from "@/shared/BoxStyled";
 import Typography from "@/shared/Typography";
 import styles from "../styles/authStyles";

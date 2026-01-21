@@ -21,7 +21,7 @@ jest.mock('../useSearchDI', () => ({
 }));
 
 // Mock auth store
-jest.mock('../../../../services/store/zustand', () => ({
+jest.mock('@services/store/zustand', () => ({
     useAuthStore: {
         getState: jest.fn(() => ({
             data: {
@@ -39,7 +39,7 @@ describe('React Query Integration', () => {
 
     it('should initialize React Query service when enabled', () => {
         const { result } = renderHook(() => useReactQuerySearch('test', 'query'));
-        
+
         expect(result.current).toBeDefined();
         expect(typeof result.current.userResults).toBe('object');
         expect(typeof result.current.postResults).toBe('object');
@@ -50,7 +50,7 @@ describe('React Query Integration', () => {
 
     it('should handle loading states correctly', () => {
         const { result } = renderHook(() => useReactQuerySearch('test', 'query'));
-        
+
         // Should have loading states
         expect(result.current.userResults.isLoading).toBeDefined();
         expect(result.current.postResults.isLoading).toBeDefined();
@@ -59,7 +59,7 @@ describe('React Query Integration', () => {
 
     it('should handle error states correctly', () => {
         const { result } = renderHook(() => useReactQuerySearch('test', 'query'));
-        
+
         // Should have error states
         expect(result.current.userResults.error).toBeDefined();
         expect(result.current.postResults.error).toBeDefined();
@@ -68,34 +68,34 @@ describe('React Query Integration', () => {
 
     it('should provide prefetch functionality', async () => {
         const { result } = renderHook(() => useReactQuerySearch('test', 'query'));
-        
+
         // Test prefetch functions
         await act(async () => {
             await result.current.prefetchUsers('test user');
         });
-        
+
         await act(async () => {
             await result.current.prefetchPosts('test post');
         });
-        
+
         expect(typeof result.current.prefetchUsers).toBe('function');
         expect(typeof result.current.prefetchPosts).toBe('function');
     });
 
     it('should provide cache invalidation', () => {
         const { result } = renderHook(() => useReactQuerySearch('test', 'query'));
-        
+
         // Test cache invalidation
         act(() => {
             result.current.invalidateCache();
         });
-        
+
         expect(typeof result.current.invalidateCache).toBe('function');
     });
 
     it('should handle empty queries', () => {
         const { result } = renderHook(() => useReactQuerySearch('', ''));
-        
+
         // Should handle empty queries gracefully
         expect(result.current.userResults.data).toBeDefined();
         expect(result.current.postResults.data).toBeDefined();
@@ -114,7 +114,7 @@ describe('React Query Integration', () => {
         }));
 
         const { result } = renderHook(() => useReactQuerySearch('test', 'query'));
-        
+
         // Should handle disabled React Query
         expect(result.current).toBeDefined();
         expect(typeof result.current.userResults).toBe('object');

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useNotificationData, useNotificationDataWithRepository } from "./useNotificationData";
 import type { NotificationStatusEntity } from "../../domain";
-import { NAVBAR_ROUTES } from "../../../../shared/navbar/constants";
+import { NAVBAR_ROUTES } from "@shared/navbar/constants";
 
 /**
  * Icon configuration for navigation items.
@@ -62,12 +62,12 @@ export interface NavbarConfig {
  */
 export const useNavbar = (config: NavbarConfig = {}) => {
   const pathName = useLocation().pathname;
-  
+
   // Choose data hook based on configuration
   const { useRepositoryPattern = false, repositoryConfig } = config;
-  
+
   let notificationData, error, repository;
-  
+
   if (useRepositoryPattern) {
     // Use enhanced repository pattern hook
     const result = useNotificationDataWithRepository(repositoryConfig);
@@ -148,9 +148,9 @@ export const useNavbar = (config: NavbarConfig = {}) => {
  * }} - Enhanced navbar state with repository access
  */
 export const useNavbarEnhanced = (repositoryConfig?: NavbarConfig['repositoryConfig']) => {
-  return useNavbar({ 
-    useRepositoryPattern: true, 
-    repositoryConfig 
+  return useNavbar({
+    useRepositoryPattern: true,
+    repositoryConfig
   });
 };
 
@@ -178,10 +178,10 @@ export const useNavbarEnhanced = (repositoryConfig?: NavbarConfig['repositoryCon
  */
 export const useNavbarAdvanced = (config: NavbarConfig = {}) => {
   const pathName = useLocation().pathname;
-  
+
   // Use repository pattern with enhanced features
   const result = useNotificationDataWithRepository(config.repositoryConfig);
-  
+
   /**
    * Creates navigation items with current path state
    */

@@ -7,8 +7,8 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
-import type { NotificationPage, NotificationResponse, NotificationType } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationPage, NotificationResponse, NotificationType } from '@/features/notification/data/models/notification';
+import type { ResId } from '@/shared/api/models/common';
 import type { INotificationRepository } from "../../domain/entities/INotificationRepository";
 import { useNotificationDI } from "../../di/useNotificationDI";
 
@@ -20,7 +20,7 @@ export interface ReactQueryNotificationState {
     unreadCount: UseQueryResult<number, Error>;
     isLoading: boolean;
     error: Error | null;
-    
+
     // Additional React Query specific methods
     prefetchNotifications?: (userId: string) => Promise<void>;
     invalidateCache?: () => void;
@@ -176,14 +176,14 @@ export const useReactQueryNotifications = (config?: { useReactQuery?: boolean })
         unreadCount,
         isLoading,
         error,
-        
+
         // Actions
         markAsRead,
         markMultipleAsRead,
         deleteNotification,
         getNotificationById,
         searchNotifications,
-        
+
         // Additional methods
         prefetchNotifications,
         invalidateCache,

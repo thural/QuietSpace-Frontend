@@ -1,5 +1,6 @@
-import { TextInputProps } from "@/features/feed/fragments/TextInput";
-import { createUseStyles, Theme } from "react-jss";
+import { TextInputProps } from "@/features/feed/presentation/components/fragments/TextInput";
+import { createUseStyles } from "react-jss";
+import { Theme } from "../../../../shared/types/theme";
 
 const useStyles = createUseStyles((theme: Theme) => ({
 

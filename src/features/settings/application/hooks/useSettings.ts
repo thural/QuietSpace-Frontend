@@ -6,11 +6,11 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { 
-    ProfileSettings, 
-    PrivacySettings, 
-    NotificationSettings 
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type {
+    ProfileSettings,
+    PrivacySettings,
+    NotificationSettings
 } from "../../domain/entities/SettingsEntities";
 import { useSettingsService, useSettingsDI } from "../../di/useSettingsDI";
 import { useReactQuerySettings } from "./useReactQuerySettings";
@@ -58,7 +58,7 @@ export const useSettings = (userId: string): SettingsState & SettingsActions => 
     const config = diContainer.getConfig();
 
     // Use React Query if enabled, otherwise use traditional approach
-    const reactQuerySettings = config.useReactQuery 
+    const reactQuerySettings = config.useReactQuery
         ? useReactQuerySettings(userId)
         : null;
 
@@ -189,54 +189,54 @@ export const useSettings = (userId: string): SettingsState & SettingsActions => 
         profile: config.useReactQuery ? reactQuerySettings?.profile.data || null : profile,
         privacy: config.useReactQuery ? reactQuerySettings?.privacy.data || null : privacy,
         notifications: config.useReactQuery ? reactQuerySettings?.notifications.data || null : notifications,
-        
+
         // Loading state from React Query if enabled, otherwise manual state
         isLoading: config.useReactQuery ? reactQuerySettings?.isLoading || false : isLoading,
-        
+
         // Error state from React Query if enabled, otherwise manual state
         error: config.useReactQuery ? reactQuerySettings?.error || null : error,
-        
+
         // Additional React Query actions
         invalidateCache: config.useReactQuery ? reactQuerySettings?.invalidateSettingsCache : undefined,
         prefetchProfileSettings: config.useReactQuery ? reactQuerySettings?.prefetchProfileSettings : undefined,
         prefetchPrivacySettings: config.useReactQuery ? reactQuerySettings?.prefetchPrivacySettings : undefined,
         prefetchNotificationSettings: config.useReactQuery ? reactQuerySettings?.prefetchNotificationSettings : undefined,
-        
+
         // Use React Query actions if enabled, otherwise traditional actions
-        getProfileSettings: config.useReactQuery 
+        getProfileSettings: config.useReactQuery
             ? () => Promise.resolve() // React Query handles this automatically
             : getProfileSettings,
-        updateProfileSettings: config.useReactQuery 
+        updateProfileSettings: config.useReactQuery
             ? (settings: ProfileSettingsRequest) => {
                 reactQuerySettings?.updateProfileSettings.mutate({ userId, settings, token: useAuthStore.getState().data.accessToken || '' });
                 return Promise.resolve();
             }
             : updateProfileSettings,
-        getPrivacySettings: config.useReactQuery 
+        getPrivacySettings: config.useReactQuery
             ? () => Promise.resolve() // React Query handles this automatically
             : getPrivacySettings,
-        updatePrivacySettings: config.useReactQuery 
+        updatePrivacySettings: config.useReactQuery
             ? (settings: PrivacySettings) => {
                 reactQuerySettings?.updatePrivacySettings.mutate({ userId, settings, token: useAuthStore.getState().data.accessToken || '' });
                 return Promise.resolve();
             }
             : updatePrivacySettings,
-        getNotificationSettings: config.useReactQuery 
+        getNotificationSettings: config.useReactQuery
             ? () => Promise.resolve() // React Query handles this automatically
             : getNotificationSettings,
-        updateNotificationSettings: config.useReactQuery 
+        updateNotificationSettings: config.useReactQuery
             ? (settings: NotificationSettings) => {
                 reactQuerySettings?.updateNotificationSettings.mutate({ userId, settings, token: useAuthStore.getState().data.accessToken || '' });
                 return Promise.resolve();
             }
             : updateNotificationSettings,
-        uploadProfilePhoto: config.useReactQuery 
+        uploadProfilePhoto: config.useReactQuery
             ? (file: File) => {
                 reactQuerySettings?.uploadProfilePhoto.mutate({ userId, file, token: useAuthStore.getState().data.accessToken || '' });
                 return Promise.resolve();
             }
             : uploadProfilePhoto,
-        removeProfilePhoto: config.useReactQuery 
+        removeProfilePhoto: config.useReactQuery
             ? () => {
                 reactQuerySettings?.removeProfilePhoto.mutate({ userId, token: useAuthStore.getState().data.accessToken || '' });
                 return Promise.resolve();

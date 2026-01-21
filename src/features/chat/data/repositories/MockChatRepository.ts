@@ -5,13 +5,13 @@
  * Provides in-memory data storage and simulated API responses.
  */
 
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
+import type { ResId } from "@/shared/api/models/common";
+import type { JwtToken } from "@/shared/api/models/common";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
-import type { 
-    ChatMessage, 
-    ChatAttachment, 
+import type {
+    ChatMessage,
+    ChatAttachment,
     ChatReaction,
     ChatSettings,
     ChatParticipant,
@@ -150,10 +150,10 @@ export class MockChatRepository implements IChatRepository {
      */
     async getChats(userId: string, token: JwtToken): Promise<ChatList> {
         console.log('MockChatRepository: Getting chats for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         const chats = this.mockData.get('chats');
         console.log('MockChatRepository: Chats retrieved successfully');
         return chats;
@@ -164,10 +164,10 @@ export class MockChatRepository implements IChatRepository {
      */
     async createChat(chatData: CreateChatRequest, token: JwtToken): Promise<ChatResponse> {
         console.log('MockChatRepository: Creating chat with data:', chatData);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         const response = {
             id: `chat-${Date.now()}`,
             name: chatData.text ? `Chat about ${chatData.text}` : 'New Chat',
@@ -175,7 +175,7 @@ export class MockChatRepository implements IChatRepository {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
-        
+
         console.log('MockChatRepository: Chat created successfully');
         return response;
     }
@@ -185,10 +185,10 @@ export class MockChatRepository implements IChatRepository {
      */
     async deleteChat(chatId: ResId, token: JwtToken): Promise<Response> {
         console.log('MockChatRepository: Deleting chat:', chatId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 150));
-        
+
         const response = new Response(JSON.stringify({ success: true }), { status: 200 });
         console.log('MockChatRepository: Chat deleted successfully');
         return response;
@@ -199,10 +199,10 @@ export class MockChatRepository implements IChatRepository {
      */
     async getMessages(chatId: ResId, page: number, token: JwtToken): Promise<PagedMessage> {
         console.log('MockChatRepository: Getting messages for chat:', chatId, 'page:', page);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         const messages = this.mockData.get('messages');
         console.log('MockChatRepository: Messages retrieved successfully');
         return messages;
@@ -213,10 +213,10 @@ export class MockChatRepository implements IChatRepository {
      */
     async sendMessage(chatId: ResId, messageData: any, token: JwtToken): Promise<any> {
         console.log('MockChatRepository: Sending message to chat:', chatId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 50));
-        
+
         const response = {
             id: `msg-${Date.now()}`,
             chatId,
@@ -225,7 +225,7 @@ export class MockChatRepository implements IChatRepository {
             timestamp: new Date().toISOString(),
             isRead: false
         };
-        
+
         console.log('MockChatRepository: Message sent successfully');
         return response;
     }
@@ -235,17 +235,17 @@ export class MockChatRepository implements IChatRepository {
      */
     async getChatDetails(chatId: ResId, token: JwtToken): Promise<ChatResponse> {
         console.log('MockChatRepository: Getting chat details for:', chatId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         const response = {
             id: chatId,
             name: `Chat ${chatId}`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
-        
+
         console.log('MockChatRepository: Chat details retrieved successfully');
         return response;
     }
@@ -255,16 +255,16 @@ export class MockChatRepository implements IChatRepository {
      */
     async updateChatSettings(chatId: ResId, settings: any, token: JwtToken): Promise<ChatResponse> {
         console.log('MockChatRepository: Updating chat settings for:', chatId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 150));
-        
+
         const response = {
             id: chatId,
             settings,
             updatedAt: new Date().toISOString()
         };
-        
+
         console.log('MockChatRepository: Chat settings updated successfully');
         return response;
     }
@@ -274,16 +274,16 @@ export class MockChatRepository implements IChatRepository {
      */
     async searchChats(query: string, userId: string, token: JwtToken): Promise<ChatList> {
         console.log('MockChatRepository: Searching chats with query:', query, 'for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 150));
-        
+
         // Filter mock chats based on query
         const allChats = this.mockData.get('chats');
-        const filteredChats = allChats.content.filter((chat: any) => 
+        const filteredChats = allChats.content.filter((chat: any) =>
             chat.name.toLowerCase().includes(query.toLowerCase())
         );
-        
+
         const response = {
             ...allChats,
             content: filteredChats,
@@ -291,7 +291,7 @@ export class MockChatRepository implements IChatRepository {
             numberOfElements: filteredChats.length,
             empty: filteredChats.length === 0
         };
-        
+
         console.log('MockChatRepository: Chat search completed successfully');
         return response;
     }
@@ -301,14 +301,14 @@ export class MockChatRepository implements IChatRepository {
      */
     async getChatParticipants(chatId: ResId, token: JwtToken): Promise<any[]> {
         console.log('MockChatRepository: Getting participants for chat:', chatId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         const allChats = this.mockData.get('chats');
         const chat = allChats.content.find((c: any) => c.id === chatId);
         const participants = chat?.members || [];
-        
+
         console.log('MockChatRepository: Participants retrieved successfully');
         return participants;
     }
@@ -318,16 +318,16 @@ export class MockChatRepository implements IChatRepository {
      */
     async addParticipant(chatId: ResId, participantId: string, token: JwtToken): Promise<ChatResponse> {
         console.log('MockChatRepository: Adding participant to chat:', chatId, 'participant:', participantId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 150));
-        
+
         const response = {
             id: chatId,
             participantId,
             addedAt: new Date().toISOString()
         };
-        
+
         console.log('MockChatRepository: Participant added successfully');
         return response;
     }
@@ -337,16 +337,16 @@ export class MockChatRepository implements IChatRepository {
      */
     async removeParticipant(chatId: ResId, participantId: string, token: JwtToken): Promise<ChatResponse> {
         console.log('MockChatRepository: Removing participant from chat:', chatId, 'participant:', participantId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 150));
-        
+
         const response = {
             id: chatId,
             participantId,
             removedAt: new Date().toISOString()
         };
-        
+
         console.log('MockChatRepository: Participant removed successfully');
         return response;
     }
@@ -356,16 +356,16 @@ export class MockChatRepository implements IChatRepository {
      */
     async markMessagesAsRead(chatId: ResId, messageIds: string[], token: JwtToken): Promise<any> {
         console.log('MockChatRepository: Marking messages as read for chat:', chatId, 'messages:', messageIds);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         const response = {
             chatId,
             messageIds,
             markedAt: new Date().toISOString()
         };
-        
+
         console.log('MockChatRepository: Messages marked as read successfully');
         return response;
     }
@@ -375,21 +375,21 @@ export class MockChatRepository implements IChatRepository {
      */
     async getUnreadCount(userId: string, token: JwtToken): Promise<number> {
         console.log('MockChatRepository: Getting unread count for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 50));
-        
+
         // Count unread messages from all chats
         const allChats = this.mockData.get('chats');
         const allMessages = this.mockData.get('messages');
         let unreadCount = 0;
-        
+
         allMessages.content.forEach((msg: ChatMessage) => {
             if (!msg.isRead) {
                 unreadCount++;
             }
         });
-        
+
         console.log('MockChatRepository: Unread count retrieved successfully');
         return unreadCount;
     }

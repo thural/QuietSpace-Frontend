@@ -1,4 +1,4 @@
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import {
     PiChatCircle,
     PiChatCircleFill

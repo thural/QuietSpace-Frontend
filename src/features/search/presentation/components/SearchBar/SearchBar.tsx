@@ -6,7 +6,7 @@
  */
 
 import InputStyled from "@/shared/InputStyled";
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { Box } from "@mantine/core";
 import { ChangeEventHandler, CSSProperties, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";

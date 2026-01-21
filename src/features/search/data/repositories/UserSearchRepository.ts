@@ -5,11 +5,11 @@
  * Handles user-specific search functionality and data access.
  */
 
-import type { UserList } from "@/api/schemas/inferred/user";
+import type { UserList } from "@/features/profile/data/models/user";
 import type { SearchFilters } from "../../domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
-import { fetchUsersByQuery } from '@/api/requests/userRequests';
-import type { JwtToken } from "@api/schemas/inferred/common";
+import { fetchUsersByQuery } from '@features/search/data/userRequests';
+import type { JwtToken } from "@/shared/api/models/common";
 
 /**
  * IUserSearchRepository interface.
@@ -106,15 +106,15 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
     async searchUsers(query: string, filters?: SearchFilters): Promise<UserList> {
         try {
             console.log('UserSearchRepository: Searching users with query:', query, 'filters:', filters);
-            
+
             // Use existing API function
             const response = await fetchUsersByQuery(query, this.token);
-            
+
             // Extract users from response content
             const users = response.content || [];
-            
+
             console.log('UserSearchRepository: Found', users.length, 'users');
-            
+
             return users;
         } catch (error) {
             console.error('UserSearchRepository: Error searching users:', error);
@@ -142,7 +142,7 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
      */
     async searchAll(query: string, filters?: SearchFilters): Promise<any> {
         const users = await this.searchUsers(query, filters);
-        
+
         return {
             query,
             users,
@@ -211,7 +211,7 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
                 radius: radius || 50
             }
         };
-        
+
         return this.searchUsers(location, filters);
     }
 
@@ -228,7 +228,7 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
             verified: true,
             type: 'users'
         };
-        
+
         return this.searchUsers(query, searchFilters);
     }
 
@@ -246,7 +246,7 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
             minFollowers,
             type: 'users'
         };
-        
+
         return this.searchUsers(query, searchFilters);
     }
 
@@ -259,7 +259,7 @@ export class UserSearchRepository extends BaseSearchRepository implements IUserS
     async getSuggestions(partialQuery: string): Promise<string[]> {
         // TODO: Implement with actual suggestion API in Priority 2
         console.log('UserSearchRepository: Getting user suggestions for:', partialQuery);
-        
+
         // Mock suggestions based on common user patterns
         if (!partialQuery || partialQuery.length < 2) {
             return [];

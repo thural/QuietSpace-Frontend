@@ -6,7 +6,7 @@
  */
 
 import { useContext, useMemo, createContext } from 'react';
-import type { JwtToken } from '@api/schemas/inferred/common';
+import type { JwtToken } from '@/shared/api/models/common';
 import type { IPostRepository } from '../domain/entities/IPostRepository';
 import { FeedDIContainer } from './FeedDIContainer';
 import type { FeedDIConfig } from './FeedDIConfig';
@@ -24,15 +24,15 @@ export const useFeedDI = (config?: Partial<FeedDIConfig>): FeedDIContainer => {
     // Get auth token from Zustand store
     const authStore = useAuthStore();
     const accessToken = authStore.data.accessToken as JwtToken;
-    
+
     // Create or get existing container from context
     const container = useContext(FeedDIContext);
-    
+
     // Create new container if not exists
     if (!container) {
         throw new Error('useFeedDI must be used within FeedDIProvider');
     }
-    
+
     return container;
 };
 
@@ -46,12 +46,12 @@ export const FeedDIProvider: React.FC<{
     // Get auth token from Zustand store
     const authStore = useAuthStore();
     const accessToken = authStore.data.accessToken as JwtToken;
-    
+
     // Create container instance
     const container = useMemo(() => {
         return FeedDIContainer.create(accessToken, config);
     }, [accessToken, config]);
-    
+
     return (
         <FeedDIContext.Provider value={container}>
             {children}

@@ -6,9 +6,9 @@
  */
 
 import { describe, it, expect, beforeEach } from '@jest/globals';
-import type { 
-    NotificationQuery, 
-    NotificationFilters, 
+import type {
+    NotificationQuery,
+    NotificationFilters,
     NotificationResult,
     NotificationMessage,
     NotificationSettings,
@@ -17,8 +17,8 @@ import type {
     NotificationTypingIndicator,
     NotificationEvent
 } from '../../domain/entities/NotificationEntities';
-import type { NotificationType } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationType } from '@/features/notification/data/models/notification';
+import type { ResId } from '@/shared/api/models/common';
 import { NotificationPriority, NotificationChannel } from '../../domain/entities/NotificationEntities';
 
 describe('Notification Domain Entities', () => {

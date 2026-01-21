@@ -4,7 +4,7 @@
  * Utility functions for formatting notification data.
  */
 
-import type { NotificationResponse } from '@api/schemas/inferred/notification';
+import type { NotificationResponse } from '@/features/notification/data/models/notification';
 
 /**
  * Format relative time (e.g., "2 hours ago", "just now")
@@ -83,7 +83,7 @@ export const truncateText = (text: string, maxLength: number): string => {
  */
 export const formatTitle = (title: string): string => {
   if (!title) return '';
-  
+
   return title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
 };
 
@@ -106,7 +106,7 @@ export const getNotificationColor = (type: string, priority?: string): string =>
     medium: '#ffc107',
     low: '#28a745'
   };
-  
+
   const typeColors = {
     message: '#007bff',
     follow: '#28a745',
@@ -115,11 +115,11 @@ export const getNotificationColor = (type: string, priority?: string): string =>
     mention: '#6610f2',
     system: '#6c757d'
   };
-  
+
   if (priority && priorityColors[priority as keyof typeof priorityColors]) {
     return priorityColors[priority as keyof typeof priorityColors];
   }
-  
+
   return typeColors[type as keyof typeof typeColors] || '#6c757d';
 };
 

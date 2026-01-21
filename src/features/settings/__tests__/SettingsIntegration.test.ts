@@ -8,11 +8,11 @@ import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { SettingsDIContainer } from '../di/SettingsDIContainer';
 import { useSettings } from '../application/hooks/useSettings';
-import type { ProfileSettingsRequest } from '@/api/schemas/inferred/user';
+import type { ProfileSettingsRequest } from '@/features/profile/data/models/user';
 import type { PrivacySettings, NotificationSettings } from '../domain/entities/SettingsEntities';
 
 // Mock auth store
-jest.mock('@/services/store/zustand', () => ({
+jest.mock('@/core/store/zustand', () => ({
     useAuthStore: {
         getState: jest.fn(() => ({
             data: {
@@ -39,10 +39,10 @@ describe('Settings Integration Tests', () => {
     describe('DI Container Integration', () => {
         it('should initialize with mock repositories', () => {
             expect(diContainer).toBeDefined();
-            
+
             const repository = diContainer.getSettingsRepository();
             expect(repository).toBeDefined();
-            
+
             const service = diContainer.getSettingsService();
             expect(service).toBeDefined();
         });

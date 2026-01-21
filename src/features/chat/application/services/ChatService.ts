@@ -6,9 +6,9 @@
  */
 
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
-import type { 
-    ChatQuery, 
-    ChatFilters, 
+import type {
+    ChatQuery,
+    ChatFilters,
     ChatResult,
     ChatMessage,
     ChatSettings,
@@ -17,7 +17,7 @@ import type {
     ChatTypingIndicator,
     ChatNotification
 } from "@chat/domain/entities/ChatEntities";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { JwtToken } from "@/shared/api/models/common";
 
 /**
  * Chat Service interface.
@@ -37,7 +37,7 @@ export interface IChatService {
     removeParticipant(chatId: string, participantId: string): Promise<any>;
     markMessagesAsRead(chatId: string, messageIds: string[]): Promise<any>;
     getUnreadCount(userId: string): Promise<number>;
-    
+
     // Business logic methods
     validateChatData(chatData: any): boolean;
     sanitizeChatData(chatData: any): any;
@@ -51,7 +51,7 @@ export interface IChatService {
  * Chat Service implementation.
  */
 export class ChatService implements IChatService {
-    constructor(private chatRepository: IChatRepository) {}
+    constructor(private chatRepository: IChatRepository) { }
 
     /**
      * Get all chats for a user.

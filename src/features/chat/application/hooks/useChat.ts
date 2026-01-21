@@ -1,284 +1,124 @@
+import { ResId } from "@/shared/api/models/common";
+import { useDeleteChat, useGetChats, useGetMessagesByChatId } from "@features/chat/data/useChatData";
+import { useAuthStore } from "@/core/store/zustand";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
+import { useChatMessaging } from "@features/chat/application/hooks/useChatMessaging";
+
 /**
- * Chat Hook.
+ * Custom hook to manage chat functionality.
  * 
- * Hook for managing chat functionality with repository pattern.
- * Provides settings state management and operations.
+ * @param {ResId} chatId - The ID of the chat to manage.
+ * @returns {Object} - An object containing chat-related data and methods.
+ * @returns {string} text - The current message text.
+ * @returns {Object} chats - The list of chats.
+ * @returns {string} recipientName - The name of the chat recipient.
+ * @returns {ResId} recipientId - The ID of the chat recipient.
+ * @returns {ResId} signedUserId - The ID of the signed-in user.
+ * @returns {Array} messages - The list of messages in the current chat.
+ * @returns {Array} messageList - The list of messages (alias for messages).
+ * @returns {number} messageCount - The number of messages.
+ * @returns {boolean} hasNextPage - Indicates if there are more messages to fetch.
+ * @returns {boolean} isFetchingNextPage - Indicates if more messages are being fetched.
+ * @returns {function} fetchNextPage - Function to fetch the next page of messages.
+ * @returns {boolean} isError - Indicates if there was an error in fetching messages.
+ * @returns {boolean} isLoading - Indicates if messages are currently being loaded.
+ * @returns {boolean} isInputEnabled - Indicates if the input is enabled for sending messages.
+ * @returns {function} handeSendMessgae - Function to handle sending a message.
+ * @returns {function} handleInputChange - Function to handle changes in the message input.
+ * @returns {function} handleDeleteChat - Function to handle deleting the current chat.
  */
 
-import { useState, useCallback, useEffect } from 'react';
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId, JwtToken } from "@/api/schemas/inferred/common";
-import { useAuthStore } from '../../../services/store/zustand';
-import type { 
-    ChatQuery, 
-    ChatFilters, 
-    ChatResult,
-    ChatMessage,
-    ChatSettings,
-    ChatParticipant,
-    ChatStatus,
-    ChatTypingIndicator,
-    ChatNotification
-} from "@chat/domain/entities/ChatEntities";
-import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
-import { useChatDI } from "@chat/di/useChatDI";
+export const useChat = (chatId: ResId) => {
+    const { data: { userId: senderId } } = useAuthStore();
+    const { sendMessage, isClientConnected } = useChatMessaging();
 
-/**
- * Chat State interface.
- */
-export interface ChatState {
-    chats: ChatList | null;
-    messages: PagedMessage | null;
-    participants: any[] | null;
-    unreadCount: number | null;
-    isLoading: boolean;
-    error: Error | null;
-}
+    const chats = useGetChats();
+    const currentChat = chats.data?.content?.find(chat => chat.id === chatId);
+    if (currentChat === undefined) throw new Error("currentChat is undefined");
 
-/**
- * Chat Actions interface.
- */
-export interface ChatActions {
-    getChats: () => Promise<void>;
-    createChat: (chatData: CreateChatRequest) => Promise<void>;
-    deleteChat: (chatId: string) => Promise<void>;
-    getMessages: (chatId: string, page?: number) => Promise<void>;
-    sendMessage: (chatId: string, messageData: any) => Promise<void>;
-    getChatDetails: (chatId: string) => Promise<void>;
-    updateChatSettings: (chatId: string, settings: any) => Promise<void>;
-    searchChats: (query: string) => Promise<void>;
-    getChatParticipants: (chatId: string) => Promise<void>;
-    addParticipant: (chatId: string, participantId: string) => Promise<void>;
-    removeParticipant: (chatId: string, participantId: string) => Promise<void>;
-    markMessagesAsRead: (chatId: string, messageIds: string[]) => Promise<void>;
-    getUnreadCount: (userId: string) => Promise<void>;
-    clearError: () => void;
-}
+    const { username: recipientName, id: recipientId } =
+        currentChat.members.find(member => member.id !== senderId) || {};
 
-/**
- * Chat Hook.
- * 
- * Hook for managing chat functionality with repository pattern.
- * Provides settings state management and operations.
- */
-export const useChat = (
-    userId: string
-): ChatState & ChatActions => {
-    const [token, setToken] = useState<JwtToken | null>(null);
-    const diContainer = useChatDI();
+    const {
+        data: messages,
+        isError,
+        isLoading,
+        isSuccess,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage
+    } = useGetMessagesByChatId(chatId);
 
-    // Initialize state
-    const [chats, setChats] = useState<ChatList | null>(null);
-    const [messages, setMessages] = useState<PagedMessage | null>(null);
-    const [participants, setParticipants] = useState<any[]>(null);
-    const [unreadCount, setUnreadCount] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [text, setText] = useState<string>("");
 
-    // Get repository
-    const chatRepository = diContainer.getChatRepository();
-
-    useEffect(() => {
-        const authStore = useAuthStore.getState();
-        const currentToken = authStore.data.accessToken || null;
-        setToken(currentToken);
-    }, [diContainer]);
-
-    // Actions
-    const getChats = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.getChats(userId, token || '');
-            setChats(result);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const createChat = useCallback(async (chatData: CreateChatRequest) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.createChat(chatData, token || '');
-            setChats((prev) => prev ? {...prev, content: [...prev.content, result]} : {content: [result], totalPages: 0, totalElements: 1, size: 10, number: 0, first: true, last: true, numberOfElements: 1, empty: false, pageable: {pageNumber: 0, pageSize: 10, sort: {sorted: false, unsorted: true, empty: false}, offset: 0, paged: true, unpaged: false}, sort: {sorted: false, unsorted: true, empty: false}});
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const deleteChat = useCallback(async (chatId: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            await chatRepository.deleteChat(chatId, token || '');
-            setChats((prev) => prev ? {...prev, content: prev.content.filter(chat => chat.id !== chatId)} : prev);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const getMessages = useCallback(async (chatId: string, page?: number) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.getMessages(chatId, page || 1, token || '');
-            setMessages(result);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const sendMessage = useCallback(async (chatId: string, messageData: any) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            await chatRepository.sendMessage(chatId, messageData, token || '');
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const getChatDetails = useCallback(async (chatId: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            await chatRepository.getChatDetails(chatId, token || '');
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const updateChatSettings = useCallback(async (chatId: string, settings: any) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.updateChatSettings(chatId, settings, token || '');
-            setChats((prev) => prev ? {...prev, content: prev.content.map(chat => chat.id === chatId ? result : chat)} : prev);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const searchChats = useCallback(async (query: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.searchChats(query, userId, token || '');
-            setChats(result);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const getChatParticipants = useCallback(async (chatId: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.getChatParticipants(chatId, token || '');
-            setParticipants(result);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const addParticipant = useCallback(async (chatId: string, participantId: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.addParticipant(chatId, participantId, token || '');
-            setParticipants((prev) => prev ? [...prev, result] : [result]);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const removeParticipant = useCallback(async (chatId: string, participantId: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            await chatRepository.removeParticipant(chatId, participantId, token || '');
-            setParticipants((prev) => prev ? prev.filter(p => p.id !== participantId) : prev);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const markMessagesAsRead = useCallback(async (chatId: string, messageIds: string[]) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            await chatRepository.markMessagesAsRead(chatId, messageIds, token || '');
-            setMessages((prev) => prev ? { ...prev, content: prev.content.map(msg => messageIds.includes(String(msg.id)) ? { ...msg, isRead: true } : msg) } : prev);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const getUnreadCount = useCallback(async (userId: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const result = await chatRepository.getUnreadCount(userId, token || '');
-            setUnreadCount(result);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatRepository, token]);
-
-    const clearError = useCallback(() => {
-        setError(null);
+    /**
+     * Handles input changes by updating the message text state.
+     * @param {string} value - The new value of the input.
+     */
+    const handleInputChange = useCallback((value: string) => {
+        setText(value);
     }, []);
 
+    /**
+     * Sends a message to the recipient.
+     * @throws {Error} If recipientId is undefined.
+     */
+    const handeSendMessgae = () => {
+        if (!recipientId) throw new Error("recipientId is undefined");
+        sendMessage({ recipientId, text });
+        console.log("message sent: ", { recipientId, text })
+        setText('');
+    };
+
+    const queryClient = useQueryClient();
+
+    /**
+     * Callback for successful chat deletion.
+     */
+    const onSuccess = (_data?: Response, _variables?: void) => {
+        queryClient.invalidateQueries({ queryKey: ["chats"] })
+            .then(() => console.log("chat cache was invalidated"));
+    }
+
+    /**
+     * Callback for handling errors during chat deletion.
+     * @param {Error} error - The error that occurred.
+     */
+    const onError = (error: Error) => {
+        console.log("error on deleting chat: ", error.message);
+    }
+
+    const deleteChat = useDeleteChat({ chatId, onSuccess, onError });
+
+    /**
+     * Handles the deletion of the current chat.
+     * @param {React.ChangeEvent} event - The event triggered by the form submission.
+     */
+    const handleDeleteChat = (event: React.ChangeEvent) => {
+        event.preventDefault();
+        deleteChat.mutate();
+    };
+
+    const isInputEnabled: boolean = isSuccess && !!isClientConnected;
+
     return {
-        // State
+        text,
         chats,
+        recipientName,
+        recipientId,
+        signedUserId: senderId,
         messages,
-        participants,
-        unreadCount,
+        messageList: messages,
+        messageCount: messages?.length,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage,
+        isError,
         isLoading,
-        error,
-        
-        // Actions
-        getChats,
-        createChat,
-        deleteChat,
-        getMessages,
-        sendMessage,
-        getChatDetails,
-        updateChatSettings,
-        searchChats,
-        getChatParticipants,
-        addParticipant,
-        removeParticipant,
-        markMessagesAsRead,
-        getUnreadCount,
-        clearError
+        isInputEnabled,
+        handeSendMessgae,
+        handleInputChange,
+        handleDeleteChat,
     };
 };

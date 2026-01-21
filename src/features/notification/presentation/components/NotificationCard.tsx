@@ -1,4 +1,4 @@
-import styles from "@/styles/notification/notificationCardStyles";
+import styles from "../styles/notificationCardStyles";
 import { useEffect } from "react";
 
 import UserCard from "@shared/UserCard";

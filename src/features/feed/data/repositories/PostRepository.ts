@@ -5,22 +5,21 @@
  * This class maps API responses to domain entities and handles data transformation.
  */
 
-import type { ResId } from '@api/schemas/inferred/common';
-import type { 
-    PostPage, 
-    PostResponse, 
-    PostRequest, 
-    RepostRequest, 
-    VoteBody 
-} from '@api/schemas/inferred/post';
-import type { JwtToken } from '@api/schemas/inferred/common';
-import type { 
-    IPostRepository, 
-    PostQuery, 
-    PostFilters 
+import type { ResId, JwtToken } from '../../../../shared/api/models/common';
+import type {
+    PostPage,
+    PostResponse,
+    PostRequest,
+    RepostRequest,
+    VoteBody
+} from '../models/post';
+import type {
+    IPostRepository,
+    PostQuery,
+    PostFilters
 } from '../../domain/entities/IPostRepository';
 import { PostFactory } from '../../domain/entities/PostEntities';
-import { 
+import {
     fetchPosts,
     fetchPostById,
     fetchPostsByUserId,
@@ -33,8 +32,8 @@ import {
     fetchDeletePost,
     fetchSavePost,
     fetchVotePoll
-} from '@api/requests/postRequests';
-import { buildPageParams } from '@utils/fetchUtils';
+} from '../postRequests';
+import { buildPageParams } from '../../../../shared/utils/fetchUtils';
 
 /**
  * Concrete implementation of post repository
@@ -49,12 +48,12 @@ export class PostRepository implements IPostRepository {
     // Query operations
     async getPosts(query: PostQuery, token: string): Promise<PostPage> {
         let pageParams = buildPageParams(query.page || 0, query.size || 10);
-        
+
         // Add sorting parameters
         if (query.sortBy) {
             pageParams += `&sort=${query.sortBy},${query.sortDirection || 'desc'}`;
         }
-        
+
         // Add filter parameters
         if (query.contentPrivacy) {
             pageParams += `&privacy=${query.contentPrivacy}`;

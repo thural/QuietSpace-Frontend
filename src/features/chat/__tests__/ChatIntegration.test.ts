@@ -8,7 +8,7 @@ import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals
 import { ChatDIContainer } from "@chat/di/ChatDIContainer";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { IChatService } from "@chat/application/services/ChatService";
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/api/schemas/inferred/chat';
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/features/chat/data/models/chat';
 
 // Mock fetch
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
@@ -41,7 +41,7 @@ describe('Chat Feature Integration', () => {
         it('should use mock repository in test environment', () => {
             // Act
             const config = diContainer.getConfig();
-            
+
             // Assert
             expect(config.useMockRepositories).toBe(true);
         });

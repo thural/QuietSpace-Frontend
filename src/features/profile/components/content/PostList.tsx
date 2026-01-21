@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseUserPostList from "../../list/UserPostList";
-import type { ResId } from "@/api/schemas/native/common";
+import type { ResId } from "@/shared/api/models/commonNative";
 
 interface PostListProps {
   userId: ResId;

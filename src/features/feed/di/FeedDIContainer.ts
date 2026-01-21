@@ -5,7 +5,7 @@
  * Manages repository instances and provides configured implementations.
  */
 
-import type { JwtToken } from '@api/schemas/inferred/common';
+import type { JwtToken } from '@/shared/api/models/common';
 import type { IPostRepository, PostQuery, PostFilters } from '../domain/entities/IPostRepository';
 import type { FeedDIConfig } from './FeedDIConfig';
 import { PostRepository } from '../data/repositories/PostRepository';
@@ -23,7 +23,7 @@ export class FeedDIContainer {
     constructor(config?: Partial<FeedDIConfig>, token?: JwtToken) {
         this.config = { ...getFeedDIConfig(), ...config };
         this.token = token || null;
-        
+
         // Initialize repository based on configuration
         this.postRepository = this.createPostRepository();
     }
@@ -83,7 +83,7 @@ export class FeedDIContainer {
      */
     updateConfig(newConfig: Partial<FeedDIConfig>): void {
         Object.assign(this.config, newConfig);
-        
+
         // Recreate repository if mock setting changed
         if (newConfig.useMockRepositories !== undefined) {
             this.postRepository = this.createPostRepository();

@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from '@jest/globals';
 import { NotificationPriority, NotificationChannel } from '../domain/entities/NotificationEntities';
-import { NotificationType } from '@api/schemas/native/notification';
+import { NotificationType } from "@/features/notification/data/models/notificationNative";
 
 describe('Test Fixes Verification', () => {
     it('should import NotificationPriority enum correctly', () => {

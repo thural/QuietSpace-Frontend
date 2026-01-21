@@ -5,11 +5,11 @@
  * Handles post-specific search functionality and data access.
  */
 
-import type { PostList } from "@/api/schemas/inferred/post";
+import type { PostList } from "@/features/feed/data/models/post";
 import type { SearchFilters } from "../../domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
-import { fetchPostQuery } from "../../../../api/requests/postRequests";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import { fetchPostQuery } from "@features/feed/data/postRequests";
+import type { JwtToken } from "@/shared/api/models/common";
 
 /**
  * IPostSearchRepository interface.
@@ -116,15 +116,15 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
     async searchPosts(query: string, filters?: SearchFilters): Promise<PostList> {
         try {
             console.log('PostSearchRepository: Searching posts with query:', query, 'filters:', filters);
-            
+
             // Use existing API function
             const response = await fetchPostQuery(query, this.token);
-            
+
             // Extract posts from response content
             const posts = response.content || [];
-            
+
             console.log('PostSearchRepository: Found', posts.length, 'posts');
-            
+
             return posts;
         } catch (error) {
             console.error('PostSearchRepository: Error searching posts:', error);
@@ -152,7 +152,7 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
      */
     async searchAll(query: string, filters?: SearchFilters): Promise<any> {
         const posts = await this.searchPosts(query, filters);
-        
+
         return {
             query,
             users: [],
@@ -204,10 +204,10 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
     async searchByTags(tags: string[], matchAll: boolean = false): Promise<PostList> {
         const operator = matchAll ? 'AND' : 'OR';
         const tagQuery = tags.map(tag => `tag:${tag}`).join(` ${operator} `);
-        
-        return this.searchPosts(tagQuery, { 
+
+        return this.searchPosts(tagQuery, {
             type: 'posts',
-            tags 
+            tags
         });
     }
 
@@ -220,10 +220,10 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
      */
     async searchByAuthor(authorId: string, query?: string): Promise<PostList> {
         const searchQuery = query ? `author:${authorId} ${query}` : `author:${authorId}`;
-        
-        return this.searchPosts(searchQuery, { 
+
+        return this.searchPosts(searchQuery, {
             type: 'posts',
-            user: authorId 
+            user: authorId
         });
     }
 
@@ -238,8 +238,8 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
     async searchByDateRange(fromDate: string, toDate: string, query?: string): Promise<PostList> {
         const dateQuery = `date:[${fromDate} TO ${toDate}]`;
         const searchQuery = query ? `${dateQuery} ${query}` : dateQuery;
-        
-        return this.searchPosts(searchQuery, { 
+
+        return this.searchPosts(searchQuery, {
             type: 'posts',
             dateRange: { from: fromDate, to: toDate }
         });
@@ -256,8 +256,8 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
     async searchByMinEngagement(minLikes: number, minComments: number, query?: string): Promise<PostList> {
         const engagementQuery = `likes:>=${minLikes} comments:>=${minComments}`;
         const searchQuery = query ? `${engagementQuery} ${query}` : engagementQuery;
-        
-        return this.searchPosts(searchQuery, { 
+
+        return this.searchPosts(searchQuery, {
             type: 'posts',
             // Custom filters for engagement will be handled in the repository
             custom: { minLikes, minComments }
@@ -274,8 +274,8 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
     async searchByMediaType(mediaType: 'image' | 'video' | 'audio' | 'text', query?: string): Promise<PostList> {
         const mediaQuery = `type:${mediaType}`;
         const searchQuery = query ? `${mediaQuery} ${query}` : mediaQuery;
-        
-        return this.searchPosts(searchQuery, { 
+
+        return this.searchPosts(searchQuery, {
             type: 'posts',
             // Custom filters for media type will be handled in the repository
             custom: { mediaType }
@@ -291,7 +291,7 @@ export class PostSearchRepository extends BaseSearchRepository implements IPostS
     async getSuggestions(partialQuery: string): Promise<string[]> {
         // TODO: Implement with actual suggestion API in Priority 2
         console.log('PostSearchRepository: Getting post suggestions for:', partialQuery);
-        
+
         // Mock suggestions based on common post patterns
         if (!partialQuery || partialQuery.length < 2) {
             return [];

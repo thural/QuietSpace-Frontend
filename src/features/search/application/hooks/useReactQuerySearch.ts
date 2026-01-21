@@ -7,12 +7,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { UseQueryResult } from '@tanstack/react-query';
-import type { UserList } from '@/api/schemas/inferred/user';
-import type { PostList } from '@/api/schemas/inferred/post';
+import type { UserList } from '@/features/profile/data/models/user';
+import type { PostList } from '@/features/feed/data/models/post';
 import type { SearchFilters } from '../../domain/entities';
 import { ReactQuerySearchService } from '../services/ReactQuerySearchService';
 import { useSearchDI } from './useSearchDI';
-import type { JwtToken } from '@/api/schemas/inferred/common';
+import type { JwtToken } from '@/shared/api/models/common';
 
 /**
  * React Query Search State interface.
@@ -68,11 +68,11 @@ export const useReactQuerySearch = (
     }, [config.useReactQuery, reactQueryService]);
 
     // Get search results
-    const userResults = reactQueryService?.searchUsers(userQuery, filters, token) || 
-        { data: [], isLoading: false, error: null, refetch: () => {} } as UseQueryResult<UserList, Error>;
-    
-    const postResults = reactQueryService?.searchPosts(postQuery, filters, token) || 
-        { data: [], isLoading: false, error: null, refetch: () => {} } as UseQueryResult<PostList, Error>;
+    const userResults = reactQueryService?.searchUsers(userQuery, filters, token) ||
+        { data: [], isLoading: false, error: null, refetch: () => { } } as UseQueryResult<UserList, Error>;
+
+    const postResults = reactQueryService?.searchPosts(postQuery, filters, token) ||
+        { data: [], isLoading: false, error: null, refetch: () => { } } as UseQueryResult<PostList, Error>;
 
     // Combined loading state
     const isLoading = userResults.isLoading || postResults.isLoading;
@@ -103,7 +103,7 @@ export const useReactQuerySearch = (
         postResults,
         isLoading,
         error,
-        
+
         // Actions
         prefetchUsers,
         prefetchPosts,

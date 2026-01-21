@@ -1,6 +1,6 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import FlexStyled from "@/shared/FlexStyled";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import PostStats from "./PostStats";
 import ReactionGroup from "./ReactionGroup";
 import InteractionActions from "./InteractionActions";

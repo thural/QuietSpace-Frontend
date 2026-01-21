@@ -5,12 +5,12 @@
  * Integrates with existing API endpoints and data sources.
  */
 
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type { JwtToken } from "@/shared/api/models/common";
 import type { ISettingsRepository } from "../../domain/entities/SettingsRepository";
-import type { 
-    ProfileSettings, 
-    PrivacySettings, 
+import type {
+    ProfileSettings,
+    PrivacySettings,
     NotificationSettings,
     SharingSettings,
     MentionsSettings,
@@ -34,7 +34,7 @@ export class SettingsRepository implements ISettingsRepository {
     async getProfileSettings(userId: string, token: JwtToken): Promise<UserProfileResponse> {
         try {
             console.log('SettingsRepository: Getting profile settings for user:', userId);
-            
+
             // Use existing API - this will be connected to the existing user queries
             const response = await fetch(`/api/users/${userId}`, {
                 headers: {
@@ -42,11 +42,11 @@ export class SettingsRepository implements ISettingsRepository {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to fetch profile settings: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Profile settings retrieved successfully');
             return data;
@@ -62,7 +62,7 @@ export class SettingsRepository implements ISettingsRepository {
     async updateProfileSettings(userId: string, settings: ProfileSettingsRequest, token: JwtToken): Promise<UserProfileResponse> {
         try {
             console.log('SettingsRepository: Updating profile settings for user:', userId);
-            
+
             const response = await fetch(`/api/users/${userId}/settings`, {
                 method: 'PUT',
                 headers: {
@@ -71,11 +71,11 @@ export class SettingsRepository implements ISettingsRepository {
                 },
                 body: JSON.stringify(settings)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to update profile settings: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Profile settings updated successfully');
             return data;
@@ -91,10 +91,10 @@ export class SettingsRepository implements ISettingsRepository {
     async uploadProfilePhoto(userId: string, file: File, token: JwtToken): Promise<UserProfileResponse> {
         try {
             console.log('SettingsRepository: Uploading profile photo for user:', userId);
-            
+
             const formData = new FormData();
             formData.append('photo', file);
-            
+
             const response = await fetch(`/api/users/${userId}/photo`, {
                 method: 'POST',
                 headers: {
@@ -102,11 +102,11 @@ export class SettingsRepository implements ISettingsRepository {
                 },
                 body: formData
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to upload profile photo: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Profile photo uploaded successfully');
             return data;
@@ -122,7 +122,7 @@ export class SettingsRepository implements ISettingsRepository {
     async removeProfilePhoto(userId: string, token: JwtToken): Promise<UserProfileResponse> {
         try {
             console.log('SettingsRepository: Removing profile photo for user:', userId);
-            
+
             const response = await fetch(`/api/users/${userId}/photo`, {
                 method: 'DELETE',
                 headers: {
@@ -130,11 +130,11 @@ export class SettingsRepository implements ISettingsRepository {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to remove profile photo: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Profile photo removed successfully');
             return data;
@@ -150,18 +150,18 @@ export class SettingsRepository implements ISettingsRepository {
     async getPrivacySettings(userId: string, token: JwtToken): Promise<PrivacySettings> {
         try {
             console.log('SettingsRepository: Getting privacy settings for user:', userId);
-            
+
             const response = await fetch(`/api/users/${userId}/privacy`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to fetch privacy settings: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Privacy settings retrieved successfully');
             return data;
@@ -177,7 +177,7 @@ export class SettingsRepository implements ISettingsRepository {
     async updatePrivacySettings(userId: string, settings: PrivacySettings, token: JwtToken): Promise<PrivacySettings> {
         try {
             console.log('SettingsRepository: Updating privacy settings for user:', userId);
-            
+
             const response = await fetch(`/api/users/${userId}/privacy`, {
                 method: 'PUT',
                 headers: {
@@ -186,11 +186,11 @@ export class SettingsRepository implements ISettingsRepository {
                 },
                 body: JSON.stringify(settings)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to update privacy settings: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Privacy settings updated successfully');
             return data;
@@ -206,18 +206,18 @@ export class SettingsRepository implements ISettingsRepository {
     async getNotificationSettings(userId: string, token: JwtToken): Promise<NotificationSettings> {
         try {
             console.log('SettingsRepository: Getting notification settings for user:', userId);
-            
+
             const response = await fetch(`/api/users/${userId}/notifications`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to fetch notification settings: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Notification settings retrieved successfully');
             return data;
@@ -233,7 +233,7 @@ export class SettingsRepository implements ISettingsRepository {
     async updateNotificationSettings(userId: string, settings: NotificationSettings, token: JwtToken): Promise<NotificationSettings> {
         try {
             console.log('SettingsRepository: Updating notification settings for user:', userId);
-            
+
             const response = await fetch(`/api/users/${userId}/notifications`, {
                 method: 'PUT',
                 headers: {
@@ -242,11 +242,11 @@ export class SettingsRepository implements ISettingsRepository {
                 },
                 body: JSON.stringify(settings)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to update notification settings: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('SettingsRepository: Notification settings updated successfully');
             return data;

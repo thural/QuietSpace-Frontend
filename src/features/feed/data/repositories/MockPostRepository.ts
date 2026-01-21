@@ -5,22 +5,22 @@
  * Uses in-memory data storage and simulates API responses with realistic delays.
  */
 
-import type { ResId } from '@api/schemas/inferred/common';
-import type { 
-    PostPage, 
-    PostResponse, 
-    PostRequest, 
-    RepostRequest, 
-    VoteBody 
-} from '@api/schemas/inferred/post';
-import type { 
-    IPostRepository, 
-    PostQuery, 
-    PostFilters 
+import type { ResId } from '@/shared/api/models/common';
+import type {
+    PostPage,
+    PostResponse,
+    PostRequest,
+    RepostRequest,
+    VoteBody
+} from '@/features/feed/data/models/post';
+import type {
+    IPostRepository,
+    PostQuery,
+    PostFilters
 } from '../../domain/entities/IPostRepository';
 import { PostFactory } from '../../domain/entities/PostEntities';
-import { ReactionType } from '@api/schemas/native/reaction';
-import { ContentType } from '@api/schemas/native/common';
+import { ReactionType } from "@/features/feed/data/models/reactionNative";
+import { ContentType } from "@/shared/api/models/commonNative";
 
 /**
  * Mock post data for testing
@@ -125,7 +125,7 @@ export class MockPostRepository implements IPostRepository {
         // Apply filters
         if (query.contentPrivacy) {
             // Mock filtering based on privacy
-            filteredPosts = filteredPosts.filter(post => 
+            filteredPosts = filteredPosts.filter(post =>
                 Math.random() > 0.3 || post.userId === 'user-1' // Some posts are private
             );
         }
@@ -251,7 +251,7 @@ export class MockPostRepository implements IPostRepository {
     }
 
     async searchPosts(queryText: string, query: PostQuery, token: string): Promise<PostPage> {
-        const searchResults = this.posts.filter(post => 
+        const searchResults = this.posts.filter(post =>
             post.text.toLowerCase().includes(queryText.toLowerCase()) ||
             post.title?.toLowerCase().includes(queryText.toLowerCase())
         );

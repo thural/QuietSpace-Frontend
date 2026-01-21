@@ -1,6 +1,6 @@
-import { ReactionRequest } from "@/api/schemas/inferred/reaction";
-import { ReactionType } from "@/api/schemas/native/reaction";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ReactionRequest } from "@/features/feed/data/models/reaction";
+import { ReactionType } from "@/api/rest/models/native/reaction";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import {
     PiArrowFatUp, PiArrowFatUpFill
 } from "react-icons/pi";

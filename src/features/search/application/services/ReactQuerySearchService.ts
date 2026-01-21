@@ -7,12 +7,12 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
-import type { UserList } from '@/api/schemas/inferred/user';
-import type { PostList } from '@/api/schemas/inferred/post';
+import type { UserList } from '@/features/profile/data/models/user';
+import type { PostList } from '@/features/feed/data/models/post';
 import type { SearchFilters } from '../../domain/entities';
-import { fetchUsersByQuery } from '../../../../api/requests/userRequests';
-import { fetchPostQuery } from '../../../../api/requests/postRequests';
-import type { JwtToken } from '@/api/schemas/inferred/common';
+import { fetchUsersByQuery } from "@features/search/data/userRequests";
+import { fetchPostQuery } from "@features/feed/data/postRequests";
+import type { JwtToken } from '@/shared/api/models/common';
 
 /**
  * React Query Search Service interface.

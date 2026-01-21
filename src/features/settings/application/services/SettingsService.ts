@@ -5,12 +5,13 @@
  * Provides high-level operations for settings management.
  */
 
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type { JwtToken } from "@/shared/api/models/common";
 import type { ISettingsRepository } from "../../domain/entities/SettingsRepository";
-import type { 
-    ProfileSettings, 
-    PrivacySettings, 
+import { useAuthStore } from "@services/store/zustand";
+import type {
+    ProfileSettings,
+    PrivacySettings,
     NotificationSettings,
     SharingSettings,
     MentionsSettings,
@@ -38,7 +39,7 @@ export interface ISettingsService {
  * Settings Service implementation.
  */
 export class SettingsService implements ISettingsService {
-    constructor(private settingsRepository: ISettingsRepository) {}
+    constructor(private settingsRepository: ISettingsRepository) { }
 
     /**
      * Get user profile settings.
@@ -64,7 +65,7 @@ export class SettingsService implements ISettingsService {
 
             // Sanitize settings
             const sanitizedSettings = this.sanitizeSettings(settings);
-            
+
             return await this.settingsRepository.updateProfileSettings(userId, sanitizedSettings, this.getToken());
         } catch (error) {
             console.error('SettingsService: Error updating profile settings:', error);
@@ -267,7 +268,6 @@ export class SettingsService implements ISettingsService {
     /**
      * Get authentication token from store.
      */
-    import { useAuthStore } from '../../../services/store/zustand';
     private getToken(): JwtToken {
         const authStore = useAuthStore.getState();
         return authStore.data.accessToken || '';

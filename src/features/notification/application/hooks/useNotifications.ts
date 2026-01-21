@@ -6,12 +6,12 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import type { NotificationPage, NotificationResponse, NotificationType } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationPage, NotificationResponse, NotificationType } from '@/features/notification/data/models/notification';
+import type { ResId } from '@/shared/api/models/common';
 import { useAuthStore } from '@services/store/zustand';
-import type { 
-    NotificationQuery, 
-    NotificationFilters, 
+import type {
+    NotificationQuery,
+    NotificationFilters,
     NotificationResult,
     NotificationMessage,
     NotificationSettings,
@@ -45,14 +45,14 @@ export interface NotificationActions {
     fetchNotifications: (userId: string, query?: Partial<NotificationQuery>) => Promise<void>;
     fetchNotificationsByType: (type: NotificationType, userId: string, query?: Partial<NotificationQuery>) => Promise<void>;
     fetchUnreadCount: (userId: string) => Promise<void>;
-    
+
     // Notification operations
     markAsRead: (notificationId: ResId) => Promise<void>;
     markMultipleAsRead: (notificationIds: ResId[]) => Promise<void>;
     deleteNotification: (notificationId: ResId) => Promise<void>;
     getNotificationById: (notificationId: ResId) => Promise<void>;
     searchNotifications: (query: string, userId: string) => Promise<void>;
-    
+
     // State management
     setSelectedNotification: (notification: NotificationResponse | null) => void;
     setFilters: (filters: NotificationFilters) => void;
@@ -70,7 +70,7 @@ export interface NotificationActions {
  */
 export const useNotifications = (config?: { useReactQuery?: boolean }): NotificationState & NotificationActions => {
     const { notificationRepository } = useNotificationDI();
-    
+
     // State
     const [notifications, setNotifications] = useState<NotificationPage | null>(null);
     const [unreadCount, setUnreadCount] = useState<number | null>(null);
@@ -97,7 +97,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
         try {
             setIsLoading(true);
             setError(null);
-            
+
             const token = getAuthToken();
             const fullQuery: NotificationQuery = {
                 userId,
@@ -106,7 +106,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
                 ...query,
                 filters
             };
-            
+
             const result = await notificationRepository.getNotifications(fullQuery, token);
             setNotifications(result);
         } catch (err) {
@@ -122,7 +122,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
         try {
             setIsLoading(true);
             setError(null);
-            
+
             const token = getAuthToken();
             const fullQuery: NotificationQuery = {
                 userId,
@@ -131,7 +131,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
                 ...query,
                 filters
             };
-            
+
             const result = await notificationRepository.getNotificationsByType(type, fullQuery, token);
             setNotifications(result);
         } catch (err) {
@@ -146,7 +146,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     const fetchUnreadCount = useCallback(async (userId: string) => {
         try {
             setError(null);
-            
+
             const token = getAuthToken();
             const result = await notificationRepository.getPendingNotificationsCount(userId, token);
             setUnreadCount(result);
@@ -160,10 +160,10 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     const markAsRead = useCallback(async (notificationId: ResId) => {
         try {
             setError(null);
-            
+
             const token = getAuthToken();
             const result = await notificationRepository.markNotificationAsSeen(notificationId, token);
-            
+
             // Update local state
             if (notifications) {
                 setNotifications({
@@ -173,12 +173,12 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
                     )
                 });
             }
-            
+
             // Update selected notification if it's the one being marked as read
             if (selectedNotification && selectedNotification.id === notificationId) {
                 setSelectedNotification({ ...selectedNotification, isSeen: true });
             }
-            
+
             // Update unread count
             if (unreadCount !== null && unreadCount > 0) {
                 setUnreadCount(unreadCount - 1);
@@ -193,10 +193,10 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     const markMultipleAsRead = useCallback(async (notificationIds: ResId[]) => {
         try {
             setError(null);
-            
+
             const token = getAuthToken();
             const results = await notificationRepository.markMultipleNotificationsAsSeen(notificationIds, token);
-            
+
             // Update local state
             if (notifications) {
                 setNotifications({
@@ -206,10 +206,10 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
                     )
                 });
             }
-            
+
             // Update unread count
             if (unreadCount !== null) {
-                const markedCount = notificationIds.filter(id => 
+                const markedCount = notificationIds.filter(id =>
                     notifications?.content.some(n => n.id === id && !n.isSeen)
                 ).length;
                 setUnreadCount(Math.max(0, unreadCount - markedCount));
@@ -224,10 +224,10 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     const deleteNotification = useCallback(async (notificationId: ResId) => {
         try {
             setError(null);
-            
+
             const token = getAuthToken();
             await notificationRepository.deleteNotification(notificationId, token);
-            
+
             // Update local state
             if (notifications) {
                 const wasUnread = notifications.content.find(n => n.id === notificationId)?.isSeen === false;
@@ -237,13 +237,13 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
                     totalElements: notifications.totalElements - 1,
                     numberOfElements: notifications.numberOfElements - 1
                 });
-                
+
                 // Update unread count if the deleted notification was unread
                 if (wasUnread && unreadCount !== null && unreadCount > 0) {
                     setUnreadCount(unreadCount - 1);
                 }
             }
-            
+
             // Clear selected notification if it was the one being deleted
             if (selectedNotification && selectedNotification.id === notificationId) {
                 setSelectedNotification(null);
@@ -258,7 +258,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
     const getNotificationById = useCallback(async (notificationId: ResId) => {
         try {
             setError(null);
-            
+
             const token = getAuthToken();
             const result = await notificationRepository.getNotificationById(notificationId, token);
             setSelectedNotification(result);
@@ -273,7 +273,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
         try {
             setIsLoading(true);
             setError(null);
-            
+
             const token = getAuthToken();
             const fullQuery: NotificationQuery = {
                 userId,
@@ -281,7 +281,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
                 size: 9,
                 filters
             };
-            
+
             const result = await notificationRepository.searchNotifications(query, fullQuery, token);
             setNotifications(result);
         } catch (err) {
@@ -321,7 +321,7 @@ export const useNotifications = (config?: { useReactQuery?: boolean }): Notifica
         filters,
         searchQuery,
         activeFilter,
-        
+
         // Actions
         fetchNotifications,
         fetchNotificationsByType,

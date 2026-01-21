@@ -1,7 +1,7 @@
-import { ResId } from "@/api/schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import styles from "@/styles/chat/chatHeadlineStyles";
-import { ConsumerFn } from "@/types/genericTypes";
+import styles from "../../styles/chatHeadlineStyles";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import FlexStyled from "@shared/FlexStyled";
 import Typography from "@shared/Typography";
 import ChatMenu from "./ChatMenu";

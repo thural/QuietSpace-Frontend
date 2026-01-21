@@ -1,6 +1,6 @@
-import styles from "@/styles/profile/followSectionStyles";
-import { ProcedureFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import styles from "./styles/followSectionStyles";
+import { ProcedureFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
 

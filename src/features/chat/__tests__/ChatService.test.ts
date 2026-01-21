@@ -8,8 +8,8 @@ import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals
 import { ChatService } from "@chat/application/services/ChatService";
 import type { IChatService } from "@chat/application/services/ChatService";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/api/schemas/inferred/chat';
-import type { ResId } from '@/api/schemas/inferred/common';
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/features/chat/data/models/chat';
+import type { ResId } from '@/shared/api/models/common';
 
 // Mock the Zustand store
 jest.mock('@services/store/zustand', () => ({

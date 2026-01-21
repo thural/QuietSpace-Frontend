@@ -1,6 +1,6 @@
 import Typography from "@/shared/Typography";
-import { ProcedureFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { ProcedureFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FormStyled from "@/shared/FormStyled";
 import LightButton from "@/shared/buttons/LightButton";
 

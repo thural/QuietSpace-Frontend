@@ -7,8 +7,8 @@
 import { SettingsRepository } from '../data/repositories/SettingsRepository';
 import { MockSettingsRepository } from '../data/repositories/MockSettingsRepository';
 import type { ISettingsRepository } from '../domain/entities/SettingsRepository';
-import type { ProfileSettingsRequest, UserProfileResponse } from '@/api/schemas/inferred/user';
-import type { JwtToken } from '@/api/schemas/inferred/common';
+import type { ProfileSettingsRequest, UserProfileResponse } from '@/features/profile/data/models/user';
+import type { JwtToken } from '@/shared/api/models/common';
 import type { PrivacySettings, NotificationSettings } from '../domain/entities/SettingsEntities';
 
 describe('Settings Repository Tests', () => {
@@ -48,7 +48,7 @@ describe('Settings Repository Tests', () => {
 
         it('should upload profile photo', async () => {
             const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-            
+
             const result = await mockRepository.uploadProfilePhoto(testUserId, file, mockToken);
             expect(result).toBeDefined();
             expect(result.photo).toBeDefined();

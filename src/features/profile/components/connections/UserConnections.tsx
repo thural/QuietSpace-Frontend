@@ -1,16 +1,16 @@
 import { Center } from "@mantine/core";
 import React from "react";
 
-import { UserPage, UserResponse } from "@/api/schemas/inferred/user";
+import { UserPage, UserResponse } from "@/features/profile/data/models/user";
 import BoxStyled from "@/shared/BoxStyled";
 import LoaderStyled from "@/shared/LoaderStyled";
 import Typography from "@/shared/Typography";
 import UserQueryItem from "@/shared/UserQueryItem";
-import useUserConnection from "@/services/hook/profile/useUserConnection";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import styles from "@/styles/profile/connectionStyles";
-import { MouseEventFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import useUserConnection from "@features/feed/application/hooks/useUserConnection";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import styles from "./styles/connectionStyles";
+import { MouseEventFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import SearchBar from "../searchbar/SearchBar";
 import UserQueryList from "./UserQueryList";

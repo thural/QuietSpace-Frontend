@@ -1,11 +1,11 @@
-import { PostRequest } from "@/api/schemas/inferred/post";
+import { PostRequest } from "@/features/feed/data/models/post";
 import Clickable from "@/shared/Clickable";
 import FlexStyled from "@/shared/FlexStyled";
 import InputBoxStyled from "@/shared/InputBoxStyled";
 import TextInputStyled from "@/shared/TextInputStyled";
-import { PollView } from "@/services/hook/feed/useCreatePostForm";
+import { PollView } from "@features/feed/application/hooks/useCreatePostForm";
 import styles from "../../styles/pollIFormStyles";
-import { AnyFunction, ProcedureFn } from "@/types/genericTypes";
+import { AnyFunction, ProcedureFn } from "@/shared/types/genericTypes";
 
 /**
  * Props for the PollForm component.

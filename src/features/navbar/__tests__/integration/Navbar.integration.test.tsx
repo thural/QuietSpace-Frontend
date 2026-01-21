@@ -13,7 +13,7 @@ import { createMockNotificationRepository } from "../../data/repositories";
 import type { NotificationStatusEntity } from "../../domain";
 
 // Mock React Query hooks
-jest.mock('@/api/queries/chatQueries', () => ({
+jest.mock('@/core/network/api/queries/chatQueries', () => ({
   __esModule: true,
   default: () => ({
     getChatsCache: jest.fn(() => [
@@ -23,14 +23,14 @@ jest.mock('@/api/queries/chatQueries', () => ({
   })
 }));
 
-jest.mock('@/api/queries/userQueries', () => ({
+jest.mock('@/core/network/api/queries/userQueries', () => ({
   __esModule: true,
   default: () => ({
     getSignedUserElseThrow: jest.fn(() => ({ id: 'user123', username: 'testuser' }))
   })
 }));
 
-jest.mock('@/services/data/useNotificationData', () => ({
+jest.mock('@features/notification/data', () => ({
   __esModule: true,
   useGetNotifications: jest.fn(() => ({
     data: {

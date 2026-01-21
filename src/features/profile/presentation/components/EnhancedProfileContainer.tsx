@@ -8,7 +8,7 @@
 
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import OutlineButton from "@/shared/buttons/OutlineButton";
 import Conditional from "@/shared/Conditional";
 import DefaultContainer from "@/shared/DefaultContainer";
@@ -218,7 +218,7 @@ function LegacyProfileContainer() {
     const { userId } = useParams();
     
     // Import legacy hook for backward compatibility
-    const useUserProfile = require("@/services/hook/profile/useUserProfile").default;
+    const useUserProfile = require("@features/feed/application/hooks/useUserProfile").default;
     
     let data = undefined;
     try {

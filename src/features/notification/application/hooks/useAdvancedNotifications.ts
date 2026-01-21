@@ -10,26 +10,26 @@
 
 import { useEffect, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { NotificationPage, NotificationResponse, NotificationType } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationPage, NotificationResponse, NotificationType } from '@/features/notification/data/models/notification';
+import type { ResId } from '@/shared/api/models/common';
 import type { NotificationQuery, NotificationFilters } from '../../domain/entities/NotificationEntities';
 import { useNotificationDI } from '../../di/useNotificationDI';
-import { 
-    useNotificationUIStore, 
-    type NotificationUIState, 
-    type NotificationUIActions 
+import {
+    useNotificationUIStore,
+    type NotificationUIState,
+    type NotificationUIActions
 } from '../stores/notificationUIStore';
-import { 
+import {
     useRealtimeNotifications,
-    type ConnectionStatus 
+    type ConnectionStatus
 } from '../services/RealtimeNotificationService';
-import { 
+import {
     useOptimisticUpdates,
-    optimisticUpdateManager 
+    optimisticUpdateManager
 } from '../services/OptimisticUpdateManager';
-import { 
+import {
     useStateSynchronization,
-    type SyncStrategy 
+    type SyncStrategy
 } from '../services/StateSynchronizationManager';
 
 /**
@@ -40,31 +40,31 @@ export interface AdvancedNotificationState {
     notifications: NotificationPage | null;
     unreadCount: number | null;
     selectedNotification: NotificationResponse | null;
-    
+
     // Loading states
     isLoading: boolean;
     isRefreshing: boolean;
     isLoadingMore: boolean;
-    
+
     // Error state
     error: Error | null;
-    
+
     // Real-time state
     isConnected: boolean;
     connectionStatus: ConnectionStatus;
     lastSyncTime: string | null;
-    
+
     // UI state
     isPanelOpen: boolean;
     activeFilter: 'all' | 'unread' | 'read' | 'custom';
     searchQuery: string;
     currentPage: number;
     hasMore: boolean;
-    
+
     // Optimistic updates state
     hasPendingOperations: boolean;
     hasOptimisticUpdates: boolean;
-    
+
     // Synchronization state
     hasConflicts: boolean;
     pendingConflicts: any[];
@@ -78,35 +78,35 @@ export interface AdvancedNotificationActions {
     refetch: () => void;
     loadMore: () => void;
     refresh: () => void;
-    
+
     // Notification operations
     markAsRead: (notificationId: ResId) => Promise<void>;
     markMultipleAsRead: (notificationIds: ResId[]) => Promise<void>;
     deleteNotification: (notificationId: ResId) => Promise<void>;
     searchNotifications: (query: string) => Promise<void>;
-    
+
     // UI operations
     openPanel: () => void;
     closePanel: () => void;
     togglePanel: () => void;
     selectNotification: (id: ResId) => void;
     clearSelection: () => void;
-    
+
     // Filter operations
     setActiveFilter: (filter: 'all' | 'unread' | 'read' | 'custom') => void;
     setCustomFilters: (filters: NotificationFilters) => void;
     setSearchQuery: (query: string) => void;
     clearFilters: () => void;
-    
+
     // Pagination operations
     nextPage: () => void;
     previousPage: () => void;
     goToPage: (page: number) => void;
-    
+
     // Real-time operations
     enableRealTime: () => void;
     disableRealTime: () => void;
-    
+
     // Synchronization operations
     forceSync: () => Promise<void>;
     resolveConflict: (conflictId: string, resolution: 'client_wins' | 'server_wins' | 'merge') => void;
@@ -177,14 +177,14 @@ export const useAdvancedNotifications = (options: {
     } = uiState;
 
     // Real-time notifications
-    const { 
-        isConnected, 
-        connectionStatus, 
-        service: realtimeService 
+    const {
+        isConnected,
+        connectionStatus,
+        service: realtimeService
     } = useRealtimeNotifications(enableRealTime ? userId : null);
 
     // Optimistic updates
-    const { 
+    const {
         manager: optimisticManager,
         applyToPage,
         getNotification: getNotificationWithOptimisticUpdates,
@@ -281,7 +281,7 @@ export const useAdvancedNotifications = (options: {
 
             // Create optimistic update
             const optimisticContext = optimisticManager.createMarkAsReadUpdate(notificationId, originalNotification);
-            
+
             // Execute with optimistic updates
             return await optimisticManager.executeOptimisticUpdate(optimisticContext);
         },
@@ -306,7 +306,7 @@ export const useAdvancedNotifications = (options: {
 
             // Create optimistic update
             const optimisticContext = optimisticManager.createDeleteUpdate(notificationId, originalNotification);
-            
+
             // Execute with optimistic updates
             return await optimisticManager.executeOptimisticUpdate(optimisticContext);
         },
@@ -333,7 +333,7 @@ export const useAdvancedNotifications = (options: {
 
         setLoadingMore(true);
         setCurrentPage(currentPage + 1);
-        
+
         try {
             // The query will automatically load the next page
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -376,8 +376,8 @@ export const useAdvancedNotifications = (options: {
     const state: AdvancedNotificationState = {
         notifications,
         unreadCount,
-        selectedNotification: uiState.selectedNotificationId 
-            ? notifications?.content.find(n => n.id === uiState.selectedNotificationId) || null 
+        selectedNotification: uiState.selectedNotificationId
+            ? notifications?.content.find(n => n.id === uiState.selectedNotificationId) || null
             : null,
         isLoading: isLoading || isLoadingUnread,
         isRefreshing,

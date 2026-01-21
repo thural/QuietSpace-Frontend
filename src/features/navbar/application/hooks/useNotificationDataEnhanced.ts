@@ -6,9 +6,9 @@
  */
 
 import { useMemo } from "react";
-import chatQueries from "@/api/queries/chatQueries";
-import useUserQueries from "@/api/queries/userQueries";
-import { useGetNotifications } from "@/services/data/useNotificationData";
+import chatQueries from "@/core/network/api/queries/chatQueries";
+import useUserQueries from "@/core/network/api/queries/userQueries";
+import { useGetNotifications } from "@features/notification/data";
 import type { INotificationRepository } from "../../domain";
 import { 
   NotificationStatusEntity, 

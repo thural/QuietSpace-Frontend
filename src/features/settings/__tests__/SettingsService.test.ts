@@ -8,7 +8,7 @@ import { jest } from '@jest/globals';
 import { SettingsService } from '../application/services/SettingsService';
 import { MockSettingsRepository } from '../data/repositories/MockSettingsRepository';
 import type { ISettingsService } from '../application/services/SettingsService';
-import type { ProfileSettingsRequest, UserProfileResponse } from '@/api/schemas/inferred/user';
+import type { ProfileSettingsRequest, UserProfileResponse } from '@/features/profile/data/models/user';
 import type { PrivacySettings, NotificationSettings } from '../domain/entities/SettingsEntities';
 
 describe('Settings Service Tests', () => {
@@ -46,7 +46,7 @@ describe('Settings Service Tests', () => {
 
         it('should validate settings before update', async () => {
             const invalidSettings = { invalid: 'settings' } as any;
-            
+
             await expect(settingsService.updateProfileSettings(testUserId, invalidSettings))
                 .rejects.toThrow('Invalid settings provided');
         });
@@ -65,7 +65,7 @@ describe('Settings Service Tests', () => {
 
         it('should upload profile photo with validation', async () => {
             const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-            
+
             const result = await settingsService.uploadProfilePhoto(testUserId, file);
             expect(result).toBeDefined();
             expect(result.photo).toBeDefined();
@@ -73,7 +73,7 @@ describe('Settings Service Tests', () => {
 
         it('should validate photo file', async () => {
             const invalidFile = new File(['test'], 'test.txt', { type: 'text/plain' });
-            
+
             await expect(settingsService.uploadProfilePhoto(testUserId, invalidFile))
                 .rejects.toThrow('Invalid photo file');
         });
@@ -107,7 +107,7 @@ describe('Settings Service Tests', () => {
 
         it('should validate privacy settings', async () => {
             const invalidSettings = { invalid: true } as any;
-            
+
             await expect(settingsService.updatePrivacySettings(testUserId, invalidSettings))
                 .rejects.toThrow('Invalid privacy settings provided');
         });
@@ -136,7 +136,7 @@ describe('Settings Service Tests', () => {
 
         it('should validate notification settings', async () => {
             const invalidSettings = { invalid: true } as any;
-            
+
             await expect(settingsService.updateNotificationSettings(testUserId, invalidSettings))
                 .rejects.toThrow('Invalid notification settings provided');
         });
@@ -172,7 +172,7 @@ describe('Settings Service Tests', () => {
             } as any;
 
             const errorService = new SettingsService(errorRepository);
-            
+
             await expect(errorService.getProfileSettings(testUserId)).rejects.toThrow('Repository error');
             await expect(errorService.updateProfileSettings(testUserId, {} as any)).rejects.toThrow('Repository error');
         });

@@ -12,7 +12,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useProfileStore } from "./ProfileStore";
 import { useProfile } from "../application/useProfile";
-import type { ResId } from "@/api/schemas/inferred/common";
+import type { ResId } from "@/shared/api/models/common";
 import type {
   UserProfileEntity,
   UserProfileStatsEntity,
@@ -117,7 +117,7 @@ export const useAdvancedProfileState = (
 
   // Get Zustand store state and actions
   const store = useProfileStore();
-  
+
   // Get basic profile data from application hook
   const profileData = useProfile(userId, {
     useRepositoryPattern: true,
@@ -132,10 +132,10 @@ export const useAdvancedProfileState = (
   // Optimistic follow action
   const optimisticFollow = useCallback((targetUserId: string | number) => {
     if (!enableOptimisticUpdates) return;
-    
+
     store.setOptimisticFollow(targetUserId, 'follow');
     store.addPendingUpdate(`follow-${targetUserId}-${Date.now()}`);
-    
+
     // Add to sync queue for background processing
     store.addToSyncQueue({
       type: 'follow',
@@ -146,10 +146,10 @@ export const useAdvancedProfileState = (
   // Optimistic unfollow action
   const optimisticUnfollow = useCallback((targetUserId: string | number) => {
     if (!enableOptimisticUpdates) return;
-    
+
     store.setOptimisticFollow(targetUserId, 'unfollow');
     store.addPendingUpdate(`unfollow-${targetUserId}-${Date.now()}`);
-    
+
     // Add to sync queue for background processing
     store.addToSyncQueue({
       type: 'unfollow',
@@ -160,16 +160,16 @@ export const useAdvancedProfileState = (
   // Background sync function
   const syncNow = useCallback(async () => {
     if (!enableBackgroundSync || store.syncInProgress) return;
-    
+
     store.setSyncInProgress(true);
-    
+
     try {
       const queue = store.syncQueue;
-      
+
       // Process each item in the sync queue
       for (let i = 0; i < queue.length; i++) {
         const item = queue[i];
-        
+
         try {
           // Process the sync item based on its type
           switch (item.type) {
@@ -182,18 +182,18 @@ export const useAdvancedProfileState = (
             default:
               console.warn(`Unknown sync item type: ${item.type}`);
           }
-          
+
           // Remove processed item from queue
           store.removeFromSyncQueue(i);
           i--; // Adjust index since we removed an item
-          
+
           // Clear optimistic state for this user
           if (item.data.userId) {
             store.clearOptimisticFollow(item.data.userId);
           }
         } catch (error) {
           console.error(`Failed to sync item ${item.type}:`, error);
-          
+
           // If max retries not reached, keep in queue
           if (store.retryCount < maxRetries) {
             store.incrementRetryCount();
@@ -205,7 +205,7 @@ export const useAdvancedProfileState = (
           }
         }
       }
-      
+
       store.setLastBackgroundSync(Date.now());
     } finally {
       store.setSyncInProgress(false);
@@ -215,15 +215,15 @@ export const useAdvancedProfileState = (
   // Real-time management
   const enableRealTimeUpdates = useCallback(() => {
     if (!enableRealTime) return;
-    
+
     store.setRealTimeEnabled(true);
-    
+
     // Add real-time subscription (placeholder for WebSocket/EventSource)
     const unsubscribe = () => {
       // Implementation would go here
       console.log('Real-time subscription ended');
     };
-    
+
     store.addSubscription('profile-updates', unsubscribe);
   }, [enableRealTime, store]);
 
@@ -251,7 +251,7 @@ export const useAdvancedProfileState = (
           syncNow();
         }
       }, syncInterval);
-      
+
       return () => {
         if (syncIntervalRef.current) {
           clearInterval(syncIntervalRef.current);
@@ -265,10 +265,10 @@ export const useAdvancedProfileState = (
   useEffect(() => {
     const handleOnline = () => store.setOnlineStatus(true);
     const handleOffline = () => store.setOnlineStatus(false);
-    
+
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-    
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
@@ -306,7 +306,7 @@ export const useAdvancedProfileState = (
     toggleFollowers: profileData.toggleFollowers,
     toggleFollowings: profileData.toggleFollowings,
     setActiveTab: store.setActiveTab,
-    
+
     // Advanced actions
     optimisticFollow,
     optimisticUnfollow,
@@ -324,16 +324,16 @@ export const useAdvancedProfileState = (
     profileAccess: profileData.profileAccess,
     completeProfile: profileData.completeProfile,
     userConnections: profileData.userConnections,
-    
+
     // State management
     isLoading: profileData.isLoading,
     error: profileData.error,
-    
+
     // UI state
     viewFollowers: profileData.viewFollowers,
     viewFollowings: profileData.viewFollowings,
     activeTab: store.activeTab,
-    
+
     // Advanced state
     isOnline: store.isOnline,
     syncInProgress: store.syncInProgress,
@@ -341,10 +341,10 @@ export const useAdvancedProfileState = (
     optimisticFollows: store.optimisticFollows,
     pendingUpdates: store.pendingUpdates,
     syncQueue: store.syncQueue,
-    
+
     // Actions
     actions,
-    
+
     // Computed values
     computed
   };

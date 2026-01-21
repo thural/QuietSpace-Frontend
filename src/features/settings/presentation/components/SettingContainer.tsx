@@ -1,6 +1,6 @@
-import useProfileSettings from "@/services/hook/profile/useProfileSettings";
+import useProfileSettings from "@features/settings/application";
 import useStyles from "../styles/settingContainerStyles";
-import { PRIVACY_DESCRIPTION } from "@/utils/dataTemplates";
+import { PRIVACY_DESCRIPTION } from "@/shared/utils/dataTemplates";
 import DefaultContainer from "@/shared/DefaultContainer";
 import Typography from "@/shared/Typography";
 import { Tabs, Text } from "@mantine/core";

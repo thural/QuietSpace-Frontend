@@ -3,7 +3,7 @@ import { useGetUserById } from "@services/data/useUserData";
 import { NotificationItemProps } from "@shared-types/notificationTypes";
 import { useNavigate } from "react-router-dom";
 import NotificationCard from "../NotificationCard";
-import NotificationSkeleton from "@shared/NotificationSkeleton";
+import NotificationSkeleton from "../../../shared/NotificationSkeleton";
 
 /**
  * FollowNotification component.

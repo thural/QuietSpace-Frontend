@@ -1,10 +1,10 @@
-import { UserResponse } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/features/profile/data/models/user";
 import BoxStyled from "@/shared/BoxStyled";
 import FlexStyled from "@/shared/FlexStyled";
 import InputStyled from "@/shared/InputStyled";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import LightButton from "@/shared/buttons/LightButton";
-import { ProcedureFn } from "@/types/genericTypes";
+import { ProcedureFn } from "@/shared/types/genericTypes";
 
 /**
  * Props for the ToggleFormSection component.

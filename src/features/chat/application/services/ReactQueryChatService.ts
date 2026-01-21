@@ -6,14 +6,14 @@
  */
 
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
+import type { ResId } from "@/shared/api/models/common";
+import type { JwtToken } from "@/shared/api/models/common";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import { useAuthStore } from '@services/store/zustand';
-import type { 
-    ChatQuery, 
-    ChatFilters, 
+import type {
+    ChatQuery,
+    ChatFilters,
     ChatResult,
     ChatMessage,
     ChatAttachment,
@@ -43,7 +43,7 @@ export interface IReactQueryChatService {
     removeParticipant(chatId: string, participantId: string): UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
     markMessagesAsRead(chatId: string, messageIds: string[]): UseMutationResult<any, Error, { chatId: string, messageIds: string[] }>;
     getUnreadCount(userId: string, token: JwtToken): UseQueryResult<number, Error>;
-    
+
     // Cache management
     prefetchChats(userId: string, token: JwtToken): Promise<void>;
     prefetchMessages(chatId: ResId, token: JwtToken): Promise<void>;
@@ -56,7 +56,7 @@ export interface IReactQueryChatService {
 export class ReactQueryChatService implements IReactQueryChatService {
     private queryClient = useQueryClient();
 
-    constructor(private chatRepository: IChatRepository) {}
+    constructor(private chatRepository: IChatRepository) { }
 
     /**
      * Get all chats for a user.

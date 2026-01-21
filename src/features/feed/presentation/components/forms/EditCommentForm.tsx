@@ -1,10 +1,10 @@
-import { ResId } from "@/api/schemas/inferred/common";
+import { ResId } from "@/shared/api/models/common";
 import FormStyled from "@/shared/FormStyled";
 import ModalStyled from "@/shared/ModalStyled";
 import TextAreaStyled from "@/shared/TextAreaStyled";
 import Typography from "@/shared/Typography";
 import DarkButton from "@/shared/buttons/DarkButton";
-import useEditCommentForm from "@/services/hook/feed/useEditCommentForm";
+import useEditCommentForm from "@features/feed/application/hooks/useEditCommentForm";
 
 /**
  * Props for the EditCommentForm component.

@@ -1,7 +1,7 @@
-import { UserResponse } from "@/api/schemas/inferred/user";
+import { UserResponse } from "@/features/profile/data/models/user";
 import LoaderStyled from "@/shared/LoaderStyled";
-import useChatQuery from "@/services/hook/chat/useChatQuery";
-import styles from "@/styles/chat/chatQueryStyles";
+import useChatQuery from "@features/chat/application/hooks/useChatQuery";
+import styles from "../../styles/chatQueryStyles";
 import AnchorStyled from "@shared/AnchorStyled";
 import BoxStyled from "@shared/BoxStyled";
 import FlexStyled from "@shared/FlexStyled";

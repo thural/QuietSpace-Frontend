@@ -4,7 +4,7 @@
  * Defines the core domain entities for chat functionality.
  */
 
-import type { ResId } from "@/api/schemas/inferred/common";
+import type { ResId } from "@/shared/api/models/common";
 
 /**
  * Chat Query entity.

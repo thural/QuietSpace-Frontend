@@ -1,8 +1,8 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
 import useStyles from "../../styles/poststatStyles";
-import { parseCount } from "@/utils/stringUtils";
+import { parseCount } from "@/shared/utils/stringUtils";
 
 /**
  * Props for the PostStats component.

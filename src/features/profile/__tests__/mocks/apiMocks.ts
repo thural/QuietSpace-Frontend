@@ -7,8 +7,8 @@
 
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import type { ResId } from '@/api/schemas/inferred/common';
-import { 
+import type { ResId } from '@/shared/api/models/common';
+import {
   baseUserProfile,
   privateUserProfile,
   baseUserStats,
@@ -29,7 +29,7 @@ export const profileApiServer = setupServer(
   // Get user profile
   rest.get(`${API_BASE}/:userId`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json(baseUserProfile));
@@ -53,7 +53,7 @@ export const profileApiServer = setupServer(
   // Get user stats
   rest.get(`${API_BASE}/:userId/stats`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json(baseUserStats));
@@ -72,7 +72,7 @@ export const profileApiServer = setupServer(
   // Get followers
   rest.get(`${API_BASE}/:userId/followers`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json([baseUserConnection, mutualConnection]));
@@ -91,7 +91,7 @@ export const profileApiServer = setupServer(
   // Get followings
   rest.get(`${API_BASE}/:userId/followings`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json([baseUserConnection, mutualConnection]));
@@ -110,7 +110,7 @@ export const profileApiServer = setupServer(
   // Follow user
   rest.post(`${API_BASE}/:userId/follow`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json({ success: true }));
@@ -132,7 +132,7 @@ export const profileApiServer = setupServer(
   // Unfollow user
   rest.post(`${API_BASE}/:userId/unfollow`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json({ success: true }));
@@ -154,7 +154,7 @@ export const profileApiServer = setupServer(
   // Update profile
   rest.put(`${API_BASE}/:userId`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json({ ...baseUserProfile, ...req.body }));
@@ -171,7 +171,7 @@ export const profileApiServer = setupServer(
   // Upload profile photo
   rest.post(`${API_BASE}/:userId/photo`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json({
@@ -194,7 +194,7 @@ export const profileApiServer = setupServer(
   // Delete profile
   rest.delete(`${API_BASE}/:userId`, (req, res, ctx) => {
     const { userId } = req.params;
-    
+
     switch (userId) {
       case 'user-123':
         return res(ctx.json({ success: true }));
@@ -211,14 +211,14 @@ export const profileApiServer = setupServer(
   // Search users
   rest.get(`${API_BASE}/search`, (req, res, ctx) => {
     const query = req.url.searchParams.get('q');
-    
+
     if (!query) {
       return res(
         ctx.status(400),
         ctx.json({ error: 'Search query is required' })
       );
     }
-    
+
     switch (query) {
       case 'john':
         return res(ctx.json([baseUserProfile]));
@@ -242,48 +242,48 @@ export const mockApiResponses = {
     status: 200,
     data: userId === 'user-123' ? baseUserProfile : privateUserProfile
   }),
-  
+
   getStats: (userId: ResId) => ({
     status: 200,
     data: userId === 'user-123' ? baseUserStats : highEngagementStats
   }),
-  
+
   getFollowers: (userId: ResId) => ({
     status: 200,
     data: userId === 'user-123' ? [baseUserConnection, mutualConnection] : []
   }),
-  
+
   getFollowings: (userId: ResId) => ({
     status: 200,
     data: userId === 'user-123' ? [baseUserConnection, mutualConnection] : []
   }),
-  
+
   followUser: (userId: ResId) => ({
     status: 200,
     data: { success: true }
   }),
-  
+
   unfollowUser: (userId: ResId) => ({
     status: 200,
     data: { success: true }
   }),
-  
+
   // Error responses
   notFound: {
     status: 404,
     data: { error: 'User not found' }
   },
-  
+
   serverError: {
     status: 500,
     data: { error: 'Internal server error' }
   },
-  
+
   unauthorized: {
     status: 401,
     data: { error: 'Unauthorized' }
   },
-  
+
   forbidden: {
     status: 403,
     data: { error: 'Forbidden' }
@@ -321,7 +321,7 @@ export class MockWebSocket {
     if (!this.connected) {
       throw new Error('WebSocket is not connected');
     }
-    
+
     // Echo the message back for testing
     setTimeout(() => {
       this.emit('message', data);
@@ -372,7 +372,7 @@ export class MockEventSource {
   private listeners: Map<string, Function[]> = new Map();
   private connected = false;
 
-  constructor(private url: string) {}
+  constructor(private url: string) { }
 
   connect() {
     setTimeout(() => {

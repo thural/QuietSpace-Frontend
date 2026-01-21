@@ -1,11 +1,11 @@
-import { ResId } from "@/api/schemas/inferred/common";
+import { ResId } from "@/shared/api/models/common";
 import Conditional from "@/shared/Conditional";
 import EmojiInput from "@/shared/EmojiInput";
 import FlexStyled from "@/shared/FlexStyled";
 import FormStyled from "@/shared/FormStyled";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapperWithRef } from "@/types/sharedComponentTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { RefObject } from "react";
 
 /**

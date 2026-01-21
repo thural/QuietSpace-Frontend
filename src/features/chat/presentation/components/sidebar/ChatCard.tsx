@@ -1,7 +1,7 @@
-import { ChatResponse } from "@/api/schemas/inferred/chat";
+import { ChatResponse } from "@/features/chat/data/models/chat";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import styles from "@/styles/chat/chatCardStyles";
-import useChatCard from "@/styles/chat/useChatCard";
+import styles from "../../styles/chatCardStyles";
+import useChatCard from "../../styles/useChatCard";
 import BoxStyled from "@shared/BoxStyled";
 import Typography from "@shared/Typography";
 import { useParams } from "react-router-dom";

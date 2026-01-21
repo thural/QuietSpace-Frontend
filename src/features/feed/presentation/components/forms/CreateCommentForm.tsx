@@ -1,10 +1,10 @@
-import { CommentResponse } from "@/api/schemas/inferred/comment";
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { CommentResponse } from "@/features/feed/data/models/comment";
+import { PostResponse } from "@/features/feed/data/models/post";
 import ModalStyled from "@/shared/ModalStyled";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import useCreateCommentForm from "@/services/hook/feed/useCreateCommentForm";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import useCreateCommentForm from "@features/feed/application/hooks/useCreateCommentForm";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FormControls from "../fragments/FormControls";
 import ReplyInput from "../fragments/ReplyInput";
 import TruncatedContent from "../fragments/TruncatedContent";

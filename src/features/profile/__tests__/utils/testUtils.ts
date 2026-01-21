@@ -7,7 +7,7 @@
 
 import { renderHook, RenderHookOptions } from '@testing-library/react';
 import React, { ReactElement, ReactNode } from 'react';
-import type { ResId } from '@/api/schemas/inferred/common';
+import type { ResId } from '@/shared/api/models/common';
 import type {
   UserProfileEntity,
   UserProfileStatsEntity,
@@ -267,7 +267,7 @@ export class PerformanceUtils {
     maxTimeMs: number
   ): Promise<T> {
     const { result, averageTime } = await this.measureTime(fn);
-    
+
     if (averageTime > maxTimeMs) {
       throw new Error(`Function took ${averageTime}ms, expected less than ${maxTimeMs}ms`);
     }
@@ -324,10 +324,10 @@ export class StateUtils {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const startTime = Date.now();
-      
+
       const checkState = () => {
         const state = getState();
-        
+
         if (condition(state)) {
           resolve();
         } else if (Date.now() - startTime > timeout) {
@@ -336,7 +336,7 @@ export class StateUtils {
           setTimeout(checkState, 50);
         }
       };
-      
+
       checkState();
     });
   }
@@ -399,7 +399,7 @@ export class EventMockUtils {
     const listeners = this.listeners.get(event) || [];
     listeners.push(handler);
     this.listeners.set(event, listeners);
-    
+
     target.addEventListener(event, handler as EventListener);
   }
 

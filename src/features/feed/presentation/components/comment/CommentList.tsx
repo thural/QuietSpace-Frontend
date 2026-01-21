@@ -1,7 +1,7 @@
-import { ResId } from "@/api/schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 import React from "react";
 import CommentBox from "./Comment";
-import { CommentResponse } from "@/api/schemas/inferred/comment";
+import { CommentResponse } from "@/features/feed/data/models/comment";
 
 /**
  * Props for the CommentList component.

@@ -1,12 +1,12 @@
 import BoxStyled from "@/shared/BoxStyled";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
-import styles from "@/styles/profile/userDetailsSectionStyles";
+import styles from "./styles/userDetailsSectionStyles";
 
-import { UserProfileResponse, UserResponse } from "@/api/schemas/inferred/user";
+import { UserProfileResponse, UserResponse } from "@/features/profile/data/models/user";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { isUserProfile } from "@/utils/typeUtils";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { isUserProfile } from "@/shared/utils/typeUtils";
 
 /**
  * UserDetailsSectionProps interface.

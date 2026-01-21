@@ -1,4 +1,4 @@
-import { GenericWrapper } from "@/types/sharedComponentTypes"
+import { GenericWrapper } from "@shared-types/sharedComponentTypes"
 import { ChangeEventHandler, FocusEventHandler } from "react"
 
 export interface SearchBarProps extends GenericWrapper {

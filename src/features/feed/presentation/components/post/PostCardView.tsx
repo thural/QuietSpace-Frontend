@@ -1,15 +1,15 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import BatchShareForm from "@/features/chat/presentation/components/forms/BatchSendForm";
 import BoxStyled from "@/shared/BoxStyled";
 import Conditional from "@/shared/Conditional";
 import styles from "../../styles/postStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import PostOverlays from "./PostOverlays";
 import PostContent from "../fragments/PostContent";
 import PostHeader from "../fragments/PostHeader";
 import PostInteractions from "../fragments/PostInteractions";
 import PostMenu from "../fragments/PostMenu";
-import type { PostViewModel } from "@/services/hook/feed/usePost";
+import type { PostViewModel } from "@features/feed/application/hooks/usePost";
 
 export interface PostCardViewProps extends GenericWrapper {
     post: PostResponse;

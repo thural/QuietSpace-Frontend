@@ -5,10 +5,10 @@
  * Handles loading, error, and success states appropriately.
  */
 
-import { PostResponse, PostList, PostPage } from "@/api/schemas/inferred/post";
+import { PostResponse, PostList, PostPage } from "@/features/feed/data/models/post";
 import PostCard from "@/features/feed/presentation/components/post/PostCard";
 import LoaderStyled from "@/shared/LoaderStyled";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography from "@/shared/Typography";
 import { UseMutationResult } from "@tanstack/react-query";
 

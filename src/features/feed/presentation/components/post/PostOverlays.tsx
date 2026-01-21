@@ -1,11 +1,11 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import BatchShareForm from "@/features/chat/presentation/components/forms/BatchSendForm";
 import Conditional from "@/shared/Conditional";
 import Overlay from "@/shared/Overlay";
 import CreateCommentForm from "../forms/CreateCommentForm";
 import CreateRepostForm from "../forms/CreateRepostForm";
 import EditPostForm from "../forms/EditPostForm";
-import type { PostViewModel } from "@/services/hook/feed/usePost";
+import type { PostViewModel } from "@features/feed/application/hooks/usePost";
 
 export interface PostOverlaysProps {
     post: PostResponse;

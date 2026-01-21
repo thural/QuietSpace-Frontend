@@ -6,7 +6,7 @@
  */
 
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import DefaultContainer from "@/shared/DefaultContainer";
 import SearchBar from "./SearchBar/SearchBar";
 import UserResults from "./UserResults/UserResults";

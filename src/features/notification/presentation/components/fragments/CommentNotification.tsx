@@ -1,5 +1,5 @@
 import { NotificationItemProps } from "@shared-types/notificationTypes";
-import { genNotificationText } from "@utils/notificationUtils";
+import { genNotificationText } from "@/shared/utils/notificationUtils";
 import NotificationCard from "../NotificationCard";
 
 /**

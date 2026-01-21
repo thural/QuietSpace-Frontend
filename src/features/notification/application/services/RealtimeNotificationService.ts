@@ -7,7 +7,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import type { NotificationEvent, NotificationMessage } from '../../domain/entities/NotificationEntities';
-import type { NotificationResponse } from '@api/schemas/inferred/notification';
+import type { NotificationResponse } from '@/features/notification/data/models/notification';
 import { useNotificationUIStore } from '../stores/notificationUIStore';
 
 /**
@@ -69,7 +69,7 @@ export class RealtimeNotificationService implements IRealtimeNotificationService
             this.ws = new WebSocket(wsUrl);
 
             this.setupWebSocketHandlers();
-            
+
             await new Promise<void>((resolve, reject) => {
                 const timeout = setTimeout(() => {
                     reject(new Error('Connection timeout'));
@@ -101,7 +101,7 @@ export class RealtimeNotificationService implements IRealtimeNotificationService
      */
     disconnect(): void {
         this.stopHeartbeat();
-        
+
         if (this.ws) {
             this.ws.close();
             this.ws = null;
@@ -250,7 +250,7 @@ export class RealtimeNotificationService implements IRealtimeNotificationService
      */
     private startHeartbeat(): void {
         this.stopHeartbeat();
-        
+
         this.heartbeatInterval = setInterval(() => {
             if (this.isConnected() && this.ws) {
                 this.ws.send(JSON.stringify({ type: 'HEARTBEAT' }));
@@ -273,7 +273,7 @@ export class RealtimeNotificationService implements IRealtimeNotificationService
      */
     private scheduleReconnect(): void {
         const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts);
-        
+
         setTimeout(() => {
             if (this.userId && this.reconnectAttempts < this.maxReconnectAttempts) {
                 this.reconnectAttempts++;
@@ -393,9 +393,9 @@ export const useRealtimeNotifications = (userId: string | null) => {
             service.removeEventListener('NOTIFICATION_UPDATED', handleNotificationUpdated);
             service.removeEventListener('NOTIFICATION_DELETED', handleNotificationDeleted);
             service.removeEventListener('NOTIFICATION_READ', handleNotificationRead);
-            
+
             eventHandlersRef.current.clear();
-            
+
             if (service.getConnectionStatus() === 'connected') {
                 service.disconnect();
             }

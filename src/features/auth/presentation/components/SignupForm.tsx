@@ -1,8 +1,8 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import InputBoxStyled from "@/shared/InputBoxStyled";
 import TextInputStyled from "@/shared/TextInputStyled";
-import { useSignupForm } from "@/services/hook/auth/useSignupForm";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import { useSignupForm } from "@features/auth/application/hooks/useSignupForm";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import styles from "../styles/authStyles";
 import BoxStyled from "@/shared/BoxStyled";
 import GradientButton from "@/shared/buttons/GradientButton";

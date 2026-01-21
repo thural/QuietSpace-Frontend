@@ -5,9 +5,9 @@
  * Provides abstraction for chat CRUD operations.
  */
 
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
+import type { ResId } from "@/shared/api/models/common";
+import type { JwtToken } from "@/shared/api/models/common";
 
 /**
  * Chat Repository interface.

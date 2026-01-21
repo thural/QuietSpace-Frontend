@@ -1,5 +1,5 @@
-import useStyles from "@/styles/chat/chatQueryInputStyles";
-import { ConsumerFn } from "@/types/genericTypes";
+import useStyles from "../../styles/chatQueryInputStyles";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import InputStyled from "@shared/InputStyled";
 import React from "react";
 

@@ -2,8 +2,8 @@
 import DarkButton from "@/shared/buttons/DarkButton";
 import FlexStyled from "@/shared/FlexStyled";
 import useStyles from "../../styles/formControlStyles";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 /**
  * Props for the FormControls component.

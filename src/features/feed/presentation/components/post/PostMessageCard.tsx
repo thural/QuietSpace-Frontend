@@ -1,9 +1,9 @@
-import { ResId } from "@/api/schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 import BoxStyled from "@/shared/BoxStyled";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import PostMessageSkeleton from "@/shared/PostMessageSkeleton";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { useGetPostById } from "@/services/data/usePostData";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { useGetPostById } from "@features/feed/data";
 import PostCardBase from "./PostCardBase";
 
 /**

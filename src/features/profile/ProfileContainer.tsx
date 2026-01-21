@@ -1,13 +1,13 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import OutlineButton from "@/shared/buttons/OutlineButton";
 import Conditional from "@/shared/Conditional";
 import DefaultContainer from "@/shared/DefaultContainer";
 import FollowToggle from "@/shared/FollowToggle";
 import Typography from "@/shared/Typography";
 import { useParams } from "react-router-dom";
-import useUserProfile from "@/services/hook/profile/useUserProfile";
+import useUserProfile from "@features/feed/application/hooks/useUserProfile";
 import LoaderStyled from "@/shared/LoaderStyled";
 import PrivateBlock from "@/shared/PrivateBlock";
 import {

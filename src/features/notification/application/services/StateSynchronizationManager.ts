@@ -5,7 +5,7 @@
  * Handles conflict resolution and state consistency.
  */
 
-import type { NotificationPage, NotificationResponse } from '@api/schemas/inferred/notification';
+import type { NotificationPage, NotificationResponse } from '@/features/notification/data/models/notification';
 import type { NotificationQuery } from '../../domain/entities/INotificationRepository';
 import type { RealtimeNotificationEvent } from './RealtimeNotificationService';
 import { useNotificationUIStore } from '../stores/notificationUIStore';
@@ -64,7 +64,7 @@ export class StateSynchronizationManager {
         for (const [operationId, update] of optimisticUpdates.entries()) {
             if (update.type === 'created' && update.data.isOptimistic) {
                 // Check if this optimistic creation exists on server
-                const serverMatch = serverPage.content.find(n => 
+                const serverMatch = serverPage.content.find(n =>
                     this.isSameNotification(n, update.data)
                 );
 
@@ -74,13 +74,13 @@ export class StateSynchronizationManager {
                 }
             } else if (update.type === 'updated' || update.type === 'mark_read') {
                 // Apply client updates if they're newer than server
-                const serverIndex = synchronizedPage.content.findIndex(n => 
+                const serverIndex = synchronizedPage.content.findIndex(n =>
                     n.id === update.data.notificationId
                 );
 
                 if (serverIndex !== -1) {
                     const serverNotification = synchronizedPage.content[serverIndex];
-                    const clientNotification = clientPage.content.find(n => 
+                    const clientNotification = clientPage.content.find(n =>
                         n.id === update.data.notificationId
                     );
 
@@ -93,7 +93,7 @@ export class StateSynchronizationManager {
                 }
             } else if (update.type === 'deleted') {
                 // Remove if client deleted it
-                synchronizedPage.content = synchronizedPage.content.filter(n => 
+                synchronizedPage.content = synchronizedPage.content.filter(n =>
                     n.id !== update.data.notificationId
                 );
             }
@@ -155,7 +155,7 @@ export class StateSynchronizationManager {
         strategy: SyncStrategy
     ): SyncConflict | null {
         const { optimisticUpdates } = useNotificationUIStore.getState();
-        
+
         // Check for optimistic creation conflict
         for (const [operationId, update] of optimisticUpdates.entries()) {
             if (update.type === 'created' && update.data.isOptimistic) {
@@ -204,7 +204,7 @@ export class StateSynchronizationManager {
         strategy: SyncStrategy
     ): SyncConflict | null {
         const index = page.content.findIndex(n => n.id === event.data.id);
-        
+
         if (index === -1) {
             // Notification not found, add it
             page.content.unshift(event.data);
@@ -254,7 +254,7 @@ export class StateSynchronizationManager {
         strategy: SyncStrategy
     ): SyncConflict | null {
         const index = page.content.findIndex(n => n.id === event.data.id);
-        
+
         if (index === -1) {
             return null; // Already deleted
         }
@@ -296,9 +296,9 @@ export class StateSynchronizationManager {
      * Check if two notifications represent the same entity.
      */
     private isSameNotification(notif1: any, notif2: any): boolean {
-        return notif1.actorId === notif2.actorId && 
-               notif1.contentId === notif2.contentId && 
-               notif1.type === notif2.type;
+        return notif1.actorId === notif2.actorId &&
+            notif1.contentId === notif2.contentId &&
+            notif1.type === notif2.type;
     }
 
     /**
@@ -355,7 +355,7 @@ export class StateSynchronizationManager {
         try {
             // Get fresh data from server
             const serverData = await repository.getNotifications(query, 'token');
-            
+
             // Clear optimistic updates since we're forcing sync
             const { clearOptimisticUpdates } = useNotificationUIStore.getState();
             clearOptimisticUpdates();
@@ -378,38 +378,38 @@ export const stateSynchronizationManager = new StateSynchronizationManager();
  * Hook for using state synchronization.
  */
 export const useStateSynchronization = () => {
-    const { 
-        optimisticUpdates, 
+    const {
+        optimisticUpdates,
         pendingOperations,
-        updateLastSyncTime 
+        updateLastSyncTime
     } = useNotificationUIStore();
 
     return {
         // Manager
         manager: stateSynchronizationManager,
-        
+
         // State
         optimisticUpdates,
         pendingOperations,
-        
+
         // Actions
         synchronizeServerResponse: (serverPage: NotificationPage, clientPage: NotificationPage | null, strategy?: SyncStrategy) =>
             stateSynchronizationManager.synchronizeServerResponse(serverPage, clientPage, strategy),
-        
+
         processRealtimeEvent: (event: RealtimeNotificationEvent, currentState: NotificationPage | null, strategy?: SyncStrategy) =>
             stateSynchronizationManager.processRealtimeEvent(event, currentState, strategy),
-        
+
         resolveConflict: (conflictId: string, resolution: 'client_wins' | 'server_wins' | 'merge') =>
             stateSynchronizationManager.resolveConflict(conflictId, resolution),
-        
+
         forceSync: (repository: any, query: NotificationQuery) =>
             stateSynchronizationManager.forceSync(repository, query),
-        
+
         // Status
         getPendingConflicts: () => stateSynchronizationManager.getPendingConflicts(),
         clearResolvedConflicts: () => stateSynchronizationManager.clearResolvedConflicts(),
         hasConflicts: stateSynchronizationManager.getPendingConflicts().length > 0,
-        
+
         // Update sync time
         updateLastSyncTime
     };

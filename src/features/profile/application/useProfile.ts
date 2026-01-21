@@ -8,11 +8,11 @@
 
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ResId } from "@/api/schemas/inferred/common";
+import { ResId } from "@/shared/api/models/common";
 import { getProfileRepository, initializeProfileContainer } from "../di";
 import { useProfileData, useProfileDataWithRepository } from "../data";
 import { useProfileWithState, useRealTimeProfile } from "../state";
-import useUserQueries from "@/api/queries/userQueries";
+import useUserQueries from "@features/profile/data/userQueries";
 import type {
   UserProfileEntity,
   UserProfileStatsEntity,
@@ -104,7 +104,7 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
   }, [config.repositoryConfig?.useMockRepositories]);
 
   // Choose data source based on configuration
-  const data = config.useRepositoryPattern 
+  const data = config.useRepositoryPattern
     ? useProfileDataWithRepository(userId, config.repositoryConfig)
     : useProfileData(userId);
 
@@ -224,7 +224,7 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
     profileAccess,
     completeProfile,
     userConnections,
-    
+
     // Legacy compatibility
     user,
     postsCount,
@@ -234,13 +234,13 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
     followings,
     isHasAccess,
     userPosts,
-    
+
     // UI state
     viewFollowers,
     viewFollowings,
     isLoading,
     error,
-    
+
     // Actions
     toggleFollowers,
     toggleFollowings,
@@ -248,14 +248,14 @@ export const useProfile = (userId: ResId, config: ProfileConfig = {}) => {
     refreshProfile,
     followUser,
     unfollowUser,
-    
+
     // Computed values
     canViewProfile,
     accessDeniedReason,
     profileCompletion,
     engagementRate,
     profileStrength,
-    
+
     // Repository access (for advanced usage)
     repository
   };
@@ -360,14 +360,14 @@ export const useProfileEnhancedWithState = (
 export const useCurrentProfile = (config: ProfileConfig = {}) => {
   const { getSignedUserElseThrow } = useUserQueries();
   const signedUser = getSignedUserElseThrow();
-  
+
   const profileData = useProfile(signedUser.id, config);
-  
+
   // Edit profile action
   const editProfile = useCallback(async (updates: Partial<UserProfileEntity>) => {
     if (profileData.repository?.updateProfile && profileData.userProfile) {
       const updatedProfile = await profileData.repository.updateProfile(
-        profileData.userProfile.id, 
+        profileData.userProfile.id,
         updates
       );
       await profileData.refreshProfile();

@@ -1,10 +1,10 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import FormStyled from "@/shared/FormStyled";
 import ModalStyled from "@/shared/ModalStyled";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import useCreateRepostForm from "@/services/hook/feed/useCreateRepostForm";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import useCreateRepostForm from "@features/feed/application/hooks/useCreateRepostForm";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
 import PostCardBase from "../post/PostCardBase";

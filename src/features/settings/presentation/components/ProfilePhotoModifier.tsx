@@ -1,7 +1,7 @@
-import useUserQueries from "@/api/queries/userQueries";
-import { useUploadProfilePhoto } from "@/services/data/useUserData";
+import useUserQueries from "@/core/network/api/queries/userQueries";
+import { useUploadProfilePhoto } from "@features/profile/data";
 import useStyles from "../styles/profileModifierStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { ChangeEvent, useState } from "react";
 import BaseCard from "@/shared/BaseCard";
 import BoxStyled from "@/shared/BoxStyled";

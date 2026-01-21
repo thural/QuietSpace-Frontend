@@ -7,13 +7,13 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
-import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/api/schemas/inferred/chat";
-import type { ResId } from "@/api/schemas/inferred/common";
-import type { JwtToken } from "@/api/schemas/inferred/common";
-import { useAuthStore } from '../../../services/store/zustand';
-import type { 
-    ChatQuery, 
-    ChatFilters, 
+import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
+import type { ResId } from "@/shared/api/models/common";
+import type { JwtToken } from "@/shared/api/models/common";
+import { useAuthStore } from "@services/store/zustand";
+import type {
+    ChatQuery,
+    ChatFilters,
     ChatResult,
     ChatMessage,
     ChatSettings,
@@ -35,7 +35,7 @@ export interface ReactQueryChatState {
     unreadCount: UseQueryResult<number, Error>;
     isLoading: boolean;
     error: Error | null;
-    
+
     // Additional React Query specific methods
     prefetchChats?: (userId: string) => Promise<void>;
     prefetchMessages?: (chatId: ResId) => Promise<void>;
@@ -84,16 +84,16 @@ export const useReactQueryChat = (
     }, [config.useReactQuery, diContainer]);
 
     // Get React Query results
-    const chats = reactQueryService?.getChats(userId, token || '') || 
+    const chats = reactQueryService?.getChats(userId, token || '') ||
         { data: null, isLoading: false, error: null } as UseQueryResult<ChatList, Error>;
-    
-    const messages = reactQueryService?.getMessages('chat-id', 0, token || '') || 
+
+    const messages = reactQueryService?.getMessages('chat-id', 0, token || '') ||
         { data: null, isLoading: false, error: null } as UseQueryResult<PagedMessage, Error>;
-    
-    const participants = reactQueryService?.getChatParticipants('chat-id', token || '') || 
+
+    const participants = reactQueryService?.getChatParticipants('chat-id', token || '') ||
         { data: null, isLoading: false, error: null } as UseQueryResult<any[], Error>;
-    
-    const unreadCount = reactQueryService?.getUnreadCount(userId, token || '') || 
+
+    const unreadCount = reactQueryService?.getUnreadCount(userId, token || '') ||
         { data: null, isLoading: false, error: null } as UseQueryResult<number, Error>;
 
     // Combined loading state
@@ -101,9 +101,9 @@ export const useReactQueryChat = (
     const error = chats.error || messages.error || participants.error || unreadCount.error || null;
 
     // Actions
-    const createChat = reactQueryService?.createChat() || 
+    const createChat = reactQueryService?.createChat() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as ChatResponse),
             isPending: false,
             isError: false,
@@ -116,15 +116,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<ChatResponse, Error, CreateChatRequest>;
-    
-    const deleteChat = reactQueryService?.deleteChat() || 
+
+    const deleteChat = reactQueryService?.deleteChat() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as Response),
             isPending: false,
             isError: false,
@@ -137,15 +137,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<Response, Error, { chatId: string }>;
-    
-    const sendMessage = reactQueryService?.sendMessage() || 
+
+    const sendMessage = reactQueryService?.sendMessage() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as any),
             isPending: false,
             isError: false,
@@ -158,15 +158,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<any, Error, { chatId: string, messageData: any }>;
-    
-    const updateChatSettings = reactQueryService?.updateChatSettings() || 
+
+    const updateChatSettings = reactQueryService?.updateChatSettings() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as ChatResponse),
             isPending: false,
             isError: false,
@@ -179,15 +179,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<ChatResponse, Error, { chatId: string, settings: any }>;
-    
-    const searchChats = reactQueryService?.searchChats() || 
+
+    const searchChats = reactQueryService?.searchChats() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as ChatList),
             isPending: false,
             isError: false,
@@ -200,15 +200,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<ChatList, Error, { query: string }>;
-    
-    const addParticipant = reactQueryService?.addParticipant() || 
+
+    const addParticipant = reactQueryService?.addParticipant() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as ChatResponse),
             isPending: false,
             isError: false,
@@ -221,15 +221,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
-    
-    const removeParticipant = reactQueryService?.removeParticipant() || 
+
+    const removeParticipant = reactQueryService?.removeParticipant() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as ChatResponse),
             isPending: false,
             isError: false,
@@ -242,15 +242,15 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
         } as UseMutationResult<ChatResponse, Error, { chatId: string, participantId: string }>;
-    
-    const markMessagesAsRead = reactQueryService?.markMessagesAsRead() || 
+
+    const markMessagesAsRead = reactQueryService?.markMessagesAsRead() ||
         {
-            mutate: () => {},
+            mutate: () => { },
             mutateAsync: async () => ({} as any),
             isPending: false,
             isError: false,
@@ -263,7 +263,7 @@ export const useReactQueryChat = (
             failureCount: 0,
             submittedAt: 0,
             variables: undefined,
-            reset: () => {},
+            reset: () => { },
             status: 'idle',
             context: undefined,
             isPaused: false
@@ -296,12 +296,12 @@ export const useReactQueryChat = (
         unreadCount,
         isLoading,
         error,
-        
+
         // Additional React Query methods
         prefetchChats,
         prefetchMessages,
         invalidateCache,
-        
+
         // Actions
         createChat,
         deleteChat,

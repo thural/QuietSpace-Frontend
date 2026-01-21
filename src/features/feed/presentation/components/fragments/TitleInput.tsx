@@ -1,6 +1,6 @@
 import TextInputStyled from "@/shared/TextInputStyled";
 import useStyles from "../../styles/titleInputStyles";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 
 /**
  * Props for the TitleInput component.

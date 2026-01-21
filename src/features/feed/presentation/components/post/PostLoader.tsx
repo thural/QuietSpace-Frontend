@@ -1,9 +1,9 @@
-import { ResId } from "@/api/schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import PostSkeleton from "@/shared/PostSkeleton";
-import { useGetPostById } from "@/services/data/usePostData";
+import { useGetPostById } from "@features/feed/data";
 import PostCard from "./PostCard";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 /**
  * Props for the PostLoader component.

@@ -1,4 +1,4 @@
-import { CommentResponse } from "@/api/schemas/inferred/comment";
+import { CommentResponse } from "@/features/feed/data/models/comment";
 import BoxStyled from "@/shared/BoxStyled";
 import EmojiText from "@/shared/EmojiText";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
@@ -6,7 +6,7 @@ import FlexStyled from "@/shared/FlexStyled";
 import Overlay from "@/shared/Overlay";
 import Typography from "@/shared/Typography";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import useComment from "@/services/hook/feed/useComment";
+import useComment from "@features/feed/application/hooks/useComment";
 import styles from "../../styles/commentStyles";
 import CreateCommentForm from "../forms/CreateCommentForm";
 import CommentControls from "./CommentControls";

@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 import { useFeedUIStore } from '../stores/feedUIStore';
-import type { PostResponse } from '@api/schemas/inferred/post';
+import type { PostResponse } from '@/features/feed/data/models/post';
 
 /**
  * Real-time update types
@@ -52,7 +52,7 @@ export const useRealtimeFeedUpdates = () => {
     const handleMessage = useCallback((event: MessageEvent) => {
         try {
             const update: RealtimePostUpdate = JSON.parse(event.data);
-            
+
             switch (update.type) {
                 case 'post_created':
                     handlePostCreated(update);
@@ -169,7 +169,7 @@ export const useRealtimeFeedUpdates = () => {
         }
 
         setConnectionStatus('connecting');
-        
+
         try {
             const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8080/feed-updates';
             const ws = new WebSocket(wsUrl);
@@ -186,7 +186,7 @@ export const useRealtimeFeedUpdates = () => {
             ws.onclose = (event) => {
                 setConnectionStatus('disconnected');
                 wsRef.current = null;
-                
+
                 // Attempt reconnection if not intentional
                 if (!event.wasClean && reconnectAttemptsRef.current < 5) {
                     scheduleReconnect();
@@ -209,7 +209,7 @@ export const useRealtimeFeedUpdates = () => {
      */
     const scheduleReconnect = useCallback(() => {
         const delay = Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
-        
+
         reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current++;
             connect();
@@ -223,12 +223,12 @@ export const useRealtimeFeedUpdates = () => {
         if (reconnectTimeoutRef.current) {
             clearTimeout(reconnectTimeoutRef.current);
         }
-        
+
         if (wsRef.current) {
             wsRef.current.close();
             wsRef.current = null;
         }
-        
+
         setConnectionStatus('disconnected');
     }, [setConnectionStatus]);
 
@@ -244,7 +244,7 @@ export const useRealtimeFeedUpdates = () => {
     // Auto-connect on mount
     useEffect(() => {
         connect();
-        
+
         return () => {
             disconnect();
         };

@@ -10,8 +10,8 @@ import { NotificationRepository } from '../../data/repositories/NotificationRepo
 import { MockNotificationRepository } from '../../data/repositories/MockNotificationRepository';
 import type { INotificationRepository } from '../../domain/entities/INotificationRepository';
 import type { NotificationQuery, NotificationFilters } from '../../domain/entities/NotificationEntities';
-import type { NotificationPage, NotificationResponse } from '@api/schemas/inferred/notification';
-import type { ResId } from '@api/schemas/inferred/common';
+import type { NotificationPage, NotificationResponse } from '@/features/notification/data/models/notification';
+import type { ResId } from '@/shared/api/models/common';
 
 // Mock the API requests
 jest.mock('../../data/repositories/NotificationRepository', () => ({
@@ -108,7 +108,7 @@ describe('Notification Repository Tests', () => {
             if (notifications.content.length > 0) {
                 const notificationId = notifications.content[0].id;
                 const result = await mockRepository.markNotificationAsSeen(notificationId, 'test-token');
-                
+
                 expect(result).toBeDefined();
                 expect(result.id).toBe(notificationId);
                 expect(result.isSeen).toBe(true);
@@ -126,7 +126,7 @@ describe('Notification Repository Tests', () => {
             if (notifications.content.length > 0) {
                 const notificationIds = notifications.content.slice(0, 2).map(n => n.id);
                 const results = await mockRepository.markMultipleNotificationsAsSeen(notificationIds, 'test-token');
-                
+
                 expect(results).toBeDefined();
                 expect(Array.isArray(results)).toBe(true);
                 expect(results.length).toBe(notificationIds.length);
@@ -143,7 +143,7 @@ describe('Notification Repository Tests', () => {
 
             if (notifications.content.length > 0) {
                 const notificationId = notifications.content[0].id;
-                
+
                 await expect(mockRepository.deleteNotification(notificationId, 'test-token')).resolves.not.toThrow();
             }
         });
@@ -159,7 +159,7 @@ describe('Notification Repository Tests', () => {
             if (notifications.content.length > 0) {
                 const notificationId = notifications.content[0].id;
                 const result = await mockRepository.getNotificationById(notificationId, 'test-token');
-                
+
                 expect(result).toBeDefined();
                 expect(result.id).toBe(notificationId);
             }

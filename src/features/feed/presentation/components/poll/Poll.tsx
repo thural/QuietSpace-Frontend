@@ -1,12 +1,12 @@
-import { ResId } from "@/api/schemas/inferred/common";
-import { PollResponse } from "@/api/schemas/inferred/post";
+import { ResId } from "@/shared/api/models/common";
+import { PollResponse } from "@/features/feed/data/models/post";
 import Conditional from "@/shared/Conditional";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
-import usePoll from "@/services/hook/feed/usePoll";
+import usePoll from "@features/feed/application/hooks/usePoll";
 import styles from "../../styles/pollStyles";
-import { isDateExpired } from "@/utils/dateUtils";
+import { isDateExpired } from "@/shared/utils/dateUtils";
 import { Progress } from "@mantine/core";
 import React from "react";
 

@@ -9,8 +9,8 @@
 import { useCallback } from 'react';
 import { useFeedUIStore } from '../stores/feedUIStore';
 import { useFeedRepository } from '../../di/useFeedDI';
-import type { PostRequest, RepostRequest } from '@api/schemas/inferred/post';
-import type { PostResponse } from '@api/schemas/inferred/post';
+import type { PostRequest, RepostRequest } from '@/features/feed/data/models/post';
+import type { PostResponse } from '@/features/feed/data/models/post';
 
 /**
  * Optimistic update result
@@ -73,10 +73,10 @@ export const useFeedOptimisticUpdates = () => {
         try {
             // Attempt actual creation
             const result = await repository.createPost(post, 'dummy-token'); // Token would come from DI
-            
+
             // Remove optimistic update on success
             removeOptimisticUpdate(tempId);
-            
+
             return result;
         } catch (error) {
             // Remove optimistic update on error
@@ -92,7 +92,7 @@ export const useFeedOptimisticUpdates = () => {
     const updatePostOptimistic = useCallback(async (postId: string, post: PostRequest): Promise<PostResponse> => {
         // Store original post for rollback
         let originalPost: PostResponse | null = null;
-        
+
         try {
             // Get current post for rollback
             originalPost = await repository.getPostById(postId, 'dummy-token');
@@ -131,7 +131,7 @@ export const useFeedOptimisticUpdates = () => {
                     timestamp: new Date(),
                     data: originalPost
                 });
-                
+
                 // Remove rollback after delay
                 setTimeout(() => {
                     removeOptimisticUpdate(postId);
@@ -142,10 +142,10 @@ export const useFeedOptimisticUpdates = () => {
         try {
             // Attempt actual update
             const result = await repository.editPost(postId, post, 'dummy-token');
-            
+
             // Remove optimistic update on success
             removeOptimisticUpdate(postId);
-            
+
             return result;
         } catch (error) {
             // Trigger rollback on error
@@ -161,7 +161,7 @@ export const useFeedOptimisticUpdates = () => {
     const deletePostOptimistic = useCallback(async (postId: string): Promise<void> => {
         // Store original post for rollback
         let originalPost: PostResponse | null = null;
-        
+
         try {
             originalPost = await repository.getPostById(postId, 'dummy-token');
         } catch (error) {
@@ -185,7 +185,7 @@ export const useFeedOptimisticUpdates = () => {
                     timestamp: new Date(),
                     data: originalPost
                 });
-                
+
                 // Remove rollback after delay
                 setTimeout(() => {
                     removeOptimisticUpdate(postId);
@@ -196,10 +196,10 @@ export const useFeedOptimisticUpdates = () => {
         try {
             // Attempt actual deletion
             await repository.deletePost(postId, 'dummy-token');
-            
+
             // Remove optimistic update on success
             removeOptimisticUpdate(postId);
-            
+
         } catch (error) {
             // Trigger rollback on error
             await rollback();
@@ -213,7 +213,7 @@ export const useFeedOptimisticUpdates = () => {
      */
     const createRepostOptimistic = useCallback(async (repost: RepostRequest): Promise<PostResponse> => {
         const tempId = `temp-repost-${Date.now()}`;
-        
+
         // Add optimistic update
         addOptimisticUpdate({
             id: tempId,
@@ -225,10 +225,10 @@ export const useFeedOptimisticUpdates = () => {
         try {
             // Attempt actual repost creation
             const result = await repository.createRepost(repost, 'dummy-token');
-            
+
             // Remove optimistic update on success
             removeOptimisticUpdate(tempId);
-            
+
             return result;
         } catch (error) {
             // Remove optimistic update on error

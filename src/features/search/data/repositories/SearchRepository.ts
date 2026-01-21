@@ -5,8 +5,8 @@
  * Abstracts the data source and provides a clean interface.
  */
 
-import type { UserList } from "@/api/schemas/inferred/user";
-import type { PostList } from "@/api/schemas/inferred/post";
+import type { UserList } from "@/features/profile/data/models/user";
+import type { PostList } from "@/features/feed/data/models/post";
 import type { SearchQuery, SearchResult, SearchFilters } from "../../domain/entities";
 
 /**
@@ -111,28 +111,28 @@ export interface ISearchRepository {
 export interface RepositoryCapabilities {
     /** Whether user search is supported */
     supportsUserSearch: boolean;
-    
+
     /** Whether post search is supported */
     supportsPostSearch: boolean;
-    
+
     /** Whether real-time search is supported */
     supportsRealTime: boolean;
-    
+
     /** Whether search history is supported */
     supportsHistory: boolean;
-    
+
     /** Whether search suggestions are supported */
     supportsSuggestions: boolean;
-    
+
     /** Whether advanced filtering is supported */
     supportsAdvancedFilters: boolean;
-    
+
     /** Maximum number of results per query */
     maxResults: number;
-    
+
     /** Supported search algorithms */
     supportedAlgorithms: ('fulltext' | 'fuzzy' | 'semantic')[];
-    
+
     /** Whether caching is supported */
     supportsCaching: boolean;
 }
@@ -207,7 +207,7 @@ export abstract class BaseSearchRepository implements ISearchRepository {
         if (!this.capabilities.supportsRealTime) {
             throw new Error('Real-time search not supported by this repository');
         }
-        return () => {}; // No-op unsubscribe
+        return () => { }; // No-op unsubscribe
     }
 
     getCapabilities(): RepositoryCapabilities {

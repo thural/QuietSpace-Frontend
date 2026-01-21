@@ -5,8 +5,8 @@
  * Provides abstraction for settings CRUD operations.
  */
 
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type { JwtToken } from "@/shared/api/models/common";
 
 /**
  * Settings Repository interface.

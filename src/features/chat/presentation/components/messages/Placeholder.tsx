@@ -1,6 +1,6 @@
 import FlexStyled from "@/shared/FlexStyled";
 import PrivateBlock, { PrivateBlockProps } from "@/shared/PrivateBlock";
-import styles from "@/styles/chat/chatPlaceholderStyles";
+import styles from "../../styles/chatPlaceholderStyles";
 import { JSXElementConstructor } from "react";
 
 export interface PlaceholderProps extends PrivateBlockProps {

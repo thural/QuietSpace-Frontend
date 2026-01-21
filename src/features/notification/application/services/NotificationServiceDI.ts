@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useService } from '../../../../core/di';
+import { useService } from "@core/di";
 import type { NotificationEntity, NotificationPreferences, NotificationStats } from '../../domain/entities/NotificationEntity';
 import { NotificationRepositoryDI } from '../../data/repositories/NotificationRepositoryDI';
 
@@ -18,7 +18,7 @@ export class NotificationServiceDI {
       id: Date.now().toString(),
       createdAt: new Date()
     };
-    
+
     return await this.notificationRepository.createNotification(notification);
   }
 
@@ -162,10 +162,10 @@ export class NotificationServiceDI {
     commentId?: string;
     content: string;
   }): Promise<NotificationEntity> {
-    const actionUrl = mentionData.postId 
+    const actionUrl = mentionData.postId
       ? `/post/${mentionData.postId}`
       : `/comment/${mentionData.commentId}`;
-    
+
     return await this.createNotification({
       userId,
       type: 'mention',
@@ -314,7 +314,7 @@ export const useNotificationsDI = (userId: string) => {
   } = {}) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const data = await notificationService.getUserNotifications(userId, options);
       setNotifications(data);

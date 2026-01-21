@@ -1,35 +1,6 @@
-/**
- * Post Search Hook.
- * 
- * Hook for managing post search functionality with debouncing.
- * Provides post search results and manages search state.
- */
-
-import { PostList } from "@/api/schemas/inferred/post";
+import { useQueryPosts } from "@/services/data/usePostData";
 import { useEffect, useState } from "react";
-import useDebounce from "@/services/hook/search/useDebounce";
-import { useSearchService } from "./useSearchDI";
-
-/**
- * PostSearchState interface.
- * 
- * Defines the state structure for post search functionality.
- */
-export interface PostSearchState {
-    postQueryList: PostList;
-    isLoading: boolean;
-    error: Error | null;
-}
-
-/**
- * PostSearchActions interface.
- * 
- * Defines the actions available for post search functionality.
- */
-export interface PostSearchActions {
-    fetchPostQuery: (query: string) => void;
-    clearResults: () => void;
-}
+import useDebounce from "@/features/search/application/hooks/useDebounce";
 
 /**
  * Custom hook for managing post search functionality.
@@ -39,47 +10,36 @@ export interface PostSearchActions {
  * excessive fetching of data.
  *
  * @param {string} query - The search query entered by the user.
- * @returns {PostSearchState & PostSearchActions} - An object containing the state and actions for post search.
+ * @returns {{
+ *     postQueryList: any[],                           // The list of posts that match the search query.
+ *     fetchPostQuery: Function                         // Function to initiate the post fetching.
+ * }} - An object containing the list of posts and the fetch function.
  */
 const usePostSearch = (query: string) => {
-    const [postQueryList, setPostQueryResult] = useState<PostList>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [postQueryList, setPostQueryResult] = useState<any[]>([]);
+    const fetchPostQuery = useQueryPosts(setPostQueryResult);
     const [prevQuery, setPrevQuery] = useState('');
-    const searchService = useSearchService();
 
     /**
      * Fetches posts based on the provided search query.
      *
      * This function checks if the current search value is different 
-     * from the previous query. If it is, it triggers the fetching 
-     * of posts that match the new search value. If the 
+     * from the previous query. If it is, it triggers the mutation 
+     * to fetch posts that match the new search value. If the 
      * value is empty, it resets the results to an empty array.
      *
      * @param {string} value - The current search value.
      */
-    const fetchQuery = async (value: string) => {
+    const fetchQuery = (value: string) => {
         // Check if the current search value is present and differs from the previous query
         if (value && value !== prevQuery) {
-            setIsLoading(true);
-            setError(null);
-            
-            try {
-                // Use injected search service
-                const results = await searchService.searchPosts(value);
-                setPostQueryResult(results);
-                
-                // Update the previous query to the current one to track changes
-                setPrevQuery(value);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setIsLoading(false);
-            }
+            // Trigger the fetching of posts that match the current query
+            fetchPostQuery.mutate(value);
+            // Update the previous query to the current one to track changes
+            setPrevQuery(value);
         } else if (!value) {
             // If the input is empty, reset the post query results
             setPostQueryResult([]);
-            setError(null);
         }
     };
 
@@ -91,22 +51,7 @@ const usePostSearch = (query: string) => {
         debouncedFetchQuery(query);
     }, [query]);
 
-    const fetchPostQuery = (searchQuery: string) => {
-        fetchQuery(searchQuery);
-    };
-
-    const clearResults = () => {
-        setPostQueryResult([]);
-        setError(null);
-    };
-
-    return { 
-        postQueryList, 
-        isLoading,
-        error,
-        fetchPostQuery,
-        clearResults
-    };
+    return { postQueryList, fetchPostQuery };
 };
 
 export default usePostSearch;

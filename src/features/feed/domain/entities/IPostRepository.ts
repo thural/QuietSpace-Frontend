@@ -5,15 +5,15 @@
  * This interface enables dependency injection and mocking for testing.
  */
 
-import type { ResId } from '@api/schemas/inferred/common';
-import type { 
-    PostPage, 
-    PostResponse, 
-    PostRequest, 
-    RepostRequest, 
+import type { ResId } from '@/shared/api/models/common';
+import type {
+    PostPage,
+    PostResponse,
+    PostRequest,
+    RepostRequest,
     VoteBody,
-    ContentPrivacy 
-} from '../../../../api/schemas/inferred/post';
+    ContentPrivacy
+} from '@/features/feed/data/models/post';
 
 /**
  * Query parameters for post filtering and pagination
@@ -53,18 +53,18 @@ export interface IPostRepository {
     getSavedPosts(query: PostQuery, token: string): Promise<PostPage>;
     getRepliedPosts(userId: ResId, query: PostQuery, token: string): Promise<PostPage>;
     searchPosts(queryText: string, query: PostQuery, token: string): Promise<PostPage>;
-    
+
     // Mutation operations
     createPost(post: PostRequest, token: string): Promise<PostResponse>;
     createRepost(repost: RepostRequest, token: string): Promise<PostResponse>;
     editPost(postId: ResId, post: PostRequest, token: string): Promise<PostResponse>;
     deletePost(postId: ResId, token: string): Promise<void>;
-    
+
     // Interaction operations
     savePost(postId: ResId, token: string): Promise<void>;
     unsavePost(postId: ResId, token: string): Promise<void>;
     votePoll(vote: VoteBody, token: string): Promise<void>;
-    
+
     // Utility operations
     validatePostContent(content: string): boolean;
     calculateEngagementScore(post: PostResponse): number;

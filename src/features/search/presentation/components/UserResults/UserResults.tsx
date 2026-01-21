@@ -5,10 +5,10 @@
  * Handles loading, error, and success states appropriately.
  */
 
-import { UserList, UserPage } from "@/api/schemas/inferred/user";
+import { UserList, UserPage } from "@/features/profile/data/models/user";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import LoaderStyled from "@/shared/LoaderStyled";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import UserQueryItem from "@/shared/UserQueryItem";
 import { UseMutationResult } from "@tanstack/react-query";

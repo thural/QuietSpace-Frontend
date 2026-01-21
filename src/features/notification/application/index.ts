@@ -11,7 +11,7 @@ export { OptimisticUpdateManager, optimisticUpdateManager, type OptimisticOperat
 export { StateSynchronizationManager, stateSynchronizationManager, type SyncConflict, type SyncConflictType, type SyncStrategy } from './services/StateSynchronizationManager';
 
 // DI-specific services
-export { NotificationService as NotificationServiceDI, useNotificationsDI } from './services/NotificationServiceDI';
+export { NotificationServiceDI, useNotificationsDI } from './services/NotificationServiceDI';
 
 // Application hooks
 export { useReactQueryNotifications, type ReactQueryNotificationState, type ReactQueryNotificationActions } from './hooks/useReactQueryNotifications';
@@ -25,3 +25,6 @@ export { useNotificationUIStore, createNotificationUIStore, type NotificationUIS
 export { useRealtimeNotifications } from './services/RealtimeNotificationService';
 export { useOptimisticUpdates } from './services/OptimisticUpdateManager';
 export { useStateSynchronization } from './services/StateSynchronizationManager';
+
+// Socket hooks
+export { default as useNotificationSocket } from './hooks/useNotificationSocket';

@@ -1,5 +1,5 @@
 import useStyles from "../../styles/commentControlStyles";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import Conditional from "@/shared/Conditional";
 import Typography from "@/shared/Typography";

@@ -1,4 +1,4 @@
-import { ProcedureFn } from "@/types/genericTypes";
+import { ProcedureFn } from "@/shared/types/genericTypes";
 import Clickable from "@shared/Clickable";
 import Conditional from "@shared/Conditional";
 import ListMenu from "@shared/ListMenu";

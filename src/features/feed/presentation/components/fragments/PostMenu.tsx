@@ -1,6 +1,6 @@
-import { ResId } from "@/api/schemas/native/common";
-import { useSavePost } from "@/services/data/usePostData";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ResId } from "@/shared/api/models/commonNative";
+import { useSavePost } from "@features/feed/data";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import Clickable from "@/shared/Clickable";
 import Conditional from "@/shared/Conditional";
 import ListMenu from "@/shared/ListMenu";

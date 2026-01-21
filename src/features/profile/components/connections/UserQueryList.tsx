@@ -1,10 +1,10 @@
-import { UserList, UserPage } from "@/api/schemas/inferred/user";
+import { UserList, UserPage } from "@/features/profile/data/models/user";
 import BoxStyled from "@/shared/BoxStyled";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
 import LoaderStyled from "@/shared/LoaderStyled";
 import Typography from "@/shared/Typography";
-import styles from "@/styles/profile/userListStyles";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import styles from "../styles/userListStyles";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import React, { JSXElementConstructor } from "react";
 

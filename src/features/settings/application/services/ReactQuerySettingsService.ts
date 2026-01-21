@@ -6,15 +6,15 @@
  */
 
 import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from '@tanstack/react-query';
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type { JwtToken } from "@/shared/api/models/common";
 import type { ISettingsRepository } from "../../domain/entities/SettingsRepository";
-import type { 
-    ProfileSettings, 
-    PrivacySettings, 
-    NotificationSettings 
+import type {
+    ProfileSettings,
+    PrivacySettings,
+    NotificationSettings
 } from "../../domain/entities/SettingsEntities";
-import { useAuthStore } from '../../../services/store/zustand';
+import { useAuthStore } from "@services/store/zustand";
 
 /**
  * React Query Settings Service interface.
@@ -25,15 +25,15 @@ export interface IReactQuerySettingsService {
     updateProfileSettings(): UseMutationResult<UserProfileResponse, Error, { userId: string; settings: ProfileSettingsRequest; token: JwtToken }>;
     uploadProfilePhoto(): UseMutationResult<UserProfileResponse, Error, { userId: string; file: File; token: JwtToken }>;
     removeProfilePhoto(): UseMutationResult<UserProfileResponse, Error, { userId: string; token: JwtToken }>;
-    
+
     // Privacy settings
     getPrivacySettings(userId: string, token: JwtToken): UseQueryResult<PrivacySettings, Error>;
     updatePrivacySettings(): UseMutationResult<PrivacySettings, Error, { userId: string; settings: PrivacySettings; token: JwtToken }>;
-    
+
     // Notification settings
     getNotificationSettings(userId: string, token: JwtToken): UseQueryResult<NotificationSettings, Error>;
     updateNotificationSettings(): UseMutationResult<NotificationSettings, Error, { userId: string; settings: NotificationSettings; token: JwtToken }>;
-    
+
     // Cache management
     prefetchProfileSettings(userId: string, token: JwtToken): Promise<void>;
     prefetchPrivacySettings(userId: string, token: JwtToken): Promise<void>;
@@ -47,7 +47,7 @@ export interface IReactQuerySettingsService {
 export class ReactQuerySettingsService implements IReactQuerySettingsService {
     private queryClient = useQueryClient();
 
-    constructor(private settingsRepository: ISettingsRepository) {}
+    constructor(private settingsRepository: ISettingsRepository) { }
 
     /**
      * Get profile settings with React Query.
@@ -67,7 +67,7 @@ export class ReactQuerySettingsService implements IReactQuerySettingsService {
      */
     updateProfileSettings(): UseMutationResult<UserProfileResponse, Error, { userId: string; settings: ProfileSettingsRequest; token: JwtToken }> {
         return useMutation({
-            mutationFn: async ({ userId, settings, token }) => 
+            mutationFn: async ({ userId, settings, token }) =>
                 await this.settingsRepository.updateProfileSettings(userId, settings, token),
             onSuccess: (data, variables) => {
                 // Update cache with new data
@@ -84,7 +84,7 @@ export class ReactQuerySettingsService implements IReactQuerySettingsService {
      */
     uploadProfilePhoto(): UseMutationResult<UserProfileResponse, Error, { userId: string; file: File; token: JwtToken }> {
         return useMutation({
-            mutationFn: async ({ userId, file, token }) => 
+            mutationFn: async ({ userId, file, token }) =>
                 await this.settingsRepository.uploadProfilePhoto(userId, file, token),
             onSuccess: (data, variables) => {
                 // Update cache with new data
@@ -101,7 +101,7 @@ export class ReactQuerySettingsService implements IReactQuerySettingsService {
      */
     removeProfilePhoto(): UseMutationResult<UserProfileResponse, Error, { userId: string; token: JwtToken }> {
         return useMutation({
-            mutationFn: async ({ userId, token }) => 
+            mutationFn: async ({ userId, token }) =>
                 await this.settingsRepository.removeProfilePhoto(userId, token),
             onSuccess: (data, variables) => {
                 // Update cache with new data
@@ -131,7 +131,7 @@ export class ReactQuerySettingsService implements IReactQuerySettingsService {
      */
     updatePrivacySettings(): UseMutationResult<PrivacySettings, Error, { userId: string; settings: PrivacySettings; token: JwtToken }> {
         return useMutation({
-            mutationFn: async ({ userId, settings, token }) => 
+            mutationFn: async ({ userId, settings, token }) =>
                 await this.settingsRepository.updatePrivacySettings(userId, settings, token),
             onSuccess: (data, variables) => {
                 // Update cache with new data
@@ -161,7 +161,7 @@ export class ReactQuerySettingsService implements IReactQuerySettingsService {
      */
     updateNotificationSettings(): UseMutationResult<NotificationSettings, Error, { userId: string; settings: NotificationSettings; token: JwtToken }> {
         return useMutation({
-            mutationFn: async ({ userId, settings, token }) => 
+            mutationFn: async ({ userId, settings, token }) =>
                 await this.settingsRepository.updateNotificationSettings(userId, settings, token),
             onSuccess: (data, variables) => {
                 // Update cache with new data

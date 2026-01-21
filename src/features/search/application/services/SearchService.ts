@@ -5,8 +5,8 @@
  * and provides a high-level interface for search functionality.
  */
 
-import type { UserList } from "@/api/schemas/inferred/user";
-import type { PostList } from "@/api/schemas/inferred/post";
+import type { UserList } from "@/features/profile/data/models/user";
+import type { PostList } from "@/features/feed/data/models/post";
 import type { SearchQuery, SearchResult } from "../../domain/entities";
 import type { ISearchRepository } from "../../data/repositories/SearchRepository";
 
@@ -33,7 +33,7 @@ export interface ISearchService {
 export class SearchService implements ISearchService {
     constructor(
         private searchRepository: ISearchRepository
-    ) {}
+    ) { }
 
     /**
      * Searches for users based on the provided query.

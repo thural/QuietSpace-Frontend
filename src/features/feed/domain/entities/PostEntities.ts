@@ -5,13 +5,13 @@
  * These entities represent the domain model and contain business logic.
  */
 
-import type { ResId } from '@api/schemas/inferred/common';
-import type { 
-    PostResponse, 
-    PollOption, 
+import type { ResId } from '@/shared/api/models/common';
+import type {
+    PostResponse,
+    PollOption,
     ContentPrivacy,
     PollResponse
-} from '@api/schemas/inferred/post';
+} from '@/features/feed/data/models/post';
 
 /**
  * Post engagement metrics
@@ -59,7 +59,7 @@ export class Post {
         public readonly poll?: PollResponse,
         public readonly media?: string[],
         public readonly tags?: string[]
-    ) {}
+    ) { }
 
     // Getter methods
     getId(): ResId {
@@ -106,11 +106,11 @@ export class Post {
      * Calculate engagement score based on various metrics
      */
     calculateEngagementScore(): number {
-        return this.engagement.likesCount + 
-               (this.engagement.commentsCount * 2) + 
-               (this.engagement.repostsCount * 3) + 
-               (this.engagement.sharesCount * 1.5) +
-               (this.engagement.pollVotesCount || 0);
+        return this.engagement.likesCount +
+            (this.engagement.commentsCount * 2) +
+            (this.engagement.repostsCount * 3) +
+            (this.engagement.sharesCount * 1.5) +
+            (this.engagement.pollVotesCount || 0);
     }
 
     /**
@@ -165,9 +165,9 @@ export class Post {
      * Check if post is currently trending
      */
     isTrending(): boolean {
-        return this.engagement.likesCount > 100 || 
-               this.engagement.commentsCount > 50 ||
-               this.engagement.sharesCount > 25;
+        return this.engagement.likesCount > 100 ||
+            this.engagement.commentsCount > 50 ||
+            this.engagement.sharesCount > 25;
     }
 
     /**
@@ -196,10 +196,10 @@ export class Post {
      */
     getEngagementRate(): number {
         const hoursSinceCreation = (Date.now() - this.createdAt.getTime()) / (1000 * 60 * 60);
-        const totalEngagement = this.engagement.likesCount + 
-                             this.engagement.commentsCount + 
-                             this.engagement.repostsCount + 
-                             this.engagement.sharesCount;
+        const totalEngagement = this.engagement.likesCount +
+            this.engagement.commentsCount +
+            this.engagement.repostsCount +
+            this.engagement.sharesCount;
         return hoursSinceCreation > 0 ? totalEngagement / hoursSinceCreation : totalEngagement;
     }
 
@@ -208,7 +208,7 @@ export class Post {
      */
     static validateContent(content: string, validation: PostContentValidation): boolean {
         if (content.length > validation.maxLength) return false;
-        if (validation.hasMediaLimit && content.includes('media') && 
+        if (validation.hasMediaLimit && content.includes('media') &&
             (content.match(/media/g) || []).length > validation.maxMediaCount) {
             return false;
         }

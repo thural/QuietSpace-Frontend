@@ -1,9 +1,9 @@
 import DefaultContainer from "@/shared/DefaultContainer";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
-import useFeed from "@/services/hook/feed/useFeed";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import useFeed from "@features/feed/application/hooks/useFeed";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
 import LoaderStyled from "@/shared/LoaderStyled";
 import CreatePostForm from "./forms/CreatePostForm";

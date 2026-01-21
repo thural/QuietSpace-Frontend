@@ -5,12 +5,12 @@
  * Provides in-memory data storage and simulated API responses.
  */
 
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type { JwtToken } from "@/shared/api/models/common";
 import type { ISettingsRepository } from "../../domain/entities/SettingsRepository";
-import type { 
-    ProfileSettings, 
-    PrivacySettings, 
+import type {
+    ProfileSettings,
+    PrivacySettings,
     NotificationSettings,
     SharingSettings,
     MentionsSettings,
@@ -108,10 +108,10 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async getProfileSettings(userId: string, token: JwtToken): Promise<UserProfileResponse> {
         console.log('MockSettingsRepository: Getting profile settings for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         const profileData = this.mockData.get('profile');
         return {
             ...profileData,
@@ -124,17 +124,17 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async updateProfileSettings(userId: string, settings: ProfileSettingsRequest, token: JwtToken): Promise<UserProfileResponse> {
         console.log('MockSettingsRepository: Updating profile settings for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         const currentProfile = this.mockData.get('profile');
         const updatedProfile = {
             ...currentProfile,
             ...settings,
             id: userId
         };
-        
+
         this.mockData.set('profile', updatedProfile);
         return updatedProfile;
     }
@@ -144,17 +144,17 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async uploadProfilePhoto(userId: string, file: File, token: JwtToken): Promise<UserProfileResponse> {
         console.log('MockSettingsRepository: Uploading profile photo for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         const currentProfile = this.mockData.get('profile');
         const updatedProfile = {
             ...currentProfile,
             photo: URL.createObjectURL(file), // Mock photo URL
             id: userId
         };
-        
+
         this.mockData.set('profile', updatedProfile);
         return updatedProfile;
     }
@@ -164,17 +164,17 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async removeProfilePhoto(userId: string, token: JwtToken): Promise<UserProfileResponse> {
         console.log('MockSettingsRepository: Removing profile photo for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         const currentProfile = this.mockData.get('profile');
         const updatedProfile = {
             ...currentProfile,
             photo: null,
             id: userId
         };
-        
+
         this.mockData.set('profile', updatedProfile);
         return updatedProfile;
     }
@@ -184,10 +184,10 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async getPrivacySettings(userId: string, token: JwtToken): Promise<PrivacySettings> {
         console.log('MockSettingsRepository: Getting privacy settings for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         return this.mockData.get('privacy');
     }
 
@@ -196,10 +196,10 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async updatePrivacySettings(userId: string, settings: PrivacySettings, token: JwtToken): Promise<PrivacySettings> {
         console.log('MockSettingsRepository: Updating privacy settings for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         this.mockData.set('privacy', settings);
         return settings;
     }
@@ -209,10 +209,10 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async getNotificationSettings(userId: string, token: JwtToken): Promise<NotificationSettings> {
         console.log('MockSettingsRepository: Getting notification settings for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         return this.mockData.get('notifications');
     }
 
@@ -221,10 +221,10 @@ export class MockSettingsRepository implements ISettingsRepository {
      */
     async updateNotificationSettings(userId: string, settings: NotificationSettings, token: JwtToken): Promise<NotificationSettings> {
         console.log('MockSettingsRepository: Updating notification settings for user:', userId);
-        
+
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         this.mockData.set('notifications', settings);
         return settings;
     }

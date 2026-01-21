@@ -11,7 +11,7 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { FeedDIProvider } from '../../di/useFeedDI';
 import { useFeedDI } from '../../di/useFeedDI';
 import { PostFactory } from '../../domain/entities/PostEntities';
-import type { PostResponse } from '../../../../api/schemas/inferred/post';
+import type { PostResponse } from '@/features/feed/data/models/post';
 import type { IPostRepository } from '../../domain/entities/IPostRepository';
 
 // Mock the dependencies
@@ -133,7 +133,7 @@ describe('Feed Component Tests', () => {
             const TestComponent = () => {
                 const { getPostRepository } = useFeedDI();
                 const repository = getPostRepository();
-                
+
                 return <div data-testid="repository-provided">{repository ? 'yes' : 'no'}</div>;
             };
 
@@ -150,7 +150,7 @@ describe('Feed Component Tests', () => {
             const TestComponent = () => {
                 const { getConfig } = useFeedDI();
                 const config = getConfig();
-                
+
                 return <div data-testid="config-provided">{JSON.stringify(config)}</div>;
             };
 
@@ -169,7 +169,7 @@ describe('Feed Component Tests', () => {
         it('should create post entities correctly', () => {
             const mockPost = mockPosts[0];
             const post = PostFactory.fromApiResponse(mockPost);
-            
+
             expect(post.getContent()).toBe(mockPost.text);
             expect(post.getAuthorId()).toBe(mockPost.userId);
         });
@@ -179,12 +179,12 @@ describe('Feed Component Tests', () => {
         it('should handle post creation flow', async () => {
             // Mock successful post creation
             mockRepository.createPost.mockResolvedValue(mockPosts[0]);
-            
+
             const TestComponent = () => {
                 const { getPostRepository } = useFeedDI();
                 const repository = getPostRepository();
                 const [posts, setPosts] = React.useState(mockPosts);
-                
+
                 const handleCreatePost = async (postData: any) => {
                     try {
                         const newPost = await repository.createPost(postData, 'test-token');
@@ -193,7 +193,7 @@ describe('Feed Component Tests', () => {
                         console.error('Failed to create post:', error);
                     }
                 };
-                
+
                 return (
                     <div>
                         <button onClick={() => handleCreatePost({ title: 'New Post', text: 'New content' })}>
@@ -205,20 +205,20 @@ describe('Feed Component Tests', () => {
                     </div>
                 );
             };
-            
+
             render(
                 <FeedDIProvider>
                     <TestComponent />
                 </FeedDIProvider>
             );
-            
+
             const createButton = screen.getByText('Create Post');
             fireEvent.click(createButton);
-            
+
             await waitFor(() => {
                 expect(screen.getByTestId('posts-count')).toHaveTextContent('1 posts');
             });
-            
+
             expect(mockRepository.createPost).toHaveBeenCalledWith(
                 { title: 'New Post', text: 'New content' },
                 'test-token'
@@ -228,12 +228,12 @@ describe('Feed Component Tests', () => {
         it('should handle post deletion flow', async () => {
             mockRepository.getPosts.mockResolvedValue({ content: mockPosts });
             mockRepository.deletePost.mockResolvedValue(undefined);
-            
+
             const TestComponent = () => {
                 const { getPostRepository } = useFeedDI();
                 const repository = getPostRepository();
                 const [posts, setPosts] = React.useState(mockPosts);
-                
+
                 const handleDeletePost = async (postId: string) => {
                     try {
                         await repository.deletePost(postId, 'test-token');
@@ -242,7 +242,7 @@ describe('Feed Component Tests', () => {
                         console.error('Failed to delete post:', error);
                     }
                 };
-                
+
                 return (
                     <div>
                         {posts.map(post => (
@@ -259,32 +259,32 @@ describe('Feed Component Tests', () => {
                     </div>
                 );
             };
-            
+
             render(
                 <FeedDIProvider>
                     <TestComponent />
                 </FeedDIProvider>
             );
-            
+
             const deleteButton = screen.getByTestId('post-1').querySelector('button');
             fireEvent.click(deleteButton);
-            
+
             await waitFor(() => {
                 expect(screen.getByTestId('posts-count')).toHaveTextContent('1 posts');
                 expect(screen.queryByTestId('post-1')).toBeNull();
             });
-            
+
             expect(mockRepository.deletePost).toHaveBeenCalledWith('1', 'test-token');
         });
 
         it('should handle error states', async () => {
             mockRepository.createPost.mockRejectedValue(new Error('Network error'));
-            
+
             const TestComponent = () => {
                 const { getPostRepository } = useFeedDI();
                 const repository = getPostRepository();
                 const [error, setError] = React.useState<string | null>(null);
-                
+
                 const handleCreatePost = async (postData: any) => {
                     try {
                         await repository.createPost(postData, 'test-token');
@@ -292,7 +292,7 @@ describe('Feed Component Tests', () => {
                         setError(err.message);
                     }
                 };
-                
+
                 return (
                     <div>
                         <button onClick={() => handleCreatePost({ title: 'New Post', text: 'New content' })}>
@@ -302,16 +302,16 @@ describe('Feed Component Tests', () => {
                     </div>
                 );
             };
-            
+
             render(
                 <FeedDIProvider>
                     <TestComponent />
                 </FeedDIProvider>
             );
-            
+
             const createButton = screen.getByText('Create Post');
             fireEvent.click(createButton);
-            
+
             await waitFor(() => {
                 expect(screen.getByTestId('error-message')).toHaveTextContent('Network error');
             });

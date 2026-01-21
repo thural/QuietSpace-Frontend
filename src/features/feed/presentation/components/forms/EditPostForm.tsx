@@ -1,4 +1,4 @@
-import { ResId } from "@/api/schemas/inferred/common";
+import { ResId } from "@/shared/api/models/common";
 import FormControls from "../fragments/FormControls";
 import TextInput from "../fragments/TextInput";
 import TitleInput from "../fragments/TitleInput";
@@ -9,9 +9,9 @@ import LoaderStyled from "@/shared/LoaderStyled";
 import ModalStyled from "@/shared/ModalStyled";
 import Typography from "@/shared/Typography";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import useEditPostForm from "@/services/hook/feed/useEditPostForm";
-import { ConsumerFn } from "@/types/genericTypes";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import useEditPostForm from "@features/feed/application/hooks/useEditPostForm";
+import { ConsumerFn } from "@/shared/types/genericTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 /**
  * Props for the EditPostForm component.

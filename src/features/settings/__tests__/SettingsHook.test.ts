@@ -8,7 +8,7 @@ import { jest } from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { useSettings } from '../application/hooks/useSettings';
 import { useSettingsDI } from '../di/useSettingsDI';
-import type { ProfileSettingsRequest } from '@/api/schemas/inferred/user';
+import type { ProfileSettingsRequest } from '@/features/profile/data/models/user';
 import type { PrivacySettings, NotificationSettings } from '../domain/entities/SettingsEntities';
 
 // Mock the DI container

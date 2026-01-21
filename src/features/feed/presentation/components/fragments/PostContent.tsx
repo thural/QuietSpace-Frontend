@@ -1,8 +1,8 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import BoxStyled from "@/shared/BoxStyled";
 import Conditional from "@/shared/Conditional";
 import Typography from "@/shared/Typography";
-import { ConsumerFn } from "@/types/genericTypes";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import PollBox from "../poll/Poll";
 import PhotoDisplay from "@/shared/PhotoDisplay";
 

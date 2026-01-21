@@ -9,15 +9,15 @@
  */
 
 // Import the enum for runtime use
-export { NotificationType } from '../../../api/schemas/native/notification';
+export { NotificationType } from '@/features/notification/data/models/notificationNative';
 
 // Re-export API types
-export type { 
-  NotificationPage, 
-  NotificationResponse 
-} from '../../../api/schemas/inferred/notification';
+export type {
+  NotificationPage,
+  NotificationResponse
+} from '@/features/notification/data/models/notification';
 
-export type { 
-  ResId, 
-  JwtToken 
-} from '../../../api/schemas/inferred/common';
+export type {
+  ResId,
+  JwtToken
+} from '@/shared/api/models/common';

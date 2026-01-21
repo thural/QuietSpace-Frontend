@@ -1,5 +1,5 @@
-import styles from "@/styles/chat/messageInputStyles";
-import { ConsumerFn } from "@/types/genericTypes";
+import styles from "../../styles/messageInputStyles";
+import { ConsumerFn } from "@/shared/types/genericTypes";
 import BoxStyled from "@shared/BoxStyled";
 import EmojiInput from "@shared/EmojiInput";
 import FormStyled from "@shared/FormStyled";

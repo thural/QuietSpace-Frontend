@@ -1,8 +1,8 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import { usePost } from "@/services/hook/feed/usePost";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
-import { isRepost } from "@/utils/typeUtils";
+import { usePost } from "@features/feed/application/hooks/usePost";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { isRepost } from "@/shared/utils/typeUtils";
 import PostCardView from "./PostCardView";
 
 /**

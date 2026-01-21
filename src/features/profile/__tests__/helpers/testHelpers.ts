@@ -7,7 +7,7 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { jest } from '@jest/globals';
-import type { ResId } from '@/api/schemas/inferred/common';
+import type { ResId } from '@/shared/api/models/common';
 import { MockDataFactory, MockProfileRepository } from '../utils/testUtils';
 import { baseUserProfile, baseUserStats } from '../fixtures/profileFixtures';
 
@@ -93,18 +93,18 @@ export const createMockErrorResponse = (
  */
 export const mockFetch = (responses: Array<Response | Error>) => {
   let callCount = 0;
-  
+
   global.fetch = jest.fn(() => {
     const response = responses[callCount] || responses[responses.length - 1];
     callCount++;
-    
+
     if (response instanceof Error) {
       return Promise.reject(response);
     }
-    
+
     return Promise.resolve(response);
   });
-  
+
   return () => {
     (global.fetch as jest.Mock).mockClear();
   };
@@ -137,7 +137,7 @@ export const setupTestEnvironment = () => {
     length: 0,
     key: jest.fn()
   };
-  
+
   Object.defineProperty(window, 'localStorage', {
     value: localStorageMock
   });
@@ -151,7 +151,7 @@ export const setupTestEnvironment = () => {
     length: 0,
     key: jest.fn()
   };
-  
+
   Object.defineProperty(window, 'sessionStorage', {
     value: sessionStorageMock
   });
@@ -167,12 +167,12 @@ export const setupTestEnvironment = () => {
  */
 export const cleanupTestEnvironment = () => {
   jest.clearAllMocks();
-  
+
   // Restore localStorage
   Object.defineProperty(window, 'localStorage', {
     value: localStorage
   });
-  
+
   // Restore sessionStorage
   Object.defineProperty(window, 'sessionStorage', {
     value: sessionStorage
@@ -229,7 +229,7 @@ export const assertErrorState = (
 ) => {
   expect(result.current.isLoading).toBe(false);
   expect(result.current.error).toBeTruthy();
-  
+
   if (typeof expectedError === 'string') {
     expect(result.current.error?.message).toContain(expectedError);
   } else {
@@ -246,7 +246,7 @@ export const assertSuccessState = (
 ) => {
   expect(result.current.isLoading).toBe(false);
   expect(result.current.error).toBeNull();
-  
+
   Object.entries(expectedData).forEach(([key, value]) => {
     expect(result.current[key]).toEqual(value);
   });
@@ -272,15 +272,15 @@ export const waitForCondition = async (
   interval = 50
 ) => {
   const startTime = Date.now();
-  
+
   while (Date.now() - startTime < timeout) {
     if (condition()) {
       return;
     }
-    
+
     await new Promise(resolve => setTimeout(resolve, interval));
   }
-  
+
   throw new Error(`Condition not met within ${timeout}ms`);
 };
 
@@ -323,18 +323,18 @@ export const measurePerformance = async (
   iterations = 100
 ) => {
   const times: number[] = [];
-  
+
   for (let i = 0; i < iterations; i++) {
     const start = performance.now();
     await fn();
     const end = performance.now();
     times.push(end - start);
   }
-  
+
   const average = times.reduce((sum, time) => sum + time, 0) / times.length;
   const min = Math.min(...times);
   const max = Math.max(...times);
-  
+
   return {
     average,
     min,
@@ -352,10 +352,10 @@ export const runIntegrationTest = async (
   assertion: (context: any) => void
 ) => {
   const context = await setup();
-  
+
   await act(async () => {
     await action(context);
   });
-  
+
   assertion(context);
 };

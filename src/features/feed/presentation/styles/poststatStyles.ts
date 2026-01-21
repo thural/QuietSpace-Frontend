@@ -1,4 +1,5 @@
-import { createUseStyles, Theme } from "react-jss";
+import { createUseStyles } from "react-jss";
+import { Theme } from "../../../../shared/types/theme";
 
 const useStyles = createUseStyles((theme: Theme) => ({
     postStats: {

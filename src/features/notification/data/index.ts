@@ -10,3 +10,6 @@ export { MockNotificationRepository } from './repositories/MockNotificationRepos
 
 // DI-specific repository
 export { NotificationRepositoryDI } from './repositories/NotificationRepositoryDI';
+
+// Public API - Cross-feature data hooks
+export * from './useNotificationData';

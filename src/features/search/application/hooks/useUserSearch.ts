@@ -1,35 +1,7 @@
-/**
- * User Search Hook.
- * 
- * Hook for managing user search functionality with debouncing.
- * Provides user search results and manages search state.
- */
-
-import { UserList } from "@/api/schemas/inferred/user";
+import { UserList } from "@/features/profile/data/models/user";
+import { useQueryUsers } from "@/services/data/useUserData";
 import { useEffect, useState } from "react";
-import useDebounce from "@/services/hook/search/useDebounce";
-import { useSearchService } from "./useSearchDI";
-
-/**
- * UserSearchState interface.
- * 
- * Defines the state structure for user search functionality.
- */
-export interface UserSearchState {
-    userQueryList: UserList;
-    isLoading: boolean;
-    error: Error | null;
-}
-
-/**
- * UserSearchActions interface.
- * 
- * Defines the actions available for user search functionality.
- */
-export interface UserSearchActions {
-    fetchUserQuery: (query: string) => void;
-    clearResults: () => void;
-}
+import useDebounce from "@/features/search/application/hooks/useDebounce";
 
 /**
  * Custom hook for managing user search functionality.
@@ -39,47 +11,36 @@ export interface UserSearchActions {
  * fetching of data.
  *
  * @param {string} query - The search query entered by the user.
- * @returns {UserSearchState & UserSearchActions} - An object containing the state and actions for user search.
+ * @returns {{
+ *     userQueryList: UserList,                        // The list of users that match the search query.
+ *     fetchUserQuery: Function                        // Function to initiate the user fetching.
+ * }} - An object containing the list of users and the fetch function.
  */
 const useUserSearch = (query: string) => {
     const [userQueryList, setUserQueryResult] = useState<UserList>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
+    const fetchUserQuery = useQueryUsers(setUserQueryResult);
     const [prevQuery, setPrevQuery] = useState('');
-    const searchService = useSearchService();
 
     /**
      * Fetches users based on the provided search query.
      *
      * This function checks if the current search value is different 
-     * from the previous query. If it is, it triggers the fetching 
-     * of users that match the new search value. If the 
+     * from the previous query. If it is, it triggers the mutation 
+     * to fetch users that match the new search value. If the 
      * value is empty, it resets the results to an empty array.
      *
      * @param {string} value - The current search value.
      */
-    const fetchQuery = async (value: string) => {
+    const fetchQuery = (value: string) => {
         // Check if the current search value is present and differs from the previous query
         if (value && value !== prevQuery) {
-            setIsLoading(true);
-            setError(null);
-            
-            try {
-                // Use injected search service
-                const results = await searchService.searchUsers(value);
-                setUserQueryResult(results);
-                
-                // Update the previous query to the current one to track changes
-                setPrevQuery(value);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setIsLoading(false);
-            }
+            // Trigger the fetching of users that match the current query
+            fetchUserQuery.mutate(value);
+            // Update the previous query to the current one to track changes
+            setPrevQuery(value);
         } else if (!value) {
             // If the input is empty, reset the user query results
             setUserQueryResult([]);
-            setError(null);
         }
     };
 
@@ -91,22 +52,7 @@ const useUserSearch = (query: string) => {
         debouncedFetchQuery(query);
     }, [query]);
 
-    const fetchUserQuery = (searchQuery: string) => {
-        fetchQuery(searchQuery);
-    };
-
-    const clearResults = () => {
-        setUserQueryResult([]);
-        setError(null);
-    };
-
-    return { 
-        userQueryList, 
-        isLoading,
-        error,
-        fetchUserQuery,
-        clearResults
-    };
+    return { userQueryList, fetchUserQuery };
 };
 
 export default useUserSearch;

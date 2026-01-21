@@ -11,7 +11,7 @@ export { ProfileRepository } from "./ProfileRepository";
 export { MockProfileRepository } from "./MockProfileRepository";
 
 // Factory and convenience functions
-export { 
+export {
   ProfileRepositoryFactory,
   createProfileRepository,
   createMockProfileRepository,
@@ -19,7 +19,7 @@ export {
 } from "./ProfileRepositoryFactory";
 
 // Data hooks
-export { 
+export {
   useProfileData,
   useProfileDataWithRepository,
   useCurrentProfileData
@@ -32,3 +32,6 @@ export * as ProfileMappers from "./mappers";
 export * as ProfileRepositories from "./repositories";
 
 export { ReactiveProfileRepository, type ProfileExternalData } from "./ReactiveProfileRepository";
+
+// Public API - Cross-feature data hooks
+export * from './useUserData';

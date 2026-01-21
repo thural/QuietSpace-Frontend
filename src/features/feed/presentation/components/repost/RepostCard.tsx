@@ -1,4 +1,4 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import BoxStyled from "@/shared/BoxStyled";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
@@ -6,9 +6,9 @@ import PostSkeleton from "@/shared/PostSkeleton";
 import Typography from "@/shared/Typography";
 import UserDetails from "@/shared/UserDetails";
 import { useGetUserById } from "@/services/data/useUserData";
-import { useRepost } from "@/services/hook/feed/useRepost";
+import { useRepost } from "@features/feed/application/hooks/useRepost";
 import styles from "../../styles/repostCardStyles";
-import { isRepost } from "@/utils/typeUtils";
+import { isRepost } from "@/shared/utils/typeUtils";
 import { PiArrowsClockwiseBold } from "react-icons/pi";
 import PostMenu from "../fragments/PostMenu";
 import PostCard from "../post/PostCard";

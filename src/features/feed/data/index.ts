@@ -7,3 +7,6 @@
 
 export { PostRepository } from './repositories/PostRepository';
 export { MockPostRepository } from './repositories/MockPostRepository';
+
+// Public API - Cross-feature data hooks
+export * from './usePostData';

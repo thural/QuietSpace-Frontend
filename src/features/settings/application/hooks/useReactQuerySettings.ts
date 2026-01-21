@@ -7,16 +7,16 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
-import type { ProfileSettingsRequest, UserProfileResponse } from "@/api/schemas/inferred/user";
-import type { 
-    ProfileSettings, 
-    PrivacySettings, 
-    NotificationSettings 
+import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
+import type {
+    ProfileSettings,
+    PrivacySettings,
+    NotificationSettings
 } from "../../domain/entities/SettingsEntities";
 import { useAuthStore } from '@services/store/zustand';
 import { ReactQuerySettingsService, type IReactQuerySettingsService } from "../services/ReactQuerySettingsService";
 import { useSettingsDI } from "../../di/useSettingsDI";
-import type { JwtToken } from "@/api/schemas/inferred/common";
+import type { JwtToken } from "@/shared/api/models/common";
 
 /**
  * React Query Settings State interface.
@@ -78,34 +78,34 @@ export const useReactQuerySettings = (
     }, [config.useReactQuery, reactQueryService, diContainer]);
 
     // Get settings results
-    const profile = reactQueryService?.getProfileSettings(userId, token || '') || 
-        { data: null, isLoading: false, error: null, refetch: () => {} } as UseQueryResult<UserProfileResponse, Error>;
-    
-    const privacy = reactQueryService?.getPrivacySettings(userId, token || '') || 
-        { data: null, isLoading: false, error: null, refetch: () => {} } as UseQueryResult<PrivacySettings, Error>;
-    
-    const notifications = reactQueryService?.getNotificationSettings(userId, token || '') || 
-        { data: null, isLoading: false, error: null, refetch: () => {} } as UseQueryResult<NotificationSettings, Error>;
+    const profile = reactQueryService?.getProfileSettings(userId, token || '') ||
+        { data: null, isLoading: false, error: null, refetch: () => { } } as UseQueryResult<UserProfileResponse, Error>;
+
+    const privacy = reactQueryService?.getPrivacySettings(userId, token || '') ||
+        { data: null, isLoading: false, error: null, refetch: () => { } } as UseQueryResult<PrivacySettings, Error>;
+
+    const notifications = reactQueryService?.getNotificationSettings(userId, token || '') ||
+        { data: null, isLoading: false, error: null, refetch: () => { } } as UseQueryResult<NotificationSettings, Error>;
 
     // Combined loading state
     const isLoading = profile.isLoading || privacy.isLoading || notifications.isLoading;
     const error = profile.error || privacy.error || notifications.error;
 
     // Actions
-    const updateProfileSettings = reactQueryService?.updateProfileSettings() || 
-        { mutate: () => {}, isPending: false, error: null } as unknown as UseMutationResult<UserProfileResponse, Error, { userId: string; settings: ProfileSettingsRequest; token: JwtToken }>;
-    
-    const uploadProfilePhoto = reactQueryService?.uploadProfilePhoto() || 
-        { mutate: () => {}, isPending: false, error: null } as unknown as UseMutationResult<UserProfileResponse, Error, { userId: string; file: File; token: JwtToken }>;
-    
-    const removeProfilePhoto = reactQueryService?.removeProfilePhoto() || 
-        { mutate: () => {}, isPending: false, error: null } as unknown as UseMutationResult<UserProfileResponse, Error, { userId: string; token: JwtToken }>;
-    
-    const updatePrivacySettings = reactQueryService?.updatePrivacySettings() || 
-        { mutate: () => {}, isPending: false, error: null } as unknown as UseMutationResult<PrivacySettings, Error, { userId: string; settings: PrivacySettings; token: JwtToken }>;
-    
-    const updateNotificationSettings = reactQueryService?.updateNotificationSettings() || 
-        { mutate: () => {}, isPending: false, error: null } as unknown as UseMutationResult<NotificationSettings, Error, { userId: string; settings: NotificationSettings; token: JwtToken }>;
+    const updateProfileSettings = reactQueryService?.updateProfileSettings() ||
+        { mutate: () => { }, isPending: false, error: null } as unknown as UseMutationResult<UserProfileResponse, Error, { userId: string; settings: ProfileSettingsRequest; token: JwtToken }>;
+
+    const uploadProfilePhoto = reactQueryService?.uploadProfilePhoto() ||
+        { mutate: () => { }, isPending: false, error: null } as unknown as UseMutationResult<UserProfileResponse, Error, { userId: string; file: File; token: JwtToken }>;
+
+    const removeProfilePhoto = reactQueryService?.removeProfilePhoto() ||
+        { mutate: () => { }, isPending: false, error: null } as unknown as UseMutationResult<UserProfileResponse, Error, { userId: string; token: JwtToken }>;
+
+    const updatePrivacySettings = reactQueryService?.updatePrivacySettings() ||
+        { mutate: () => { }, isPending: false, error: null } as unknown as UseMutationResult<PrivacySettings, Error, { userId: string; settings: PrivacySettings; token: JwtToken }>;
+
+    const updateNotificationSettings = reactQueryService?.updateNotificationSettings() ||
+        { mutate: () => { }, isPending: false, error: null } as unknown as UseMutationResult<NotificationSettings, Error, { userId: string; settings: NotificationSettings; token: JwtToken }>;
 
     const prefetchProfileSettings = useCallback(async (userId: string) => {
         if (reactQueryService && token) {
@@ -138,7 +138,7 @@ export const useReactQuerySettings = (
         notifications,
         isLoading,
         error,
-        
+
         // Actions
         updateProfileSettings,
         uploadProfilePhoto,

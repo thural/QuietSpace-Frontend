@@ -1,8 +1,8 @@
-import { NotificationResponse } from "@api/schemas/inferred/notification";
-import { NotificationType } from "@/api/schemas/native/notification";
+import { NotificationResponse } from "@/features/notification/data/models/notification";
+import { NotificationType } from "@/features/notification/data/models/notificationNative";
 import InfinateScrollContainer from "@shared/InfinateScrollContainer";
 import { useGetNotifications } from "@services/data/useNotificationData";
-import { Category, pickNotificationFilter } from "@utils/notificationUtils";
+import { Category, pickNotificationFilter } from "@/shared/utils/notificationUtils";
 import Typography from "@shared/Typography";
 import { Center } from "@mantine/core";
 import { useParams } from "react-router-dom";

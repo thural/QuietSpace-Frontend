@@ -1,4 +1,4 @@
-import { ResId } from "@/api/schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 import PostCard from "@/features/feed/presentation/components/post/PostCard";
 import PostReplyCard from "@/features/feed/presentation/components/post/PostReplyCard";
 import RepostCard from "@/features/feed/presentation/components/repost/RepostCard";

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import { Text } from "@mantine/core";
 import PostHeader from "../fragments/PostHeader";
 

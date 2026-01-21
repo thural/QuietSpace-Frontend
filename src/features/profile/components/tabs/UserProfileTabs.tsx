@@ -1,5 +1,5 @@
-import { ResId } from "@/api/schemas/native/common";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { ResId } from "@/shared/api/models/commonNative";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { Tabs } from "@mantine/core";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiClockClockwise, PiNote } from "react-icons/pi";
 import UserPostList from "../list/UserPostList";

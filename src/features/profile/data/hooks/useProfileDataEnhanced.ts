@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useGetUserById, useGetFollowers, useGetFollowings } from "@/services/data/useUserData";
+import { useGetUserById, useGetFollowers, useGetFollowings } from "@features/profile/data";
 import { useGetPostsByUserId } from "@/services/data/usePostData";
-import useUserQueries from "@/api/queries/userQueries";
-import type { ResId } from "@/api/schemas/inferred/common";
+import useUserQueries from "@features/profile/data/userQueries";
+import type { ResId } from "@/shared/api/models/common";
 
 import { getProfileRepository, initializeProfileContainer } from "../../di";
 import type { IProfileRepository } from "../../domain";
@@ -128,8 +128,8 @@ export const useProfileDataEnhanced = (userId: ResId, config?: ProfileRepository
     userPosts,
     viewFollowers: false,
     viewFollowings: false,
-    toggleFollowers: () => {},
-    toggleFollowings: () => {},
+    toggleFollowers: () => { },
+    toggleFollowings: () => { },
 
     userProfile,
     userStats,

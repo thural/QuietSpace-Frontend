@@ -6,11 +6,11 @@
 
 import { UserSearchRepository } from '../UserSearchRepository';
 import { PostSearchRepository } from '../PostSearchRepository';
-import { fetchUsersByQuery } from '../../../../../api/requests/userRequests';
-import { fetchPostQuery } from '../../../../../api/requests/postRequests';
+import { fetchUsersByQuery } from "@features/search/data/userRequests";
+import { fetchPostQuery } from "@features/feed/data/postRequests";
 
 // Mock the auth store
-jest.mock('../../../../../services/store/zustand', () => ({
+jest.mock('@services/store/zustand', () => ({
     getState: jest.fn(() => ({
         data: {
             accessToken: 'mock-token-123',
@@ -20,11 +20,11 @@ jest.mock('../../../../../services/store/zustand', () => ({
 }));
 
 // Mock the API functions
-jest.mock('../../../../../api/requests/userRequests', () => ({
+jest.mock('@core/network/api/requests/userRequests', () => ({
     fetchUsersByQuery: jest.fn()
 }));
 
-jest.mock('../../../../../api/requests/postRequests', () => ({
+jest.mock('@core/network/api/requests/postRequests', () => ({
     fetchPostQuery: jest.fn()
 }));
 
@@ -55,7 +55,7 @@ describe('Repository Implementation Tests', () => {
             mockFetchUsersByQuery.mockResolvedValue(mockResponse);
 
             const result = await userRepo.searchUsers('test query');
-            
+
             expect(fetchUsersByQuery).toHaveBeenCalledWith('test query', 'mock-token-123');
             expect(result).toEqual([
                 { id: '1', username: 'testuser', email: 'test@example.com' }
@@ -66,7 +66,7 @@ describe('Repository Implementation Tests', () => {
             mockFetchUsersByQuery.mockRejectedValue(new Error('API Error'));
 
             const result = await userRepo.searchUsers('test query');
-            
+
             expect(result).toEqual([]);
         });
     });
@@ -94,7 +94,7 @@ describe('Repository Implementation Tests', () => {
             mockFetchPostQuery.mockResolvedValue(mockResponse);
 
             const result = await postRepo.searchPosts('test query');
-            
+
             expect(fetchPostQuery).toHaveBeenCalledWith('test query', 'mock-token-123');
             expect(result).toEqual([
                 { id: '1', title: 'Test Post', text: 'Test content' }
@@ -105,7 +105,7 @@ describe('Repository Implementation Tests', () => {
             mockFetchPostQuery.mockRejectedValue(new Error('API Error'));
 
             const result = await postRepo.searchPosts('test query');
-            
+
             expect(result).toEqual([]);
         });
     });

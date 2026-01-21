@@ -13,3 +13,6 @@ export { useSettings } from './hooks/useSettings';
 export { useReactQuerySettings } from './hooks/useReactQuerySettings';
 export type { SettingsState, SettingsActions } from './hooks/useSettings';
 export type { ReactQuerySettingsState, ReactQuerySettingsActions } from './hooks/useReactQuerySettings';
+
+// Profile settings hook
+export { default as useProfileSettings } from './hooks/useProfileSettings';

@@ -1,8 +1,8 @@
-import { PostResponse } from "@/api/schemas/inferred/post";
+import { PostResponse } from "@/features/feed/data/models/post";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
 import UserCard from "@/shared/UserCard";
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 /**
  * Props for the PostHeader component.

@@ -1,17 +1,17 @@
 import ComponentList from "@/shared/ComponentList";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
-import styles from "@/styles/navbar/navbarStyles";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import styles from "../styles/navbarStyles";
 import { Badge } from "@mantine/core";
 import BoxStyled from "@shared/BoxStyled";
 import Conditional from "@shared/Conditional";
-import NavStyled from "@shared/NavStyled";
+import NavStyled from "../../shared/NavStyled";
 import Typography from "@shared/Typography";
 import { useLocation } from "react-router-dom";
 import NavItem, { NavItemProps } from "./NavItem";
 import NavMenu from "./NavMenu";
 import { useNavbar } from "../../application";
-import { NAVBAR_ICONS } from "../../../../shared/navbar/constants";
+import { NAVBAR_ICONS } from "@shared/navbar/constants";
 
 /**
  * NavBar component.

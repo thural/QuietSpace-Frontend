@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach } from '@jest/globals';
 import { Post, PostFactory, POST_VALIDATION, PostStatus, PostSortOption } from '../../domain/entities/PostEntities';
-import type { PostResponse } from '../../../../api/schemas/inferred/post';
+import type { PostResponse } from '@/features/feed/data/models/post';
 
 describe('Post Domain Entities', () => {
     describe('Post Class', () => {

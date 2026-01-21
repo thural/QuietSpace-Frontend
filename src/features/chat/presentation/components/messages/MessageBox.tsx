@@ -1,12 +1,12 @@
 import React from 'react';
-import { MessageResponse } from "@/api/schemas/inferred/chat";
-import { useMessage } from "@/services/hook/chat/useMessage";
-import styles from "@/styles/chat/messageStyles";
+import { MessageResponse } from "@/features/chat/data/models/chat";
+import { useMessage } from "@features/chat/application/hooks/useMessage";
+import styles from "../../styles/messageStyles";
 import BoxStyled from "@shared/BoxStyled";
 import Conditional from "@shared/Conditional";
 import Typography from "@shared/Typography";
-import { ResId } from '@/api/schemas/native/common';
-import useHoverState from '@/services/hook/shared/useHoverState';
+import { ResId } from '@/shared/api/models/commonNative';
+import useHoverState from '@shared/hooks/useHoverState';
 
 /**
  * Props for the MessageBox component.

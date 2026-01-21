@@ -1,4 +1,4 @@
-import { GenericWrapper } from "@/types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import BoxStyled from "@shared/BoxStyled";
 import { Link } from "react-router-dom";
 
