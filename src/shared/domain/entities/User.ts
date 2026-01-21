@@ -9,14 +9,14 @@ export class User {
   constructor(
     public readonly id: string,
     public readonly username: string,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date,
     public readonly email?: string,
     public readonly bio?: string,
     public readonly avatar?: string,
-    public readonly createdAt: Date,
-    public readonly updatedAt: Date,
     public readonly isActive: boolean = true,
     public readonly isVerified: boolean = false
-  ) {}
+  ) { }
 
   /**
    * Get display name for user
@@ -77,11 +77,11 @@ export class User {
     return new User(
       this.id,
       updates.username || this.username,
-      updates.email || this.email,
-      updates.avatar || this.avatar,
-      updates.bio || this.bio,
       updates.createdAt || this.createdAt,
-      updates.updatedAt || new Date(),
+      new Date(),
+      updates.email || this.email,
+      updates.bio || this.bio,
+      updates.avatar || this.avatar,
       updates.isActive ?? this.isActive,
       updates.isVerified ?? this.isVerified
     );
@@ -94,11 +94,11 @@ export class User {
     return new User(
       this.id,
       this.username,
-      this.email,
-      this.avatar,
-      this.bio,
       this.createdAt,
       new Date(),
+      this.email,
+      this.bio,
+      this.avatar,
       false,
       this.isVerified
     );
@@ -111,11 +111,11 @@ export class User {
     return new User(
       this.id,
       this.username,
-      this.email,
-      this.avatar,
-      this.bio,
       this.createdAt,
       new Date(),
+      this.email,
+      this.bio,
+      this.avatar,
       this.isActive,
       true
     );
@@ -145,11 +145,11 @@ export class User {
     return new User(
       json.id,
       json.username,
-      json.email,
-      json.avatar,
-      json.bio,
       new Date(json.createdAt),
       new Date(json.updatedAt),
+      json.email,
+      json.bio,
+      json.avatar,
       json.isActive ?? true,
       json.isVerified ?? false
     );
