@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
-import { useAuthStore } from "@/services/store/zustand";
+import { useAuthStore } from "@/core/store/zustand";
 import LoaderStyled from "@/shared/LoaderStyled";
 
 interface ProtectedRouteProps {

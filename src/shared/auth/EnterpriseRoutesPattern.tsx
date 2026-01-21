@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/services/store/zustand';
+import { useAuthStore } from '@/core/store/zustand';
 import AuthGuard from '@/shared/auth/AuthGuard';
 import ProtectedRoute from '@/shared/auth/ProtectedRoute';
 

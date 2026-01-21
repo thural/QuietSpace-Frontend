@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/services/store/zustand';
-import LoadingFallback from '@/LoadingFallback';
+import { useAuthStore } from '@/core/store/zustand';
+import LoadingFallback from '@/app/LoadingFallback';
 import ErrorFallback from '@/shared/ErrorFallback';
 
 interface AuthGuardProps {

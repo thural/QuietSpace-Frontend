@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/services/store/zustand';
+import { useAuthStore } from '@/core/store/zustand';
 
 // Audit log event types
 export enum AuditEventType {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useAuthStore } from '@/services/store/zustand';
+import { useAuthStore } from '@/core/store/zustand';
 import { auditLogger, AuditEventType, AuditSeverity } from './auditLogger';
 
 // Anomaly types

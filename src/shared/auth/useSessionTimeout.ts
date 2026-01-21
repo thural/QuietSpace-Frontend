@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useAuthStore } from '@/services/store/zustand';
+import { useAuthStore } from '@/core/store/zustand';
 
 interface SessionTimeoutOptions {
   /** Session timeout in milliseconds (default: 30 minutes) */

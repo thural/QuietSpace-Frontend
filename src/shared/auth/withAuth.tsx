@@ -1,5 +1,5 @@
 import { ReactNode, ComponentType } from "react";
-import { useAuthStore } from "@/services/store/zustand";
+import { useAuthStore } from "@/core/store/zustand";
 import LoaderStyled from "@/shared/LoaderStyled";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAuthStore } from '@/services/store/zustand';
+import { useAuthStore } from '@/core/store/zustand';
 import { useSessionTimeout } from './useSessionTimeout';
 import { useMultiTabSync } from './useMultiTabSync';
 import { useAuditLogger } from './auditLogger';
