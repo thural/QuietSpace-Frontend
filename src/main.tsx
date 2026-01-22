@@ -2,7 +2,7 @@ import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from 'react-dom/client';
 import RouteSwitch from "./app/RouteSwitch";
-import { getLocalThemeMode } from "./shared/utils/localStorageUtils";
+import { getLocalThemeMode } from "@shared/utils/localStorageUtils";
 
 
 const queryClient = new QueryClient({});
@@ -31,7 +31,7 @@ const queryClient = new QueryClient({});
 //     }).catch(err => console.log(err));
 
 const isDarkMode = getLocalThemeMode();
-const colorScheme = isDarkMode ? "dark" : "light"
+const colorScheme = isDarkMode ? "dark" : "light";
 
 createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>

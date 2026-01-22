@@ -1,32 +1,29 @@
-import { lazy, Suspense, useEffect } from "react";
-import { ThemeProvider } from "react-jss";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { Frame } from "stompjs";
+import {lazy, Suspense, useEffect} from "react";
+import {ThemeProvider} from "react-jss";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {Frame} from "stompjs";
 
 import '@mantine/core/styles.css';
 import './styles/App.css';
 
-import { darkTheme, lightTheme } from "@/app/theme";
-import { AuthResponse } from "../features/auth/data/models/auth";
+import {darkTheme, lightTheme} from "@/app/theme";
 import UnauthorizedPage from "@/pages/auth/UnauthorizedPage";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
-import { useGetChats } from "../features/chat/data/useChatData";
-import { useGetNotifications } from "../features/notification/data/useNotificationData";
+import {useGetNotifications} from "@/features/notification/data/useNotificationData";
 import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
-import useNotificationSocket from "../features/notification/application/hooks/useNotificationSocket";
 import useTheme from "../shared/hooks/useTheme";
 import useChatSocket from "../features/chat/data/useChatSocket";
-import { useStompClient } from "@/core/network/socket/clients/useStompClient";
-import { useAuthStore } from "../core/store/zustand";
-import { AdvancedSecurityProvider } from "../shared/auth/AdvancedSecurityProvider";
-import { AuthProvider } from "../shared/auth/AuthProvider";
-import { useAuditLogger } from "../shared/auth/auditLogger";
+import {useStompClient} from "@/core/network/socket/clients/useStompClient";
+import {useAuthStore} from "../core/store/zustand";
+import {AdvancedSecurityProvider} from "../shared/auth/AdvancedSecurityProvider";
+import {AuthProvider} from "../shared/auth/AuthProvider";
+import {useAuditLogger} from "../shared/auth/auditLogger";
 import AuthGuard from "../shared/auth/AuthGuard";
-import { getLocalThemeMode } from "../shared/utils/localStorageUtils";
+import {getLocalThemeMode} from "@utils/localStorageUtils.ts";
 
 // Lazy-loaded components for better performance
-const NavBar = lazy(() => import("../features/navbar/presentation/components/Navbar"));
+lazy(() => import("../features/navbar/presentation/components/Navbar"));
 const AuthPage = lazy(() => import("../pages/auth/AuthPage"));
 
 /**
@@ -55,15 +52,12 @@ const AuthPage = lazy(() => import("../pages/auth/AuthPage"));
  * - JWT token expiry checking
  * - Role-based permission mapping
  * 
- * @returns {JSX.Element} - The rendered application component.
+ * @returns The rendered application component.
  */
 const App = () => {
     const navigate = useNavigate();
     const { theme } = useTheme();
-    const {
-        setIsAuthenticated,
-        setAuthData
-    } = useAuthStore();
+    useAuthStore();
     const isDarkMode = getLocalThemeMode();
     const storedTheme = isDarkMode ? darkTheme : lightTheme;
 
@@ -84,7 +78,7 @@ const App = () => {
     // Only initialize sockets when authenticated
     useChatSocket();
     useGetNotifications();
-    const { authenticate, initializeTokenRefresh } = useJwtAuth();
+    const { initializeTokenRefresh } = useJwtAuth();
 
     /**
      * Enhanced authentication initialization with improved error handling
