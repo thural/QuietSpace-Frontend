@@ -6,7 +6,7 @@
  */
 
 import { IAuthLogger } from '../interfaces/authInterfaces';
-import { AuthEvent, AuthErrorType } from '../types/authTypes';
+import { AuthEvent, AuthErrorType } from '../types/auth.domain.types';
 
 /**
  * Console authentication logger implementation
@@ -27,7 +27,6 @@ export class ConsoleAuthLogger implements IAuthLogger {
         this.logs.push(event);
 
         const logLevel = this.getLogLevel(event.type);
-        const timestamp = event.timestamp.toISOString();
         const message = this.formatLogMessage(event);
 
         switch (logLevel) {

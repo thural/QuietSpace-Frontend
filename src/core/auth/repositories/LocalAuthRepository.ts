@@ -5,8 +5,8 @@
  * using localStorage for token and session storage.
  */
 
-import { IAuthRepository } from '../interfaces/authInterfaces';
-import { AuthSession } from '../types/authTypes';
+import {IAuthRepository} from '../interfaces/authInterfaces';
+import {AuthSession} from '../types/auth.domain.types';
 
 /**
  * Local authentication repository
@@ -88,8 +88,7 @@ export class LocalAuthRepository implements IAuthRepository {
      */
     async getRefreshToken(): Promise<string | null> {
         try {
-            const token = localStorage.getItem('refreshToken');
-            return token;
+            return localStorage.getItem('refreshToken');
         } catch (error) {
             console.error('Failed to retrieve refresh token:', error);
             return null;

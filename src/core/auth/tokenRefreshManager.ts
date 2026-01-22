@@ -1,13 +1,13 @@
-import { AuthResponse } from '../../features/auth/data/models/auth';
-import { fetchAccessToken } from '../../features/auth/data/authRequests';
-import { getRefreshToken } from '../../shared/utils/authStoreUtils';
+import { AuthResponse } from '@features/auth';
+import { fetchAccessToken } from '@features/auth/data/authRequests.ts';
+import { getRefreshToken } from '@shared/utils/authStoreUtils';
 
 /**
  * Token refresh management service
  * 
  * Handles automatic token refresh without business logic or state management
  */
-export class TokenRefreshManager {
+class TokenRefreshManager {
     private static intervalId: number = 0;
 
     /**
@@ -15,17 +15,17 @@ export class TokenRefreshManager {
      * 
      * @param options - Refresh configuration
      */
-    static startRefresh(options: {
+    static async startRefresh(options: {
         interval?: number;
         onSuccess?: (data: AuthResponse) => void;
         onError?: (error: Error) => void;
-    } = {}): void {
+    } = {}): Promise<void> {
         this.stopRefresh();
 
         const { interval = 540000, onSuccess, onError } = options;
 
         // Initial token fetch
-        this.refreshToken(onSuccess, onError);
+        await this.refreshToken(onSuccess, onError);
 
         // Set up periodic refresh
         this.intervalId = window.setInterval(

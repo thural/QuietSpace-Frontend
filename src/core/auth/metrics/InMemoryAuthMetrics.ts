@@ -19,6 +19,7 @@ export class InMemoryAuthMetrics implements IAuthMetrics {
         failedAttempts: 0,
         averageDuration: 0,
         errorsByType: {} as Record<string, number>,
+        attemptsByType: {} as Record<string, number>,
         lastAttempt: null as Date | null,
         lastSuccess: null as Date | null
     };
@@ -28,7 +29,9 @@ export class InMemoryAuthMetrics implements IAuthMetrics {
      */
     recordAttempt(type: string, duration: number): void {
         this.metrics.totalAttempts++;
+        this.metrics.attemptsByType[type] = (this.metrics.attemptsByType[type] || 0) + 1;
         this.metrics.lastAttempt = new Date();
+        this.metrics.averageDuration = this.calculateAverageDuration(duration);
     }
 
     /**
@@ -36,6 +39,7 @@ export class InMemoryAuthMetrics implements IAuthMetrics {
      */
     recordSuccess(type: string, duration: number): void {
         this.metrics.successfulAttempts++;
+        this.metrics.attemptsByType[type] = (this.metrics.attemptsByType[type] || 0) + 1;
         this.metrics.averageDuration = this.calculateAverageDuration(duration);
         this.metrics.lastSuccess = new Date();
     }
@@ -46,6 +50,7 @@ export class InMemoryAuthMetrics implements IAuthMetrics {
     recordFailure(type: string, error: string, duration: number): void {
         this.metrics.failedAttempts++;
         this.metrics.errorsByType[error] = (this.metrics.errorsByType[error] || 0) + 1;
+        this.metrics.attemptsByType[type] = (this.metrics.attemptsByType[type] || 0) + 1;
         this.metrics.averageDuration = this.calculateAverageDuration(duration);
     }
 
@@ -58,13 +63,22 @@ export class InMemoryAuthMetrics implements IAuthMetrics {
         failureRate: number;
         averageDuration: number;
         errorsByType: Record<string, number>;
+        attemptsByType: Record<string, number>;
     } {
+        // For in-memory implementation, we currently don't store timestamps
+        // so timeRange filtering is not applicable. Return all metrics.
+        // Future enhancement: store timestamps with each metric for proper filtering
+        if (timeRange) {
+            console.warn('Time range filtering not supported in InMemoryAuthMetrics - returning all metrics');
+        }
+
         return {
             totalAttempts: this.metrics.totalAttempts,
             successRate: this.calculateSuccessRate(),
             failureRate: this.calculateFailureRate(),
             averageDuration: this.metrics.averageDuration,
-            errorsByType: { ...this.metrics.errorsByType }
+            errorsByType: { ...this.metrics.errorsByType },
+            attemptsByType: { ...this.metrics.attemptsByType }
         };
     }
 
@@ -78,6 +92,7 @@ export class InMemoryAuthMetrics implements IAuthMetrics {
             failedAttempts: 0,
             averageDuration: 0,
             errorsByType: {} as Record<string, number>,
+            attemptsByType: {} as Record<string, number>,
             lastAttempt: null,
             lastSuccess: null
         };

@@ -12,7 +12,10 @@ import {
     AuthEvent,
     AuthErrorType,
     AuthProviderType
-} from '../types/authTypes';
+} from '../types/auth.domain.types';
+
+// Re-export commonly used types for convenience
+export type { AuthEvent, AuthErrorType, AuthProviderType, AuthCredentials, AuthResult, AuthSession };
 
 /**
  * Authentication provider interface
@@ -48,7 +51,7 @@ export interface IAuthProvider {
     /**
      * Refreshes authentication token
      */
-    refreshToken(): Promise<AuthResult<any>>;
+    refreshToken(): Promise<AuthResult>;
 
     /**
      * Validates current session

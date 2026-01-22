@@ -5,16 +5,8 @@
  * including token validation, refresh, and security.
  */
 
-import {
-    AuthCredentials,
-    AuthResult,
-    AuthSession,
-    AuthToken,
-    AuthProviderType,
-    AuthErrorType
-} from '../types/authTypes';
-
-import { IAuthProvider } from '../interfaces/authInterfaces';
+import {AuthCredentials, AuthErrorType, AuthProviderType, AuthResult, AuthSession} from '../types/auth.domain.types';
+import {IAuthProvider} from '../interfaces/authInterfaces';
 
 /**
  * JWT Authentication Provider Implementation
@@ -92,7 +84,7 @@ export class JwtAuthProvider implements IAuthProvider {
     /**
      * Registers user (not applicable for JWT)
      */
-    async register(userData: AuthCredentials): Promise<AuthResult<void>> {
+    async register(_userData: AuthCredentials): Promise<AuthResult<void>> {
         return {
             success: false,
             error: {
@@ -106,7 +98,7 @@ export class JwtAuthProvider implements IAuthProvider {
     /**
      * Activates user (not applicable for JWT)
      */
-    async activate(code: string): Promise<AuthResult<void>> {
+    async activate(_code: string): Promise<AuthResult<void>> {
         return {
             success: false,
             error: {
@@ -134,7 +126,7 @@ export class JwtAuthProvider implements IAuthProvider {
     /**
      * Refreshes JWT token
      */
-    async refreshToken(): Promise<AuthResult<any>> {
+    async refreshToken(): Promise<AuthResult> {
         return {
             success: false,
             error: {

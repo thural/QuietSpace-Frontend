@@ -27,6 +27,8 @@ import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
 import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { EnterpriseSecurityService } from './security/EnterpriseSecurityService';
 import { DefaultAuthConfig } from './config/DefaultAuthConfig';
+import { AnalyticsPlugin } from './plugins/AnalyticsPlugin';
+import { SecurityPlugin } from './plugins/SecurityPlugin';
 
 /**
  * Factory for creating authentication services
@@ -155,7 +157,9 @@ export class AuthModuleFactory {
  * Main authentication module exports
  */
 export {
-    EnterpriseAuthService
+    EnterpriseAuthService,
+    AnalyticsPlugin,
+    SecurityPlugin
 };
 
 // Type-only exports for interfaces

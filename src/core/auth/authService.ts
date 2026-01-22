@@ -1,17 +1,17 @@
-import { AuthResponse } from '../../features/auth/data/models/auth';
-import { LoginBody, SignupBody } from '../../shared/types/authTypes';
+import { AuthResponse } from '@features/auth/data/models/auth';
+import { LoginBody, SignupBody } from '@/shared/types/auth.dto';
 import {
     fetchAccessToken,
     fetchActivation,
     fetchLogin,
     fetchLogout,
     fetchSignup
-} from '../../features/auth/data/authRequests';
+} from '@features/auth/data/authRequests';
 import {
     clearAuthTokens,
     getRefreshToken,
     setRefreshToken
-} from '../../shared/utils/authStoreUtils';
+} from '@shared/utils/authStoreUtils';
 
 /**
  * Abstract base authentication service
@@ -71,17 +71,17 @@ export class AuthService extends BaseAuthService {
      * @returns Promise<AuthResponse> - Authentication response with tokens
      */
     static async authenticate(credentials: LoginBody): Promise<AuthResponse> {
+        // Validate credentials before proceeding
+        if (!this.validateCredentials(credentials)) {
+            throw new Error('Invalid credentials format');
+        }
+
+        // Log authentication attempt
+        this.logAuthAttempt('login', { email: credentials.email });
+
         try {
-            // Validate credentials before proceeding
-            if (!this.validateCredentials(credentials)) {
-                throw new Error('Invalid credentials format');
-            }
-
-            // Log authentication attempt
-            this.logAuthAttempt('login', { email: credentials.email });
-
             const response = await fetchLogin(credentials);
-            setRefreshToken(response.refreshToken);
+            setRefreshToken(response.refreshToken as string);
 
             this.logAuthAttempt('login_success', { userId: response.userId });
             return response;
@@ -116,15 +116,15 @@ export class AuthService extends BaseAuthService {
      * @returns Promise<void> - Activation completion
      */
     static async activate(code: string): Promise<void> {
+        // Validate activation code format
+        if (!code || code.trim().length === 0) {
+            throw new Error('Invalid activation code format');
+        }
+
+        // Log activation attempt
+        this.logAuthAttempt('activate', { code: code.substring(0, 4) + '***' });
+
         try {
-            // Validate activation code format
-            if (!code || code.trim().length === 0) {
-                throw new Error('Invalid activation code format');
-            }
-
-            // Log activation attempt
-            this.logAuthAttempt('activate', { code: code.substring(0, 4) + '***' });
-
             await fetchActivation(code);
 
             this.logAuthAttempt('activate_success');
