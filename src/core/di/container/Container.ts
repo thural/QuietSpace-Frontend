@@ -5,9 +5,10 @@
  * Provides enterprise-grade DI with reflection support.
  */
 
-import { ServiceContainer } from './ServiceContainer';
-import { getInjectableMetadata, getConstructorDependencies } from '../decorators/Injectable';
+import { ServiceContainer } from '@core/di/container/ServiceContainer';
+import { getInjectableMetadata, getConstructorDependencies } from '@core/di//decorators/Injectable';
 import type { ServiceIdentifier } from '../registry/ServiceRegistry';
+import { TypeKeys } from '../types';
 
 // Import ServiceLifetime as value, not type
 import { ServiceLifetime } from '../registry/ServiceRegistry';
@@ -82,6 +83,13 @@ export class Container {
   }
 
   /**
+   * Register a service instance by string token with type safety
+   */
+  registerInstanceByToken<T>(token: TypeKeys, instance: T): void {
+    this.container.registerInstance(token, instance);
+  }
+
+  /**
    * Get a service instance
    */
   get<T>(identifier: ServiceIdentifier<T>): T {
@@ -89,10 +97,24 @@ export class Container {
   }
 
   /**
+   * Get a service by string token with type safety
+   */
+  getByToken<T>(token: TypeKeys): T {
+    return this.container.get(token);
+  }
+
+  /**
    * Try to get a service instance
    */
   tryGet<T>(identifier: ServiceIdentifier<T>): T | null {
     return this.container.tryGet(identifier);
+  }
+
+  /**
+   * Try to get a service by string token with type safety
+   */
+  tryGetByToken<T>(token: TypeKeys): T | null {
+    return this.container.tryGet(token);
   }
 
   /**

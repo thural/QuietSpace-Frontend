@@ -10,7 +10,7 @@ export { container, initializeContainer, getContainer, createMockContainer } fro
 export { TYPES } from './di/types';
 
 // Network
-export { apiClient } from './network/rest/clients/apiClient';
+export { apiClient } from './network/rest/apiClient';
 export { socketService } from './network/socket/service/socketService';
 
 // Theme
