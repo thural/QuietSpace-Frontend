@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
+import { SecurityMonitor } from "./SecurityMonitor";
 
 
 /**
@@ -49,6 +50,13 @@ const AuthContainer = () => {
                 <Typography className="secondary-text">where free speech and privacy is the priority</Typography>
             </BoxStyled>
             <RenderResult />
+            
+            {/* Security Monitor - Admin Only */}
+            {process.env.NODE_ENV === 'development' && (
+                <BoxStyled className="security-monitor-section" style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
+                    <SecurityMonitor />
+                </BoxStyled>
+            )}
         </BoxStyled>
     );
 }

@@ -8,7 +8,7 @@
 export type { UseAuthStoreProps } from './authStoreTypes';
 
 // Form types
-export type { AuthState, SetAuthState, AuthFormProps, SignupFormProps, ActivationFormProps } from './authTypes';
+export type { AuthState, SetAuthState, AuthFormProps, SignupFormProps, ActivationFormProps } from './auth.ui.types';
 
 // Enums
-export { AuthPages } from './authTypes';
+export { AuthPages } from './auth.ui.types';

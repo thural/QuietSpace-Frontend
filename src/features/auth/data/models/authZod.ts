@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseSchema } from "./commonZod";
+import { BaseSchema } from "@shared/api/models/commonZod";
 
 export const RefreshTokenResponseSchema = z.object({
     ...BaseSchema.shape,

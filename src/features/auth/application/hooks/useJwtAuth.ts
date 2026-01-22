@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { LoginBody, SignupBody } from '../../../types/authTypes';
-import AuthService from '../../auth/authService';
-import TokenRefreshManager from '../../auth/tokenRefreshManager';
-import { useAuthStore } from '../../store/zustand';
+import { LoginBody, SignupBody } from '@shared/types/auth.dto';
+import AuthService from '@core/auth/authService';
+import TokenRefreshManager from '@core/auth/tokenRefreshManager';
+import { useAuthStore } from '@core/store/zustand';
 
 /**
  * Clean authentication hook with proper separation of concerns
@@ -96,19 +96,24 @@ export const useJwtAuth = () => {
     /**
      * Initializes token refresh on app startup
      */
-    const initializeTokenRefresh = useCallback(() => {
-        TokenRefreshManager.startRefresh({
-            interval: 490000,
-            onSuccess: (data) => {
-                setAuthData(data);
-                setIsAuthenticated(true);
-            },
-            onError: (error) => {
-                setError(error);
-                setIsAuthenticated(false);
-                TokenRefreshManager.stopRefresh();
-            }
-        });
+    const initializeTokenRefresh = useCallback(async () => {
+        try {
+            await TokenRefreshManager.startRefresh({
+                interval: 490000,
+                onSuccess: (data) => {
+                    setAuthData(data);
+                    setIsAuthenticated(true);
+                },
+                onError: (error) => {
+                    setError(error);
+                    setIsAuthenticated(false);
+                    TokenRefreshManager.stopRefresh();
+                }
+            });
+        } catch (error) {
+            setError(error instanceof Error ? error : new Error(String(error)));
+            setIsAuthenticated(false);
+        }
     }, [setAuthData, setIsAuthenticated, setError]);
 
     /**

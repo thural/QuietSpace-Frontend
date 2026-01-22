@@ -1,23 +1,27 @@
-import useJwtAuth from "@services/hook/auth/useJwtAuth";
-import { useAuthStore } from "@/core/store/zustand";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthPages } from "@/types/authTypes";
-import { AuthResponse } from "@/features/auth/data/models/auth";
+import { useJwtAuth } from "@features/auth/application/hooks/useJwtAuth";
+import {useAuthStore} from "@/core/store/zustand";
+import React from "react";
+import {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+import {AuthPages} from "@/features/auth/types/auth.ui.types";
+
+interface LoginFormReturn {
+    formData: { email: string; password: string };
+    isAuthenticating: boolean;
+    isError: boolean;
+    error: string | null;
+    handleLoginForm: (event: React.FormEvent) => Promise<void>;
+    handleFormChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSignupBtn: () => void;
+}
 
 /**
  * useLoginForm hook.
  * 
  * This hook manages the login form state and handles authentication logic. It provides 
  * functions for handling form submission, input changes, and navigation to the signup page.
- * 
- * @param {AuthFormProps} params - The authentication form properties.
- * @param {Function} params.setAuthState - Function to set the authentication state.
- * @param {Object} params.authState - The current authentication state, including form data.
- * @returns {Object} - An object containing form data, authentication status, error information, 
- *                     and functions to handle form events.
  */
-export const useLoginForm = () => {
+export const useLoginForm = (): LoginFormReturn => {
     const { formData, setFormData, setCurrentPage, isLoading, isError, error } = useAuthStore();
     const navigate = useNavigate();
 
@@ -33,9 +37,9 @@ export const useLoginForm = () => {
     /**
      * Handles the form submission event.
      * 
-     * @param {Event} event - The form submission event.
+     * @param {React.FormEvent} event - The form submission event.
      */
-    const handleLoginForm = async (event: Event): Promise<void> => {
+    const handleLoginForm = async (event: React.FormEvent): Promise<void> => {
         event.preventDefault();
         try {
             await authenticate({
@@ -66,10 +70,13 @@ export const useLoginForm = () => {
     const handleSignupBtn = () => setCurrentPage(AuthPages.SIGNUP);
 
     return {
-        formData,
+        formData: {
+            email: formData.email || '',
+            password: formData.password || ''
+        },
         isAuthenticating: isLoading,
         isError,
-        error,
+        error: error?.message || null,
         handleLoginForm,
         handleFormChange,
         handleSignupBtn,

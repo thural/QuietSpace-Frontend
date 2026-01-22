@@ -4,7 +4,7 @@ import {
     AuthResponseSchema,
     AuthRequestSchema,
     RegisterRequestSchema
-} from "../zod/authZod";
+} from "./authZod";
 
 export type RefreshTokenResponse = z.infer<typeof RefreshTokenResponseSchema>;
 export type AuthResponse = z.infer<typeof AuthResponseSchema>;

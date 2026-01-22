@@ -1,7 +1,7 @@
-import { AuthPages, SignupBody } from "@/types/authTypes";
-import useJwtAuth from "@services/hook/auth/useJwtAuth";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useAuthStore } from "@/core/store/zustand";
+import {AuthPages} from "@/features/auth/types/auth.ui.types";
+import useJwtAuth from "@features/auth/application/hooks/useJwtAuth";
+import {ChangeEvent, useEffect} from "react";
+import {useAuthStore} from "@/core/store/zustand";
 
 /**
  * useSignupForm hook.

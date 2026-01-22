@@ -1,8 +1,8 @@
 import { fetchResendCode } from "@features/auth/data/authRequests";
-import { AuthPages } from "@/types/authTypes";
+import { AuthPages } from "@/features/auth/types/auth.ui.types";
 import { useState } from "react";
 import { useAuthStore } from "@/core/store/zustand";
-import { useTimer } from "../common/useTimer";
+import { useTimer } from "./useTimer";
 import useJwtAuth from "./useJwtAuth";
 
 export const useActivationForm = () => {
@@ -33,9 +33,15 @@ export const useActivationForm = () => {
         }
     };
 
-    const handleResendCode = (): void => {
-        fetchResendCode(formData.email || '');
-        tokenTimer.resetTimer();
+    const handleResendCode = async (): Promise<void> => {
+        try {
+            await fetchResendCode(formData.email || '');
+            tokenTimer.resetTimer();
+            activationNotice("Activation code resent successfully");
+        } catch (error) {
+            console.error("Failed to resend activation code:", error);
+            activationNotice("Failed to resend activation code. Please try again.");
+        }
     };
 
     const handleSubmit = async (event: Event): Promise<void> => {
