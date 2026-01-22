@@ -5,30 +5,20 @@
  * using the existing Inversify container for consistency.
  */
 
-import {
-    AuthCredentials,
-    AuthResult,
-    AuthSession,
-    AuthEvent,
-    AuthErrorType,
-    AuthProviderType,
-    AuthUser,
-    AuthToken
-} from '../types/authTypes';
+import {AuthCredentials, AuthResult, AuthSession} from '../types/auth.domain.types';
 
 import type {
-    IAuthService,
-    IAuthRepository,
+    IAuthConfig,
     IAuthLogger,
     IAuthMetrics,
+    IAuthPlugin,
+    IAuthRepository,
     IAuthSecurityService,
-    IAuthConfig,
-    IAuthPlugin
+    IAuthService
 } from '../interfaces/authInterfaces';
+import {IAuthProvider, IAuthValidator} from '../interfaces/authInterfaces';
 
-import { IAuthProvider, IAuthValidator } from '../interfaces/authInterfaces';
-
-import { Injectable } from '../../../core/di/index';
+import {Injectable} from '@core/di';
 
 /**
  * Enterprise authentication service implementation
@@ -144,7 +134,20 @@ export class EnterpriseAuthService implements IAuthService {
             // Get provider
             const provider = this.providers.get(providerName);
             if (!provider) {
-                throw new Error(`Authentication provider '${providerName}' not found`);
+                this.metrics.recordFailure('login_attempt', 'provider_not_found' as any, Date.now() - startTime);
+                return {
+                    success: false,
+                    error: {
+                        type: 'provider_not_found' as any,
+                        message: `Authentication provider '${providerName}' not found`,
+                        code: 'AUTH_PROVIDER_NOT_FOUND'
+                    },
+                    metadata: {
+                        timestamp: new Date(),
+                        duration: Date.now() - startTime,
+                        requestId: this.generateRequestId()
+                    }
+                };
             }
 
             // Authenticate with provider
@@ -230,7 +233,7 @@ export class EnterpriseAuthService implements IAuthService {
      * Validates credentials with all registered validators
      */
     private async validateCredentials(credentials: AuthCredentials): Promise<AuthResult<boolean>> {
-        for (const [name, validator] of this.validators) {
+        for (const [, validator] of this.validators) {
             const result = validator.validateCredentials(credentials);
             if (!result.success) {
                 return result;
@@ -316,6 +319,13 @@ export class EnterpriseAuthService implements IAuthService {
         }
 
         return [...new Set(capabilities)];
+    }
+
+    /**
+     * Gets authentication metrics
+     */
+    getMetrics(timeRange?: { start: Date; end: Date }) {
+        return this.metrics.getMetrics(timeRange);
     }
 
     /**

@@ -27,13 +27,20 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
 
         // Analyze patterns
         for (const event of events) {
-            // Multiple failed attempts from same IP
-            const ipEvents = events.filter(e => e.details?.ipAddress);
-            if (ipEvents.length > 5) {
-                suspiciousEvents.push({
-                    type: 'multiple_failures' as any,
-                    details: { ip: event.details?.ipAddress, count: ipEvents.length }
-                });
+            const ipAddress = event.details?.ipAddress;
+            
+            if (ipAddress) {
+                // Multiple failed attempts from same IP
+                const ipEvents = events.filter(e => e.details?.ipAddress === ipAddress);
+                if (ipEvents.length > 5) {
+                    suspiciousEvents.push({
+                        type: 'multiple_failures' as any,
+                        details: { ip: ipAddress, count: ipEvents.length }
+                    });
+                    
+                    // Auto-block IP after multiple failures
+                    this.blockIP(ipAddress, 24 * 60 * 60 * 1000); // 24 hours
+                }
             }
 
             // Rapid successive attempts
@@ -74,21 +81,24 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
     }
 
     /**
-     * Checks rate limiting
+     * Checks rate limiting and IP blocking
      */
-    checkRateLimit(userId: string, attempts: number): boolean {
+    checkRateLimit(userId: string, attempts: number, ipAddress?: string): boolean {
+        // Check if IP is blocked first
+        if (ipAddress && this.isIPBlocked(ipAddress)) {
+            return false; // Blocked IP, deny access
+        }
+
         const userLimit = this.rateLimitStore.get(userId) || { attempts: 5, windowStart: Date.now() };
 
-        if (attempts >= userLimit.attempts) {
-            const timeSinceLastAttempt = Date.now() - userLimit.windowStart;
-
-            // Lock out for 15 minutes if too many attempts
-            if (timeSinceLastAttempt < 15 * 60 * 1000) {
-                return false; // Still within window
-            }
-
-            return true; // Rate limited
+        if (attempts < userLimit.attempts) {
+            return true; // Within limit
         }
+
+        const timeSinceLastAttempt = Date.now() - userLimit.windowStart;
+        const isWithinWindow = timeSinceLastAttempt < 15 * 60 * 1000;
+        
+        return !isWithinWindow; // Allow only if window has expired
     }
 
     /**
@@ -127,6 +137,55 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
         }
     }
 
+    /**
+     * Checks if an IP address is blocked
+     */
+    isIPBlocked(ipAddress: string): boolean {
+        return this.blockedIPs.has(ipAddress);
+    }
+
+    /**
+     * Blocks an IP address for a specified duration
+     */
+    blockIP(ipAddress: string, durationMs: number = 60 * 60 * 1000): void {
+        this.blockedIPs.add(ipAddress);
+        
+        // Auto-unblock after duration
+        setTimeout(() => {
+            this.unblockIP(ipAddress);
+        }, durationMs);
+    }
+
+    /**
+     * Unblocks an IP address
+     */
+    unblockIP(ipAddress: string): void {
+        this.blockedIPs.delete(ipAddress);
+    }
+
+    /**
+     * Gets all currently blocked IPs
+     */
+    getBlockedIPs(): string[] {
+        return Array.from(this.blockedIPs);
+    }
+
+    /**
+     * Gets security monitoring data including blocked IPs and rate limit info
+     */
+    getSecurityMonitoringData(): {
+        blockedIPs: string[];
+        rateLimitEntries: number;
+        totalBlockedIPs: number;
+    } {
+        return {
+            blockedIPs: this.getBlockedIPs(),
+            rateLimitEntries: this.rateLimitStore.size,
+            totalBlockedIPs: this.blockedIPs.size
+        };
+    }
+
+    
     /**
      * Gets time windows for analysis
      */
