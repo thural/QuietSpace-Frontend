@@ -1,5 +1,5 @@
-import { apiClient } from '@/core/network/rest/clients/apiClient';
-import { RequestMethod } from '@/core/network/rest/clients/fetchApiClient';
+import { apiClient } from '@/core/network/rest/apiClient';
+import { RequestMethod } from '@/core/network/rest/fetchApiClient';
 import { JwtToken } from '@/shared/api/models/common';
 
 /**

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Injectable, Inject } from '../di';
-import { User } from '../../shared/domain/entities/User';
+import { User } from '@shared/domain/entities/User';
 
 // User service interface
 interface IUserService {

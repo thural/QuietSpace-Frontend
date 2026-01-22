@@ -102,14 +102,18 @@ class WebSocketServiceImpl implements SocketService {
     }
   }
 
-  private handleReconnect(): void {
+  private async handleReconnect(): Promise<void> {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       console.log(`[WebSocket] Reconnect attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
       
-      setTimeout(() => {
-        // This would need the token - in real implementation, get from auth store
-        this.connect('dummy-token');
+      setTimeout(async () => {
+        try {
+          // This would need the token - in real implementation, get from auth store
+          await this.connect('dummy-token');
+        } catch (error) {
+          console.error('[WebSocket] Reconnection failed:', error);
+        }
       }, this.reconnectDelay * this.reconnectAttempts);
     } else {
       console.error('[WebSocket] Max reconnect attempts reached');

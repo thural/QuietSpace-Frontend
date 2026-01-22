@@ -1,5 +1,5 @@
-import { FetchOptions, JwtToken } from "../../../shared/api/models/common";
-import { CustomError } from "../../../shared/api/models/errors";
+import { FetchOptions, JwtToken } from "@shared/api/models/common";
+import { CustomError } from "@shared/api/models/errors";
 
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'CONNECT';
 

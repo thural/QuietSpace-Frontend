@@ -5,8 +5,8 @@
  * Includes interceptors for authentication and logging.
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { useAuthStore } from '@/core/store/zustand';
+import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
+import {useAuthStore} from '@/core/store/zustand';
 
 // Extend axios config to include metadata
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {

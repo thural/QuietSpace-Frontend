@@ -7,12 +7,12 @@
 
 import React from 'react';
 import { useThemeTokens } from './EnhancedThemeProvider';
-import { Colors, Typography, BaseTheme } from '../../shared/types/themeTypes';
+import { Theme } from '@shared/types/theme';
 
 /**
  * Legacy theme adapter for backward compatibility
  */
-export const useLegacyThemeAdapter = (): BaseTheme => {
+export const useLegacyThemeAdapter = (): Theme => {
   const theme = useThemeTokens();
 
   return {
@@ -155,8 +155,8 @@ export const useLegacyThemeAdapter = (): BaseTheme => {
 /**
  * Color migration helper
  */
-export const migrateColor = (legacyColor: keyof Colors, theme: ReturnType<typeof useThemeTokens>): string => {
-  const colorMap: Record<keyof Colors, string> = {
+export const migrateColor = (legacyColor: keyof Theme['colors'], theme: ReturnType<typeof useThemeTokens>): string => {
+  const colorMap: Record<keyof Theme['colors'], string> = {
     background: theme.getColor('background.primary'),
     backgroundSecondary: theme.getColor('background.secondary'),
     backgroundTransparent: theme.getColor('background.overlay'),
@@ -187,8 +187,8 @@ export const migrateColor = (legacyColor: keyof Colors, theme: ReturnType<typeof
 /**
  * Typography migration helper
  */
-export const migrateTypography = (legacyTypography: keyof Typography, theme: ReturnType<typeof useThemeTokens>): any => {
-  const typographyMap: Record<keyof Typography, any> = {
+export const migrateTypography = (legacyTypography: keyof Theme['typography'], theme: ReturnType<typeof useThemeTokens>): any => {
+  const typographyMap: Record<keyof Theme['typography'], any> = {
     fontFamily: theme.typography.fontFamily.sans.join(', '),
     fontSize: theme.typography.fontSize,
     fontWeightThin: parseInt(theme.typography.fontWeight.thin),

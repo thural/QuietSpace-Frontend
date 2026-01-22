@@ -1,15 +1,14 @@
-import * as SockJS from 'sockjs-client';
-import { Client, Frame, over } from 'stompjs';
+import SockJS from 'sockjs-client';
+import {Client, Frame, over} from 'stompjs';
 import {
-    StompHeaders,
     ConnectCallback,
-    SubscribeCallback,
     DisconnectCallback,
     ErrorCallback,
-    StompMessage,
-    Headers
-} from "@/api/rest/models/native/websocket";
-import { ResId } from "@/api/rest/models/native/common";
+    Headers,
+    StompHeaders,
+    SubscribeCallback
+} from "@/shared/api/models/websocketNative";
+import {ResId} from "@/shared/api/models/commonNative";
 
 // Logger utility for consistent logging across socket operations
 const logger = {
@@ -268,8 +267,8 @@ export const disconnectStompClient = (
 /**
  * Sets auto-reconnect functionality for the STOMP client.
  * 
- * @param {ExtendedClient} client - The STOMP client to configure.
- * @param {number} [delay=5000] - Reconnection delay in milliseconds.
+ * @param client - The STOMP client to configure.
+ * @param delay - Reconnection delay in milliseconds.
  */
 export const setStompAutoReconnect = (
     client: ExtendedClient,

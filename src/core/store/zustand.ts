@@ -1,12 +1,10 @@
-import { AuthResponse } from '../../features/auth/data/models/auth';
-import type { JwtToken } from '../../shared/api/models/common';
-import { UseAuthStoreProps } from '../../shared/types/authStoreTypes';
-import { ActiveChatId, ChatClientMethods, ChatStoreProps } from '../../shared/types/chatStoreTypes';
-import { NotificationStoreProps } from '../../shared/types/notificationStore';
-import { StompStore } from '../../shared/types/stompStoreTypes';
-import { ViewState, ViewStoreProps } from '../../shared/types/viewStoreTypes';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import {AuthResponse} from '@features/auth/data/models/auth';
+import {ActiveChatId, ChatClientMethods, ChatStoreProps} from '@shared/types/chatStoreTypes';
+import {NotificationStoreProps} from '@shared/types/notificationStore';
+import {StompStore} from '@shared/types/stompStoreTypes';
+import {ViewState, ViewStoreProps} from '@shared/types/viewStoreTypes';
+import {create} from 'zustand';
+import {persist} from 'zustand/middleware';
 
 // User interface for authentication
 export interface User {
@@ -97,6 +95,22 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
       // Authentication actions
       login: (user, token) => {
+        const currentState = get();
+        if (currentState.isAuthenticated) {
+          console.warn('User is already authenticated, logging out first...');
+          // Clear existing session before logging in with new credentials
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null,
+            isError: false,
+            currentPage: 'LOGIN',
+            formData: {}
+          });
+        }
+        
         set({
           user,
           token,

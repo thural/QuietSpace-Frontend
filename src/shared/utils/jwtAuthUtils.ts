@@ -11,7 +11,8 @@ import {
     fetchSignup
 } from '@/features/auth/data/authRequests';
 import { AuthResponse } from '@/features/auth/data/models/auth';
-import { AuthPages, SignupBody, LoginBody } from '@/features/auth/types/authTypes';
+import { AuthPages } from '@/features/auth/types/auth.ui.types';
+import { SignupBody, LoginBody } from '@/shared/types/auth.dto';
 
 // Use a ref object to manage interval ID 
 export const createTokenRefreshManager = () => {

@@ -8,7 +8,7 @@
 // Legacy exports for backward compatibility (deprecated)
 export { colors } from './appColors';
 export { typography } from './appTypography';
-export { ThemeProvider as LegacyThemeProvider, useTheme as useLegacyTheme } from './ThemeProvider';
+export { EnhancedThemeProvider as LegacyThemeProvider, useTheme as useLegacyTheme } from './EnhancedThemeProvider';
 
 // New composable theme system (recommended)
 export * from './tokens';

@@ -1,30 +1,28 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAuthStore, useStompStore } from "@/core/store/zustand";
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useAuthStore, useStompStore} from "@/core/store/zustand";
 import {
     createStompClient,
-    openStompConnection,
-    handleStompError,
-    sendStompMessage,
-    subscribeToDestination,
     disconnectStompClient,
-    setStompAutoReconnect,
-    unsubscribeFromDestination,
-    isClientConnected,
+    ExtendedClient,
+    handleStompError,
+    openStompConnection,
     parseStompMessage,
-    ExtendedClient
+    sendStompMessage,
+    setStompAutoReconnect,
+    subscribeToDestination,
+    unsubscribeFromDestination
 } from '@/core/network/socket/utils/stomptUtils';
 import {
-    StompHeaders,
-    StompClientProps,
     ConnectCallback,
-    SubscribeCallback,
     DisconnectCallback,
-    StompMessage,
-    Headers
-} from "@/api/rest/models/native/websocket";
-import { ResId } from "@/api/rest/models/native/common";
-import { UseStompClientReturn } from '../../../../shared/types/stompStoreTypes';
-import { Frame } from 'stompjs';
+    Headers,
+    StompClientProps,
+    StompHeaders,
+    SubscribeCallback
+} from "@/shared/api/models/websocketNative";
+import {ResId} from "@/shared/api/models/commonNative";
+import {UseStompClientReturn} from '@shared/types/stompStoreTypes';
+import {Frame} from 'stompjs';
 
 /**
  * Custom hook to handle STOMP client connection and operations.
@@ -62,7 +60,7 @@ export const useStompClient = ({
     const handleError = useCallback((errorMessage: string | Frame) => {
         const newError = handleStompError(
             errorMessage,
-            onError || ((msg) => {
+            onError || ((msg: Frame | string) => {
                 console.error(msg);
                 return undefined;
             })
@@ -98,14 +96,14 @@ export const useStompClient = ({
 
             openStompConnection(stompClient, {
                 headers,
-                onConnect: (frame) => {
+                onConnect: (frame: Frame) => {
                     setError(null);
                     setIsError(false);
                     setIsConnecting(false);
                     setIsClientConnected(true);
                     (onConnect || defaultConnect)(frame);
                 },
-                onError: (error) => {
+                onError: (error: Frame | string) => {
                     handleError(error);
                     return undefined;
                 }

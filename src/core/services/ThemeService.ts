@@ -1,6 +1,5 @@
 import 'reflect-metadata';
-import { Injectable } from '../di';
-import { useThemeTokens } from '../theme';
+import {Injectable} from '../di';
 
 // Theme service interface
 interface IThemeService {

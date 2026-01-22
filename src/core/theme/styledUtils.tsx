@@ -7,12 +7,11 @@
 
 import React, { useMemo } from 'react';
 import styled, { css, keyframes, DefaultTheme } from 'styled-components';
-import { useTheme, AppTheme } from './ThemeProvider';
-import { EnhancedTheme } from './EnhancedThemeProvider';
+import { useTheme, EnhancedTheme as AppTheme } from './EnhancedThemeProvider';
 
 // Extend DefaultTheme to include our enhanced theme (which has backward compatibility)
 declare module 'styled-components' {
-  export interface DefaultTheme extends EnhancedTheme {}
+  export interface DefaultTheme extends AppTheme {}
 }
 
 /**
