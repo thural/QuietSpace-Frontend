@@ -62,30 +62,41 @@ This guide shows how to migrate to the comprehensive enterprise-grade authentica
    ```
 
 ### Phase 3: API Security Migration
-**From:** Manual token management  
-**To:** Automatic token injection + refresh
+**From:** Manual token management with fetchApiClient  
+**To:** Automatic token injection with apiClient
 
 #### Migration Steps:
-1. **Replace fetch calls** with secure API:
+1. **Replace fetch calls** with modern API client:
    ```typescript
    // Before
-   import { getWrappedApiResponse } from "./fetchApiUtils";
+   import { getWrappedApiResponse } from "@/core/network/rest/fetchApiClient";
    export const fetchLogin = async (body) => 
      await getWrappedApiResponse(LOGIN_URL, 'POST', body, null);
    
    // After
-   import { getWrappedSecureApiResponse } from "./secureApiUtils";
-   export const fetchLogin = async (body) => 
-     await getWrappedSecureApiResponse(LOGIN_URL, 'POST', body, null);
-   ```
-
-2. **Use secure API client** for new endpoints:
-   ```typescript
-   import { secureApi } from "./secureApiUtils";
-   export const fetchProfile = async () => {
-     const { data } = await secureApi.get('/user/profile');
+   import { apiClient } from "@/core/network/rest/apiClient";
+   export const fetchLogin = async (body) => {
+     const { data } = await apiClient.post(LOGIN_URL, body);
      return data;
    };
+   ```
+
+2. **Use request functions** for organized API calls:
+   ```typescript
+   import { fetchLogin, fetchUser } from '@/features/auth/data/authRequests';
+   
+   // Automatic authentication, no manual token handling
+   const user = await fetchUser();
+   const loginResult = await fetchLogin(credentials);
+   ```
+
+3. **Remove manual token management** - apiClient handles it automatically:
+   ```typescript
+   // Before - manual token passing
+   await getWrappedApiResponse(url, method, body, token);
+   
+   // After - automatic via interceptors
+   await apiClient.post(url, body); // Token added automatically
    ```
 
 ### Phase 4: Advanced Security Features Migration
@@ -147,10 +158,12 @@ src/
 │   ├── auditLogger.ts                     # Security audit logging
 │   ├── anomalyDetector.ts                 # Threat detection
 │   └── AdvancedSecurityProvider.tsx       # Integration provider
-├── core/network/apiClient.ts               # Secure API client
-├── api/requests/
-│   ├── secureApiUtils.ts                  # Secure API utilities
-│   └── authRequests.ts                  # Updated auth requests
+├── core/network/rest/apiClient.ts           # Modern API client
+├── features/
+│   ├── auth/data/authRequests.ts           # Auth API requests
+│   ├── chat/data/requests/                 # Chat API requests
+│   ├── feed/data/                          # Feed API requests
+│   └── search/data/userRequests.ts         # User API requests
 ├── pages/auth/
 │   ├── AuthPage.tsx                      # Authentication pages
 │   └── UnauthorizedPage.tsx              # Access denied page
@@ -241,9 +254,11 @@ src/
 - [x] Update RoutesConfig
 
 ### Phase 3: API Security ✅
-- [x] Setup secure API client
+- [x] Replace fetchApiClient with apiClient
+- [x] Add automatic token injection via interceptors
 - [x] Add token refresh logic
-- [x] Update existing API calls
+- [x] Update all API request functions
+- [x] Remove manual token management
 - [x] Test API security
 
 ### Phase 4: Advanced Features ✅

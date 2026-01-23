@@ -19,10 +19,14 @@ src/
 │   ├── auditLogger.ts                     # Security audit logging
 │   ├── anomalyDetector.ts                 # Threat pattern detection
 │   └── AdvancedSecurityProvider.tsx       # Integration provider
-├── core/network/apiClient.ts               # Secure API client
-├── api/requests/
-│   ├── secureApiUtils.ts                  # Secure API utilities
-│   └── MIGRATION_GUIDE.md              # API migration guide
+├── core/network/rest/apiClient.ts           # Modern API client with automatic auth
+├── features/
+│   ├── auth/data/repositories/AuthRepository.ts  # Auth repository with DI
+│   ├── chat/data/repositories/                 # Chat & message repositories
+│   ├── feed/data/repositories/               # Post & comment repositories
+│   ├── notification/data/repositories/        # Notification repository
+│   ├── search/data/repositories/             # User repository
+│   └── services/                           # Enhanced service classes
 ├── pages/auth/
 │   ├── AuthPage.tsx                      # Authentication pages
 │   └── UnauthorizedPage.tsx              # Access denied page
@@ -119,26 +123,34 @@ const userPerms = getRolePermissions(user.role);
 ```
 
 ### 5. API Security Layer
-**Files:** `src/core/network/apiClient.ts`, `src/api/requests/secureApiUtils.ts`
+**Files:** `src/core/network/rest/apiClient.ts`, Repository classes with DI
 
-**Purpose:** Secure HTTP communication with automatic token management
+**Purpose:** Secure HTTP communication with automatic token management and enterprise repository pattern
 
 **Features:**
-- Automatic token injection
+- Automatic token injection via interceptors
 - Token refresh on 401 errors
 - Request retry logic
 - Error categorization and logging
 - Performance monitoring
+- Centralized configuration
+- Dependency injection for testability
 
 **Usage:**
 ```typescript
-// Automatic security (recommended)
-import { secureApi } from '@/api/requests/secureApiUtils';
-const { data } = await secureApi.get('/user/profile');
+// Modern API client (recommended)
+import { apiClient } from '@/core/network/rest/apiClient';
 
-// Drop-in replacement
-import { getWrappedSecureApiResponse } from '@/api/requests/secureApiUtils';
-const response = await getWrappedSecureApiResponse('/api/user', 'GET', null, null);
+// Repository pattern with DI
+import { AuthRepository } from '@/features/auth/data/repositories/AuthRepository';
+import { container } from '@/core/di/AppContainer';
+
+const authRepository = container.get<AuthRepository>(TYPES.AUTH_REPOSITORY);
+const user = await authRepository.getUser();
+
+// Enhanced service classes
+import { AuthService } from '@/features/auth/services/AuthService';
+const loginResult = await AuthService.login(credentials);
 ```
 
 ---
@@ -319,22 +331,40 @@ const { isAuthorized } = useAuth(['edit: posts']);
 
 ### API Security Integration
 
-#### Secure API Calls
+#### Repository Pattern with DI
 ```typescript
-// New implementation (recommended)
-import { secureApi } from '@/api/requests/secureApiUtils';
+// Repository injection (recommended)
+import { container } from '@/core/di/AppContainer';
+import { AuthRepository } from '@/features/auth/data/repositories/AuthRepository';
+import { TYPES } from '@/core/di/types';
 
-export const fetchUserProfile = async (userId: string) => {
-  const { data } = await secureApi.get(`/users/${userId}`);
-  return data;
+export const useAuthOperations = () => {
+  const authRepository = container.get<AuthRepository>(TYPES.AUTH_REPOSITORY);
+  
+  const login = async (credentials: LoginCredentials) => {
+    return await authRepository.login(credentials);
+  };
+  
+  const logout = async () => {
+    return await authRepository.logout();
+  };
+  
+  return { login, logout };
 };
 
-// Migration from existing fetch
-import { getWrappedSecureApiResponse } from '@/api/requests/secureApiUtils';
+// Enhanced service classes (recommended)
+import { AuthService } from '@/features/auth/services/AuthService';
 
-export const fetchLogin = async (credentials: LoginCredentials) => {
-  const response = await getWrappedSecureApiResponse('/auth/login', 'POST', credentials, null);
-  return response.json();
+export const useAuthService = () => {
+  const login = async (credentials: LoginCredentials) => {
+    return await AuthService.login(credentials);
+  };
+  
+  const validateAuth = async (data: LoginCredentials) => {
+    return await AuthService.validateAuthData(data);
+  };
+  
+  return { login, validateAuth };
 };
 ```
 
