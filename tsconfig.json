@@ -48,6 +48,9 @@
       "@features/*": [
         "src/features/*"
       ],
+      "@auth/*": [
+        "src/features/auth/*"
+      ],
       "@chat/*": [
         "src/features/chat/*"
       ],
