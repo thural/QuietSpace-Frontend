@@ -1,14 +1,22 @@
 import 'reflect-metadata';
-import { Container } from '../di';
-import { ThemeService } from '@core/services/ThemeService';
-import { LoggerService } from './test/SimpleTest';
-import { AuthModuleFactory } from '@core/auth/AuthModule';
-import { EnterpriseAuthService } from '@core/auth/enterprise/AuthService';
-import { EnterpriseAuthAdapter } from '@core/auth/adapters/EnterpriseAuthAdapter';
-import { TYPES } from '@core/di/types';
-import { apiClient } from '../network/rest/apiClient';
-import { PostRepositoryDI } from '@features/feed/data/repositories/PostRepositoryDI';
-import type { AxiosInstance } from 'axios';
+import {Container} from '../di';
+import {ThemeService} from '@core/services/ThemeService';
+import {LoggerService} from './test/SimpleTest';
+import {AuthModuleFactory} from '@core/auth/AuthModule';
+import {EnterpriseAuthService} from '@core/auth/enterprise/AuthService';
+import {EnterpriseAuthAdapter} from '@core/auth/adapters/EnterpriseAuthAdapter';
+import {TYPES} from '@core/di/types';
+import {apiClient} from '../network/rest/apiClient';
+import type {AxiosInstance} from 'axios';
+
+// Import repositories
+import {AuthRepository} from '@features/auth/data/repositories/AuthRepository';
+import {ChatRepository} from '@features/chat/data/repositories/ChatRepository';
+import {MessageRepository} from '@features/chat/data/repositories/MessageRepository';
+import {PostRepository} from '@features/feed/data/repositories/PostRepository';
+import {CommentRepository} from '@features/feed/data/repositories/CommentRepository';
+import {NotificationRepository} from '@features/notification/data/repositories/NotificationRepository';
+import {UserRepository} from '@features/search/data/repositories/UserRepository';
 
 /**
  * Application DI Container Setup.
@@ -26,9 +34,26 @@ export function createAppContainer(): Container {
   container.registerSingleton(LoggerService);
   container.registerSingleton(ThemeService);
   
-  // Register API client and repository
+  // Register API client and repositories
   container.registerInstanceByToken(TYPES.API_CLIENT, apiClient);
-  container.registerSingleton(PostRepositoryDI);
+  
+  // Register new repositories as singletons
+  container.registerSingleton(AuthRepository);
+  container.registerSingleton(ChatRepository);
+  container.registerSingleton(MessageRepository);
+  container.registerSingleton(PostRepository);
+  container.registerSingleton(CommentRepository);
+  container.registerSingleton(NotificationRepository);
+  container.registerSingleton(UserRepository);
+  
+  // Register repositories by token for injection
+  container.registerSingletonByToken(TYPES.AUTH_REPOSITORY, AuthRepository);
+  container.registerSingletonByToken(TYPES.CHAT_REPOSITORY, ChatRepository);
+  container.registerSingletonByToken(TYPES.MESSAGE_REPOSITORY, MessageRepository);
+  container.registerSingletonByToken(TYPES.POST_REPOSITORY, PostRepository);
+  container.registerSingletonByToken(TYPES.COMMENT_REPOSITORY, CommentRepository);
+  container.registerSingletonByToken(TYPES.NOTIFICATION_REPOSITORY, NotificationRepository);
+  container.registerSingletonByToken(TYPES.USER_REPOSITORY, UserRepository);
   
   // Register enterprise auth service using factory
   const enterpriseAuthService = AuthModuleFactory.createDefault();
@@ -62,7 +87,7 @@ export function initializeApp(): Container {
   // This provides type safety - only valid TYPES values are allowed
   const authService: { initialize?: () => Promise<void> } = container.getByToken(TYPES.AUTH_SERVICE);
   const apiClient: AxiosInstance = container.getByToken(TYPES.API_CLIENT);
-  const postRepository = container.get(PostRepositoryDI);
+  const postRepository = container.get(PostRepository);
   
   // Initialize auth service if available
   if (authService && 'initialize' in authService && typeof authService.initialize === 'function') {

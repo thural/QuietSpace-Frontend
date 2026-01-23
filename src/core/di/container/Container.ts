@@ -5,13 +5,12 @@
  * Provides enterprise-grade DI with reflection support.
  */
 
-import { ServiceContainer } from '@core/di/container/ServiceContainer';
-import { getInjectableMetadata, getConstructorDependencies } from '@core/di//decorators/Injectable';
-import type { ServiceIdentifier } from '../registry/ServiceRegistry';
-import { TypeKeys } from '../types';
-
+import {ServiceContainer} from '@core/di/container/ServiceContainer';
+import {getConstructorDependencies, getInjectableMetadata} from '@core/di//decorators/Injectable';
+import type {ServiceIdentifier} from '../registry/ServiceRegistry';
 // Import ServiceLifetime as value, not type
-import { ServiceLifetime } from '../registry/ServiceRegistry';
+import {ServiceLifetime} from '../registry/ServiceRegistry';
+import {TypeKeys} from '../types';
 
 /**
  * Main DI container with automatic service registration
@@ -28,9 +27,9 @@ export class Container {
   }
 
   /**
-   * Register a service class with automatic dependency resolution
+   * Create factory function for service instantiation
    */
-  register<T>(serviceClass: new (...args: any[]) => T, options?: { lifetime?: ServiceLifetime }): void {
+  private createFactory<T>(serviceClass: new (...args: any[]) => T) {
     // Get injectable metadata
     const metadata = getInjectableMetadata(serviceClass);
 
@@ -51,6 +50,15 @@ export class Container {
       // Create instance with dependencies
       return new serviceClass(...(resolvedDependencies as any[]));
     };
+
+    return { factory, dependencies, metadata };
+  }
+
+  /**
+   * Register a service class with automatic dependency resolution
+   */
+  register<T>(serviceClass: new (...args: any[]) => T, options?: { lifetime?: ServiceLifetime }): void {
+    const { factory, dependencies, metadata } = this.createFactory(serviceClass);
 
     // Register with container
     this.container.register(serviceClass, factory, {
@@ -80,6 +88,24 @@ export class Container {
    */
   registerInstance<T>(identifier: ServiceIdentifier<T>, instance: T): void {
     this.container.registerInstance(identifier, instance);
+  }
+
+  /**
+   * Register a singleton service by string token with type safety
+   */
+  registerSingletonByToken<T>(token: TypeKeys, serviceClass: new (...args: any[]) => T): void {
+    const { factory, dependencies, metadata } = this.createFactory(serviceClass);
+
+    // Register with container as singleton using token
+    this.container.register(token, factory, {
+      lifetime: ServiceLifetime.Singleton,
+      dependencies
+    });
+
+    // Log warning if metadata suggests different lifetime than singleton
+    if (metadata.lifetime && metadata.lifetime !== 'singleton') {
+      console.warn(`Service ${serviceClass.name} has metadata lifetime '${metadata.lifetime}' but is being registered as singleton via registerSingletonByToken`);
+    }
   }
 
   /**
@@ -192,9 +218,30 @@ export class Container {
    * Scan and auto-register services from a module
    */
   scan(module: any): void {
-    // This would implement reflection-based scanning
-    // For now, manual registration is required
-    console.warn('Auto-scanning not implemented yet. Please register services manually.');
+    if (!module) {
+      console.warn('No module provided for scanning.');
+      return;
+    }
+
+    // Scan for service classes in the module
+    for (const key in module) {
+      const service = module[key];
+      
+      // Check if it's a class constructor (service)
+      if (typeof service === 'function' && service.prototype) {
+        // Check if it has Injectable decorator or follows naming convention
+        const serviceName = service.name;
+        if (serviceName.endsWith('Service') || serviceName.endsWith('Repository')) {
+          try {
+            this.register(serviceName, service);
+            this.autoRegistered.add(serviceName);
+            console.log(`Auto-registered service: ${serviceName}`);
+          } catch (error) {
+            console.warn(`Failed to auto-register ${serviceName}:`, error);
+          }
+        }
+      }
+    }
   }
 
   /**

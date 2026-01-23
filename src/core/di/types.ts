@@ -10,7 +10,12 @@ export const TYPES = {
   SOCKET_SERVICE: 'SocketService',
   
   // Repositories
+  AUTH_REPOSITORY: 'AuthRepository',
+  CHAT_REPOSITORY: 'ChatRepository',
+  MESSAGE_REPOSITORY: 'MessageRepository',
   POST_REPOSITORY: 'PostRepository',
+  COMMENT_REPOSITORY: 'CommentRepository',
+  NOTIFICATION_REPOSITORY: 'NotificationRepository',
   USER_REPOSITORY: 'UserRepository',
   
   // Services
