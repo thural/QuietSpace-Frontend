@@ -208,9 +208,9 @@ export class Post {
      */
     static validateContent(content: string, validation: PostContentValidation): boolean {
         if (content.length > validation.maxLength) return false;
-        if (validation.hasMediaLimit && content.includes('media') &&
-            (content.match(/media/g) || []).length > validation.maxMediaCount) {
-            return false;
+        if (validation.hasMediaLimit) {
+            const mediaCount = (content.match(/media/g) || []).length;
+            if (mediaCount > validation.maxMediaCount) return false;
         }
         return true;
     }

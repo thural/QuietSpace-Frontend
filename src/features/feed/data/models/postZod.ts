@@ -38,7 +38,8 @@ export const RepostResponseSchema = z.object({
 
 export const RepostBodySchema = z.object({
     text: z.string(),
-    postId: ResIdSchema
+    postId: ResIdSchema,
+    userId: ResIdSchema
 });
 
 export const PostRequestSchema = z.object({

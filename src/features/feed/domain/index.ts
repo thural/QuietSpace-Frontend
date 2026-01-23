@@ -11,6 +11,23 @@ export type {
     PostFilters
 } from './entities/IPostRepository';
 
+export type {
+    ICommentRepository,
+    CommentQuery
+} from './entities/ICommentRepository';
+
+export type {
+    PostResponse,
+    PostPage,
+    PostRequest,
+    RepostRequest,
+    VoteBody
+} from '../data/models/post';
+
+export type {
+    ReactionRequest
+} from '../data/models/reaction';
+
 export { 
     Post,
     PostFactory,

@@ -8,6 +8,9 @@
 // Stores
 export { useFeedUIStore, useFeedUISelectors } from './stores/feedUIStore';
 
+// Services
+export * from './services';
+
 // Hooks
 export { useRealtimeFeedUpdates } from './hooks/useRealtimeFeedUpdates';
 export { useFeedOptimisticUpdates } from './hooks/useFeedOptimisticUpdates';

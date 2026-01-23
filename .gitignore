@@ -122,6 +122,3 @@ pids
 # DynamoDB Local files
 .dynamodb/
 tsconfig.tsbuildinfo
-
-# Documentation for reference only - ignore for git
-IMPLEMENTATION_SUMMARY.md
