@@ -187,11 +187,9 @@ export const signoutUser = async ({
     onLoadFn: () => void;
 }): Promise<void> => {
     try {
-        const refreshToken = getRefreshToken();
-
         onLoadFn();
 
-        const response = await fetchLogout(refreshToken);
+        const response = await fetchLogout();
         clearAuthTokens();
         onSuccessFn(response);
     } catch (error) {

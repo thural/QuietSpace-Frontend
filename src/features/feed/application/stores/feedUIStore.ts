@@ -6,10 +6,7 @@
  * Complements server state managed by React Query.
  */
 
-import { create } from 'zustand';
-import { useService } from '@core/di';
-import type { PostQuery, PostFilters } from '../../domain/entities/IPostRepository';
-import type { ResId } from '@/shared/api/models/common';
+import {create} from 'zustand';
 
 /**
  * Feed UI state interface

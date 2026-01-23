@@ -10,7 +10,9 @@ import type { JwtToken } from '@/shared/api/models/common';
 import type { IPostRepository } from '../domain/entities/IPostRepository';
 import { FeedDIContainer } from './FeedDIContainer';
 import type { FeedDIConfig } from './FeedDIConfig';
-import { useAuthStore } from '@services/store/zustand';
+import { useAuthStore } from '@core/store/zustand';
+import { useService } from '@/core/di';
+import { TYPES } from '@/core/di/types';
 
 /**
  * Feed DI context
@@ -46,11 +48,14 @@ export const FeedDIProvider: React.FC<{
     // Get auth token from Zustand store
     const authStore = useAuthStore();
     const accessToken = authStore.data.accessToken as JwtToken;
+    
+    // Get PostRepository from global DI container
+    const postRepository = useService<IPostRepository>(TYPES.POST_REPOSITORY);
 
     // Create container instance
     const container = useMemo(() => {
-        return FeedDIContainer.create(accessToken, config);
-    }, [accessToken, config]);
+        return FeedDIContainer.create(accessToken, config, postRepository);
+    }, [accessToken, config, postRepository]);
 
     return (
         <FeedDIContext.Provider value={container}>

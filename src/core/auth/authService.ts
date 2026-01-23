@@ -1,5 +1,5 @@
-import { AuthResponse } from '@features/auth/data/models/auth';
-import { LoginBody, SignupBody } from '@/shared/types/auth.dto';
+import {AuthResponse} from '@features/auth/data/models/auth';
+import {LoginBody, SignupBody} from '@/shared/types/auth.dto';
 import {
     fetchAccessToken,
     fetchActivation,
@@ -7,11 +7,7 @@ import {
     fetchLogout,
     fetchSignup
 } from '@features/auth/data/authRequests';
-import {
-    clearAuthTokens,
-    getRefreshToken,
-    setRefreshToken
-} from '@shared/utils/authStoreUtils';
+import {clearAuthTokens, getRefreshToken, setRefreshToken} from '@shared/utils/authStoreUtils';
 
 /**
  * Abstract base authentication service
@@ -143,8 +139,7 @@ export class AuthService extends BaseAuthService {
             // Log logout attempt
             this.logAuthAttempt('logout');
 
-            const refreshToken = getRefreshToken();
-            await fetchLogout(refreshToken);
+            await fetchLogout();
 
             // Clear tokens regardless of API call success
             clearAuthTokens();

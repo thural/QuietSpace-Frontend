@@ -5,12 +5,11 @@
  * Manages repository instances and provides configured implementations.
  */
 
-import type { JwtToken } from '@/shared/api/models/common';
-import type { IPostRepository, PostQuery, PostFilters } from '../domain/entities/IPostRepository';
-import type { FeedDIConfig } from './FeedDIConfig';
-import { PostRepository } from '../data/repositories/PostRepository';
-import { MockPostRepository } from '../data/repositories/MockPostRepository';
-import { getFeedDIConfig } from './FeedDIConfig';
+import type {JwtToken} from '@/shared/api/models/common';
+import type {IPostRepository} from '../domain/entities/IPostRepository';
+import type {FeedDIConfig} from './FeedDIConfig';
+import {getFeedDIConfig} from './FeedDIConfig';
+import {MockPostRepository} from '../data/repositories/MockPostRepository';
 
 /**
  * Feed dependency injection container
@@ -20,18 +19,18 @@ export class FeedDIContainer {
     private postRepository: IPostRepository;
     private readonly token: JwtToken | null;
 
-    constructor(config?: Partial<FeedDIConfig>, token?: JwtToken) {
+    constructor(config?: Partial<FeedDIConfig>, token?: JwtToken, postRepository?: IPostRepository) {
         this.config = { ...getFeedDIConfig(), ...config };
         this.token = token || null;
 
         // Initialize repository based on configuration
-        this.postRepository = this.createPostRepository();
+        this.postRepository = this.createPostRepository(postRepository);
     }
 
     /**
      * Create repository instance based on configuration
      */
-    private createPostRepository(): IPostRepository {
+    private createPostRepository(providedRepository?: IPostRepository): IPostRepository {
         if (this.config.useMockRepositories) {
             console.log('🔧 Feed: Using MockPostRepository for development/testing');
             return new MockPostRepository(100); // 100ms delay for realistic testing
@@ -40,7 +39,10 @@ export class FeedDIContainer {
                 throw new Error('Token is required for real PostRepository');
             }
             console.log('🌐 Feed: Using real PostRepository with API integration');
-            return new PostRepository(this.token);
+            if (providedRepository) {
+                return providedRepository;
+            }
+            throw new Error('PostRepository must be provided when not using mock repositories');
         }
     }
 
@@ -93,8 +95,8 @@ export class FeedDIContainer {
     /**
      * Factory method to create container with default configuration
      */
-    static create(token?: JwtToken, config?: Partial<FeedDIConfig>): FeedDIContainer {
-        return new FeedDIContainer(config, token);
+    static create(token?: JwtToken, config?: Partial<FeedDIConfig>, postRepository?: IPostRepository): FeedDIContainer {
+        return new FeedDIContainer(config, token, postRepository);
     }
 
     /**
