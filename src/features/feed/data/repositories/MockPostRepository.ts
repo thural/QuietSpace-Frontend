@@ -5,22 +5,12 @@
  * Uses in-memory data storage and simulates API responses with realistic delays.
  */
 
-import type { ResId } from '@/shared/api/models/common';
-import type {
-    PostPage,
-    PostResponse,
-    PostRequest,
-    RepostRequest,
-    VoteBody
-} from '@/features/feed/data/models/post';
-import type {
-    IPostRepository,
-    PostQuery,
-    PostFilters
-} from '../../domain/entities/IPostRepository';
-import { PostFactory } from '../../domain/entities/PostEntities';
-import { ReactionType } from "@/features/feed/data/models/reactionNative";
-import { ContentType } from "@/shared/api/models/commonNative";
+import type {ResId} from '@/shared/api/models/common';
+import type {PostPage, PostRequest, PostResponse, RepostRequest, VoteBody} from '@/features/feed/data/models/post';
+import type {IPostRepository, PostQuery} from '@feed/domain/entities/IPostRepository';
+import {PostFactory} from '@feed/domain/entities/PostEntities';
+import {ReactionType} from "@/features/feed/data/models/reactionNative";
+import {ContentType} from "@/shared/api/models/commonNative";
 
 /**
  * Mock post data for testing

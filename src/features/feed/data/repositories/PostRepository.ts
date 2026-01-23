@@ -1,161 +1,147 @@
-/**
- * Post Repository Implementation.
- * 
- * Concrete implementation of IPostRepository that handles all post data operations.
- * This class maps API responses to domain entities and handles data transformation.
- */
-
-import type { ResId, JwtToken } from '../../../../shared/api/models/common';
-import type {
-    PostPage,
-    PostResponse,
-    PostRequest,
-    RepostRequest,
-    VoteBody
-} from '../models/post';
-import type {
-    IPostRepository,
-    PostQuery,
-    PostFilters
-} from '../../domain/entities/IPostRepository';
-import { PostFactory } from '../../domain/entities/PostEntities';
-import {
-    fetchPosts,
-    fetchPostById,
-    fetchPostsByUserId,
-    fetchSavedPostsByUser,
-    fetchRepliedPostsByUserId,
-    fetchPostQuery,
-    fetchCreatePost,
-    fetchCreateRepost,
-    fetchEditPost,
-    fetchDeletePost,
-    fetchSavePost,
-    fetchVotePoll
-} from '../postRequests';
-import { buildPageParams } from '../../../../shared/utils/fetchUtils';
+import type {AxiosInstance} from 'axios';
+import {Inject, Injectable} from '@/core/di';
+import {TYPES} from '@/core/di/types';
+import {POST_URL, REACTION_PATH} from "@/shared/constants/apiPath";
+import {ResId} from "@/shared/api/models/common";
+import {PostPage, PostRequest, PostResponse, RepostRequest, VoteBody} from "@/features/feed/data/models/post";
+import {ReactionRequest} from "@/features/feed/data/models/reaction";
+import type {IPostRepository, PostQuery} from "@/features/feed/domain/entities/IPostRepository";
 
 /**
- * Concrete implementation of post repository
+ * Post Repository - Handles post-related API operations
  */
+@Injectable()
 export class PostRepository implements IPostRepository {
-    private readonly token: JwtToken;
+    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
 
-    constructor(token: JwtToken) {
-        this.token = token;
-    }
-
-    // Query operations
     async getPosts(query: PostQuery, token: string): Promise<PostPage> {
-        let pageParams = buildPageParams(query.page || 0, query.size || 10);
-
-        // Add sorting parameters
-        if (query.sortBy) {
-            pageParams += `&sort=${query.sortBy},${query.sortDirection || 'desc'}`;
-        }
-
-        // Add filter parameters
-        if (query.contentPrivacy) {
-            pageParams += `&privacy=${query.contentPrivacy}`;
-        }
-
-        return await fetchPosts(token, pageParams);
+        const pageParams = this.buildPageParams(query);
+        const { data } = await this.apiClient.get(POST_URL + pageParams, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
     async getPostById(postId: ResId, token: string): Promise<PostResponse> {
-        return await fetchPostById(postId, token);
-    }
-
-    async getPostsByUserId(userId: ResId, query: PostQuery, token: string): Promise<PostPage> {
-        const pageParams = buildPageParams(query.page || 0, query.size || 10);
-        return await fetchPostsByUserId(userId, token, pageParams);
+        const { data } = await this.apiClient.get(POST_URL + `/${postId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
     async getSavedPosts(query: PostQuery, token: string): Promise<PostPage> {
-        const pageParams = buildPageParams(query.page || 0, query.size || 10);
-        return await fetchSavedPostsByUser(token, pageParams);
+        const pageParams = this.buildPageParams(query);
+        const { data } = await this.apiClient.get(POST_URL + "/saved" + pageParams, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
-    async getRepliedPosts(userId: ResId, query: PostQuery, token: string): Promise<PostPage> {
-        const pageParams = buildPageParams(query.page || 0, query.size || 10);
-        return await fetchRepliedPostsByUserId(userId, token, pageParams);
+    async getPostsByUserId(userId: ResId, query: PostQuery, token: string): Promise<PostPage> {
+        const pageParams = this.buildPageParams(query);
+        const { data } = await this.apiClient.get(POST_URL + `/user/${userId}` + pageParams, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
     async searchPosts(queryText: string, query: PostQuery, token: string): Promise<PostPage> {
-        const pageParams = buildPageParams(query.page || 0, query.size || 10);
-        return await fetchPostQuery(queryText, token, pageParams);
-    }
-
-    // Mutation operations
-    async createPost(post: PostRequest, token: string): Promise<PostResponse> {
-        return await fetchCreatePost(post, token);
+        const pageParams = this.buildPageParams(query);
+        const { data } = await this.apiClient.get(POST_URL + `/search?query=${queryText}` + pageParams, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
     async createRepost(repost: RepostRequest, token: string): Promise<PostResponse> {
-        return await fetchCreateRepost(repost, token);
+        const { data } = await this.apiClient.post(POST_URL + "/repost", repost, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
+    }
+
+    async createPost(post: PostRequest, token: string): Promise<PostResponse> {
+        const { data } = await this.apiClient.post(POST_URL, post, {
+            headers: {
+                ...(post instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {}),
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return data;
+    }
+
+    async getRepliedPosts(userId: ResId, query: PostQuery, token: string): Promise<PostPage> {
+        const pageParams = this.buildPageParams(query);
+        const { data } = await this.apiClient.get(POST_URL + `/user/${userId}/commented` + pageParams, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
     async editPost(postId: ResId, post: PostRequest, token: string): Promise<PostResponse> {
-        return await fetchEditPost(post, token, postId);
+        const { data } = await this.apiClient.put(POST_URL + `/${postId}`, post, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
     }
 
     async deletePost(postId: ResId, token: string): Promise<void> {
-        await fetchDeletePost(postId, token);
-    }
-
-    // Interaction operations
-    async savePost(postId: ResId, token: string): Promise<void> {
-        await fetchSavePost(postId, token);
+        await this.apiClient.delete(POST_URL + `/${postId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
     }
 
     async unsavePost(postId: ResId, token: string): Promise<void> {
-        // Note: API might need an unsave endpoint, for now using save with toggle
-        await fetchSavePost(postId, token);
+        await this.apiClient.delete(POST_URL + `/saved/${postId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
     }
 
-    async votePoll(vote: VoteBody, token: string): Promise<void> {
-        await fetchVotePoll(vote, token);
+    async reaction(reaction: ReactionRequest, token: string): Promise<void> {
+        await this.apiClient.post(REACTION_PATH + "/toggle-reaction", reaction, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
     }
 
-    // Utility operations
     validatePostContent(content: string): boolean {
-        // Basic validation - can be enhanced with more complex rules
-        return content.trim().length > 0 && content.trim().length <= 2000;
+        return content.trim().length > 0 && content.length <= 2000;
     }
 
     calculateEngagementScore(post: PostResponse): number {
-        // Convert API response to domain entity for calculation
-        const domainPost = PostFactory.fromApiResponse(post);
-        return domainPost.getEngagementRate();
+        const likesWeight = 1;
+        const commentsWeight = 2;
+        const sharesWeight = 3;
+        const reactionsWeight = 0.5;
+        
+        const likes = post.likesCount || 0;
+        const comments = post.commentsCount || 0;
+        const shares = post.sharesCount || 0;
+        const reactions = post.reactions?.length || 0;
+        
+        return (likes * likesWeight) + (comments * commentsWeight) + (shares * sharesWeight) + (reactions * reactionsWeight);
     }
 
-    /**
-     * Apply filters to post query
-     */
-    private applyFilters(query: PostQuery, filters: PostFilters): string {
-        let params = '';
+    private buildPageParams(query: PostQuery): string {
+        const params = new URLSearchParams();
+        if (query.page) params.append('page', query.page.toString());
+        if (query.size) params.append('size', query.size.toString());
+        if (query.sortBy) params.append('sort', query.sortBy);
+        if (query.sortDirection) params.append('direction', query.sortDirection);
+        if (query.contentPrivacy) params.append('privacy', query.contentPrivacy);
+        
+        const paramString = params.toString();
+        return paramString ? `?${paramString}` : '';
+    }
 
-        if (filters.userId) {
-            params += `&userId=${filters.userId}`;
-        }
+    async votePoll(vote: VoteBody, token: string): Promise<void> {
+        await this.apiClient.post(POST_URL + "/vote-poll", vote, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    }
 
-        if (filters.contentPrivacy) {
-            params += `&privacy=${filters.contentPrivacy}`;
-        }
-
-        if (filters.dateRange) {
-            params += `&from=${filters.dateRange.from.toISOString()}`;
-            params += `&to=${filters.dateRange.to.toISOString()}`;
-        }
-
-        if (filters.hasMedia !== undefined) {
-            params += `&hasMedia=${filters.hasMedia}`;
-        }
-
-        if (filters.isPinned !== undefined) {
-            params += `&isPinned=${filters.isPinned}`;
-        }
-
-        return params;
+    async savePost(postId: ResId, token: string): Promise<void> {
+        await this.apiClient.patch(POST_URL + `/saved/${postId}`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
     }
 }
