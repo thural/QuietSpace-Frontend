@@ -4,12 +4,13 @@ import {TYPES} from '@/core/di/types';
 import {COMMENT_PATH} from "@/shared/constants/apiPath";
 import {CommentRequest, CommentResponse, PagedComment} from "@/features/feed/data/models/comment";
 import {ResId} from "@/shared/api/models/common";
+import type {ICommentRepository} from "@/features/feed/domain/entities/ICommentRepository";
 
 /**
  * Comment Repository - Handles comment-related API operations
  */
 @Injectable()
-export class CommentRepository {
+export class CommentRepository implements ICommentRepository {
     constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
 
     async createComment(body: CommentRequest): Promise<CommentResponse> {

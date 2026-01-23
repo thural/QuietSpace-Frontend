@@ -17,8 +17,20 @@ import {
 } from "@/core/hooks/migrationUtils";
 import type { PostQuery } from "@/features/feed/domain";
 
-// Legacy hooks that now use the new feature services
-export const useGetPagedPosts = () => {
+/**
+ * CUSTOM HOOKS - Migrated from React Query to Custom Query Implementation
+ * 
+ * This file demonstrates the migration of usePostData hooks from React Query
+ * to our enterprise-grade custom query implementation.
+ */
+
+// ===== INFINITE QUERY HOOKS =====
+
+/**
+ * Custom hook for fetching paginated posts
+ * Replaces: useGetPagedPosts (React Query)
+ */
+export const useGetPagedPostsCustom = () => {
     const { data: authData, isAuthenticated } = useAuthStore();
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
@@ -56,9 +68,69 @@ export const useGetPagedPosts = () => {
             }
         }
     );
-}
+};
 
-export const useGetPostById = (postId: ResId) => {
+/**
+ * Custom hook for fetching saved posts
+ * Replaces: useGetSavedPostsByUserId (React Query)
+ */
+export const useGetSavedPostsByUserIdCustom = (userId: ResId) => {
+    const { data: authData, isAuthenticated } = useAuthStore();
+    const { postDataService } = useFeedServices();
+
+    return useCustomInfiniteQuery(
+        ['posts', 'saved', userId],
+        async ({ pageParam = 0 }): Promise<PostPage> => {
+            const query: PostQuery = { page: pageParam, size: 9 };
+            return await postDataService.getSavedPostsByUserId(userId, query, authData.accessToken);
+        },
+        {
+            enabled: isAuthenticated && !!userId,
+            staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
+            cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
+            refetchInterval: 5 * 60 * 1000,
+            initialPageParam: 0,
+            getNextPageParam: (lastPage, allPages) => {
+                return !lastPage.last ? allPages.length : undefined;
+            }
+        }
+    );
+};
+
+/**
+ * Custom hook for fetching user posts
+ * Replaces: useGetPostsByUserId (React Query)
+ */
+export const useGetPostsByUserIdCustom = (userId: ResId) => {
+    const { data: authData, isAuthenticated } = useAuthStore();
+    const { postDataService } = useFeedServices();
+
+    return useCustomInfiniteQuery(
+        ['posts', userId],
+        async ({ pageParam = 0 }): Promise<PostPage> => {
+            const query: PostQuery = { page: pageParam, size: 9 };
+            return await postDataService.getPostsByUserId(userId, query, authData.accessToken);
+        },
+        {
+            enabled: isAuthenticated && !!userId,
+            staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
+            cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
+            refetchInterval: 5 * 60 * 1000,
+            initialPageParam: 0,
+            getNextPageParam: (lastPage, allPages) => {
+                return !lastPage.last ? allPages.length : undefined;
+            }
+        }
+    );
+};
+
+// ===== SINGLE QUERY HOOKS =====
+
+/**
+ * Custom hook for fetching a single post
+ * Replaces: useGetPostById (React Query)
+ */
+export const useGetPostByIdCustom = (postId: ResId) => {
     const { data: authData, isAuthenticated } = useAuthStore();
     const { feedDataService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
@@ -82,99 +154,15 @@ export const useGetPostById = (postId: ResId) => {
             }
         }
     );
-}
+};
 
-export const useGetSavedPostsByUserId = (userId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
-    const { postDataService } = useFeedServices();
-    const invalidateCache = useCacheInvalidation();
+// ===== MUTATION HOOKS =====
 
-    return useCustomInfiniteQuery(
-        ['posts', 'saved', userId],
-        async ({ pageParam = 0 }): Promise<PostPage> => {
-            const query: PostQuery = { page: pageParam, size: 9 };
-            return await postDataService.getSavedPostsByUserId(userId, query, authData.accessToken);
-        },
-        {
-            enabled: isAuthenticated && !!userId,
-            staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
-            cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
-            refetchInterval: 6 * 60 * 1000, // 6 minutes
-            initialPageParam: 0,
-            getNextPageParam: (lastPage, allPages) => {
-                return !lastPage.last ? allPages.length : undefined;
-            },
-            onSuccess: (data, allPages) => {
-                console.log('Saved posts loaded:', { userId, count: data.length });
-            },
-            onError: (error) => {
-                console.error('Error loading saved posts:', { userId, error: error.message });
-            }
-        }
-    );
-}
-
-export const useGetRepliedPostsByUserId = (userId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
-    const { postDataService } = useFeedServices();
-    const invalidateCache = useCacheInvalidation();
-
-    return useCustomInfiniteQuery(
-        ['posts', 'replied', userId],
-        async ({ pageParam = 0 }): Promise<PostPage> => {
-            const query: PostQuery = { page: pageParam, size: 9 };
-            return await postDataService.getRepliedPostsByUserId(userId, query, authData.accessToken);
-        },
-        {
-            enabled: isAuthenticated && !!userId,
-            staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
-            cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
-            refetchInterval: 6 * 60 * 1000, // 6 minutes
-            initialPageParam: 0,
-            getNextPageParam: (lastPage, allPages) => {
-                return !lastPage.last ? allPages.length : undefined;
-            },
-            onSuccess: (data, allPages) => {
-                console.log('Replied posts loaded:', { userId, count: data.length });
-            },
-            onError: (error) => {
-                console.error('Error loading replied posts:', { userId, error: error.message });
-            }
-        }
-    );
-}
-
-export const useGetPostsByUserId = (userId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
-    const { postDataService } = useFeedServices();
-    const invalidateCache = useCacheInvalidation();
-
-    return useCustomInfiniteQuery(
-        ['posts', userId],
-        async ({ pageParam = 0 }): Promise<PostPage> => {
-            const query: PostQuery = { page: pageParam, size: 9 };
-            return await postDataService.getPostsByUserId(userId, query, authData.accessToken);
-        },
-        {
-            enabled: isAuthenticated && !!userId,
-            staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
-            cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
-            refetchInterval: 6 * 60 * 1000, // 6 minutes
-            initialPageParam: 0,
-            getNextPageParam: (lastPage, allPages) => {
-                return !lastPage.last ? allPages.length : undefined;
-            },
-            onSuccess: (data, allPages) => {
-                console.log('User posts loaded:', { userId, count: data.length });
-            },
-            onError: (error) => {
-                console.error('Error loading user posts:', { userId, error: error.message });
-            }
-        }
-    );
-}
-
-export const useCreatePost = (toggleForm: ConsumerFn) => {
+/**
+ * Custom hook for creating posts
+ * Replaces: useCreatePost (React Query)
+ */
+export const useCreatePostCustom = (toggleForm: ConsumerFn) => {
     const { data: authData } = useAuthStore();
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
@@ -193,6 +181,9 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
                 
                 // Invalidate feed cache to show new post
                 invalidateCache.invalidateFeed();
+                
+                // Optimistically update cache if needed
+                // This would be handled by the cacheUpdate function
             },
             onError: (error, variables) => {
                 console.error("Error creating post:", error.message);
@@ -200,26 +191,30 @@ export const useCreatePost = (toggleForm: ConsumerFn) => {
             },
             retry: 2,
             retryDelay: 1000,
-            invalidateQueries: ['posts', 'feed'],
+            invalidateQueries: ['posts', 'feed'], // Will invalidate these cache keys
             optimisticUpdate: (cache, variables) => {
                 // Return rollback function
                 return () => {
+                    // Rollback logic would go here
                     console.log('Rolling back optimistic post creation');
                 };
             }
         }
     );
-}
+};
 
-export const useCreateRepost = (toggleForm: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+/**
+ * Custom hook for creating reposts
+ * Replaces: useCreateRepost (React Query)
+ */
+export const useCreateRepostCustom = (toggleForm: ConsumerFn) => {
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
     return useCustomMutation(
         async (repostData: RepostRequest): Promise<PostResponse> => {
             console.log("Creating repost:", repostData);
-            return await feedFeatureService.createPostWithValidation(repostData as PostRequest, authData.accessToken);
+            return await feedFeatureService.createPostWithValidation(repostData as PostRequest, '');
         },
         {
             onSuccess: (data, variables) => {
@@ -236,15 +231,17 @@ export const useCreateRepost = (toggleForm: ConsumerFn) => {
             invalidateQueries: ['posts', 'feed']
         }
     );
-}
+};
 
-export const useSavePost = () => {
+/**
+ * Custom hook for saving posts
+ * Replaces: useSavePost (React Query)
+ */
+export const useSavePostCustom = () => {
     const { feedFeatureService } = useFeedServices();
     const { getSignedUser } = useUserQueries();
     const user = getSignedUser();
     const invalidateCache = useCacheInvalidation();
-    
-    if (user === undefined) throw new Error("user is undefined");
 
     return useCustomMutation(
         async (postId: ResId): Promise<Response> => {
@@ -254,7 +251,10 @@ export const useSavePost = () => {
         {
             onSuccess: (data, postId) => {
                 console.log("Post saved successfully:", postId);
-                invalidateCache.invalidateUser(user.id);
+                // Invalidate user-specific saved posts cache
+                if (user) {
+                    invalidateCache.invalidateUser(user.id);
+                }
             },
             onError: (error, postId) => {
                 console.error("Error saving post:", error.message);
@@ -264,63 +264,61 @@ export const useSavePost = () => {
             invalidateQueries: (variables) => [`posts:saved:${variables}`]
         }
     );
-}
+};
 
-export const useEditPost = (postId: ResId, toggleForm: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+/**
+ * Custom hook for deleting posts
+ * Replaces: useDeletePost (React Query)
+ */
+export const useDeletePostCustom = (postId: ResId) => {
     const { feedFeatureService } = useFeedServices();
+    const { getSignedUserElseThrow } = useUserQueries();
+    const user = getSignedUserElseThrow();
     const invalidateCache = useCacheInvalidation();
 
     return useCustomMutation(
-        async (postData: PostRequest): Promise<PostResponse> => {
-            return await feedFeatureService.updatePostWithValidation(postId, postData, authData.accessToken);
+        async (): Promise<Response> => {
+            await feedFeatureService.deletePostWithBusinessLogic(postId, user.id, '');
+            return new Response('Post deleted successfully');
         },
         {
             onSuccess: (data, variables) => {
-                console.log("Post updated successfully:", data);
-                toggleForm();
+                console.log("Post deleted successfully:", postId);
+                
+                // Invalidate all relevant caches
                 invalidateCache.invalidatePost(postId);
                 invalidateCache.invalidateFeed();
+                invalidateCache.invalidateUser(user.id);
             },
             onError: (error, variables) => {
-                console.error("Error editing post:", error.message);
-                alert(`Error editing post: ${error.message}`);
+                console.error("Error deleting post:", error.message);
             },
-            retry: 2,
-            invalidateQueries: (variables) => [
-                `post:${postId}`,
-                'feed',
-                'posts'
-            ],
+            retry: 1,
+            invalidateQueries: ['posts', 'feed', `posts:${user.id}`],
             optimisticUpdate: (cache, variables) => {
-                // Optimistically update post in cache
-                const postKey = convertQueryKeyToCacheKey(['posts', postId]);
-                const existingPost = cache.get(postKey);
+                // Optimistically remove post from cache
+                const cacheKey = convertQueryKeyToCacheKey(['posts', postId]);
+                cache.delete(cacheKey);
                 
-                if (existingPost) {
-                    const updatedPost = {
-                        ...existingPost,
-                        ...variables,
-                        updateDate: new Date().toISOString()
-                    };
-                    cache.set(postKey, updatedPost);
-                }
-
                 return () => {
-                    console.log('Rolling back post update');
+                    // Rollback: restore post to cache
+                    console.log('Rolling back post deletion');
                 };
             }
         }
     );
-}
+};
 
-export const useQueryPosts = (setPostQueryResult: (posts: PostResponse[]) => void) => {
+/**
+ * Custom hook for searching posts
+ * Replaces: useQueryPosts (React Query)
+ */
+export const useQueryPostsCustom = (setPostQueryResult: (posts: PostResponse[]) => void) => {
     const { postDataService } = useFeedServices();
-    const { data: authData } = useAuthStore();
 
     return useCustomMutation(
         async (queryText: string): Promise<PostPage> => {
-            return await postDataService.searchPosts(queryText, {}, authData.accessToken);
+            return await postDataService.searchPosts(queryText, {}, '');
         },
         {
             onSuccess: (data, variables) => {
@@ -337,76 +335,17 @@ export const useQueryPosts = (setPostQueryResult: (posts: PostResponse[]) => voi
             retry: 1
         }
     );
-}
+};
 
-export const useDeletePost = (postId: ResId) => {
+/**
+ * Custom hook for voting on polls
+ * Replaces: useVotePoll (React Query)
+ */
+export const useVotePollCustom = (postId: ResId) => {
     const { feedFeatureService } = useFeedServices();
-    const { postId: id } = useParams();
-    const navigate = useNavigate();
-    const { getSignedUser } = useUserQueries();
-    const user = getSignedUser();
+    const { getSignedUserElseThrow } = useUserQueries();
+    const user = getSignedUserElseThrow();
     const invalidateCache = useCacheInvalidation();
-    
-    if (user === undefined) throw new Error("user is undefined");
-
-    return useCustomMutation(
-        async (): Promise<Response> => {
-            await feedFeatureService.deletePostWithBusinessLogic(postId, user.id, '');
-            return new Response('Post deleted successfully');
-        },
-        {
-            onSuccess: (data, variables) => {
-                console.log("Post deleted successfully:", postId);
-                if (id === postId) navigate("/feed");
-                invalidateCache.invalidatePost(postId);
-                invalidateCache.invalidateFeed();
-                invalidateCache.invalidateUser(user.id);
-            },
-            onError: (error, variables) => {
-                console.error("Error deleting post:", error.message);
-            },
-            retry: 1,
-            invalidateQueries: [
-                `post:${postId}`,
-                'feed',
-                'posts',
-                `posts:${user.id}`
-            ],
-            optimisticUpdate: (cache, variables) => {
-                // Optimistically remove post from cache
-                const postKey = convertQueryKeyToCacheKey(['posts', postId]);
-                cache.delete(postKey);
-                
-                const feedKey = convertQueryKeyToCacheKey(['feed', {}]);
-                const existingFeed = cache.get(feedKey);
-                
-                if (existingFeed) {
-                    const updatedFeed = {
-                        ...existingFeed,
-                        items: existingFeed.items.filter(item => item.post.id !== postId),
-                        pagination: {
-                            ...existingFeed.pagination,
-                            total: Math.max(0, existingFeed.pagination.total - 1)
-                        }
-                    };
-                    cache.set(feedKey, updatedFeed);
-                }
-
-                return () => {
-                    console.log('Rolling back post deletion');
-                };
-            }
-        }
-    );
-}
-
-export const useVotePoll = (postId: ResId) => {
-    const { feedFeatureService } = useFeedServices();
-    const { getSignedUser } = useUserQueries();
-    const user = getSignedUser();
-    const invalidateCache = useCacheInvalidation();
-    
-    if (user === undefined) throw new Error("user is undefined");
 
     return useCustomMutation(
         async (voteData: VoteBody): Promise<Response> => {
@@ -415,7 +354,7 @@ export const useVotePoll = (postId: ResId) => {
         },
         {
             onSuccess: (data, variables) => {
-                console.log("Vote successful:", { postId, voteData: variables });
+                console.log("Vote successful:", { postId, voteData });
                 invalidateCache.invalidatePost(postId);
             },
             onError: (error, variables) => {
@@ -425,4 +364,29 @@ export const useVotePoll = (postId: ResId) => {
             invalidateQueries: (variables) => [`posts:${postId}`]
         }
     );
-}
+};
+
+// ===== EXPORTS =====
+
+/**
+ * Export all custom hooks with consistent naming
+ */
+export const usePostDataCustom = {
+    // Infinite queries
+    useGetPagedPosts: useGetPagedPostsCustom,
+    useGetSavedPostsByUserId: useGetSavedPostsByUserIdCustom,
+    useGetPostsByUserId: useGetPostsByUserIdCustom,
+    useGetRepliedPostsByUserId: useGetRepliedPostsByUserIdCustom,
+    
+    // Single queries
+    useGetPostById: useGetPostByIdCustom,
+    
+    // Mutations
+    useCreatePost: useCreatePostCustom,
+    useCreateRepost: useCreateRepostCustom,
+    useSavePost: useSavePostCustom,
+    useEditPost: useEditPostCustom,
+    useQueryPosts: useQueryPostsCustom,
+    useDeletePost: useDeletePostCustom,
+    useVotePoll: useVotePollCustom
+};

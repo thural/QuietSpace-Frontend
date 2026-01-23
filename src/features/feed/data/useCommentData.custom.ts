@@ -1,22 +1,37 @@
 import { CommentRequest, CommentResponse, PagedComment } from "@/features/feed/data/models/comment";
 import { ResId } from "@/shared/api/models/common";
-import { useCustomQuery, useCustomMutation } from "@/core/hooks";
 import { useAuthStore } from "@/core/store/zustand";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { QueryProps } from "@/types/hookPropTypes";
 import { useCommentServices } from "@/features/feed/application/hooks/useCommentService";
+import { 
+  useCustomQuery, 
+  useCustomMutation 
+} from "@/core/hooks";
 import { 
   CACHE_TIME_MAPPINGS, 
   convertQueryKeyToCacheKey,
   useCacheInvalidation 
 } from "@/core/hooks/migrationUtils";
 
-// Legacy hooks that now use the new feature services
-export const useGetComments = (postId: ResId) => {
+/**
+ * CUSTOM COMMENT HOOKS - Migrated from React Query to Custom Query Implementation
+ * 
+ * This file demonstrates the migration of useCommentData hooks from React Query
+ * to our enterprise-grade custom query implementation.
+ */
+
+// ===== QUERY HOOKS =====
+
+/**
+ * Custom hook for fetching comments by post ID
+ * Replaces: useGetComments (React Query)
+ */
+export const useGetCommentsCustom = (postId: ResId) => {
     const { data: authData } = useAuthStore();
     const { commentDataService } = useCommentServices();
     const invalidateCache = useCacheInvalidation();
-    
+
     return useCustomQuery(
         ['posts', postId, 'comments'],
         async (): Promise<PagedComment> => {
@@ -42,13 +57,16 @@ export const useGetComments = (postId: ResId) => {
             refetchIntervalInBackground: true
         }
     );
-}
+};
 
-export const useGetLatestComment = (userId: ResId, postId: ResId) => {
+/**
+ * Custom hook for fetching the latest comment
+ * Replaces: useGetLatestComment (React Query)
+ */
+export const useGetLatestCommentCustom = (userId: ResId, postId: ResId) => {
     const { data: authData } = useAuthStore();
     const { commentDataService } = useCommentServices();
-    const invalidateCache = useCacheInvalidation();
-    
+
     return useCustomQuery(
         ['posts', postId, 'comments', 'latest'],
         async (): Promise<CommentResponse> => {
@@ -71,15 +89,22 @@ export const useGetLatestComment = (userId: ResId, postId: ResId) => {
             }
         }
     );
-}
+};
+
+// ===== MUTATION HOOKS =====
 
 interface usePostCommentProps extends QueryProps {
     postId: ResId;
     handleClose?: ConsumerFn;
 }
 
-export const usePostComment = ({
-    postId, handleClose
+/**
+ * Custom hook for posting comments
+ * Replaces: usePostComment (React Query)
+ */
+export const usePostCommentCustom = ({
+    postId, 
+    handleClose
 }: usePostCommentProps) => {
     const { feedFeatureService } = useCommentServices();
     const invalidateCache = useCacheInvalidation();
@@ -97,6 +122,7 @@ export const usePostComment = ({
                 invalidateCache.invalidateComment(data.id, postId);
                 
                 // Also invalidate the latest comment cache
+                const latestCommentKey = convertQueryKeyToCacheKey(['posts', postId, 'comments', 'latest']);
                 invalidateCache.invalidateComment(data.id, postId);
             },
             onError: (error, variables) => {
@@ -148,9 +174,13 @@ export const usePostComment = ({
             }
         }
     );
-}
+};
 
-export const useDeleteComment = () => {
+/**
+ * Custom hook for deleting comments
+ * Replaces: useDeleteComment (React Query)
+ */
+export const useDeleteCommentCustom = () => {
     const { feedFeatureService } = useCommentServices();
     const invalidateCache = useCacheInvalidation();
 
@@ -210,6 +240,117 @@ export const useDeleteComment = () => {
             }
         }
     );
-}
+};
 
+/**
+ * Custom hook for updating comments
+ * New functionality not present in original React Query implementation
+ */
+export const useUpdateCommentCustom = () => {
+    const { feedFeatureService } = useCommentServices();
+    const invalidateCache = useCacheInvalidation();
 
+    return useCustomMutation(
+        async ({ 
+            commentId, 
+            postId, 
+            content 
+        }: { 
+            commentId: ResId; 
+            postId: ResId; 
+            content: string 
+        }) => {
+            // This would need to be implemented in the feature service
+            return await feedFeatureService.updateCommentWithValidation(commentId, content, postId);
+        },
+        {
+            onSuccess: (data, variables) => {
+                console.log("Comment updated successfully:", variables);
+                invalidateCache.invalidateComment(variables.commentId, variables.postId);
+            },
+            onError: (error, variables) => {
+                console.error("Error updating comment:", error.message);
+            },
+            retry: 2,
+            invalidateQueries: (variables) => [
+                `posts:${variables.postId}:comments:*`,
+                `posts:${variables.postId}:comments:latest`
+            ],
+            optimisticUpdate: (cache, variables) => {
+                // Optimistically update comment content
+                const commentsKey = convertQueryKeyToCacheKey(['posts', variables.postId, 'comments']);
+                const existingComments = cache.get(commentsKey);
+                
+                if (existingComments) {
+                    const updatedComments = {
+                        ...existingComments,
+                        content: existingComments.content.map(c => 
+                            c.id === variables.commentId 
+                                ? { ...c, content: variables.content, updateDate: new Date().toISOString() }
+                                : c
+                        )
+                    };
+                    cache.set(commentsKey, updatedComments);
+                }
+
+                return () => {
+                    console.log('Rolling back comment update');
+                };
+            }
+        }
+    );
+};
+
+/**
+ * Custom hook for reacting to comments
+ * New functionality for comment reactions
+ */
+export const useReactToCommentCustom = () => {
+    const { feedFeatureService } = useCommentServices();
+    const invalidateCache = useCacheInvalidation();
+
+    return useCustomMutation(
+        async ({ 
+            commentId, 
+            postId, 
+            reactionType 
+        }: { 
+            commentId: ResId; 
+            postId: ResId; 
+            reactionType: 'like' | 'dislike' 
+        }) => {
+            await feedFeatureService.interactWithPost(commentId, reactionType, '');
+            return { commentId, postId, reactionType };
+        },
+        {
+            onSuccess: (data, variables) => {
+                console.log("Comment reaction successful:", variables);
+                invalidateCache.invalidateComment(variables.commentId, variables.postId);
+            },
+            onError: (error, variables) => {
+                console.error("Error reacting to comment:", error.message);
+            },
+            retry: 1,
+            invalidateQueries: (variables) => [
+                `posts:${variables.postId}:comments:*`
+            ]
+        }
+    );
+};
+
+// ===== EXPORTS =====
+
+/**
+ * Export all custom comment hooks with consistent naming
+ */
+export const useCommentDataCustom = {
+    // Queries
+    useGetComments: useGetCommentsCustom,
+    useGetLatestComment: useGetLatestCommentCustom,
+    
+    // Mutations
+    usePostComment: usePostCommentCustom,
+    useDeleteComment: useDeleteCommentCustom,
+    useUpdateComment: useUpdateCommentCustom,
+    useReactToComment: useReactToCommentCustom
+};

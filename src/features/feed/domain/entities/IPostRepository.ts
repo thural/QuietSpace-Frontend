@@ -14,6 +14,7 @@ import type {
     VoteBody,
     ContentPrivacy
 } from '@/features/feed/data/models/post';
+import {ReactionRequest} from "@feed/data/models/reaction.ts";
 
 /**
  * Query parameters for post filtering and pagination
@@ -64,8 +65,5 @@ export interface IPostRepository {
     savePost(postId: ResId, token: string): Promise<void>;
     unsavePost(postId: ResId, token: string): Promise<void>;
     votePoll(vote: VoteBody, token: string): Promise<void>;
-
-    // Utility operations
-    validatePostContent(content: string): boolean;
-    calculateEngagementScore(post: PostResponse): number;
+    reaction(reaction: ReactionRequest, token: string): Promise<void>;
 }

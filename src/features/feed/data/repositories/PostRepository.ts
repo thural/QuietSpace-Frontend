@@ -103,23 +103,6 @@ export class PostRepository implements IPostRepository {
         });
     }
 
-    validatePostContent(content: string): boolean {
-        return content.trim().length > 0 && content.length <= 2000;
-    }
-
-    calculateEngagementScore(post: PostResponse): number {
-        const likesWeight = 1;
-        const commentsWeight = 2;
-        const sharesWeight = 3;
-        const reactionsWeight = 0.5;
-        
-        const likes = post.likesCount || 0;
-        const comments = post.commentsCount || 0;
-        const shares = post.sharesCount || 0;
-        const reactions = post.reactions?.length || 0;
-        
-        return (likes * likesWeight) + (comments * commentsWeight) + (shares * sharesWeight) + (reactions * reactionsWeight);
-    }
 
     private buildPageParams(query: PostQuery): string {
         const params = new URLSearchParams();
