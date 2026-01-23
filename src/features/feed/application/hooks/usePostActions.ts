@@ -1,27 +1,58 @@
 import { ContentType } from "@/shared/api/models/commonNative";
 import { ReactionType } from "@/features/feed/data/models/reactionNative";
-import { useDeletePost } from "@features/feed/data";
-import useReaction from "./useReaction";
+import { useFeedServices } from "./useFeedService";
+import { useAuthStore } from "@/core/store/zustand";
 import { ResId } from "@/shared/api/models/common";
 
 const usePostActions = (postId: ResId) => {
-    const deletePost = useDeletePost(postId);
+    const { data: authData } = useAuthStore();
+    const { feedFeatureService } = useFeedServices();
 
     const handleDeletePost = async (e: React.MouseEvent) => {
         e && e.stopPropagation();
-        deletePost.mutate();
+        
+        try {
+            await feedFeatureService.deletePostWithBusinessLogic(
+                postId, 
+                authData.user.id, 
+                authData.accessToken
+            );
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            // Error handling is done in the feature service
+        }
     };
 
-    const handleReaction = useReaction(postId);
-
-    const handleLike = (e: React.MouseEvent) => {
+    const handleLike = async (e: React.MouseEvent) => {
         e && e.stopPropagation();
-        handleReaction(ContentType.POST, ReactionType.LIKE);
+        
+        try {
+            await feedFeatureService.interactWithPost(
+                postId, 
+                authData.user.id, 
+                'like', 
+                authData.accessToken
+            );
+        } catch (error) {
+            console.error('Error liking post:', error);
+            // Error handling is done in the feature service
+        }
     };
 
-    const handleDislike = (e: React.MouseEvent) => {
+    const handleDislike = async (e: React.MouseEvent) => {
         e && e.stopPropagation();
-        handleReaction(ContentType.POST, ReactionType.DISLIKE);
+        
+        try {
+            await feedFeatureService.interactWithPost(
+                postId, 
+                authData.user.id, 
+                'dislike', 
+                authData.accessToken
+            );
+        } catch (error) {
+            console.error('Error disliking post:', error);
+            // Error handling is done in the feature service
+        }
     };
 
     return { handleDeletePost, handleLike, handleDislike };

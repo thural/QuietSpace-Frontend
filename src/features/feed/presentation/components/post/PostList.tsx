@@ -1,7 +1,7 @@
 import { PostResponse } from "@/features/feed/data/models/post";
 import PostSkeleton from "@/shared/PostSkeleton";
 import usePlaceholderCount from "@shared/hooks/usePlaceholderCount";
-import { useIsFetching } from "@tanstack/react-query";
+import { useIsFetching } from "@/core/hooks";
 import RepostCard from "../repost/RepostCard";
 import PostCard from "./PostCard";
 import { useMemo } from "react";
@@ -22,7 +22,7 @@ interface PostListBoxProps {
  * PostListBox component.
  * 
  * This component renders a list of posts or skeletons while the posts are loading.
- * It uses the React Query library to check if any post fetching is in progress and
+ * It uses the custom query hooks to check if any post fetching is in progress and
  * dynamically displays loading placeholders if necessary. Once the posts are loaded,
  * it distinguishes between regular posts and reposts, rendering them accordingly.
  * 
@@ -31,8 +31,8 @@ interface PostListBoxProps {
  */
 const PostListBox: React.FC<PostListBoxProps> = ({ posts, isLoading }) => {
 
-    // Check if any post fetching is in progress using React Query
-    const isFetchingPosts = useIsFetching({ queryKey: ['posts'] });
+    // Check if any post fetching is in progress using custom hooks
+    const isFetchingPosts = useIsFetching();
 
     // Define a constant for the height of the placeholders
     const placeholderHeight = 75;

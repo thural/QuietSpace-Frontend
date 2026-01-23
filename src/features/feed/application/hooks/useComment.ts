@@ -2,8 +2,8 @@ import useUserQueries from "@features/profile/data/userQueries";
 import { CommentResponse } from "@/features/feed/data/models/comment";
 import { ContentType } from "@/shared/api/models/commonNative";
 import { ReactionType } from "@/features/feed/data/models/reactionNative";
-import { useDeleteComment } from "@features/feed/data/useCommentData";
-import useReaction from "./useReaction";
+import { useCommentServices } from "./useCommentService";
+import { useAuthStore } from "@/core/store/zustand";
 import { useState } from "react";
 
 /**
@@ -27,17 +27,36 @@ import { useState } from "react";
 const useComment = (comment: CommentResponse) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
-    const deleteComment = useDeleteComment();
+    const { data: authData } = useAuthStore();
+    const { feedFeatureService } = useCommentServices();
 
-    const handleReaction = useReaction(comment.id);
-
-    const handleLikeToggle = (event: Event) => {
+    const handleLikeToggle = async (event: Event) => {
         event.preventDefault();
-        handleReaction(ContentType.COMMENT, ReactionType.LIKE);
+        
+        try {
+            await feedFeatureService.interactWithPost(
+                comment.id, 
+                user.id, 
+                'like', 
+                authData.accessToken
+            );
+        } catch (error) {
+            console.error('Error liking comment:', error);
+            // Error handling is done in the feature service
+        }
     };
 
-    const handleDeleteComment = () => {
-        deleteComment.mutate(comment.id);
+    const handleDeleteComment = async () => {
+        try {
+            await feedFeatureService.deleteCommentWithFullInvalidation(
+                comment.id, 
+                comment.postId, 
+                user.id
+            );
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            // Error handling is done in the feature service
+        }
     };
 
     const [commentFormView, setCommentFormView] = useState(false);

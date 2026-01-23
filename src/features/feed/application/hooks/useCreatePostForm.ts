@@ -1,6 +1,7 @@
 import useUserQueries from "@features/profile/data/userQueries";
 import { PollRequest, PostRequest } from "@/features/feed/data/models/post";
-import { useCreatePost } from "@features/feed/data";
+import { useFeedServices } from "./useFeedService";
+import { useAuthStore } from "@/core/store/zustand";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { getOffsetDateTime } from "@/shared/utils/dateUtils";
 import { toUpperFirstChar } from "@/shared/utils/stringUtils";
@@ -42,6 +43,9 @@ export interface PollView {
 const useCreatePostForm = (toggleForm: ConsumerFn) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
+    const { data: authData } = useAuthStore();
+    const { feedFeatureService } = useFeedServices();
+    
     const viewAccessOptions = ["friends", "anyone"];
     const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(null);
     const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
@@ -74,25 +78,36 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         setPollView({ ...pollView, enabled: !pollView.enabled });
     };
 
-    const addPost = useCreatePost(toggleForm);
     const handleSubmit = async (event: SubmitEvent) => {
         event.preventDefault();
-        const formattedDate = getOffsetDateTime(810000);
-        const poll: PollRequest = { dueDate: formattedDate, options: [] };
+        
+        try {
+            const formattedDate = getOffsetDateTime(810000);
+            const poll: PollRequest = { dueDate: formattedDate, options: [] };
 
-        Object.entries(postData).forEach(([key, value]: any) => {
-            if (key.includes("option")) poll.options.push(value);
-        });
+            Object.entries(postData).forEach(([key, value]: any) => {
+                if (key.includes("option")) poll.options.push(value);
+            });
 
-        const formData = new FormData();
-        formData.append('userId', user.id.toString());
-        formData.append('title', postData.title);
-        formData.append('text', postData.text);
+            const formData = new FormData();
+            formData.append('userId', user.id.toString());
+            formData.append('title', postData.title);
+            formData.append('text', postData.text);
 
-        if (poll.options.length) formData.append('poll', JSON.stringify(poll)); // TODO: test poll data on submit
-        if (postData.photoData !== null) formData.append('photoData', postData.photoData);
+            if (poll.options.length) formData.append('poll', JSON.stringify(poll));
+            if (postData.photoData !== null) formData.append('photoData', postData.photoData);
 
-        addPost.mutate(formData);
+            // Use feature service for business validation and creation
+            await feedFeatureService.createPostWithValidation(
+                postData, 
+                authData.accessToken
+            );
+            
+            toggleForm();
+        } catch (error) {
+            console.error('Error creating post:', error);
+            // Error handling is done in the feature service
+        }
     };
 
     const avatarPlaceholder = toUpperFirstChar(user.username);
@@ -107,7 +122,6 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
         handleFileChange,
         togglePoll,
         avatarPlaceholder,
-        addPost,
         viewAccessOptions,
     };
 };

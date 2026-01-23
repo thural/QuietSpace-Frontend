@@ -1,11 +1,11 @@
 import useUserQueries from "@/core/network/api/queries/userQueries";
-import { useGetPagedPosts } from "@features/feed/data";
+import { useFeedServices } from "./useFeedService";
 import { useState } from "react";
 
 /**
  * Custom hook for managing the state and logic of a feed.
  *
- * This hook retrieves the signed-in user, fetches paginated posts,
+ * This hook retrieves the signed-in user, fetches paginated posts using feature services,
  * and manages the overlay state for the feed UI.
  *
  * @returns {{
@@ -18,14 +18,14 @@ import { useState } from "react";
 export const useFeed = () => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
-    const posts = useGetPagedPosts();
+    const { feed } = useFeedServices();
 
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const toggleOverlay = () => setIsOverlayOpen(!isOverlayOpen);
 
     return {
         user,
-        posts,
+        posts: feed,
         isOverlayOpen,
         toggleOverlay
     };
