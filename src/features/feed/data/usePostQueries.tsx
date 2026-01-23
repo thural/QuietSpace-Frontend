@@ -35,7 +35,7 @@ const usePostQueries = () => {
         queryClient.setQueryData((queryKeys ?? ['posts']), (data: InfiniteData<Page<PostResponse>>) => {
             const lastPageNumber = data.pages[0]?.number;
             const predicate = (page: Page<PostResponse>) => isPageMatchesByNumber(page, lastPageNumber);
-            if (data !== undefined) return pushToPageContent(data, post, predicate);
+            if (data) return pushToPageContent(data, post, predicate);
             else return getInitInfinitePagesObject(DEFAULT_PAGE_SIZE, [post]);
         });
     }

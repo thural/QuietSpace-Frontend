@@ -1,6 +1,6 @@
 import { fetchReaction } from "@features/feed/data/postRequests";
 import { ReactionRequest } from "./models/reaction";
-import { ResId } from "../../../shared/api/models/common";
+import { ResId } from "@/shared/api/models/common";
 import { useAuthStore } from "@/core/store/zustand";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import usePostQueries from "@features/feed/data/usePostQueries";

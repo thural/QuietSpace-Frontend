@@ -1,16 +1,18 @@
-import { MESSAGE_PATH } from "@/shared/constants/apiPath";
-import { getWrappedApiResponse } from "@/core/network/rest/fetchApiClient";
-import { JwtToken, ResId } from "@/shared/api/models/common";
-import { MessageRequest, MessageResponse, PagedMessage } from "@/features/chat/data/models/chat";
+import {MESSAGE_PATH} from "@/shared/constants/apiPath";
+import {apiClient} from "@/core/network/rest/apiClient";
+import {JwtToken, ResId} from "@/shared/api/models/common";
+import {MessageRequest, MessageResponse, PagedMessage} from "@/features/chat/data/models/chat";
 
-export const fetchMessages = async (chatId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<PagedMessage> => (
-    await getWrappedApiResponse(MESSAGE_PATH + `/chat/${chatId}` + (pageParams || ""), 'GET', null, token)
-).json();
+export const fetchMessages = async (chatId: ResId, token: JwtToken, pageParams?: string | undefined): Promise<PagedMessage> => {
+    const { data } = await apiClient.get(MESSAGE_PATH + `/chat/${chatId}` + (pageParams || ""));
+    return data;
+};
 
-export const fetchCreateMessage = async (body: MessageRequest, token: JwtToken): Promise<MessageResponse> => (
-    await getWrappedApiResponse(MESSAGE_PATH, 'POST', body, token)
-).json();
+export const fetchCreateMessage = async (body: MessageRequest, token: JwtToken): Promise<MessageResponse> => {
+    const { data } = await apiClient.post(MESSAGE_PATH, body);
+    return data;
+};
 
 export const fetchDeleteMessage = async (token: JwtToken, messageId: ResId): Promise<Response> => (
-    await getWrappedApiResponse(MESSAGE_PATH + `/${messageId}`, 'DELETE', null, token)
+    await apiClient.delete(MESSAGE_PATH + `/${messageId}`)
 );

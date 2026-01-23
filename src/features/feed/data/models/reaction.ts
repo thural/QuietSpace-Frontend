@@ -3,8 +3,8 @@ import {
     ReactionTypeSchema,
     ReactionRequestSchema,
     ReactionResponseSchema
-} from "../zod/reactionZod";
-import { ContentTypeEnum } from "../zod/commonZod";
+} from "./reactionZod";
+import { ContentTypeEnum } from "@/shared/api/models/commonZod";
 
 export type ReactionType = z.infer<typeof ReactionTypeSchema>;
 export type ReactionRequest = z.infer<typeof ReactionRequestSchema>;

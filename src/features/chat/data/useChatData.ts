@@ -1,15 +1,12 @@
-import { fetchChatByUserId, fetchCreateChat, fetchDeleteChat } from "./requests/chatRequests";
-import { fetchMessages } from "./requests/messageRequests";
-import { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "./models/chat";
-import { ResId } from "../../../shared/api/models/common";
+import {fetchChatByUserId, fetchCreateChat, fetchDeleteChat} from "./requests/chatRequests";
+import {fetchMessages} from "./requests/messageRequests";
+import {ChatList, ChatResponse, CreateChatRequest, PagedMessage} from "./models/chat";
+import {ResId} from "@/shared/api/models/common";
 
-interface QueryProps {
-    onSuccess?: (data: any) => void;
-    onError?: (error: Error) => void;
-}
-import { buildPageParams, getNextPageParam } from "../../../shared/utils/fetchUtils";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "../../../core/store/zustand";
+import {QueryProps} from "@/types/hookPropTypes";
+import {buildPageParams, getNextPageParam} from "@/shared/utils/fetchUtils";
+import {useInfiniteQuery, useMutation, useQuery} from "@tanstack/react-query";
+import {useAuthStore} from "@/core/store/zustand";
 
 
 export const useGetChats = () => {

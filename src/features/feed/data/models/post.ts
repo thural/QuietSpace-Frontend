@@ -1,17 +1,17 @@
-import { z } from "zod";
+import {z} from "zod";
 
 import {
-    VoteBodySchema,
     PollOptionSchema,
+    PollRequestSchema,
     PollResponseSchema,
-    PostRequestSchema,
-    PostResponseSchema,
     PostListSchema,
     PostPageSchema,
-    PollRequestSchema,
+    PostRequestSchema,
+    PostResponseSchema,
     RepostBodySchema,
-    RepostResponseSchema
-} from "../zod/postZod";
+    RepostResponseSchema,
+    VoteBodySchema
+} from "../models/postZod";
 
 export type VoteBody = z.infer<typeof VoteBodySchema>;
 export type PollOption = z.infer<typeof PollOptionSchema>;

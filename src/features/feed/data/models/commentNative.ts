@@ -1,5 +1,5 @@
-import { BaseSchema, PagedResponse, ResId } from "./common";
-import { UserReaction } from "./reaction";
+import { BaseSchema, PagedResponse, ResId } from "@/shared/api/models/commonNative";
+import { UserReaction } from "./reactionNative";
 
 export interface CommentBody {
     parentId?: ResId | null

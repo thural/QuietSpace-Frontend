@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { BaseSchema, ContentTypeEnum, ResIdSchema } from "./commonZod";
-import { ReactionType } from "../native/reaction";
+import {z} from "zod";
+import {BaseSchema, ContentTypeEnum, ResIdSchema} from "@/shared/api/models/commonZod";
+import {ReactionType} from "./reactionNative";
 
 export const ReactionTypeSchema = z.nativeEnum(ReactionType);
 

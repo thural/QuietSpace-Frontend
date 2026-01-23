@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
+import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "@/shared/api/models/commonZod";
 import { ReactionRequestSchema } from "./reactionZod";
 
 export const CommentRequestSchema = z.object({

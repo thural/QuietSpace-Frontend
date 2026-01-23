@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "./commonZod";
-import { ReactionResponseSchema } from "./reactionZod";
-import { PhotoResponseSchema } from "./photoZod";
+import {z} from "zod";
+import {BaseSchema, PageContentSchema, PageSchema, ResIdSchema} from "@/shared/api/models/commonZod";
+import {ReactionResponseSchema} from "./reactionZod";
+import {PhotoResponseSchema} from "@/shared/api/models/photoZod";
 
 
 export const VoteBodySchema = z.object({

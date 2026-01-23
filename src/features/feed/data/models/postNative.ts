@@ -1,4 +1,4 @@
-import { BaseSchema, ContentResponse, PagedResponse, ResId } from "./common"
+import { BaseSchema, ContentResponse, PagedResponse, ResId } from "@shared/api/models/commonNative"
 import { ReactionType } from "./reaction"
 
 export interface VoteBody {

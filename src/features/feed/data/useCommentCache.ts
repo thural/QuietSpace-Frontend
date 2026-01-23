@@ -11,7 +11,7 @@ import {
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { CommentResponse, PagedComment } from "@/features/feed/data/models/comment";
 import { Page } from "@/shared/api/models/common";
-import { ResId } from "../schemas/native/common";
+import { ResId } from "@/shared/api/models/commonNative";
 
 
 const useCommentCache = () => {
@@ -27,7 +27,7 @@ const useCommentCache = () => {
         return queryClient.getQueryData(["comments", postId]);
     }
 
-    const getCommentssByUserId = (userId: ResId): Page<CommentResponse> | undefined => {
+    const getCommentsByUserId = (userId: ResId): Page<CommentResponse> | undefined => {
         return queryClient.getQueryData(["comments", userId]);
     }
 
@@ -39,7 +39,7 @@ const useCommentCache = () => {
         queryClient.setQueryData((queryKeys ?? ['comments']), (data: InfiniteData<Page<CommentResponse>>) => {
             const lastPageNumber = data.pages[0]?.number;
             const predicate = (page: Page<CommentResponse>) => isPageMatchesByNumber(page, lastPageNumber);
-            if (data !== undefined) return pushToPageContent(data, comment, predicate);
+            if (data) return pushToPageContent(data, comment, predicate);
             else return getInitInfinitePagesObject(DEFAULT_PAGE_SIZE, [comment]);
         });
     }
@@ -60,7 +60,7 @@ const useCommentCache = () => {
     return {
         getComments,
         getCommentsById,
-        getCommentssByUserId,
+        getCommentsByUserId,
         getCommentsByPostId,
         insertCommentCache,
         updateCommentCache,

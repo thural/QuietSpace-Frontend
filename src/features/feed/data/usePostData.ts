@@ -1,4 +1,4 @@
-import useUserQueries from "@/core/network/api/queries/userQueries";
+import useUserQueries from "@/features/profile/data/userQueries";
 import {
     fetchCreatePost,
     fetchCreateRepost,
@@ -11,15 +11,15 @@ import {
     fetchSavePost,
     fetchSavedPostsByUser,
     fetchVotePoll
-} from "@/core/network/api/clients/postRequests";
+} from "@/features/feed/data/postRequests";
 import { ResId } from "@/shared/api/models/common";
 import { PostPage, PostRequest, PostResponse, RepostRequest, VoteBody } from "@/features/feed/data/models/post";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { buildPageParams, getNextPageParam } from "@/shared/utils/fetchUtils";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuthStore } from "../store/zustand";
-import usePostQueries from "@/core/network/api/queries/usePostQueries";
+import { useAuthStore } from "@/core/store/zustand";
+import usePostQueries from "@/features/feed/data/usePostQueries";
 
 
 export const useGetPagedPosts = () => {
@@ -239,7 +239,7 @@ export const useEditPost = (postId: ResId, toggleForm: ConsumerFn) => {
 }
 
 
-export const useQueryPosts = (setPostQueryResult: ConsumerFn) => {
+export const useQueryPosts = (setPostQueryResult: (posts: PostResponse[]) => void) => {
 
     const { data: authData } = useAuthStore();
 

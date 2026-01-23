@@ -1,10 +1,15 @@
-import { fetchCommentsByPostId, fetchCreateComment, fetchDeleteComment, fetchLatestComment } from "@features/feed/data/commentRequests";
-import { CommentRequest, CommentResponse, PagedComment } from "@/features/feed/data/models/comment";
-import { ResId } from "@/shared/api/models/common";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "../store/zustand";
-import { ConsumerFn, ProcedureFn } from "@/shared/types/genericTypes";
-import { QueryProps } from "@/types/hookPropTypes";
+import {
+    fetchCommentsByPostId,
+    fetchCreateComment,
+    fetchDeleteComment,
+    fetchLatestComment
+} from "@features/feed/data/commentRequests";
+import {CommentRequest, CommentResponse, PagedComment} from "@/features/feed/data/models/comment";
+import {ResId} from "@/shared/api/models/common";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {useAuthStore} from "@/core/store/zustand";
+import {ConsumerFn} from "@/shared/types/genericTypes";
+import {QueryProps} from "@/types/hookPropTypes";
 import useCommentCache from "@features/feed/data/useCommentCache"
 
 
@@ -46,7 +51,7 @@ export const usePostComment = ({
     const onSuccess = (data: CommentResponse) => {
         console.log("added comment response data: ", data);
         const { insertCommentCache } = useCommentCache();
-        insertCommentCache(data);
+        insertCommentCache(data, ["posts", postId, "comments"]);
         handleClose && handleClose();
     }
 

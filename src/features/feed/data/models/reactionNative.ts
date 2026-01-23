@@ -1,5 +1,5 @@
-import { ContentType } from "../inferred/reaction"
-import { BaseSchema } from "./common"
+import {ContentType} from "./reaction"
+import {BaseSchema} from "@/shared/api/models/commonNative"
 
 export enum ReactionType {
     LIKE = "LIKE",

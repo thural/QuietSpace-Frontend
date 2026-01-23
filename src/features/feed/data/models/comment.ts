@@ -1,10 +1,5 @@
-import { z } from "zod";
-import {
-    CommentRequestSchema,
-    CommentList,
-    CommentResponseSchema,
-    PagedCommentSchema
-} from "../zod/commentZod";
+import {z} from "zod";
+import {CommentList, CommentRequestSchema, CommentResponseSchema, PagedCommentSchema} from "./commentZod";
 
 export type CommentRequest = z.infer<typeof CommentRequestSchema>;
 export type CommentResponse = z.infer<typeof CommentResponseSchema>;
