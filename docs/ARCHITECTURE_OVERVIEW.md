@@ -13,6 +13,9 @@ This guide provides new developers with a comprehensive understanding of QuietSp
 5. [Developer Onboarding](#developer-onboarding)
 6. [Development Workflow](#development-workflow)
 7. [Best Practices](#best-practices)
+8. [Custom Query System](#custom-query-system)
+
+---
 
 ---
 
