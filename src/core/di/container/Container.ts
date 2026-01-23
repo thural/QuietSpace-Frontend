@@ -109,6 +109,24 @@ export class Container {
   }
 
   /**
+   * Register a transient service by string token with type safety
+   */
+  registerTransientByToken<T>(token: TypeKeys, serviceClass: new (...args: any[]) => T): void {
+    const { factory, dependencies, metadata } = this.createFactory(serviceClass);
+
+    // Register with container as transient using token
+    this.container.register(token, factory, {
+      lifetime: ServiceLifetime.Transient,
+      dependencies
+    });
+
+    // Log warning if metadata suggests different lifetime than transient
+    if (metadata.lifetime && metadata.lifetime !== 'transient') {
+      console.warn(`Service ${serviceClass.name} has metadata lifetime '${metadata.lifetime}' but is being registered as transient via registerTransientByToken`);
+    }
+  }
+
+  /**
    * Register a service instance by string token with type safety
    */
   registerInstanceByToken<T>(token: TypeKeys, instance: T): void {

@@ -5,8 +5,10 @@ import {LoggerService} from './test/SimpleTest';
 import {AuthModuleFactory} from '@core/auth/AuthModule';
 import {EnterpriseAuthService} from '@core/auth/enterprise/AuthService';
 import {EnterpriseAuthAdapter} from '@core/auth/adapters/EnterpriseAuthAdapter';
+import {CacheProvider, CacheServiceManager} from '@core/cache';
 import {TYPES} from '@core/di/types';
 import {apiClient} from '../network/rest/apiClient';
+import { registerFeedContainer } from '@features/feed/di/container';
 import type {AxiosInstance} from 'axios';
 
 // Import repositories
@@ -33,6 +35,10 @@ export function createAppContainer(): Container {
   // Register core services
   container.registerSingleton(LoggerService);
   container.registerSingleton(ThemeService);
+  
+  // Register cache services
+  container.registerSingleton(CacheServiceManager);
+  container.registerSingletonByToken(TYPES.CACHE_SERVICE, CacheServiceManager);
   
   // Register API client and repositories
   container.registerInstanceByToken(TYPES.API_CLIENT, apiClient);
@@ -67,7 +73,12 @@ export function createAppContainer(): Container {
   // This provides type safety - only valid TYPES values are allowed
   container.registerInstanceByToken(TYPES.AUTH_SERVICE, enterpriseAuthService);
   
+  // Register feed feature container and services
+  console.log('📱 Registering feed feature container...');
+  const feedContainer = registerFeedContainer(container);
+  
   console.log('✅ Core services registered');
+  console.log('✅ Feed feature container registered');
   console.log(`📊 Container stats: ${JSON.stringify(container.getStats())}`);
   
   return container;
@@ -97,6 +108,11 @@ export function initializeApp(): Container {
   // Example: Demonstrate API client usage
   console.log('🔗 API client configured with baseURL:', apiClient.defaults.baseURL);
   console.log('📄 Post repository initialized with DI');
+  
+  // Example: Demonstrate feed feature service usage
+  const feedFeatureService = container.getByToken(TYPES.FEED_FEATURE_SERVICE);
+  const postFeatureService = container.getByToken(TYPES.POST_FEATURE_SERVICE);
+  console.log('📱 Feed feature services initialized and ready');
   
   console.log('🚀 Application initialized with DI');
   

@@ -9,6 +9,12 @@
 export { container, initializeContainer, getContainer, createMockContainer } from './di/injection';
 export { TYPES } from './di/types';
 
+// Cache
+export { CacheProvider } from './cache';
+export { CacheServiceManager } from './cache/CacheServiceManager';
+export type { CacheEntry, CacheStats, CacheConfig, CacheEvents } from './cache';
+export type { CacheServiceConfig, FeatureCacheService } from './cache/CacheServiceManager';
+
 // Network
 export { apiClient } from './network/rest/apiClient';
 export { socketService } from './network/socket/service/socketService';
