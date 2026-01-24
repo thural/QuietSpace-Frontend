@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { EnterpriseSecurityService } from '../../../../core/auth/security/EnterpriseSecurityService';
+import { EnterpriseSecurityService } from '@core/auth/security/EnterpriseSecurityService';
 
 interface SecurityData {
   blockedIPs: string[];

@@ -9,7 +9,7 @@ import {
     RESEND_CODE,
     SIGNUP_URL
 } from "@/shared/constants/apiPath";
-import {AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest} from "../models/auth";
+import {AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest} from "@auth/data/models/auth";
 import {AuthResponseSchema, RefreshTokenResponseSchema} from "@features/auth/data/models/authZod";
 import {getRefreshToken} from "@/shared/utils/authStoreUtils";
 

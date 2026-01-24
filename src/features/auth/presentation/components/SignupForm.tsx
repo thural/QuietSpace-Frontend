@@ -3,7 +3,7 @@ import InputBoxStyled from "@/shared/InputBoxStyled";
 import TextInputStyled from "@/shared/TextInputStyled";
 import { useSignupForm } from "@features/auth/application/hooks/useSignupForm";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import styles from "../styles/authStyles";
+import styles from "@auth/presentation/styles/authStyles";
 import BoxStyled from "@/shared/BoxStyled";
 import GradientButton from "@/shared/buttons/GradientButton";
 import OutlineButton from "@/shared/buttons/OutlineButton";

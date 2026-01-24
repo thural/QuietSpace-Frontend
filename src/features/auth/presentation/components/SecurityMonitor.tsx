@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSecurityMonitor } from '../../application/hooks/useSecurityMonitor';
+import { useSecurityMonitor } from '@auth/application/hooks/useSecurityMonitor';
 
 export const SecurityMonitor: React.FC = () => {
   const { securityData, loading, error, unblockIP } = useSecurityMonitor();

@@ -30,11 +30,11 @@ export class EnterpriseAuthAdapter {
         // Convert enterprise auth session to AuthResponse format
         const session = result.data;
         return {
+            id: session.user.id,
             accessToken: session.token.accessToken,
             refreshToken: session.token.refreshToken,
             userId: session.user.id,
-            email: session.user.email,
-            expiresIn: Math.floor((session.token.expiresAt.getTime() - Date.now()) / 1000)
+            message: 'Authentication successful'
         };
     }
 
