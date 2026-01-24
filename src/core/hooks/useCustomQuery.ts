@@ -112,19 +112,19 @@ export function useCustomQuery<T>(
       }));
 
       // Check cache first
-      const cachedData = cache.get(cacheKey);
-      if (cachedData && !isRefetch) {
-        const cacheAge = Date.now() - cachedData.timestamp;
+      const cachedEntry = cache.getEntry(cacheKey);
+      if (cachedEntry && !isRefetch) {
+        const cacheAge = Date.now() - cachedEntry.timestamp;
         if (cacheAge < staleTime) {
-          const data = select ? select(cachedData.data) : cachedData.data;
+          const data = select ? select(cachedEntry.data) : cachedEntry.data as T;
           setState(prev => ({
             ...prev,
-            data,
+            data: data as T,
             isLoading: false,
             isFetching: false,
             isSuccess: true,
             isStale: false,
-            lastUpdated: cachedData.timestamp
+            lastUpdated: cachedEntry.timestamp
           }));
           onSuccess?.(data);
           return data;
@@ -135,9 +135,7 @@ export function useCustomQuery<T>(
       const data = await fetcher();
       
       // Cache the result
-      cache.set(cacheKey, data, {
-        ttl: cacheTime
-      });
+      cache.set(cacheKey, data, cacheTime);
 
       const finalData = select ? select(data) : data;
       
@@ -250,13 +248,13 @@ export function useCustomQuery<T>(
   }, [state.lastUpdated, staleTime]);
 
   // Refetch function
-  const refetch = useCallback(async () => {
-    return executeQuery(true);
+  const refetch = useCallback(async (): Promise<void> => {
+    await executeQuery(true);
   }, [executeQuery]);
 
   // Invalidate cache and refetch
   const invalidate = useCallback(() => {
-    cache.delete(cacheKey);
+    cache.invalidate(cacheKey);
     return executeQuery(true);
   }, [cache, cacheKey, executeQuery]);
 
@@ -266,7 +264,7 @@ export function useCustomQuery<T>(
       ? (newData as Function)(state.data) 
       : newData;
     
-    cache.set(cacheKey, data, { ttl: cacheTime });
+    cache.set(cacheKey, data, cacheTime);
     
     setState(prev => ({
       ...prev,

@@ -27,7 +27,21 @@ export const CACHE_TIME_MAPPINGS = {
   
   // User data - 10 minutes stale, 30 minutes cache
   USER_STALE_TIME: 10 * 60 * 1000,
-  USER_CACHE_TIME: 30 * 60 * 1000
+  USER_CACHE_TIME: 30 * 60 * 1000,
+  
+  // Chat data - 1 minute stale, 5 minutes cache
+  CHAT_STALE_TIME: 1 * 60 * 1000,
+  CHAT_CACHE_TIME: 5 * 60 * 1000,
+  CHAT_REFETCH_INTERVAL: 30 * 1000, // 30 seconds for chat list updates
+  MESSAGES_REFETCH_INTERVAL: 10 * 1000, // 10 seconds for message updates
+  
+  // Real-time data - 30 seconds stale, 2 minutes cache (for real-time features)
+  REALTIME_STALE_TIME: 30 * 1000,
+  REALTIME_CACHE_TIME: 2 * 60 * 1000,
+  
+  // Search data - 30 seconds stale, 2 minutes cache
+  SEARCH_STALE_TIME: 30 * 1000,
+  SEARCH_CACHE_TIME: 2 * 60 * 1000
 } as const;
 
 /**
@@ -104,6 +118,35 @@ export class CacheInvalidationHelper {
       `posts:${userId}:*`,
       `user:${userId}:*`,
       `profile:${userId}:*`
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  /**
+   * Invalidate chat-specific cache entries
+   */
+  invalidateChatData(chatId: string): void {
+    const patterns = [
+      `chat:${chatId}:*`,
+      `chat:message:*${chatId}*`,
+      `chat:*:${chatId}:*`
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  /**
+   * Invalidate user-specific chat cache entries
+   */
+  invalidateUserChatData(userId: string): void {
+    const patterns = [
+      `chat:user:${userId}:*`,
+      `chat:*:user:${userId}:*`
     ];
 
     patterns.forEach(pattern => {

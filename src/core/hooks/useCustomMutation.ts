@@ -28,15 +28,15 @@ export interface MutationState<TData = any, TError = Error> {
   isSuccess: boolean;
   error: TError | null;
   isIdle: boolean;
-  reset: () => void;
 }
 
 /**
  * Custom mutation hook result interface
  */
 export interface CustomMutationResult<TData = any, TError = Error, TVariables = any> extends MutationState<TData, TError> {
-  mutate: (variables: TVariables) => Promise<TData>;
+  mutate: (variables: TVariables) => void;
   mutateAsync: (variables: TVariables) => Promise<TData>;
+  reset: () => void;
 }
 
 /**
@@ -70,15 +70,7 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
     isError: false,
     isSuccess: false,
     error: null,
-    isIdle: true,
-    reset: () => setState({
-      data: undefined,
-      isLoading: false,
-      isError: false,
-      isSuccess: false,
-      error: null,
-      isIdle: true
-    })
+    isIdle: true
   });
 
   const retryCountRef = useRef(0);
@@ -115,7 +107,10 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
 
       // Optimistic update if provided
       if (optimisticUpdate) {
-        rollbackRef.current = optimisticUpdate(cache, variables);
+        const rollback = optimisticUpdate(cache, variables);
+        if (rollback) {
+          rollbackRef.current = rollback;
+        }
       }
 
       // Execute the mutation
@@ -128,7 +123,7 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
 
       // Invalidate specified queries
       invalidateQueries.forEach(queryKey => {
-        cache.delete(queryKey);
+        cache.invalidate(queryKey);
       });
 
       setState(prev => ({

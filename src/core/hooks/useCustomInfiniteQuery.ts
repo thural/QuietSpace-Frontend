@@ -144,12 +144,12 @@ export function useCustomInfiniteQuery<T>(
 
       // Check cache first
       const pageCacheKey = `${cacheKey}:page:${pageParam}`;
-      const cachedPage = cache.get(pageCacheKey);
+      const cachedEntry = cache.getEntry(pageCacheKey);
       
-      if (cachedPage && !isRefetch) {
-        const cacheAge = Date.now() - cachedPage.timestamp;
+      if (cachedEntry && !isRefetch) {
+        const cacheAge = Date.now() - cachedEntry.timestamp;
         if (cacheAge < staleTime) {
-          const pageData = cachedPage.data;
+          const pageData: InfiniteQueryPage<T> = cachedEntry.data as InfiniteQueryPage<T>;
           
           setState(prev => {
             let newPages: InfiniteQueryPage<T>[];
@@ -182,7 +182,7 @@ export function useCustomInfiniteQuery<T>(
               isStale: false,
               hasNextPage: hasNext,
               hasPreviousPage: hasPrevious,
-              lastUpdated: cachedPage.timestamp
+              lastUpdated: cachedEntry.timestamp
             };
           });
 
@@ -204,7 +204,7 @@ export function useCustomInfiniteQuery<T>(
       };
 
       // Cache the page
-      cache.set(pageCacheKey, pageData, { ttl: cacheTime });
+      cache.set(pageCacheKey, pageData, cacheTime);
 
       setState(prev => {
         let newPages: InfiniteQueryPage<T>[];
@@ -383,7 +383,7 @@ export function useCustomInfiniteQuery<T>(
   const invalidate = useCallback(() => {
     // Clear all page caches
     for (let i = 0; i < state.pages.length; i++) {
-      cache.delete(`${cacheKey}:page:${state.pages[i].pageParam}`);
+      cache.invalidate(`${cacheKey}:page:${state.pages[i].pageParam}`);
     }
     return executeQuery(initialPageParam, true);
   }, [cache, cacheKey, state.pages, initialPageParam, executeQuery]);
@@ -416,7 +416,7 @@ export function useCustomInfiniteQuery<T>(
         isFetchingPreviousPage: false
       };
       
-      cache.set(`${cacheKey}:page:${initialPageParam}`, newPage, { ttl: cacheTime });
+      cache.set(`${cacheKey}:page:${initialPageParam}`, newPage, cacheTime);
       
       setState(prev => ({
         ...prev,
