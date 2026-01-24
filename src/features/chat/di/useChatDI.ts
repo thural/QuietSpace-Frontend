@@ -18,7 +18,6 @@ export interface UseChatDIConfig {
     overrideConfig?: {
         useMockRepositories?: boolean;
         enableLogging?: boolean;
-        useReactQuery?: boolean;
     };
 }
 
@@ -54,4 +53,12 @@ export const useChatRepository = () => {
 export const useChatService = () => {
     const diContainer = useChatDI();
     return diContainer.getChatService();
+};
+
+/**
+ * Hook to get WebSocket service from DI container.
+ */
+export const useWebSocketService = () => {
+    const diContainer = useChatDI();
+    return diContainer.getWebSocketService();
 };

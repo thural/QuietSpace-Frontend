@@ -136,4 +136,13 @@ export interface IChatRepository {
      * @returns Promise resolving to unread count
      */
     getUnreadCount(userId: string, token: JwtToken): Promise<number>;
+
+    /**
+     * Delete a message.
+     * 
+     * @param messageId - The message ID
+     * @param token - Authentication token
+     * @returns Promise resolving to delete response
+     */
+    deleteMessage(messageId: string, token: JwtToken): Promise<Response>;
 }

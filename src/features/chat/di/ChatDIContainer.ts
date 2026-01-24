@@ -8,7 +8,14 @@
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import { ChatRepository } from "@chat/data/repositories/ChatRepository";
 import { MockChatRepository } from "@chat/data/repositories/MockChatRepository";
-import { useAuthStore } from "@services/store/zustand";
+import { WebSocketService } from "@chat/data/services/WebSocketService";
+import { ChatDataService } from "@chat/data/services/ChatDataService";
+import { ChatFeatureService } from "@chat/application/services/ChatFeatureService";
+import { ChatMetricsService } from "@chat/application/services/ChatMetricsService";
+import { ChatPresenceService } from "@chat/application/services/ChatPresenceService";
+import { ChatAnalyticsService } from "@chat/application/services/ChatAnalyticsService";
+import { CacheProvider } from '@/core/cache';
+import { useAuthStore } from "@core/store/zustand";
 
 /**
  * DI Container configuration options.
@@ -16,7 +23,6 @@ import { useAuthStore } from "@services/store/zustand";
 export interface DIContainerConfig {
     useMockRepositories?: boolean;
     enableLogging?: boolean;
-    useReactQuery?: boolean; // New option to enable/disable React Query
 }
 
 /**
@@ -27,15 +33,19 @@ export interface DIContainerConfig {
 export class ChatDIContainer {
     private repositories: Map<string, IChatRepository> = new Map();
     private services: Map<string, any> = new Map();
+    private webSocketService: WebSocketService | null = null;
+    private cache: CacheProvider;
     private config: DIContainerConfig;
 
     constructor(config: DIContainerConfig = {}) {
         this.config = {
             useMockRepositories: false,
             enableLogging: true,
-            useReactQuery: false,
             ...config
         };
+        
+        // Initialize cache first
+        this.cache = new CacheProvider();
         
         this.initializeDependencies();
     }
@@ -50,8 +60,7 @@ export class ChatDIContainer {
         if (this.config.enableLogging) {
             console.log('ChatDIContainer: Dependencies initialized', {
                 useMockRepositories: this.config.useMockRepositories,
-                enableLogging: this.config.enableLogging,
-                useReactQuery: this.config.useReactQuery
+                enableLogging: this.config.enableLogging
             });
         }
     }
@@ -81,15 +90,43 @@ export class ChatDIContainer {
      * Register services.
      */
     private registerServices(): void {
-        // Chat services can be registered here
-        // For now, we'll register the repository as a service
-        const chatRepository = this.repositories.get('chat');
+        // Register WebSocket service
+        this.webSocketService = new WebSocketService(this.cache);
+        this.services.set('webSocketService', this.webSocketService);
         
+        // Register Chat data service
+        const chatRepository = this.repositories.get('chat');
         if (chatRepository) {
+            const chatDataService = new ChatDataService(this.cache, chatRepository, this.webSocketService);
+            this.services.set('chatDataService', chatDataService);
+            
+            // Register Chat feature service
+            const chatFeatureService = new ChatFeatureService(chatDataService);
+            this.services.set('chatFeatureService', chatFeatureService);
+            
+            // Register Chat metrics service
+            const chatMetricsService = new ChatMetricsService(this.cache);
+            this.services.set('chatMetricsService', chatMetricsService);
+            
+            // Register Chat presence service
+            const chatPresenceService = new ChatPresenceService(this.webSocketService, this.cache, chatMetricsService);
+            this.services.set('chatPresenceService', chatPresenceService);
+            
+            // Register Chat analytics service
+            const chatAnalyticsService = new ChatAnalyticsService(this.cache, chatMetricsService);
+            this.services.set('chatAnalyticsService', chatAnalyticsService);
+            
+            // Legacy service registration
             this.services.set('chatService', chatRepository);
             
             if (this.config.enableLogging) {
                 console.log('ChatDIContainer: Registered ChatService');
+                console.log('ChatDIContainer: Registered ChatDataService');
+                console.log('ChatDIContainer: Registered ChatFeatureService');
+                console.log('ChatDIContainer: Registered ChatMetricsService');
+                console.log('ChatDIContainer: Registered ChatPresenceService');
+                console.log('ChatDIContainer: Registered ChatAnalyticsService');
+                console.log('ChatDIContainer: Registered WebSocketService');
             }
         }
     }
@@ -128,6 +165,34 @@ export class ChatDIContainer {
      */
     getChatService(): any {
         return this.getService<any>('chatService');
+    }
+
+    /**
+     * Get WebSocket service.
+     */
+    getWebSocketService(): WebSocketService {
+        return this.getService<WebSocketService>('webSocketService');
+    }
+
+    /**
+     * Get Chat analytics service.
+     */
+    getChatAnalyticsService(): ChatAnalyticsService {
+        return this.getService<ChatAnalyticsService>('chatAnalyticsService');
+    }
+
+    /**
+     * Get Chat presence service.
+     */
+    getChatPresenceService(): ChatPresenceService {
+        return this.getService<ChatPresenceService>('chatPresenceService');
+    }
+
+    /**
+     * Get Chat metrics service.
+     */
+    getChatMetricsService(): ChatMetricsService {
+        return this.getService<ChatMetricsService>('chatMetricsService');
     }
 
     /**

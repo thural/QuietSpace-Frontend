@@ -11,8 +11,7 @@ import type { DIContainerConfig } from './ChatDIContainer';
  */
 export const developmentConfig: DIContainerConfig = {
     useMockRepositories: true,
-    enableLogging: true,
-    useReactQuery: false // Disabled by default in development
+    enableLogging: true
 };
 
 /**
@@ -20,8 +19,7 @@ export const developmentConfig: DIContainerConfig = {
  */
 export const productionConfig: DIContainerConfig = {
     useMockRepositories: false,
-    enableLogging: true, // Enable logging in production for debugging
-    useReactQuery: true
+    enableLogging: true // Enable logging in production for debugging
 };
 
 /**
@@ -29,8 +27,7 @@ export const productionConfig: DIContainerConfig = {
  */
 export const testConfig: DIContainerConfig = {
     useMockRepositories: true,
-    enableLogging: false,
-    useReactQuery: false
+    enableLogging: false
 };
 
 /**

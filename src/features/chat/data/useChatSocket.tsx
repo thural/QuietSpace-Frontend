@@ -1,9 +1,9 @@
 import chatHandler from "@features/chat/application/hooks/chatHandler";
 import useUserQueries from "@/features/profile/data/userQueries";
 import { ChatEvent, MessageRequest, MessageResponse } from "./models/chat";
-import { ResId } from "../../../shared/api/models/common";
-import { StompMessage } from "../../../shared/api/models/websocket";
-import { SocketEventType } from "../../../shared/api/models/websocketNative";
+import { ResId } from "@/shared/api/models/common";
+import { StompMessage } from "@/shared/api/models/websocket";
+import { SocketEventType } from "@/shared/api/models/websocketNative";
 import { ChatEventSchema, MessageResponseSchema } from "./models/chatZod";
 import { useChatStore, useStompStore } from "@/core/store/zustand";
 import { useEffect } from "react";
@@ -16,21 +16,21 @@ import { fromZodError } from 'zod-validation-error';
  * This hook sets up the WebSocket connection for chat functionality, 
  * handles incoming messages and events, and provides methods to send 
  * and manipulate chat messages.
- *
- * @returns {{
- *     sendChatMessage: (inputData: MessageRequest) => void, // Function to send a chat message.
- *     deleteChatMessage: (messageId: ResId) => void,        // Function to delete a chat message.
- *     setMessageSeen: (messageId: ResId) => void,           // Function to mark a message as seen.
- *     isClientConnected: boolean                               // Indicates if the WebSocket client is connected.
- * }} - An object containing chat methods and connection status.
  */
-const useChatSocket = () => {
+type UseChatSocketReturn = {
+    sendChatMessage: (inputData: MessageRequest) => void; // Function to send a chat message.
+    deleteChatMessage: (messageId: ResId) => void;        // Function to delete a chat message.
+    setMessageSeen: (messageId: ResId) => void;           // Function to mark a message as seen.
+    isClientConnected: boolean;                               // Indicates if the WebSocket client is connected.
+};
+
+const useChatSocket = (): UseChatSocketReturn => {
     const { getSignedUser } = useUserQueries();
     const user = getSignedUser();
     const { setClientMethods } = useChatStore();
 
     const {
-        hadnleRecievedMessage,
+        handleReceivedMessage,
         handleChatException,
         handleLeftChat,
         handleOnlineUser,
@@ -55,7 +55,7 @@ const useChatSocket = () => {
         const messageBody: MessageResponse | ChatEvent = JSON.parse(message.body);
 
         if (MessageResponseSchema.safeParse(messageBody).success) {
-            return hadnleRecievedMessage(messageBody as MessageResponse);
+            return handleReceivedMessage(messageBody as MessageResponse);
         }
 
         try {
