@@ -1,6 +1,6 @@
 import useJwtAuth from "@/services/hook/auth/useJwtAuth";
 import { useAuthStore } from "@/core/store/zustand";
-import { useQueryClient } from "@tanstack/react-query";
+import { useCacheInvalidation } from "@/core/hooks/migrationUtils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
  */
 export const useSignout = () => {
     const { resetAuthData, setIsAuthenticated } = useAuthStore();
-    const queryClient = useQueryClient();
+    const invalidateCache = useCacheInvalidation();
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,8 @@ export const useSignout = () => {
      * updates the authentication state, and navigates to the login page.
      */
     const onSuccessFn = () => {
-        queryClient.clear();
+        // Clear all enterprise caches
+        invalidateCache.invalidateAll();
         setIsLoading(false);
         resetAuthData();
         setIsAuthenticated(false);

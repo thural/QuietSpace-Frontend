@@ -1,11 +1,8 @@
 import { MantineProvider } from "@mantine/core";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from 'react-dom/client';
 import RouteSwitch from "./app/RouteSwitch";
 import { getLocalThemeMode } from "@shared/utils/localStorageUtils";
 
-
-const queryClient = new QueryClient({});
 
 //TODO: remove after kubernetes service tests
 
@@ -35,11 +32,8 @@ const colorScheme = isDarkMode ? "dark" : "light";
 
 createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-        <MantineProvider forceColorScheme={colorScheme}>
-            <RouteSwitch />
-            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-        </MantineProvider>
-    </QueryClientProvider>
+    <MantineProvider forceColorScheme={colorScheme}>
+        <RouteSwitch />
+    </MantineProvider>
     // </React.StrictMode>
 )

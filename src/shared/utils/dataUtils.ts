@@ -1,7 +1,7 @@
 import { Page } from "@/shared/api/models/common";
 import { BaseSchema, ResId } from "@/shared/api/models/commonNative";
 import { AnyPredicate } from "@/shared/types/genericTypes";
-import { InfiniteData } from "@tanstack/react-query";
+import { InfiniteData } from "@/core/types/InfiniteQueryTypes";
 
 export interface HasId { id?: ResId }
 
