@@ -4,15 +4,23 @@
  * Exports all hooks from the application layer.
  */
 
-// Main search hooks
+// Main search hooks (legacy - for backward compatibility)
 export { default as useSearch } from './useSearch';
 export { default as useUserSearch } from './useUserSearch';
 export { default as usePostSearch } from './usePostSearch';
 
-// Enterprise Hooks
+// Enterprise Hooks (new - recommended for use)
+export { useEnterpriseSearch } from './useEnterpriseSearch';
+export { useEnterpriseUserSearch } from './useEnterpriseUserSearch';
+export { useEnterprisePostSearch } from './useEnterprisePostSearch';
+
+// Migration Hook (for gradual transition)
+export { useSearchMigration, SearchMigrationUtils } from './useSearchMigration';
+
+// Enterprise Services Hook
 export { useSearchServices } from './useSearchServices';
 
-// React Query hooks
+// React Query hooks (legacy)
 export { useReactQuerySearch } from './useReactQuerySearch';
 
 // Dependency Injection hooks
