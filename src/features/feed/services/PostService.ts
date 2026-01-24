@@ -1,7 +1,7 @@
 import {PostRepository} from '@feed/data/repositories/PostRepository';
-import {CommentRepository} from '../data/repositories/CommentRepository';
-import {PostPage, PostRequest, PostResponse, RepostRequest} from '../data/models/post';
-import {ReactionRequest} from '../data/models/reaction';
+import {CommentRepository} from '@feed/data/repositories/CommentRepository';
+import {PostPage, PostRequest, PostResponse, RepostRequest} from '@feed/data/models/post';
+import {ReactionRequest} from '@feed/data/models/reaction';
 import {ResId} from '@/shared/api/models/common';
 import {Inject, Injectable} from '@/core/di';
 import {TYPES} from '@/core/di/types';

@@ -246,7 +246,7 @@ export class NotificationDataService {
 ### **3. Analytics Feature Migration Plan**
 
 #### **🔍 Current State Analysis**
-```bash
+```
 src/features/analytics/
 ├── application/services/
 │   └── AnalyticsServiceDI.ts

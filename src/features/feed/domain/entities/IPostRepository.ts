@@ -14,7 +14,7 @@ import type {
     VoteBody,
     ContentPrivacy
 } from '@/features/feed/data/models/post';
-import {ReactionRequest} from "@feed/data/models/reaction.ts";
+import {ReactionRequest} from '@feed/data/models/reaction';
 
 /**
  * Query parameters for post filtering and pagination

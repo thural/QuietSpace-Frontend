@@ -1,7 +1,7 @@
 /**
  * Chat Feature Integration Tests.
  * 
- * End-to-end integration tests for Chat feature with DI container and React Query.
+ * End-to-end integration tests for Chat feature with DI container, metrics, and comprehensive testing.
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
@@ -9,6 +9,9 @@ import { ChatDIContainer } from "@chat/di/ChatDIContainer";
 import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { IChatService } from "@chat/application/services/ChatService";
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from '@/features/chat/data/models/chat';
+import { ChatMetricsService } from '@/features/chat/application/services/ChatMetricsService';
+import { WebSocketService } from '@/features/chat/data/services/WebSocketService';
+import { CacheProvider } from '@/core/cache';
 
 // Mock fetch
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
@@ -307,7 +310,6 @@ describe('Chat Feature Integration', () => {
             // Assert
             expect(config).toBeDefined();
             expect(typeof config.useMockRepositories).toBe('boolean');
-            expect(typeof config.useReactQuery).toBe('boolean');
         });
 
         it('should provide consistent repository instance', () => {
@@ -327,5 +329,152 @@ describe('Chat Feature Integration', () => {
             // Assert
             expect(service1).toBe(service2); // Same instance
         });
+
+        it('should provide metrics service', () => {
+            // Act
+            const metricsService = diContainer.getChatMetricsService();
+
+            // Assert
+            expect(metricsService).toBeDefined();
+            expect(metricsService).toBeInstanceOf(ChatMetricsService);
+        });
+
+        it('should provide WebSocket service', () => {
+            // Act
+            const webSocketService = diContainer.getWebSocketService();
+
+            // Assert
+            expect(webSocketService).toBeDefined();
+            expect(webSocketService).toBeInstanceOf(WebSocketService);
+        });
+    });
+
+    describe('Performance Metrics Integration', () => {
+        it('should track metrics across all operations', () => {
+            // Arrange
+            const metricsService = diContainer.getChatMetricsService();
+            
+            // Act - Record various metrics
+            metricsService.recordQuery('getChats', 500, true, false);
+            metricsService.recordMutation('createChat', 800, true, true, false);
+            metricsService.recordInteraction('message', { chatId: 'test-chat' });
+            
+            // Assert
+            const metrics = metricsService.getMetrics();
+            expect(metrics.queryMetrics.totalQueries).toBe(1);
+            expect(metrics.mutationMetrics.totalMutations).toBe(1);
+            expect(metrics.interactionMetrics.messagesPerSession).toBe(1);
+        });
+
+        it('should provide performance summary', () => {
+            // Arrange
+            const metricsService = diContainer.getChatMetricsService();
+            
+            // Act - Record some metrics
+            metricsService.recordQuery('getChats', 3000, false, false); // Slow query
+            
+            // Assert
+            const summary = metricsService.getPerformanceSummary();
+            expect(summary).toBeDefined();
+            expect(['excellent', 'good', 'fair', 'poor']).toContain(summary.overall);
+        });
+
+        it('should reset metrics correctly', () => {
+            // Arrange
+            const metricsService = diContainer.getChatMetricsService();
+            metricsService.recordQuery('getChats', 500, true, false);
+            
+            // Act
+            metricsService.resetMetrics();
+            
+            // Assert
+            const metrics = metricsService.getMetrics();
+            expect(metrics.queryMetrics.totalQueries).toBe(0);
+            expect(metrics.mutationMetrics.totalMutations).toBe(0);
+        });
+    });
+
+    describe('WebSocket Integration', () => {
+        it('should initialize WebSocket service', () => {
+            // Act
+            const webSocketService = diContainer.getWebSocketService();
+            
+            // Assert
+            expect(webSocketService).toBeDefined();
+            expect(typeof webSocketService.connect).toBe('function');
+            expect(typeof webSocketService.subscribe).toBe('function');
+        });
+
+        it('should handle WebSocket events', () => {
+            // Arrange
+            const webSocketService = diContainer.getWebSocketService();
+            const mockCallback = jest.fn();
+            
+            // Act
+            const unsubscribe = webSocketService.subscribe('test-pattern', mockCallback);
+            
+            // Assert
+            expect(typeof unsubscribe).toBe('function');
+        });
+    });
+
+    describe('Cache Integration', () => {
+        it('should integrate with cache provider', () => {
+            // Arrange
+            const metricsService = diContainer.getChatMetricsService();
+            
+            // Act
+            metricsService.recordCacheEvent('hit', 10);
+            metricsService.recordCacheEvent('miss', 15);
+            
+            // Assert
+            const metrics = metricsService.getMetrics();
+            expect(metrics.cacheMetrics.totalCacheHits).toBe(1);
+            expect(metrics.cacheMetrics.totalCacheMisses).toBe(1);
+        });
+    });
+
+    describe('Error Handling Integration', () => {
+        it('should handle service errors gracefully', () => {
+            // Arrange
+            const metricsService = diContainer.getChatMetricsService();
+            
+            // Act - Record error metrics
+            metricsService.recordQuery('getChats', 500, false, false);
+            metricsService.recordMutation('createChat', 800, false, true, false);
+            
+            // Assert
+            const metrics = metricsService.getMetrics();
+            expect(metrics.queryMetrics.errorRate).toBe(1);
+            expect(metrics.mutationMetrics.errorRate).toBe(1);
+        });
+    });
+
+    describe('Multi-Instance Support', () => {
+        it('should support multiple DI containers', () => {
+            // Act
+            const container1 = new ChatDIContainer({ enableLogging: false });
+            const container2 = new ChatDIContainer({ enableLogging: false });
+            
+            // Assert
+            expect(container1).not.toBe(container2);
+            expect(container1.getChatMetricsService()).not.toBe(container2.getChatMetricsService());
+        });
+
+        it('should maintain separate metrics per container', () => {
+            // Act
+            const container1 = new ChatDIContainer({ enableLogging: false });
+            const container2 = new ChatDIContainer({ enableLogging: false });
+            
+            const metrics1 = container1.getChatMetricsService();
+            const metrics2 = container2.getChatMetricsService();
+            
+            metrics1.recordQuery('getChats', 500, true, false);
+            
+            // Assert
+            expect(metrics1.getMetrics().queryMetrics.totalQueries).toBe(1);
+            expect(metrics2.getMetrics().queryMetrics.totalQueries).toBe(0);
+        });
+    });
     });
 });

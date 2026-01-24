@@ -59,8 +59,7 @@ const chatQueries = () => {
         queryClient.setQueryData(["chats", chatId, 'messages'], (data: InfiniteData<PagedMessage>) => {
             const lastPageNumber = data.pages[0]?.number;
             const predicate = (page: Page<MessageResponse>) => page.number === lastPageNumber;
-            if (data !== undefined) return pushToPageContent(data, messageBody, predicate);
-            else return getInitInfinitePagesObject(DEFAULT_PAGE_SIZE, [messageBody]);
+            return data ? pushToPageContent(data, messageBody, predicate) : getInitInfinitePagesObject(DEFAULT_PAGE_SIZE, [messageBody]);
         });
     }
 

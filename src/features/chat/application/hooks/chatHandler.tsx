@@ -29,7 +29,7 @@ const chatHandler = () => {
         // TODO: mutate chat cache
     }
 
-    const hadnleRecievedMessage = (messageBody: MessageResponse) => {
+    const handleReceivedMessage = (messageBody: MessageResponse) => {
         insertMessageCache(messageBody);
         updateChatCache(messageBody);
     }
@@ -41,7 +41,7 @@ const chatHandler = () => {
         handleDeleteMessage,
         handleSeenMessage,
         handleLeftChat,
-        hadnleRecievedMessage
+        handleReceivedMessage
     }
 }
 
