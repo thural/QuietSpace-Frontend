@@ -5,9 +5,19 @@
  */
 
 // Application services
-export { ChatService, type IChatService } from './services/ChatService';
+export { ChatFeatureService } from './services/ChatFeatureService';
+export { ChatAnalyticsService } from './services/ChatAnalyticsService';
+export { ChatMetricsService } from './services/ChatMetricsService';
+export { ChatPresenceService } from './services/ChatPresenceService';
 
 // Application hooks
 export { useChatDI, useChatRepository, useChatService, type UseChatDIConfig } from '../di/useChatDI';
-export { useReactQueryChat, type ReactQueryChatState, type ReactQueryChatActions } from './hooks/useReactQueryChatSimple';
+export { 
+    useUnifiedChat, 
+    useCustomChat,
+    type UnifiedChatState, 
+    type UnifiedChatActions,
+    type UseChatOptions 
+} from './hooks/useUnifiedChat';
 export { useChat, type ChatState, type ChatActions } from './hooks/useChat';
+export { useChatServices } from './hooks/useChatServices';
