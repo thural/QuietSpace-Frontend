@@ -6,6 +6,7 @@
  */
 
 import { useMemo } from 'react';
+import { useDIContainer } from '@core/di';
 import { ChatDIContainer } from "@chat/di/ChatDIContainer";
 import type { DIContainerConfig } from '@chat/di/ChatDIContainer';
 import { getChatConfig } from './ChatDIConfig';
@@ -27,14 +28,15 @@ export interface UseChatDIConfig {
  * Provides access to Chat DI container and its dependencies.
  */
 export const useChatDI = (config?: UseChatDIConfig) => {
+    const mainContainer = useDIContainer();
     const diContainer = useMemo(() => {
         const baseConfig = getChatConfig();
-        const finalConfig = config?.overrideConfig 
+        const finalConfig = config?.overrideConfig
             ? { ...baseConfig, ...config.overrideConfig }
             : baseConfig;
-            
-        return new ChatDIContainer(finalConfig);
-    }, [config?.overrideConfig]);
+
+        return new ChatDIContainer(mainContainer, finalConfig);
+    }, [mainContainer, config?.overrideConfig]);
 
     return diContainer;
 };

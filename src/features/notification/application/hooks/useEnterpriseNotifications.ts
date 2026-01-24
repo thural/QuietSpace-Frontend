@@ -8,17 +8,17 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useNotificationServices } from './useNotificationServices';
+import { useNotificationDI } from '../../di/useNotificationDI';
 import { useDebounce } from './useDebounce';
-import { useAuthStore } from '@services/store/zustand';
-import type { 
-  NotificationPage, 
-  NotificationResponse, 
+import type {
+  NotificationPage,
+  NotificationResponse,
   NotificationType,
   NotificationQuery,
-  NotificationFilters 
+  NotificationFilters
 } from '@/features/notification/data/models/notification';
 import type { ResId } from '@/shared/api/models/common';
-import type { 
+import type {
   NotificationSettings,
   NotificationPreferences,
   PushNotificationStatus,
@@ -98,8 +98,13 @@ interface EnterpriseNotificationActions {
  */
 export const useEnterpriseNotifications = (): EnterpriseNotificationState & EnterpriseNotificationActions => {
   const { notificationDataService, notificationFeatureService } = useNotificationServices();
-  const { user } = useAuthStore();
-  
+  const diContainer = useNotificationDI();
+  const authData = diContainer.container.getAuthData();
+  const user = {
+    id: authData.userId,
+    token: authData.accessToken
+  };
+
   // State management
   const [state, setState] = useState<EnterpriseNotificationState>({
     notifications: null,
@@ -137,11 +142,11 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       const notifications = await notificationDataService.getUserNotifications(
-        user.id, 
-        query, 
+        user.id,
+        query,
         user.token
       );
-      
+
       setState(prev => ({
         ...prev,
         notifications,
@@ -159,7 +164,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
   // Fetch notifications by type
   const fetchNotificationsByType = useCallback(async (
-    type: NotificationType, 
+    type: NotificationType,
     query: Partial<NotificationQuery> = {}
   ) => {
     if (!user?.id) return;
@@ -173,7 +178,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
         query,
         user.token
       );
-      
+
       setState(prev => ({
         ...prev,
         notifications,
@@ -195,7 +200,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       const count = await notificationDataService.getUnreadCount(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         unreadCount: count
@@ -217,7 +222,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationDataService.markAsRead(notificationId, user.id, user.token);
-      
+
       // Update local state
       setState(prev => ({
         ...prev,
@@ -245,7 +250,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationDataService.markMultipleAsRead(notificationIds, user.id, user.token);
-      
+
       // Update local state
       setState(prev => ({
         ...prev,
@@ -273,7 +278,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationDataService.markAllAsRead(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         unreadCount: 0,
@@ -299,7 +304,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationDataService.deleteNotification(notificationId, user.id, user.token);
-      
+
       // Update local state
       setState(prev => {
         const deletedNotification = prev.notifications?.content.find(n => n.id === notificationId);
@@ -309,8 +314,8 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
             ...prev.notifications,
             content: prev.notifications.content.filter(notification => notification.id !== notificationId)
           } : null,
-          unreadCount: deletedNotification && !deletedNotification.isRead 
-            ? Math.max(0, prev.unreadCount - 1) 
+          unreadCount: deletedNotification && !deletedNotification.isRead
+            ? Math.max(0, prev.unreadCount - 1)
             : prev.unreadCount
         };
       });
@@ -328,12 +333,12 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationDataService.deleteMultipleNotifications(notificationIds, user.id, user.token);
-      
+
       // Update local state
       setState(prev => {
         const deletedNotifications = prev.notifications?.content.filter(n => notificationIds.includes(n.id)) || [];
         const unreadDeletedCount = deletedNotifications.filter(n => !n.isRead).length;
-        
+
         return {
           ...prev,
           notifications: prev.notifications ? {
@@ -357,7 +362,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       const notification = await notificationDataService.getNotificationById(notificationId, user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         selectedNotification: notification
@@ -382,7 +387,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
         query,
         user.token
       );
-      
+
       setState(prev => ({
         ...prev,
         notifications,
@@ -403,7 +408,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationFeatureService.enableRealTimeNotifications(user.id);
-      
+
       setState(prev => ({
         ...prev,
         realTimeEnabled: true
@@ -422,7 +427,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationFeatureService.disableRealTimeNotifications(user.id);
-      
+
       setState(prev => ({
         ...prev,
         realTimeEnabled: false
@@ -441,7 +446,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       const status = await notificationFeatureService.subscribeToPushNotifications(user.id);
-      
+
       setState(prev => ({
         ...prev,
         pushNotificationStatus: status
@@ -460,7 +465,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationFeatureService.unsubscribeFromPushNotifications(user.id);
-      
+
       setState(prev => ({
         ...prev,
         pushNotificationStatus: 'disabled'
@@ -493,7 +498,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationFeatureService.updateNotificationPreferences(user.id, preferences);
-      
+
       setState(prev => ({
         ...prev,
         preferences: prev.preferences ? { ...prev.preferences, ...preferences } : preferences as NotificationPreferences
@@ -512,7 +517,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationFeatureService.setQuietHours(user.id, quietHours);
-      
+
       setState(prev => ({
         ...prev,
         quietHours
@@ -531,7 +536,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
     try {
       await notificationFeatureService.clearQuietHours(user.id);
-      
+
       setState(prev => ({
         ...prev,
         quietHours: null
@@ -563,7 +568,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
     try {
       await notificationFeatureService.syncNotifications(user.id);
       await refreshNotifications();
-      
+
       setState(prev => ({
         ...prev,
         syncInProgress: false,

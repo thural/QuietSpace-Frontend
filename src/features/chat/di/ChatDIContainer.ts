@@ -15,7 +15,8 @@ import { ChatMetricsService } from "@chat/application/services/ChatMetricsServic
 import { ChatPresenceService } from "@chat/application/services/ChatPresenceService";
 import { ChatAnalyticsService } from "@chat/application/services/ChatAnalyticsService";
 import { CacheProvider } from '@/core/cache';
-import { useAuthStore } from "@core/store/zustand";
+import { TYPES } from '@/core/di/types';
+import type { Container } from '@core/di/container';
 
 /**
  * DI Container configuration options.
@@ -36,17 +37,19 @@ export class ChatDIContainer {
     private webSocketService: WebSocketService | null = null;
     private cache: CacheProvider;
     private config: DIContainerConfig;
+    private mainContainer: Container;
 
-    constructor(config: DIContainerConfig = {}) {
+    constructor(mainContainer: Container, config: DIContainerConfig = {}) {
+        this.mainContainer = mainContainer;
         this.config = {
             useMockRepositories: false,
             enableLogging: true,
             ...config
         };
-        
+
         // Initialize cache first
         this.cache = new CacheProvider();
-        
+
         this.initializeDependencies();
     }
 
@@ -56,7 +59,7 @@ export class ChatDIContainer {
     private initializeDependencies(): void {
         this.registerRepositories();
         this.registerServices();
-        
+
         if (this.config.enableLogging) {
             console.log('ChatDIContainer: Dependencies initialized', {
                 useMockRepositories: this.config.useMockRepositories,
@@ -70,16 +73,16 @@ export class ChatDIContainer {
      */
     private registerRepositories(): void {
         const token = this.getAuthToken();
-        
+
         if (this.config.useMockRepositories) {
             this.repositories.set('chat', new MockChatRepository(token));
-            
+
             if (this.config.enableLogging) {
                 console.log('ChatDIContainer: Registered MockChatRepository');
             }
         } else {
             this.repositories.set('chat', new ChatRepository(token));
-            
+
             if (this.config.enableLogging) {
                 console.log('ChatDIContainer: Registered ChatRepository');
             }
@@ -93,32 +96,32 @@ export class ChatDIContainer {
         // Register WebSocket service
         this.webSocketService = new WebSocketService(this.cache);
         this.services.set('webSocketService', this.webSocketService);
-        
+
         // Register Chat data service
         const chatRepository = this.repositories.get('chat');
         if (chatRepository) {
             const chatDataService = new ChatDataService(this.cache, chatRepository, this.webSocketService);
             this.services.set('chatDataService', chatDataService);
-            
+
             // Register Chat feature service
             const chatFeatureService = new ChatFeatureService(chatDataService);
             this.services.set('chatFeatureService', chatFeatureService);
-            
+
             // Register Chat metrics service
             const chatMetricsService = new ChatMetricsService(this.cache);
             this.services.set('chatMetricsService', chatMetricsService);
-            
+
             // Register Chat presence service
             const chatPresenceService = new ChatPresenceService(this.webSocketService, this.cache, chatMetricsService);
             this.services.set('chatPresenceService', chatPresenceService);
-            
+
             // Register Chat analytics service
             const chatAnalyticsService = new ChatAnalyticsService(this.cache, chatMetricsService);
             this.services.set('chatAnalyticsService', chatAnalyticsService);
-            
+
             // Legacy service registration
             this.services.set('chatService', chatRepository);
-            
+
             if (this.config.enableLogging) {
                 console.log('ChatDIContainer: Registered ChatService');
                 console.log('ChatDIContainer: Registered ChatDataService');
@@ -207,7 +210,7 @@ export class ChatDIContainer {
      */
     updateConfig(newConfig: Partial<DIContainerConfig>): void {
         this.config = { ...this.config, ...newConfig };
-        
+
         if (this.config.enableLogging) {
             console.log('ChatDIContainer: Configuration updated', this.config);
         }
@@ -219,7 +222,7 @@ export class ChatDIContainer {
     clear(): void {
         this.repositories.clear();
         this.services.clear();
-        
+
         if (this.config.enableLogging) {
             console.log('ChatDIContainer: All dependencies cleared');
         }
@@ -230,26 +233,39 @@ export class ChatDIContainer {
      */
     reinitialize(newConfig?: Partial<DIContainerConfig>): void {
         this.clear();
-        
+
         if (newConfig) {
             this.config = { ...this.config, ...newConfig };
         }
-        
+
         this.initializeDependencies();
     }
 
     /**
-     * Get authentication token from store.
+     * Get authentication token from DI container.
      */
     private getAuthToken(): string | null {
         try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || null;
+            const authService = this.mainContainer.getByToken(TYPES.AUTH_SERVICE);
+            const session = authService.getCurrentSession?.();
+            return session?.token.accessToken || null;
         } catch (error) {
             if (this.config.enableLogging) {
                 console.error('ChatDIContainer: Error getting auth token', error);
             }
             return null;
         }
+    }
+
+    /**
+     * Get authentication data for hooks.
+     */
+    public getAuthData() {
+        const token = this.getAuthToken();
+        return {
+            accessToken: token,
+            isAuthenticated: !!token,
+            userId: token ? 'current-user' : null // TODO: Extract from token properly
+        };
     }
 }

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { LoginBody, SignupBody } from '@shared/types/auth.dto';
 import { useService } from '@core/di';
+import { TYPES } from '@core/di/types';
 import { EnterpriseAuthAdapter } from '@core/auth/adapters/EnterpriseAuthAdapter';
 import { useAuthStore } from '@core/store/zustand';
 
@@ -24,7 +25,8 @@ export const useEnterpriseAuthHook = () => {
         setIsAuthenticated
     } = useAuthStore();
 
-    const authAdapter = useService(EnterpriseAuthAdapter);
+    const container = useService(TYPES.AUTH_CONTAINER) as any;
+    const authAdapter = container.get(EnterpriseAuthAdapter);
 
     /**
      * Authenticates user with credentials using enterprise auth service

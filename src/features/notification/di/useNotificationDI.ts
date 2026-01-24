@@ -6,6 +6,7 @@
  */
 
 import { useMemo } from 'react';
+import { useDIContainer } from '@core/di';
 import { NotificationDIContainer } from "./NotificationDIContainer";
 import type { DIContainerConfig } from './NotificationDIContainer';
 import { getNotificationConfig } from './NotificationDIConfig';
@@ -29,6 +30,7 @@ export interface UseNotificationDIConfig {
  * Returns repositories and services based on current configuration.
  */
 export const useNotificationDI = (config?: UseNotificationDIConfig) => {
+    const mainContainer = useDIContainer();
     const diContainer = useMemo(() => {
         const baseConfig = getNotificationConfig();
         const finalConfig: DIContainerConfig = {
@@ -36,8 +38,8 @@ export const useNotificationDI = (config?: UseNotificationDIConfig) => {
             ...config?.overrideConfig,
         };
 
-        return new NotificationDIContainer(finalConfig);
-    }, [config]);
+        return new NotificationDIContainer(mainContainer, finalConfig);
+    }, [mainContainer, config]);
 
     // Get notification repository
     const notificationRepository = useMemo(() => {
@@ -52,13 +54,13 @@ export const useNotificationDI = (config?: UseNotificationDIConfig) => {
     return {
         // Dependencies
         notificationRepository,
-        
+
         // Configuration
         config: diConfig,
-        
+
         // Container (for advanced usage)
         container: diContainer,
-        
+
         // Utility methods
         isUsingMockRepositories: diContainer.isUsingMockRepositories(),
         isReactQueryEnabled: diContainer.isReactQueryEnabled(),

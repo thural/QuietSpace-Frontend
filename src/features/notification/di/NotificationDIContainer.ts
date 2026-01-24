@@ -8,7 +8,8 @@
 import type { INotificationRepository } from "../domain/entities/INotificationRepository";
 import { NotificationRepository } from "../data/repositories/NotificationRepository";
 import { MockNotificationRepository } from "../data/repositories/MockNotificationRepository";
-import { useAuthStore } from '@services/store/zustand';
+import { TYPES } from '@/core/di/types';
+import type { Container } from '@core/di/container';
 
 /**
  * DI Container configuration options.
@@ -28,15 +29,17 @@ export class NotificationDIContainer {
     private repositories: Map<string, INotificationRepository> = new Map();
     private services: Map<string, any> = new Map();
     private config: DIContainerConfig;
+    private mainContainer: Container;
 
-    constructor(config: DIContainerConfig = {}) {
+    constructor(mainContainer: Container, config: DIContainerConfig = {}) {
+        this.mainContainer = mainContainer;
         this.config = {
             useMockRepositories: false,
             enableLogging: true,
             // useReactQuery removed - migrated to enterprise hooks
             ...config
         };
-        
+
         this.initializeDependencies();
     }
 
@@ -46,7 +49,7 @@ export class NotificationDIContainer {
     private initializeDependencies(): void {
         this.registerRepositories();
         this.registerServices();
-        
+
         if (this.config.enableLogging) {
             console.log('NotificationDIContainer: Dependencies initialized with config:', this.config);
         }
@@ -57,7 +60,7 @@ export class NotificationDIContainer {
      */
     private registerRepositories(): void {
         const token = this.getAuthToken();
-        
+
         // Register notification repository
         if (this.config.useMockRepositories) {
             this.repositories.set('notification', new MockNotificationRepository(token));
@@ -114,16 +117,29 @@ export class NotificationDIContainer {
     }
 
     /**
-     * Get authentication token from store.
+     * Get authentication token from DI container.
      */
     private getAuthToken(): string {
         try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
+            const authService = this.mainContainer.getByToken(TYPES.AUTH_SERVICE);
+            const session = authService.getCurrentSession?.();
+            return session?.token.accessToken || '';
         } catch (error) {
             console.error('NotificationDIContainer: Error getting auth token', error);
             return '';
         }
+    }
+
+    /**
+     * Get authentication data for hooks.
+     */
+    public getAuthData() {
+        const token = this.getAuthToken();
+        return {
+            accessToken: token,
+            isAuthenticated: !!token,
+            userId: token ? 'current-user' : null // TODO: Extract from token properly
+        };
     }
 
     /**
