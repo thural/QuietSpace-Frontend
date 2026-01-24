@@ -11,5 +11,25 @@ export { MockNotificationRepository } from './repositories/MockNotificationRepos
 // DI-specific repository
 export { NotificationRepositoryDI } from './repositories/NotificationRepositoryDI';
 
+// Data services (Enterprise)
+export { NotificationDataService } from './services/NotificationDataService';
+
+// Cache exports (Enterprise)
+export { NOTIFICATION_CACHE_KEYS, NOTIFICATION_CACHE_TTL, NOTIFICATION_CACHE_INVALIDATION, NotificationCacheUtils } from './cache/NotificationCacheKeys';
+
+// Types and interfaces (Enterprise)
+export type { 
+  NotificationQuery,
+  NotificationFilters,
+  NotificationSettings,
+  NotificationPreferences,
+  PushNotificationStatus,
+  PushSubscription,
+  DeviceToken,
+  DeviceInfo,
+  QuietHours,
+  QuietHoursException
+} from '../domain/entities/INotificationRepository';
+
 // Public API - Cross-feature data hooks
 export * from './useNotificationData';
