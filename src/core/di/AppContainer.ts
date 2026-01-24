@@ -9,6 +9,7 @@ import {CacheProvider, CacheServiceManager} from '@core/cache';
 import {TYPES} from '@core/di/types';
 import {apiClient} from '../network/rest/apiClient';
 import { registerFeedContainer } from '@features/feed/di/container';
+import { registerChatContainer } from '@features/chat/di/container';
 import type {AxiosInstance} from 'axios';
 
 // Import repositories
@@ -77,8 +78,12 @@ export function createAppContainer(): Container {
   console.log('📱 Registering feed feature container...');
   const feedContainer = registerFeedContainer(container);
   
+  // Register chat feature services
+  registerChatContainer(container);
+  
   console.log('✅ Core services registered');
   console.log('✅ Feed feature container registered');
+  console.log('✅ Chat feature services registered');
   console.log(`📊 Container stats: ${JSON.stringify(container.getStats())}`);
   
   return container;

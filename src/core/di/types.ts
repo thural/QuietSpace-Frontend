@@ -27,6 +27,12 @@ export const TYPES = {
   FEED_FEATURE_SERVICE: 'FeedFeatureService',
   POST_FEATURE_SERVICE: 'PostFeatureService',
   
+  // Chat Feature Services
+  CHAT_DATA_SERVICE: 'ChatDataService',
+  CHAT_FEATURE_SERVICE: 'ChatFeatureService',
+  WEBSOCKET_SERVICE: 'WebSocketService',
+  ICHAT_REPOSITORY: 'IChatRepository',
+  
   // Configurations
   POST_DATA_SERVICE_CONFIG: 'PostDataServiceConfig',
   COMMENT_DATA_SERVICE_CONFIG: 'CommentDataServiceConfig',

@@ -86,6 +86,31 @@ export class CacheProvider {
     }
   }
 
+  getEntry<T>(key: string): CacheEntry<T> | null {
+    try {
+      const entry = this.cache.get(key);
+      
+      if (!entry) {
+        return null;
+      }
+
+      if (this.isExpired(entry)) {
+        this.cache.delete(key);
+        return null;
+      }
+
+      if (this.config.enableLRU) {
+        entry.accessCount++;
+        entry.lastAccessed = Date.now();
+      }
+
+      return entry;
+    } catch (error) {
+      this.events?.onError?.(error as Error, 'getEntry', key);
+      return null;
+    }
+  }
+
   set<T>(key: string, data: T, ttl?: number): void {
     try {
       if (this.cache.size >= this.config.maxSize) {
