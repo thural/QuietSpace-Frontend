@@ -6,23 +6,28 @@ import BoxStyled from "@shared/BoxStyled";
 import Typography from "@shared/Typography";
 import { useParams } from "react-router-dom";
 
-const ChatCard: React.FC<{ chat: ChatResponse }> = ({ chat }) => {
+const ChatCard: React.FC<{ 
+    chat: ChatResponse
+    isSelected?: boolean
+    onClick?: () => void 
+}> = ({ chat, isSelected = false, onClick }) => {
 
 
     const { chatId } = useParams();
+    const isCurrentlySelected = chatId == chat.id;
+    const isActuallySelected = isSelected || isCurrentlySelected;
 
     const {
         contactId,
         username,
         recentText,
-        handleClick,
+        handleClick: defaultHandleClick,
         appliedStyle,
     } = useChatCard(chat);
 
+    const handleClick = onClick || defaultHandleClick;
 
-    const isSelected = chatId == chat.id;
-
-    const classes = styles(isSelected);
+    const classes = styles(isActuallySelected);
 
     return (
         <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick}>

@@ -25,11 +25,32 @@ interface MessageinputProps {
 
 /**
  * MessageInput component for sending messages with emoji support.
+ * Now uses enhanced version with real-time typing indicators.
  *
  * @param {MessageinputProps} props - The props for the MessageInput component.
  * @returns {JSX.Element} - The rendered message input component.
  */
 const MessageInput: React.FC<MessageinputProps> = ({ value, onChange, onEnter, placeholder, enabled }) => {
+    const { chatId } = useParams();
+    
+    // If chatId is available, use enhanced version with typing indicators
+    if (chatId) {
+        const EnhancedMessageInput = require('./EnhancedMessageInput').default;
+        return (
+            <EnhancedMessageInput
+                value={value}
+                onChange={onChange}
+                onEnter={onEnter}
+                placeholder={placeholder}
+                enabled={enabled}
+                chatId={chatId}
+                onTypingStart={() => console.log('User started typing')}
+                onTypingStop={() => console.log('User stopped typing')}
+            />
+        );
+    }
+    
+    // Fallback to basic input if no chatId
     const classes = styles();
     const messageInput = useRef("");
 
