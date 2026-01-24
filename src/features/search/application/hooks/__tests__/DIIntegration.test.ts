@@ -5,7 +5,7 @@
  */
 
 import { renderHook, act } from '@testing-library/react';
-import { getSearchDIContainer, resetSearchDIContainer } from '../../../di/SearchDIContainer';
+import { getSearchDIContainer, resetSearchDIContainer } from '@search/di/SearchDIContainer';
 import { useSearchDI, useSearchService } from '../useSearchDI';
 
 describe('Search DI Integration', () => {

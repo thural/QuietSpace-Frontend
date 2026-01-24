@@ -5,7 +5,7 @@
  * Contains business rules for query validation.
  */
 
-import type { SearchQuery, SearchFilters } from '../entities';
+import type { SearchQuery, SearchFilters } from '@search/domain/entities';
 
 /**
  * QueryValidation interface.

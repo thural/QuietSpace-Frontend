@@ -6,7 +6,7 @@
  */
 
 import type { UserList } from "@/features/profile/data/models/user";
-import type { SearchFilters } from "../../domain/entities";
+import type { SearchFilters } from "@search/domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
 import { fetchUsersByQuery } from '@features/search/data/userRequests';
 import type { JwtToken } from "@/shared/api/models/common";

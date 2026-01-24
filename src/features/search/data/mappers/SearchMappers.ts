@@ -5,7 +5,7 @@
  * Maps between different data formats and structures.
  */
 
-import type { SearchQuery, SearchResult, SearchFilters } from "../../domain/entities";
+import type { SearchQuery, SearchResult, SearchFilters } from "@search/domain/entities";
 
 /**
  * SearchMappers class.

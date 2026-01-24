@@ -1,5 +1,5 @@
 import { createUseStyles } from "react-jss";
-import { Theme } from "../../../../shared/types/theme";
+import { Theme } from "@shared/types/theme";
 
 const styles = createUseStyles((theme: Theme) => ({
   auth: {

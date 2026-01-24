@@ -7,7 +7,7 @@
 
 import type { UserList } from "@/features/profile/data/models/user";
 import type { PostList } from "@/features/feed/data/models/post";
-import type { SearchQuery, SearchResult, SearchFilters } from "../../domain/entities";
+import type { SearchQuery, SearchResult, SearchFilters } from "@search/domain/entities";
 
 /**
  * ISearchRepository interface.

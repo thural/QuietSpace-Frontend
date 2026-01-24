@@ -10,7 +10,7 @@ import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { Box } from "@mantine/core";
 import { ChangeEventHandler, CSSProperties, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
-import styles from "../../styles/searchBarStyles";
+import styles from "@search/presentation/styles/searchBarStyles";
 
 /**
  * SearchBarProps interface.

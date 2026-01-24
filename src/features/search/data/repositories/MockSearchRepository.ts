@@ -7,7 +7,7 @@
 
 import type { UserList } from "@/features/profile/data/models/user";
 import type { PostList } from "@/features/feed/data/models/post";
-import type { SearchQuery, SearchResult, SearchFilters } from "../../domain/entities";
+import type { SearchQuery, SearchResult, SearchFilters } from "@search/domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
 import { ReactionType } from "@/api/rest/models/native/reaction";
 import { ContentType } from "@/api/rest/models/native/common";

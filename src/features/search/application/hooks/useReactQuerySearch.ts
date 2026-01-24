@@ -9,9 +9,10 @@ import { useState, useEffect, useCallback } from 'react';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { UserList } from '@/features/profile/data/models/user';
 import type { PostList } from '@/features/feed/data/models/post';
-import type { SearchFilters } from '../../domain/entities';
-import { ReactQuerySearchService } from '../services/ReactQuerySearchService';
+import type { SearchFilters } from '@search/domain/entities';
+import { ReactQuerySearchService } from '@search/application/services/ReactQuerySearchService';
 import { useSearchDI } from './useSearchDI';
+import { useAuthStore } from '@/core/store/zustand';
 import type { JwtToken } from '@/shared/api/models/common';
 
 /**

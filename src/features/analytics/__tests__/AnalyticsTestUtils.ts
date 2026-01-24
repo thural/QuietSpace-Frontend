@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { Container } from '@core/di';
-import { AnalyticsService } from '../application/services/AnalyticsServiceDI';
-import { AnalyticsRepository } from '../data';
-import { initializeAnalyticsContainer } from '../di';
+import { AnalyticsService } from '@analytics/application/services/AnalyticsServiceDI';
+import { AnalyticsRepository } from '@analytics/data';
+import { initializeAnalyticsContainer } from '@analytics/di';
 
 /**
  * Test utilities for Analytics feature testing

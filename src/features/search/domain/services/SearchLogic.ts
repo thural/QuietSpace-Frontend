@@ -5,8 +5,8 @@
  * Contains business rules for search functionality.
  */
 
-import type { SearchQuery, SearchResult, SearchSuggestion } from '../entities';
-import type { SearchFilters } from '../entities/SearchFilters';
+import type { SearchQuery, SearchResult, SearchSuggestion } from "@search/domain/entities";
+import type { SearchFilters } from "@search/domain/entities/SearchFilters";
 
 /**
  * SearchLogic interface.

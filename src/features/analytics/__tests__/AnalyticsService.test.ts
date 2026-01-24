@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { AnalyticsService } from '../application/services/AnalyticsServiceDI';
-import { AnalyticsRepository } from '../data';
+import { AnalyticsService } from '@analytics/application/services/AnalyticsServiceDI';
+import { AnalyticsRepository } from '@analytics/data';
 import { createAnalyticsTestUtils, MockAnalyticsService, PerformanceTestUtils } from './AnalyticsTestUtils';
 
 /**

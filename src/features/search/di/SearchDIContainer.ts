@@ -5,12 +5,12 @@
  * Provides centralized dependency management and configuration.
  */
 
-import type { ISearchRepository } from "../data/repositories/SearchRepository";
-import { UserSearchRepository } from "../data/repositories/UserSearchRepository";
-import { PostSearchRepository } from "../data/repositories/PostSearchRepository";
-import { MockSearchRepository } from "../data/repositories/MockSearchRepository";
-import { SearchService } from "../application/services/SearchService";
-import { SearchQueryService } from "../application/services/SearchQueryService";
+import type { ISearchRepository } from "@search/data/repositories/SearchRepository";
+import { UserSearchRepository } from "@search/data/repositories/UserSearchRepository";
+import { PostSearchRepository } from "@search/data/repositories/PostSearchRepository";
+import { MockSearchRepository } from "@search/data/repositories/MockSearchRepository";
+import { SearchService } from "@search/application/services/SearchService";
+import { SearchQueryService } from "@search/application/services/SearchQueryService";
 import { useAuthStore } from '@services/store/zustand';
 
 /**

@@ -5,7 +5,7 @@
  * Handles loading, error, and success states appropriately.
  */
 
-import { UserList, UserPage } from "@/features/profile/data/models/user";
+import { UserList, UserPage, UserResponse } from "@/features/profile/data/models/user";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import LoaderStyled from "@/shared/LoaderStyled";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
@@ -13,7 +13,7 @@ import BoxStyled from "@/shared/BoxStyled";
 import UserQueryItem from "@/shared/UserQueryItem";
 import { UseMutationResult } from "@tanstack/react-query";
 import React, { CSSProperties } from "react";
-import styles from "../../styles/queryResultStyles";
+import styles from "@search/presentation/styles/queryResultStyles";
 
 /**
  * UserResultsProps interface.
@@ -36,8 +36,8 @@ export interface UserResultsProps extends GenericWrapper {
  * This component manages the display of a list of users based on the fetching status.
  * It conditionally renders a loading indicator, an error message, or the list of users.
  * 
- * @param {UserResultsProps} props - The component props.
- * @returns {JSX.Element} - The rendered UserResults component based on the fetching state.
+ * @param props - The component props.
+ * @returns The rendered UserResults component based on the fetching state.
  */
 const UserResults: React.FC<UserResultsProps> = ({ fetchUserQuery, userQueryList, style }) => {
     const classes = styles(); // Apply custom styles
@@ -49,7 +49,7 @@ const UserResults: React.FC<UserResultsProps> = ({ fetchUserQuery, userQueryList
      * It displays a loader if the fetching is in progress, an error message if there's an error,
      * or the list of users if the fetching is successful.
      * 
-     * @returns {JSX.Element} - The rendered result based on the fetching status.
+     * @returns The rendered result based on the fetching status.
      */
     const RenderResult = () => (
         fetchUserQuery.isPending ? (
@@ -58,7 +58,7 @@ const UserResults: React.FC<UserResultsProps> = ({ fetchUserQuery, userQueryList
             <ErrorComponent message={fetchUserQuery.error.message} /> // Display error message
         ) : (
             // Render the list of users if fetching is successful
-            userQueryList?.map((user, index) => (
+            userQueryList?.map((user: UserResponse, index: number) => (
                 <UserQueryItem key={index} data={user} /> // Render each user using UserQueryItem component
             ))
         )

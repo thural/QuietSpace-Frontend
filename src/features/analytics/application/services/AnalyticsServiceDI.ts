@@ -15,7 +15,7 @@ import type {
   InsightType,
   GoalType
 } from '../../domain';
-import { AnalyticsRepository } from '../../data';
+import { AnalyticsRepository } from '@analytics/data';
 
 @Injectable({ lifetime: 'singleton' })
 export class AnalyticsService {

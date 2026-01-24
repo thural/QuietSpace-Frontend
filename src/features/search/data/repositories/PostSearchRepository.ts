@@ -6,7 +6,7 @@
  */
 
 import type { PostList } from "@/features/feed/data/models/post";
-import type { SearchFilters } from "../../domain/entities";
+import type { SearchFilters } from "@search/domain/entities";
 import { BaseSearchRepository, type RepositoryCapabilities } from "./SearchRepository";
 import { fetchPostQuery } from "@features/feed/data/postRequests";
 import type { JwtToken } from "@/shared/api/models/common";

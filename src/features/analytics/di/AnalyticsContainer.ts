@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container } from '@core/di';
-import { AnalyticsService } from '../application/services/AnalyticsServiceDI';
-import { AnalyticsRepository } from '../data';
+import { AnalyticsService } from '@analytics/application/services/AnalyticsServiceDI';
+import { AnalyticsRepository } from '@analytics/data';
 
 let analyticsContainerInstance: Container | null = null;
 

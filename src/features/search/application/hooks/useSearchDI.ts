@@ -6,7 +6,7 @@
  */
 
 import { useMemo } from 'react';
-import { getSearchDIContainer, type DIContainerConfig } from '../../di/SearchDIContainer';
+import { getSearchDIContainer, type DIContainerConfig } from '@search/di/SearchDIContainer';
 
 /**
  * Hook configuration for DI container.

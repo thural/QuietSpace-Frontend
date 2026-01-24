@@ -5,7 +5,7 @@
  * and query optimization.
  */
 
-import type { SearchQuery, SearchFilters } from "../../domain/entities";
+import type { SearchQuery, SearchFilters } from "@search/domain/entities";
 
 /**
  * SearchQueryService interface.

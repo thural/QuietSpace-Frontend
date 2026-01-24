@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAnalyticsDI } from '../../application/services/AnalyticsServiceDI';
+import { useAnalyticsDI } from '@analytics/application/services/AnalyticsServiceDI';
 import { styles } from './ReportBuilder.styles.ts';
 
 interface ReportBuilderProps {
