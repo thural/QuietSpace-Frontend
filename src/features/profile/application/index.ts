@@ -6,11 +6,23 @@
  * for easy importing and clean dependency management.
  */
 
-// Enhanced hooks with repository pattern support
+// Enterprise Hooks
+export { useProfile } from './hooks/useProfile';
+export { useProfileServices } from './hooks/useProfileServices';
+export { useProfileConnections } from './hooks/useProfileConnections';
+export { useProfileSettings } from './hooks/useProfileSettings';
+
+// Enterprise Services
+export { ProfileFeatureService } from './services/index';
+
+// Legacy Hooks (for backward compatibility)
 export { 
-  useProfile, 
-  useProfileEnhanced, 
-  useProfileEnhancedWithState,
-  useProfileAdvanced,
-  type ProfileConfig
+    useProfile, 
+    useProfileEnhanced, 
+    useProfileEnhancedWithState,
+    useProfileAdvanced,
+    type ProfileConfig
 } from "./useProfile";
+
+// Legacy Services (for backward compatibility)
+export { ProfileServiceDI } from './services/ProfileServiceDI';

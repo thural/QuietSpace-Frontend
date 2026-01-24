@@ -1,3 +1,9 @@
+// Enterprise Components
+export { default as EnterpriseProfileContainer } from './EnterpriseProfileContainer';
+export { default as ProfileSettingsContainer } from './ProfileSettingsContainer';
+export { default as ProfileSearchContainer } from './ProfileSearchContainer';
+
+// Legacy Components (for backward compatibility)
 export { default as ProfileHeader } from "./layout/ProfileHeader";
 export { default as ProfileControls } from "./layout/ProfileControls";
 export { default as ProfileStats } from "./layout/ProfileStats";
