@@ -9,6 +9,9 @@ export { default as useSearch } from './useSearch';
 export { default as useUserSearch } from './useUserSearch';
 export { default as usePostSearch } from './usePostSearch';
 
+// Enterprise Hooks
+export { useSearchServices } from './useSearchServices';
+
 // React Query hooks
 export { useReactQuerySearch } from './useReactQuerySearch';
 

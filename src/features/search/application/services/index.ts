@@ -8,5 +8,8 @@
 export { SearchService, type ISearchService } from './SearchService';
 export { SearchQueryService, type ISearchQueryService } from './SearchQueryService';
 
+// Enterprise services
+export { SearchFeatureService } from './SearchFeatureService';
+
 // React Query services
 export { ReactQuerySearchService, type IReactQuerySearchService } from './ReactQuerySearchService';
