@@ -10,6 +10,7 @@ import {TYPES} from '@core/di/types';
 import {apiClient} from '../network/rest/apiClient';
 import { registerFeedContainer } from '@features/feed/di/container';
 import { registerChatContainer } from '@features/chat/di/container';
+import { createSearchContainer } from '@features/search/di/container';
 import type {AxiosInstance} from 'axios';
 
 // Import repositories
@@ -20,6 +21,7 @@ import {PostRepository} from '@features/feed/data/repositories/PostRepository';
 import {CommentRepository} from '@features/feed/data/repositories/CommentRepository';
 import {NotificationRepository} from '@features/notification/data/repositories/NotificationRepository';
 import {UserRepository} from '@features/search/data/repositories/UserRepository';
+import {SearchRepositoryImpl} from '@features/search/data/repositories/SearchRepositoryImpl';
 
 /**
  * Application DI Container Setup.
@@ -52,6 +54,7 @@ export function createAppContainer(): Container {
   container.registerSingleton(CommentRepository);
   container.registerSingleton(NotificationRepository);
   container.registerSingleton(UserRepository);
+  container.registerSingleton(SearchRepositoryImpl);
   
   // Register repositories by token for injection
   container.registerSingletonByToken(TYPES.AUTH_REPOSITORY, AuthRepository);
@@ -61,6 +64,7 @@ export function createAppContainer(): Container {
   container.registerSingletonByToken(TYPES.COMMENT_REPOSITORY, CommentRepository);
   container.registerSingletonByToken(TYPES.NOTIFICATION_REPOSITORY, NotificationRepository);
   container.registerSingletonByToken(TYPES.USER_REPOSITORY, UserRepository);
+  container.registerSingletonByToken(TYPES.SEARCH_REPOSITORY, SearchRepositoryImpl);
   
   // Register enterprise auth service using factory
   const enterpriseAuthService = AuthModuleFactory.createDefault();
@@ -81,9 +85,14 @@ export function createAppContainer(): Container {
   // Register chat feature services
   registerChatContainer(container);
   
+  // Register search feature services
+  console.log('🔍 Registering search feature container...');
+  const searchContainer = createSearchContainer();
+  
   console.log('✅ Core services registered');
   console.log('✅ Feed feature container registered');
   console.log('✅ Chat feature services registered');
+  console.log('✅ Search feature container registered');
   console.log(`📊 Container stats: ${JSON.stringify(container.getStats())}`);
   
   return container;
@@ -119,8 +128,11 @@ export function initializeApp(): Container {
   const postFeatureService = container.getByToken(TYPES.POST_FEATURE_SERVICE);
   console.log('📱 Feed feature services initialized and ready');
   
+  // Example: Demonstrate search feature service usage
+  const searchFeatureService = container.getByToken(TYPES.SEARCH_FEATURE_SERVICE);
+  console.log('🔍 Search feature services initialized and ready');
+  
   console.log('🚀 Application initialized with DI');
   
   return container;
 }
-
