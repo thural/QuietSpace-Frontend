@@ -18,7 +18,7 @@ export interface UseNotificationDIConfig {
     overrideConfig?: {
         useMockRepositories?: boolean;
         enableLogging?: boolean;
-        useReactQuery?: boolean;
+        // useReactQuery removed - migrated to enterprise hooks
     };
 }
 

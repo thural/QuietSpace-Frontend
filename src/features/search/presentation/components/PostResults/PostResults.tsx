@@ -10,7 +10,7 @@ import PostCard from "@/features/feed/presentation/components/post/PostCard";
 import LoaderStyled from "@/shared/LoaderStyled";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography from "@/shared/Typography";
-import { UseMutationResult } from "@tanstack/react-query";
+import { useEnterpriseSearch } from "@search/application/hooks/useEnterpriseSearch";
 
 /**
  * PostResultsProps interface.
@@ -22,7 +22,8 @@ import { UseMutationResult } from "@tanstack/react-query";
  */
 export interface PostResultsProps extends GenericWrapper {
     postQueryList: PostList;
-    fetchPostQuery: UseMutationResult<PostPage, Error, string>;
+    isLoading: boolean;
+    error: Error | null;
 }
 
 /**
@@ -34,13 +35,13 @@ export interface PostResultsProps extends GenericWrapper {
  * @param {PostResultsProps} props - The component props.
  * @returns {JSX.Element} - The rendered PostResults component based on the fetching state.
  */
-const PostResults: React.FC<PostResultsProps> = ({ fetchPostQuery, postQueryList }) => (
+const PostResults: React.FC<PostResultsProps> = ({ isLoading, error, postQueryList }) => (
     // Check if the fetch operation is pending
-    fetchPostQuery.isPending ? (
+    isLoading ? (
         <LoaderStyled /> // Show loader while data is being fetched
-    ) : fetchPostQuery.isError ? (
+    ) : error ? (
         // Check if there was an error in the fetch operation
-        <Typography type="h1">{fetchPostQuery.error.message}</Typography> // Display error message
+        <Typography type="h1">{error.message}</Typography> // Display error message
     ) : (
         // Render the list of posts if fetching is successful
         postQueryList?.map((post: PostResponse, index: number) => (

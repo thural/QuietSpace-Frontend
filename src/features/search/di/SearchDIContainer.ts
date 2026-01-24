@@ -19,7 +19,7 @@ import { useAuthStore } from '@services/store/zustand';
 export interface DIContainerConfig {
     useMockRepositories?: boolean;
     enableLogging?: boolean;
-    useReactQuery?: boolean; // New option to enable/disable React Query
+    // useReactQuery option removed - migrated to enterprise hooks
 }
 
 /**

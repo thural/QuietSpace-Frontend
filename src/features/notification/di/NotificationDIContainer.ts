@@ -16,7 +16,7 @@ import { useAuthStore } from '@services/store/zustand';
 export interface DIContainerConfig {
     useMockRepositories?: boolean;
     enableLogging?: boolean;
-    useReactQuery?: boolean;
+    // useReactQuery removed - migrated to enterprise hooks
 }
 
 /**
@@ -33,7 +33,7 @@ export class NotificationDIContainer {
         this.config = {
             useMockRepositories: false,
             enableLogging: true,
-            useReactQuery: false,
+            // useReactQuery removed - migrated to enterprise hooks
             ...config
         };
         
@@ -135,9 +135,10 @@ export class NotificationDIContainer {
 
     /**
      * Check if React Query is enabled.
+     * REMOVED - Migrated to enterprise hooks
      */
     isReactQueryEnabled(): boolean {
-        return this.config.useReactQuery || false;
+        return false; // Always false - migrated to enterprise hooks
     }
 
     /**

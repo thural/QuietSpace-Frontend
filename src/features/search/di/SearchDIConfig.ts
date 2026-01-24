@@ -11,8 +11,8 @@ import type { DIContainerConfig } from './SearchDIContainer';
  */
 export const developmentConfig: DIContainerConfig = {
     useMockRepositories: true,
-    enableLogging: true,
-    useReactQuery: false // Disabled by default in development
+    enableLogging: true
+    // useReactQuery removed - migrated to enterprise hooks
 };
 
 /**
@@ -20,8 +20,8 @@ export const developmentConfig: DIContainerConfig = {
  */
 export const productionConfig: DIContainerConfig = {
     useMockRepositories: false,
-    enableLogging: true, // Enable logging in production for debugging
-    useReactQuery: true
+    enableLogging: true // Enable logging in production for debugging
+    // useReactQuery removed - migrated to enterprise hooks
 };
 
 /**
@@ -29,8 +29,8 @@ export const productionConfig: DIContainerConfig = {
  */
 export const testConfig: DIContainerConfig = {
     useMockRepositories: true,
-    enableLogging: false,
-    useReactQuery: false
+    enableLogging: false
+    // useReactQuery removed - migrated to enterprise hooks
 };
 
 /**

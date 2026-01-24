@@ -9,11 +9,10 @@
  */
 
 import { useEffect, useCallback, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { NotificationPage, NotificationResponse, NotificationType } from '@/features/notification/data/models/notification';
 import type { ResId } from '@/shared/api/models/common';
 import type { NotificationQuery, NotificationFilters } from '../../domain/entities/NotificationEntities';
-import { useNotificationDI } from '../../di/useNotificationDI';
+import { useNotificationServices } from './useNotificationServices';
 import {
     useNotificationUIStore,
     type NotificationUIState,
@@ -136,9 +135,8 @@ export const useAdvancedNotifications = (options: {
         autoRefresh = true
     } = options;
 
-    // DI and repositories
-    const { notificationRepository } = useNotificationDI();
-    const queryClient = useQueryClient();
+    // Enterprise services
+    const { notificationDataService, notificationFeatureService } = useNotificationServices();
 
     // UI state management
     const uiState = useNotificationUIStore();
@@ -228,38 +226,69 @@ export const useAdvancedNotifications = (options: {
         return query;
     }, [userId, currentPage, notificationsPerPage, activeFilter, searchQuery]);
 
-    // Main notifications query
-    const {
-        data: serverNotifications,
-        isLoading,
-        error,
-        refetch,
-        isFetching: isRefreshing
-    } = useQuery({
-        queryKey: ['notifications', userId, currentPage, activeFilter, searchQuery],
-        queryFn: async () => {
-            const query = buildQuery();
-            return await notificationRepository.getNotifications(query, 'test-token');
-        },
-        staleTime: 1000 * 60 * 2, // 2 minutes
-        gcTime: 1000 * 60 * 10, // 10 minutes
-        refetchInterval: autoRefresh && autoRefreshEnabled ? 1000 * 60 * 5 : false, // 5 minutes
-        enabled: !!userId && !!notificationRepository,
-    });
+    // Local state for enterprise service data
+    const [serverNotifications, setServerNotifications] = useState<NotificationPage | null>(null);
+    const [unreadCount, setUnreadCount] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
-    // Unread count query
-    const {
-        data: unreadCount,
-        isLoading: isLoadingUnread
-    } = useQuery({
-        queryKey: ['notifications', 'unread-count', userId],
-        queryFn: async () => {
-            return await notificationRepository.getPendingNotificationsCount(userId, 'test-token');
-        },
-        staleTime: 1000 * 30, // 30 seconds
-        refetchInterval: 1000 * 60 * 2, // 2 minutes
-        enabled: !!userId && !!notificationRepository,
-    });
+    // Load notifications using enterprise services
+    const loadNotifications = useCallback(async () => {
+        if (!userId) return;
+        
+        setIsLoading(true);
+        setError(null);
+        
+        try {
+            const query = buildQuery();
+            const result = await notificationDataService.getNotifications(query, 'test-token');
+            setServerNotifications(result);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to load notifications'));
+        } finally {
+            setIsLoading(false);
+        }
+    }, [userId, buildQuery, notificationDataService]);
+
+    // Load unread count using enterprise services
+    const loadUnreadCount = useCallback(async () => {
+        if (!userId) return;
+        
+        try {
+            const result = await notificationDataService.getPendingNotificationsCount(userId, 'test-token');
+            setUnreadCount(result);
+        } catch (err) {
+            console.error('Failed to load unread count:', err);
+        }
+    }, [userId, notificationDataService]);
+
+    // Refresh notifications
+    const refetch = useCallback(async () => {
+        setIsRefreshing(true);
+        await loadNotifications();
+        await loadUnreadCount();
+        setIsRefreshing(false);
+    }, [loadNotifications, loadUnreadCount]);
+
+    // Auto-refresh effect
+    useEffect(() => {
+        if (!autoRefresh || !autoRefreshEnabled || !userId) return;
+
+        const interval = setInterval(() => {
+            refetch();
+        }, 1000 * 60 * 5); // 5 minutes
+
+        return () => clearInterval(interval);
+    }, [autoRefresh, autoRefreshEnabled, userId, refetch]);
+
+    // Initial load effect
+    useEffect(() => {
+        if (userId) {
+            loadNotifications();
+            loadUnreadCount();
+        }
+    }, [userId, loadNotifications, loadUnreadCount]);
 
     // Apply optimistic updates and synchronization
     const notifications = useMemo(() => {
@@ -271,55 +300,51 @@ export const useAdvancedNotifications = (options: {
         return processedPage;
     }, [serverNotifications, syncStrategy, synchronizeServerResponse, applyToPage]);
 
-    // Mark as read mutation with optimistic updates
-    const markAsReadMutation = useMutation({
-        mutationFn: async (notificationId: ResId) => {
-            const originalNotification = notifications?.content.find(n => n.id === notificationId);
-            if (!originalNotification) {
-                throw new Error('Notification not found');
-            }
+    // Mark as read with enterprise services and optimistic updates
+    const markAsRead = useCallback(async (notificationId: ResId) => {
+        const originalNotification = notifications?.content.find(n => n.id === notificationId);
+        if (!originalNotification) {
+            throw new Error('Notification not found');
+        }
 
+        try {
             // Create optimistic update
             const optimisticContext = optimisticManager.createMarkAsReadUpdate(notificationId, originalNotification);
 
-            // Execute with optimistic updates
-            return await optimisticManager.executeOptimisticUpdate(optimisticContext);
-        },
-        onSuccess: () => {
-            // Invalidate related queries
-            queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+            // Execute with optimistic updates using enterprise service
+            await optimisticManager.executeOptimisticUpdate(optimisticContext);
+            
+            // Refresh data
+            await refetch();
             updateLastSyncTime();
-        },
-        onError: (error) => {
+        } catch (error) {
             console.error('Failed to mark notification as read:', error);
+            throw error;
         }
-    });
+    }, [notifications, optimisticManager, refetch, updateLastSyncTime]);
 
-    // Delete notification mutation with optimistic updates
-    const deleteNotificationMutation = useMutation({
-        mutationFn: async (notificationId: ResId) => {
-            const originalNotification = notifications?.content.find(n => n.id === notificationId);
-            if (!originalNotification) {
-                throw new Error('Notification not found');
-            }
+    // Delete notification with enterprise services and optimistic updates
+    const deleteNotification = useCallback(async (notificationId: ResId) => {
+        const originalNotification = notifications?.content.find(n => n.id === notificationId);
+        if (!originalNotification) {
+            throw new Error('Notification not found');
+        }
 
+        try {
             // Create optimistic update
             const optimisticContext = optimisticManager.createDeleteUpdate(notificationId, originalNotification);
 
-            // Execute with optimistic updates
-            return await optimisticManager.executeOptimisticUpdate(optimisticContext);
-        },
-        onSuccess: () => {
-            // Invalidate related queries
-            queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+            // Execute with optimistic updates using enterprise service
+            await optimisticManager.executeOptimisticUpdate(optimisticContext);
+            
+            // Refresh data
+            await refetch();
             updateLastSyncTime();
-        },
-        onError: (error) => {
+        } catch (error) {
             console.error('Failed to delete notification:', error);
+            throw error;
         }
-    });
+    }, [notifications, optimisticManager, refetch, updateLastSyncTime]);
 
     // Search notifications
     const searchNotifications = useCallback(async (query: string) => {
@@ -345,14 +370,14 @@ export const useAdvancedNotifications = (options: {
     // Force synchronization
     const forceSync = useCallback(async () => {
         try {
-            await forceSyncOperation(notificationRepository, buildQuery());
+            await forceSyncOperation(notificationDataService, buildQuery());
             clearOptimisticUpdates();
             clearPendingOperations();
-            refetch();
+            await refetch();
         } catch (error) {
             console.error('Failed to force sync:', error);
         }
-    }, [forceSyncOperation, notificationRepository, buildQuery, clearOptimisticUpdates, clearPendingOperations, refetch]);
+    }, [forceSyncOperation, notificationDataService, buildQuery, clearOptimisticUpdates, clearPendingOperations, refetch]);
 
     // Handle real-time events
     useEffect(() => {
@@ -379,7 +404,7 @@ export const useAdvancedNotifications = (options: {
         selectedNotification: uiState.selectedNotificationId
             ? notifications?.content.find(n => n.id === uiState.selectedNotificationId) || null
             : null,
-        isLoading: isLoading || isLoadingUnread,
+        isLoading,
         isRefreshing,
         isLoadingMore: uiState.isLoadingMore,
         error,
@@ -401,12 +426,12 @@ export const useAdvancedNotifications = (options: {
         refetch,
         loadMore,
         refresh: () => refetch(),
-        markAsRead: (notificationId: ResId) => markAsReadMutation.mutateAsync(notificationId),
+        markAsRead,
         markMultipleAsRead: async (notificationIds: ResId[]) => {
             // Batch mark as read
-            await Promise.all(notificationIds.map(id => markAsReadMutation.mutateAsync(id)));
+            await Promise.all(notificationIds.map(id => markAsRead(id)));
         },
-        deleteNotification: (notificationId: ResId) => deleteNotificationMutation.mutateAsync(notificationId),
+        deleteNotification,
         searchNotifications,
         openPanel: openNotificationPanel,
         closePanel: closeNotificationPanel,

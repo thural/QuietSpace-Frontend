@@ -27,7 +27,7 @@ export const getNotificationConfig = () => {
     
     const baseConfig = {
         enableLogging: environment === 'development',
-        useReactQuery: false,
+        // useReactQuery removed - migrated to enterprise hooks
     };
     
     switch (environment) {

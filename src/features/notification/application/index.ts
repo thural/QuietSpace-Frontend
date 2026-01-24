@@ -24,7 +24,7 @@ export { useNotificationSettings } from './hooks/useNotificationSettings';
 // Application hooks (Enhanced)
 export { useNotifications, type NotificationState, type NotificationActions } from './hooks/useNotifications';
 export { useAdvancedNotifications, type AdvancedNotificationState, type AdvancedNotificationActions } from './hooks/useAdvancedNotifications';
-export { useReactQueryNotifications, type ReactQueryNotificationState, type ReactQueryNotificationActions } from './hooks/useReactQueryNotifications';
+// useReactQueryNotifications removed - migrated to enterprise hooks
 
 // Application stores
 export { useNotificationUIStore, createNotificationUIStore, type NotificationUIState, type NotificationUIActions, type NotificationUIStore } from './stores/notificationUIStore';

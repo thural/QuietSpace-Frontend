@@ -98,12 +98,7 @@ export interface UseAdvancedNotificationConfig extends UseNotificationConfig {
   maxCacheSize?: number;
 }
 
-export interface UseReactQueryNotificationConfig extends UseNotificationConfig {
-  staleTime?: number;
-  cacheTime?: number;
-  refetchOnWindowFocus?: boolean;
-  refetchOnReconnect?: boolean;
-}
+// UseReactQueryNotificationConfig removed - migrated to enterprise hooks
 
 // Event types
 export interface NotificationClickEvent {
@@ -180,10 +175,4 @@ export const DEFAULT_ADVANCED_CONFIG: UseAdvancedNotificationConfig = {
   maxCacheSize: 100,
 };
 
-export const DEFAULT_REACT_QUERY_CONFIG: UseReactQueryNotificationConfig = {
-  ...DEFAULT_NOTIFICATION_CONFIG,
-  staleTime: 5 * 60 * 1000, // 5 minutes
-  cacheTime: 10 * 60 * 1000, // 10 minutes
-  refetchOnWindowFocus: true,
-  refetchOnReconnect: true,
-};
+// DEFAULT_REACT_QUERY_CONFIG removed - migrated to enterprise hooks

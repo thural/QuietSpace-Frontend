@@ -11,7 +11,7 @@ import LoaderStyled from "@/shared/LoaderStyled";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import UserQueryItem from "@/shared/UserQueryItem";
-import { UseMutationResult } from "@tanstack/react-query";
+import { useEnterpriseSearch } from "@search/application/hooks/useEnterpriseSearch";
 import React, { CSSProperties } from "react";
 import styles from "@search/presentation/styles/queryResultStyles";
 
@@ -25,7 +25,8 @@ import styles from "@search/presentation/styles/queryResultStyles";
  * @property {CSSProperties} [style] - Optional inline styles for the result container.
  */
 export interface UserResultsProps extends GenericWrapper {
-    fetchUserQuery: UseMutationResult<UserPage, Error, string>;
+    isLoading: boolean;
+    error: Error | null;
     userQueryList: UserList;
     style?: CSSProperties;
 }
@@ -39,7 +40,7 @@ export interface UserResultsProps extends GenericWrapper {
  * @param props - The component props.
  * @returns The rendered UserResults component based on the fetching state.
  */
-const UserResults: React.FC<UserResultsProps> = ({ fetchUserQuery, userQueryList, style }) => {
+const UserResults: React.FC<UserResultsProps> = ({ isLoading, error, userQueryList, style }) => {
     const classes = styles(); // Apply custom styles
 
     /**
@@ -52,10 +53,10 @@ const UserResults: React.FC<UserResultsProps> = ({ fetchUserQuery, userQueryList
      * @returns The rendered result based on the fetching status.
      */
     const RenderResult = () => (
-        fetchUserQuery.isPending ? (
+        isLoading ? (
             <LoaderStyled /> // Show loader while data is being fetched
-        ) : fetchUserQuery.isError ? (
-            <ErrorComponent message={fetchUserQuery.error.message} /> // Display error message
+        ) : error ? (
+            <ErrorComponent message={error.message} /> // Display error message
         ) : (
             // Render the list of users if fetching is successful
             userQueryList?.map((user: UserResponse, index: number) => (

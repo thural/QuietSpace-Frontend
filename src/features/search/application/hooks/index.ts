@@ -20,8 +20,7 @@ export { useSearchMigration, SearchMigrationUtils } from './useSearchMigration';
 // Enterprise Services Hook
 export { useSearchServices } from './useSearchServices';
 
-// React Query hooks (legacy)
-export { useReactQuerySearch } from './useReactQuerySearch';
+// React Query hooks (legacy) - REMOVED - Migrated to enterprise hooks
 
 // Dependency Injection hooks
 export { useSearchDI, useSearchService, useQueryService, useUserSearchRepository, usePostSearchRepository } from './useSearchDI';

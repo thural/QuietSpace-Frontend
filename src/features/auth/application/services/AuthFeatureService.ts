@@ -70,6 +70,130 @@ export class AuthFeatureService {
     await this.authDataService.recordRateLimitHit(email, 'resend_code');
   }
 
+  // Enhanced validation methods for enterprise hooks
+  async validateLoginCredentials(credentials: any): Promise<boolean> {
+    // Comprehensive credential validation
+    if (!credentials || typeof credentials !== 'object') {
+      return false;
+    }
+    
+    const { email, password } = credentials;
+    
+    // Email validation
+    if (!email || typeof email !== 'string' || !this.isValidEmail(email)) {
+      return false;
+    }
+    
+    // Password validation
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return false;
+    }
+    
+    // Advanced password strength check
+    if (!this.isStrongPassword(password)) {
+      return false;
+    }
+    
+    return true;
+  }
+  
+  async sanitizeLoginCredentials(credentials: any): Promise<any> {
+    // Sanitize and normalize credentials
+    const { email, password, ...otherFields } = credentials;
+    
+    return {
+      email: this.sanitizeEmail(email),
+      password: password.trim(), // Don't sanitize password too much
+      ...otherFields
+    };
+  }
+  
+  async validateSignupData(userData: any): Promise<boolean> {
+    // Comprehensive signup data validation
+    if (!userData || typeof userData !== 'object') {
+      return false;
+    }
+    
+    const { email, password, username, firstName, lastName } = userData;
+    
+    // Required fields validation
+    if (!email || !password || !username || !firstName || !lastName) {
+      return false;
+    }
+    
+    // Email validation
+    if (!this.isValidEmail(email)) {
+      return false;
+    }
+    
+    // Username validation
+    if (!this.isValidUsername(username)) {
+      return false;
+    }
+    
+    // Name validation
+    if (!this.isValidName(firstName) || !this.isValidName(lastName)) {
+      return false;
+    }
+    
+    // Password validation
+    if (!this.isStrongPassword(password)) {
+      return false;
+    }
+    
+    return true;
+  }
+  
+  async sanitizeSignupData(userData: any): Promise<any> {
+    // Sanitize and normalize user data
+    const { email, password, username, firstName, lastName, ...otherFields } = userData;
+    
+    return {
+      email: this.sanitizeEmail(email),
+      password: password.trim(),
+      username: this.sanitizeUsername(username),
+      firstName: this.sanitizeName(firstName),
+      lastName: this.sanitizeName(lastName),
+      ...otherFields
+    };
+  }
+  
+  // Security utility methods
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+  
+  private sanitizeEmail(email: string): string {
+    return email.toLowerCase().trim();
+  }
+  
+  private isValidUsername(username: string): boolean {
+    // Username: 3-30 chars, alphanumeric + underscores + hyphens
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,30}$/;
+    return usernameRegex.test(username);
+  }
+  
+  private sanitizeUsername(username: string): string {
+    return username.toLowerCase().trim().replace(/[^a-zA-Z0-9_-]/g, '');
+  }
+  
+  private isValidName(name: string): boolean {
+    // Name: 1-50 chars, letters + spaces + hyphens + apostrophes
+    const nameRegex = /^[a-zA-Z\s'-]{1,50}$/;
+    return nameRegex.test(name);
+  }
+  
+  private sanitizeName(name: string): string {
+    return name.trim().replace(/[^a-zA-Z\s'-]/g, '');
+  }
+  
+  private isStrongPassword(password: string): boolean {
+    // Strong password: 8+ chars, uppercase, lowercase, number, special char
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return strongPasswordRegex.test(password);
+  }
+
   // Session management business logic
   async getUserActiveSessions(userId: string): Promise<UserSession[]> {
     const sessions = await this.authDataService.getUserSessions(userId);

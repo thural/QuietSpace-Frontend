@@ -11,5 +11,4 @@ export { SearchQueryService, type ISearchQueryService } from './SearchQueryServi
 // Enterprise services
 export { SearchFeatureService } from './SearchFeatureService';
 
-// React Query services
-export { ReactQuerySearchService, type IReactQuerySearchService } from './ReactQuerySearchService';
+// React Query services - REMOVED - Migrated to enterprise hooks
