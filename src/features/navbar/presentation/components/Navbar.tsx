@@ -2,7 +2,7 @@ import ComponentList from "@/shared/ComponentList";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import { Navbar as StyledNavbar } from "../styles/NavbarStyles";
-import { Badge } from "@mantine/core";
+import { Badge } from "@/shared/ui/components";
 import Conditional from "@shared/Conditional";
 import NavStyled from "../../shared/NavStyled";
 import Typography from "@shared/Typography";

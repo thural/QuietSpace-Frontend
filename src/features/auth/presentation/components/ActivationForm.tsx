@@ -7,7 +7,7 @@ import OutlineButton from "@/shared/buttons/OutlineButton";
 import FormStyled from "@/shared/FormStyled";
 import { Text } from "@/shared/ui/components/typography/Text";
 import { Title } from "@/shared/ui/components/typography/Title";
-import { PinInput } from "@mantine/core";
+import { PinInput } from "@/shared/ui/components";
 import React from "react";
 import CountdownTimer from "@/shared/CountdownTimer";
 
@@ -44,7 +44,6 @@ const ActivationForm: React.FC = () => {
             <FormStyled className='activation-form'>
                 <PinInput
                     length={6}
-                    name="activationCode"
                     type="number"
                     value={formData.activationCode}
                     onChange={handleChange}

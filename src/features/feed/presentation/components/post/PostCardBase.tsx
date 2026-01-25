@@ -1,6 +1,6 @@
 import React from 'react';
 import { PostResponse } from "@/features/feed/data/models/post";
-import { Text } from "@mantine/core";
+import { Text } from "@/shared/ui/components/typography/Text";
 import PostHeader from "../fragments/PostHeader";
 
 

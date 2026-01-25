@@ -16,7 +16,7 @@ import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import styles from "@features/profile/components/connections/styles/connectionStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { assertIsNotNullish } from "@/shared/utils/assertions";
-import { Center } from "@mantine/core";
+import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
 import React from 'react';
 
 /**
@@ -80,9 +80,9 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
 
     return (
         <Container onClick={handleContainerClick}>
-            <Center>
+            <CenterContainer>
                 <Text variant="h3">share</Text>
-            </Center>
+            </CenterContainer>
             <SearchBar
                 placeHolder="search a user"
                 handleInputBlur={handleInputBlur}

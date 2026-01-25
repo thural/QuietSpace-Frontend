@@ -7,7 +7,7 @@ import Typography from "@/shared/Typography";
 import usePoll from "@features/feed/application/hooks/usePoll";
 import styles from "../../styles/pollStyles";
 import { isDateExpired } from "@/shared/utils/dateUtils";
-import { Progress } from "@mantine/core";
+import { Progress } from "@/shared/ui/components";
 import React from "react";
 
 /**

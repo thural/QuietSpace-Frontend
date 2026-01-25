@@ -7,7 +7,7 @@ import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useCreatePostForm from "@features/feed/application/hooks/useCreatePostForm";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import { FileInput, Image } from "@mantine/core";
+import { FileInput, Image } from "@/shared/ui/components";
 import { PiChartBarHorizontalFill, PiImage } from "react-icons/pi";
 import ComboMenu from "../fragments/ComboMenu";
 import FormControls from "../fragments/FormControls";

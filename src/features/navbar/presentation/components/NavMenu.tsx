@@ -2,27 +2,9 @@ import Clickable from "@/shared/Clickable";
 import ListMenu from "@/shared/ListMenu";
 import CustomLink, { CustomLinkProps } from "@/shared/routes/CustomLink";
 import useTheme from "@shared/hooks/useTheme";
-import { Switch } from "@mantine/core";
+import { Switch } from "@/shared/ui/components";
 import { PiBookmarkSimple, PiClockCounterClockwise, PiGearSix, PiMoon, PiSignOut, PiSun } from "react-icons/pi";
 import { RiMenu3Fill } from "react-icons/ri";
-import { createUseStyles } from "react-jss";
-
-/**
- * Custom styles for the NavMenu component.
- * 
- * @function useStyles
- * @param {boolean} isDarkMode - Flag indicating whether dark mode is enabled.
- * @returns {object} - The styles object for the component.
- */
-const useStyles = createUseStyles({
-    themeSwitch: (isDarkMode: boolean) => ({
-        padding: '.5rem .25rem',
-        "& .mantine-Switch-track": {
-            width: "100%",
-            justifyContent: isDarkMode ? "start" : "end",
-        }
-    })
-});
 
 /**
  * NavMenu component.
@@ -35,7 +17,6 @@ const useStyles = createUseStyles({
  */
 const NavMenu = () => {
     const { isDarkMode, setThemeMode } = useTheme();
-    const classes = useStyles(isDarkMode);
 
     // Define the navigation links with their properties
     const links: Array<CustomLinkProps> = [
@@ -59,15 +40,14 @@ const NavMenu = () => {
                         }
                     />)
             }
-            <Switch
-                size="xl"
-                checked={isDarkMode}
-                color="gray"
-                onChange={(event) => setThemeMode(event.currentTarget.checked)}
-                onLabel={<PiSun size="1.75rem" />}
-                offLabel={<PiMoon size="1.75rem" />}
-                className={classes.themeSwitch}
-            />
+            <div style={{ padding: '0.5rem 0.25rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
+                {isDarkMode ? <PiMoon size="1.75rem" /> : <PiSun size="1.75rem" />}
+                <Switch
+                    size="lg"
+                    checked={isDarkMode}
+                    onChange={(checked) => setThemeMode(checked)}
+                />
+            </div>
         </ListMenu>
     );
 }

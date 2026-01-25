@@ -4,7 +4,7 @@ import InfinateScrollContainer from "@shared/InfinateScrollContainer";
 import { useGetNotifications } from "@services/data/useNotificationData";
 import { Category, pickNotificationFilter } from "@/shared/utils/notificationUtils";
 import { Text } from "../../../../shared/ui/components";
-import { Center } from "@mantine/core";
+import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
 import { useParams } from "react-router-dom";
 import CommentNotification from "./fragments/CommentNotification";
 import FollowNotification from "./fragments/FollowNotification";
@@ -35,9 +35,9 @@ const NotificationList: React.FC = () => {
     // If there are no notifications, display a message
     if (content.length === 0) {
         return (
-            <Center>
+            <CenterContainer>
                 <Text textAlign="center">You have no Notifications yet</Text>
-            </Center>
+            </CenterContainer>
         );
     }
 

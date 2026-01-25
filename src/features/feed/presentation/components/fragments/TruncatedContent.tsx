@@ -1,6 +1,6 @@
 import FlexStyled from "@/shared/FlexStyled";
 import useStyles from "../comment/styles/commentFormStyles";
-import { Text } from "@mantine/core";
+import { Text } from "@/shared/ui/components/typography/Text";
 
 /**
  * Props for the TruncatedContent component.

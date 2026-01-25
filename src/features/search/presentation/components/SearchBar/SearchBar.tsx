@@ -7,7 +7,7 @@
 
 import InputStyled from "@/shared/InputStyled";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
-import { Box } from "@mantine/core";
+import { Container } from "@/shared/ui/components/layout/Container";
 import { ChangeEventHandler, CSSProperties, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
 import styles from "@search/presentation/styles/searchBarStyles";
@@ -53,7 +53,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     const classes = styles(); // Apply custom styles
 
     return (
-        <Box className={classes.searchbar} style={style}>
+        <Container className={classes.searchbar} style={style}>
             <PiMagnifyingGlassBold className={classes.searchIconLarge} /> {/* Search icon */}
             <InputStyled
                 placeholder="Search"
@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 className={classes.searchInput}
             />
             <PiMicrophone className={classes.microphoneIcon} /> {/* Voice search icon */}
-        </Box>
+        </Container>
     );
 };
 
