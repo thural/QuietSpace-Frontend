@@ -46,6 +46,12 @@ export const TYPES = {
   WEBSOCKET_SERVICE: 'WebSocketService',
   ICHAT_REPOSITORY: 'IChatRepository',
   
+  // WebSocket Enterprise Services
+  ENTERPRISE_WEBSOCKET_SERVICE: 'EnterpriseWebSocketService',
+  CONNECTION_MANAGER: 'ConnectionManager',
+  MESSAGE_ROUTER: 'MessageRouter',
+  WEBSOCKET_CONTAINER: 'WebSocketContainer',
+  
   // Notification Feature Services
   PUSH_NOTIFICATION_SERVICE: 'PushNotificationService',
   

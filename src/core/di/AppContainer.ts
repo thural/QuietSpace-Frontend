@@ -11,6 +11,7 @@ import {apiClient} from '../network/rest/apiClient';
 import { registerFeedContainer } from '@features/feed/di/container';
 import { registerChatContainer } from '@features/chat/di/container';
 import { createSearchContainer } from '@features/search/di/container';
+import { registerWebSocketServices, initializeWebSocketServices } from '@core/websocket/di/WebSocketContainer';
 import type {AxiosInstance} from 'axios';
 
 // Import repositories
@@ -89,10 +90,15 @@ export function createAppContainer(): Container {
   console.log('🔍 Registering search feature container...');
   const searchContainer = createSearchContainer();
   
+  // Register WebSocket enterprise services
+  console.log('🌐 Registering WebSocket enterprise services...');
+  const webSocketContainer = registerWebSocketServices(container);
+  
   console.log('✅ Core services registered');
   console.log('✅ Feed feature container registered');
   console.log('✅ Chat feature services registered');
   console.log('✅ Search feature container registered');
+  console.log('✅ WebSocket enterprise services registered');
   console.log(`📊 Container stats: ${JSON.stringify(container.getStats())}`);
   
   return container;
@@ -131,6 +137,10 @@ export function initializeApp(): Container {
   // Example: Demonstrate search feature service usage
   const searchFeatureService = container.getByToken(TYPES.SEARCH_FEATURE_SERVICE);
   console.log('🔍 Search feature services initialized and ready');
+  
+  // Initialize WebSocket services
+  console.log('🌐 Initializing WebSocket enterprise services...');
+  await initializeWebSocketServices(container);
   
   console.log('🚀 Application initialized with DI');
   
