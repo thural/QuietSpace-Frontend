@@ -7,10 +7,10 @@
 
 import InputStyled from "@/shared/InputStyled";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
-import { Container } from "@/shared/ui/components/layout/Container";
+import { Container } from "@shared/ui/components/layout/Container";
 import { ChangeEventHandler, CSSProperties, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
-import styles from "@search/presentation/styles/searchBarStyles";
+import { SearchBarStyles } from "@/features/search/presentation/styles/SearchBarStyles";
 
 /**
  * SearchBarProps interface.
@@ -50,21 +50,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
     handleInputChange,
     queryInputRef
 }) => {
-    const classes = styles(); // Apply custom styles
-
     return (
-        <Container className={classes.searchbar} style={style}>
-            <PiMagnifyingGlassBold className={classes.searchIconLarge} /> {/* Search icon */}
-            <InputStyled
-                placeholder="Search"
-                ref={queryInputRef}
-                onKeyDown={handleKeyDown}
-                onBlur={handleInputBlur}
-                onFocus={handleInputFocus}
-                onChange={handleInputChange}
-                className={classes.searchInput}
-            />
-            <PiMicrophone className={classes.microphoneIcon} /> {/* Voice search icon */}
+        <Container style={style}>
+            <SearchBarStyles.searchbar>
+                <PiMagnifyingGlassBold className={SearchBarStyles.searchIconLarge} /> {/* Search icon */}
+                <InputStyled
+                    placeholder="Search"
+                    ref={queryInputRef}
+                    onKeyDown={handleKeyDown}
+                    onBlur={handleInputBlur}
+                    onFocus={handleInputFocus}
+                    onChange={handleInputChange}
+                    className={SearchBarStyles.searchInput}
+                />
+                <PiMicrophone className={SearchBarStyles.microphoneIcon} /> {/* Voice search icon */}
+            </SearchBarStyles.searchbar>
         </Container>
     );
 };
