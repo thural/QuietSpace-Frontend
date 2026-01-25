@@ -25,5 +25,8 @@ export * from './domain';
 // Data layer
 export * from './data';
 
+// WebSocket adapters
+export * from './adapters';
+
 // DI module
 export * from './di';
