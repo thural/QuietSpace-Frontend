@@ -1,7 +1,6 @@
 import React from 'react';
 import { jest } from '@jest/globals';
 import { render, fireEvent } from '@testing-library/react';
-import { MantineProvider } from '@mantine/core';
 import ReactionGroup from '@/features/feed/fragments/ReactionGroup';
 
 const mockReaction = { reactionType: 'LIKE' } as any;
@@ -11,9 +10,7 @@ test('renders like and dislike toggles and calls handlers', () => {
     const handleDislike = jest.fn();
 
     const { container } = render(
-        <MantineProvider>
-            <ReactionGroup userReaction={mockReaction} handleLike={handleLike} handleDislike={handleDislike} />
-        </MantineProvider>
+        <ReactionGroup userReaction={mockReaction} handleLike={handleLike} handleDislike={handleDislike} />
     );
 
     const icons = container.getElementsByClassName('posticon');

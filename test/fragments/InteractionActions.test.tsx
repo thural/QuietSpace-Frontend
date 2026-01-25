@@ -2,7 +2,6 @@ import React from 'react';
 import { jest } from '@jest/globals';
 import { render, fireEvent } from '@testing-library/react';
 import InteractionActions from '@/features/feed/fragments/InteractionActions';
-import { MantineProvider } from '@mantine/core';
 
 jest.mock('@/features/feed/fragments/CommentToggle', () => ({
     __esModule: true,
@@ -31,14 +30,12 @@ test('renders actions and triggers callbacks', () => {
     const toggleRepostForm = jest.fn();
 
     const { getByTestId } = render(
-        <MantineProvider>
-            <InteractionActions
-                hasCommented={false}
-                toggleCommentForm={toggleCommentForm}
-                toggleShareForm={toggleShareForm}
-                toggleRepostForm={toggleRepostForm}
-            />
-        </MantineProvider>
+        <InteractionActions
+            hasCommented={false}
+            toggleCommentForm={toggleCommentForm}
+            toggleShareForm={toggleShareForm}
+            toggleRepostForm={toggleRepostForm}
+        />
     );
 
     fireEvent.click(getByTestId('comment'));
