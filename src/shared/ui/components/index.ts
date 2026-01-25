@@ -21,6 +21,10 @@ export { default as Title } from './typography/Title';
 // Export interactive components
 export { Button } from './interactive/Button';
 export { Input } from './interactive/Input';
+export { Switch } from './interactive/Switch';
+export { PinInput } from './interactive/PinInput';
+export { FileInput } from './interactive/FileInput';
+export { Progress } from './interactive/Progress';
 
 // Export navigation components
 export { Tabs } from './navigation/Tabs';
@@ -32,6 +36,7 @@ export { Skeleton } from './display/Skeleton';
 export { LoadingOverlay } from './display/LoadingOverlay';
 export { Loader } from './display/Loader';
 export { Image } from './display/Image';
+export { Badge } from './display/Badge';
 
 // Re-export Theme for convenience
 export type { Theme } from '@/app/theme';

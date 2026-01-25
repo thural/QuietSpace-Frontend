@@ -241,6 +241,25 @@ export const typographyPropsToStyles = (props: TypographyProps, theme: Theme): s
     if (props.textDecoration) styles.push(`text-decoration: ${props.textDecoration}`);
     if (props.fontFamily) styles.push(`font-family: ${props.fontFamily}`);
 
+    // Handle truncate
+    if (props.truncate) {
+        if (props.truncate === 'start') {
+            styles.push('direction: rtl');
+            styles.push('text-align: left');
+        }
+        styles.push('overflow: hidden');
+        styles.push('text-overflow: ellipsis');
+        styles.push('white-space: nowrap');
+    }
+
+    // Handle lineClamp
+    if (props.lineClamp) {
+        styles.push('display: -webkit-box');
+        styles.push('-webkit-line-clamp: ' + props.lineClamp);
+        styles.push('-webkit-box-orient: vertical');
+        styles.push('overflow: hidden');
+    }
+
     return styles.join('; ');
 };
 

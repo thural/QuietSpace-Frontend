@@ -70,6 +70,8 @@ export interface TypographyProps extends BaseComponentProps {
     textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
     textDecoration?: 'none' | 'underline' | 'overline' | 'line-through';
     fontFamily?: string;
+    truncate?: 'end' | 'start' | boolean;
+    lineClamp?: number;
 }
 
 // Interactive component props
