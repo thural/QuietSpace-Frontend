@@ -1,5 +1,5 @@
 import { PostResponse } from "@/features/feed/data/models/post";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
 import PostSkeleton from "@/shared/PostSkeleton";
@@ -60,7 +60,7 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
 
     // Render the repost card with user details, repost content, and the original post
     return (
-        <BoxStyled className={classes.repostCard}>
+        <Container className={classes.repostCard}>
             <FlexStyled className={classes.postHeadline}>
                 <PiArrowsClockwiseBold className="repost-icon" />
                 <UserDetails scale={5} user={user} isDisplayEmail={false} />
@@ -69,7 +69,7 @@ const RepostCard: React.FC<RepostCardProps> = ({ post, isPostsLoading = false })
             </FlexStyled>
             <Typography className={classes.replyText}>{post.repost.text}</Typography>
             <PostCard post={post} isMenuHidden={true} />
-        </BoxStyled>
+        </Container>
     );
 }
 

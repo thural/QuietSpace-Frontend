@@ -10,7 +10,7 @@
 
 import styles from "../../styles/messageInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import BoxStyled from "@shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import EmojiInput from "@shared/EmojiInput";
 import FormStyled from "@shared/FormStyled";
 import { useRef, useState, useEffect } from "react";
@@ -49,12 +49,12 @@ interface EnhancedMessageInputProps {
  * @param {EnhancedMessageInputProps} props - The props for the MessageInput component.
  * @returns {JSX.Element} - The rendered message input component.
  */
-const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({ 
-    value, 
-    onChange, 
-    onEnter, 
-    placeholder, 
-    enabled, 
+const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
+    value,
+    onChange,
+    onEnter,
+    placeholder,
+    enabled,
     chatId,
     onTypingStart,
     onTypingStop
@@ -63,17 +63,17 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
     const messageInput = useRef("");
     const [isFocused, setIsFocused] = useState(false);
     const [showTypingIndicator, setShowTypingIndicator] = useState(false);
-    
+
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
-    
+
     // Use typing indicator hook
     const { startTyping, stopTyping } = useTypingIndicator(user.id, chatId);
 
     // Handle input changes with typing detection
     const handleChange = (newValue: string) => {
         onChange(newValue);
-        
+
         // Start typing indicator if user is typing
         if (newValue.trim() && enabled) {
             if (!showTypingIndicator) {
@@ -99,7 +99,7 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
             stopTyping();
             onTypingStop?.();
         }
-        
+
         onEnter(value);
     };
 
@@ -132,7 +132,7 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
     }, [showTypingIndicator, stopTyping, onTypingStop]);
 
     return (
-        <BoxStyled className={classes.inputSection}>
+        <Container className={classes.inputSection}>
             {/* Typing indicator */}
             {showTypingIndicator && (
                 <div className="px-3 py-1 bg-blue-50 border-t border-blue-200">
@@ -146,15 +146,15 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
                     </div>
                 </div>
             )}
-            
+
             {/* User presence indicator */}
             <div className="px-3 py-2 border-t border-gray-200 bg-gray-50">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                         <span className="text-sm text-gray-600">Status:</span>
-                        <PresenceIndicator 
-                            userId={user.id} 
-                            showStatus={true} 
+                        <PresenceIndicator
+                            userId={user.id}
+                            showStatus={true}
                             showTyping={false}
                         />
                     </div>
@@ -180,7 +180,7 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
                     enabled={enabled}
                 />
             </FormStyled>
-        </BoxStyled>
+        </Container>
     );
 };
 

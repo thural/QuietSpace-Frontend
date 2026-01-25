@@ -1,7 +1,6 @@
-import BoxStyled from "@/shared/BoxStyled";
-import InputStyled from "@/shared/InputStyled";
+import { SearchBarSecondary, SearchIcon } from "@/features/search/presentation/styles/SearchBarStyles";
+import { Input } from "../../../../../shared/ui/components";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import styles from "@/features/search/presentation/styles/searchBarStyles";
 import { ChangeEventHandler, FocusEventHandler, useRef } from "react";
 import { PiMagnifyingGlassBold } from "react-icons/pi";
 
@@ -38,21 +37,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
     handleInputFocus,
     placeHolder = "search a topic..."
 }) => {
-    const classes = styles(); // Apply custom styles
     const queryInputRef = useRef<HTMLInputElement>(null); // Create a reference for the input element
 
     return (
-        <BoxStyled className={classes.searchbarSecondary}>
-            <PiMagnifyingGlassBold className={classes.searchIcon} />
-            <InputStyled
-                className={classes.searchInput}
+        <SearchBarSecondary>
+            <SearchIcon>
+                <PiMagnifyingGlassBold />
+            </SearchIcon>
+            <Input
                 placeholder={placeHolder}
                 onFocus={handleInputFocus} // Trigger handleInputFocus on focus
                 onChange={handleInputChange} // Trigger handleInputChange on input change
                 onBlur={handleInputBlur} // Trigger handleInputBlur on blur
                 ref={queryInputRef} // Assign the input reference
             />
-        </BoxStyled>
+        </SearchBarSecondary>
     );
 }
 

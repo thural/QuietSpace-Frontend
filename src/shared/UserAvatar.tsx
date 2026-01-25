@@ -1,4 +1,4 @@
-import { Avatar } from "@mantine/core"
+import { Avatar } from "@/shared/ui/components"
 import { GenericWrapper } from "@shared-types/sharedComponentTypes"
 
 const UserAvatar: React.FC<GenericWrapper> = ({

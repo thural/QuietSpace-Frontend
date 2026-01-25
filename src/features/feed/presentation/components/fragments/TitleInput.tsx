@@ -1,4 +1,4 @@
-import TextInputStyled from "@/shared/TextInputStyled";
+import { Input } from "../../../../../shared/ui/components";
 import useStyles from "../../styles/titleInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 
@@ -28,15 +28,14 @@ const TitleInput: React.FC<TitleInputProps> = ({ value = "", handleChange }) => 
     const classes = useStyles();
 
     return (
-        <TextInputStyled
+        <Input
             className={classes.titleInput}
             name="title"
             minLength="1"
             maxLength="32"
-            isStyled={false}
             value={value}
             placeholder="type a title"
-            handleChange={handleChange}
+            onChange={handleChange}
         />
     );
 }

@@ -2,11 +2,11 @@ import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
 import { useCurrentProfile } from "@features/feed/application/hooks/useUserProfile";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import OutlineButton from "@/shared/buttons/OutlineButton";
+import { Button } from "../../shared/ui/components";
 import DefaultContainer from "@/shared/DefaultContainer";
 import { PiSignOut } from "react-icons/pi";
 import { Link } from "react-router-dom";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "@/shared/ui/components/layout/Container";
 import LoaderStyled from "@/shared/LoaderStyled";
 import UserConnections from "./components/connections/UserConnections";
 import FollowsSection from "./components/follow-section/FollowSection";
@@ -57,9 +57,9 @@ const UserProfileContainer = () => {
         <DefaultContainer>
             <UserDetailsSection user={signedUser} /> {/* Display user details */}
             <FollowsSection {...data}>
-                <BoxStyled className="signout-icon" onClick={handleSignout}>
+                <div className="signout-icon" onClick={handleSignout} style={{ cursor: 'pointer' }}>
                     <PiSignOut /> {/* Sign out icon */}
-                </BoxStyled>
+                </div>
             </FollowsSection>
             {/* Overlay for displaying followings */}
             <Overlay isOpen={viewFollowings && !!followingsCount} onClose={toggleFollowings}>
@@ -71,11 +71,12 @@ const UserProfileContainer = () => {
             </Overlay>
             <ProfileControls>
                 <Link style={{ width: "100%", textDecoration: "none" }} to="/settings">
-                    <OutlineButton
-                        color="rgba(32, 32, 32, 1)"
+                    <Button
+                        variant="secondary"
                         fullWidth
-                        name="Edit Profile" // Button for editing profile
-                    />
+                    >
+                        Edit Profile
+                    </Button>
                 </Link>
             </ProfileControls>
             <UserProfileTabs userId={signedUser.id} /> {/* Render user profile tabs */}

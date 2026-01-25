@@ -1,5 +1,5 @@
 import { ResId } from "@/shared/api/models/commonNative";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import PostMessageSkeleton from "@/shared/PostMessageSkeleton";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
@@ -65,9 +65,9 @@ const PostMessageCard: React.FC<PostMessageCardProps> = ({ postId, lineClamp = 7
 
     // Render the PostCardBase component with the fetched post data
     return (
-        <BoxStyled style={mergedStyle}>
+        <Container style={mergedStyle}>
             <PostCardBase post={post} lineClamp={lineClamp} />
-        </BoxStyled>
+        </Container>
     );
 }
 

@@ -1,6 +1,6 @@
 import useStyles from "../../styles/commentControlStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "@/shared/ui/components/layout/Container";
 import Conditional from "@/shared/Conditional";
 import Typography from "@/shared/Typography";
 
@@ -38,19 +38,17 @@ const CommentControls: React.FC<CommentControlsProps> = ({
     const classes = useStyles();
 
     return (
-        <BoxStyled className={classes.commentOptions}>
+        <Container className={classes.commentOptions}>
             <Typography className="comment-like" onClick={handleLike}>
                 {isLiked ? "unlike" : "like"}
             </Typography>
-            <Typography className="comment-reply" onClick={handleReply}>
-                reply
-            </Typography>
+            <Typography onClick={handleReply}>reply</Typography>
             <Conditional isEnabled={isOwner}>
-                <Typography className="comment-delete" onClick={hanldeDelete}>
+                <Typography onClick={hanldeDelete}>
                     delete
                 </Typography>
             </Conditional>
-        </BoxStyled>
+        </Container>
     );
 };
 

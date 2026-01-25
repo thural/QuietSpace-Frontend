@@ -2,9 +2,8 @@ import { MessageResponse } from "@/features/chat/data/models/chat";
 import { ResId } from "@/shared/api/models/commonNative";
 import PostMessageCard from "@/features/feed/presentation/components/post/PostMessageCard";
 import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/shared/InfinateScrollContainer";
-import styles from "../../styles/messageListStyles";
+import { Messages } from "../../styles/MessageListStyles";
 import { extractId } from "@/shared/utils/stringUtils";
-import BoxStyled from "@shared/BoxStyled";
 import MessageBox from "./MessageBox";
 import { PresenceIndicator } from "@features/chat/components/ChatPresenceComponents";
 import React, { useState, useEffect } from "react";
@@ -37,11 +36,10 @@ const MessagesList: React.FC<MessageListProps> = ({
     hasNextPage,
     fetchNextPage
 }) => {
-    const classes = styles();
     const { chatId } = useParams();
     const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
     const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
-    
+
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
 
@@ -93,7 +91,7 @@ const MessagesList: React.FC<MessageListProps> = ({
         };
 
     return (
-        <BoxStyled className={classes.messages}>
+        <Messages>
             {/* Real-time status bar */}
             {(onlineUsers.size > 0 || typingUsers.size > 0) && (
                 <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
@@ -146,7 +144,7 @@ const MessagesList: React.FC<MessageListProps> = ({
                     const appliedStyle = getAppliedStyle(message.senderId, signedUserId);
                     const isOnline = onlineUsers.has(message.senderId);
                     const isTyping = typingUsers.has(message.senderId);
-                    
+
                     return (
                         <div key={key} className="relative">
                             {message.text.startsWith("##MP##") ? (
@@ -154,7 +152,7 @@ const MessagesList: React.FC<MessageListProps> = ({
                             ) : (
                                 <MessageBox style={appliedStyle} message={message} />
                             )}
-                            
+
                             {/* Presence indicator for message sender */}
                             {message.senderId !== signedUserId && (
                                 <div className="absolute top-2 right-2">
@@ -166,7 +164,7 @@ const MessagesList: React.FC<MessageListProps> = ({
                                     />
                                 </div>
                             )}
-                            
+
                             {/* Online status indicator */}
                             {message.senderId !== signedUserId && isOnline && (
                                 <div className="absolute bottom-2 right-2">
@@ -177,7 +175,7 @@ const MessagesList: React.FC<MessageListProps> = ({
                     );
                 })}
             </InfinateScrollContainer>
-        </BoxStyled>
+        </Messages>
     );
 };
 

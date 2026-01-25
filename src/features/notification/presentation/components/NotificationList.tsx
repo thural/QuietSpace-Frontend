@@ -3,7 +3,7 @@ import { NotificationType } from "@/features/notification/data/models/notificati
 import InfinateScrollContainer from "@shared/InfinateScrollContainer";
 import { useGetNotifications } from "@services/data/useNotificationData";
 import { Category, pickNotificationFilter } from "@/shared/utils/notificationUtils";
-import Typography from "@shared/Typography";
+import { Text } from "../../../../shared/ui/components";
 import { Center } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import CommentNotification from "./fragments/CommentNotification";
@@ -36,7 +36,7 @@ const NotificationList: React.FC = () => {
     if (content.length === 0) {
         return (
             <Center>
-                <Typography ta="center">You have no Notifications yet</Typography>
+                <Text textAlign="center">You have no Notifications yet</Text>
             </Center>
         );
     }

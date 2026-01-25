@@ -1,5 +1,5 @@
 import { PostResponse } from "@/features/feed/data/models/post";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import Conditional from "@/shared/Conditional";
 import Typography from "@/shared/Typography";
 import { ConsumerFn } from "@/shared/types/genericTypes";
@@ -30,7 +30,7 @@ interface PostContentProps {
  */
 const PostContent: React.FC<PostContentProps> = ({ handleContentClick, post }) => {
     return (
-        <BoxStyled onClick={handleContentClick}>
+        <Container onClick={handleContentClick}>
             <Typography style={{ margin: "1rem 0" }}>{post.text}</Typography>
             <Conditional isEnabled={!!post.photo}>
                 <PhotoDisplay photoResponse={post.photo} />
@@ -38,7 +38,7 @@ const PostContent: React.FC<PostContentProps> = ({ handleContentClick, post }) =
             <Conditional isEnabled={!!post.poll}>
                 <PollBox postId={post.id} pollData={post.poll} />
             </Conditional>
-        </BoxStyled>
+        </Container>
     );
 };
 

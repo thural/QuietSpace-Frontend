@@ -7,12 +7,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAnalytics } from './AnalyticsProvider';
-import BoxStyled from '@shared/BoxStyled';
+import { Container } from "../../../../../shared/ui/components";
 import Typography from '@shared/Typography';
-import { 
-    FiTrendingUp, 
-    FiTrendingDown, 
-    FiActivity, 
+import {
+    FiTrendingUp,
+    FiTrendingDown,
+    FiActivity,
     FiZap,
     FiUsers,
     FiMessageCircle,
@@ -44,11 +44,11 @@ interface MetricCardProps {
 /**
  * Individual metric card component
  */
-const MetricCard: React.FC<MetricCardProps> = ({ 
-    title, 
-    value, 
-    icon, 
-    trend, 
+const MetricCard: React.FC<MetricCardProps> = ({
+    title,
+    value,
+    icon,
+    trend,
     status = 'good',
     color = 'blue'
 }) => {
@@ -65,41 +65,40 @@ const MetricCard: React.FC<MetricCardProps> = ({
         return isPositive ? (
             <FiTrendingUp className=\"text-green-500\" />
         ) : (
-            <FiTrendingDown className=\"text-red-500\" />
+    <FiTrendingDown className=\"text-red-500\" />
         );
     };
 
-    return (
-        <BoxStyled className={`p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow`}>
-            <div className=\"flex items-center justify-between mb-2\">
-                <div className=\"flex items-center space-x-2\">
-                    <div className={`p-2 rounded-lg ${getStatusColor(status)}`}>
-                        {icon}
-                    </div>
-                    <Typography className=\"text-sm text-gray-600\">{title}</Typography>
-                </div>
-                
-                {trend && (
-                    <div className=\"flex items-center space-x-1\">
-                        {getTrendIcon(trend.isPositive)}
-                        <Typography className={`text-sm font-medium ${
-                            trend.isPositive ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                            {trend.isPositive ? '+' : ''}{trend.value}%
-                        </Typography>
-                    </div>
+return (
+    <Container className={`p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow`}>
+        <div className=\"flex items-center justify-between mb-2\">
+        <div className=\"flex items-center space-x-2\">
+        <div className={`p-2 rounded-lg ${getStatusColor(status)}`}>
+            {icon}
+        </div>
+        <Typography className=\"text-sm text-gray-600\">{title}</Typography>
+                </div >
+
+    { trend && (
+        <div className=\"flex items-center space-x-1\">
+{ getTrendIcon(trend.isPositive) }
+<Typography className={`text-sm font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'
+    }`}>
+    {trend.isPositive ? '+' : ''}{trend.value}%
+</Typography>
+                    </div >
                 )}
-            </div>
-            
-            <Typography className=\"text-2xl font-bold text-gray-900\">{value}</Typography>
-        </BoxStyled>
+            </div >
+
+    <Typography className=\"text-2xl font-bold text-gray-900\">{value}</Typography>
+        </Container >
     );
 };
 
 /**
  * Metrics Display component that shows real-time chat metrics
  */
-const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ 
+const MetricsDisplay: React.FC<MetricsDisplayProps> = ({
     className = '',
     showTrends = true,
     compact = false,
@@ -112,15 +111,15 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({
     // Calculate trends
     useEffect(() => {
         const currentMetrics = getMetrics();
-        
+
         if (previousMetrics) {
             const newTrends: Record<string, any> = {};
-            
+
             // Calculate percentage changes
             Object.keys(currentMetrics).forEach(key => {
                 const currentValue = currentMetrics[key as keyof typeof currentMetrics];
                 const previousValue = previousMetrics[key];
-                
+
                 if (typeof currentValue === 'number' && typeof previousValue === 'number' && previousValue > 0) {
                     const change = ((currentValue - previousValue) / previousValue) * 100;
                     newTrends[key] = {
@@ -129,10 +128,10 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({
                     };
                 }
             });
-            
+
             setTrends(newTrends);
         }
-        
+
         setPreviousMetrics(currentMetrics);
     }, [state.metrics]);
 
@@ -161,170 +160,174 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({
         return (
             <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 ${className}`}>
                 <div className=\"flex items-center space-x-2 p-3 bg-blue-50 rounded-lg\">
-                    <FiMessageCircle className=\"text-blue-600\" />
-                    <div>
-                        <Typography className=\"text-xs text-gray-600\">Messages</Typography>
-                        <Typography className=\"text-sm font-bold\">{metrics.totalMessages.toLocaleString()}</Typography>
-                    </div>
-                </div>
-                
-                <div className=\"flex items-center space-x-2 p-3 bg-green-50 rounded-lg\">
-                    <FiUsers className=\"text-green-600\" />
-                    <div>
-                        <Typography className=\"text-xs text-gray-600\">Active</Typography>
-                        <Typography className=\"text-sm font-bold\">{metrics.activeUsers}</Typography>
-                    </div>
-                </div>
-                
-                <div className=\"flex items-center space-x-2 p-3 bg-purple-50 rounded-lg\">
-                    <FiActivity className=\"text-purple-600\" />
-                    <div>
-                        <Typography className=\"text-xs text-gray-600\">Performance</Typography>
-                        <Typography className=\"text-sm font-bold\">{metrics.performanceScore}%</Typography>
-                    </div>
-                </div>
-                
-                <div className=\"flex items-center space-x-2 p-3 bg-yellow-50 rounded-lg\">
-                    <FiZap className=\"text-yellow-600\" />
-                    <div>
-                        <Typography className=\"text-xs text-gray-600\">Cache</Typography>
-                        <Typography className=\"text-sm font-bold\">{metrics.cacheHitRate}%</Typography>
-                    </div>
-                </div>
-            </div>
+                <FiMessageCircle className=\"text-blue-600\" />
+                <div>
+                    <Typography className=\"text-xs text-gray-600\">Messages</Typography>
+                <Typography className=\"text-sm font-bold\">{metrics.totalMessages.toLocaleString()}</Typography>
+                    </div >
+                </div >
+
+    <div className=\"flex items-center space-x-2 p-3 bg-green-50 rounded-lg\">
+        < FiUsers className =\"text-green-600\" />
+            < div >
+            <Typography className=\"text-xs text-gray-600\">Active</Typography>
+                < Typography className =\"text-sm font-bold\">{metrics.activeUsers}</Typography>
+                    </div >
+                </div >
+
+    <div className=\"flex items-center space-x-2 p-3 bg-purple-50 rounded-lg\">
+        < FiActivity className =\"text-purple-600\" />
+            < div >
+            <Typography className=\"text-xs text-gray-600\">Performance</Typography>
+                < Typography className =\"text-sm font-bold\">{metrics.performanceScore}%</Typography>
+                    </div >
+                </div >
+
+    <div className=\"flex items-center space-x-2 p-3 bg-yellow-50 rounded-lg\">
+        < FiZap className =\"text-yellow-600\" />
+            < div >
+            <Typography className=\"text-xs text-gray-600\">Cache</Typography>
+                < Typography className =\"text-sm font-bold\">{metrics.cacheHitRate}%</Typography>
+                    </div >
+                </div >
+            </div >
         );
     }
 
-    return (
-        <div className={`space-y-6 ${className}`}>
-            {/* Header */}
-            <div className=\"flex items-center justify-between\">
-                <div className=\"flex items-center space-x-3\">
-                    <FiBarChart2 className=\"text-2xl text-gray-600\" />
-                    <div>
-                        <Typography type=\"h4\">Real-time Metrics</Typography>
-                        <Typography className=\"text-sm text-gray-500\">
-                            Last updated: {state.lastUpdated?.toLocaleTimeString() || 'Never'}
-                        </Typography>
-                    </div>
-                </div>
-                
-                {state.isLoading && (
-                    <div className=\"flex items-center space-x-2 text-blue-600\">
-                        <FiActivity className=\"animate-spin\" />
-                        <Typography className=\"text-sm\">Updating...</Typography>
+return (
+    <div className={`space-y-6 ${className}`}>
+        {/* Header */}
+        <div className=\"flex items-center justify-between\">
+        <div className=\"flex items-center space-x-3\">
+        <FiBarChart2 className=\"text-2xl text-gray-600\" />
+        <div>
+            <Typography type=\"h4\">Real-time Metrics</Typography>
+        <Typography className=\"text-sm text-gray-500\">
+        Last updated: {state.lastUpdated?.toLocaleTimeString() || 'Never'}
+    </Typography>
+                    </div >
+                </div >
+
+{
+    state.isLoading && (
+        <div className=\"flex items-center space-x-2 text-blue-600\">
+        <FiActivity className =\"animate-spin\" />
+        <Typography className =\"text-sm\">Updating...</Typography>
                     </div>
                 )}
-            </div>
+            </div >
 
-            {/* Primary Metrics */}
-            <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4\">
-                <MetricCard
-                    title=\"Total Messages\"
-                    value={metrics.totalMessages.toLocaleString()}
-                    icon={<FiMessageCircle />}
-                    trend={showTrends ? trends.totalMessages : undefined}
-                    color=\"blue\"
-                />
-                
-                <MetricCard
-                    title=\"Active Users\"
-                    value={metrics.activeUsers}
-                    icon={<FiUsers />}
-                    trend={showTrends ? trends.activeUsers : undefined}
-                    color=\"green\"
-                />
-                
-                <MetricCard
-                    title=\"Engagement Rate\"
-                    value={`${metrics.engagementRate}%`}
-                    icon={<FiTrendingUp />}
-                    trend={showTrends ? trends.engagementRate : undefined}
-                    color=\"purple\"
-                />
-                
-                <MetricCard
-                    title=\"Performance Score\"
-                    value={`${metrics.performanceScore}%`}
-                    icon={<FiActivity />}
-                    trend={showTrends ? trends.performanceScore : undefined}
-                    status={getPerformanceStatus(metrics.performanceScore)}
-                />
-            </div>
+    {/* Primary Metrics */ }
+    < div className =\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4\">
+        < MetricCard
+title =\"Total Messages\"
+value = { metrics.totalMessages.toLocaleString() }
+icon = {< FiMessageCircle />}
+trend = { showTrends? trends.totalMessages : undefined }
+color =\"blue\"
+    />
 
-            {/* Secondary Metrics */}
-            <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">
-                <MetricCard
-                    title=\"Avg Response Time\"
-                    value={`${metrics.averageResponseTime}ms`}
-                    icon={<FiClock />}
-                    trend={showTrends ? trends.averageResponseTime : undefined}
-                    color=\"yellow\"
-                />
-                
-                <MetricCard
-                    title=\"Cache Hit Rate\"
-                    value={`${metrics.cacheHitRate}%`}
-                    icon={<FiZap />}
-                    trend={showTrends ? trends.cacheHitRate : undefined}
-                    status={getCacheStatus(metrics.cacheHitRate)}
-                />
-                
-                <MetricCard
-                    title=\"Error Rate\"
-                    value={`${metrics.errorRate}%`}
-                    icon={<FiAlertCircle />}
-                    trend={showTrends ? trends.errorRate : undefined}
-                    status={getErrorStatus(metrics.errorRate)}
-                />
-            </div>
+    <MetricCard
+        title=\"Active Users\"
+value = { metrics.activeUsers }
+icon = {< FiUsers />}
+trend = { showTrends? trends.activeUsers : undefined }
+color =\"green\"
+    />
 
-            {/* Status Summary */}
-            <div className=\"bg-gray-50 p-4 rounded-lg\">
-                <Typography type=\"h5\" className=\"mb-3\">System Status</Typography>
-                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
-                    <div className=\"flex items-center space-x-3\">
-                        <div className={`w-3 h-3 rounded-full ${
-                            metrics.performanceScore >= 90 ? 'bg-green-500' :
+    <MetricCard
+        title=\"Engagement Rate\"
+value = {`${metrics.engagementRate}%`}
+icon = {< FiTrendingUp />}
+trend = { showTrends? trends.engagementRate : undefined }
+color =\"purple\"
+    />
+
+    <MetricCard
+        title=\"Performance Score\"
+value = {`${metrics.performanceScore}%`}
+icon = {< FiActivity />}
+trend = { showTrends? trends.performanceScore : undefined }
+status = { getPerformanceStatus(metrics.performanceScore) }
+    />
+            </div >
+
+    {/* Secondary Metrics */ }
+    < div className =\"grid grid-cols-1 md:grid-cols-3 gap-4\">
+        < MetricCard
+title =\"Avg Response Time\"
+value = {`${metrics.averageResponseTime}ms`}
+icon = {< FiClock />}
+trend = { showTrends? trends.averageResponseTime : undefined }
+color =\"yellow\"
+    />
+
+    <MetricCard
+        title=\"Cache Hit Rate\"
+value = {`${metrics.cacheHitRate}%`}
+icon = {< FiZap />}
+trend = { showTrends? trends.cacheHitRate : undefined }
+status = { getCacheStatus(metrics.cacheHitRate) }
+    />
+
+    <MetricCard
+        title=\"Error Rate\"
+value = {`${metrics.errorRate}%`}
+icon = {< FiAlertCircle />}
+trend = { showTrends? trends.errorRate : undefined }
+status = { getErrorStatus(metrics.errorRate) }
+    />
+            </div >
+
+    {/* Status Summary */ }
+    < div className =\"bg-gray-50 p-4 rounded-lg\">
+        < Typography type =\"h5\" className=\"mb-3\">System Status</Typography>
+            < div className =\"grid grid-cols-1 md:grid-cols-2 gap-4\">
+                < div className =\"flex items-center space-x-3\">
+                    < div className = {`w-3 h-3 rounded-full ${metrics.performanceScore >= 90 ? 'bg-green-500' :
                             metrics.performanceScore >= 75 ? 'bg-yellow-500' : 'bg-red-500'
                         }`} />
-                        <Typography className=\"text-sm\">
-                            Performance: {metrics.performanceScore >= 90 ? 'Excellent' :
-                                       metrics.performanceScore >= 75 ? 'Good' : 'Needs Attention'}
-                        </Typography>
-                    </div>
-                    
-                    <div className=\"flex items-center space-x-3\">
-                        <div className={`w-3 h-3 rounded-full ${
-                            metrics.cacheHitRate >= 90 ? 'bg-green-500' :
-                            metrics.cacheHitRate >= 75 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`} />
-                        <Typography className=\"text-sm\">
-                            Cache: {metrics.cacheHitRate >= 90 ? 'Optimal' :
-                                   metrics.cacheHitRate >= 75 ? 'Good' : 'Needs Optimization'}
-                        </Typography>
-                    </div>
-                    
-                    <div className=\"flex items-center space-x-3\">
-                        <div className={`w-3 h-3 rounded-full ${
-                            metrics.errorRate <= 2 ? 'bg-green-500' :
-                            metrics.errorRate <= 5 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`} />
-                        <Typography className=\"text-sm\">
-                            Errors: {metrics.errorRate <= 2 ? 'Minimal' :
-                                    metrics.errorRate <= 5 ? 'Acceptable' : 'High'}
-                        </Typography>
-                    </div>
-                    
-                    <div className=\"flex items-center space-x-3\">
-                        <div className=\"w-3 h-3 rounded-full bg-green-500\" />
-                        <Typography className=\"text-sm\">
-                            System: Operational
-                        </Typography>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            < Typography className =\"text-sm\">
+Performance: {
+    metrics.performanceScore >= 90 ? 'Excellent' :
+    metrics.performanceScore >= 75 ? 'Good' : 'Needs Attention'
+}
+                        </Typography >
+                    </div >
+
+    <div className=\"flex items-center space-x-3\">
+        < div className = {`w-3 h-3 rounded-full ${metrics.cacheHitRate >= 90 ? 'bg-green-500' :
+                metrics.cacheHitRate >= 75 ? 'bg-yellow-500' : 'bg-red-500'
+            }`} />
+                < Typography className =\"text-sm\">
+Cache: {
+    metrics.cacheHitRate >= 90 ? 'Optimal' :
+    metrics.cacheHitRate >= 75 ? 'Good' : 'Needs Optimization'
+}
+                        </Typography >
+                    </div >
+
+    <div className=\"flex items-center space-x-3\">
+        < div className = {`w-3 h-3 rounded-full ${metrics.errorRate <= 2 ? 'bg-green-500' :
+                metrics.errorRate <= 5 ? 'bg-yellow-500' : 'bg-red-500'
+            }`} />
+                < Typography className =\"text-sm\">
+Errors: {
+    metrics.errorRate <= 2 ? 'Minimal' :
+    metrics.errorRate <= 5 ? 'Acceptable' : 'High'
+}
+                        </Typography >
+                    </div >
+
+    <div className=\"flex items-center space-x-3\">
+        < div className =\"w-3 h-3 rounded-full bg-green-500\" />
+            < Typography className =\"text-sm\">
+System: Operational
+                        </Typography >
+                    </div >
+                </div >
+            </div >
+        </div >
     );
 };
 

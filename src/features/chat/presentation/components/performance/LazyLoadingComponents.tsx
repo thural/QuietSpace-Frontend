@@ -6,7 +6,8 @@
  */
 
 import React, { Suspense, lazy, ComponentType, Component, ReactNode } from 'react';
-import BoxStyled from '@shared/BoxStyled';
+import { Container } from '@/shared/ui/components/layout/Container';
+import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
 import Typography from '@shared/Typography';
 import { FiLoader, FiAlertTriangle, FiRefreshCw } from 'react-icons/fi';
 
@@ -22,8 +23,42 @@ interface LazyLoadConfig {
     threshold?: number;
 }
 
-// Default configuration
-const DEFAULT_CONFIG: LazyLoadConfig = {
+// Default configuration - will be set after component definitions
+let DEFAULT_CONFIG: LazyLoadConfig;
+
+/**
+ * Default loading fallback component
+ */
+const DefaultLoadingFallback: React.FC = () => (
+    <Container className="flex items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex flex-col items-center space-y-3">
+            <FiLoader className="text-3xl text-blue-600 animate-spin" />
+            <Typography className="text-gray-600">Loading component...</Typography>
+        </div>
+    </Container>
+);
+
+/**
+ * Default error fallback component
+ */
+const DefaultErrorFallback: React.FC = () => (
+    <Container className="flex items-center justify-center p-8 bg-red-50 rounded-lg border border-red-200">
+        <div className="flex flex-col items-center space-y-3">
+            <FiAlertTriangle className="text-3xl text-red-600" />
+            <Typography className="text-red-700">Failed to load component</Typography>
+            <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-2"
+            >
+                <FiRefreshCw />
+                <span>Retry</span>
+            </button>
+        </div>
+    </Container>
+);
+
+// Initialize default configuration after component definitions
+DEFAULT_CONFIG = {
     fallback: <DefaultLoadingFallback />,
     errorFallback: <DefaultErrorFallback />,
     delay: 200,
@@ -33,37 +68,6 @@ const DEFAULT_CONFIG: LazyLoadConfig = {
     rootMargin: '50px',
     threshold: 0.1
 };
-
-/**
- * Default loading fallback component
- */
-const DefaultLoadingFallback: React.FC = () => (
-    <BoxStyled className=\"flex items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200\">
-        <div className=\"flex flex-col items-center space-y-3\">
-            <FiLoader className=\"text-3xl text-blue-600 animate-spin\" />
-            <Typography className=\"text-gray-600\">Loading component...</Typography>
-        </div>
-    </BoxStyled>
-);
-
-/**
- * Default error fallback component
- */
-const DefaultErrorFallback: React.FC = () => (
-    <BoxStyled className=\"flex items-center justify-center p-8 bg-red-50 rounded-lg border border-red-200\">
-        <div className=\"flex flex-col items-center space-y-3\">
-            <FiAlertTriangle className=\"text-3xl text-red-600\" />
-            <Typography className=\"text-red-700\">Failed to load component</Typography>
-            <button
-                onClick={() => window.location.reload()}
-                className=\"px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-2\"
-            >
-                <FiRefreshCw />
-                <span>Retry</span>
-            </button>
-        </div>
-    </BoxStyled>
-);
 
 /**
  * Error boundary for lazy loaded components
@@ -120,16 +124,16 @@ interface LazyLoadWrapperProps {
     className?: string;
 }
 
-const LazyLoadWrapper: React.FC<LazyLoadWrapperProps> = ({ 
-    children, 
+const LazyLoadWrapper: React.FC<LazyLoadWrapperProps> = ({
+    children,
     config = DEFAULT_CONFIG,
     className = ''
 }) => {
     const { maxRetries } = config;
 
     return (
-        <LazyErrorBoundary 
-            fallback={config.errorFallback} 
+        <LazyErrorBoundary
+            fallback={config.errorFallback}
             maxRetries={maxRetries}
         >
             <Suspense fallback={config.fallback}>
@@ -149,7 +153,7 @@ export function withLazyLoad<P extends object>(
     config: LazyLoadConfig = {}
 ) {
     const LazyComponent = lazy(importFunc);
-    
+
     return React.forwardRef<any, P>((props, ref) => (
         <LazyLoadWrapper config={config}>
             <LazyComponent {...props} ref={ref} />
@@ -164,13 +168,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
     importFunc: () => Promise<{ default: T }>,
     config: LazyLoadConfig = {}
 ) {
-    return lazy(importFunc, {
-        suspense: (
-            <LazyLoadWrapper config={config}>
-                {config.fallback || <DefaultLoadingFallback />}
-            </LazyLoadWrapper>
-        )
-    });
+    return lazy(importFunc);
 }
 
 /**
@@ -363,20 +361,20 @@ export const LazyLoadWithRetry: React.FC<LazyLoadWithRetryProps> = ({
 
     if (error) {
         return (
-            <BoxStyled className=\"flex flex-col items-center justify-center p-8 bg-red-50 rounded-lg border border-red-200\">
-            <FiAlertTriangle className=\"text-3xl text-red-600 mb-3\" />
-            <Typography className=\"text-red-700 mb-3\">Failed to load component</Typography>
-            <Typography className=\"text-sm text-gray-600 mb-4\">{error.message}</Typography>
-            <Typography className=\"text-sm text-gray-500 mb-4\">Retry {retryCount} of {maxRetries}</Typography>
-            <button
-                onClick={handleRetry}
-                className=\"px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-2\"
-            >
-                <FiRefreshCw className={retryCount > 0 ? 'animate-spin' : ''} />
-                <span>Retry</span>
-            </button>
-        </BoxStyled>
-    );
+            <FlexContainer className="flex-col items-center justify-center p-8 bg-red-50 rounded-lg border border-red-200">
+                <FiAlertTriangle className="text-3xl text-red-600 mb-3" />
+                <Typography className="text-red-700 mb-3">Failed to load component</Typography>
+                <Typography className="text-sm text-gray-600 mb-4">{error.message}</Typography>
+                <Typography className="text-sm text-gray-500 mb-4">Retry {retryCount} of {maxRetries}</Typography>
+                <button
+                    onClick={handleRetry}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-2"
+                >
+                    <FiRefreshCw className={retryCount > 0 ? 'animate-spin' : ''} />
+                    <span>Retry</span>
+                </button>
+            </FlexContainer>
+        );
     }
 
     return (
@@ -402,7 +400,7 @@ export function useLazyLoadPerformance() {
         const startTime = performance.now();
         return () => {
             const loadTime = performance.now() - startTime;
-            
+
             setMetrics(prev => ({
                 ...prev,
                 loadTime,
@@ -482,7 +480,7 @@ export function createLazyComponentFactory(defaultConfig: Partial<LazyLoadConfig
             const finalConfig = { ...DEFAULT_CONFIG, ...defaultConfig, ...config };
             return createLazyComponent(importFunc, finalConfig);
         },
-        
+
         withHOC: <P extends object>(
             importFunc: () => Promise<{ default: ComponentType<P> }>,
             config: Partial<LazyLoadConfig> = {}
@@ -501,7 +499,7 @@ export const LazyLoadingPatterns = {
         delay: 500,
         rootMargin: '100px'
     },
-    
+
     // For critical components
     critical: {
         fallback: <DefaultLoadingFallback />,
@@ -509,14 +507,14 @@ export const LazyLoadingPatterns = {
         rootMargin: '25px',
         preload: true
     },
-    
+
     // For non-critical components
     nonCritical: {
         fallback: <DefaultLoadingFallback />,
         delay: 1000,
         rootMargin: '200px'
     },
-    
+
     // For image components
     image: {
         fallback: <DefaultLoadingFallback />,

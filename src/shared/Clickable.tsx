@@ -2,7 +2,7 @@ import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef"
 import useStyles from "@/shared/styles/clickableStyles"
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes"
 import { MouseEventHandler } from "react"
-import BoxStyled from "./BoxStyled"
+import { Container } from '@/shared/ui/components/layout/Container';
 import { MenuListStyleProps } from "./ListMenu"
 
 
@@ -26,10 +26,10 @@ const Clickable: React.FC<ClickableProps> = ({
     const classes = useStyles(styleProps);
 
     return (
-        <BoxStyled ref={forwardedRef} className={classes.clickable} onClick={handleClick} {...props}>
+        <Container ref={forwardedRef} className={classes.clickable} onClick={handleClick} {...props}>
             {text && <p>{text}</p>}
             {children}
-        </BoxStyled>
+        </Container>
     )
 }
 

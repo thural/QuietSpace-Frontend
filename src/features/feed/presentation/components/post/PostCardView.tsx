@@ -1,6 +1,6 @@
 import { PostResponse } from "@/features/feed/data/models/post";
 import BatchShareForm from "@/features/chat/presentation/components/forms/BatchSendForm";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import Conditional from "@/shared/Conditional";
 import styles from "../../styles/postStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
@@ -42,7 +42,7 @@ const PostCardView: React.FC<PostCardViewProps> = ({
     } = postData;
 
     return (
-        <BoxStyled id={post.id} className={classes.postCard} onClick={handleNavigation}>
+        <Container id={post.id} className={classes.postCard} onClick={handleNavigation}>
             <PostHeader post={post}>
                 <Conditional isEnabled={!isMenuHidden}>
                     <PostMenu
@@ -59,7 +59,7 @@ const PostCardView: React.FC<PostCardViewProps> = ({
             </Conditional>
             <PostOverlays post={post} postData={postData}>{children}</PostOverlays>
             {children}
-        </BoxStyled>
+        </Container>
     );
 };
 

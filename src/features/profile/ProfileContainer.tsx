@@ -1,7 +1,7 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import OutlineButton from "@/shared/buttons/OutlineButton";
+import { Button } from "../../../../shared/ui/components";
 import Conditional from "@/shared/Conditional";
 import DefaultContainer from "@/shared/DefaultContainer";
 import FollowToggle from "@/shared/FollowToggle";
@@ -60,9 +60,9 @@ function ProfileContainer() {
         return <LoaderStyled />;
     }
 
-    // Styled OutlineButton component for consistency
+    // Styled Button component for consistency
     const OutlineButtonStyled = ({ ...props }) => (
-        <OutlineButton color="gray" fullWidth {...props} />
+        <Button variant="secondary" fullWidth {...props} />
     );
 
     return (

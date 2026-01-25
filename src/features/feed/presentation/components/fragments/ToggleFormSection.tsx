@@ -1,9 +1,9 @@
 import { UserResponse } from "@/features/profile/data/models/user";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import FlexStyled from "@/shared/FlexStyled";
-import InputStyled from "@/shared/InputStyled";
+import { Input } from "../../../../../shared/ui/components";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import LightButton from "@/shared/buttons/LightButton";
+import { Button } from "../../../../../shared/ui/components";
 import { ProcedureFn } from "@/shared/types/genericTypes";
 
 /**
@@ -29,18 +29,18 @@ interface CreatePostSection {
  * @returns {JSX.Element} - The rendered ToggleFormSection component.
  */
 const ToggleFormSection: React.FC<CreatePostSection> = ({ user, handleClick }) => (
-    <BoxStyled style={{ margin: "1rem 0" }}>
+    <Container style={{ margin: "1rem 0" }}>
         <FlexStyled justify="space-between" gap="1rem">
             <UserAvatarPhoto userId={user.id} />
-            <InputStyled
+            <Input
                 variant="unstyled"
                 style={{ width: "100%" }}
                 placeholder="start a topic..."
                 onClick={handleClick}
             />
-            <LightButton name="post" handleClick={handleClick} />
+            <Button variant="light" name="post" handleClick={handleClick} />
         </FlexStyled>
-    </BoxStyled>
+    </Container>
 );
 
 export default ToggleFormSection;

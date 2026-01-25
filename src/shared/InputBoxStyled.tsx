@@ -1,22 +1,12 @@
-import { createUseStyles } from "react-jss";
-import BoxStyled from "./BoxStyled"
+import React from 'react';
+import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 const InputBoxStyled: React.FC<GenericWrapper> = ({ children }) => {
-    const useStyles = createUseStyles({
-        inputBox: {
-            display: 'flex',
-            flexFlow: 'column nowrap',
-            gap: '0.5rem',
-        },
-    });
-
-    const classes = useStyles();
-
     return (
-        < BoxStyled className={classes.inputBox} >
+        <FlexContainer flexDirection="column" gap="0.5rem">
             {children}
-        </BoxStyled >
+        </FlexContainer>
     )
 }
 

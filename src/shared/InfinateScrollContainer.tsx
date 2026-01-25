@@ -3,7 +3,7 @@ import withErrorBoundary from "@/services/hook/shared/withErrorBoundary";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { useEffect } from "react";
-import BoxStyled from "./BoxStyled";
+import { Container } from "@/shared/ui/components/layout/Container";
 import Conditional from "./Conditional";
 import LoaderStyled from "./LoaderStyled";
 
@@ -59,7 +59,7 @@ const InfinateScrollContainer: React.FC<InfinateScrollContainerProps> = ({
     return (
         <>
             {children} {/* Render child components */}
-            <BoxStyled ref={wasSeenRef} /> {/* Reference for visibility detection */}
+            <Container ref={wasSeenRef} /> {/* Reference for visibility detection */}
             <Conditional isEnabled={isFetchingNextPage}>
                 <LoaderStyled /> {/* Show loader while fetching next page */}
             </Conditional>

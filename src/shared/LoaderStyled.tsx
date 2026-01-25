@@ -1,10 +1,8 @@
-import { Center, Loader } from "@mantine/core"
+import { Loader } from "@/shared/ui/components"
 
 const LoaderStyled = ({ color = "gray", size = 30 }) => {
     return (
-        <Center>
-            <Loader color={color} size={size} />
-        </Center>
+        <Loader color={color} size={size} />
     );
 }
 

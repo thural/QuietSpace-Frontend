@@ -1,7 +1,8 @@
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import BoxStyled from "@/shared/BoxStyled";
-import Typography from "@/shared/Typography";
-import styles from "@auth/presentation/styles/authStyles";
+import { Container } from "@/shared/ui/components/layout/Container";
+import { Text } from "@/shared/ui/components/typography/Text";
+import { Title } from "@/shared/ui/components/typography/Title";
+import { AuthContainer as StyledAuthContainer, FormContainer } from "@auth/presentation/styles/AuthStyles";
 import { useLocation } from "react-router-dom";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";
@@ -16,7 +17,6 @@ import { SecurityMonitor } from "./SecurityMonitor";
  * @returns {JSX.Element} - The rendered authentication container.
  */
 const AuthContainer = () => {
-    const classes = styles();
     const location = useLocation();
 
     /**
@@ -43,21 +43,21 @@ const AuthContainer = () => {
     };
 
     return (
-        <BoxStyled className={classes.auth}>
-            <BoxStyled className="greeting-text">
-                <Typography className="brand" size="4rem" type="h1">QuietSpace</Typography>
-                <Typography className="primary-text" size="1.5rem">social media without distraction</Typography>
-                <Typography className="secondary-text">where free speech and privacy is the priority</Typography>
-            </BoxStyled>
+        <StyledAuthContainer>
+            <Container className="greeting-text">
+                <Title className="brand" variant="h1" size="4rem">QuietSpace</Title>
+                <Text className="primary-text" size="1.5rem">social media without distraction</Text>
+                <Text className="secondary-text">where free speech and privacy is the priority</Text>
+            </Container>
             <RenderResult />
-            
+
             {/* Security Monitor - Admin Only */}
             {process.env.NODE_ENV === 'development' && (
-                <BoxStyled className="security-monitor-section" style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
+                <Container className="security-monitor-section" style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
                     <SecurityMonitor />
-                </BoxStyled>
+                </Container>
             )}
-        </BoxStyled>
+        </StyledAuthContainer>
     );
 }
 

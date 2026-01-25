@@ -1,5 +1,5 @@
 import { ConsumerFn } from "@/shared/types/genericTypes"
-import BoxStyled from "./BoxStyled"
+import { Container } from "@/shared/ui/components/layout/Container";
 import { createUseStyles } from "react-jss";
 
 interface CloseButtonProps {
@@ -30,7 +30,7 @@ const CloseButtonStyled: React.FC<CloseButtonProps> = ({ handleToggle }) => {
     const classes = useStyles();
 
     return (
-        <BoxStyled onClick={handleToggle} className={classes.closeButton}>x</BoxStyled>
+        <Container onClick={handleToggle} className={classes.closeButton}>x</Container>
     )
 }
 

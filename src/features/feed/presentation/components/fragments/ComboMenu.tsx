@@ -1,4 +1,4 @@
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "@/shared/ui/components/layout/Container";
 import Clickable from "@/shared/Clickable";
 import ListMenu from "@/shared/ListMenu";
 import { ConsumerFn } from "@/shared/types/genericTypes";
@@ -32,18 +32,18 @@ interface ComboMenuProps {
  */
 const ComboMenu: React.FC<ComboMenuProps> = ({ options, selectedOption, textContent, handleSelect }) => {
     return (
-        <BoxStyled style={{ position: "relative" }}>
+        <Container style={{ position: "relative" }}>
             <ListMenu menuIcon={selectedOption.concat(" ").concat(textContent)}>
                 {options.map((option, index) => (
                     <Clickable
                         key={index}
-                        handleClick={() => handleSelect(option)}
-                        alt={"option"}
-                        text={option}
-                    />
+                        onClick={() => handleSelect(option)}
+                    >
+                        {option}
+                    </Clickable>
                 ))}
             </ListMenu>
-        </BoxStyled>
+        </Container>
     );
 };
 

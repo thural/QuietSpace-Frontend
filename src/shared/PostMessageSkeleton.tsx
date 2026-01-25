@@ -1,17 +1,17 @@
-import { Skeleton } from "@mantine/core";
-import BoxStyled from "./BoxStyled";
+import { Skeleton } from "@/shared/ui/components";
+import { Container } from '@/shared/ui/components/layout/Container';
 
 interface PostMessageSkeletonProps {
     style?: React.CSSProperties
 }
 
 const PostMessageSkeleton: React.FC<PostMessageSkeletonProps> = ({ style }) => (
-    <BoxStyled style={{ ...style, minWidth: '172px', height: '256px' }}>
-        <Skeleton height={50} circle mb="xl" />
-        <Skeleton height={8} radius="xl" />
-        <Skeleton height={8} mt={6} radius="xl" />
-        <Skeleton height={8} mt={6} width="70%" radius="xl" />
-    </BoxStyled >
+    <Container style={{ ...style, minWidth: '172px', height: '256px' }}>
+        <Skeleton width={50} height={50} radius="50%" style={{ marginBottom: '24px' }} />
+        <Skeleton height={8} radius="8px" />
+        <Skeleton height={8} style={{ marginTop: '6px' }} radius="8px" />
+        <Skeleton height={8} style={{ marginTop: '6px', width: '70%' }} radius="8px" />
+    </Container>
 );
 
 export default PostMessageSkeleton;

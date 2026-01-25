@@ -2,14 +2,15 @@ import { ChatResponse } from "@/features/chat/data/models/chat";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import styles from "../../styles/chatCardStyles";
 import useChatCard from "../../styles/useChatCard";
-import BoxStyled from "@shared/BoxStyled";
+import { Container } from "@/shared/ui/components/layout/Container";
+import { FlexContainer } from "@/shared/ui/components/layout/FlexContainer";
 import Typography from "@shared/Typography";
 import { useParams } from "react-router-dom";
 
-const ChatCard: React.FC<{ 
+const ChatCard: React.FC<{
     chat: ChatResponse
     isSelected?: boolean
-    onClick?: () => void 
+    onClick?: () => void
 }> = ({ chat, isSelected = false, onClick }) => {
 
 
@@ -30,13 +31,13 @@ const ChatCard: React.FC<{
     const classes = styles(isActuallySelected);
 
     return (
-        <BoxStyled id={contactId} className={classes.chatCard} onClick={handleClick}>
+        <Container id={contactId} className={classes.chatCard} onClick={handleClick}>
             <UserAvatarPhoto userId={contactId} />
-            <BoxStyled className={classes.chatDetails} style={appliedStyle}>
+            <FlexContainer className={classes.chatDetails} style={appliedStyle}>
                 <Typography size="sm" lineClamp={1}>{username}</Typography>
                 <Typography size="xs" lineClamp={1}>{recentText}</Typography>
-            </BoxStyled>
-        </BoxStyled>
+            </FlexContainer>
+        </Container>
     );
 };
 

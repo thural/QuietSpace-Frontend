@@ -1,8 +1,7 @@
 import { PostRequest } from "@/features/feed/data/models/post";
 import Clickable from "@/shared/Clickable";
 import FlexStyled from "@/shared/FlexStyled";
-import InputBoxStyled from "@/shared/InputBoxStyled";
-import TextInputStyled from "@/shared/TextInputStyled";
+import { Container, Input } from "../../../../../shared/ui/components";
 import { PollView } from "@features/feed/application/hooks/useCreatePostForm";
 import styles from "../../styles/pollIFormStyles";
 import { AnyFunction, ProcedureFn } from "@/shared/types/genericTypes";
@@ -41,37 +40,37 @@ const PollForm: React.FC<PollFormProps> = ({ postData, handleChange, togglePoll,
             className={classes.pollForm}
             style={{ display: pollView.enabled ? "flex" : "none" }}
         >
-            <InputBoxStyled>
-                <TextInputStyled
+            <Container>
+                <Input
                     name="option1"
                     className="poll-input"
                     placeholder="yes"
                     value={postData?.option1 ?? ""}
-                    handleChange={handleChange}
+                    onChange={handleChange}
                 />
-                <TextInputStyled
+                <Input
                     name="option2"
                     className="poll-input"
                     placeholder="no"
                     value={postData?.option2 ?? ""}
-                    handleChange={handleChange}
+                    onChange={handleChange}
                 />
-                <TextInputStyled
+                <Input
                     name="option3"
                     className="poll-input"
                     placeholder="add another option"
                     value={postData?.option3 ?? ""}
-                    handleChange={handleChange}
+                    onChange={handleChange}
                 />
-                <TextInputStyled
+                <Input
                     name="option4"
                     className="poll-input"
                     placeholder="add another option"
                     value={postData?.option4 ?? ""}
-                    handleChange={handleChange}
+                    onChange={handleChange}
                     hidden={!postData?.option3}
                 />
-            </InputBoxStyled>
+            </Container>
             <Clickable className="close-poll" onClick={togglePoll}>remove poll</Clickable>
         </FlexStyled>
     );

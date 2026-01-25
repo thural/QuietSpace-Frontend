@@ -2,9 +2,9 @@ import ChatHeadline from "./ChatHeadline";
 import MessageInput from "./MessageInput";
 import MessagesList from "./MessageList";
 import Placeholder from "./Placeholder";
-import BoxStyled from "@/shared/BoxStyled";
+import { ChatBoard } from "../../styles/ChatPanelStyles";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import Typography from "@/shared/Typography";
+import { Text } from "../../../../shared/ui/components";
 import { useUnifiedChat } from "@features/chat/application/hooks/useUnifiedChat";
 import { MessageInputWithTyping, ChatPresenceBar, PresenceIndicator } from "@features/chat/components/ChatPresenceComponents";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
@@ -22,7 +22,6 @@ import React, { useState } from "react";
  * @returns {JSX.Element} - The rendered chat panel component.
  */
 const ChatPanel = () => {
-    const classes = styles();
     const { chatId } = useParams();
     const [showAnalytics, setShowAnalytics] = useState(false);
 
@@ -124,10 +123,10 @@ const ChatPanel = () => {
         if (isError || error) {
             const errors = chat.getErrorSummary?.();
             return (
-                <ErrorComponent 
+                <ErrorComponent
                     message={`Error loading chat: ${error?.message || 'Unknown error'}`}
                     action={
-                        <button 
+                        <button
                             onClick={handleRetry}
                             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
@@ -144,7 +143,7 @@ const ChatPanel = () => {
             );
         }
 
-        if (isLoading) return <Typography className="system-message" ta="center">loading messages ...</Typography>;
+        if (isLoading) return <Text className="system-message" textAlign="center">loading messages ...</Text>;
         if (!messages?.pages?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
 
         // Flatten all message pages
@@ -159,9 +158,9 @@ const ChatPanel = () => {
         const RenderResult = () => {
             if (messageCount === 0) {
                 return (
-                    <Typography className="system-message" ta="center">
+                    <Text className="system-message" textAlign="center">
                         send your first message to <strong>{recipientName}</strong>
-                    </Typography>
+                    </Text>
                 );
             }
             return (
@@ -176,7 +175,7 @@ const ChatPanel = () => {
         }
 
         return (
-            <BoxStyled className={classes.chatboard}>
+            <ChatBoard>
                 {/* Chat Header with presence */}
                 <div className="border-b border-gray-200 px-4 py-3 bg-white">
                     <div className="flex items-center justify-between">
@@ -191,22 +190,21 @@ const ChatPanel = () => {
                                 </div>
                             </div>
                             {recipientId && (
-                                <PresenceIndicator 
-                                    userId={recipientId} 
-                                    showStatus={true} 
-                                    showTyping={true} 
+                                <PresenceIndicator
+                                    userId={recipientId}
+                                    showStatus={true}
+                                    showTyping={true}
                                 />
                             )}
                         </div>
-                        
+
                         {/* Performance and Analytics */}
                         <div className="flex items-center space-x-2">
                             {performanceSummary && (
-                                <div className={`text-xs px-2 py-1 rounded ${
-                                    performanceSummary.overall === 'excellent' ? 'bg-green-100 text-green-700' :
+                                <div className={`text-xs px-2 py-1 rounded ${performanceSummary.overall === 'excellent' ? 'bg-green-100 text-green-700' :
                                     performanceSummary.overall === 'good' ? 'bg-blue-100 text-blue-700' :
-                                    'bg-yellow-100 text-yellow-700'
-                                }`}>
+                                        'bg-yellow-100 text-yellow-700'
+                                    }`}>
                                     {performanceSummary.overall}
                                 </div>
                             )}
@@ -255,23 +253,23 @@ const ChatPanel = () => {
                 <RenderResult />
 
                 {/* Typing Indicator */}
-                <TypingIndicator 
-                    chatId={validatedChatId} 
+                <TypingIndicator
+                    chatId={validatedChatId}
                     participantIds={participantIds}
                 />
 
                 {/* Presence Bar */}
-                <ChatPresenceBar 
+                <ChatPresenceBar
                     chatId={validatedChatId}
                     participantIds={participantIds}
                 />
 
                 {/* Message Input with Typing */}
-                <MessageInputWithTyping 
+                <MessageInputWithTyping
                     chatId={validatedChatId}
                     onSendMessage={handleSendMessage}
                 />
-            </BoxStyled>
+            </ChatBoard>
         );
     } catch (error: unknown) {
         console.error(error);

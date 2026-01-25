@@ -1,7 +1,7 @@
 import styles from "@/shared/styles/listMenuStyles";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { useState } from "react";
-import BoxStyled from "./BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 
 /**
  * MenuListStyleProps interface.
@@ -77,9 +77,9 @@ const ListMenu: React.FC<ListMenuProps> = ({ menuIcon, styleProps, children }) =
 
     return (
         <>
-            <BoxStyled onClick={toggleDisplay} className={classes.menuIcon}>{menuIcon}</BoxStyled> {/* Menu icon */}
-            <BoxStyled className={classes.menuOverlay} style={{ display }} onClick={hideMenu}></BoxStyled> {/* Overlay for hiding the menu */}
-            <BoxStyled className={classes.menuList} style={{ display }} onClick={hideMenu}>{children}</BoxStyled> {/* Menu items */}
+            <Container onClick={toggleDisplay} className={classes.menuIcon}>{menuIcon}</Container> {/* Menu icon */}
+            <Container className={classes.menuOverlay} style={{ display }} onClick={hideMenu}></Container> {/* Overlay for hiding the menu */}
+            <Container className={classes.menuList} style={{ display }} onClick={hideMenu}>{children}</Container> {/* Menu items */}
         </>
     );
 }

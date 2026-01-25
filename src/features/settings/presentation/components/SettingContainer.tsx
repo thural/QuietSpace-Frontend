@@ -3,11 +3,12 @@ import useStyles from "../styles/settingContainerStyles";
 import { PRIVACY_DESCRIPTION } from "@/shared/utils/dataTemplates";
 import DefaultContainer from "@/shared/DefaultContainer";
 import Typography from "@/shared/Typography";
-import { Tabs, Text } from "@mantine/core";
+import { Tabs } from "@/shared/ui/components";
+import { Text } from "@/shared/ui/components";
 import { PiArrowBendDoubleUpLeft, PiArrowsClockwise, PiLock, PiTag, PiUserCircle, PiXCircle } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import TextInput from "@/features/feed/presentation/components/fragments/TextInput";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "@/shared/ui/components/layout/Container";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import SwitchStyled from "@/shared/SwitchStyled";
 import ProfilePhotoModifier from "./ProfilePhotoModifier";
@@ -55,41 +56,35 @@ function SettingsContainer() {
     return (
         <DefaultContainer>
             <Typography type="h2">settings</Typography>
-            <Tabs orientation="vertical" color="black" onChange={redirectToPage} defaultValue="profile">
+            <Tabs color="black" onChange={redirectToPage} defaultValue="profile">
                 <Tabs.List justify="center" grow>
-                    <Tabs.Tab value="profile" leftSection={<PiUserCircle size={24} />}>
-                        Profile
+                    <Tabs.Tab value="profile" label="Profile" leftSection={<PiUserCircle size={24} />}>
                     </Tabs.Tab>
-                    <Tabs.Tab value="privacy" leftSection={<PiLock size={24} />}>
-                        Privacy
+                    <Tabs.Tab value="privacy" label="Privacy" leftSection={<PiLock size={24} />}>
                     </Tabs.Tab>
-                    <Tabs.Tab value="mentions" leftSection={<PiTag size={24} />}>
-                        Mentions
+                    <Tabs.Tab value="mentions" label="Mentions" leftSection={<PiTag size={24} />}>
                     </Tabs.Tab>
-                    <Tabs.Tab value="sharing" leftSection={<PiArrowsClockwise size={24} />}>
-                        Sharing
+                    <Tabs.Tab value="sharing" label="Sharing" leftSection={<PiArrowsClockwise size={24} />}>
                     </Tabs.Tab>
-                    <Tabs.Tab value="replies" leftSection={<PiArrowBendDoubleUpLeft size={24} />}>
-                        Replies
+                    <Tabs.Tab value="replies" label="Replies" leftSection={<PiArrowBendDoubleUpLeft size={24} />}>
                     </Tabs.Tab>
-                    <Tabs.Tab value="blocking" leftSection={<PiXCircle size={24} />}>
-                        Blocking
+                    <Tabs.Tab value="blocking" label="Blocking" leftSection={<PiXCircle size={24} />}>
                     </Tabs.Tab>
                 </Tabs.List>
 
-                <BoxStyled className={classes.panel}>
+                <Container className={classes.panel}>
                     <Tabs.Panel value="profile">
                         <SettingsPanel isPending={isPending} label="Profile Settings" handleSubmit={handleSubmit}>
                             <ProfilePhotoModifier /> {/* Component for modifying the profile photo */}
-                            <BoxStyled>
+                            <Container>
                                 <Typography type="h4">Bio</Typography>
                                 <TextInput
                                     name="bio"
-                                    minHeight="5rem"
+                                    placeholder={PRIVACY_DESCRIPTION}
                                     handleChange={handleChange}
                                     value={settings.bio}
                                 /> {/* Input for bio */}
-                            </BoxStyled>
+                            </Container>
                         </SettingsPanel>
                     </Tabs.Panel>
 
@@ -120,7 +115,7 @@ function SettingsContainer() {
                     <Tabs.Panel value="blocking">
                         <Text ta="center">blocking settings</Text> {/* Placeholder for blocking settings */}
                     </Tabs.Panel>
-                </BoxStyled>
+                </Container>
             </Tabs>
         </DefaultContainer>
     );

@@ -1,6 +1,5 @@
-import styles from "../../styles/messageInputStyles";
+import { InputSection, InputForm } from "../../styles/MessageInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import BoxStyled from "@shared/BoxStyled";
 import EmojiInput from "@shared/EmojiInput";
 import FormStyled from "@shared/FormStyled";
 import { useRef } from "react";
@@ -32,7 +31,7 @@ interface MessageinputProps {
  */
 const MessageInput: React.FC<MessageinputProps> = ({ value, onChange, onEnter, placeholder, enabled }) => {
     const { chatId } = useParams();
-    
+
     // If chatId is available, use enhanced version with typing indicators
     if (chatId) {
         const EnhancedMessageInput = require('./EnhancedMessageInput').default;
@@ -49,17 +48,15 @@ const MessageInput: React.FC<MessageinputProps> = ({ value, onChange, onEnter, p
             />
         );
     }
-    
+
     // Fallback to basic input if no chatId
-    const classes = styles();
     const messageInput = useRef("");
 
     return (
-        <BoxStyled className={classes.inputSection}>
-            <FormStyled className={classes.inputForm}>
+        <InputSection>
+            <FormStyled>
                 <EmojiInput
                     ref={messageInput}
-                    className={classes.messageInput}
                     value={value}
                     onChange={onChange}
                     cleanOnEnter
@@ -69,7 +66,7 @@ const MessageInput: React.FC<MessageinputProps> = ({ value, onChange, onEnter, p
                     enabled={enabled}
                 />
             </FormStyled>
-        </BoxStyled>
+        </InputSection>
     );
 }
 

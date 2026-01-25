@@ -1,11 +1,11 @@
-import BoxStyled from "../BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 const ErrorContainer: React.FC<GenericWrapper> = ({ children, ...props }) => {
 
-    return <BoxStyled {...props}>
+    return <Container {...props}>
         {children}
-    </BoxStyled>
+    </Container>
 }
 
 export default ErrorContainer

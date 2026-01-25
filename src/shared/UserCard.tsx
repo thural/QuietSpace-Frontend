@@ -1,10 +1,10 @@
 import styles from "@/features/chat/presentation/styles/userCardStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { ResId } from "@/shared/api/models/commonNative";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
+import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
 import { useGetCurrentUser, useGetUserById } from "@/services/data/useUserData";
 import { LoadingOverlay } from "@mantine/core";
-import FlexStyled from "@shared/FlexStyled";
 import UserDetails from "@shared/UserDetails";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -71,20 +71,20 @@ const UserCard: React.FC<UserCardProps> = ({
     if (isLoading || !user) return <LoadingOverlay />;
 
     return (
-        <FlexStyled onClick={handleUserNavigation} className={classes.queryCard} {...props}>
+        <FlexContainer onClick={handleUserNavigation} className={classes.queryCard} {...props}>
             <UserAvatarPhoto userId={userId} /> {/* Display user's avatar */}
-            <BoxStyled>
+            <Container>
                 <UserDetails
                     user={user}
                     scale={5}
                     isDisplayEmail={isDisplayEmail}
                     isDisplayName={isDisplayName}
                 /> {/* Display user details */}
-                <BoxStyled className={classes.detailsSection}>
+                <Container className={classes.detailsSection}>
                     {children} {/* Render any additional children */}
-                </BoxStyled>
-            </BoxStyled>
-        </FlexStyled>
+                </Container>
+            </Container>
+        </FlexContainer>
     );
 }
 

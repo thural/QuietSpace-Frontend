@@ -5,8 +5,8 @@ import UserCard from "@shared/UserCard";
 import useWasSeen from "@services/hook/common/useWasSeen";
 import { useNotificationStore } from "@services/store/zustand";
 import { NotificationCardProps } from "@shared-types/notificationTypes";
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
+import { FlexContainer } from "../../../../shared/ui/components";
+import { Text } from "../../../../shared/ui/components";
 
 /**
  * NotificationCard component.
@@ -43,12 +43,12 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onCli
     useEffect(handleSeenNotification, [wasSeen, isClientConnected]);
 
     return (
-        <FlexStyled ref={wasSeenRef} className={classes.notificationCard} onClick={onClick}>
+        <FlexContainer ref={wasSeenRef} className={classes.notificationCard} onClick={onClick}>
             <UserCard userId={actorId}>
-                <Typography size="1rem" lineClamp={5} className="message">{text}</Typography>
+                <Text size="1rem" className="message">{text}</Text>
             </UserCard>
             {children}
-        </FlexStyled>
+        </FlexContainer>
     );
 }
 

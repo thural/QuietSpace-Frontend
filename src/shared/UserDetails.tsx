@@ -1,5 +1,5 @@
 import { UserResponse } from "@/features/profile/data/models/user";
-import BoxStyled from "./BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 import styles from "@/shared/styles/userDetailsStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography, { headingSize } from "./Typography";
@@ -57,7 +57,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
     const heading = `h${size}` as headingSize; // Determine heading type
 
     return (
-        <BoxStyled key={user.id} className={classes.userDetails}>
+        <Container key={user.id} className={classes.userDetails}>
             <Conditional isEnabled={isDisplayName}>
                 <Typography type={heading} className="username">{user.username}</Typography> {/* Display username */}
             </Conditional>
@@ -65,7 +65,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
                 <Typography style={{ fontSize }} lineClamp={1} truncate="end" className="email">{user.email}</Typography> {/* Display email */}
             </Conditional>
             {children} {/* Render any additional children */}
-        </BoxStyled>
+        </Container>
     );
 };
 

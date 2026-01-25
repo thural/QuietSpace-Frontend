@@ -1,6 +1,6 @@
 import { ResId } from "@/shared/api/models/commonNative";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import BoxStyled from "./BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 import styles from "@/shared/styles/checkboxStyles"
 
 
@@ -19,7 +19,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({ value, onChange }) => {
     }
 
     return (
-        <BoxStyled className={classes.wrapper}>
+        <Container className={classes.wrapper}>
             <input
                 className={classes.roundedCheckbox}
                 onClick={handleSelectClick}
@@ -27,7 +27,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({ value, onChange }) => {
                 value={value}
                 onChange={onChange}
             />
-        </BoxStyled>
+        </Container>
     );
 };
 

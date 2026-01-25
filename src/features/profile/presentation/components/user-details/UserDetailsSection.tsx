@@ -1,7 +1,6 @@
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "@/features/profile/presentation/components/styles/UserDetailsSectionStyles";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
-import styles from "./styles/userDetailsSectionStyles";
 
 import { UserProfileResponse, UserResponse } from "@/features/profile/data/models/user";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
@@ -29,14 +28,12 @@ export interface UserDetailsSectionProps extends GenericWrapper {
  * @returns {JSX.Element} - The rendered UserDetailsSection component.
  */
 const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {
-    const classes = styles(); // Apply custom styles
-
     // Determine the bio based on the user type
     const bio = isUserProfile(user) ? user.settings.bio : user.bio;
 
     return (
-        <FlexStyled className={classes.detailsSection}>
-            <BoxStyled>
+        <FlexStyled style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Container>
                 <Typography type="h2" fw={700}>{user.username}</Typography> {/* Display username */}
                 <Typography
                     style={{ whiteSpace: "pre-wrap", lineHeight: "1.25rem" }}
@@ -45,7 +42,7 @@ const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {
                 >
                     {bio} {/* Display bio */}
                 </Typography>
-            </BoxStyled>
+            </Container>
             <UserAvatarPhoto size="6rem" userId={user.id} /> {/* Render user avatar */}
         </FlexStyled>
     );

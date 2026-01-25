@@ -1,5 +1,5 @@
 import { ChatResponse } from "@/features/chat/data/models/chat";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import Typography from "@/shared/Typography";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import styles from "../../styles/chatSidebarStyles";
@@ -16,11 +16,11 @@ interface ChatSidebarProps extends GenericWrapper {
     chat?: any // useUnifiedChat instance
 }
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ 
-    chats, 
-    selectedChatId, 
-    onChatSelect, 
-    chat 
+const ChatSidebar: React.FC<ChatSidebarProps> = ({
+    chats,
+    selectedChatId,
+    onChatSelect,
+    chat
 }) => {
     const classes = styles();
 
@@ -33,27 +33,27 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         return (chats?.length > 0) ?
             chats.map((chatItem, key) => (
                 <div key={key} className="relative">
-                    <ChatCard 
-                        chat={chatItem} 
+                    <ChatCard
+                        chat={chatItem}
                         isSelected={selectedChatId === chatItem.id}
                         onClick={() => onChatSelect?.(chatItem.id)}
                     />
-                    
+
                     {/* Typing indicator for each chat */}
                     <div className="absolute bottom-2 right-2">
-                        <TypingIndicator 
-                            chatId={chatItem.id} 
+                        <TypingIndicator
+                            chatId={chatItem.id}
                             participantIds={getParticipantIds(chatItem)}
                             className="text-xs"
                         />
                     </div>
-                    
+
                     {/* Online status for group chats */}
                     {chatItem.members && chatItem.members.length > 2 && (
                         <div className="absolute top-2 right-2">
                             <div className="flex -space-x-2">
                                 {chatItem.members.slice(0, 3).map((member: any, index: number) => (
-                                    <PresenceIndicator 
+                                    <PresenceIndicator
                                         key={index}
                                         userId={member.id}
                                         showStatus={false}
@@ -75,15 +75,15 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     }
 
     return (
-        <BoxStyled className={classes.chatContainer}>
+        <Container className={classes.chatContainer}>
             {/* Chat Query with real-time features */}
             <ChatQuery chat={chat} />
-            
+
             {/* Chat List with presence indicators */}
             <div className="mt-4">
                 <ChatList />
             </div>
-        </BoxStyled>
+        </Container>
     )
 }
 

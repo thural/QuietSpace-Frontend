@@ -1,6 +1,6 @@
 import useStyles from "../../styles/chatQueryInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import InputStyled from "@shared/InputStyled";
+import { Input } from "../../../../../shared/ui/components";
 import React from "react";
 
 interface QueryInputProps {
@@ -19,7 +19,7 @@ const ChatQueryInput: React.FC<QueryInputProps> = ({
     const classes = useStyles();
 
     return (
-        <InputStyled
+        <Input
             onKeyDown={handleKeyDown}
             isStyled={true}
             type='text'

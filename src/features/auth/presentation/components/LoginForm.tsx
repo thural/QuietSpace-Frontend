@@ -1,15 +1,16 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import InputBoxStyled from "@/shared/InputBoxStyled";
-import TextInputStyled from "@/shared/TextInputStyled";
+import { Input } from "@/shared/ui/components";
 import { useLoginForm } from "@features/auth/application/hooks/useLoginForm";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import styles from "@auth/presentation/styles/authStyles";
-import BoxStyled from "@/shared/BoxStyled";
+import { FormContainer } from "@auth/presentation/styles/AuthStyles";
+import { Container } from "@/shared/ui/components/layout/Container";
 import GradientButton from "@/shared/buttons/GradientButton";
 import OutlineButton from "@/shared/buttons/OutlineButton";
 import FormStyled from "@/shared/FormStyled";
 import PassInput from "@/shared/PassInput";
-import Typography from "@/shared/Typography";
+import { Text } from "@/shared/ui/components/typography/Text";
+import { Title } from "@/shared/ui/components/typography/Title";
 import React from "react";
 import LoaderStyled from "@/shared/LoaderStyled";
 
@@ -21,7 +22,6 @@ import LoaderStyled from "@/shared/LoaderStyled";
  */
 const LoginForm: React.FC = () => {
 
-    const classes = styles();
     let data;
 
     try {
@@ -46,27 +46,28 @@ const LoginForm: React.FC = () => {
     if (isError) return <ErrorComponent message={`could not authenticate! error: ${error}`} />;
 
     return (
-        <BoxStyled className={classes.form}>
-            <Typography type="h2">login</Typography>
+        <FormContainer>
+            <Title variant="h2">login</Title>
             <FormStyled>
-                <InputBoxStyled>
-                    <TextInputStyled
+                <Container>
+                    <Input
                         placeholder="username or email"
                         name='email'
                         value={formData.email}
-                        handleChange={handleFormChange}
+                        onChange={handleFormChange}
                     />
                     <PassInput
+                        placeholder="password"
                         name='password'
                         value={formData.password}
                         handleChange={handleFormChange}
                     />
-                </InputBoxStyled>
+                </Container>
             </FormStyled>
             <GradientButton onClick={handleLoginForm} />
-            <Typography type="h4">don't have an account?</Typography>
-            <OutlineButton name="signup" onClick={handleSignupBtn} />
-        </BoxStyled>
+            <Text variant="h4">don't have an account?</Text>
+            <OutlineButton onClick={handleSignupBtn} name="signup" />
+        </FormContainer>
     );
 };
 

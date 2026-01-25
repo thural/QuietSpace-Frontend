@@ -3,7 +3,7 @@ import LoaderStyled from "@/shared/LoaderStyled";
 import useChatQuery from "@features/chat/application/hooks/useChatQuery";
 import styles from "../../styles/chatQueryStyles";
 import AnchorStyled from "@shared/AnchorStyled";
-import BoxStyled from "@shared/BoxStyled";
+import { Container } from "../../../../../shared/ui/components";
 import FlexStyled from "@shared/FlexStyled";
 import Typography from "@shared/Typography";
 import UserCard from "@shared/UserCard";
@@ -60,7 +60,7 @@ const ChatQuery: React.FC<ChatQueryProps> = ({ chat }) => {
 
         return queryResult.map((user: UserResponse, key: number) => {
             const userPresence = getUserPresence(user.id);
-            
+
             return (
                 <div key={key} className="relative">
                     <UserCard
@@ -68,17 +68,17 @@ const ChatQuery: React.FC<ChatQueryProps> = ({ chat }) => {
                         isDisplayEmail={true}
                         onClick={(e: React.MouseEvent) => handleChatCreation(e, user)}
                     />
-                    
+
                     {/* Presence indicator for search results */}
                     <div className="absolute top-2 right-2">
-                        <PresenceIndicator 
+                        <PresenceIndicator
                             userId={user.id}
                             showStatus={true}
                             showTyping={false}
                             className="w-2 h-2"
                         />
                     </div>
-                    
+
                     {/* Online status indicator */}
                     {userPresence?.status === 'online' && (
                         <div className="absolute bottom-2 right-2">
@@ -101,7 +101,7 @@ const ChatQuery: React.FC<ChatQueryProps> = ({ chat }) => {
     ));
 
     return (
-        <BoxStyled
+        <Container
             onFocus={inputProps.handleInputFocus}
             onBlur={inputProps.handleInputBlur}
             className={classes.searchContainer}
@@ -109,7 +109,7 @@ const ChatQuery: React.FC<ChatQueryProps> = ({ chat }) => {
             <ChatQueryInput {...inputProps} />
             <LoadingIndicator />
             <QueryPanel />
-        </BoxStyled>
+        </Container>
     );
 };
 

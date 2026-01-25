@@ -2,13 +2,13 @@ import { UserResponse } from "@/features/profile/data/models/user";
 import { ResId } from "@/shared/api/models/commonNative";
 import UserQueryList from "@/features/profile/components/connections/UserQueryList";
 import SearchBar from "@/features/profile/components/searchbar/SearchBar";
-import BoxStyled from "@/shared/BoxStyled";
-import DarkButton from "@/shared/buttons/DarkButton";
+import { Container } from "@features/profile/components/connections/styles/ConnectionStyles";
+import { Button } from "../../../../shared/ui/components";
 import CheckBox from "@/shared/CheckBox";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import InputStyled from "@/shared/InputStyled";
+import { Input } from "../../../../shared/ui/components";
 import LoaderStyled from "@/shared/LoaderStyled";
-import Typography from "@/shared/Typography";
+import { Text } from "../../../../shared/ui/components";
 import UserQueryItem from "@/shared/UserQueryItem";
 import useBatchShareForm from "@features/chat/application/hooks/useBatchShareForm";
 import useSearch from "@/features/search/application/hooks/useSearch";
@@ -38,8 +38,6 @@ interface BatchShareFormProps {
  * @returns {JSX.Element} - The rendered batch share form component.
  */
 const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) => {
-    const classes = styles();
-
     try {
         assertIsNotNullish({ postId });
     } catch (error) {
@@ -81,12 +79,9 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
     if (fetchUserQuery.isPending) return <LoaderStyled />;
 
     return (
-        <BoxStyled
-            className={classes.container}
-            onClick={handleContainerClick}
-        >
+        <Container onClick={handleContainerClick}>
             <Center>
-                <Typography type="h3">share</Typography>
+                <Text variant="h3">share</Text>
             </Center>
             <SearchBar
                 placeHolder="search a user"
@@ -99,19 +94,21 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
                 userFetch={fetchUserQuery}
                 queryResult={userQueryList}
             />
-            <InputStyled
+            <Input
                 variant="unstyled"
                 style={{ width: "100%", margin: "1rem 0" }}
                 placeholder="write a message"
                 onChange={handleMessageChange}
             />
-            <DarkButton
+            <Button
                 loading={!isClientConnected}
                 style={{ width: "100%" }}
-                name="send"
-                handleClick={handleSend}
-            />
-        </BoxStyled>
+                variant="primary"
+                onClick={handleSend}
+            >
+                send
+            </Button>
+        </Container>
     );
 };
 

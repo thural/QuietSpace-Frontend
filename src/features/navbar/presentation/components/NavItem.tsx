@@ -1,5 +1,5 @@
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import BoxStyled from "@shared/BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 import { Link } from "react-router-dom";
 
 /**
@@ -33,13 +33,13 @@ export interface NavItemProps extends GenericWrapper {
 const NavItem: React.FC<NavItemProps> = ({ linkTo, pathName, icon, iconFill, children }) => {
 
     return (
-        <BoxStyled className="navbar-item">
+        <Container className="navbar-item">
             <Link to={linkTo}>
                 {/* Display the filled icon if the current path matches the link, otherwise display the regular icon */}
                 {pathName.includes(linkTo.slice(0, 5)) ? iconFill : icon}
             </Link>
             {children}
-        </BoxStyled>
+        </Container>
     );
 }
 

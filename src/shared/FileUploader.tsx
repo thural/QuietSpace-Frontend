@@ -1,7 +1,7 @@
 import useFileUploader, { FetchCallback } from "@/services/hook/shared/useFileUploader";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { formatFileSize } from "@/shared/utils/stringUtils";
-import BoxStyled from "./BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 import OutlineButton from "./buttons/OutlineButton";
 import InputStyled from "./InputStyled";
 import Typography from "./Typography";
@@ -21,8 +21,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ fetchCallback }) => 
 
 
 
-    const Container: React.FC<GenericWrapper> = ({ children }) => (
-        <BoxStyled>
+    const ContainerComponent: React.FC<GenericWrapper> = ({ children }) => (
+        <Container>
             <InputStyled type="file" onChange={handleFileChange} />
             <OutlineButton
                 name="upload"
@@ -31,19 +31,19 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ fetchCallback }) => 
                 onClick={handleFileUpload}
             />
             {children}
-        </BoxStyled>
+        </Container>
     );
 
-    if (!file) return <Container />
+    if (!file) return <ContainerComponent />
 
     const fileSize = formatFileSize(file.size);
 
 
     return (
-        <Container>
+        <ContainerComponent>
             <Typography>file name: {file.name}</Typography>
             <Typography>file size: {fileSize}</Typography>
             <Typography>file type: {file.type}</Typography>
-        </Container>
+        </ContainerComponent>
     );
 }

@@ -3,7 +3,7 @@ import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import InputEmoji from "react-input-emoji";
 import { createUseStyles } from "react-jss";
 import { Theme } from "./types/theme";
-import BoxStyled from "./BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
 
 export const styles = createUseStyles((theme: Theme) => ({
     emojiInputWrapper: {
@@ -50,7 +50,7 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
 
 
     return (
-        <BoxStyled className={classes.emojiInputWrapper}>
+        <Container className={classes.emojiInputWrapper}>
             <InputEmoji
                 ref={forwardedRef}
                 value={value}
@@ -66,7 +66,7 @@ const EmojiInput: React.FC<GenericWrapperWithRef> = ({
                 shouldConvertEmojiToImage={false}
                 {...props}
             />
-        </BoxStyled>
+        </Container>
     );
 }
 

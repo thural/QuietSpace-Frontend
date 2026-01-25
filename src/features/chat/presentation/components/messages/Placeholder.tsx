@@ -1,4 +1,4 @@
-import FlexStyled from "@/shared/FlexStyled";
+import { FlexContainer } from "../../../../../shared/ui/components";
 import PrivateBlock, { PrivateBlockProps } from "@/shared/PrivateBlock";
 import styles from "../../styles/chatPlaceholderStyles";
 import { JSXElementConstructor } from "react";
@@ -13,9 +13,9 @@ const Placeholder: React.FC<PlaceholderProps> = ({ message, Icon, type = "h3" })
     const classes = styles();
 
     return (
-        <FlexStyled className={classes.chatboard}>
+        <FlexContainer className={classes.chatboard}>
             <PrivateBlock Icon={Icon} message={message} type={type} />
-        </FlexStyled>
+        </FlexContainer>
     )
 }
 

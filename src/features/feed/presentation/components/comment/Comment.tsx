@@ -4,9 +4,9 @@ import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@features/feed/application/hooks/useComment";
 import styles from "../../styles/commentStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
+import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
 import EmojiText from "@/shared/EmojiText";
-import FlexStyled from "@/shared/FlexStyled";
 import CreateCommentForm from "../forms/CreateCommentForm";
 import CommentControls from "./CommentControls";
 
@@ -46,10 +46,10 @@ const CommentBox: React.FC<CommentProps> = ({ comment }) => {
      * @returns {JSX.Element} - The rendered comment body.
      */
     const CommentBody: React.FC<{ comment: CommentResponse }> = ({ comment }) => (
-        <FlexStyled className={classes.commentElement}>
-            <BoxStyled key={comment.id} className={classes.textBody}>
+        <FlexContainer className={classes.commentElement}>
+            <Container key={comment.id} className={classes.textBody}>
                 <EmojiText text={comment.text} />
-            </BoxStyled>
+            </Container>
             <CommentControls
                 isOwner={comment.userId === user.id}
                 isLiked={isLiked}
@@ -57,19 +57,19 @@ const CommentBox: React.FC<CommentProps> = ({ comment }) => {
                 handleReply={toggleCommentForm}
                 hanldeDelete={handleDeleteComment}
             />
-        </FlexStyled>
+        </FlexContainer>
     );
 
     return (
-        <BoxStyled className={classes.commentWrapper}>
-            <FlexStyled className={classes.mainElement}>
+        <Container className={classes.commentWrapper}>
+            <FlexContainer className={classes.mainElement}>
                 <UserAvatarPhoto size="2rem" userId={comment.userId} />
                 <CommentBody comment={comment} />
-            </FlexStyled>
+            </FlexContainer>
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm postItem={comment} />
             </Overlay>
-        </BoxStyled>
+        </Container>
     );
 };
 

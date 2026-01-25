@@ -3,7 +3,7 @@ import { useGetNotifications } from "@services/data/useNotificationData";
 import withErrorBoundary from "@services/hook/shared/withErrorBoundary";
 import type { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import DefaultContainer from "@shared/DefaultContainer";
-import { SegmentedControl } from "@mantine/core";
+import { SegmentedControl } from "@/shared/ui/components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoaderStyled from "@shared/LoaderStyled";
@@ -63,7 +63,6 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
     const ControlPanel = () => (
         <>
             <SegmentedControl
-                style={{ zIndex: 1 }}
                 fullWidth
                 color="rgba(32, 32, 32, 1)"
                 value={value}

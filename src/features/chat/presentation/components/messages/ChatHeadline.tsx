@@ -2,8 +2,8 @@ import { ResId } from "@/shared/api/models/commonNative";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import styles from "../../styles/chatHeadlineStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import FlexStyled from "@shared/FlexStyled";
-import Typography from "@shared/Typography";
+import { FlexContainer } from "../../../../../shared/ui/components";
+import { Title } from "../../../../../shared/ui/components";
 import ChatMenu from "./ChatMenu";
 
 /**
@@ -30,11 +30,11 @@ const ChatHeadline: React.FC<ChatHeadlineProps> = ({ userId, recipientName, hand
     const classes = styles();
 
     return (
-        <FlexStyled className={classes.chatHeadline}>
+        <FlexContainer className={classes.chatHeadline}>
             <UserAvatarPhoto userId={userId} />
-            <Typography className="title" type="h5">{recipientName}</Typography>
+            <Title variant="h5" className="title">{recipientName}</Title>
             <ChatMenu handleDeleteChat={handleDeleteChat} isMutable={true} />
-        </FlexStyled>
+        </FlexContainer>
     );
 }
 

@@ -1,10 +1,9 @@
 import React from 'react';
 import { MessageResponse } from "@/features/chat/data/models/chat";
-import { useMessage } from "@features/chat/application/hooks/useMessage";
-import styles from "../../styles/messageStyles";
-import BoxStyled from "@shared/BoxStyled";
+import useMessage from "@features/chat/application/hooks/useMessage";
+import { Message, Delete, Text } from "../../styles/MessageStyles";
 import Conditional from "@shared/Conditional";
-import Typography from "@shared/Typography";
+import { Text } from "../../../../shared/ui/components";
 import { ResId } from '@/shared/api/models/commonNative';
 import useHoverState from '@shared/hooks/useHoverState';
 
@@ -33,8 +32,6 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     style,
     onDelete
 }) => {
-    const classes = styles();
-
     const { user, wasSeenRef } = useMessage(message);
     const {
         isHovering,
@@ -52,27 +49,25 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     };
 
     return (
-        <BoxStyled
+        <Message
             id={message.id}
             ref={wasSeenRef}
-            className={classes.message}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
             style={style}
         >
             <Conditional isEnabled={message.senderId === user.id && isHovering}>
-                <BoxStyled
-                    className={classes.delete}
+                <Delete
                     onClick={handleDeleteMessage}
                 >
                     delete
-                </BoxStyled>
+                </Delete>
             </Conditional>
 
-            <BoxStyled className={classes.text}>
-                <Typography>{message.text}</Typography>
-            </BoxStyled>
-        </BoxStyled>
+            <Text>
+                <EnterpriseText>{message.text}</EnterpriseText>
+            </Text>
+        </Message>
     );
 };
 

@@ -1,5 +1,5 @@
 import { PhotoResponse } from '@/shared/api/models/photo';
-import { Image } from '@mantine/core';
+import { Image } from '@/shared/ui/components';
 import { useEffect, useState } from 'react';
 
 /**

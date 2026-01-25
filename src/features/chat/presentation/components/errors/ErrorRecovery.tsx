@@ -6,12 +6,12 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import BoxStyled from '@shared/BoxStyled';
+import { Container } from "../../../../../shared/ui/components";
 import Typography from '@shared/Typography';
-import { 
-    FiRefreshCw, 
-    FiAlertTriangle, 
-    FiCheckCircle, 
+import {
+    FiRefreshCw,
+    FiAlertTriangle,
+    FiCheckCircle,
     FiClock,
     FiSettings,
     FiWifi,
@@ -219,7 +219,7 @@ const ErrorRecovery: React.FC<ErrorRecoveryProps> = ({
             }
         } catch (recoveryError) {
             const duration = Date.now() - startTime;
-            
+
             const attempt: RecoveryAttempt = {
                 timestamp: new Date(),
                 method: strategy.name,
@@ -253,7 +253,7 @@ const ErrorRecovery: React.FC<ErrorRecoveryProps> = ({
         if (availableStrategies.length === 0) return null;
 
         // Return strategy with highest success rate
-        return availableStrategies.reduce((best, current) => 
+        return availableStrategies.reduce((best, current) =>
             current.successRate > best.successRate ? current : best
         );
     }, [allStrategies, recoveryAttempts]);
@@ -262,8 +262,8 @@ const ErrorRecovery: React.FC<ErrorRecoveryProps> = ({
 
     // Auto-execute recommended strategy for certain error types
     useEffect(() => {
-        if (classification.retryStrategy === 'immediate' && 
-            recommendedStrategy && 
+        if (classification.retryStrategy === 'immediate' &&
+            recommendedStrategy &&
             recoveryAttempts.length === 0 &&
             !isRecovering) {
             executeRecovery(recommendedStrategy);
@@ -281,102 +281,107 @@ const ErrorRecovery: React.FC<ErrorRecoveryProps> = ({
     };
 
     return (
-        <BoxStyled className=\"p-6 bg-white rounded-lg shadow-lg\">
+        <Container className="p-6 bg-white rounded-lg shadow-lg">
             {/* Error Header */}
             <div className=\"flex items-center justify-between mb-6\">
-                <div className=\"flex items-center space-x-3\">
-                    <div className={`p-3 rounded-full ${getSeverityColor(classification.severity)}`}>
-                        <FiAlertTriangle />
-                    </div>
-                    <div>
-                        <Typography type=\"h4\" className=\"text-gray-900\">
-                            Error Recovery Options
-                        </Typography>
-                        <Typography className=\"text-gray-600\">
-                            {classification.userMessage}
-                        </Typography>
-                    </div>
-                </div>
-                
-                <div className=\"flex items-center space-x-2\">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getSeverityColor(classification.severity)}`}>
-                        {classification.severity.toUpperCase()}
-                    </span>
-                    <span className=\"px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-700\">
-                        {classification.type.toUpperCase()}
-                    </span>
-                </div>
+            <div className=\"flex items-center space-x-3\">
+            <div className={`p-3 rounded-full ${getSeverityColor(classification.severity)}`}>
+                <FiAlertTriangle />
             </div>
+            <div>
+                <Typography type=\"h4\" className=\"text-gray-900\">
+                Error Recovery Options
+            </Typography>
+            <Typography className=\"text-gray-600\">
+            {classification.userMessage}
+        </Typography>
+                    </div >
+                </div >
 
-            {/* Recommended Strategy */}
-            {recommendedStrategy && !isRecovering && recoveryAttempts.length === 0 && (
-                <div className=\"bg-green-50 border border-green-200 rounded-lg p-4 mb-6\">
-                    <div className=\"flex items-center justify-between\">
-                        <div className=\"flex items-center space-x-3\">
-                            <FiCheckCircle className=\"text-green-600\" />
-                            <div>
-                                <Typography className=\"font-medium text-green-900\">
-                                    Recommended: {recommendedStrategy.name}
-                                </Typography>
-                                <Typography className=\"text-sm text-green-700\">
-                                    {recommendedStrategy.description}
-                                </Typography>
-                            </div>
-                        </div>
-                        <div className=\"flex items-center space-x-2 text-sm text-green-600\">
-                            <FiClock />
+    <div className=\"flex items-center space-x-2\">
+        < span className = {`px-3 py-1 rounded-full text-sm font-medium ${getSeverityColor(classification.severity)}`}>
+            { classification.severity.toUpperCase() }
+                    </span >
+    <span className=\"px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-700\">
+{ classification.type.toUpperCase() }
+                    </span >
+                </div >
+            </div >
+
+    {/* Recommended Strategy */ }
+{
+    recommendedStrategy && !isRecovering && recoveryAttempts.length === 0 && (
+        <div className=\"bg-green-50 border border-green-200 rounded-lg p-4 mb-6\">
+            < div className =\"flex items-center justify-between\">
+                < div className =\"flex items-center space-x-3\">
+                    < FiCheckCircle className =\"text-green-600\" />
+                        < div >
+                        <Typography className=\"font-medium text-green-900\">
+    Recommended: { recommendedStrategy.name }
+                                </Typography >
+        <Typography className=\"text-sm text-green-700\">
+    { recommendedStrategy.description }
+                                </Typography >
+                            </div >
+                        </div >
+        <div className=\"flex items-center space-x-2 text-sm text-green-600\">
+            < FiClock />
                             <span>~{recommendedStrategy.estimatedTime / 1000}s</span>
                             <span>•</span>
                             <span>{recommendedStrategy.successRate}% success</span>
-                        </div>
-                    </div>
-                    
-                    <button
-                        onClick={() => executeRecovery(recommendedStrategy!)}
-                        className=\"mt-3 w-full flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700\"
-                    >
+                        </div >
+                    </div >
+
+        <button
+            onClick={() => executeRecovery(recommendedStrategy!)}
+            className=\"mt-3 w-full flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700\"
+                >
                         <FiRefreshCw />
                         <span>Try Recommended Recovery</span>
-                    </button>
-                </div>
-            )}
+                    </button >
+                </div >
+            )
+}
 
-            {/* Current Recovery Status */}
-            {isRecovering && (
-                <div className=\"bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6\">
-                    <div className=\"flex items-center space-x-3\">
-                        <FiRefreshCw className=\"animate-spin text-blue-600\" />
-                        <div>
-                            <Typography className=\"font-medium text-blue-900\">
-                                Attempting Recovery: {currentStrategy}
-                            </Typography>
-                            <Typography className=\"text-sm text-blue-700\">
+{/* Current Recovery Status */ }
+{
+    isRecovering && (
+        <div className=\"bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6\">
+            < div className =\"flex items-center space-x-3\">
+                < FiRefreshCw className =\"animate-spin text-blue-600\" />
+                    < div >
+                    <Typography className=\"font-medium text-blue-900\">
+                                Attempting Recovery: { currentStrategy }
+                            </Typography >
+        <Typography className=\"text-sm text-blue-700\">
                                 Please wait while we try to resolve the issue...
-                            </Typography>
-                        </div>
-                    </div>
-                </div>
-            )}
+                            </Typography >
+                        </div >
+                    </div >
+                </div >
+            )
+}
 
-            {/* Recovery Strategies */}
-            <div className=\"mb-6\">
-                <div className=\"flex items-center justify-between mb-4\">
-                    <Typography type=\"h5\">Recovery Strategies</Typography>
-                    <button
-                        onClick={() => setShowAdvanced(!showAdvanced)}
-                        className=\"text-sm text-blue-600 hover:text-blue-700\"
-                    >
-                        {showAdvanced ? 'Show Less' : 'Show Advanced'}
-                    </button>
-                </div>
+{/* Recovery Strategies */ }
+<div className=\"mb-6\">
+    < div className =\"flex items-center justify-between mb-4\">
+        < Typography type =\"h5\">Recovery Strategies</Typography>
+            < button
+onClick = {() => setShowAdvanced(!showAdvanced)}
+className =\"text-sm text-blue-600 hover:text-blue-700\"
+    >
+    { showAdvanced? 'Show Less': 'Show Advanced' }
+                    </button >
+                </div >
 
-                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
-                    {allStrategies.slice(0, showAdvanced ? undefined : 3).map((strategy, index) => {
-                        const hasFailed = recoveryAttempts.some(attempt => 
-                            attempt.method === strategy.name && !attempt.success
-                        );
-                        
-                        return (
+    <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
+{
+    allStrategies.slice(0, showAdvanced ? undefined : 3).map((strategy, index) => {
+        const hasFailed = recoveryAttempts.some(attempt =>
+            attempt.method === strategy.name && !attempt.success
+        );
+
+        return (
                             <div
                                 key={index}
                                 className={`border rounded-lg p-4 ${
@@ -393,111 +398,117 @@ const ErrorRecovery: React.FC<ErrorRecoveryProps> = ({
                                         <div>
                                             <Typography className=\"font-medium\">{strategy.name}</Typography>
                                             <Typography className=\"text-sm text-gray-600\">
-                                                {strategy.description}
-                                            </Typography>
-                                        </div>
-                                    </div>
-                                </div>
+        { strategy.description }
+                                            </Typography >
+                                        </div >
+                                    </div >
+                                </div >
 
-                                <div className=\"flex items-center justify-between mb-3\">
-                                    <div className=\"flex items-center space-x-4 text-sm text-gray-500\">
-                                        <div className=\"flex items-center space-x-1\">
-                                            <FiClock />
-                                            <span>~{strategy.estimatedTime / 1000}s</span>
-                                        </div>
-                                        <div className=\"flex items-center space-x-1\">
-                                            <FiCheckCircle />
-                                            <span>{strategy.successRate}% success</span>
-                                        </div>
-                                    </div>
-                                </div>
+            <div className=\"flex items-center justify-between mb-3\">
+                < div className =\"flex items-center space-x-4 text-sm text-gray-500\">
+                    < div className =\"flex items-center space-x-1\">
+                        < FiClock />
+                        <span>~{strategy.estimatedTime / 1000}s</span>
+                                        </div >
+            <div className=\"flex items-center space-x-1\">
+                < FiCheckCircle />
+                <span>{strategy.successRate}% success</span>
+                                        </div >
+                                    </div >
+                                </div >
 
-                                <button
-                                    onClick={() => executeRecovery(strategy)}
-                                    disabled={isRecovering || hasFailed}
-                                    className={`w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                        hasFailed
-                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                            : isRecovering
-                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                            : 'bg-blue-600 text-white hover:bg-blue-700'
-                                    }`}
-                                >
-                                    {hasFailed ? (
-                                        <span>Already Tried</span>
-                                    ) : isRecovering ? (
-                                        <>
-                                            <FiRefreshCw className=\"animate-spin\" />
-                                            <span>Recovering...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FiRefreshCw />
-                                            <span>Try Recovery</span>
-                                        </>
-                                    )}
-                                </button>
+            <button
+                onClick={() => executeRecovery(strategy)}
+                disabled={isRecovering || hasFailed}
+                className={`w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${hasFailed
+                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        : isRecovering
+                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                    }`}
+            >
+                {hasFailed ? (
+                    <span>Already Tried</span>
+                ) : isRecovering ? (
+                    <>
+                        <FiRefreshCw className=\"animate-spin\" />
+                        <span>Recovering...</span>
+                    </>
+                ) : (
+                    <>
+                        <FiRefreshCw />
+                        <span>Try Recovery</span>
+                    </>
+                )}
+            </button>
 
-                                {hasFailed && (
-                                    <div className=\"mt-2 text-xs text-red-600\">
+        {
+            hasFailed && (
+                <div className=\"mt-2 text-xs text-red-600\">
                                         This strategy failed previously
-                                    </div>
-                                )}
-                            </div>
+                                    </div >
+                                )
+}
+                            </div >
                         );
                     })}
-                </div>
-            </div>
+                </div >
+            </div >
 
-            {/* Recovery History */}
-            {recoveryAttempts.length > 0 && (
-                <div className=\"bg-gray-50 rounded-lg p-4\">
-                    <Typography type=\"h5\" className=\"mb-3\">Recovery History</Typography>
-                    <div className=\"space-y-2\">
-                        {recoveryAttempts.slice(-5).reverse().map((attempt, index) => (
-                            <div key={index} className=\"flex items-center justify-between p-3 bg-white rounded border\">
-                                <div className=\"flex items-center space-x-3\">
-                                    <div className={`w-2 h-2 rounded-full ${
-                                        attempt.success ? 'bg-green-500' : 'bg-red-500'
-                                    }`} />
-                                    <div>
-                                        <Typography className=\"text-sm font-medium\">
-                                            {attempt.method}
-                                        </Typography>
-                                        <Typography className=\"text-xs text-gray-500\">
-                                            {attempt.timestamp.toLocaleTimeString()} • {attempt.duration}ms
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className=\"flex items-center space-x-2\">
-                                    <span className={`px-2 py-1 rounded text-xs ${
-                                        attempt.success 
-                                            ? 'bg-green-100 text-green-700' 
-                                            : 'bg-red-100 text-red-700'
-                                    }`}>
-                                        {attempt.success ? 'Success' : 'Failed'}
-                                    </span>
-                                </div>
-                            </div>
+    {/* Recovery History */ }
+{
+    recoveryAttempts.length > 0 && (
+        <div className=\"bg-gray-50 rounded-lg p-4\">
+            < Typography type =\"h5\" className=\"mb-3\">Recovery History</Typography>
+                < div className =\"space-y-2\">
+    {
+        recoveryAttempts.slice(-5).reverse().map((attempt, index) => (
+            <div key={index} className=\"flex items-center justify-between p-3 bg-white rounded border\">
+        < div className =\"flex items-center space-x-3\">
+        < div className = {`w-2 h-2 rounded-full ${attempt.success ? 'bg-green-500' : 'bg-red-500'
+            }`} />
+                < div >
+                <Typography className=\"text-sm font-medium\">
+    { attempt.method }
+                                        </Typography >
+        <Typography className=\"text-xs text-gray-500\">
+    { attempt.timestamp.toLocaleTimeString() } • { attempt.duration } ms
+                                        </Typography >
+                                    </div >
+                                </div >
+        <div className=\"flex items-center space-x-2\">
+            < span className = {`px-2 py-1 rounded text-xs ${attempt.success
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                }`
+}>
+    { attempt.success ? 'Success' : 'Failed' }
+                                    </span >
+                                </div >
+                            </div >
                         ))}
-                    </div>
-                </div>
+                    </div >
+                </div >
             )}
 
-            {/* Suggested Actions */}
-            {classification.suggestedActions && classification.suggestedActions.length > 0 && (
-                <div className=\"mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg\">
-                    <Typography className=\"font-medium text-yellow-900 mb-2\">
+{/* Suggested Actions */ }
+{
+    classification.suggestedActions && classification.suggestedActions.length > 0 && (
+        <div className=\"mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg\">
+            < Typography className =\"font-medium text-yellow-900 mb-2\">
                         Manual Actions You Can Take:
-                    </Typography>
-                    <ul className=\"list-disc list-inside space-y-1 text-sm text-yellow-800\">
-                        {classification.suggestedActions.map((action, index) => (
-                            <li key={index}>{action}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-        </BoxStyled>
+                    </Typography >
+        <ul className=\"list-disc list-inside space-y-1 text-sm text-yellow-800\">
+    {
+        classification.suggestedActions.map((action, index) => (
+            <li key={index}>{action}</li>
+        ))
+    }
+                    </ul >
+                </div >
+            )
+}
+        </Container >
     );
 };
 

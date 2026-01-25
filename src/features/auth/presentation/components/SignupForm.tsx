@@ -1,16 +1,17 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import InputBoxStyled from "@/shared/InputBoxStyled";
-import TextInputStyled from "@/shared/TextInputStyled";
+import { Input } from "@/shared/ui/components";
 import { useSignupForm } from "@features/auth/application/hooks/useSignupForm";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import styles from "@auth/presentation/styles/authStyles";
-import BoxStyled from "@/shared/BoxStyled";
+import { FormContainer } from "@auth/presentation/styles/AuthStyles";
+import { Container } from "@/shared/ui/components";
 import GradientButton from "@/shared/buttons/GradientButton";
 import OutlineButton from "@/shared/buttons/OutlineButton";
 import FormStyled from "@/shared/FormStyled";
 import FullLoadingOverlay from "@/shared/FullLoadingOverlay";
 import PassInput from "@/shared/PassInput";
-import Typography from "@/shared/Typography";
+import { Text } from "@/shared/ui/components/typography/Text";
+import { Title } from "@/shared/ui/components/typography/Title";
 import React from "react";
 
 /**
@@ -20,8 +21,6 @@ import React from "react";
  * @returns {JSX.Element} - The rendered signup form component.
  */
 const SignupForm: React.FC = () => {
-
-    const classes = styles();
 
     let data;
 
@@ -47,22 +46,22 @@ const SignupForm: React.FC = () => {
     if (isError) return <ErrorComponent message={`(!) could not authenticate! error: ${error}`} />
 
     return (
-        <BoxStyled className={classes.form}>
-            <Typography type="h2">signup</Typography>
+        <FormContainer>
+            <Title variant="h2">signup</Title>
             <FormStyled>
-                <InputBoxStyled>
-                    <TextInputStyled name='username' value={formData.username} handleChange={handleChange} />
-                    <TextInputStyled name='firstname' value={formData.firstname} handleChange={handleChange} />
-                    <TextInputStyled name='lastname' value={formData.lastname} handleChange={handleChange} />
-                    <TextInputStyled name='email' value={formData.email} handleChange={handleChange} />
+                <Container>
+                    <Input name='username' value={formData.username} onChange={handleChange} />
+                    <Input name='firstname' value={formData.firstname} onChange={handleChange} />
+                    <Input name='lastname' value={formData.lastname} onChange={handleChange} />
+                    <Input name='email' value={formData.email} onChange={handleChange} />
                     <PassInput name='password' value={formData.password} handleChange={handleChange} />
                     <PassInput name='confirmPassword' value={formData.confirmPassword} handleChange={handleChange} />
-                </InputBoxStyled>
+                </Container>
             </FormStyled>
             <GradientButton onClick={handleSubmit} />
-            <Typography type="h4">already have an account?</Typography>
+            <Text variant="h4">already have an account?</Text>
             <OutlineButton onClick={handleLoginClick} name="login" />
-        </BoxStyled>
+        </FormContainer>
     );
 };
 

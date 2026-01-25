@@ -1,8 +1,8 @@
 import { CommentResponse } from "@/features/feed/data/models/comment";
-import BoxStyled from "@/shared/BoxStyled";
+import { Container } from '@/shared/ui/components/layout/Container';
+import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
 import EmojiText from "@/shared/EmojiText";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import FlexStyled from "@/shared/FlexStyled";
 import Overlay from "@/shared/Overlay";
 import Typography from "@/shared/Typography";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
@@ -55,14 +55,14 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
     } = data;
 
     const CommentBody = () => (
-        <BoxStyled key={comment.id} className={classes.comment} style={appliedStyle}>
-            <BoxStyled className={classes.commentBody}>
-                <FlexStyled className={classes.replyCard}>
-                    <BoxStyled className="reply-card-indicator"></BoxStyled>
+        <Container key={comment.id} className={classes.comment} style={appliedStyle}>
+            <Container className={classes.commentBody}>
+                <FlexContainer className={classes.replyCard}>
+                    <Container className="reply-card-indicator"></Container>
                     <Typography className="reply-card-text" lineClamp={1}>{repliedComment?.text}</Typography>
-                </FlexStyled>
+                </FlexContainer>
                 <EmojiText text={comment.text} />
-            </BoxStyled>
+            </Container>
             <CommentControls
                 isOwner={isOwner}
                 isLiked={isLiked}
@@ -70,17 +70,17 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
                 handleReply={toggleCommentForm}
                 hanldeDelete={handleDeleteComment}
             />
-        </BoxStyled>
+        </Container>
     );
 
     return (
-        <FlexStyled className={classes.commentWrapper}>
+        <FlexContainer className={classes.commentWrapper}>
             <CommentBody />
             <UserAvatarPhoto userId={user.id} />
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
                 <CreateCommentForm postItem={comment} />
             </Overlay>
-        </FlexStyled>
+        </FlexContainer>
     );
 };
 

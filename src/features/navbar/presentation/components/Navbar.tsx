@@ -1,9 +1,8 @@
 import ComponentList from "@/shared/ComponentList";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import styles from "../styles/navbarStyles";
+import { Navbar as StyledNavbar } from "../styles/NavbarStyles";
 import { Badge } from "@mantine/core";
-import BoxStyled from "@shared/BoxStyled";
 import Conditional from "@shared/Conditional";
 import NavStyled from "../../shared/NavStyled";
 import Typography from "@shared/Typography";
@@ -26,7 +25,6 @@ import { NAVBAR_ICONS } from "@shared/navbar/constants";
  *                          navigation items and menus.
  */
 const NavBar = () => {
-  const classes = styles();
   const pathName = useLocation().pathname;
 
   const { notificationData, navigationItems, error } = useNavbar();
@@ -53,7 +51,7 @@ const NavBar = () => {
   const notificationProps = convertToNavItemProps(navigationItems.notification);
 
   return (
-    <BoxStyled className={classes.navbar}>
+    <StyledNavbar>
       <Typography type="h1" className="title">QS</Typography>
       <NavStyled>
         <ComponentList Component={NavItem} list={mainItemProps} />
@@ -69,8 +67,8 @@ const NavBar = () => {
           </Conditional>
         </NavItem>
       </NavStyled>
-      <BoxStyled className="navbar-item menu"><NavMenu /></BoxStyled>
-    </BoxStyled>
+      <StyledNavbar className="navbar-item menu"><NavMenu /></StyledNavbar>
+    </StyledNavbar>
   )
 }
 
