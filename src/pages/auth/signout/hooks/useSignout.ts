@@ -1,4 +1,4 @@
-import useJwtAuth from "@/services/hook/auth/useJwtAuth";
+import { useJwtAuth } from "@/features/auth/application/hooks";
 import { useAuthStore } from "@/core/store/zustand";
 import { useCacheInvalidation } from "@/core/hooks/migrationUtils";
 import { useEffect, useState } from "react";

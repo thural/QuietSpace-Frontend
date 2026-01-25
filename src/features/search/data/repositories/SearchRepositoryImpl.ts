@@ -24,6 +24,7 @@ import {
 import { UserList } from '@/features/profile/data/models/user';
 import { PostList } from '@/features/feed/data/models/post';
 import { JwtToken } from '@/shared/api/models/common';
+import { IAuthService } from '@/core/auth/interfaces/authInterfaces';
 
 /**
  * Search Repository Implementation
@@ -33,7 +34,26 @@ import { JwtToken } from '@/shared/api/models/common';
  */
 @Injectable()
 export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
-  constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
+  constructor(
+    @Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance,
+    @Inject(TYPES.AUTH_SERVICE) private authService: IAuthService
+  ) {}
+
+  /**
+   * Helper method to get auth token from centralized service
+   */
+  private async getAuthToken(): Promise<string> {
+    try {
+      const session = await this.authService.getCurrentSession();
+      if (!session || !session.token.accessToken) {
+        throw new Error('No valid authentication session found');
+      }
+      return session.token.accessToken;
+    } catch (error) {
+      console.error('Error getting auth token from centralized service:', error);
+      throw new Error('Authentication failed');
+    }
+  }
 
   // Basic search operations
   async searchUsers(query: string, filters?: SearchFilters): Promise<UserList> {
@@ -83,7 +103,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         token
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -100,7 +120,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -118,7 +138,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -135,7 +155,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -152,7 +172,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -170,7 +190,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -187,7 +207,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -202,7 +222,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         data: { userId }
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -218,7 +238,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -235,7 +255,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -251,7 +271,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -267,7 +287,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         limit
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -286,7 +306,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         filters
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -304,7 +324,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         filters
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -323,7 +343,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         filters
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -342,7 +362,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         filters
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -360,7 +380,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         period
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -377,7 +397,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         period
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -391,7 +411,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       await this.apiClient.post('/api/search/metrics', metrics, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -405,7 +425,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       const response = await this.apiClient.get<SearchConfiguration>('/api/search/configuration', {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -419,7 +439,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       const response = await this.apiClient.put<SearchConfiguration>('/api/search/configuration', config, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -433,7 +453,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       await this.apiClient.post('/api/search/configuration/reset', {}, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -447,7 +467,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       const response = await this.apiClient.get<Record<string, any>>('/api/search/index/status', {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -461,7 +481,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       await this.apiClient.post('/api/search/index/rebuild', {}, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -474,7 +494,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       await this.apiClient.post('/api/search/index/optimize', {}, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -488,7 +508,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       const response = await this.apiClient.get<Record<string, any>>('/api/search/health', {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -502,7 +522,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
     try {
       const response = await this.apiClient.get<Record<string, any>>('/api/search/statistics', {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -520,7 +540,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         context
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -537,7 +557,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         weights
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -554,7 +574,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         sources
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -571,7 +591,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         query
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data.optimizedQuery;
@@ -587,7 +607,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         query
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data.isValid;
@@ -603,7 +623,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         query
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data.sanitizedQuery;
@@ -620,7 +640,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         query
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -636,7 +656,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         query
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -654,7 +674,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         format
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         },
         responseType: 'blob'
       });
@@ -673,7 +693,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
 
       await this.apiClient.post('/api/search/import', formData, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined,
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -691,7 +711,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -706,7 +726,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         data: { alertId, userId }
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -721,7 +741,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -739,7 +759,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userIds
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -754,7 +774,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -772,7 +792,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
     } catch (error) {
@@ -787,7 +807,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
@@ -804,7 +824,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
         userId
       }, {
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined
+          Authorization: token ? `Bearer ${token}` : `Bearer ${await this.getAuthToken()}`
         }
       });
       return response.data;
