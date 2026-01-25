@@ -5,7 +5,7 @@
  * using the existing Inversify container for consistency.
  */
 
-import {AuthCredentials, AuthResult, AuthSession} from '../types/auth.domain.types';
+import { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 import type {
     IAuthConfig,
@@ -16,20 +16,16 @@ import type {
     IAuthSecurityService,
     IAuthService
 } from '../interfaces/authInterfaces';
-import {IAuthProvider, IAuthValidator} from '../interfaces/authInterfaces';
-
-import {Injectable} from '@core/di';
+import { IAuthProvider, IAuthValidator } from '../interfaces/authInterfaces';
 
 /**
  * Enterprise authentication service implementation
  * 
  * Provides comprehensive authentication with:
- * - Inversify dependency injection
  * - Enterprise security features
  * - Comprehensive logging and metrics
  * - Multiple provider support
  */
-@Injectable({ lifetime: 'singleton' })
 export class EnterpriseAuthService implements IAuthService {
     private readonly repository: IAuthRepository;
     private readonly logger: IAuthLogger;
@@ -39,6 +35,7 @@ export class EnterpriseAuthService implements IAuthService {
     private readonly providers: Map<string, IAuthProvider> = new Map();
     private readonly plugins: Map<string, any> = new Map();
     private readonly validators: Map<string, IAuthValidator> = new Map();
+    private activeProvider?: string;
 
     constructor(
         repository: IAuthRepository,
@@ -376,6 +373,70 @@ export class EnterpriseAuthService implements IAuthService {
      */
     private generateRequestId(): string {
         return `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    }
+
+    // ==================== DYNAMIC PROVIDER MANAGEMENT ====================
+
+    /**
+     * Unregisters a provider
+     */
+    unregisterProvider(provider: IAuthProvider): void {
+        this.providers.delete(provider.name);
+        this.logger.log({
+            type: 'provider_unregistered' as any,
+            timestamp: new Date(),
+            details: {
+                providerName: provider.name,
+                providerType: provider.type
+            }
+        });
+    }
+
+    /**
+     * Sets the active provider
+     */
+    setActiveProvider(provider: IAuthProvider): void {
+        this.activeProvider = provider.name;
+        this.logger.log({
+            type: 'active_provider_changed' as any,
+            timestamp: new Date(),
+            details: {
+                providerName: provider.name,
+                providerType: provider.type
+            }
+        });
+    }
+
+    /**
+     * Gets the active provider
+     */
+    getActiveProvider(): IAuthProvider | undefined {
+        return this.activeProvider ? this.providers.get(this.activeProvider) : undefined;
+    }
+
+    /**
+     * Gets active sessions (mock implementation)
+     */
+    async getActiveSessions(): Promise<AuthSession[]> {
+        // This would typically query the repository for active sessions
+        // For now, return empty array as mock
+        return [];
+    }
+
+    /**
+     * Stores a session (mock implementation)
+     */
+    async storeSession(session: AuthSession): Promise<void> {
+        // This would typically store the session in the repository
+        // For now, just log the action
+        this.logger.log({
+            type: 'session_stored' as any,
+            timestamp: new Date(),
+            details: {
+                userId: session.user.id,
+                provider: session.provider
+            }
+        });
     }
 }
 

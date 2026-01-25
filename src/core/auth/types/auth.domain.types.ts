@@ -10,7 +10,8 @@ export enum AuthProviderType {
     OAUTH = 'oauth',
     SAML = 'saml',
     LDAP = 'ldap',
-    API_KEY = 'api_key'
+    API_KEY = 'api_key',
+    SESSION = 'session'
 }
 
 export enum AuthEventType {
@@ -139,6 +140,7 @@ export interface AuthSession {
             country?: string;
             city?: string;
         };
+        [key: string]: any; // Allow additional properties for provider-specific metadata
     };
 }
 
