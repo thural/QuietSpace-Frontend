@@ -13,6 +13,13 @@ export { ChatMessageHandlers } from './ChatMessageHandlers';
 
 // Migration utilities
 export { ChatWebSocketMigration } from './ChatWebSocketMigration';
+export { 
+  useChatSocketMigration,
+  useChatMigrationMonitor,
+  type ChatMigrationConfig,
+  type ChatMigrationState,
+  type UseChatSocketMigrationReturn
+} from './ChatSocketMigration';
 
 // Types and interfaces
 export {
