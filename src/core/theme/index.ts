@@ -1,23 +1,22 @@
 /**
- * Enhanced Theme System Index.
+ * Modern Theme System Index.
  * 
- * Barrel exports for all theme-related components with composable architecture.
+ * Enterprise-grade theme system with composable architecture.
  * Provides centralized access to tokens, variants, composer, and utilities.
  */
 
-// Legacy exports for backward compatibility (deprecated)
-export { colors } from './appColors';
-export { typography } from './appTypography';
-export { EnhancedThemeProvider as LegacyThemeProvider, useTheme as useLegacyTheme } from './EnhancedThemeProvider';
-
-// New composable theme system (recommended)
+// Core theme system
 export * from './tokens';
 export * from './composer';
 export * from './variants';
 export * from './EnhancedThemeProvider';
 
-// Enhanced theme provider (recommended)
-export { 
+// Application theme assets
+export { colors } from './appColors';
+export { typography } from './appTypography';
+
+// Enhanced theme provider and hooks
+export {
   EnhancedThemeProvider,
   useEnhancedTheme,
   useThemeSwitch,
@@ -25,35 +24,35 @@ export {
   useTheme
 } from './EnhancedThemeProvider';
 
-// Performance utilities (updated for new system)
-export { 
-  createStyledComponent, 
-  media, 
-  animations, 
-  Container, 
-  FlexContainer, 
-  GridContainer, 
-  useResponsiveStyles, 
-  StyledButton 
+// Performance utilities and styled components
+export {
+  createStyledComponent,
+  media,
+  animations,
+  Container,
+  FlexContainer,
+  GridContainer,
+  useResponsiveStyles,
+  StyledButton
 } from './styledUtils';
 
-// Re-export commonly used types
-export type { 
-  ThemeTokens, 
-  ColorTokens, 
-  TypographyTokens, 
-  SpacingTokens, 
-  ShadowTokens, 
-  BreakpointTokens, 
-  RadiusTokens, 
-  AnimationTokens 
+// Type exports
+export type {
+  ThemeTokens,
+  ColorTokens,
+  TypographyTokens,
+  SpacingTokens,
+  ShadowTokens,
+  BreakpointTokens,
+  RadiusTokens,
+  AnimationTokens
 } from './tokens';
 
-export type { 
+export type {
   EnhancedTheme
 } from './EnhancedThemeProvider';
 
-export type { 
+export type {
   ThemeConfig,
   ComposedTheme
 } from './composer';
