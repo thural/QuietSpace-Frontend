@@ -2,8 +2,6 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig } from 'vite'
 import removeConsole from 'vite-plugin-remove-console'
-import postcssPresetMantine from 'postcss-preset-mantine'
-import postcssSimpleVars from 'postcss-simple-vars'
 
 export default defineConfig({
   define: {
@@ -58,14 +56,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'mantine': [
-            '@mantine/core',
-            '@mantine/dates',
-            '@mantine/form',
-            '@mantine/hooks',
-            '@mantine/modals',
-            '@mantine/nprogress'
-          ],
           'styled-components': [
             'styled-components'
           ],
@@ -79,12 +69,4 @@ export default defineConfig({
       }
     }
   },
-  css: {
-    postcss: {
-      plugins: [
-        postcssPresetMantine(),
-        postcssSimpleVars()
-      ]
-    }
-  }
 })
