@@ -1,32 +1,33 @@
 /**
  * Auth Component Styles - Enterprise Styled-Components
  * 
- * Migrated from JSS to styled-components while maintaining
- * the same styling behavior and theme integration.
+ * Modernized with EnhancedTheme and direct token access for
+ * consistent theme integration and improved performance.
  */
 
 import styled from 'styled-components';
-import { Theme } from '@/app/theme';
+import { EnhancedTheme } from '../../../../core/theme';
 
-export const AuthContainer = styled.div<{ theme: Theme }>`
+export const AuthContainer = styled.div<{ theme: EnhancedTheme }>`
   display: flex;
   flex-flow: row nowrap;
-  background: ${props => props.theme.colors?.background || '#fafafa'};
+  background: ${props => props.theme.colors.background.primary};
   align-items: center;
   justify-content: center;
   height: 100vh;
   font-family: inherit;
+  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
 
   .greeting-text {
     display: flex;
-    padding: ${props => props.theme.spacing(props.theme.spacingFactor.md * 2)};
+    padding: ${props => props.theme.spacing.xl};
     flex-flow: column nowrap;
     min-width: min-content;
     align-items: flex-start;
     justify-content: flex-start;
     font-size: 3.2rem;
     align-self: center;
-    gap: ${props => props.theme.spacing(props.theme.spacingFactor.md * 3)};
+    gap: ${props => props.theme.spacing.xl};
     height: 360px;
     text-wrap: nowrap;
   }
@@ -67,29 +68,45 @@ export const AuthContainer = styled.div<{ theme: Theme }>`
   }
 `;
 
-export const FormContainer = styled.div<{ theme: Theme }>`
+export const FormContainer = styled.div<{ theme: EnhancedTheme }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing(props.theme.spacingFactor.lg)};
+  padding: ${props => props.theme.spacing.lg};
   min-width: 400px;
-  gap: ${props => props.theme.spacing(props.theme.spacingFactor.md)};
+  gap: ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.radius.lg};
+  background-color: ${props => props.theme.colors.background.secondary};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
 `;
 
-export const ActivationContainer = styled.div<{ theme: Theme }>`
+export const ActivationContainer = styled.div<{ theme: EnhancedTheme }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing(props.theme.spacingFactor.lg)};
+  padding: ${props => props.theme.spacing.lg};
   min-width: 400px;
-  gap: ${props => props.theme.spacing(props.theme.spacingFactor.md)};
+  gap: ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.radius.lg};
+  background-color: ${props => props.theme.colors.background.secondary};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
 `;
 
 // Legacy export for backward compatibility during migration
 export const AuthStyles = {
-    auth: AuthContainer,
-    form: FormContainer,
-    activation: ActivationContainer,
+  auth: AuthContainer,
+  form: FormContainer,
+  activation: ActivationContainer,
 };

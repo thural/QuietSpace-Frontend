@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSecurityMonitor } from '@auth/application/hooks/useSecurityMonitor';
-import { styles } from './SecurityMonitor.styles.ts';
+import { SecurityMonitorStyles } from './SecurityMonitor.styles.ts';
 
 /**
  * Comprehensive Security Analytics Dashboard
@@ -32,18 +32,18 @@ interface SecurityAnalyticsProps {
   refreshInterval?: number;
 }
 
-export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({ 
-  userId, 
-  refreshInterval = 30000 
+export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
+  userId,
+  refreshInterval = 30000
 }) => {
-  const { 
-    securityData, 
-    securityStatus, 
-    securitySettings, 
-    securityEvents, 
+  const {
+    securityData,
+    securityStatus,
+    securitySettings,
+    securityEvents,
     loginAttempts,
-    loading, 
-    error, 
+    isLoading,
+    error,
     recordSecurityEvent,
     revokeSession,
     revokeAllSessions,
@@ -79,30 +79,30 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
     };
 
     const cutoff = timeframes[selectedTimeframe];
-    
-    const recentEvents = securityEvents.filter(event => 
+
+    const recentEvents = securityEvents.filter(event =>
       new Date(event.timestamp).getTime() > cutoff
     );
-    
-    const recentAttempts = loginAttempts.filter(attempt => 
+
+    const recentAttempts = loginAttempts.filter(attempt =>
       new Date(attempt.timestamp).getTime() > cutoff
     );
 
     const failedAttempts = recentAttempts.filter(attempt => !attempt.success);
     const successfulAttempts = recentAttempts.filter(attempt => attempt.success);
-    
-    const criticalEvents = recentEvents.filter(event => 
+
+    const criticalEvents = recentEvents.filter(event =>
       event.severity === 'critical'
     );
-    
-    const highRiskEvents = recentEvents.filter(event => 
+
+    const highRiskEvents = recentEvents.filter(event =>
       event.severity === 'high'
     );
 
     // Calculate threat level
     const threatScore = Math.min(100, (
-      (failedAttempts.length * 10) + 
-      (criticalEvents.length * 25) + 
+      (failedAttempts.length * 10) +
+      (criticalEvents.length * 25) +
       (highRiskEvents.length * 15) +
       (securityData?.totalBlockedIPs || 0) * 5
     ));
@@ -140,12 +140,12 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
     return '#dc3545'; // Poor
   };
 
-  if (loading && !securityData) {
+  if (isLoading && !securityData) {
     return (
-      <div style={styles.securityAnalyticsDashboard.loading}>
-        <div style={styles.loadingSpinner}></div>
+      <SecurityMonitorStyles.LoadingState>
+        <SecurityMonitorStyles.LoadingSpinner></SecurityMonitorStyles.LoadingSpinner>
         <p>Loading security analytics...</p>
-      </div>
+      </SecurityMonitorStyles.LoadingState>
     );
   }
 
@@ -197,7 +197,7 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
             />
             <span>Auto-refresh</span>
           </label>
-          <button 
+          <button
             onClick={() => setShowDetails(!showDetails)}
             style={styles.detailsToggle}
           >
@@ -213,7 +213,7 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
             <h3 style={styles.metricCard.title}>Threat Level</h3>
             <span style={styles.metricCard.icon}>🚨</span>
           </div>
-          <div 
+          <div
             style={{
               ...styles.metricCard.value,
               color: getThreatLevelColor(metrics.threatScore)
@@ -223,8 +223,8 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
           </div>
           <div style={styles.metricCard.description}>
             {metrics.threatScore >= 80 ? 'Critical' :
-             metrics.threatScore >= 60 ? 'High' :
-             metrics.threatScore >= 40 ? 'Medium' : 'Low'}
+              metrics.threatScore >= 60 ? 'High' :
+                metrics.threatScore >= 40 ? 'Medium' : 'Low'}
           </div>
         </div>
 
@@ -233,7 +233,7 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
             <h3 style={styles.metricCard.title}>Security Health</h3>
             <span style={styles.metricCard.icon}>🛡️</span>
           </div>
-          <div 
+          <div
             style={{
               ...styles.metricCard.value,
               color: getHealthLevelColor(metrics.healthScore)
@@ -243,8 +243,8 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
           </div>
           <div style={styles.metricCard.description}>
             {metrics.healthScore >= 80 ? 'Excellent' :
-             metrics.healthScore >= 60 ? 'Good' :
-             metrics.healthScore >= 40 ? 'Fair' : 'Poor'}
+              metrics.healthScore >= 60 ? 'Good' :
+                metrics.healthScore >= 40 ? 'Fair' : 'Poor'}
           </div>
         </div>
 
@@ -264,8 +264,8 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
           </div>
           <div style={styles.metricCard.value}>{metrics.failedAttempts}</div>
           <div style={styles.metricCard.description}>
-            {metrics.totalAttempts > 0 ? 
-              `${((metrics.failedAttempts / metrics.totalAttempts) * 100).toFixed(1)}% failure rate` : 
+            {metrics.totalAttempts > 0 ?
+              `${((metrics.failedAttempts / metrics.totalAttempts) * 100).toFixed(1)}% failure rate` :
               'No attempts'
             }
           </div>
@@ -313,8 +313,8 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
             <div style={styles.statusItem.container}>
               <span style={styles.statusLabel}>Last Activity:</span>
               <span style={styles.statusValue.container}>
-                {securityStatus.lastActivity ? 
-                  new Date(securityStatus.lastActivity).toLocaleString() : 
+                {securityStatus.lastActivity ?
+                  new Date(securityStatus.lastActivity).toLocaleString() :
                   'No activity'
                 }
               </span>
@@ -370,19 +370,19 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
               <h4>Total Attempts</h4>
               <span style={styles.statValue}>{metrics.totalAttempts}</span>
             </div>
-            <div style={{...styles.attemptStat.container, ...styles.attemptStat.success}}>
+            <div style={{ ...styles.attemptStat.container, ...styles.attemptStat.success }}>
               <h4>Successful</h4>
               <span style={styles.statValue}>{metrics.successfulAttempts}</span>
             </div>
-            <div style={{...styles.attemptStat.container, ...styles.attemptStat.failed}}>
+            <div style={{ ...styles.attemptStat.container, ...styles.attemptStat.failed }}>
               <h4>Failed</h4>
               <span style={styles.statValue}>{metrics.failedAttempts}</span>
             </div>
             <div style={styles.attemptStat.container}>
               <h4>Success Rate</h4>
               <span style={styles.statValue}>
-                {metrics.totalAttempts > 0 ? 
-                  `${((metrics.successfulAttempts / metrics.totalAttempts) * 100).toFixed(1)}%` : 
+                {metrics.totalAttempts > 0 ?
+                  `${((metrics.successfulAttempts / metrics.totalAttempts) * 100).toFixed(1)}%` :
                   'N/A'
                 }
               </span>
@@ -407,8 +407,8 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
                 <span style={styles.ipAddress}>{ip}</span>
                 <span style={styles.blockedTime}>Recently</span>
                 <span style={styles.blockReason}>Suspicious activity</span>
-                <button 
-                  onClick={() => {/* unblockIP function would go here */}}
+                <button
+                  onClick={() => {/* unblockIP function would go here */ }}
                   style={styles.unblockBtn}
                 >
                   Unblock
@@ -423,23 +423,23 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
       <div style={styles.securityActionsPanel.container}>
         <h3 style={styles.sectionTitle}>Security Actions</h3>
         <div style={styles.actionsGrid.container}>
-          <button 
+          <button
             onClick={() => recordSecurityEvent('manual_check', 'Manual security check triggered', 'medium')}
             disabled={isRecordingEvent}
             style={styles.actionBtn.container}
           >
             {isRecordingEvent ? 'Recording...' : 'Record Security Event'}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => revokeAllSessions()}
             disabled={isRevokingAllSessions}
-            style={{...styles.actionBtn.container, ...styles.actionBtn.danger}}
+            style={{ ...styles.actionBtn.container, ...styles.actionBtn.danger }}
           >
             {isRevokingAllSessions ? 'Revoking...' : 'Revoke All Sessions'}
           </button>
-          
-          <button 
+
+          <button
             onClick={refreshSecurityData}
             style={styles.actionBtn.container}
           >
