@@ -23,5 +23,8 @@ export * from './application/services';
 // ===== APPLICATION HOOKS =====
 export * from './application/hooks';
 
+// ===== WEBSOCKET ADAPTERS =====
+export * from './adapters';
+
 // ===== INTEGRATION =====
 export * from './integration';
