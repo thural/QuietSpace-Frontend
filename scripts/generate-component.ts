@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as process from 'process';
 
 // Component generator script
-const generateComponent = (componentName, feature = 'shared') => {
-  const templates = {
-    component: `import * as React from 'react';
+const generateComponent = (componentName: string, feature = 'shared') => {
+    const templates = {
+        component: `import * as React from 'react';
 import { useService } from '../../core/di';
 import { styles } from './${componentName}.styles';
 
@@ -125,7 +125,7 @@ export const ${componentName}: React.FC<${componentName}Props> = (props) => {
 
 export default ${componentName};`,
 
-    styles: `import { CSSProperties } from 'react';
+        styles: `import { CSSProperties } from 'react';
 
 export const styles = {
   container: {
@@ -186,7 +186,7 @@ export const styles = {
   }
 } as const;`,
 
-    test: `import { render, screen } from '@testing-library/react';
+        test: `import { render, screen } from '@testing-library/react';
 import { ${componentName} } from '../${componentName}';
 import { renderWithDI } from '../../../shared/utils/testUtils';
 
@@ -228,24 +228,24 @@ describe('${componentName}', () => {
   });
 });`,
 
-    index: `export { ${componentName} } from './${componentName}';
+        index: `export { ${componentName} } from './${componentName}';
 export { styles } from './${componentName}.styles';`
-  };
+    };
 
-  const componentDir = path.join(process.cwd(), 'src', 'features', feature, 'presentation', 'components', componentName);
-  
-  // Create directory if it doesn't exist
-  if (!fs.existsSync(componentDir)) {
-    fs.mkdirSync(componentDir, { recursive: true });
-  }
+    const componentDir = path.join(process.cwd(), 'src', 'features', feature, 'presentation', 'components', componentName);
 
-  // Write files
-  fs.writeFileSync(path.join(componentDir, `${componentName}.tsx`), templates.component);
-  fs.writeFileSync(path.join(componentDir, `${componentName}.styles.ts`), templates.styles);
-  fs.writeFileSync(path.join(componentDir, `${componentName}.test.tsx`), templates.test);
-  fs.writeFileSync(path.join(componentDir, 'index.ts'), templates.index);
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(componentDir)) {
+        fs.mkdirSync(componentDir, { recursive: true });
+    }
 
-  console.log(`✅ Component ${componentName} created successfully in ${componentDir}`);
+    // Write files
+    fs.writeFileSync(path.join(componentDir, `${componentName}.tsx`), templates.component);
+    fs.writeFileSync(path.join(componentDir, `${componentName}.styles.ts`), templates.styles);
+    fs.writeFileSync(path.join(componentDir, `${componentName}.test.tsx`), templates.test);
+    fs.writeFileSync(path.join(componentDir, 'index.ts'), templates.index);
+
+    console.log(`✅ Component ${componentName} created successfully in ${componentDir}`);
 };
 
 // Get command line arguments
@@ -254,9 +254,9 @@ const componentName = args[0];
 const feature = args[1] || 'shared';
 
 if (!componentName) {
-  console.error('❌ Please provide a component name');
-  console.log('Usage: node generate-component.js <ComponentName> [feature]');
-  process.exit(1);
+    console.error('❌ Please provide a component name');
+    console.log('Usage: node generate-component.js <ComponentName> [feature]');
+    process.exit(1);
 }
 
 // Generate component

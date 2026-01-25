@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as process from 'process';
 
 // Feature generator script
-const generateFeature = (featureName) => {
+const generateFeature = (featureName: string) => {
   const templates = {
     domainEntity: `export interface ${featureName.charAt(0).toUpperCase() + featureName.slice(1)}Entity {
   id: string;
@@ -213,7 +213,7 @@ export const styles = {
   };
 
   const featureDir = path.join(process.cwd(), 'src', 'features', featureName);
-  
+
   // Create directory structure
   const directories = [
     path.join(featureDir, 'domain'),

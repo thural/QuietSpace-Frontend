@@ -1,1 +1,1 @@
-export { AuthFeatureService, SecurityStatus, UserSecuritySettings } from './AuthFeatureService';
+export { TestServiceService, TestServiceRepository, useTestServiceDI } from './TestServiceServiceDI';

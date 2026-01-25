@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as process from 'process';
 
 // Service generator script
-const generateService = (serviceName, feature) => {
+const generateService = (serviceName: string, feature: string) => {
   const templates = {
     service: `import 'reflect-metadata';
 import * as React from 'react';
@@ -75,7 +75,7 @@ describe('${serviceName}Service', () => {
   };
 
   const serviceDir = path.join(process.cwd(), 'src', 'features', feature, 'application', 'services');
-  
+
   // Create directory if it doesn't exist
   if (!fs.existsSync(serviceDir)) {
     fs.mkdirSync(serviceDir, { recursive: true });
