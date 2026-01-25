@@ -1,0 +1,43 @@
+{
+    "provider": "jwt",
+    "defaultProvider": "jwt",
+    "allowedProviders": [
+        "jwt"
+    ],
+    "featureFlags": {
+        "mfaRequired": false,
+        "encryptionEnabled": true,
+        "auditEnabled": true,
+        "rateLimitingEnabled": false
+    },
+    "token": {
+        "refreshInterval": 540000,
+        "expiration": 3600000,
+        "maxRetries": 3
+    },
+    "session": {
+        "timeout": 1800000,
+        "maxConcurrentSessions": 5
+    },
+    "security": {
+        "maxLoginAttempts": 10,
+        "lockoutDuration": 300000,
+        "rateLimitWindow": 300000,
+        "rateLimitMaxAttempts": 10
+    },
+    "environment": {
+        "name": "development",
+        "apiBaseUrl": "http://localhost:3000",
+        "debugMode": true
+    },
+    "logging": {
+        "level": "debug",
+        "retentionDays": 7
+    },
+    "development": {
+        "mockProviders": true,
+        "autoLogin": false,
+        "skipMFA": true,
+        "verboseLogging": true
+    }
+}

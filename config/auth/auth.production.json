@@ -1,0 +1,121 @@
+{
+    "provider": "saml",
+    "defaultProvider": "saml",
+    "allowedProviders": [
+        "saml",
+        "oauth",
+        "ldap"
+    ],
+    "featureFlags": {
+        "mfaRequired": true,
+        "encryptionEnabled": true,
+        "auditEnabled": true,
+        "rateLimitingEnabled": true
+    },
+    "token": {
+        "refreshInterval": 240000,
+        "expiration": 900000,
+        "maxRetries": 1
+    },
+    "session": {
+        "timeout": 600000,
+        "maxConcurrentSessions": 1
+    },
+    "security": {
+        "maxLoginAttempts": 3,
+        "lockoutDuration": 3600000,
+        "rateLimitWindow": 300000,
+        "rateLimitMaxAttempts": 2
+    },
+    "environment": {
+        "name": "production",
+        "apiBaseUrl": "https://api.quietspace.com",
+        "debugMode": false
+    },
+    "logging": {
+        "level": "warn",
+        "retentionDays": 90
+    },
+    "production": {
+        "mockProviders": false,
+        "autoLogin": false,
+        "skipMFA": false,
+        "verboseLogging": false,
+        "performanceMonitoring": true,
+        "securityMonitoring": true,
+        "complianceMode": true,
+        "dataRetention": {
+            "logs": 365,
+            "sessions": 30,
+            "audit": 2555
+        }
+    },
+    "oauth": {
+        "google": {
+            "enabled": true,
+            "clientId": "${GOOGLE_CLIENT_ID}",
+            "redirectUri": "https://quiet-space.com/auth/google/callback",
+            "scope": "openid profile email"
+        },
+        "github": {
+            "enabled": true,
+            "clientId": "${GITHUB_CLIENT_ID}",
+            "redirectUri": "https://quiet-space.com/auth/github/callback",
+            "scope": "user:email"
+        },
+        "microsoft": {
+            "enabled": true,
+            "clientId": "${MICROSOFT_CLIENT_ID}",
+            "redirectUri": "https://quiet-space.com/auth/microsoft/callback",
+            "tenant": "${MICROSOFT_TENANT_ID}"
+        }
+    },
+    "saml": {
+        "enabled": true,
+        "entryPoint": "${SAML_ENTRY_POINT}",
+        "issuer": "quiet-space-production",
+        "cert": "${SAML_CERTIFICATE}",
+        "privateKey": "${SAML_PRIVATE_KEY}",
+        "signatureAlgorithm": "rsa-sha256",
+        "digestAlgorithm": "sha256",
+        "nameIdFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+        "attributeConsumingServiceIndex": 1
+    },
+    "ldap": {
+        "enabled": true,
+        "url": "${LDAP_URL}",
+        "bindDN": "${LDAP_BIND_DN}",
+        "bindCredentials": "${LDAP_BIND_CREDENTIALS}",
+        "searchBase": "${LDAP_SEARCH_BASE}",
+        "searchFilter": "(uid={{username}})",
+        "searchAttributes": [
+            "uid",
+            "cn",
+            "mail",
+            "memberOf"
+        ],
+        "groupSearchBase": "${LDAP_GROUP_SEARCH_BASE}",
+        "groupSearchFilter": "(member={{dn}})",
+        "groupMemberAttribute": "member",
+        "tlsOptions": {
+            "rejectUnauthorized": true
+        }
+    },
+    "compliance": {
+        "gdpr": {
+            "enabled": true,
+            "dataPortability": true,
+            "rightToErasure": true
+        },
+        "soc2": {
+            "enabled": true,
+            "auditLogging": true,
+            "accessControls": true
+        },
+        "iso27001": {
+            "enabled": true,
+            "riskManagement": true,
+            "incidentResponse": true
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "provider": "jwt",
+    "defaultProvider": "jwt",
+    "allowedProviders": [
+        "jwt",
+        "oauth"
+    ],
+    "featureFlags": {
+        "mfaRequired": false,
+        "encryptionEnabled": true,
+        "auditEnabled": true,
+        "rateLimitingEnabled": true
+    },
+    "token": {
+        "refreshInterval": 540000,
+        "expiration": 3600000,
+        "maxRetries": 3
+    },
+    "session": {
+        "timeout": 1800000,
+        "maxConcurrentSessions": 3
+    },
+    "security": {
+        "maxLoginAttempts": 5,
+        "lockoutDuration": 900000,
+        "rateLimitWindow": 900000,
+        "rateLimitMaxAttempts": 5
+    },
+    "environment": {
+        "name": "development",
+        "apiBaseUrl": "http://localhost:3000",
+        "debugMode": true
+    },
+    "logging": {
+        "level": "info",
+        "retentionDays": 30
+    },
+    "development": {
+        "mockProviders": false,
+        "autoLogin": false,
+        "skipMFA": false,
+        "verboseLogging": true,
+        "hotReload": true,
+        "mockExternalServices": true
+    },
+    "oauth": {
+        "google": {
+            "enabled": true,
+            "clientId": "${GOOGLE_CLIENT_ID}",
+            "redirectUri": "http://localhost:3000/auth/google/callback"
+        },
+        "github": {
+            "enabled": true,
+            "clientId": "${GITHUB_CLIENT_ID}",
+            "redirectUri": "http://localhost:3000/auth/github/callback"
+        }
+    }
+}
