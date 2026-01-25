@@ -1,5 +1,5 @@
-import { Skeleton } from "@mantine/core"
-import FlexStyled from "./FlexStyled"
+import { Skeleton } from "@/shared/ui/components"
+import { FlexContainer } from "../../../shared/ui/components";
 
 const wrapperStyle = {
     display: 'flex',
@@ -27,10 +27,10 @@ const line = {
 
 const NotificationSkeleton = () => {
     return (
-        <FlexStyled style={wrapperStyle}>
-            <Skeleton style={circle} circle />
-            <Skeleton style={line} />
-        </FlexStyled >
+        <FlexContainer style={wrapperStyle}>
+            <Skeleton style={circle} width={40} height={40} radius="50%" />
+            <Skeleton style={line} height={16} />
+        </FlexContainer>
     )
 }
 

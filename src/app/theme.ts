@@ -1,4 +1,4 @@
-interface Theme {
+export interface Theme {
     spacing: (factor: number) => string;
     spacingFactor: {
         xs: number;
