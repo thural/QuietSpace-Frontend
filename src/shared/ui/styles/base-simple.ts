@@ -242,12 +242,12 @@ border - bottom: 2px solid ${ (props) => props.active ? props.theme.colors.prima
 transition: ${ (props) => props.theme.transitions.default };
   
   &:hover {
-    color: ${ (props) => props.theme.colors.primary };
+  color: ${ (props) => props.theme.colors.primary };
 }
   
   &:focus {
-    outline: 2px solid ${ (props) => props.theme.colors.primary };
-    outline - offset: 2px;
+  outline: 2px solid ${ (props) => props.theme.colors.primary };
+  outline - offset: 2px;
 }
 `;
 
