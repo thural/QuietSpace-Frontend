@@ -1,10 +1,9 @@
 import { PostResponse } from "@/features/feed/data/models/post";
-import FlexStyled from "@/shared/FlexStyled";
+import { StatsSection } from "../../styles/postInteractionStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import PostStats from "./PostStats";
 import ReactionGroup from "./ReactionGroup";
 import InteractionActions from "./InteractionActions";
-import useStyles from "../../styles/postInteractionStyles";
 
 /**
  * Props for the PostInteractions component.
@@ -50,14 +49,12 @@ const PostInteractions: React.FC<PostInteractionsProps> = ({
     toggleCommentForm,
     toggleRepostForm
 }) => {
-    const classes = useStyles();
-
     return (
-        <FlexStyled className={classes.statsSection}>
+        <StatsSection>
             <ReactionGroup userReaction={post?.userReaction} handleLike={handleLike} handleDislike={handleDislike} />
             <InteractionActions hasCommented={hasCommented} toggleCommentForm={toggleCommentForm} toggleShareForm={toggleShareForm} toggleRepostForm={toggleRepostForm} />
             <PostStats post={post} commentCount={commentCount} />
-        </FlexStyled>
+        </StatsSection>
     );
 }
 

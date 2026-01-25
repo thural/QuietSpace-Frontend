@@ -1,9 +1,8 @@
 import { PostRequest } from "@/features/feed/data/models/post";
 import Clickable from "@/shared/Clickable";
-import FlexStyled from "@/shared/FlexStyled";
 import { Container, Input } from "../../../../../shared/ui/components";
+import { PollForm as PollFormStyled, PollFormBody, PollOptionInput, AddOptionButton } from "../../styles/pollIFormStyles";
 import { PollView } from "@features/feed/application/hooks/useCreatePostForm";
-import styles from "../../styles/pollIFormStyles";
 import { AnyFunction, ProcedureFn } from "@/shared/types/genericTypes";
 
 /**
@@ -25,54 +24,45 @@ interface PollFormProps {
 /**
  * PollForm component.
  * 
- * This component renders a form for creating a poll within a post. It includes input fields
- * for multiple poll options and a button to remove the poll. The visibility of the poll form
- * is controlled by the `pollView` prop.
+ * This component renders a form for creating a poll with multiple options. It allows users to add
+ * up to four options and provides a button to remove the poll entirely. The form is conditionally
+ * rendered based on the poll view state.
  * 
  * @param {PollFormProps} props - The component props.
  * @returns {JSX.Element} - The rendered PollForm component.
  */
 const PollForm: React.FC<PollFormProps> = ({ postData, handleChange, togglePoll, pollView }) => {
-    const classes = styles();
-
     return (
-        <FlexStyled
-            className={classes.pollForm}
-            style={{ display: pollView.enabled ? "flex" : "none" }}
-        >
-            <Container>
-                <Input
+        <PollFormStyled isVisible={pollView.enabled}>
+            <PollFormBody>
+                <PollOptionInput
                     name="option1"
-                    className="poll-input"
                     placeholder="yes"
                     value={postData?.option1 ?? ""}
                     onChange={handleChange}
                 />
-                <Input
+                <PollOptionInput
                     name="option2"
-                    className="poll-input"
                     placeholder="no"
                     value={postData?.option2 ?? ""}
                     onChange={handleChange}
                 />
-                <Input
+                <PollOptionInput
                     name="option3"
-                    className="poll-input"
                     placeholder="add another option"
                     value={postData?.option3 ?? ""}
                     onChange={handleChange}
                 />
-                <Input
+                <PollOptionInput
                     name="option4"
-                    className="poll-input"
                     placeholder="add another option"
                     value={postData?.option4 ?? ""}
                     onChange={handleChange}
-                    hidden={!postData?.option3}
+                    hasError={!postData?.option3}
                 />
-            </Container>
+            </PollFormBody>
             <Clickable className="close-poll" onClick={togglePoll}>remove poll</Clickable>
-        </FlexStyled>
+        </PollFormStyled>
     );
 };
 

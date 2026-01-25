@@ -3,7 +3,7 @@ import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
 import LoaderStyled from "@/shared/LoaderStyled";
 import { useGetComments } from "@features/feed/data/useCommentData";
-import styles from "../../styles/commentPanelStyles";
+import { CommentSection, CommentPanelContainer } from "../../styles/commentPanelStyles";
 import CommentBox from "./Comment";
 import CommentReply from "./CommentReply";
 
@@ -32,8 +32,6 @@ interface CommentPanelProps {
  * @returns {JSX.Element | null} - The rendered comment panel or null if postId is undefined.
  */
 const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
-    const classes = styles();
-
     // If postId is undefined, return null
     if (postId === undefined) return null;
 
@@ -57,7 +55,7 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
 
         // Render the comments
         return (
-            <>
+            <CommentPanelContainer>
                 {comments.data?.content.map((comment, index) => {
                     // Render top-level comments
                     if (!comment.parentId) return <CommentBox key={index} comment={comment} />;
@@ -66,15 +64,15 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
                     // Render replies
                     return <CommentReply key={index} comment={comment} repliedComment={repliedComment} />;
                 })}
-            </>
+            </CommentPanelContainer>
         );
     };
 
     return (
-        <FlexStyled className={classes.commentSection}>
+        <CommentSection>
             <CommentList />
-        </FlexStyled>
+        </CommentSection>
     );
-}
+};
 
 export default CommentPanel;

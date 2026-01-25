@@ -1,5 +1,4 @@
-import TextAreaStyled from "@/shared/TextAreaStyled";
-import useStyles from "../../styles/textInputStyles";
+import { Textarea, TextInputContainer } from "../../styles/textInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 
 /**
@@ -30,18 +29,18 @@ export interface TextInputProps {
  */
 const TextInput: React.FC<TextInputProps> = (props) => {
     const { name = "text", value, handleChange } = props;
-    const classes = useStyles(props);
 
     return (
-        <TextAreaStyled
-            className={classes.textarea}
-            name={name}
-            value={value}
-            handleChange={handleChange}
-            placeholder="what's on your mind?"
-            maxLength={999}
-            minLength={1}
-        />
+        <TextInputContainer>
+            <Textarea
+                name={name}
+                value={value}
+                onChange={handleChange}
+                placeholder="what's on your mind?"
+                maxLength={999}
+                minLength={1}
+            />
+        </TextInputContainer>
     );
 }
 

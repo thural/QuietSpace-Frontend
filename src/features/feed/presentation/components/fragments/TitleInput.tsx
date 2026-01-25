@@ -1,5 +1,5 @@
 import { Input } from "../../../../../shared/ui/components";
-import useStyles from "../../styles/titleInputStyles";
+import { TitleInputContainer, TitleInputWrapper } from "../../styles/titleInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 
 /**
@@ -25,18 +25,19 @@ interface TitleInputProps {
  * @returns {JSX.Element} - The rendered TitleInput component.
  */
 const TitleInput: React.FC<TitleInputProps> = ({ value = "", handleChange }) => {
-    const classes = useStyles();
-
     return (
-        <Input
-            className={classes.titleInput}
-            name="title"
-            minLength="1"
-            maxLength="32"
-            value={value}
-            placeholder="type a title"
-            onChange={handleChange}
-        />
+        <TitleInputContainer>
+            <TitleInputWrapper>
+                <Input
+                    name="title"
+                    minLength={1}
+                    maxLength={32}
+                    value={value}
+                    placeholder="type a title"
+                    onChange={handleChange}
+                />
+            </TitleInputWrapper>
+        </TitleInputContainer>
     );
 }
 

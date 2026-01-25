@@ -1,7 +1,5 @@
 
-import DarkButton from "@/shared/buttons/DarkButton";
-import FlexStyled from "@/shared/FlexStyled";
-import useStyles from "../../styles/formControlStyles";
+import { Button, ActionButtons } from "../../styles/formControlStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
@@ -31,19 +29,17 @@ export interface FormControlsProps extends GenericWrapper {
  * @returns {JSX.Element} - The rendered FormControls component.
  */
 const FormControls: React.FC<FormControlsProps> = ({ isLoading, isDisabled, handleSubmit, children }) => {
-    const classes = useStyles();
-
     return (
-        <FlexStyled className={classes.controlArea}>
+        <ActionButtons>
             {children}
-            <DarkButton
-                className={classes.button}
-                name="post"
-                disabled={isDisabled}
-                loading={isLoading}
+            <Button
+                variant="primary"
+                disabled={isDisabled || isLoading}
                 onClick={handleSubmit}
-            />
-        </FlexStyled>
+            >
+                {isLoading ? "Posting..." : "Post"}
+            </Button>
+        </ActionButtons>
     );
 };
 

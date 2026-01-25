@@ -1,7 +1,5 @@
 import { PostResponse } from "@/features/feed/data/models/post";
-import FlexStyled from "@/shared/FlexStyled";
-import Typography from "@/shared/Typography";
-import useStyles from "../../styles/poststatStyles";
+import { PostStats as PostStatsStyled } from "../../styles/poststatStyles";
 import { parseCount } from "@/shared/utils/stringUtils";
 
 /**
@@ -26,15 +24,14 @@ interface PostStatsProps {
  * @returns {JSX.Element} - The rendered PostStats component.
  */
 const PostStats: React.FC<PostStatsProps> = ({ post, commentCount }) => {
-    const classes = useStyles();
     const { likeCount, dislikeCount } = post;
 
     return (
-        <FlexStyled className={classes.postStats}>
-            {likeCount > 0 && <Typography size="0.85rem">{parseCount(likeCount)} likes</Typography>}
-            {dislikeCount > 0 && <Typography size="0.85rem">{parseCount(dislikeCount)} dislikes</Typography>}
-            {commentCount > 0 && <Typography size="0.85rem">{parseCount(commentCount)} comments</Typography>}
-        </FlexStyled>
+        <PostStatsStyled>
+            {likeCount > 0 && <span>{parseCount(likeCount)} likes</span>}
+            {dislikeCount > 0 && <span>{parseCount(dislikeCount)} dislikes</span>}
+            {commentCount > 0 && <span>{parseCount(commentCount)} comments</span>}
+        </PostStatsStyled>
     );
 }
 
