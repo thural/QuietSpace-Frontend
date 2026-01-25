@@ -1,26 +1,21 @@
-import {lazy, Suspense, useEffect} from "react";
-import {ThemeProvider} from "react-jss";
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
-import {Frame} from "stompjs";
+import { lazy, Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Frame } from "stompjs";
 
-import '@mantine/core/styles.css';
 import './styles/App.css';
 
-import {darkTheme, lightTheme} from "@/app/theme";
 import UnauthorizedPage from "@/pages/auth/UnauthorizedPage";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
-import {useGetNotifications} from "@/features/notification/data/useNotificationData";
+import { useGetNotifications } from "@/features/notification/data/useNotificationData";
 import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
-import useTheme from "../shared/hooks/useTheme";
 import { useChatWebSocket } from "@/core/websocket/hooks";
 import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
-import {useAuthStore} from "../core/store/zustand";
-import {AdvancedSecurityProvider} from "../shared/auth/AdvancedSecurityProvider";
-import {AuthProvider} from "../shared/auth/AuthProvider";
-import {useAuditLogger} from "../shared/auth/auditLogger";
+import { useAuthStore } from "../core/store/zustand";
+import { AdvancedSecurityProvider } from "../shared/auth/AdvancedSecurityProvider";
+import { AuthProvider } from "../shared/auth/AuthProvider";
+import { useAuditLogger } from "../shared/auth/auditLogger";
 import AuthGuard from "../shared/auth/AuthGuard";
-import {getLocalThemeMode} from "@utils/localStorageUtils.ts";
 
 // Lazy-loaded components for better performance
 lazy(() => import("../features/navbar/presentation/components/Navbar"));
@@ -56,10 +51,7 @@ const AuthPage = lazy(() => import("../pages/auth/AuthPage"));
  */
 const App = () => {
     const navigate = useNavigate();
-    const { theme } = useTheme();
-    useAuthStore();
-    const isDarkMode = getLocalThemeMode();
-    const storedTheme = isDarkMode ? darkTheme : lightTheme;
+    const { isAuthenticated } = useAuthStore();
 
     // Security audit logging (optional - for additional tracking)
     const auditLog = useAuditLogger();
@@ -107,7 +99,7 @@ const App = () => {
         };
     }, [isAuthenticated, connectWebSocket, disconnectWebSocket, connectChat, disconnectChat]);
     useGetNotifications();
-    const { initializeTokenRefresh } = useJwtAuth();
+    const { refreshToken } = useJwtAuth();
 
     /**
      * Enhanced authentication initialization with improved error handling
@@ -122,7 +114,7 @@ const App = () => {
     const initAuth = () => {
         try {
             // Initialize token refresh
-            initializeTokenRefresh();
+            refreshToken();
         } catch (error: unknown) {
             console.error('Authentication initialization failed:', error);
 
@@ -146,33 +138,31 @@ const App = () => {
     return (
         <AdvancedSecurityProvider>
             <AuthProvider>
-                <ThemeProvider theme={theme ? theme : storedTheme}>
-                    <Suspense fallback={<LoadingFallback />}>
-                        <Routes>
-                            {/* === UNAUTHENTICATED ROUTES ONLY === */}
-                            <Route path="/auth/*" element={<AuthGuard requireAuth={false}><AuthPage /></AuthGuard>} />
-                            <Route path="/signin" element={<Navigate to="/auth/login" replace />} />
-                            <Route path="/signout" element={<Navigate to="/auth/logout" replace />} />
-                            <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                <Suspense fallback={<LoadingFallback />}>
+                    <Routes>
+                        {/* === UNAUTHENTICATED ROUTES ONLY === */}
+                        <Route path="/auth/*" element={<AuthGuard requireAuth={false}><AuthPage /></AuthGuard>} />
+                        <Route path="/signin" element={<Navigate to="/auth/login" replace />} />
+                        <Route path="/signout" element={<Navigate to="/auth/logout" replace />} />
+                        <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-                            {/* === AUTHENTICATION REQUIRED ROUTES === */}
-                            <Route path="/*" element={
-                                <AuthGuard requireAuth={true}>
-                                    <>
-                                        {/* <NavBar /> */}
-                                        <Routes>
-                                            {/* Default redirect for authenticated users */}
-                                            <Route path="/" element={<Navigate to="/feed" replace />} />
+                        {/* === AUTHENTICATION REQUIRED ROUTES === */}
+                        <Route path="/*" element={
+                            <AuthGuard requireAuth={true}>
+                                <>
+                                    {/* <NavBar /> */}
+                                    <Routes>
+                                        {/* Default redirect for authenticated users */}
+                                        <Route path="/" element={<Navigate to="/feed" replace />} />
 
-                                            {/* All authenticated routes handled by RoutesConfig */}
-                                            <Route path="/*" element={<RoutesConfig />} />
-                                        </Routes>
-                                    </>
-                                </AuthGuard>
-                            } />
-                        </Routes>
-                    </Suspense>
-                </ThemeProvider>
+                                        {/* All authenticated routes handled by RoutesConfig */}
+                                        <Route path="/*" element={<RoutesConfig />} />
+                                    </Routes>
+                                </>
+                            </AuthGuard>
+                        } />
+                    </Routes>
+                </Suspense>
             </AuthProvider>
         </AdvancedSecurityProvider>
     );

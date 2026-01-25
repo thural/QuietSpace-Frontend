@@ -1,31 +1,30 @@
 import 'reflect-metadata';
-import React, {lazy, Suspense, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {Frame} from "stompjs";
+import React, { lazy, Suspense, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Frame } from "stompjs";
 
-import '@mantine/core/styles.css';
 import './styles/App.css';
 
 // DI imports
-import {DIProvider, useService} from "@core/di";
+import { DIProvider, useService } from "@core/di";
 import { initializeApp } from "@core/di/AppContainer";
 
 // Legacy imports (to be migrated)
 import LoaderStyled from "../shared/LoaderStyled";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
-import {useGetChats} from "@chat/data/useChatData.ts";
-import {useGetNotifications} from "@notification/data";
-import {useGetCurrentUser} from "@profile/data";
+import { useGetChats } from "@chat/data/useChatData.ts";
+import { useGetNotifications } from "@notification/data";
+import { useGetCurrentUser } from "@profile/data";
 import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
 import { useEnterpriseAuthHook } from "../features/auth/application/hooks/useEnterpriseAuthHook";
 import { useNotificationWebSocket } from "@/core/websocket/hooks";
 import { useChatWebSocket } from "@/core/websocket/hooks";
 import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
-import {useAuthStore} from "../core/store/zustand";
+import { useAuthStore } from "../core/store/zustand";
 
 // DI Services (new)
-import {ThemeService} from "../core/services/ThemeService";
+import { ThemeService } from "../core/services/ThemeService";
 
 // Lazy-loaded components for better performance
 const NavBar = lazy(() => import("../features/navbar/presentation/components/Navbar"));
@@ -45,7 +44,7 @@ const DIApp = () => {
     const themeService = useService(ThemeService);
     const { isLoading: isUserLoading, isError: isUserError } = useGetCurrentUser();
     const { isAuthenticated } = useAuthStore();
-    
+
     // Initialize theme on app startup
     useEffect(() => {
         // Apply theme class to document body
@@ -54,56 +53,56 @@ const DIApp = () => {
             document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
             document.body.className = isDark ? 'dark-theme' : 'light-theme';
         };
-        
+
         applyTheme();
-        
+
         // Listen for theme changes (if you add theme change events later)
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === 'theme') {
                 applyTheme();
             }
         };
-        
+
         window.addEventListener('storage', handleStorageChange);
         return () => window.removeEventListener('storage', handleStorageChange);
     }, [themeService]);
-    
+
     // Theme is now managed by DI - no legacy theme handling needed
-    
+
     // Enterprise WebSocket connections
     const { connect: connectWebSocket, disconnect: disconnectWebSocket } = useEnterpriseWebSocket({
         featureName: 'di-app',
         onError: (error) => console.error('Enterprise WebSocket error:', error),
         autoConnect: true
     });
-    
+
     const { connect: connectChat, disconnect: disconnectChat } = useChatWebSocket({
         autoConnect: true,
         onError: (error) => console.error('Chat WebSocket error:', error)
     });
-    
+
     const { connect: connectNotifications, disconnect: disconnectNotifications } = useNotificationWebSocket({
         autoConnect: true,
         onError: (error) => console.error('Notification WebSocket error:', error)
     });
-    
+
     // Initialize WebSocket connections
     useEffect(() => {
         connectWebSocket();
         connectChat();
         connectNotifications();
-        
+
         return () => {
             disconnectWebSocket();
             disconnectChat();
             disconnectNotifications();
         };
     }, [connectWebSocket, connectChat, connectNotifications, disconnectWebSocket, disconnectChat, disconnectNotifications]);
-    
+
     useGetNotifications();
     useGetChats();
 
-    const { initializeTokenRefresh } = useJwtAuth();
+    const { refreshToken } = useJwtAuth();
     const { validateSession } = useEnterpriseAuthHook();
 
     /**
@@ -112,7 +111,7 @@ const DIApp = () => {
      */
     const initAuth = () => {
         try {
-            initializeTokenRefresh();
+            refreshToken();
             // Optional: Validate session with enterprise security
             validateSession().catch(console.error);
         } catch (error: unknown) {

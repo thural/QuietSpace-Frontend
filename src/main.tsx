@@ -1,7 +1,5 @@
-import { MantineProvider } from "@mantine/core";
 import { createRoot } from 'react-dom/client';
 import RouteSwitch from "./app/RouteSwitch";
-import { getLocalThemeMode } from "@shared/utils/localStorageUtils";
 
 
 //TODO: remove after kubernetes service tests
@@ -27,13 +25,8 @@ import { getLocalThemeMode } from "@shared/utils/localStorageUtils";
 //         console.log( "http://backend-service/hello",data);
 //     }).catch(err => console.log(err));
 
-const isDarkMode = getLocalThemeMode();
-const colorScheme = isDarkMode ? "dark" : "light";
-
 createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>
-    <MantineProvider forceColorScheme={colorScheme}>
-        <RouteSwitch />
-    </MantineProvider>
+    <RouteSwitch />
     // </React.StrictMode>
 )
