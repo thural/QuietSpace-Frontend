@@ -13,6 +13,9 @@ export * from './data';
 // Application layer
 export * from './application';
 
+// WebSocket adapters
+export * from './adapters';
+
 // DI layer
 export * from './di';
 
