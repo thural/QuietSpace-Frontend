@@ -11,6 +11,15 @@ export { NotificationWebSocketAdapter } from './NotificationWebSocketAdapter';
 // Message handlers
 export { NotificationMessageHandlers } from './NotificationMessageHandlers';
 
+// Migration utilities
+export { 
+  useNotificationSocketMigration,
+  useNotificationMigrationMonitor,
+  type NotificationMigrationConfig,
+  type NotificationMigrationState,
+  type UseNotificationSocketMigrationReturn
+} from './NotificationSocketMigration';
+
 // Types and interfaces
 export {
   // Core types
