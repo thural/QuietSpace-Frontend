@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { createTokenRefreshManager } from '@/shared/utils/jwtAuthUtils';
+import { createTokenRefreshManager, EnterpriseTokenRefreshManager } from '@/core/auth/services/TokenRefreshManager';
 
 interface TokenRefreshProviderProps {
   children: React.ReactNode;
@@ -7,35 +7,47 @@ interface TokenRefreshProviderProps {
   refreshInterval?: number;
   onTokenRefresh?: (data: unknown) => void;
   onRefreshError?: (error: Error) => void;
+  // Enterprise features
+  enableMultiTabSync?: boolean;
+  enableSecurityMonitoring?: boolean;
+  onMetricsUpdate?: (metrics: any) => void;
 }
 
 /**
- * Token Refresh Provider Component
+ * Enterprise Token Refresh Provider Component
  * 
- * A lightweight React component that uses the createTokenRefreshManager utility
- * to handle automatic token refresh for child components.
+ * An enterprise-grade React component that uses the EnterpriseTokenRefreshManager
+ * to handle automatic token refresh for child components with advanced features.
  * 
- * This provides an alternative to the static TokenRefreshManager class for
- * scenarios where a factory-based approach is preferred.
+ * This provides enterprise-grade token management with:
+ * - Multi-tab synchronization
+ * - Security monitoring and analytics
+ * - Circuit breaker pattern for reliability
+ * - Performance metrics and monitoring
+ * - Intelligent retry logic with exponential backoff
  */
 export const TokenRefreshProvider: React.FC<TokenRefreshProviderProps> = ({
   children,
   enabled = true,
   refreshInterval = 540000, // 9 minutes default
   onTokenRefresh,
-  onRefreshError
+  onRefreshError,
+  enableMultiTabSync = true,
+  enableSecurityMonitoring = true,
+  onMetricsUpdate
 }) => {
-  const managerRef = useRef<ReturnType<typeof createTokenRefreshManager> | null>(null);
+  const managerRef = useRef<EnterpriseTokenRefreshManager | null>(null);
   const isActiveRef = useRef(false);
+  const metricsIntervalRef = useRef<number | null>(null);
 
   const startTokenRefresh = useCallback(() => {
     if (!enabled || isActiveRef.current) return;
 
     try {
-      // Create a new manager instance
+      // Create enterprise manager instance
       managerRef.current = createTokenRefreshManager();
       
-      // Start automatic refresh
+      // Start automatic refresh with enterprise features
       managerRef.current.startTokenAutoRefresh({
         refreshInterval,
         onSuccessFn: (data) => {
@@ -43,21 +55,40 @@ export const TokenRefreshProvider: React.FC<TokenRefreshProviderProps> = ({
         },
         onErrorFn: (error) => {
           onRefreshError?.(error);
-          // Stop refresh on error to prevent continuous failed attempts
-          stopTokenRefresh();
-        }
+          // Enterprise manager handles circuit breaker automatically
+        },
+        enableMultiTabSync,
+        enableSecurityMonitoring
       });
       
       isActiveRef.current = true;
+
+      // Start metrics monitoring if callback provided
+      if (onMetricsUpdate) {
+        metricsIntervalRef.current = window.setInterval(() => {
+          if (managerRef.current) {
+            const metrics = managerRef.current.getMetrics();
+            const status = managerRef.current.getStatus();
+            onMetricsUpdate({ ...metrics, ...status });
+          }
+        }, 30000); // Update metrics every 30 seconds
+      }
+
     } catch (error) {
       onRefreshError?.(error instanceof Error ? error : new Error(String(error)));
     }
-  }, [enabled, refreshInterval, onTokenRefresh, onRefreshError]);
+  }, [enabled, refreshInterval, onTokenRefresh, onRefreshError, enableMultiTabSync, enableSecurityMonitoring, onMetricsUpdate]);
 
   const stopTokenRefresh = useCallback(() => {
     if (managerRef.current && isActiveRef.current) {
       managerRef.current.stopTokenAutoRefresh();
       isActiveRef.current = false;
+    }
+
+    // Clear metrics interval
+    if (metricsIntervalRef.current) {
+      window.clearInterval(metricsIntervalRef.current);
+      metricsIntervalRef.current = null;
     }
   }, []);
 
@@ -79,7 +110,9 @@ export const TokenRefreshProvider: React.FC<TokenRefreshProviderProps> = ({
   const contextValue = {
     startTokenRefresh,
     stopTokenRefresh,
-    isActive: isActiveRef.current
+    isActive: isActiveRef.current,
+    getMetrics: () => managerRef.current?.getMetrics(),
+    getStatus: () => managerRef.current?.getStatus()
   };
 
   return (
