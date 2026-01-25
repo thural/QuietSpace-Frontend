@@ -1,23 +1,15 @@
-import { Switch } from '@mantine/core';
+import { Switch } from "@/shared/ui/components";
 
 const SwitchStyled = ({
-  color = "rgba(0, 255, 255, 1)",
-  labelPosition = "left",
   label = "switch label",
-  name = "switchName",
-  description = "switch description",
-  size = "md",
+  size = "md" as "md" | "sm" | "lg",
   checked = false,
-  onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    console.log("mising change event for switch: ", event.target.value)
+  onChange = (checked: boolean) =>
+    console.log("missing change event for switch: ", checked)
 }) => {
   return (
     <Switch
-      color={color}
-      name={name}
-      labelPosition={labelPosition as 'left' | 'right'}
       label={label}
-      description={description}
       size={size}
       checked={checked}
       onChange={onChange}

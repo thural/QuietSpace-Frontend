@@ -4,7 +4,7 @@ import { ResId } from "@/shared/api/models/commonNative";
 import { Container } from '@/shared/ui/components/layout/Container';
 import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
 import { useGetCurrentUser, useGetUserById } from "@/services/data/useUserData";
-import { LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay } from "@/shared/ui/components/display/LoadingOverlay";
 import UserDetails from "@shared/UserDetails";
 import React from "react";
 import { useNavigate } from "react-router-dom";

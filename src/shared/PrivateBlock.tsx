@@ -1,4 +1,4 @@
-import { Center } from "@mantine/core";
+import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
 import { RxLockClosed } from "react-icons/rx";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography, { TypographyProps } from "@/shared/Typography";
@@ -39,7 +39,7 @@ const PrivateBlock: React.FC<PrivateBlockProps> = ({
     const classes = styles(); // Apply styles
 
     return (
-        <Center {...props}> {/* Center the content */}
+        <CenterContainer {...props}> {/* Center the content */}
             <FlexStyled className={classes.privateBlock}>
                 <Icon className={classes.icon} /> {/* Render the icon */}
                 <FlexStyled className={classes.messageSection}>
@@ -49,7 +49,7 @@ const PrivateBlock: React.FC<PrivateBlockProps> = ({
                     {children} {/* Render any additional children */}
                 </FlexStyled>
             </FlexStyled>
-        </Center>
+        </CenterContainer>
     );
 }
 

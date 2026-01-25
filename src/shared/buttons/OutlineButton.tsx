@@ -1,12 +1,11 @@
-import { Button } from "@mantine/core"
+import { Button } from "@/shared/ui/components"
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes"
 
 const OutlineButton: React.FC<GenericWrapperWithRef> = ({
     forwardedRef,
     onClick,
-    radius = "md",
-    size = "2.5rem",
+    size = "md",
     name = "submit",
     ...props
 }) => {
@@ -14,11 +13,9 @@ const OutlineButton: React.FC<GenericWrapperWithRef> = ({
     return (
         <Button
             ref={forwardedRef}
-            radius={radius}
+            variant="secondary"
             size={size}
-            variant="outline"
             onClick={onClick}
-            style={{ fontSize: 'medium' }}
             {...props}
         >
             {name}

@@ -1,11 +1,11 @@
-import { Center } from "@mantine/core";
+import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography from "../Typography";
 
 const ErrorMessage: React.FC<GenericWrapper> = ({ children }) => (
-    <Center>
+    <CenterContainer>
         <Typography>{children}</Typography>
-    </Center>
+    </CenterContainer>
 )
 
 export default ErrorMessage

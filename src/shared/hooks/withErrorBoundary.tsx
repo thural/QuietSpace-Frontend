@@ -1,4 +1,4 @@
-import { Center } from '@mantine/core';
+import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
 import React from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
@@ -12,13 +12,13 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
  * @returns {JSX.Element} - The rendered fallback UI.
  */
 const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => (
-    <Center style={{ margin: "5rem" }}>
+    <CenterContainer style={{ margin: "5rem" }}>
         <div role="alert">
             <p>Something went wrong:</p>
             <pre>{error.message}</pre>
             <button onClick={resetErrorBoundary}>Try again</button>
         </div>
-    </Center>
+    </CenterContainer>
 );
 
 /**
