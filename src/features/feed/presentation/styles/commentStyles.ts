@@ -1,90 +1,139 @@
-import { createUseStyles } from "react-jss";
-import { Theme } from "../../../../shared/types/theme";
+/**
+ * Comment Component Styles - Modern Theme Integration
+ * 
+ * Enterprise styled-components with modern centralized theme system.
+ */
 
-const styles = createUseStyles((theme: Theme) => ({
+import styled from 'styled-components';
+import { EnhancedTheme } from '../../../../core/theme';
 
-  commentWrapper: (isReply: boolean) => ({
-    display: 'flex',
-    marginLeft: isReply ? 'auto' : '0',
-    fontSize: '.9rem',
-    gap: theme.spacing(theme.spacingFactor.md),
-    margin: `${theme.spacing(theme.spacingFactor.ms)} 0 ${theme.spacing(theme.spacingFactor.lg)} 0`,
-    '& .right-section': {
-      flexDirection: 'column',
-      gap: theme.spacing(theme.spacingFactor.lg)
-    }
-  }),
+export const CommentWrapper = styled.div<{ theme: EnhancedTheme; isReply?: boolean }>`
+  display: flex;
+  margin-left: ${(props: any) => props.isReply ? 'auto' : '0'};
+  font-size: ${(props: any) => props.theme.typography.fontSize.sm};
+  gap: ${(props: any) => props.theme.spacing.md};
 
-  mainElement: {
-    display: 'flex',
-    gap: theme.spacing(theme.spacingFactor.md),
-  },
+  @media (max-width: ${(props: any) => props.theme.breakpoints.sm}) {
+    flex-direction: column;
+    gap: ${(props: any) => props.theme.spacing.sm};
+  }
+`;
 
-  commentElement: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    gap: theme.spacing(theme.spacingFactor.md),
-  },
+export const CommentAvatar = styled.div<{ theme: EnhancedTheme }>`
+  width: ${(props: any) => props.theme.spacing.xl};
+  height: ${(props: any) => props.theme.spacing.xl};
+  border-radius: ${(props: any) => props.theme.radius.full};
+  background-color: ${(props: any) => props.theme.colors.brand[500]};
+  color: ${(props: any) => props.theme.colors.text.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${(props: any) => props.theme.typography.fontSize.lg};
+  font-weight: ${(props: any) => props.theme.typography.fontWeight.bold};
+  flex-shrink: 0;
+`;
 
-  avatar: {
-    alignSelf: 'flex-start',
-    color: theme.colors.text,
-    borderRadius: theme.radius.round,
-  },
+export const CommentContent = styled.div<{ theme: EnhancedTheme }>`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${(props: any) => props.theme.spacing.xs};
+`;
 
-  textBody: {
-    display: 'inline-block',
-    margin: '0',
-    padding: '0 10px',
-    width: 'fit-content',
-    position: 'relative',
-    boxSizing: 'border-box',
-    backgroundColor: theme.colors.backgroundSecondary,
-    borderRadius: '0rem 1rem 1rem 1rem'
-  },
+export const CommentHeader = styled.div<{ theme: EnhancedTheme }>`
+  display: flex;
+  align-items: center;
+  gap: ${(props: any) => props.theme.spacing.sm};
+  margin-bottom: ${(props: any) => props.theme.spacing.xs};
+`;
 
-  replyCard: {
-    alignItems: 'center',
-    '& .reply-card-indicator': {
-      width: '.35rem',
-      height: '2rem',
-      borderRadius: `${theme.radius.md} 0 0 ${theme.radius.md}`,
-      backgroundColor: theme.colors.secondary
-    },
-    '& .reply-card-text': {
-      width: '100%',
-      fontSize: '.9rem',
-      height: '2rem',
-      borderRadius: `0 ${theme.radius.sm} ${theme.radius.sm} 0`,
-      backgroundColor: theme.colors.background,
-      padding: `0 ${theme.spacing(theme.spacingFactor.md)}`
-    }
+export const CommentAuthor = styled.span<{ theme: EnhancedTheme }>`
+  font-size: ${(props: any) => props.theme.typography.fontSize.sm};
+  font-weight: ${(props: any) => props.theme.typography.fontWeight.bold};
+  color: ${(props: any) => props.theme.colors.text.primary};
+`;
 
-  },
+export const CommentTimestamp = styled.span<{ theme: EnhancedTheme }>`
+  font-size: ${(props: any) => props.theme.typography.fontSize.sm};
+  color: ${(props: any) => props.theme.colors.text.secondary};
+  margin-left: ${(props: any) => props.theme.spacing.xs};
+`;
 
-  comment: {
-    flexDirection: 'column',
-    width: 'fit-content',
-    position: 'relative',
+export const CommentText = styled.p<{ theme: EnhancedTheme }>`
+  font-size: ${(props: any) => props.theme.typography.fontSize.sm};
+  color: ${(props: any) => props.theme.colors.text.primary};
+  line-height: ${(props: any) => props.theme.typography.lineHeight.normal};
+  margin: 0;
+  word-wrap: break-word;
 
-    '& .comment-text': {
-      display: 'inline-block',
-      margin: '0',
-      padding: '0'
-    },
-    '& .comment-options > *': {
-      cursor: 'pointer',
-    },
-  },
+  @media (max-width: ${(props: any) => props.theme.breakpoints.sm}) {
+    font-size: ${(props: any) => props.theme.typography.fontSize.sm};
+  }
+`;
 
-  commentBody: {
-    backgroundColor: theme.colors.backgroundSecondary,
-    boxSizing: 'border-box',
-    borderRadius: `${theme.radius.md} 0 ${theme.radius.md} 0`,
-    padding: '10px 10px',
-  },
+export const CommentActions = styled.div<{ theme: EnhancedTheme }>`
+  display: flex;
+  align-items: center;
+  gap: ${(props: any) => props.theme.spacing.sm};
+  margin-top: ${(props: any) => props.theme.spacing.sm};
 
-}));
+  @media (max-width: ${(props: any) => props.theme.breakpoints.sm}) {
+    justify-content: space-between;
+  }
+`;
 
+export const CommentAction = styled.button<{ theme: EnhancedTheme }>`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.text.secondary};
+  font-size: ${(props: any) => props.theme.typography.fontSize.sm};
+  padding: ${(props: any) => props.theme.spacing.xs};
+  border-radius: ${(props: any) => props.theme.radius.sm};
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: ${(props: any) => props.theme.spacing.xs};
 
-export default styles
+  &:hover {
+    color: ${(props: any) => props.theme.colors.brand[500]};
+    background-color: ${(props: any) => props.theme.colors.background.secondary};
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+export const CommentReplyCard = styled.div<{ theme: EnhancedTheme }>`
+  background-color: ${(props: any) => props.theme.colors.background.secondary};
+  border-radius: ${(props: any) => props.theme.radius.md};
+  padding: ${(props: any) => props.theme.spacing.md};
+  margin-top: ${(props: any) => props.theme.spacing.sm};
+  border: 1px solid ${(props: any) => props.theme.colors.border.light};
+
+  @media (max-width: ${(props: any) => props.theme.breakpoints.sm}) {
+    margin-left: ${(props: any) => props.theme.spacing.md};
+  }
+`;
+
+// Legacy export for backward compatibility during migration
+export const CommentStyles = {
+  wrapper: CommentWrapper,
+  avatar: CommentAvatar,
+  content: CommentContent,
+  header: CommentHeader,
+  author: CommentAuthor,
+  timestamp: CommentTimestamp,
+  text: CommentText,
+  actions: CommentActions,
+  action: CommentAction,
+  replyCard: CommentReplyCard,
+};
+
+export default CommentStyles;
