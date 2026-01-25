@@ -19,9 +19,9 @@ import {useGetNotifications} from "@notification/data";
 import {useGetCurrentUser} from "@profile/data";
 import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
 import { useEnterpriseAuthHook } from "../features/auth/application/hooks/useEnterpriseAuthHook";
-import useNotificationSocket from "../features/notification/application/hooks/useNotificationSocket";
-import useChatSocket from "../features/chat/data/useChatSocket";
-import {useStompClient} from "../core/network/socket/clients/useStompClient";
+import { useNotificationWebSocket } from "@/core/websocket/hooks";
+import { useChatWebSocket } from "@/core/websocket/hooks";
+import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
 import {useAuthStore} from "../core/store/zustand";
 
 // DI Services (new)
@@ -70,10 +70,37 @@ const DIApp = () => {
     
     // Theme is now managed by DI - no legacy theme handling needed
     
-    useStompClient({ onError: (message: Frame | string) => console.error(message) });
-    useChatSocket();
+    // Enterprise WebSocket connections
+    const { connect: connectWebSocket, disconnect: disconnectWebSocket } = useEnterpriseWebSocket({
+        featureName: 'di-app',
+        onError: (error) => console.error('Enterprise WebSocket error:', error),
+        autoConnect: true
+    });
+    
+    const { connect: connectChat, disconnect: disconnectChat } = useChatWebSocket({
+        autoConnect: true,
+        onError: (error) => console.error('Chat WebSocket error:', error)
+    });
+    
+    const { connect: connectNotifications, disconnect: disconnectNotifications } = useNotificationWebSocket({
+        autoConnect: true,
+        onError: (error) => console.error('Notification WebSocket error:', error)
+    });
+    
+    // Initialize WebSocket connections
+    useEffect(() => {
+        connectWebSocket();
+        connectChat();
+        connectNotifications();
+        
+        return () => {
+            disconnectWebSocket();
+            disconnectChat();
+            disconnectNotifications();
+        };
+    }, [connectWebSocket, connectChat, connectNotifications, disconnectWebSocket, disconnectChat, disconnectNotifications]);
+    
     useGetNotifications();
-    useNotificationSocket();
     useGetChats();
 
     const { initializeTokenRefresh } = useJwtAuth();

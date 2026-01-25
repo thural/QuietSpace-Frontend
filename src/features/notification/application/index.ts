@@ -38,5 +38,5 @@ export { useStateSynchronization } from './services/StateSynchronizationManager'
 export { useNotificationData } from '../data/useNotificationData';
 export { useUserData } from '../data/useUserData';
 
-// Socket hooks
-export { default as useNotificationSocket } from './hooks/useNotificationSocket';
+// WebSocket hooks (Enterprise)
+export { useNotificationWebSocket } from '@/core/websocket/hooks';

@@ -13,8 +13,8 @@ import RoutesConfig from "./RoutesConfig";
 import {useGetNotifications} from "@/features/notification/data/useNotificationData";
 import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
 import useTheme from "../shared/hooks/useTheme";
-import useChatSocket from "../features/chat/data/useChatSocket";
-import {useStompClient} from "@/core/network/socket/clients/useStompClient";
+import { useChatWebSocket } from "@/core/websocket/hooks";
+import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
 import {useAuthStore} from "../core/store/zustand";
 import {AdvancedSecurityProvider} from "../shared/auth/AdvancedSecurityProvider";
 import {AuthProvider} from "../shared/auth/AuthProvider";
@@ -64,19 +64,48 @@ const App = () => {
     // Security audit logging (optional - for additional tracking)
     const auditLog = useAuditLogger();
 
-    // Socket connections with enhanced error handling
-    useStompClient({
-        onError: (message: Frame | string) => {
-            console.error(message);
+    // Enterprise WebSocket connections with enhanced error handling
+    const { connect: connectWebSocket, disconnect: disconnectWebSocket, isConnected } = useEnterpriseWebSocket({
+        featureName: 'app',
+        onError: (error) => {
+            console.error('Enterprise WebSocket error:', error);
             auditLog.logSuspiciousActivity({
-                type: 'SOCKET_ERROR',
-                message: String(message)
+                type: 'WEBSOCKET_ERROR',
+                message: error.message
+            }, 'MEDIUM');
+        },
+        onConnect: () => {
+            console.log('Enterprise WebSocket connected');
+        },
+        onDisconnect: () => {
+            console.log('Enterprise WebSocket disconnected');
+        }
+    });
+
+    // Chat WebSocket integration
+    const { connect: connectChat, disconnect: disconnectChat } = useChatWebSocket({
+        autoConnect: true,
+        onError: (error) => {
+            console.error('Chat WebSocket error:', error);
+            auditLog.logSuspiciousActivity({
+                type: 'CHAT_WEBSOCKET_ERROR',
+                message: error.message
             }, 'MEDIUM');
         }
     });
 
-    // Only initialize sockets when authenticated
-    useChatSocket();
+    // Initialize WebSocket connections when authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            connectWebSocket();
+            connectChat();
+        }
+
+        return () => {
+            disconnectWebSocket();
+            disconnectChat();
+        };
+    }, [isAuthenticated, connectWebSocket, disconnectWebSocket, connectChat, disconnectChat]);
     useGetNotifications();
     const { initializeTokenRefresh } = useJwtAuth();
 

@@ -17,7 +17,16 @@ export type { CacheServiceConfig, FeatureCacheService } from './cache/CacheServi
 
 // Network
 export { apiClient } from './network/rest/apiClient';
-export { socketService } from './network/socket/service/socketService';
+
+// WebSocket (Enterprise)
+export { 
+  EnterpriseWebSocketService,
+  useEnterpriseWebSocket,
+  useFeatureWebSocket,
+  useChatWebSocket,
+  useNotificationWebSocket,
+  useFeedWebSocket
+} from './websocket';
 
 // Theme
 export { colors } from './theme/appColors';

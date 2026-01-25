@@ -9,9 +9,11 @@ export { default as useNotifications } from './useNotifications';
 export { default as useAdvancedNotifications } from './useAdvancedNotifications';
 export { default as usePushNotifications } from './usePushNotifications';
 export { default as useNotificationSettings } from './useNotificationSettings';
-export { default as useNotificationSocket } from './useNotificationSocket';
 // useReactQueryNotifications removed - migrated to enterprise hooks
 export { default as useWasSeen } from './useWasSeen';
+
+// Enterprise WebSocket Hook (recommended for use)
+export { useNotificationWebSocket } from '@/core/websocket/hooks';
 
 // Enterprise Notification Hooks (new - recommended for use)
 export { useEnterpriseNotifications } from './useEnterpriseNotifications';
