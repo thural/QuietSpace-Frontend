@@ -43,12 +43,14 @@ export {
     createDefaultAuthService,
     createCustomAuthService,
     createAuthService,
-    createAuthRepository,
-    createAuthLogger,
-    createAuthMetrics,
-    createAuthSecurityService,
-    createMockAuthService
 } from './factory';
+
+// Feature authentication factory functions - DI-based auth for features
+export {
+    createFeatureAuthService,
+    createFeatureAuthServiceFromDI,
+    createSingletonFeatureAuthService
+} from './factory/featureAuthFactory';
 
 // Utility functions - Clean API
 export {
@@ -91,13 +93,14 @@ export {
 
 // Provider implementations moved to legacy exports (Black Box pattern)
 // Note: These should be accessed through factory functions, not direct imports
-export {
-    JwtAuthProvider as _JwtAuthProvider,
-    OAuthAuthProvider as _OAuthAuthProvider,
-    SessionAuthProvider as _SessionAuthProvider,
-    SAMLAuthProvider as _SAMLAuthProvider,
-    LDAPAuthProvider as _LDAPAuthProvider
-} from './providers';
+// TODO: Uncomment when providers are implemented
+// export {
+//     JwtAuthProvider as _JwtAuthProvider,
+//     OAuthAuthProvider as _OAuthAuthProvider,
+//     SessionAuthProvider as _SessionAuthProvider,
+//     SAMLAuthProvider as _SAMLAuthProvider,
+//     LDAPAuthProvider as _LDAPAuthProvider
+// } from './providers';
 
 // Configuration functions - Use existing exports
 export { AuthConfigLoader, createAuthConfigLoader, loadAuthConfiguration } from './config/AuthConfigLoader';
@@ -129,10 +132,17 @@ export {
 } from './factory';
 
 // React hooks for integration (if available)
+// TODO: Uncomment when hooks are implemented
+// export {
+//     useAuth,
+//     useAuthUser,
+//     useAuthLogin,
+//     useAuthLogout,
+//     useAuthStatus
+// } from './hooks';
+
+// Feature authentication hooks - DI-based auth for features
 export {
-    useAuth,
-    useAuthUser,
-    useAuthLogin,
-    useAuthLogout,
-    useAuthStatus
-} from './hooks';
+    useFeatureAuth,
+    useReactiveFeatureAuth
+} from './hooks/useFeatureAuth';
