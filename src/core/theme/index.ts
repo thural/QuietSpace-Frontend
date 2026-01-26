@@ -1,42 +1,47 @@
 /**
- * Modern Theme System Index.
+ * Theme System Black Box Index
  * 
- * Enterprise-grade theme system with complete isolation of concerns.
- * Provides clean, modular access to all theme functionality.
+ * Provides clean public API for the theme system following Black Box pattern.
+ * Only interfaces, factory functions, and essential utilities are exported.
+ * Implementation details and internal modules are properly hidden.
  */
 
 // Public API - Clean interface for consumers
-export * from './public';
+export {
+  themeSystem,
+  ThemeSystem
+} from './public';
 
-// Core theme tokens and composition
-export * from './tokens';
-export * from './composer';
-export * from './variants';
+// Provider components - Clean API
+export {
+  ThemeProvider,
+  EnhancedThemeProvider
+} from './public';
 
-// Application theme assets
-export { colors } from './appColors';
-export { typography } from './appTypography';
-export * from './baseTokens';
+// Hooks for React integration - Clean API
+export {
+  useEnhancedTheme,
+  useThemeSwitch,
+  useThemeTokens,
+  useTheme
+} from './public';
 
-// Theme enhancers
-export * from './enhancers/themeEnhancers';
+// Type exports for public API
+export type {
+  EnhancedTheme,
+  ThemeProviderProps,
+  ThemeSwitcher,
+  ThemeContextValue
+} from './public';
 
-// Performance utilities and styled components
+// Essential utilities - Clean API
 export {
   createStyledComponent,
   media,
-  animations,
-  Container,
-  FlexContainer,
-  GridContainer,
-  useResponsiveStyles,
-  StyledButton,
-} from './styledUtils';
+  animations
+} from './public';
 
-// Segregated interfaces for better modularity
-export * from './interfaces';
-
-// Type exports
+// Core theme tokens - Clean API
 export type {
   ThemeTokens,
   ColorTokens,
@@ -47,6 +52,53 @@ export type {
   RadiusTokens,
   AnimationTokens
 } from './tokens';
+
+// Theme system interfaces - Clean API
+export type {
+  ColorPalette,
+  SemanticColors,
+  BackgroundColors,
+  TextColors,
+  BorderColors,
+  ColorSystem,
+  ColorUtilities,
+  FontSize,
+  FontWeight,
+  LineHeight,
+  FontFamily,
+  TypographySystem,
+  TypographyUtilities,
+  Spacing,
+  Shadow,
+  Breakpoint,
+  Radius,
+  LayoutSystem,
+  LayoutUtilities
+} from './interfaces';
+
+// Factory functions - Clean service creation
+export {
+  createTheme,
+  createThemeWithVariant,
+  createDefaultTheme,
+  createCustomTheme
+} from './factory';
+
+// Legacy exports for backward compatibility (with underscore prefix)
+export {
+  Container as _Container,
+  FlexContainer as _FlexContainer,
+  GridContainer as _GridContainer,
+  StyledButton as _StyledButton
+} from './styledUtils';
+
+// Legacy wildcard exports (deprecated - will be removed in next major version)
+export * from './tokens';
+export * from './composer';
+export * from './variants';
+export * from './enhancers/themeEnhancers';
+export * from './styledUtils';
+export * from './interfaces';
 
 export type {
   ThemeConfig,
