@@ -19,6 +19,12 @@ export const typography = {
             'Arial',
             'sans-serif'
         ],
+        serif: [
+            'Georgia',
+            'Times New Roman',
+            'Times',
+            'serif'
+        ],
         mono: [
             'JetBrains Mono',
             'Fira Code',
@@ -68,7 +74,6 @@ export const typography = {
 
     // Line Heights
     lineHeight: {
-        none: '1',
         tight: '1.25',
         snug: '1.375',
         normal: '1.5',

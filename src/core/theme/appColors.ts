@@ -6,8 +6,8 @@
  */
 
 export const colors = {
-    // Primary Brand Colors
-    primary: {
+    // Brand Colors
+    brand: {
         50: '#f0f9ff',
         100: '#e0f2fe',
         200: '#bae6fd',
@@ -21,35 +21,12 @@ export const colors = {
         950: '#082f49',
     },
 
-    // Secondary Brand Colors
-    secondary: {
-        50: '#f8fafc',
-        100: '#f1f5f9',
-        200: '#e2e8f0',
-        300: '#cbd5e1',
-        400: '#94a3b8',
-        500: '#64748b', // Main secondary color
-        600: '#475569',
-        700: '#334155',
-        800: '#1e293b',
-        900: '#0f172a',
-        950: '#020617',
-    },
-
     // Semantic Colors
     semantic: {
         success: '#10b981',
-        successLight: '#34d399',
-        successDark: '#059669',
         warning: '#f59e0b',
-        warningLight: '#fbbf24',
-        warningDark: '#d97706',
         error: '#ef4444',
-        errorLight: '#f87171',
-        errorDark: '#dc2626',
         info: '#3b82f6',
-        infoLight: '#60a5fa',
-        infoDark: '#2563eb',
     },
 
     // Neutral Colors
@@ -73,7 +50,7 @@ export const colors = {
         secondary: '#f8fafc',
         tertiary: '#f1f5f9',
         overlay: 'rgba(0, 0, 0, 0.5)',
-        inverse: '#0f172a',
+        transparent: 'transparent',
     },
 
     // Text Colors
@@ -82,7 +59,6 @@ export const colors = {
         secondary: '#475569',
         tertiary: '#64748b',
         inverse: '#ffffff',
-        disabled: '#94a3b8',
     },
 
     // Border Colors
@@ -90,17 +66,6 @@ export const colors = {
         light: '#e2e8f0',
         medium: '#cbd5e1',
         dark: '#94a3b8',
-        focus: '#3b82f6',
-        error: '#ef4444',
-        success: '#10b981',
-    },
-
-    // Interactive Colors
-    interactive: {
-        hover: 'rgba(0, 0, 0, 0.05)',
-        active: 'rgba(0, 0, 0, 0.1)',
-        disabled: 'rgba(0, 0, 0, 0.3)',
-        selected: '#dbeafe',
     },
 };
 

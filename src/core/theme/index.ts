@@ -11,6 +11,12 @@ export * from './composer';
 export * from './variants';
 export * from './EnhancedThemeProvider';
 
+// Base tokens
+export * from './baseTokens';
+
+// Theme enhancers
+export * from './enhancers/themeEnhancers';
+
 // Application theme assets
 export { colors } from './appColors';
 export { typography } from './appTypography';
@@ -18,11 +24,15 @@ export { typography } from './appTypography';
 // Enhanced theme provider and hooks
 export {
   EnhancedThemeProvider,
+  ThemeContext,
+} from './EnhancedThemeProvider';
+
+export {
   useEnhancedTheme,
   useThemeSwitch,
   useThemeTokens,
-  useTheme
-} from './EnhancedThemeProvider';
+  useTheme,
+} from './hooks/themeHooks';
 
 // Performance utilities and styled components
 export {
@@ -33,7 +43,7 @@ export {
   FlexContainer,
   GridContainer,
   useResponsiveStyles,
-  StyledButton
+  StyledButton,
 } from './styledUtils';
 
 // Type exports
