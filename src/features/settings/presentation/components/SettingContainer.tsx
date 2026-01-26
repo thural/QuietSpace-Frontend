@@ -1,5 +1,5 @@
-import useProfileSettings from "@features/settings/application";
-import useStyles from "../styles/settingContainerStyles";
+import { useProfileSettings } from "@features/settings/application";
+import { Panel } from "../styles/settingContainerStyles";
 import { PRIVACY_DESCRIPTION } from "@/shared/utils/dataTemplates";
 import DefaultContainer from "@/shared/DefaultContainer";
 import Typography from "@/shared/Typography";
@@ -24,7 +24,6 @@ import SettingsPanel from "./SettingsPanel";
  * @returns {JSX.Element} - The rendered SettingsContainer component.
  */
 function SettingsContainer() {
-    const classes = useStyles(); // Get styles for the component
     const navigate = useNavigate(); // Hook for navigation
 
     /**
@@ -72,7 +71,7 @@ function SettingsContainer() {
                     </Tabs.Tab>
                 </Tabs.List>
 
-                <Container className={classes.panel}>
+                <Panel>
                     <Tabs.Panel value="profile">
                         <SettingsPanel isPending={isPending} label="Profile Settings" handleSubmit={handleSubmit}>
                             <ProfilePhotoModifier /> {/* Component for modifying the profile photo */}
@@ -115,7 +114,7 @@ function SettingsContainer() {
                     <Tabs.Panel value="blocking">
                         <Text ta="center">blocking settings</Text> {/* Placeholder for blocking settings */}
                     </Tabs.Panel>
-                </Container>
+                </Panel>
             </Tabs>
         </DefaultContainer>
     );

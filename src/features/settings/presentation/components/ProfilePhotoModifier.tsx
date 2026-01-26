@@ -1,6 +1,6 @@
-import useUserQueries from "@/core/network/api/queries/userQueries";
-import { useUploadProfilePhoto } from "@features/profile/data";
-import useStyles from "../styles/profileModifierStyles";
+import useUserQueries from "@features/profile/data/userQueries";
+import { useSettings } from "@features/settings/application/hooks/useSettings";
+import { ProfileModifierStyles } from "../styles/profileModifierStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { ChangeEvent, useState } from "react";
 import BaseCard from "@/shared/BaseCard";
@@ -11,8 +11,8 @@ import HiddenFileInput from "@/shared/HiddenFileInput";
 import LoaderStyled from "@/shared/LoaderStyled";
 import ModalStyled from "@/shared/ModalStyled";
 import Overlay from "@/shared/Overlay";
-import Typography from "@/shared/Typography";
-import UserCard from "@/shared/UserCard";
+import Typography from "@shared/Typography";
+import UserCard from "@shared/UserCard";
 
 /**
  * ProfilePhotoModifier component.
@@ -24,22 +24,22 @@ import UserCard from "@/shared/UserCard";
  * @returns {JSX.Element} - The rendered ProfilePhotoModifier component.
  */
 const ProfilePhotoModifier = () => {
-    const classes = useStyles(); // Get styles for the component
     const { getSignedUserElseThrow } = useUserQueries(); // Hook to get signed user information
     const signedUser = getSignedUserElseThrow(); // Retrieve the signed user or throw an error if not available
     const [modalDisplay, setModalDisplay] = useState<boolean>(false); // State to control modal visibility
+    const { uploadProfilePhoto, isLoading } = useSettings(signedUser.id); // Hook to handle settings including photo upload
 
     /**
      * Toggles the modal display state.
      * 
      * @param {React.MouseEvent} event - The mouse event triggered by the click.
      */
-    const handleModalToggle = (event: React.MouseEvent) => {
-        event.stopPropagation(); // Prevent event from bubbling up
+    const handleModalToggle = (event?: React.MouseEvent) => {
+        if (event) {
+            event.stopPropagation(); // Prevent event from bubbling up
+        }
         setModalDisplay(!modalDisplay); // Toggle modal visibility
     };
-
-    const uploadPhoto = useUploadProfilePhoto(handleModalToggle); // Hook to handle photo upload
 
     /**
      * Handles the file input change event.
@@ -48,9 +48,12 @@ const ProfilePhotoModifier = () => {
      */
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return; // Check if files are selected
-        const formData = new FormData(); // Create FormData object
-        formData.append('image', e.target.files[0]); // Append the selected file
-        uploadPhoto.mutate(formData); // Trigger the upload
+        const file = e.target.files[0]; // Get the selected file
+        uploadProfilePhoto(file).then(() => {
+            handleModalToggle(); // Close modal after successful upload
+        }).catch((error) => {
+            console.error('Failed to upload photo:', error);
+        });
     };
 
     /**
@@ -62,9 +65,9 @@ const ProfilePhotoModifier = () => {
      * @returns {JSX.Element} - The rendered UploadClick component.
      */
     const UploadClick: React.FC<GenericWrapper> = ({ onClick }) => (
-        <Clickable className={classes.listItem} onClick={onClick}>
+        <ProfileModifierStyles.listItem onClick={onClick}>
             <Typography ta="center" type="h4">upload photo</Typography>
-        </Clickable>
+        </ProfileModifierStyles.listItem>
     );
 
     return (
@@ -82,14 +85,14 @@ const ProfilePhotoModifier = () => {
                     <Typography type="h3">Change Profile Photo</Typography>
                     <BoxStyled>
                         <HiddenFileInput onFileChange={handleFileChange} Component={UploadClick} /> {/* Hidden file input for photo upload */}
-                        <Clickable className={classes.listItem}>
+                        <ProfileModifierStyles.listItem>
                             <Typography ta="center" type="h4">remove profile photo</Typography> {/* Option to remove the photo */}
-                        </Clickable>
-                        <Clickable className={classes.listItem} onClick={handleModalToggle}>
+                        </ProfileModifierStyles.listItem>
+                        <ProfileModifierStyles.listItem onClick={handleModalToggle}>
                             <Typography ta="center" type="h4">cancel</Typography> {/* Option to cancel the action */}
-                        </Clickable>
+                        </ProfileModifierStyles.listItem>
                     </BoxStyled>
-                    {uploadPhoto.isPending && <LoaderStyled />} {/* Show loader if upload is in progress */}
+                    {isLoading && <LoaderStyled />} {/* Show loader if upload is in progress */}
                 </ModalStyled>
                 <Clickable handleClick={null} text="remove photo" /> {/* Placeholder for remove photo action */}
             </Overlay>
