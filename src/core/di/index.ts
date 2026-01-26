@@ -19,10 +19,10 @@ export type {
 } from './types/index';
 
 // Service registry - Implementation moved to legacy exports
-export type { IServiceRegistry } from './registry';
+export type { ServiceRegistry } from './registry';
 
 // Service container - Implementation moved to legacy exports
-export type { IServiceContainer } from './container';
+export type { ServiceContainer } from './types/index';
 
 // Decorators
 export {
@@ -45,8 +45,19 @@ export {
   useDIScope
 } from './providers';
 
-// Main container - Implementation moved to legacy exports
-// Note: Use DIContainer alias for clean API
+// Factory functions - Clean API for service creation
+export {
+  createContainer,
+  createAutoContainer,
+  createContainerWithServices,
+  createScopedContainer,
+  createChildContainer,
+  createDevelopmentContainer,
+  createProductionContainer,
+  createTestContainer,
+  validateContainer,
+  getContainerStats
+} from './factory';
 
 // Legacy exports for backward compatibility (with underscore prefix)
 export {
