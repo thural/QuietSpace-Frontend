@@ -12,6 +12,7 @@ Welcome to the comprehensive documentation for the QuietSpace Frontend Modern St
 - **[Quick Start Guide](./QUICK_START.md)** - 5-minute setup guide with examples
 - **[Component Library](./COMPONENT_LIBRARY.md)** - Complete component reference
 - **[Full Documentation](./STYLING_DOCUMENTATION.md)** - Comprehensive guide
+- **[Theme System Modern Architecture](./THEME_SYSTEM_MODERN_ARCHITECTURE.md)** - Enterprise-grade modular theme system
 
 ---
 
@@ -51,6 +52,13 @@ Welcome to the comprehensive documentation for the QuietSpace Frontend Modern St
 - **Typography**: Font sizes and weights
 - **Animations**: Smooth transitions
 - **Responsive**: Mobile-first design
+
+### **🏗️ Modern Architecture**
+- **[Modular Theme System](./THEME_SYSTEM_MODERN_ARCHITECTURE.md)**: Enterprise-grade architecture
+- **Facade Pattern**: Clean public API
+- **Dependency Injection**: Loose coupling
+- **Interface Segregation**: Focused interfaces
+- **Self-Containment**: Zero external dependencies
 
 ### **🚀 Modern Features**
 - **Interactive States**: Hover, focus, active
