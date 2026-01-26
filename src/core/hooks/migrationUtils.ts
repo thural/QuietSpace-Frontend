@@ -1,4 +1,4 @@
-import { useDIContainer } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import type { CacheProvider } from '@/core/cache';
 
@@ -16,29 +16,29 @@ export const CACHE_TIME_MAPPINGS = {
   // Feed data - 2 minutes stale, 10 minutes cache
   FEED_STALE_TIME: 2 * 60 * 1000,
   FEED_CACHE_TIME: 10 * 60 * 1000,
-  
+
   // Post data - 5 minutes stale, 15 minutes cache
   POST_STALE_TIME: 5 * 60 * 1000,
   POST_CACHE_TIME: 15 * 60 * 1000,
-  
+
   // Comment data - 3 minutes stale, 10 minutes cache
   COMMENT_STALE_TIME: 3 * 60 * 1000,
   COMMENT_CACHE_TIME: 10 * 60 * 1000,
-  
+
   // User data - 10 minutes stale, 30 minutes cache
   USER_STALE_TIME: 10 * 60 * 1000,
   USER_CACHE_TIME: 30 * 60 * 1000,
-  
+
   // Chat data - 1 minute stale, 5 minutes cache
   CHAT_STALE_TIME: 1 * 60 * 1000,
   CHAT_CACHE_TIME: 5 * 60 * 1000,
   CHAT_REFETCH_INTERVAL: 30 * 1000, // 30 seconds for chat list updates
   MESSAGES_REFETCH_INTERVAL: 10 * 1000, // 10 seconds for message updates
-  
+
   // Real-time data - 30 seconds stale, 2 minutes cache (for real-time features)
   REALTIME_STALE_TIME: 30 * 1000,
   REALTIME_CACHE_TIME: 2 * 60 * 1000,
-  
+
   // Search data - 30 seconds stale, 2 minutes cache
   SEARCH_STALE_TIME: 30 * 1000,
   SEARCH_CACHE_TIME: 2 * 60 * 1000

@@ -5,7 +5,7 @@
  * Follows the established pattern from auth, notification, analytics, and profile features
  */
 
-import { useDIContainer } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import { SearchDataService } from '@features/search/data/services/SearchDataService';
 import { SearchFeatureService } from '@features/search/application/services/SearchFeatureService';
@@ -17,18 +17,18 @@ import { SearchFeatureService } from '@features/search/application/services/Sear
  */
 export const useSearchServices = () => {
   const container = useDIContainer();
-  
+
   // Get services from DI container
   const searchDataService = container.get<SearchDataService>(TYPES.SEARCH_DATA_SERVICE);
   const searchFeatureService = container.get<SearchFeatureService>(TYPES.SEARCH_FEATURE_SERVICE);
-  
+
   return {
     // Data service for caching and data orchestration
     searchDataService,
-    
+
     // Feature service for business logic and validation
     searchFeatureService,
-    
+
     // Convenience methods for common operations
     data: searchDataService,
     feature: searchFeatureService

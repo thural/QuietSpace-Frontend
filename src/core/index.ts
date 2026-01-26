@@ -6,69 +6,80 @@
  * Implementation details and internal modules are properly hidden.
  */
 
-// Public types - Clean API for consumers
+// Import all shared types, enums, constants, and feature flags
 export type {
   ICacheService,
   ICacheServiceManager,
   IWebSocketService,
   IAuthService,
   IThemeService,
+  ILoggerService,
   INetworkService,
   IServiceContainer,
-  IApiClient
-} from './types';
-
-// Factory functions - Clean service creation
-export {
-  createCoreServices,
-  createCacheService,
-  createWebSocketService,
-  createAuthService,
-  createThemeService,
-  createNetworkService,
-  createServiceContainer
-} from './factory';
-
-// Essential hooks - Clean API
-export {
-  useCoreServices,
-  useCacheService,
-  useWebSocketService,
-  useAuthService,
-  useThemeService
-} from './hooks';
-
-// Configuration types - Clean API
-export type {
-  CoreConfig,
+  ICoreServices,
+  CacheEntry,
+  CacheStats,
   CacheConfig,
+  WebSocketMessage,
   WebSocketConfig,
-  AuthConfig,
+  AuthCredentials,
+  AuthUser,
+  AuthToken,
+  AuthSession,
+  AuthResult,
   ThemeConfig,
-  NetworkConfig
-} from './config';
+  ThemeTokens,
+  EnhancedTheme,
+  ApiResponse,
+  ApiError,
+  IServiceConfig,
+  ServiceIdentifier,
+  ServiceFactory,
+  ServiceDescriptor,
+  CoreConfig,
+  CoreSystemEvent
+} from './shared';
 
-// Constants and enums - Clean API
+// Import all shared enums
+export {
+  WebSocketState,
+  LogLevel,
+  CacheStrategy,
+  AuthProvider,
+  ThemeVariant,
+  ServiceStatus,
+  NetworkStatus,
+  CoreSystemStatus
+} from './shared';
+
+// Import all shared constants
 export {
   CORE_CONSTANTS,
   CORE_STATUS,
-  CORE_EVENTS
-} from './constants';
+  CORE_EVENTS,
+  SERVICE_PRIORITY,
+  CORE_ERROR_CODES,
+  CORE_ERROR_MESSAGES,
+  CORE_SERVICE_NAMES,
+  DEFAULT_CORE_CONFIG,
+  CORE_VALIDATION_RULES,
+  CORE_PERFORMANCE_METRICS,
+  CORE_ENVIRONMENT_VARIABLES,
+  HEALTH_CHECK_STATUS
+} from './shared';
 
-// Utility functions - Clean API
+// Import all shared feature flags
 export {
-  validateCoreConfig,
-  initializeCoreSystem,
-  shutdownCoreSystem
-} from './utils';
+  CORE_FEATURE_FLAGS,
+  ENVIRONMENT_FEATURE_FLAGS,
+  isFeatureEnabled,
+  getAllFeatureFlags,
+  enableFeature,
+  disableFeature
+} from './shared';
 
-// Legacy exports for backward compatibility (with underscore prefix)
-export {
-  CacheProvider as _CacheProvider,
-  CacheServiceManager as _CacheServiceManager,
-  EnterpriseWebSocketService as _EnterpriseWebSocketService,
-  apiClient as _ApiClient
-} from './legacy';
+// Export types for feature flags
+export type { FeatureFlag, Environment } from './shared';
 
 // Essential re-exports from compliant modules
 export {
@@ -80,30 +91,7 @@ export {
 
 export { TYPES } from './di/types';
 
-// Re-export types from compliant modules
-export type {
-  CacheEntry,
-  CacheStats,
-  CacheEvents
-} from './cache';
-
-export type {
-  WebSocketMessage,
-  WebSocketConfig as WebSocketConfigType
-} from './websocket';
-
-export type {
-  AuthResult,
-  AuthUser,
-  AuthToken
-} from './auth';
-
-export type {
-  ThemeTokens,
-  EnhancedTheme
-} from './theme';
-
-export type {
-  ApiResponse,
-  ApiError
-} from './network';
+// Legacy exports for backward compatibility (with underscore prefix)
+export {
+  _LegacyExports
+} from './legacy';

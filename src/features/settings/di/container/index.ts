@@ -1,4 +1,4 @@
-import { Container } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import { CacheService } from '@/core/cache/CacheProvider';
 import { SettingsRepository } from '../repositories/SettingsRepository';
@@ -17,28 +17,28 @@ import { SettingsFeatureService } from '../services/SettingsFeatureService';
 
 export function createSettingsContainer(): Container {
   const container = new Container();
-  
+
   // Core services (inherited from main container)
   // CacheService is registered as singleton in main AppContainer
-  
+
   // Repositories (Transient - new instance per injection)
   container.registerTransientByToken(
-    TYPES.SETTINGS_REPOSITORY, 
+    TYPES.SETTINGS_REPOSITORY,
     SettingsRepository
   );
-  
+
   // Data Services (Singleton - shared cache state)
   container.registerSingletonByToken(
-    TYPES.SETTINGS_DATA_SERVICE, 
+    TYPES.SETTINGS_DATA_SERVICE,
     SettingsDataService
   );
-  
+
   // Feature Services (Singleton - business logic)
   container.registerSingletonByToken(
-    TYPES.SETTINGS_FEATURE_SERVICE, 
+    TYPES.SETTINGS_FEATURE_SERVICE,
     SettingsFeatureService
   );
-  
+
   return container;
 }
 
@@ -48,26 +48,26 @@ export function createSettingsContainer(): Container {
  */
 export function createSettingsChildContainer(parentContainer: Container): Container {
   const settingsContainer = parentContainer.createChild();
-  
+
   // Register settings-specific services
   const settingsSpecificContainer = createSettingsContainer();
-  
+
   // Merge configurations
   settingsContainer.registerTransientByToken(
-    TYPES.SETTINGS_REPOSITORY, 
+    TYPES.SETTINGS_REPOSITORY,
     SettingsRepository
   );
-  
+
   settingsContainer.registerSingletonByToken(
-    TYPES.SETTINGS_DATA_SERVICE, 
+    TYPES.SETTINGS_DATA_SERVICE,
     SettingsDataService
   );
-  
+
   settingsContainer.registerSingletonByToken(
-    TYPES.SETTINGS_FEATURE_SERVICE, 
+    TYPES.SETTINGS_FEATURE_SERVICE,
     SettingsFeatureService
   );
-  
+
   return settingsContainer;
 }
 
@@ -76,22 +76,22 @@ export function createSettingsChildContainer(parentContainer: Container): Contai
  */
 export function createTestSettingsContainer(): Container {
   const container = new Container();
-  
+
   // Mock implementations can be registered here for testing
   container.registerTransientByToken(
-    TYPES.SETTINGS_REPOSITORY, 
+    TYPES.SETTINGS_REPOSITORY,
     SettingsRepository // Replace with mock in tests
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.SETTINGS_DATA_SERVICE, 
+    TYPES.SETTINGS_DATA_SERVICE,
     SettingsDataService
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.SETTINGS_FEATURE_SERVICE, 
+    TYPES.SETTINGS_FEATURE_SERVICE,
     SettingsFeatureService
   );
-  
+
   return container;
 }

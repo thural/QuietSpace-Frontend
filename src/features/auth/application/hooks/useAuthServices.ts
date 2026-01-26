@@ -1,4 +1,4 @@
-import { useDIContainer } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import { AuthDataService } from '@features/auth/data/services/AuthDataService';
 import { AuthFeatureService } from '@features/auth/application/services/AuthFeatureService';
@@ -11,18 +11,18 @@ import { AuthFeatureService } from '@features/auth/application/services/AuthFeat
  */
 export const useAuthServices = () => {
   const container = useDIContainer();
-  
+
   // Get services from DI container
   const authDataService = container.get<AuthDataService>(TYPES.AUTH_DATA_SERVICE);
   const authFeatureService = container.get<AuthFeatureService>(TYPES.AUTH_FEATURE_SERVICE);
-  
+
   return {
     // Data service for caching and data orchestration
     authDataService,
-    
+
     // Feature service for business logic and validation
     authFeatureService,
-    
+
     // Convenience methods for common operations
     data: authDataService,
     feature: authFeatureService

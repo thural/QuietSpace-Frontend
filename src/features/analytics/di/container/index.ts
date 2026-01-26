@@ -1,4 +1,4 @@
-import { Container } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { AnalyticsRepository } from '../repositories/AnalyticsRepository';

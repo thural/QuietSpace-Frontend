@@ -102,14 +102,6 @@ export {
   enhanceTheme
 } from './enhancers/themeEnhancers';
 
-// Styled utilities - Clean API
-export {
-  Container,
-  FlexContainer,
-  GridContainer,
-  StyledButton
-} from './styledUtils';
-
 // Configuration types - Clean API
 export type {
   ThemeConfig,
@@ -117,9 +109,25 @@ export type {
 } from './composer';
 
 // Legacy exports for backward compatibility (with underscore prefix)
+// Note: UI components moved to legacy exports as they should be in separate UI module
 export {
   Container as _Container,
   FlexContainer as _FlexContainer,
   GridContainer as _GridContainer,
   StyledButton as _StyledButton
 } from './styledUtils';
+
+// Module information
+export const THEME_MODULE_VERSION = '1.0.0';
+export const THEME_MODULE_INFO = {
+  name: 'Enterprise Theme Module',
+  version: THEME_MODULE_VERSION,
+  description: 'Centralized theme management with enterprise patterns',
+  deprecatedExports: [
+    '_Container',
+    '_FlexContainer',
+    '_GridContainer',
+    '_StyledButton'
+  ],
+  migrationGuide: 'Use UI library components instead of theme module UI components'
+};

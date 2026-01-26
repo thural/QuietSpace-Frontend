@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import type { CacheProvider } from '@/core/cache';
 
@@ -101,9 +101,9 @@ export function useCustomInfiniteQuery<T>(
 
   const container = useDIContainer();
   const cache = container.getByToken<CacheProvider>(TYPES.CACHE_SERVICE);
-  
+
   const cacheKey = Array.isArray(key) ? key.join(':') : key;
-  
+
   const [state, setState] = useState<InfiniteQueryState<T>>({
     data: [],
     pages: [],
@@ -145,15 +145,15 @@ export function useCustomInfiniteQuery<T>(
       // Check cache first
       const pageCacheKey = `${cacheKey}:page:${pageParam}`;
       const cachedEntry = cache.getEntry(pageCacheKey);
-      
+
       if (cachedEntry && !isRefetch) {
         const cacheAge = Date.now() - cachedEntry.timestamp;
         if (cacheAge < staleTime) {
           const pageData: InfiniteQueryPage<T> = cachedEntry.data as InfiniteQueryPage<T>;
-          
+
           setState(prev => {
             let newPages: InfiniteQueryPage<T>[];
-            
+
             if (isFetchingNext) {
               newPages = [...prev.pages, pageData];
             } else if (isFetchingPrevious) {
@@ -161,13 +161,13 @@ export function useCustomInfiniteQuery<T>(
             } else {
               newPages = [pageData];
             }
-            
+
             const allData = newPages.flatMap(page => page.data);
-            const hasNext = getNextPageParam ? 
-              getNextPageParam(pageData, newPages) !== undefined : 
+            const hasNext = getNextPageParam ?
+              getNextPageParam(pageData, newPages) !== undefined :
               pageData.hasNextPage;
-            const hasPrevious = getPreviousPageParam ? 
-              getPreviousPageParam(pageData, newPages) !== undefined : 
+            const hasPrevious = getPreviousPageParam ?
+              getPreviousPageParam(pageData, newPages) !== undefined :
               (pageData.hasPreviousPage ?? false);
 
             return {
@@ -193,7 +193,7 @@ export function useCustomInfiniteQuery<T>(
 
       // Fetch new data
       const result = await fetcher(pageParam);
-      
+
       const pageData: InfiniteQueryPage<T> = {
         data: result.data.map(item => select ? select(item) : item),
         pageParam,
@@ -208,7 +208,7 @@ export function useCustomInfiniteQuery<T>(
 
       setState(prev => {
         let newPages: InfiniteQueryPage<T>[];
-        
+
         if (isFetchingNext) {
           newPages = [...prev.pages, pageData];
         } else if (isFetchingPrevious) {
@@ -216,7 +216,7 @@ export function useCustomInfiniteQuery<T>(
         } else {
           newPages = [pageData];
         }
-        
+
         // Limit pages to maxPages
         if (newPages.length > maxPages) {
           if (isFetchingNext) {
@@ -225,13 +225,13 @@ export function useCustomInfiniteQuery<T>(
             newPages = newPages.slice(0, maxPages);
           }
         }
-        
+
         const allData = newPages.flatMap(page => page.data);
-        const hasNext = getNextPageParam ? 
-          getNextPageParam(pageData, newPages) !== undefined : 
+        const hasNext = getNextPageParam ?
+          getNextPageParam(pageData, newPages) !== undefined :
           pageData.hasNextPage;
-        const hasPrevious = getPreviousPageParam ? 
-          getPreviousPageParam(pageData, newPages) !== undefined : 
+        const hasPrevious = getPreviousPageParam ?
+          getPreviousPageParam(pageData, newPages) !== undefined :
           pageData.hasPreviousPage;
 
         return {
@@ -253,21 +253,21 @@ export function useCustomInfiniteQuery<T>(
       retryCountRef.current = 0;
       onSuccess?.(state.data, state.pages);
       onSettled?.(state.data, null);
-      
+
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Unknown error');
-      
+
       // Retry logic
       if (retryCountRef.current < retry && !abortControllerRef.current?.signal.aborted) {
         retryCountRef.current++;
         const delay = retryDelay * Math.pow(2, retryCountRef.current - 1); // Exponential backoff
-        
+
         setTimeout(() => {
           if (!abortControllerRef.current?.signal.aborted) {
             executeQuery(pageParam, isRefetch, isFetchingNext, isFetchingPrevious);
           }
         }, delay);
-        
+
         return;
       }
 
@@ -355,10 +355,10 @@ export function useCustomInfiniteQuery<T>(
   const fetchNextPage = useCallback(async () => {
     if (state.hasNextPage && !state.isFetchingNextPage) {
       const lastPage = state.pages[state.pages.length - 1];
-      const nextPageParam = getNextPageParam ? 
-        getNextPageParam(lastPage, state.pages) : 
+      const nextPageParam = getNextPageParam ?
+        getNextPageParam(lastPage, state.pages) :
         lastPage.pageParam + 1;
-      
+
       if (nextPageParam !== undefined) {
         await executeQuery(nextPageParam, false, true, false);
       }
@@ -369,10 +369,10 @@ export function useCustomInfiniteQuery<T>(
   const fetchPreviousPage = useCallback(async () => {
     if (state.hasPreviousPage && !state.isFetchingPreviousPage) {
       const firstPage = state.pages[0];
-      const prevPageParam = getPreviousPageParam ? 
-        getPreviousPageParam(firstPage, state.pages) : 
+      const prevPageParam = getPreviousPageParam ?
+        getPreviousPageParam(firstPage, state.pages) :
         firstPage.pageParam - 1;
-      
+
       if (prevPageParam !== undefined) {
         await executeQuery(prevPageParam, false, false, true);
       }
@@ -396,9 +396,9 @@ export function useCustomInfiniteQuery<T>(
         ...updatedPages[pageIndex],
         data: newData
       };
-      
+
       const allData = updatedPages.flatMap(page => page.data);
-      
+
       setState(prev => ({
         ...prev,
         pages: updatedPages,
@@ -415,9 +415,9 @@ export function useCustomInfiniteQuery<T>(
         isFetchingNextPage: false,
         isFetchingPreviousPage: false
       };
-      
+
       cache.set(`${cacheKey}:page:${initialPageParam}`, newPage, cacheTime);
-      
+
       setState(prev => ({
         ...prev,
         pages: [newPage],

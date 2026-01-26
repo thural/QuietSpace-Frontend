@@ -1,4 +1,4 @@
-import { Container } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import { CacheService } from '@/core/cache/CacheProvider';
 import { AuthRepository } from '../repositories/AuthRepository';
@@ -17,28 +17,28 @@ import { AuthFeatureService } from '../services/AuthFeatureService';
 
 export function createAuthContainer(): Container {
   const container = new Container();
-  
+
   // Core services (inherited from main container)
   // CacheService is registered as singleton in main AppContainer
-  
+
   // Repositories (Transient - new instance per injection)
   container.registerTransientByToken(
-    TYPES.IAUTH_REPOSITORY, 
+    TYPES.IAUTH_REPOSITORY,
     AuthRepository
   );
-  
+
   // Data Services (Singleton - shared cache state)
   container.registerSingletonByToken(
-    TYPES.AUTH_DATA_SERVICE, 
+    TYPES.AUTH_DATA_SERVICE,
     AuthDataService
   );
-  
+
   // Feature Services (Singleton - business logic)
   container.registerSingletonByToken(
-    TYPES.AUTH_FEATURE_SERVICE, 
+    TYPES.AUTH_FEATURE_SERVICE,
     AuthFeatureService
   );
-  
+
   return container;
 }
 
@@ -48,26 +48,26 @@ export function createAuthContainer(): Container {
  */
 export function createAuthChildContainer(parentContainer: Container): Container {
   const authContainer = parentContainer.createChild();
-  
+
   // Register auth-specific services
   const authSpecificContainer = createAuthContainer();
-  
+
   // Merge configurations
   authContainer.registerTransientByToken(
-    TYPES.IAUTH_REPOSITORY, 
+    TYPES.IAUTH_REPOSITORY,
     AuthRepository
   );
-  
+
   authContainer.registerSingletonByToken(
-    TYPES.AUTH_DATA_SERVICE, 
+    TYPES.AUTH_DATA_SERVICE,
     AuthDataService
   );
-  
+
   authContainer.registerSingletonByToken(
-    TYPES.AUTH_FEATURE_SERVICE, 
+    TYPES.AUTH_FEATURE_SERVICE,
     AuthFeatureService
   );
-  
+
   return authContainer;
 }
 
@@ -76,22 +76,22 @@ export function createAuthChildContainer(parentContainer: Container): Container 
  */
 export function createTestAuthContainer(): Container {
   const container = new Container();
-  
+
   // Mock implementations can be registered here for testing
   container.registerTransientByToken(
-    TYPES.IAUTH_REPOSITORY, 
+    TYPES.IAUTH_REPOSITORY,
     AuthRepository // Replace with mock in tests
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.AUTH_DATA_SERVICE, 
+    TYPES.AUTH_DATA_SERVICE,
     AuthDataService
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.AUTH_FEATURE_SERVICE, 
+    TYPES.AUTH_FEATURE_SERVICE,
     AuthFeatureService
   );
-  
+
   return container;
 }

@@ -89,15 +89,36 @@ export {
     SecurityPlugin as _SecurityPlugin
 } from './AuthModule';
 
-// Essential providers (commonly used) - Import from provider files
-export { JwtAuthProvider } from './providers/JwtAuthProvider';
-export { OAuthAuthProvider } from './providers/OAuthProvider';
-export { SessionAuthProvider } from './providers/SessionAuthProvider';
-export { SAMLAuthProvider } from './providers/SAMLProvider';
-export { LDAPAuthProvider } from './providers/LDAPProvider';
+// Provider implementations moved to legacy exports (Black Box pattern)
+// Note: These should be accessed through factory functions, not direct imports
+export {
+    JwtAuthProvider as _JwtAuthProvider,
+    OAuthAuthProvider as _OAuthAuthProvider,
+    SessionAuthProvider as _SessionAuthProvider,
+    SAMLAuthProvider as _SAMLAuthProvider,
+    LDAPAuthProvider as _LDAPAuthProvider
+} from './providers';
 
 // Configuration functions - Use existing exports
 export { AuthConfigLoader, createAuthConfigLoader, loadAuthConfiguration } from './config/AuthConfigLoader';
+
+// Module information
+export const AUTH_MODULE_VERSION = '1.0.0';
+export const AUTH_MODULE_INFO = {
+    name: 'Enterprise Authentication Module',
+    version: AUTH_MODULE_VERSION,
+    description: 'Centralized authentication management with enterprise patterns',
+    deprecatedExports: [
+        '_AnalyticsPlugin',
+        '_SecurityPlugin',
+        '_JwtAuthProvider',
+        '_OAuthAuthProvider',
+        '_SessionAuthProvider',
+        '_SAMLAuthProvider',
+        '_LDAPAuthProvider'
+    ],
+    migrationGuide: 'Use factory functions instead of direct provider imports'
+};
 export { EnvironmentAuthConfig, createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
 
 // Plugin functions - Clean API

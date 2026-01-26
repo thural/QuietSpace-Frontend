@@ -87,7 +87,14 @@ export {
     LoggerService as _LoggerService
 } from './factory';
 
-// Re-export the enhanced LoggerService for advanced usage
-export {
-    LoggerService
-} from './factory';
+// Module information
+export const LOGGER_MODULE_VERSION = '1.0.0';
+export const LOGGER_MODULE_INFO = {
+    name: 'Enterprise Logger Module',
+    version: LOGGER_MODULE_VERSION,
+    description: 'Centralized logging management with enterprise patterns',
+    deprecatedExports: [
+        '_LoggerService'
+    ],
+    migrationGuide: 'Use factory functions instead of direct LoggerService import'
+};

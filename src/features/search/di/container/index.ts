@@ -5,7 +5,7 @@
  * Provides proper service registration and lifecycle management
  */
 
-import { Container } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import { CacheService } from '@/core/cache/CacheProvider';
 import { SearchRepositoryImpl } from '../../data/repositories/SearchRepositoryImpl';
@@ -75,7 +75,7 @@ export class SearchContainerFactory {
   static validate(): boolean {
     try {
       const container = this.create();
-      
+
       // Check if all required services are registered
       const requiredServices = [
         TYPES.SEARCH_REPOSITORY,
@@ -104,7 +104,7 @@ export class SearchContainerFactory {
    */
   static getStats(): Record<string, any> {
     const container = this.create();
-    
+
     return {
       boundServices: container.bindings.size,
       registeredServices: Array.from(container.bindings.keys()),

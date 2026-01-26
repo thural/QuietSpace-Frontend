@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import type { CacheProvider } from '@/core/cache';
 
@@ -77,9 +77,9 @@ export function useCustomQuery<T>(
 
   const container = useDIContainer();
   const cache = container.getByToken<CacheProvider>(TYPES.CACHE_SERVICE);
-  
+
   const cacheKey = Array.isArray(key) ? key.join(':') : key;
-  
+
   const [state, setState] = useState<QueryState<T>>({
     data: initialData,
     isLoading: false,
@@ -133,12 +133,12 @@ export function useCustomQuery<T>(
 
       // Fetch new data
       const data = await fetcher();
-      
+
       // Cache the result
       cache.set(cacheKey, data, cacheTime);
 
       const finalData = select ? select(data) : data;
-      
+
       setState(prev => ({
         ...prev,
         data: finalData,
@@ -153,23 +153,23 @@ export function useCustomQuery<T>(
       retryCountRef.current = 0;
       onSuccess?.(finalData);
       onSettled?.(finalData, null);
-      
+
       return finalData;
-      
+
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Unknown error');
-      
+
       // Retry logic
       if (retryCountRef.current < retry && !signal?.aborted) {
         retryCountRef.current++;
         const delay = retryDelay * Math.pow(2, retryCountRef.current - 1); // Exponential backoff
-        
+
         setTimeout(() => {
           if (!signal?.aborted) {
             executeQuery(isRefetch, signal);
           }
         }, delay);
-        
+
         return Promise.reject(err);
       }
 
@@ -184,7 +184,7 @@ export function useCustomQuery<T>(
 
       onError?.(err);
       onSettled?.(undefined, err);
-      
+
       return Promise.reject(err);
     }
   }, [cache, cacheKey, fetcher, staleTime, cacheTime, select, retry, retryDelay, onSuccess, onError, onSettled]);
@@ -260,12 +260,12 @@ export function useCustomQuery<T>(
 
   // Set data manually
   const setData = useCallback((newData: T | ((old: T | undefined) => T)) => {
-    const data = typeof newData === 'function' 
-      ? (newData as Function)(state.data) 
+    const data = typeof newData === 'function'
+      ? (newData as Function)(state.data)
       : newData;
-    
+
     cache.set(cacheKey, data, cacheTime);
-    
+
     setState(prev => ({
       ...prev,
       data,
@@ -276,8 +276,8 @@ export function useCustomQuery<T>(
   }, [cache, cacheKey, cacheTime, state.data]);
 
   // Return placeholder data if loading and placeholder provided
-  const finalData = state.isLoading && placeholderData !== undefined 
-    ? placeholderData 
+  const finalData = state.isLoading && placeholderData !== undefined
+    ? placeholderData
     : state.data;
 
   return {

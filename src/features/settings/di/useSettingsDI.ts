@@ -5,7 +5,7 @@
  * Follows enterprise patterns for service access
  */
 
-import { useDIContainer } from '@/core/di';
+import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
 import type { SettingsDataService } from '../services/SettingsDataService';
 import type { SettingsFeatureService } from '../services/SettingsFeatureService';
@@ -18,7 +18,7 @@ import type { ISettingsRepository } from '../domain/entities/SettingsRepository'
  */
 export const useSettingsServices = () => {
   const container = useDIContainer();
-  
+
   return {
     settingsDataService: container.get<SettingsDataService>(TYPES.SETTINGS_DATA_SERVICE),
     settingsFeatureService: container.get<SettingsFeatureService>(TYPES.SETTINGS_FEATURE_SERVICE),

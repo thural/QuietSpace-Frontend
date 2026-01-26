@@ -6,11 +6,11 @@
  */
 
 // Core types and interfaces
-export type { 
-  ServiceIdentifier, 
-  ServiceFactory, 
-  ServiceDescriptor, 
-  ServiceLifetime, 
+export type {
+  ServiceIdentifier,
+  ServiceFactory,
+  ServiceDescriptor,
+  ServiceLifetime,
   ServiceOptions,
   ServiceProvider,
   DIContext,
@@ -18,35 +18,40 @@ export type {
   InjectionToken
 } from './types/index';
 
-// Service registry
-export { ServiceRegistry } from './registry';
+// Service registry - Implementation moved to legacy exports
 export type { IServiceRegistry } from './registry';
 
-// Service container
-export { ServiceContainer } from './container';
+// Service container - Implementation moved to legacy exports
 export type { IServiceContainer } from './container';
-export { Container } from './container';
 
 // Decorators
-export { 
-  Injectable, 
-  Inject, 
-  getInjectableMetadata, 
-  getInjectionMetadata, 
-  getConstructorDependencies, 
-  isInjectable 
+export {
+  Injectable,
+  Inject,
+  getInjectableMetadata,
+  getInjectionMetadata,
+  getConstructorDependencies,
+  isInjectable
 } from './decorators';
 
 // React providers
-export { 
-  DIProvider, 
-  useDIContainer, 
-  useDIContext, 
-  useService, 
-  useTryService, 
-  useHasService, 
-  useDIScope 
+export {
+  DIProvider,
+  useDIContainer,
+  useDIContext,
+  useService,
+  useTryService,
+  useHasService,
+  useDIScope
 } from './providers';
 
-// Main container
-export { Container as DIContainer } from './container';
+// Main container - Implementation moved to legacy exports
+// Note: Use DIContainer alias for clean API
+
+// Legacy exports for backward compatibility (with underscore prefix)
+export {
+  ServiceContainer as _ServiceContainer,
+  Container as _Container
+} from './container';
+
+export { ServiceRegistry as _ServiceRegistry } from './registry';
