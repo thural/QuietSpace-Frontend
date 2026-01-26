@@ -84,6 +84,38 @@ export {
   createCustomTheme
 } from './factory';
 
+// Composer functions - Clean API
+export {
+  ThemeComposer,
+  themeComposer
+} from './composer';
+
+// Variant functions - Clean API
+export {
+  getTheme,
+  getThemeVariants,
+  defaultTheme
+} from './variants';
+
+// Enhancer functions - Clean API
+export {
+  enhanceTheme
+} from './enhancers/themeEnhancers';
+
+// Styled utilities - Clean API
+export {
+  Container,
+  FlexContainer,
+  GridContainer,
+  StyledButton
+} from './styledUtils';
+
+// Configuration types - Clean API
+export type {
+  ThemeConfig,
+  ComposedTheme
+} from './composer';
+
 // Legacy exports for backward compatibility (with underscore prefix)
 export {
   Container as _Container,
@@ -91,16 +123,3 @@ export {
   GridContainer as _GridContainer,
   StyledButton as _StyledButton
 } from './styledUtils';
-
-// Legacy wildcard exports (deprecated - will be removed in next major version)
-export * from './tokens';
-export * from './composer';
-export * from './variants';
-export * from './enhancers/themeEnhancers';
-export * from './styledUtils';
-export * from './interfaces';
-
-export type {
-  ThemeConfig,
-  ComposedTheme
-} from './composer';
