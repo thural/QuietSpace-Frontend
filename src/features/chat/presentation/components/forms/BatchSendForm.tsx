@@ -13,7 +13,6 @@ import UserQueryItem from "@/shared/UserQueryItem";
 import useBatchShareForm from "@features/chat/application/hooks/useBatchShareForm";
 import useSearch from "@/features/search/application/hooks/useSearch";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import styles from "@features/profile/components/connections/styles/connectionStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { assertIsNotNullish } from "@/shared/utils/assertions";
 import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
