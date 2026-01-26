@@ -7,6 +7,15 @@
 
 import { themeComposer } from './composer';
 import { ThemeTokens } from './tokens';
+import { colors } from './appColors';
+import { typography } from './appTypography';
+import {
+  baseShadows,
+  baseSpacing,
+  baseBreakpoints,
+  baseRadius,
+  baseAnimation
+} from './baseTokens';
 
 /**
  * Light theme variant
@@ -15,65 +24,13 @@ themeComposer.registerTheme({
   name: 'light',
   version: '1.0.0',
   tokens: {
-    colors: {
-      brand: {
-        50: '#f0f9ff',
-        100: '#e0f2fe',
-        200: '#bae6fd',
-        300: '#7dd3fc',
-        400: '#38bdf8',
-        500: '#0ea5e9',
-        600: '#0284c7',
-        700: '#0369a1',
-        800: '#075985',
-        900: '#0c4a6e',
-        950: '#155e75',
-      },
-      semantic: {
-        success: '#22c55e',
-        warning: '#f59e0b',
-        error: '#ef4444',
-        info: '#3b82f6',
-      },
-      neutral: {
-        50: '#f9fafb',
-        100: '#f3f4f6',
-        200: '#e5e7eb',
-        300: '#d1d5db',
-        400: '#9ca3af',
-        500: '#6b7280',
-        600: '#4b5563',
-        700: '#374151',
-        800: '#1f2937',
-        900: '#111827',
-        950: '#030712',
-      },
-      background: {
-        primary: '#ffffff',
-        secondary: '#f8fafc',
-        tertiary: '#f1f5f9',
-        overlay: 'rgba(0, 0, 0, 0.75)',
-      },
-      text: {
-        primary: '#111827',
-        secondary: '#6b7280',
-        tertiary: '#9ca3af',
-        inverse: '#ffffff',
-      },
-      border: {
-        light: '#e5e7eb',
-        medium: '#d1d5db',
-        dark: '#4b5563',
-      },
-    },
-    shadows: {
-      sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-      md: '0 4px 6px -1px rgba(0, 0, 0, 0.07)',
-      lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-      inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-    },
+    colors: colors,
+    typography: typography,
+    spacing: baseSpacing,
+    shadows: baseShadows,
+    breakpoints: baseBreakpoints,
+    radius: baseRadius,
+    animation: baseAnimation,
   },
 });
 
@@ -85,6 +42,7 @@ themeComposer.registerTheme({
   version: '1.0.0',
   tokens: {
     colors: {
+      ...colors,
       brand: {
         50: '#0c4a6e',
         100: '#075985',
@@ -97,12 +55,6 @@ themeComposer.registerTheme({
         800: '#e0f2fe',
         900: '#f0f9ff',
         950: '#f0f9ff',
-      },
-      semantic: {
-        success: '#22c55e',
-        warning: '#f59e0b',
-        error: '#ef4444',
-        info: '#3b82f6',
       },
       neutral: {
         50: '#030712',
@@ -122,6 +74,7 @@ themeComposer.registerTheme({
         secondary: '#1f2937',
         tertiary: '#374151',
         overlay: 'rgba(0, 0, 0, 0.85)',
+        transparent: 'transparent',
       },
       text: {
         primary: '#f9fafb',
@@ -135,6 +88,8 @@ themeComposer.registerTheme({
         dark: '#6b7280',
       },
     },
+    typography: typography,
+    spacing: baseSpacing,
     shadows: {
       sm: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
       md: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
@@ -143,6 +98,9 @@ themeComposer.registerTheme({
       '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)',
     },
+    breakpoints: baseBreakpoints,
+    radius: baseRadius,
+    animation: baseAnimation,
   },
 });
 
@@ -155,6 +113,7 @@ themeComposer.registerTheme({
   extends: ['light'],
   tokens: {
     colors: {
+      ...colors,
       brand: {
         50: '#000000',
         100: '#000000',
@@ -192,6 +151,7 @@ themeComposer.registerTheme({
         secondary: '#ffffff',
         tertiary: '#ffffff',
         overlay: 'rgba(0, 0, 0, 0.9)',
+        transparent: 'transparent',
       },
       text: {
         primary: '#000000',
@@ -205,6 +165,12 @@ themeComposer.registerTheme({
         dark: '#000000',
       },
     },
+    typography: typography,
+    spacing: baseSpacing,
+    shadows: baseShadows,
+    breakpoints: baseBreakpoints,
+    radius: baseRadius,
+    animation: baseAnimation,
   },
 });
 
@@ -216,11 +182,9 @@ themeComposer.registerTheme({
   version: '1.0.0',
   extends: ['light'],
   tokens: {
+    colors: colors,
     typography: {
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Liberation Mono', 'Courier New', 'monospace'],
-      },
+      ...typography,
       fontSize: {
         xs: '0.625rem',
         sm: '0.75rem',
@@ -232,31 +196,6 @@ themeComposer.registerTheme({
         '4xl': '1.875rem',
         '5xl': '2.25rem',
         '6xl': '3rem',
-      },
-      fontWeight: {
-        thin: '100',
-        extralight: '200',
-        light: '300',
-        normal: '400',
-        medium: '500',
-        semibold: '600',
-        bold: '700',
-        extrabold: '800',
-        black: '900',
-      },
-      lineHeight: {
-        tight: '1.25',
-        normal: '1.5',
-        relaxed: '1.75',
-        loose: '2',
-      },
-      letterSpacing: {
-        tighter: '-0.05em',
-        tight: '-0.025em',
-        normal: '0',
-        wide: '0.025em',
-        wider: '0.05em',
-        widest: '0.1em',
       },
     },
     spacing: {
@@ -271,6 +210,10 @@ themeComposer.registerTheme({
       '5xl': '96px',
       '6xl': '128px',
     },
+    shadows: baseShadows,
+    breakpoints: baseBreakpoints,
+    radius: baseRadius,
+    animation: baseAnimation,
   },
 });
 
@@ -282,62 +225,9 @@ themeComposer.registerTheme({
   version: '1.0.0',
   extends: ['light'],
   tokens: {
-    colors: {
-      brand: {
-        50: '#f0f9ff',
-        100: '#e0f2fe',
-        200: '#bae6fd',
-        300: '#7dd3fc',
-        400: '#38bdf8',
-        500: '#0ea5e9',
-        600: '#0284c7',
-        700: '#0369a1',
-        800: '#075985',
-        900: '#0c4a6e',
-        950: '#155e75',
-      },
-      semantic: {
-        success: '#059669',
-        warning: '#d97706',
-        error: '#dc2626',
-        info: '#2563eb',
-      },
-      neutral: {
-        50: '#f9fafb',
-        100: '#f3f4f6',
-        200: '#e5e7eb',
-        300: '#d1d5db',
-        400: '#9ca3af',
-        500: '#6b7280',
-        600: '#4b5563',
-        700: '#374151',
-        800: '#1f2937',
-        900: '#111827',
-        950: '#030712',
-      },
-      background: {
-        primary: '#ffffff',
-        secondary: '#f8fafc',
-        tertiary: '#f1f5f9',
-        overlay: 'rgba(0, 0, 0, 0.75)',
-      },
-      text: {
-        primary: '#111827',
-        secondary: '#6b7280',
-        tertiary: '#9ca3af',
-        inverse: '#ffffff',
-      },
-      border: {
-        light: '#e5e7eb',
-        medium: '#d1d5db',
-        dark: '#4b5563',
-      },
-    },
+    colors: colors,
     typography: {
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Liberation Mono', 'Courier New', 'monospace'],
-      },
+      ...typography,
       fontSize: {
         xs: '0.875rem',
         sm: '1rem',
@@ -361,20 +251,6 @@ themeComposer.registerTheme({
         extrabold: '900',
         black: '900',
       },
-      lineHeight: {
-        tight: '1.25',
-        normal: '1.5',
-        relaxed: '1.75',
-        loose: '2',
-      },
-      letterSpacing: {
-        tighter: '-0.05em',
-        tight: '-0.025em',
-        normal: '0',
-        wide: '0.025em',
-        wider: '0.05em',
-        widest: '0.1em',
-      },
     },
     spacing: {
       xs: '6px',
@@ -388,6 +264,10 @@ themeComposer.registerTheme({
       '5xl': '192px',
       '6xl': '288px',
     },
+    shadows: baseShadows,
+    breakpoints: baseBreakpoints,
+    radius: baseRadius,
+    animation: baseAnimation,
   },
 });
 
@@ -399,57 +279,13 @@ themeComposer.registerTheme({
   version: '1.0.0',
   extends: ['light'],
   tokens: {
-    colors: {
-      brand: {
-        50: '#f0f9ff',
-        100: '#e0f2fe',
-        200: '#bae6fd',
-        300: '#7dd3fc',
-        400: '#38bdf8',
-        500: '#0ea5e9',
-        600: '#0284c7',
-        700: '#0369a1',
-        800: '#075985',
-        900: '#0c4a6e',
-        950: '#155e75',
-      },
-      semantic: {
-        success: '#22c55e',
-        warning: '#f59e0b',
-        error: '#ef4444',
-        info: '#3b82f6',
-      },
-      neutral: {
-        50: '#f9fafb',
-        100: '#f3f4f6',
-        200: '#e5e7eb',
-        300: '#d1d5db',
-        400: '#9ca3af',
-        500: '#6b7280',
-        600: '#4b5563',
-        700: '#374151',
-        800: '#1f2937',
-        900: '#111827',
-        950: '#030712',
-      },
-      background: {
-        primary: '#ffffff',
-        secondary: '#f8fafc',
-        tertiary: '#f1f5f9',
-        overlay: 'rgba(0, 0, 0, 0.75)',
-      },
-      text: {
-        primary: '#111827',
-        secondary: '#6b7280',
-        tertiary: '#9ca3af',
-        inverse: '#ffffff',
-      },
-      border: {
-        light: '#e5e7eb',
-        medium: '#d1d5db',
-        dark: '#4b5563',
-      },
-    },
+    colors: colors,
+    typography: typography,
+    spacing: baseSpacing,
+    shadows: baseShadows,
+    breakpoints: baseBreakpoints,
+    radius: baseRadius,
+    animation: baseAnimation,
   },
 });
 
