@@ -131,6 +131,15 @@ export interface ApiMetrics {
     requestsByStatus: Record<number, number>;
 }
 
+// Token Provider Interface
+export interface ITokenProvider {
+    getToken(): string | null;
+    setToken(token: string): void;
+    clearToken(): void;
+    isAuthenticated(): boolean;
+    refreshToken(): Promise<string | null>;
+}
+
 // HTTP Method Types
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 

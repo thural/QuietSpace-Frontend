@@ -27,18 +27,13 @@ export type {
     ResponseType
 } from './interfaces';
 
-// Factory functions - Clean service creation
+// Factory functions - Clean API for service creation
 export {
     createApiClient,
     createApiClientFromDI,
     createRestClient,
-    createRestClientFromDI,
-    createApiClientForEnvironment,
     createAuthenticatedApiClient,
-    createAuthenticatedApiClientFromDI,
-    createMockApiClient,
-    createApiClientWithFactory,
-    apiClientFactoryRegistry
+    createMockApiClient
 } from './factory';
 
 // Authenticated factory functions - Pre-configured with authentication
@@ -49,6 +44,14 @@ export {
     createAutoAuthApiClient,
     SimpleTokenProvider
 } from './authenticatedFactory';
+
+// DI-based factory functions
+export {
+    createDIAuthenticatedApiClient,
+    createAutoAuthApiClient as createDIAutoAuthApiClient,
+    createTokenProvider as createDITokenProvider,
+    createApiClientFactory
+} from './factory/diApiClientFactory';
 
 // Token provider interface
 export type { ITokenProvider } from './authenticatedFactory';
