@@ -1,13 +1,25 @@
 /**
- * Enterprise UI Components - Main Export
+ * UI Components Black Box Index
  * 
- * Central export point for all enterprise UI components
- * following Clean Architecture principles.
+ * Provides clean public API for the UI components following Black Box pattern.
+ * Only interfaces, factory functions, and essential components are exported.
+ * Implementation details and internal modules are properly hidden.
  */
 
-// Export types and utilities
-export * from './types';
-export * from './utils';
+// Public types and utilities - Clean API
+export type {
+    BaseComponentProps,
+    LayoutProps,
+    FlexProps,
+    TypographyProps,
+    InteractiveProps,
+    ButtonProps,
+    InputProps,
+    ComponentVariant,
+    ComponentSize,
+    ComponentStyles,
+    ComponentConfig
+} from './types';
 
 // Export layout components
 export { Container } from './layout/Container';
@@ -38,5 +50,15 @@ export { Loader } from './display/Loader';
 export { Image } from './display/Image';
 export { Badge } from './display/Badge';
 
-// Re-export Theme for convenience
+// Theme integration - Clean API
 export type { Theme } from '@/app/theme';
+
+// Essential hooks for UI integration
+export {
+    useTheme,
+    useThemeTokens
+} from '@/core/theme';
+
+// Legacy wildcard exports (deprecated - will be removed in next major version)
+export * from './types';
+export * from './utils';
