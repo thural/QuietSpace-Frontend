@@ -1,13 +1,24 @@
-import { createUseStyles } from "react-jss";
-import { Theme } from "../shared/types/theme";
+import styled from 'styled-components';
+import { EnhancedTheme } from '../core/theme';
 
-const styles = createUseStyles((theme: Theme) => (
-	{
-		app: {
-			height: '100vh',
-			backgroundColor: theme.colors.backgroundSecondary,
-		}
-	}
-));
+export const AppContainer = styled.div<{ theme: EnhancedTheme }>`
+  height: 100vh;
+  background-color: ${props => props.theme.colors.background.primary};
+  transition: background-color ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+  
+  /* Ensure proper theme switching */
+  &[data-theme="dark"] {
+    background-color: ${props => props.theme.colors.background.primary};
+  }
+  
+  &[data-theme="light"] {
+    background-color: ${props => props.theme.colors.background.primary};
+  }
+`;
 
-export default styles
+// Legacy export for backward compatibility during migration
+const styles = () => ({
+	app: '',
+});
+
+export default styles;

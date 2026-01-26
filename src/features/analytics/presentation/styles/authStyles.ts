@@ -1,62 +1,73 @@
-import { createUseStyles } from "react-jss";
-import { Theme } from "@shared/types/theme";
+import styled from 'styled-components';
+import { EnhancedTheme } from '../../../../core/theme';
 
-const styles = createUseStyles((theme: Theme) => ({
-  auth: {
-    display: 'flex',
-    flexFlow: 'row nowrap',
-    background: theme.colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    fontFamily: 'inherit',
-    '& .greeting-text': {
-      display: 'flex',
-      padding: theme.spacing(theme.spacingFactor.md * 2),
-      flexFlow: 'column nowrap',
-      minWidth: 'min-content',
-      // textAlign: 'center',
-      alignItems: 'flex-start',
-      // alignSelf: 'flex-start',
-      justifyContent: 'flex-start',
-      fontSize: '3.2rem',
-      alignSelf: 'center',
-      gap: theme.spacing(theme.spacingFactor.md * 3),
-      height: '360px',
-      textWrap: 'nowrap'
-    },
-    '& .brand': {
-      marginTop: '0',
-      minWidth: 'max-content',
-      marginBottom: 'auto',
-      fontFamily: 'inherit',
-    },
-    '& .primary-text': {
-    },
-    '& .secondary-text': {
-      fontSize: '1.2rem',
-      fontWeight: '300'
-    },
-  },
-  '@media (max-width: 720px)': {
-    auth: {
-      background: theme.colors.background,
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      '& .greeting-text': {
-        alignItems: 'center',
-        height: 'fit-content',
-      },
-      '& .brand': {
-        fontSize: "2.5rem",
-        marginBottom: '1rem'
-      },
-      '& .secondary-text': {
-        display: 'none'
-      },
-    },
-  },
-}));
+export const AuthContainer = styled.div<{ theme: EnhancedTheme }>`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  background: ${props => props.theme.colors.background.primary};
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: inherit;
 
+  & .greeting-text {
+    display: flex;
+    padding: ${props => props.theme.spacing.xl};
+    flex-direction: column;
+    flex-wrap: nowrap;
+    min-width: min-content;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-size: 3.2rem;
+    align-self: center;
+    gap: ${props => props.theme.spacing.xl};
+    height: 360px;
+    text-wrap: nowrap;
+  }
 
-export default styles
+  & .brand {
+    margin-top: 0;
+    min-width: max-content;
+    margin-bottom: auto;
+    font-family: inherit;
+    color: ${props => props.theme.colors.text.primary};
+    font-weight: ${props => props.theme.typography.fontWeight.bold};
+  }
+
+  & .primary-text {
+    color: ${props => props.theme.colors.text.primary};
+  }
+
+  & .secondary-text {
+    font-size: 1.2rem;
+    font-weight: ${props => props.theme.typography.fontWeight.light};
+    color: ${props => props.theme.colors.text.secondary};
+  }
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+    justify-content: space-around;
+
+    & .greeting-text {
+      align-items: center;
+      height: fit-content;
+    }
+
+    & .brand {
+      font-size: 2.5rem;
+      margin-bottom: ${props => props.theme.spacing.md};
+    }
+
+    & .secondary-text {
+      display: none;
+    }
+  }
+`;
+
+// Legacy export for backward compatibility
+const styles = () => ({
+  auth: '',
+});
+
+export default styles;

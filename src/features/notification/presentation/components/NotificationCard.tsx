@@ -1,11 +1,10 @@
-import styles from "../styles/notificationCardStyles";
+import { NotificationCard as NotificationCardStyled } from "../styles/notificationCardStyles";
 import { useEffect } from "react";
 
 import UserCard from "@shared/UserCard";
-import useWasSeen from "@services/hook/common/useWasSeen";
-import { useNotificationStore } from "@services/store/zustand";
-import { NotificationCardProps } from "@shared-types/notificationTypes";
-import { FlexContainer } from "../../../../shared/ui/components";
+import useWasSeen from "@notification/application/hooks/useWasSeen";
+import { useNotificationStore } from "@core/store/zustand";
+import { NotificationCardProps } from "@notification/types/notificationTypes";
 import { Text } from "../../../../shared/ui/components";
 
 /**
@@ -22,8 +21,6 @@ import { Text } from "../../../../shared/ui/components";
  * @returns {JSX.Element} - The rendered NotificationCard component containing user and notification details.
  */
 const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onClick, children, text }) => {
-    const classes = styles();
-
     const [wasSeen, wasSeenRef] = useWasSeen();
     const { id, actorId } = notification;
     const { clientMethods } = useNotificationStore();
@@ -43,12 +40,12 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onCli
     useEffect(handleSeenNotification, [wasSeen, isClientConnected]);
 
     return (
-        <FlexContainer ref={wasSeenRef} className={classes.notificationCard} onClick={onClick}>
+        <NotificationCardStyled ref={wasSeenRef} onClick={onClick}>
             <UserCard userId={actorId}>
                 <Text size="1rem" className="message">{text}</Text>
             </UserCard>
             {children}
-        </FlexContainer>
+        </NotificationCardStyled>
     );
 }
 

@@ -1,30 +1,68 @@
-import { createUseStyles } from "react-jss";
-import { Theme } from "../../../../shared/types/theme";
+import styled from 'styled-components';
+import { EnhancedTheme } from '../../../../core/theme';
 
-const styles = createUseStyles((theme: Theme) => ({
+export const NotificationCard = styled.div<{ theme: EnhancedTheme }>`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-bottom: 0.1rem solid ${props => props.theme.colors.border.light};
+  padding: ${props => props.theme.spacing.sm} 0;
+  transition: ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
 
-    notificationCard: {
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        borderBottom: `.1rem solid ${theme.colors.hrDivider}`,
-        padding: `${theme.spacing(theme.spacingFactor.sm)} 0`,
+  &:hover {
+    background-color: ${props => props.theme.colors.background.secondary};
+  }
 
-        '& button': {
-            height: '2rem',
-            width: '8rem',
-            cursor: 'pointer',
-            display: 'block',
-            marginLeft: 'auto',
-            color: theme.colors.textMax,
-            border: `1px solid ${theme.colors.buttonBorder}`,
-            padding: `0 ${theme.spacing(theme.spacingFactor.md)}`,
-            fontSize: theme.spacing(0.9),
-            fontWeight: theme.typography.fontWeightBold,
-            borderRadius: theme.radius.ms,
-            backgroundColor: theme.colors.backgroundSecondary
-        },
-    },
-}));
+  & button {
+    height: 2rem;
+    width: 8rem;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    color: ${props => props.theme.colors.text.primary};
+    border: 1px solid ${props => props.theme.colors.border.medium};
+    padding: 0 ${props => props.theme.spacing.md};
+    font-size: 0.9rem;
+    font-weight: ${props => props.theme.typography.fontWeight.bold};
+    border-radius: ${props => props.theme.radius.sm};
+    background-color: ${props => props.theme.colors.background.secondary};
+    transition: ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
 
-export default styles
+    &:hover {
+      background-color: ${props => props.theme.colors.brand[100]};
+      border-color: ${props => props.theme.colors.brand[300]};
+      transform: translateY(-1px);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px ${props => props.theme.colors.brand[200]};
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 630px) {
+    padding: ${props => props.theme.spacing.xs} 0;
+
+    & button {
+      width: 6rem;
+      font-size: 0.8rem;
+      padding: 0 ${props => props.theme.spacing.sm};
+    }
+  }
+`;
+
+// Legacy export for backward compatibility during migration
+export const NotificationCardStyles = {
+    notificationCard: NotificationCard,
+};
+
+// Legacy JSS export for backward compatibility
+const styles = () => ({
+    notificationCard: '',
+});
+
+export default styles;
