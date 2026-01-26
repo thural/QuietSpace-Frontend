@@ -1,15 +1,15 @@
 import { Injectable, Inject } from '@/core/di';
 import { CacheServiceManager, TYPES } from '@/core';
-import { CacheProvider } from '@/core/cache';
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { PostRepository } from '../repositories/PostRepository';
 import { CacheKeys } from '../cache/CacheKeys';
-import type { 
-    IPostRepository, 
-    PostQuery, 
-    PostResponse, 
-    PostPage, 
-    PostRequest, 
-    RepostRequest, 
+import type {
+    IPostRepository,
+    PostQuery,
+    PostResponse,
+    PostPage,
+    PostRequest,
+    RepostRequest,
     VoteBody,
     ReactionRequest
 } from '@/features/feed/domain';
@@ -26,7 +26,7 @@ export interface PostDataServiceConfig {
 
 @Injectable()
 export class PostDataService {
-    private cache: CacheProvider;
+    private cache: ICacheProvider;
     private repository: IPostRepository;
     private config: PostDataServiceConfig;
 
@@ -35,7 +35,7 @@ export class PostDataService {
         repository: PostRepository,
         config: Partial<PostDataServiceConfig> = {}
     ) {
-        this.cache = cacheService.getCache('feed');
+        this.cache = createCacheProvider();
         this.repository = repository;
         this.config = {
             defaultTTL: 300000, // 5 minutes
@@ -50,7 +50,7 @@ export class PostDataService {
 
     async getPosts(query: PostQuery, token: string): Promise<PostPage> {
         const cacheKey = CacheKeys.feed(query.userId || 'global');
-        
+
         // Try cache first
         const cached = this.cache.get<PostPage>(cacheKey);
         if (cached) {
@@ -65,13 +65,13 @@ export class PostDataService {
 
         // Cache the result
         this.cache.set(cacheKey, data, this.config.feedTTL);
-        
+
         return data;
     }
 
     async getPostById(postId: ResId, token: string): Promise<PostResponse> {
         const cacheKey = CacheKeys.post(postId);
-        
+
         // Try cache first
         const cached = this.cache.get<PostResponse>(cacheKey);
         if (cached) {
@@ -86,13 +86,13 @@ export class PostDataService {
 
         // Cache the result
         this.cache.set(cacheKey, data, this.config.postTTL);
-        
+
         return data;
     }
 
     async getSavedPosts(query: PostQuery, token: string): Promise<PostPage> {
         const cacheKey = CacheKeys.savedPosts(query.userId || 'global');
-        
+
         const cached = this.cache.get<PostPage>(cacheKey);
         if (cached) {
             return cached;
@@ -109,7 +109,7 @@ export class PostDataService {
 
     async getPostsByUserId(userId: ResId, query: PostQuery, token: string): Promise<PostPage> {
         const cacheKey = CacheKeys.userPosts(userId);
-        
+
         const cached = this.cache.get<PostPage>(cacheKey);
         if (cached) {
             return cached;
@@ -126,7 +126,7 @@ export class PostDataService {
 
     async searchPosts(queryText: string, query: PostQuery, token: string): Promise<PostPage> {
         const cacheKey = CacheKeys.searchResults(queryText);
-        
+
         const cached = this.cache.get<PostPage>(cacheKey);
         if (cached) {
             return cached;
@@ -234,7 +234,7 @@ export class PostDataService {
 
     async getRepliedPosts(userId: ResId, query: PostQuery, token: string): Promise<PostPage> {
         const cacheKey = CacheKeys.repliedPosts(userId);
-        
+
         const cached = this.cache.get<PostPage>(cacheKey);
         if (cached) {
             return cached;
@@ -279,25 +279,25 @@ export class PostDataService {
         }
 
         let lastError: Error;
-        
+
         for (let attempt = 1; attempt <= this.config.maxRetries; attempt++) {
             try {
                 return await operation();
             } catch (error) {
                 lastError = error as Error;
-                
+
                 if (attempt === this.config.maxRetries) {
                     console.error(`PostDataService: ${operationName} failed after ${attempt} attempts:`, error);
                     throw lastError;
                 }
-                
+
                 // Wait before retry
-                await new Promise(resolve => 
+                await new Promise(resolve =>
                     setTimeout(resolve, this.config.retryDelay * attempt)
                 );
             }
         }
-        
+
         throw lastError!;
     }
 

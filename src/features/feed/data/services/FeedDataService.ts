@@ -1,22 +1,22 @@
 import { Injectable, Inject } from '@/core/di';
 import { CacheServiceManager, TYPES } from '@/core';
-import { CacheProvider } from '@/core/cache';
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { PostDataService } from './PostDataService';
 import { CommentDataService } from './CommentDataService';
 import { CacheKeys } from '../cache/CacheKeys';
-import type { 
+import type {
     PostQuery,
-    PostResponse, 
+    PostResponse,
     PostPage,
     PostRequest,
     RepostRequest,
     VoteBody,
     ReactionRequest
 } from '@/features/feed/domain';
-import type { 
-    CommentRequest, 
-    CommentResponse, 
-    PagedComment 
+import type {
+    CommentRequest,
+    CommentResponse,
+    PagedComment
 } from '@/features/feed/data/models/comment';
 import type { ResId } from '@/shared/api/models/common';
 
@@ -71,7 +71,7 @@ export class FeedDataService {
 
     async getFeedWithComments(query: PostQuery, token: string): Promise<FeedPage> {
         const cacheKey = `feed:withComments:${JSON.stringify(query)}`;
-        
+
         // Try cache first for smart caching
         if (this.config.enableSmartCaching) {
             const cached = this.cache.get<FeedPage>(cacheKey);
@@ -82,7 +82,7 @@ export class FeedDataService {
 
         // Get posts first
         const postsPage = await this.postService.getPosts(query, token);
-        
+
         // Preload comments if enabled
         let feedItems: FeedItem[];
         if (this.config.enableCommentPreloading && postsPage.content.length > 0) {
@@ -112,7 +112,7 @@ export class FeedDataService {
 
     async getPostWithComments(postId: ResId, token: string): Promise<FeedItem> {
         const cacheKey = `post:withComments:${postId}`;
-        
+
         if (this.config.enableSmartCaching) {
             const cached = this.cache.get<FeedItem>(cacheKey);
             if (cached) {
@@ -140,30 +140,30 @@ export class FeedDataService {
 
     async createPostWithCache(post: PostRequest, token: string): Promise<PostResponse> {
         const result = await this.postService.createPost(post, token);
-        
+
         // Invalidate all relevant caches
         this.invalidateFeedCaches();
         this.invalidateUserCaches(post.userId);
-        
+
         return result;
     }
 
     async createCommentWithCache(comment: CommentRequest): Promise<CommentResponse> {
         const result = await this.commentService.createComment(comment);
-        
+
         // Invalidate post cache and feed caches
         this.postService.invalidatePostCache(comment.postId);
         this.invalidateFeedCaches();
-        
+
         // Invalidate enriched post cache
         this.cache.invalidate(`post:withComments:${comment.postId}`);
-        
+
         return result;
     }
 
     async deletePostWithFullCacheInvalidation(postId: ResId, token: string): Promise<void> {
         await this.postService.deletePost(postId, token);
-        
+
         // Full cache invalidation for post deletion
         this.postService.invalidatePostCache(postId);
         this.commentService.invalidatePostComments(postId);
@@ -172,23 +172,23 @@ export class FeedDataService {
     }
 
     async deleteCommentWithFullInvalidation(
-        commentId: ResId, 
-        postId: ResId, 
+        commentId: ResId,
+        postId: ResId,
         userId: ResId
     ): Promise<Response> {
         const result = await this.commentService.deleteCommentWithPostId(commentId, postId, userId);
-        
+
         // Invalidate all related caches
         this.postService.invalidatePostCache(postId);
         this.cache.invalidate(`post:withComments:${postId}`);
         this.invalidateFeedCaches();
-        
+
         return result;
     }
 
     async votePollWithCacheInvalidation(vote: VoteBody, token: string): Promise<void> {
         await this.postService.votePoll(vote, token);
-        
+
         // Invalidate post and poll caches
         this.postService.invalidatePostCache(vote.postId);
         this.cache.invalidate(`post:withComments:${vote.postId}`);
@@ -197,7 +197,7 @@ export class FeedDataService {
 
     async reactToPostWithCache(reaction: ReactionRequest, token: string): Promise<void> {
         await this.postService.reaction(reaction, token);
-        
+
         // Invalidate post and related caches
         this.postService.invalidatePostCache(reaction.postId);
         this.cache.invalidate(`post:withComments:${reaction.postId}`);
@@ -207,7 +207,7 @@ export class FeedDataService {
     // Batch operations for performance
     async getMultiplePostsWithComments(postIds: ResId[], token: string): Promise<FeedItem[]> {
         const cacheKey = `posts:batch:${postIds.join(',')}`;
-        
+
         if (this.config.enableSmartCaching) {
             const cached = this.cache.get<FeedItem[]>(cacheKey);
             if (cached) {
@@ -236,14 +236,14 @@ export class FeedDataService {
     // Cache warming strategies
     async warmupFeedCache(userId: ResId, token: string): Promise<void> {
         console.log(`Warming up feed cache for user ${userId}`);
-        
+
         try {
             // Preload main feed
             await this.getFeedWithComments({ userId, page: 0, size: 10 }, token);
-            
+
             // Preload user posts
             await this.postService.getPostsByUserId(userId, { page: 0, size: 5 }, token);
-            
+
             console.log(`Feed cache warmup completed for user ${userId}`);
         } catch (error) {
             console.error(`Feed cache warmup failed for user ${userId}:`, error);
@@ -254,7 +254,7 @@ export class FeedDataService {
     getCacheAnalytics() {
         const postStats = this.postService.getCacheStats();
         const commentStats = this.commentService.getCacheStats();
-        
+
         return {
             posts: postStats,
             comments: commentStats,
@@ -286,7 +286,7 @@ export class FeedDataService {
     private async enrichFeedWithComments(posts: PostResponse[], token: string): Promise<FeedItem[]> {
         const postIds = posts.map(post => post.id);
         const commentsMap = await this.commentService.getCommentsForMultiplePosts(
-            postIds, 
+            postIds,
             `?size=${this.config.maxCommentsPerPost}`
         );
 
@@ -298,7 +298,7 @@ export class FeedDataService {
 
     private async getPostsBatch(postIds: ResId[], token: string): Promise<Map<ResId, PostResponse>> {
         const postsMap = new Map<ResId, PostResponse>();
-        
+
         // Fetch posts in parallel
         const postPromises = postIds.map(async (postId) => {
             try {
@@ -311,7 +311,7 @@ export class FeedDataService {
         });
 
         const results = await Promise.allSettled(postPromises);
-        
+
         results.forEach((result, index) => {
             if (result.status === 'fulfilled' && result.value.post) {
                 postsMap.set(result.value.postId, result.value.post);

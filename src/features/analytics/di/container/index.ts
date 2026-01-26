@@ -1,6 +1,6 @@
 import { Container } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import { CacheService } from '@/core/cache/CacheProvider';
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { AnalyticsRepository } from '../repositories/AnalyticsRepository';
 import { AnalyticsDataService } from '../services/AnalyticsDataService';
 import { AnalyticsFeatureService } from '../services/AnalyticsFeatureService';
@@ -17,28 +17,28 @@ import { AnalyticsFeatureService } from '../services/AnalyticsFeatureService';
 
 export function createAnalyticsContainer(): Container {
   const container = new Container();
-  
+
   // Core services (inherited from main container)
   // CacheService is registered as singleton in main AppContainer
-  
+
   // Repositories (Transient - new instance per injection)
   container.registerTransientByToken(
-    TYPES.ANALYTICS_REPOSITORY, 
+    TYPES.ANALYTICS_REPOSITORY,
     AnalyticsRepository
   );
-  
+
   // Data Services (Singleton - shared cache state)
   container.registerSingletonByToken(
-    TYPES.ANALYTICS_DATA_SERVICE, 
+    TYPES.ANALYTICS_DATA_SERVICE,
     AnalyticsDataService
   );
-  
+
   // Feature Services (Singleton - business logic)
   container.registerSingletonByToken(
-    TYPES.ANALYTICS_FEATURE_SERVICE, 
+    TYPES.ANALYTICS_FEATURE_SERVICE,
     AnalyticsFeatureService
   );
-  
+
   return container;
 }
 
@@ -48,26 +48,26 @@ export function createAnalyticsContainer(): Container {
  */
 export function createAnalyticsChildContainer(parentContainer: Container): Container {
   const analyticsContainer = parentContainer.createChild();
-  
+
   // Register analytics-specific services
   const analyticsSpecificContainer = createAnalyticsContainer();
-  
+
   // Merge configurations
   analyticsContainer.registerTransientByToken(
-    TYPES.ANALYTICS_REPOSITORY, 
+    TYPES.ANALYTICS_REPOSITORY,
     AnalyticsRepository
   );
-  
+
   analyticsContainer.registerSingletonByToken(
-    TYPES.ANALYTICS_DATA_SERVICE, 
+    TYPES.ANALYTICS_DATA_SERVICE,
     AnalyticsDataService
   );
-  
+
   analyticsContainer.registerSingletonByToken(
-    TYPES.ANALYTICS_FEATURE_SERVICE, 
+    TYPES.ANALYTICS_FEATURE_SERVICE,
     AnalyticsFeatureService
   );
-  
+
   return analyticsContainer;
 }
 
@@ -76,22 +76,22 @@ export function createAnalyticsChildContainer(parentContainer: Container): Conta
  */
 export function createTestAnalyticsContainer(): Container {
   const container = new Container();
-  
+
   // Mock implementations can be registered here for testing
   container.registerTransientByToken(
-    TYPES.ANALYTICS_REPOSITORY, 
+    TYPES.ANALYTICS_REPOSITORY,
     AnalyticsRepository // Replace with mock in tests
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.ANALYTICS_DATA_SERVICE, 
+    TYPES.ANALYTICS_DATA_SERVICE,
     AnalyticsDataService
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.ANALYTICS_FEATURE_SERVICE, 
+    TYPES.ANALYTICS_FEATURE_SERVICE,
     AnalyticsFeatureService
   );
-  
+
   return container;
 }
