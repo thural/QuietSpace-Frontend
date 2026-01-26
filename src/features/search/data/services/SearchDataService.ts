@@ -7,7 +7,7 @@
 
 import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import { CacheService } from '@/core/cache/CacheProvider';
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { ISearchRepositoryEnhanced, EnhancedSearchQuery, EnhancedSearchResult, SearchSuggestion, SearchAnalytics, SearchPerformanceMetrics, SearchConfiguration } from '@search/domain/entities/ISearchRepositoryEnhanced';
 import { SearchQuery, SearchResult, SearchFilters } from '@search/domain/entities';
 import { JwtToken } from '@/shared/api/models/common';
@@ -21,25 +21,29 @@ import { SEARCH_CACHE_KEYS, SEARCH_CACHE_TTL, SEARCH_CACHE_INVALIDATION } from '
  */
 @Injectable()
 export class SearchDataService {
+  private cache: ICacheProvider;
+
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
     @Inject(TYPES.SEARCH_REPOSITORY) private repository: ISearchRepositoryEnhanced
-  ) {}
+  ) {
+    // Initialize cache using Black Box factory pattern
+    this.cache = createCacheProvider();
+  }
 
   // Basic search operations with caching
   async searchUsers(query: string, filters?: SearchFilters, token?: JwtToken): Promise<any[]> {
     const cacheKey = SEARCH_CACHE_KEYS.USER_SEARCH(query, 0, 20);
-    
+
     let data = this.cache.get<any[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchUsers(query, filters);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.USER_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching users:', error);
@@ -49,17 +53,17 @@ export class SearchDataService {
 
   async searchPosts(query: string, filters?: SearchFilters, token?: JwtToken): Promise<any[]> {
     const cacheKey = SEARCH_CACHE_KEYS.POST_SEARCH(query, 0, 20);
-    
+
     let data = this.cache.get<any[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchPosts(query, filters);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.POST_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching posts:', error);
@@ -69,17 +73,17 @@ export class SearchDataService {
 
   async searchAll(query: string, filters?: SearchFilters, token?: JwtToken): Promise<SearchResult> {
     const cacheKey = SEARCH_CACHE_KEYS.COMBINED_SEARCH(query, 0, 20);
-    
+
     let data = this.cache.get<SearchResult>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchAll(query, filters);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.COMBINED_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching all:', error);
@@ -90,23 +94,23 @@ export class SearchDataService {
   // Enhanced search operations with caching
   async searchEnhanced(query: EnhancedSearchQuery, token?: JwtToken): Promise<EnhancedSearchResult> {
     const cacheKey = SEARCH_CACHE_KEYS.ADVANCED_SEARCH(query.query, query.pagination?.page || 0, query.pagination?.size || 20);
-    
+
     let data = this.cache.get<EnhancedSearchResult>(cacheKey);
     if (data) {
       // Mark as cache hit
       data.cacheHit = true;
       return data;
     }
-    
+
     try {
       data = await this.repository.searchEnhanced(query, token);
-      
+
       if (data) {
         // Mark as fresh cache hit
         data.cacheHit = false;
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.ADVANCED_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error in enhanced search:', error);
@@ -116,15 +120,15 @@ export class SearchDataService {
 
   async searchWithAnalytics(query: string, userId: string, token?: JwtToken): Promise<EnhancedSearchResult> {
     const cacheKey = SEARCH_CACHE_KEYS.SEARCH_ANALYTICS(userId, '24h');
-    
+
     try {
       const result = await this.repository.searchWithAnalytics(query, userId, token);
-      
+
       // Cache analytics data separately
       if (result.analytics) {
         this.cache.set(cacheKey, result.analytics, SEARCH_CACHE_TTL.SEARCH_ANALYTICS);
       }
-      
+
       return result;
     } catch (error) {
       console.error('Error in search with analytics:', error);
@@ -135,17 +139,17 @@ export class SearchDataService {
   // Suggestions and autocomplete with caching
   async getSuggestions(partialQuery: string, limit: number = 10, token?: JwtToken): Promise<SearchSuggestion[]> {
     const cacheKey = SEARCH_CACHE_KEYS.SUGGESTIONS(partialQuery, limit);
-    
+
     let data = this.cache.get<SearchSuggestion[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getSuggestions(partialQuery, limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.SUGGESTIONS);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting suggestions:', error);
@@ -155,17 +159,17 @@ export class SearchDataService {
 
   async getAutocomplete(partialQuery: string, limit: number = 10, token?: JwtToken): Promise<string[]> {
     const cacheKey = SEARCH_CACHE_KEYS.AUTOCOMPLETE(partialQuery, limit);
-    
+
     let data = this.cache.get<string[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getAutocomplete(partialQuery, limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.AUTOCOMPLETE);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting autocomplete:', error);
@@ -175,15 +179,15 @@ export class SearchDataService {
 
   async getSmartSuggestions(query: string, userId: string, token?: JwtToken): Promise<SearchSuggestion[]> {
     const cacheKey = SEARCH_CACHE_KEYS.RECOMMENDATIONS(userId, 10);
-    
+
     try {
       const suggestions = await this.repository.getSmartSuggestions(query, userId, token);
-      
+
       // Cache recommendations for longer
       if (suggestions) {
         this.cache.set(cacheKey, suggestions, SEARCH_CACHE_TTL.RECOMMENDATIONS);
       }
-      
+
       return suggestions;
     } catch (error) {
       console.error('Error getting smart suggestions:', error);
@@ -194,17 +198,17 @@ export class SearchDataService {
   // Search history with caching
   async getSearchHistory(userId: string, limit: number = 10, token?: JwtToken): Promise<SearchQuery[]> {
     const cacheKey = SEARCH_CACHE_KEYS.SEARCH_HISTORY(userId);
-    
+
     let data = this.cache.get<SearchQuery[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getSearchHistory(userId, limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.SEARCH_HISTORY);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting search history:', error);
@@ -215,11 +219,11 @@ export class SearchDataService {
   async saveToHistory(query: SearchQuery, userId: string, token?: JwtToken): Promise<void> {
     try {
       await this.repository.saveToHistory(query, userId, token);
-      
+
       // Invalidate history cache
       const historyKey = SEARCH_CACHE_KEYS.SEARCH_HISTORY(userId);
       this.cache.invalidate(historyKey);
-      
+
       // Invalidate recent searches cache
       const recentKey = SEARCH_CACHE_KEYS.RECENT_SEARCHES(userId, 10);
       this.cache.invalidate(recentKey);
@@ -232,7 +236,7 @@ export class SearchDataService {
   async clearHistory(userId: string, token?: JwtToken): Promise<void> {
     try {
       await this.repository.clearHistory(userId, token);
-      
+
       // Invalidate all user-related search caches
       const invalidationKeys = SEARCH_CACHE_INVALIDATION.invalidateUserSearchData(userId);
       for (const key of invalidationKeys) {
@@ -246,17 +250,17 @@ export class SearchDataService {
 
   async getPersonalizedSuggestions(userId: string, limit: number = 10, token?: JwtToken): Promise<SearchSuggestion[]> {
     const cacheKey = SEARCH_CACHE_KEYS.RECOMMENDATIONS(userId, limit);
-    
+
     let data = this.cache.get<SearchSuggestion[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getPersonalizedSuggestions(userId, limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.RECOMMENDATIONS);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting personalized suggestions:', error);
@@ -267,17 +271,17 @@ export class SearchDataService {
   // Trending and popular searches with caching
   async getTrendingSearches(limit: number = 10, token?: JwtToken): Promise<SearchQuery[]> {
     const cacheKey = SEARCH_CACHE_KEYS.TRENDING_SEARCHES(limit);
-    
+
     let data = this.cache.get<SearchQuery[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getTrendingSearches(limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.TRENDING_SEARCHES);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting trending searches:', error);
@@ -287,17 +291,17 @@ export class SearchDataService {
 
   async getPopularSearches(limit: number = 10, token?: JwtToken): Promise<SearchQuery[]> {
     const cacheKey = SEARCH_CACHE_KEYS.POPULAR_SEARCHES(limit);
-    
+
     let data = this.cache.get<SearchQuery[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getPopularSearches(limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.POPULAR_SEARCHES);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting popular searches:', error);
@@ -307,17 +311,17 @@ export class SearchDataService {
 
   async getRecentSearches(limit: number = 10, token?: JwtToken): Promise<SearchQuery[]> {
     const cacheKey = SEARCH_CACHE_KEYS.RECENT_SEARCHES;
-    
+
     let data = this.cache.get<SearchQuery[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getRecentSearches(limit, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.RECENT_SEARCHES);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting recent searches:', error);
@@ -328,17 +332,17 @@ export class SearchDataService {
   // Advanced search features
   async searchByCategory(category: string, query: string, filters?: SearchFilters, token?: JwtToken): Promise<EnhancedSearchResult> {
     const cacheKey = SEARCH_CACHE_KEYS.CATEGORY_SEARCH(category, query, 0, 20);
-    
+
     let data = this.cache.get<EnhancedSearchResult>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchByCategory(category, query, filters, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.CATEGORY_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching by category:', error);
@@ -349,17 +353,17 @@ export class SearchDataService {
   async searchByTags(tags: string[], query?: string, filters?: SearchFilters, token?: JwtToken): Promise<EnhancedSearchResult> {
     const tagKey = tags.join(',');
     const cacheKey = SEARCH_CACHE_KEYS.TAG_SEARCH(tagKey, 0, 20);
-    
+
     let data = this.cache.get<EnhancedSearchResult>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchByTags(tags, query, filters, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.TAG_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching by tags:', error);
@@ -369,17 +373,17 @@ export class SearchDataService {
 
   async searchByLocation(location: string, radius?: number, query?: string, filters?: SearchFilters, token?: JwtToken): Promise<EnhancedSearchResult> {
     const cacheKey = SEARCH_CACHE_KEYS.LOCATION_SEARCH(location, 0, 20);
-    
+
     let data = this.cache.get<EnhancedSearchResult>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchByLocation(location, radius, query, filters, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.LOCATION_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching by location:', error);
@@ -389,17 +393,17 @@ export class SearchDataService {
 
   async searchByDateRange(startDate: string, endDate: string, query?: string, filters?: SearchFilters, token?: JwtToken): Promise<EnhancedSearchResult> {
     const cacheKey = SEARCH_CACHE_KEYS.DATE_RANGE_SEARCH(startDate, endDate, 0, 20);
-    
+
     let data = this.cache.get<EnhancedSearchResult>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.searchByDateRange(startDate, endDate, query, filters, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.DATE_RANGE_SEARCH);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error searching by date range:', error);
@@ -410,17 +414,17 @@ export class SearchDataService {
   // Search analytics and metrics
   async getSearchAnalytics(userId: string, period: string, token?: JwtToken): Promise<SearchAnalytics> {
     const cacheKey = SEARCH_CACHE_KEYS.SEARCH_ANALYTICS(userId, period);
-    
+
     let data = this.cache.get<SearchAnalytics>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getSearchAnalytics(userId, period, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.SEARCH_ANALYTICS);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting search analytics:', error);
@@ -430,17 +434,17 @@ export class SearchDataService {
 
   async getSearchPerformanceMetrics(query: string, period: string, token?: JwtToken): Promise<SearchPerformanceMetrics[]> {
     const cacheKey = SEARCH_CACHE_KEYS.SEARCH_PERFORMANCE(query, period);
-    
+
     let data = this.cache.get<SearchPerformanceMetrics[]>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getSearchPerformanceMetrics(query, period, token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.SEARCH_PERFORMANCE);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting search performance metrics:', error);
@@ -451,7 +455,7 @@ export class SearchDataService {
   async recordSearchMetrics(metrics: SearchPerformanceMetrics, token?: JwtToken): Promise<void> {
     try {
       await this.repository.recordSearchMetrics(metrics, token);
-      
+
       // Invalidate performance cache
       const perfKey = SEARCH_CACHE_KEYS.SEARCH_PERFORMANCE(metrics.query, '24h');
       this.cache.invalidate(perfKey);
@@ -464,17 +468,17 @@ export class SearchDataService {
   // Search configuration with caching
   async getSearchConfiguration(token?: JwtToken): Promise<SearchConfiguration> {
     const cacheKey = SEARCH_CACHE_KEYS.SEARCH_CONFIG();
-    
+
     let data = this.cache.get<SearchConfiguration>(cacheKey);
     if (data) return data;
-    
+
     try {
       data = await this.repository.getSearchConfiguration(token);
-      
+
       if (data) {
         this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.SEARCH_CONFIG);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error getting search configuration:', error);
@@ -485,11 +489,11 @@ export class SearchDataService {
   async updateSearchConfiguration(config: Partial<SearchConfiguration>, token?: JwtToken): Promise<SearchConfiguration> {
     try {
       const updatedConfig = await this.repository.updateSearchConfiguration(config, token);
-      
+
       // Invalidate configuration cache
       const configKey = SEARCH_CACHE_KEYS.SEARCH_CONFIG();
       this.cache.invalidate(configKey);
-      
+
       return updatedConfig;
     } catch (error) {
       console.error('Error updating search configuration:', error);

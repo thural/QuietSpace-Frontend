@@ -1,6 +1,6 @@
 import { Container } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import { CacheService } from '@/core/cache/CacheProvider';
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { INotificationRepository } from '@features/navbar/domain/repositories/INotificationRepository';
 import { NavbarDataService } from '../services/NavbarDataService';
 import { NavbarFeatureService } from '../services/NavbarFeatureService';
@@ -17,28 +17,28 @@ import { NavbarFeatureService } from '../services/NavbarFeatureService';
 
 export function createNavbarContainer(): Container {
   const container = new Container();
-  
+
   // Core services (inherited from main container)
   // CacheService is registered as singleton in main AppContainer
-  
+
   // Repositories (Transient - new instance per injection)
   container.registerTransientByToken(
-    TYPES.NOTIFICATION_REPOSITORY, 
+    TYPES.NOTIFICATION_REPOSITORY,
     INotificationRepository
   );
-  
+
   // Data Services (Singleton - shared cache state)
   container.registerSingletonByToken(
-    TYPES.NAVBAR_DATA_SERVICE, 
+    TYPES.NAVBAR_DATA_SERVICE,
     NavbarDataService
   );
-  
+
   // Feature Services (Singleton - business logic)
   container.registerSingletonByToken(
-    TYPES.NAVBAR_FEATURE_SERVICE, 
+    TYPES.NAVBAR_FEATURE_SERVICE,
     NavbarFeatureService
   );
-  
+
   return container;
 }
 
@@ -48,26 +48,26 @@ export function createNavbarContainer(): Container {
  */
 export function createNavbarChildContainer(parentContainer: Container): Container {
   const navbarContainer = parentContainer.createChild();
-  
+
   // Register navbar-specific services
   const navbarSpecificContainer = createNavbarContainer();
-  
+
   // Merge configurations
   navbarContainer.registerTransientByToken(
-    TYPES.NOTIFICATION_REPOSITORY, 
+    TYPES.NOTIFICATION_REPOSITORY,
     INotificationRepository
   );
-  
+
   navbarContainer.registerSingletonByToken(
-    TYPES.NAVBAR_DATA_SERVICE, 
+    TYPES.NAVBAR_DATA_SERVICE,
     NavbarDataService
   );
-  
+
   navbarContainer.registerSingletonByToken(
-    TYPES.NAVBAR_FEATURE_SERVICE, 
+    TYPES.NAVBAR_FEATURE_SERVICE,
     NavbarFeatureService
   );
-  
+
   return navbarContainer;
 }
 
@@ -76,22 +76,22 @@ export function createNavbarChildContainer(parentContainer: Container): Containe
  */
 export function createTestNavbarContainer(): Container {
   const container = new Container();
-  
+
   // Mock implementations can be registered here for testing
   container.registerTransientByToken(
-    TYPES.NOTIFICATION_REPOSITORY, 
+    TYPES.NOTIFICATION_REPOSITORY,
     INotIFICATIONRepository // Replace with mock in tests
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.NAVBAR_DATA_SERVICE, 
+    TYPES.NAVBAR_DATA_SERVICE,
     NavbarDataService
   );
-  
+
   container.registerSingletonByToken(
-    TYPES.NAVBAR_FEATURE_SERVICE, 
+    TYPES.NAVBAR_FEATURE_SERVICE,
     NavbarFeatureService
   );
-  
+
   return container;
 }

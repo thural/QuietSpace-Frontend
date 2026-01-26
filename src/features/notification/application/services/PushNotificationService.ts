@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import { CacheService } from '@/core/cache/CacheProvider';
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { NotificationDataService } from '../services/NotificationDataService';
 import { PushSubscription, DeviceToken, DeviceInfo } from '@features/notification/domain/entities/INotificationRepository';
 import { JwtToken } from '@/shared/api/models/common';
@@ -18,9 +18,9 @@ export class PushNotificationService {
   private vapidPublicKey: string = '';
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
+    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheProvider,
     @Inject(TYPES.NOTIFICATION_DATA_SERVICE) private notificationDataService: NotificationDataService
-  ) {}
+  ) { }
 
   // Service Worker Management
   async initializeServiceWorker(): Promise<boolean> {
@@ -31,10 +31,10 @@ export class PushNotificationService {
       }
 
       this.serviceWorkerRegistration = await navigator.serviceWorker.register('/sw.js');
-      
+
       // Wait for the service worker to be ready
       await navigator.serviceWorker.ready;
-      
+
       console.log('Service Worker initialized successfully');
       return true;
     } catch (error) {
@@ -56,10 +56,10 @@ export class PushNotificationService {
       }
 
       const pushManager = this.serviceWorkerRegistration.pushManager;
-      
+
       // Check existing subscription
       let subscription = await pushManager.getSubscription();
-      
+
       if (subscription) {
         // Update existing subscription
         const pushSubscription = this.convertWebPushSubscription(subscription, deviceInfo);
@@ -88,13 +88,13 @@ export class PushNotificationService {
 
       const pushManager = this.serviceWorkerRegistration.pushManager;
       const subscription = await pushManager.getSubscription();
-      
+
       if (subscription) {
         await subscription.unsubscribe();
       }
 
       await this.notificationDataService.removePushSubscription(userId, token);
-      
+
       console.log('Successfully unsubscribed from push notifications');
       return true;
     } catch (error) {
@@ -111,7 +111,7 @@ export class PushNotificationService {
     try {
       const permission = await Notification.requestPermission();
       const subscription = await this.notificationDataService.getPushSubscription(userId, token);
-      
+
       return {
         isSubscribed: !!subscription && permission === 'granted',
         subscription,
@@ -131,7 +131,7 @@ export class PushNotificationService {
   async handlePushMessage(event: PushEvent): Promise<void> {
     try {
       const data = event.data?.json();
-      
+
       if (!data) {
         console.warn('Push message received without data');
         return;
@@ -185,7 +185,7 @@ export class PushNotificationService {
       }
 
       const notification = new Notification(data.title || 'New Notification', options);
-      
+
       // Handle notification click
       notification.onclick = (event) => {
         event.preventDefault();
@@ -231,7 +231,7 @@ export class PushNotificationService {
       // This would require a token, which we don't have in this context
       // In a real implementation, you'd get the token from secure storage
       const unreadCount = await this.getUnreadCountFromCache(userId);
-      
+
       if ('setAppBadge' in navigator) {
         if (unreadCount > 0) {
           await navigator.setAppBadge(unreadCount);
@@ -248,11 +248,11 @@ export class PushNotificationService {
   async registerDevice(userId: string, deviceInfo: DeviceInfo, token: JwtToken): Promise<DeviceToken | null> {
     try {
       const deviceToken = await this.notificationDataService.registerDevice(userId, deviceInfo, token);
-      
+
       // Cache device info for offline access
       const cacheKey = NOTIFICATION_CACHE_KEYS.DEVICE_TOKENS(userId);
       this.cache.set(cacheKey, [deviceToken], NOTIFICATION_CACHE_TTL.DEVICE_TOKENS);
-      
+
       return deviceToken;
     } catch (error) {
       console.error('Error registering device:', error);
@@ -263,11 +263,11 @@ export class PushNotificationService {
   async unregisterDevice(userId: string, deviceId: string, token: JwtToken): Promise<boolean> {
     try {
       await this.notificationDataService.removeDeviceToken(userId, deviceId, token);
-      
+
       // Remove from cache
       const cacheKey = NOTIFICATION_CACHE_KEYS.DEVICE_TOKENS(userId);
       this.cache.delete(cacheKey);
-      
+
       return true;
     } catch (error) {
       console.error('Error unregistering device:', error);
@@ -279,7 +279,7 @@ export class PushNotificationService {
   async checkQuietHours(userId: string, token: JwtToken): Promise<boolean> {
     try {
       const quietHours = await this.notificationDataService.getQuietHours(userId, token);
-      
+
       if (!quietHours?.enabled) {
         return false;
       }
@@ -296,13 +296,13 @@ export class PushNotificationService {
     try {
       const analyticsKey = `notification:analytics:${notificationId}`;
       const existing = this.cache.get(analyticsKey) || {};
-      
+
       const updated = {
         ...existing,
         [status]: (existing[status] || 0) + 1,
         lastUpdated: new Date().toISOString()
       };
-      
+
       this.cache.set(analyticsKey, updated, 24 * 60 * 60 * 1000); // 24 hours
     } catch (error) {
       console.error('Error tracking notification delivery:', error);
@@ -396,11 +396,11 @@ export class PushNotificationService {
   private isInQuietHours(quietHours: any): boolean {
     const now = new Date();
     const currentTime = now.toTimeString().substring(0, 5); // HH:mm format
-    
+
     const currentMinutes = this.timeToMinutes(currentTime);
     const startMinutes = this.timeToMinutes(quietHours.startTime);
     const endMinutes = this.timeToMinutes(quietHours.endTime);
-    
+
     if (startMinutes <= endMinutes) {
       return currentMinutes >= startMinutes && currentMinutes < endMinutes;
     } else {
