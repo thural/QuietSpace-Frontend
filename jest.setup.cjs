@@ -1,4 +1,5 @@
-// jest.setup.js
+// jest.setup.cjs
+// Jest globals are already available in setup files
 require('@testing-library/jest-dom');
 
 // Mock fetch for Node.js test environment
@@ -24,6 +25,7 @@ try {
 // Mock alert function
 global.alert = jest.fn();
 
+// Set default timeout
 jest.setTimeout(10000);
 
 // Mock browser APIs if needed
@@ -62,6 +64,54 @@ if (typeof globalThis.TextEncoder === 'undefined') {
         // ignore
     }
 }
+
+// Mock localStorage for tests that need it
+global.localStorage = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn(),
+};
+
+// Mock sessionStorage for tests that need it
+global.sessionStorage = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn(),
+};
+
+// Mock BroadcastChannel for cross-tab communication tests
+global.BroadcastChannel = jest.fn().mockImplementation(() => ({
+    postMessage: jest.fn(),
+    close: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+}));
+
+// Mock Web Crypto API for authentication tests
+Object.defineProperty(global, 'crypto', {
+    value: {
+        subtle: {
+            digest: jest.fn().mockImplementation((algorithm, data) => {
+                return Promise.resolve(new Uint8Array(32).fill(0));
+            }),
+            generateKey: jest.fn().mockResolvedValue({}),
+            sign: jest.fn().mockResolvedValue(new Uint8Array(64)),
+            verify: jest.fn().mockResolvedValue(true),
+            encrypt: jest.fn().mockResolvedValue(new Uint8Array(128)),
+            decrypt: jest.fn().mockResolvedValue(new Uint8Array(128)),
+        },
+        getRandomValues: jest.fn().mockImplementation((arr) => {
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = Math.floor(Math.random() * 256);
+            }
+            return arr;
+        }),
+        randomUUID: jest.fn().mockReturnValue('test-uuid-1234-5678-9abcdef'),
+    },
+});
 
 // Load shared test mocks (STOMP / SockJS) so they are available before tests import modules
 try {

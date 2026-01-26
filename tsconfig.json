@@ -86,6 +86,9 @@
       ],
       "@shared-types/*": [
         "src/shared/types/*"
+      ],
+      "@platform_shell/*": [
+        "src/platform_shell/*"
       ]
     },
     "esModuleInterop": true,

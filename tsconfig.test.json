@@ -7,19 +7,31 @@
         "allowSyntheticDefaultImports": true,
         "types": [
             "jest",
+            "@jest/globals",
+            "@testing-library/jest-dom",
+            "@testing-library/jest-dom/extend-expect",
             "node"
         ],
         "typeRoots": [
             "./node_modules/@types",
             "./src/types",
             "./src/__mocks__"
-        ]
+        ],
+        "jsx": "react-jsx",
+        "isolatedModules": true,
+        "noEmit": true
     },
     "include": [
         "src/**/__tests__/**/*",
         "src/**/*.test.*",
         "src/**/*.spec.*",
         "test/**/*",
-        "src/types/**/*.d.ts"
+        "src/types/**/*.d.ts",
+        "jest.setup.cjs"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "build"
     ]
 }
