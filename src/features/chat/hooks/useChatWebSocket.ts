@@ -7,12 +7,14 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useDIContainer } from '@/core/di';
-import type { IChatWebSocketAdapter } from '@/features/chat/adapters';
-import type { 
+import { useChatDI } from '@/features/chat/di';
+import { ChatWebSocketAdapter } from '@/features/chat/adapters';
+import type {
   ChatWebSocketMessage,
   ChatEventHandlers,
   ChatSubscriptionOptions
 } from '@/features/chat/adapters';
+import type { MessageResponse } from '@/features/chat/data/models/chat';
 
 // Chat hook configuration
 export interface UseChatWebSocketConfig {
@@ -31,7 +33,7 @@ export interface ChatWebSocketState {
   isConnected: boolean;
   isConnecting: boolean;
   error: string | null;
-  messages: ChatWebSocketMessage[];
+  messages: MessageResponse[];
   presence: Record<string, any>;
   typingUsers: Record<string, boolean>;
   unreadCount: number;
@@ -44,21 +46,21 @@ export interface UseChatWebSocketReturn extends ChatWebSocketState {
   // Connection management
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  
+
   // Message operations
   sendMessage: (chatId: string, content: string, type?: string) => Promise<void>;
   sendTypingIndicator: (chatId: string, isTyping: boolean) => Promise<void>;
   markMessagesAsRead: (chatId: string, messageIds?: string[]) => Promise<void>;
-  
+
   // Subscription management
   subscribeToChat: (chatId: string, options?: ChatSubscriptionOptions) => () => void;
   subscribeToPresence: (callback: (presence: Record<string, any>) => void) => () => void;
   subscribeToTyping: (callback: (typingUsers: Record<string, boolean>) => void) => () => void;
-  
+
   // Chat management
   joinChat: (chatId: string) => Promise<void>;
   leaveChat: (chatId: string) => Promise<void>;
-  
+
   // Utilities
   clearHistory: () => void;
   getMetrics: () => any;
@@ -69,6 +71,9 @@ export interface UseChatWebSocketReturn extends ChatWebSocketState {
  * Chat WebSocket hook
  */
 export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWebSocketReturn {
+  const mainContainer = useDIContainer();
+  const chatDI = useChatDI();
+
   const {
     autoConnect = true,
     enablePresence = true,
@@ -80,7 +85,6 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
     typingTimeout = 3000
   } = config;
 
-  const container = useDIContainer();
   const [state, setState] = useState<ChatWebSocketState>({
     isConnected: false,
     isConnecting: false,
@@ -90,11 +94,11 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
     typingUsers: {},
     unreadCount: 0,
     activeChats: [],
-    metrics: null
+    metrics: {}
   });
 
   // Refs for cleanup and state management
-  const adapterRef = useRef<IChatWebSocketAdapter | null>(null);
+  const adapterRef = useRef<ChatWebSocketAdapter | null>(null);
   const subscriptionsRef = useRef<Map<string, () => void>>(new Map());
   const typingTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const presenceIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -102,56 +106,53 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
   // Initialize adapter
   const initializeAdapter = useCallback(async () => {
     try {
-      const adapter = container.resolve<IChatWebSocketAdapter>('chatWebSocketAdapter');
+      const adapter = chatDI.getChatWebSocketAdapter();
       await adapter.initialize();
-      
+
       adapterRef.current = adapter;
-      
+
       // Set up event handlers
       const eventHandlers: ChatEventHandlers = {
-        onMessageReceived: (message) => {
+        onMessage: (message) => {
           setState(prev => {
-            const newMessages = enableMessageHistory 
+            const newMessages = enableMessageHistory
               ? [message, ...prev.messages.slice(0, maxHistorySize - 1)]
               : prev.messages;
-            
+
             return {
               ...prev,
               messages: newMessages,
-              unreadCount: message.read ? prev.unreadCount : prev.unreadCount + 1
+              unreadCount: message.isSeen ? prev.unreadCount : prev.unreadCount + 1
             };
           });
         },
-        
-        onMessageSent: (message) => {
-          setState(prev => {
-            const newMessages = enableMessageHistory 
-              ? [message, ...prev.messages.slice(0, maxHistorySize - 1)]
-              : prev.messages;
-            
-            return { ...prev, messages: newMessages };
-          });
-        },
-        
-        onPresenceUpdated: (presence) => {
+
+        onPresenceUpdate: (presence) => {
           setState(prev => ({ ...prev, presence }));
         },
-        
-        onTypingIndicator: (chatId, userId, isTyping) => {
+
+        onTypingIndicator: (chatId, userIds) => {
           setState(prev => {
-            const typingKey = `${chatId}:${userId}`;
             const newTypingUsers = { ...prev.typingUsers };
-            
-            if (isTyping) {
-              newTypingUsers[typingKey] = true;
-              
-              // Clear existing timeout
-              const existingTimeout = typingTimeoutsRef.current.get(typingKey);
-              if (existingTimeout) {
-                clearTimeout(existingTimeout);
+
+            // Clear existing typing indicators for this chat
+            Object.keys(newTypingUsers).forEach(key => {
+              if (key.startsWith(`${chatId}:`)) {
+                const timeout = typingTimeoutsRef.current.get(key);
+                if (timeout) {
+                  clearTimeout(timeout);
+                  typingTimeoutsRef.current.delete(key);
+                }
+                delete newTypingUsers[key];
               }
-              
-              // Set new timeout to clear typing indicator
+            });
+
+            // Set new typing indicators
+            userIds.forEach(userId => {
+              const typingKey = `${chatId}:${userId}`;
+              newTypingUsers[typingKey] = true;
+
+              // Set timeout to clear typing indicator
               const timeout = setTimeout(() => {
                 setState(prev => {
                   const updatedTyping = { ...prev.typingUsers };
@@ -160,52 +161,33 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
                 });
                 typingTimeoutsRef.current.delete(typingKey);
               }, typingTimeout);
-              
+
               typingTimeoutsRef.current.set(typingKey, timeout);
-            } else {
-              delete newTypingUsers[typingKey];
-              const timeout = typingTimeoutsRef.current.get(typingKey);
-              if (timeout) {
-                clearTimeout(timeout);
-                typingTimeoutsRef.current.delete(typingKey);
-              }
-            }
-            
+            });
+
             return { ...prev, typingUsers: newTypingUsers };
           });
         },
-        
-        onMessageRead: (chatId, messageIds) => {
-          setState(prev => {
-            const updatedMessages = prev.messages.map(msg => 
-              messageIds.includes(msg.id) ? { ...msg, read: true } : msg
-            );
-            
-            const unreadCount = updatedMessages.filter(msg => !msg.read).length;
-            
-            return { ...prev, messages: updatedMessages, unreadCount };
-          });
-        },
-        
+
         onConnectionChange: (isConnected) => {
-          setState(prev => ({ 
-            ...prev, 
+          setState(prev => ({
+            ...prev,
             isConnected,
-            isConnecting: false 
+            isConnecting: false
           }));
         },
-        
+
         onError: (error) => {
-          setState(prev => ({ 
-            ...prev, 
+          setState(prev => ({
+            ...prev,
             error: error.message,
-            isConnecting: false 
+            isConnecting: false
           }));
         }
       };
 
       adapter.setEventHandlers(eventHandlers);
-      
+
       setState(prev => ({
         ...prev,
         isConnected: adapter.isConnected,
@@ -219,7 +201,7 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
         isConnecting: false
       }));
     }
-  }, [container, enableMessageHistory, maxHistorySize, typingTimeout]);
+  }, [chatDI, enableMessageHistory, maxHistorySize, typingTimeout]);
 
   // Connect to WebSocket
   const connect = useCallback(async () => {
@@ -234,8 +216,7 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
     setState(prev => ({ ...prev, isConnecting: true, error: null }));
 
     try {
-      await adapterRef.current.connect();
-      
+      await adapterRef.current.initialize();
       setState(prev => ({
         ...prev,
         isConnected: true,
@@ -285,7 +266,7 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
       if (adapterRef.current) {
         await adapterRef.current.disconnect();
       }
-      
+
       setState(prev => ({
         ...prev,
         isConnected: false,
@@ -354,8 +335,8 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
 
     setState(prev => ({
       ...prev,
-      activeChats: prev.activeChats.includes(chatId) 
-        ? prev.activeChats 
+      activeChats: prev.activeChats.includes(chatId)
+        ? prev.activeChats
         : [...prev.activeChats, chatId]
     }));
 
@@ -450,7 +431,7 @@ export function useChatWebSocket(config: UseChatWebSocketConfig = {}): UseChatWe
   // Reset hook state
   const reset = useCallback(() => {
     disconnect();
-    
+
     setState({
       isConnected: false,
       isConnecting: false,

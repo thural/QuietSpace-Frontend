@@ -15,7 +15,7 @@ import {
   WebSocketMessage,
   WebSocketEventListener,
   ConnectionMetrics
-} from '../services/EnterpriseWebSocketService';
+} from '@/core/websocket';
 
 export interface UseEnterpriseWebSocketOptions {
   autoConnect?: boolean;
@@ -90,7 +90,7 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
   const updateConnectionState = useCallback(() => {
     const isConnected = webSocketService.isConnected();
     const state = webSocketService.getConnectionState();
-    
+
     setConnectionState(prev => ({
       ...prev,
       isConnected,
@@ -106,7 +106,7 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
     if (!enableMetrics) return;
 
     const connectionMetrics = webSocketService.getConnectionMetrics();
-    
+
     setMetrics(prev => ({
       connectionMetrics,
       messagesReceived: connectionMetrics.messagesReceived,
@@ -120,14 +120,14 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
   const connect = useCallback(async (token: string) => {
     try {
       setConnectionState(prev => ({ ...prev, isConnecting: true, error: null }));
-      
+
       await webSocketService.connect(token, {
         connectionTimeout,
         enableMetrics
       });
-      
+
       updateConnectionState();
-      
+
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Connection failed');
       setConnectionState(prev => ({
@@ -226,16 +226,16 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
   return {
     // Connection state
     ...connectionState,
-    
+
     // Metrics
     ...metrics,
-    
+
     // Actions
     connect,
     disconnect,
     sendMessage,
     subscribe,
-    
+
     // Raw service access
     webSocketService
   };
@@ -320,15 +320,15 @@ export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
   return {
     // Connection state from main hook
     ...webSocket,
-    
+
     // Feature-specific state
     featureMessages,
     isSubscribed,
-    
+
     // Feature-specific actions
     sendFeatureMessage,
     clearMessages,
-    
+
     // Feature info
     feature,
     priority

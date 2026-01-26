@@ -7,8 +7,8 @@
 
 import { Injectable, Inject } from '../../di';
 import { TYPES } from '../../di/types';
-import { CacheService } from '../../cache';
-import { LoggerService } from '../../services/ThemeService';
+import { CacheServiceManager, type FeatureCacheService } from '../../cache';
+import { LoggerService } from '../../services/LoggerService';
 
 // WebSocket Message Types
 export interface WebSocketMessage {
@@ -78,7 +78,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private token: string | null = null;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
+    @Inject(TYPES.CACHE_SERVICE) private cache: FeatureCacheService,
     @Inject(TYPES.AUTH_SERVICE) private authService: any,
     private logger: LoggerService
   ) {
@@ -102,7 +102,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
       this.ws = new WebSocket(wsUrl);
 
       await this.setupWebSocketHandlers();
-      
+
       // Set connection timeout
       const timeoutPromise = new Promise<void>((_, reject) => {
         setTimeout(() => reject(new Error('Connection timeout')), this.config.connectionTimeout);
@@ -121,7 +121,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
       this.logger.info('[WebSocket] Connected successfully');
       this.startHeartbeat();
-      
+
     } catch (error) {
       this.connectionState = 'error';
       this.logger.error('[WebSocket] Connection failed:', error);
@@ -131,7 +131,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
   disconnect(): void {
     this.clearTimers();
-    
+
     if (this.ws) {
       this.ws.close(1000, 'Manual disconnect');
       this.ws = null;
@@ -140,7 +140,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
     this.connectionState = 'disconnected';
     this.token = null;
     this.listeners.clear();
-    
+
     this.logger.info('[WebSocket] Disconnected');
   }
 
@@ -161,9 +161,8 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
       this.metrics.lastMessageAt = new Date();
 
       // Cache sent message for potential recovery
-      await this.cache.set(`ws:sent:${fullMessage.id}`, fullMessage, {
-        ttl: 60000 // 1 minute
-      });
+      const websocketCache = this.cache.getCache('websocket');
+      websocketCache.set(`ws:sent:${fullMessage.id}`, fullMessage, 60000); // 1 minute
 
       this.logger.debug('[WebSocket] Message sent:', fullMessage);
     } catch (error) {
@@ -225,7 +224,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
         this.connectionState = 'connected';
         this.metrics.connectedAt = new Date();
         this.metrics.reconnectAttempts = 0;
-        
+
         this.logger.info('[WebSocket] Connection opened');
         this.notifyListeners('onConnect');
         resolve();
@@ -244,9 +243,8 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
           }
 
           // Cache received message
-          await this.cache.set(`ws:received:${message.id}`, message, {
-            ttl: 300000 // 5 minutes
-          });
+          const websocketCache = this.cache.getCache('websocket');
+          websocketCache.set(`ws:received:${message.id}`, message, 300000); // 5 minutes
 
           this.logger.debug('[WebSocket] Message received:', message);
           this.notifyFeatureListeners(message);
@@ -260,7 +258,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
       this.ws.onclose = (event) => {
         this.connectionState = 'disconnected';
         this.clearTimers();
-        
+
         this.logger.info('[WebSocket] Connection closed:', event);
         this.notifyListeners('onDisconnect', event);
 

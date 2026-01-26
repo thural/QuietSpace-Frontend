@@ -2,41 +2,77 @@
  * WebSocket Module Index.
  * 
  * Main entry point for the WebSocket enterprise module.
- * Exports all WebSocket services, managers, and utilities.
+ * Exports only public interfaces and types (Black Box Pattern).
+ * Internal implementation is completely encapsulated.
  */
 
-// Services
-export {
-  EnterpriseWebSocketService,
+// Import types for factory function signatures
+import type {
   IEnterpriseWebSocketService,
-  type WebSocketMessage,
-  type WebSocketConfig,
-  type WebSocketEventListener,
-  type ConnectionMetrics
+  WebSocketMessage,
+  WebSocketConfig,
+  WebSocketEventListener,
+  ConnectionMetrics
 } from './services/EnterpriseWebSocketService';
 
-export {
-  MessageRouter,
+import type {
   IMessageRouter,
-  type MessageRoute,
-  type MessageHandler,
-  type MessageValidator,
-  type MessageTransformer,
-  type RoutingMetrics,
-  type FeatureMessageStats,
-  type MessageRouterConfig
+  MessageRoute,
+  MessageHandler,
+  MessageValidator,
+  MessageTransformer,
+  RoutingMetrics,
+  FeatureMessageStats,
+  MessageRouterConfig
 } from './services/MessageRouter';
 
-// Managers
-export {
-  ConnectionManager,
+import type {
   IConnectionManager,
-  type ConnectionPool,
-  type ConnectionHealth,
-  type ConnectionPoolConfig
+  ConnectionPool,
+  ConnectionHealth,
+  ConnectionPoolConfig
 } from './managers/ConnectionManager';
 
-// Dependency Injection
+import type {
+  IWebSocketCacheManager,
+  CacheInvalidationStrategy,
+  CacheInvalidationConfig
+} from './cache/WebSocketCacheManager';
+
+import { WebSocketServiceFactory } from './di/WebSocketContainer';
+import { Container } from '../di';
+import { TYPES } from '../di/types';
+
+// Services - Public API Only (Black Box Pattern)
+export type {
+  IEnterpriseWebSocketService,
+  WebSocketMessage,
+  WebSocketConfig,
+  WebSocketEventListener,
+  ConnectionMetrics
+} from './services/EnterpriseWebSocketService';
+
+// Message Router - Public API Only (Black Box Pattern)
+export type {
+  IMessageRouter,
+  MessageRoute,
+  MessageHandler,
+  MessageValidator,
+  MessageTransformer,
+  RoutingMetrics,
+  FeatureMessageStats,
+  MessageRouterConfig
+} from './services/MessageRouter';
+
+// Connection Management - Public API Only (Black Box Pattern)
+export type {
+  IConnectionManager,
+  ConnectionPool,
+  ConnectionHealth,
+  ConnectionPoolConfig
+} from './managers/ConnectionManager';
+
+// Dependency Injection - Public API Factory Functions (Black Box Pattern)
 export {
   createWebSocketContainer,
   registerWebSocketServices,
@@ -48,12 +84,40 @@ export {
   performWebSocketHealthCheck
 } from './di/WebSocketContainer';
 
-// Cache Integration
-export {
-  WebSocketCacheManager,
+// Factory Functions for Service Creation (Black Box Pattern)
+// Note: These functions require a DI container instance to be passed in
+// This maintains the black box pattern while providing clean factory methods
+
+export function createWebSocketService(container: Container, config?: WebSocketConfig): IEnterpriseWebSocketService {
+  return container.getByToken<IEnterpriseWebSocketService>(
+    TYPES.ENTERPRISE_WEBSOCKET_SERVICE
+  );
+}
+
+export function createMessageRouter(container: Container, config?: MessageRouterConfig): IMessageRouter {
+  return container.getByToken<IMessageRouter>(
+    TYPES.MESSAGE_ROUTER
+  );
+}
+
+export function createConnectionManager(container: Container, config?: ConnectionPoolConfig): IConnectionManager {
+  return container.getByToken<IConnectionManager>(
+    TYPES.CONNECTION_MANAGER
+  );
+}
+
+export function createCacheManager(container: Container, config?: CacheInvalidationConfig): IWebSocketCacheManager {
+  // Note: Cache manager is handled differently - it uses CacheServiceManager directly
+  // This is a placeholder for the cache management functionality
+  // In practice, cache invalidation is handled through the CacheServiceManager
+  return null as any; // TODO: Implement proper cache manager factory
+}
+
+// Cache Integration - Public API Only (Black Box Pattern)
+export type {
   IWebSocketCacheManager,
-  type CacheInvalidationStrategy,
-  type CacheInvalidationConfig
+  CacheInvalidationStrategy,
+  CacheInvalidationConfig
 } from './cache/WebSocketCacheManager';
 
 // Hooks (React integration)
@@ -67,15 +131,9 @@ export {
   type WebSocketConnectionState
 } from './hooks/useEnterpriseWebSocket';
 
-// Utilities
-export {
-  WebSocketMessageBuilder,
-  WebSocketMessageValidator,
-  WebSocketConnectionMonitor,
-  type MessageBuilderOptions,
-  type ValidationRule,
-  type ConnectionMonitorConfig
-} from './utils/WebSocketUtils';
+// Internal Utilities - NOT EXPORTED (Black Box Pattern)
+// WebSocketMessageBuilder, WebSocketMessageValidator, WebSocketConnectionMonitor
+// are internal utilities and not part of the public API
 
 // Types
 export type {

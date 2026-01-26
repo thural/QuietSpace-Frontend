@@ -5,17 +5,18 @@
  * Manages repository and service dependencies.
  */
 
-import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
-import { ChatRepository } from "@chat/data/repositories/ChatRepository";
-import { MockChatRepository } from "@chat/data/repositories/MockChatRepository";
-import { WebSocketService } from "@chat/data/services/WebSocketService";
-import { ChatDataService } from "@chat/data/services/ChatDataService";
+import { createCacheProvider, type ICacheProvider } from '@/core/cache';
+import { TYPES } from '@/core/di/types';
+import { IEnterpriseWebSocketService } from "@/core/websocket";
+import { ChatWebSocketAdapter } from "@chat/adapters";
+import { ChatAnalyticsService } from "@chat/application/services/ChatAnalyticsService";
 import { ChatFeatureService } from "@chat/application/services/ChatFeatureService";
 import { ChatMetricsService } from "@chat/application/services/ChatMetricsService";
 import { ChatPresenceService } from "@chat/application/services/ChatPresenceService";
-import { ChatAnalyticsService } from "@chat/application/services/ChatAnalyticsService";
-import { CacheProvider } from '@/core/cache';
-import { TYPES } from '@/core/di/types';
+import { ChatRepository } from "@chat/data/repositories/ChatRepository";
+import { MockChatRepository } from "@chat/data/repositories/MockChatRepository";
+import { ChatDataService } from "@chat/data/services/ChatDataService";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 import type { Container } from '@core/di/container';
 
 /**
@@ -34,8 +35,8 @@ export interface DIContainerConfig {
 export class ChatDIContainer {
     private repositories: Map<string, IChatRepository> = new Map();
     private services: Map<string, any> = new Map();
-    private webSocketService: WebSocketService | null = null;
-    private cache: CacheProvider;
+    private webSocketService: IEnterpriseWebSocketService | null = null;
+    private cache: ICacheProvider;
     private config: DIContainerConfig;
     private mainContainer: Container;
 
@@ -48,7 +49,7 @@ export class ChatDIContainer {
         };
 
         // Initialize cache first
-        this.cache = new CacheProvider();
+        this.cache = createCacheProvider();
 
         this.initializeDependencies();
     }
@@ -93,9 +94,35 @@ export class ChatDIContainer {
      * Register services.
      */
     private registerServices(): void {
-        // Register WebSocket service
-        this.webSocketService = new WebSocketService(this.cache);
+        // Register WebSocket service - get from main container instead of creating directly
+        try {
+            this.webSocketService = this.mainContainer.getByToken(TYPES.ENTERPRISE_WEBSOCKET_SERVICE);
+        } catch (error) {
+            console.error('ChatDIContainer: Failed to get EnterpriseWebSocketService', error);
+            // Fallback: create directly if needed
+            this.webSocketService = null;
+        }
         this.services.set('webSocketService', this.webSocketService);
+
+        // Register Chat WebSocket Adapter with enterprise WebSocket infrastructure
+        try {
+            const enterpriseWebSocketService = this.mainContainer.getByToken(TYPES.ENTERPRISE_WEBSOCKET_SERVICE);
+            const messageRouter = this.mainContainer.getByToken(TYPES.MESSAGE_ROUTER);
+            const cacheManager = this.mainContainer.getByToken(TYPES.WEBSOCKET_CACHE_MANAGER);
+
+            const chatWebSocketAdapter = new ChatWebSocketAdapter(
+                enterpriseWebSocketService,
+                messageRouter,
+                cacheManager
+            );
+            this.services.set('chatWebSocketAdapter', chatWebSocketAdapter);
+
+            if (this.config.enableLogging) {
+                console.log('ChatDIContainer: Registered ChatWebSocketAdapter');
+            }
+        } catch (error) {
+            console.error('ChatDIContainer: Failed to register ChatWebSocketAdapter', error);
+        }
 
         // Register Chat data service
         const chatRepository = this.repositories.get('chat');
@@ -173,8 +200,8 @@ export class ChatDIContainer {
     /**
      * Get WebSocket service.
      */
-    getWebSocketService(): WebSocketService {
-        return this.getService<WebSocketService>('webSocketService');
+    getWebSocketService(): IEnterpriseWebSocketService {
+        return this.getService<IEnterpriseWebSocketService>('webSocketService');
     }
 
     /**
@@ -196,6 +223,13 @@ export class ChatDIContainer {
      */
     getChatMetricsService(): ChatMetricsService {
         return this.getService<ChatMetricsService>('chatMetricsService');
+    }
+
+    /**
+     * Get Chat WebSocket adapter.
+     */
+    getChatWebSocketAdapter(): ChatWebSocketAdapter {
+        return this.getService<ChatWebSocketAdapter>('chatWebSocketAdapter');
     }
 
     /**

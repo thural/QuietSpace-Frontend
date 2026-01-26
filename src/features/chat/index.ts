@@ -28,5 +28,8 @@ export * from './data';
 // WebSocket adapters
 export * from './adapters';
 
+// Hooks
+export * from './hooks';
+
 // DI module
 export * from './di';

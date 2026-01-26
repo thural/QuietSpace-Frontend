@@ -11,7 +11,7 @@ import { EnterpriseWebSocketService, IEnterpriseWebSocketService } from '../serv
 import { ConnectionManager, IConnectionManager } from '../managers/ConnectionManager';
 import { MessageRouter, IMessageRouter } from '../services/MessageRouter';
 import { CacheServiceManager } from '../../cache';
-import { LoggerService } from '../../services/ThemeService';
+import { LoggerService } from '../../services/LoggerService';
 
 /**
  * Create WebSocket Container
@@ -23,45 +23,42 @@ export function createWebSocketContainer(
   parentContainer: Container
 ): Container {
   console.log('🌐 Creating WebSocket DI container...');
-  
+
   const webSocketContainer = parentContainer.createChild();
-  
+
   // Register WebSocket services as singletons for shared state
-  webSocketContainer.registerSingleton(
-    IEnterpriseWebSocketService,
+  webSocketContainer.registerSingleton<IEnterpriseWebSocketService>(
     EnterpriseWebSocketService
   );
-  
+
   webSocketContainer.registerSingletonByToken(
     TYPES.ENTERPRISE_WEBSOCKET_SERVICE,
     EnterpriseWebSocketService
   );
-  
+
   // Register Connection Manager
-  webSocketContainer.registerSingleton(
-    IConnectionManager,
+  webSocketContainer.registerSingleton<IConnectionManager>(
     ConnectionManager
   );
-  
+
   webSocketContainer.registerSingletonByToken(
     TYPES.CONNECTION_MANAGER,
     ConnectionManager
   );
-  
+
   // Register Message Router
-  webSocketContainer.registerSingleton(
-    IMessageRouter,
+  webSocketContainer.registerSingleton<IMessageRouter>(
     MessageRouter
   );
-  
+
   webSocketContainer.registerSingletonByToken(
     TYPES.MESSAGE_ROUTER,
     MessageRouter
   );
-  
+
   console.log('✅ WebSocket DI container created');
   console.log(`📊 WebSocket Container stats: ${JSON.stringify(webSocketContainer.getStats())}`);
-  
+
   return webSocketContainer;
 }
 
@@ -75,34 +72,34 @@ export function registerWebSocketServices(
   appContainer: Container
 ): Container {
   console.log('🌐 Registering WebSocket services...');
-  
+
   // Create WebSocket container as child of app container
   const webSocketContainer = createWebSocketContainer(appContainer);
-  
+
   // Register the WebSocket container with the app container
   appContainer.registerInstanceByToken(
     TYPES.WEBSOCKET_CONTAINER,
     webSocketContainer
   );
-  
+
   // Register WebSocket services directly with app container for easy access
   appContainer.registerSingletonByToken(
     TYPES.ENTERPRISE_WEBSOCKET_SERVICE,
     EnterpriseWebSocketService
   );
-  
+
   appContainer.registerSingletonByToken(
     TYPES.CONNECTION_MANAGER,
     ConnectionManager
   );
-  
+
   appContainer.registerSingletonByToken(
     TYPES.MESSAGE_ROUTER,
     MessageRouter
   );
-  
+
   console.log('✅ WebSocket services registered with app container');
-  
+
   return webSocketContainer;
 }
 
@@ -116,27 +113,27 @@ export async function initializeWebSocketServices(
   container: Container
 ): Promise<void> {
   console.log('🌐 Initializing WebSocket services...');
-  
+
   try {
     // Get WebSocket services
     const webSocketService = container.getByToken<IEnterpriseWebSocketService>(
       TYPES.ENTERPRISE_WEBSOCKET_SERVICE
     );
-    
+
     const connectionManager = container.getByToken<IConnectionManager>(
       TYPES.CONNECTION_MANAGER
     );
-    
+
     const messageRouter = container.getByToken<IMessageRouter>(
       TYPES.MESSAGE_ROUTER
     );
-    
+
     const cacheService = container.get<CacheServiceManager>(CacheServiceManager);
     const loggerService = container.get<LoggerService>(LoggerService);
-    
+
     // Initialize message router with default routes
     console.log('📡 Setting up message routing...');
-    
+
     // Example: Register chat message routes
     messageRouter.registerRoute({
       feature: 'chat',
@@ -144,9 +141,8 @@ export async function initializeWebSocketServices(
       handler: async (message) => {
         loggerService.info(`[Chat] Message received: ${message.payload.content}`);
         // Cache message for chat history
-        await cacheService.set(`chat:message:${message.payload.chatId}:${message.id}`, message, {
-          ttl: 3600000 // 1 hour
-        });
+        const chatCache = cacheService.getCache('chat');
+        chatCache.set(`message:${message.payload.chatId}:${message.id}`, message, 3600000); // 1 hour
       },
       validator: (message) => {
         return !!(
@@ -159,7 +155,7 @@ export async function initializeWebSocketServices(
       priority: 5,
       enabled: true
     });
-    
+
     // Example: Register notification routes
     messageRouter.registerRoute({
       feature: 'notification',
@@ -167,14 +163,13 @@ export async function initializeWebSocketServices(
       handler: async (message) => {
         loggerService.info(`[Notification] Push notification: ${message.payload.title}`);
         // Cache notification for offline access
-        await cacheService.set(`notification:${message.id}`, message, {
-          ttl: 86400000 // 24 hours
-        });
+        const notificationCache = cacheService.getCache('notification');
+        notificationCache.set(`notification:${message.id}`, message, 86400000); // 24 hours
       },
       priority: 3,
       enabled: true
     });
-    
+
     // Example: Register feed update routes
     messageRouter.registerRoute({
       feature: 'feed',
@@ -188,17 +183,17 @@ export async function initializeWebSocketServices(
       priority: 4,
       enabled: true
     });
-    
+
     console.log('✅ Message routing configured');
-    
+
     // Log service status
     console.log('🌐 WebSocket Services Status:');
     console.log(`  - WebSocket Service: ${webSocketService ? '✅ Ready' : '❌ Not Available'}`);
     console.log(`  - Connection Manager: ${connectionManager ? '✅ Ready' : '❌ Not Available'}`);
     console.log(`  - Message Router: ${messageRouter ? '✅ Ready' : '❌ Not Available'}`);
-    
+
     console.log('✅ WebSocket services initialized successfully');
-    
+
   } catch (error) {
     console.error('❌ Failed to initialize WebSocket services:', error);
     throw error;
@@ -250,8 +245,8 @@ export function getMessageRouter(
  * Factory for creating WebSocket services with specific configurations.
  */
 export class WebSocketServiceFactory {
-  constructor(private container: Container) {}
-  
+  constructor(private container: Container) { }
+
   /**
    * Create a WebSocket service for a specific feature
    */
@@ -259,11 +254,11 @@ export class WebSocketServiceFactory {
     const service = this.container.getByToken<IEnterpriseWebSocketService>(
       TYPES.ENTERPRISE_WEBSOCKET_SERVICE
     );
-    
+
     // Feature-specific configuration could be applied here
     return service;
   }
-  
+
   /**
    * Create a connection manager for a specific feature
    */
@@ -271,11 +266,11 @@ export class WebSocketServiceFactory {
     const manager = this.container.getByToken<IConnectionManager>(
       TYPES.CONNECTION_MANAGER
     );
-    
+
     // Feature-specific configuration could be applied here
     return manager;
   }
-  
+
   /**
    * Create a message router for a specific feature
    */
@@ -283,7 +278,7 @@ export class WebSocketServiceFactory {
     const router = this.container.getByToken<IMessageRouter>(
       TYPES.MESSAGE_ROUTER
     );
-    
+
     // Feature-specific configuration could be applied here
     return router;
   }
@@ -300,22 +295,22 @@ export async function performWebSocketHealthCheck(
   const healthStatus = {
     healthy: true,
     services: {
-      webSocketService: 'unknown',
-      connectionManager: 'unknown',
-      messageRouter: 'unknown'
+      webSocketService: 'unknown' as string | object,
+      connectionManager: 'unknown' as string | object,
+      messageRouter: 'unknown' as string | object
     }
   };
-  
+
   try {
     // Check WebSocket service
     const webSocketService = getWebSocketService(container);
     const connectionState = webSocketService.getConnectionState();
     healthStatus.services.webSocketService = connectionState;
-    
+
     if (connectionState === 'error') {
       healthStatus.healthy = false;
     }
-    
+
     // Check connection manager
     const connectionManager = getConnectionManager(container);
     const connections = connectionManager.getAllConnections();
@@ -324,7 +319,7 @@ export async function performWebSocketHealthCheck(
       activeConnections: connections.filter(c => c.isActive).length,
       averageHealthScore: connections.reduce((sum, c) => sum + c.healthScore, 0) / connections.length || 0
     };
-    
+
     // Check message router
     const messageRouter = getMessageRouter(container);
     const metrics = messageRouter.getMetrics();
@@ -333,11 +328,11 @@ export async function performWebSocketHealthCheck(
       messagesRouted: metrics.messagesRouted,
       averageProcessingTime: metrics.averageProcessingTime
     };
-    
+
   } catch (error) {
     console.error('WebSocket health check failed:', error);
     healthStatus.healthy = false;
   }
-  
+
   return healthStatus;
 }
