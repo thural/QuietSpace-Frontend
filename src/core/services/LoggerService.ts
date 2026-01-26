@@ -1,57 +1,147 @@
 import 'reflect-metadata';
 import { Injectable } from '../di';
+import { LogLevel, type ILoggerService } from './interfaces';
 
 /**
- * Logger Service Interface
- */
-export interface ILoggerService {
-    info(message: string, ...args: any[]): void;
-    debug(message: string, ...args: any[]): void;
-    error(message: string, ...args: any[]): void;
-    warn(message: string, ...args: any[]): void;
-}
-
-/**
- * Console Logger Service Implementation
+ * Legacy Logger Service Implementation
  * 
- * Provides logging functionality with different log levels
- * and structured console output for enterprise applications.
+ * @deprecated Use createLogger() factory function instead
+ * This class is maintained for backward compatibility only.
  */
 @Injectable({ lifetime: 'singleton' })
 export class LoggerService implements ILoggerService {
-    private readonly prefix = '[LoggerService]';
+    private _prefix = '[LoggerService]';
 
     /**
      * Logs informational messages
      */
     info(message: string, ...args: any[]): void {
-        console.info(`${this.prefix} ${message}`, ...args);
+        console.info(`${this._prefix} ${message}`, ...args);
     }
 
     /**
      * Logs debug messages
      */
     debug(message: string, ...args: any[]): void {
-        console.debug(`${this.prefix} ${message}`, ...args);
+        console.debug(`${this._prefix} ${message}`, ...args);
     }
 
     /**
      * Logs error messages
      */
     error(message: string, ...args: any[]): void {
-        console.error(`${this.prefix} ${message}`, ...args);
+        console.error(`${this._prefix} ${message}`, ...args);
     }
 
     /**
      * Logs warning messages
      */
     warn(message: string, ...args: any[]): void {
-        console.warn(`${this.prefix} ${message}`, ...args);
+        console.warn(`${this._prefix} ${message}`, ...args);
+    }
+
+    /**
+     * Logs fatal error messages
+     */
+    fatal(message: string, ...args: any[]): void {
+        console.error(`${this._prefix} FATAL: ${message}`, ...args);
+    }
+
+    /**
+     * Logs message with custom level
+     */
+    log(level: LogLevel, message: string, ...args: any[]): void {
+        console.log(`${this._prefix} [${level}] ${message}`, ...args);
+    }
+
+    /**
+     * Update logger configuration
+     */
+    updateConfig(config: any): void {
+        // Legacy implementation - no-op
+    }
+
+    /**
+     * Get current configuration
+     */
+    getConfig(): any {
+        return { prefix: this._prefix };
+    }
+
+    /**
+     * Add logging target
+     */
+    addTarget(target: any): void {
+        // Legacy implementation - no-op
+    }
+
+    /**
+     * Remove logging target
+     */
+    removeTarget(name: string): void {
+        // Legacy implementation - no-op
+    }
+
+    /**
+     * Get logger metrics
+     */
+    getMetrics(): any {
+        return {
+            totalLogs: 0,
+            logsByLevel: {},
+            logsPerMinute: 0,
+            errorCount: 0
+        };
+    }
+
+    /**
+     * Get logger health status
+     */
+    getHealth(): any {
+        return {
+            status: 'healthy',
+            lastCheck: new Date(),
+            targetCount: 0,
+            activeTargets: [],
+            errorRate: 0
+        };
+    }
+
+    /**
+     * Create child logger with custom prefix
+     */
+    createChild(prefix: string, config?: any): ILoggerService {
+        const child = new LoggerService();
+        (child as any)._prefix = `${this._prefix} ${prefix}`;
+        return child;
+    }
+
+    /**
+     * Check if a log level is enabled
+     */
+    isLevelEnabled(level: LogLevel): boolean {
+        return true; // Legacy implementation - always enabled
+    }
+
+    /**
+     * Set log level
+     */
+    setLevel(level: LogLevel): void {
+        // Legacy implementation - no-op
+    }
+
+    /**
+     * Get current log level
+     */
+    getLevel(): LogLevel {
+        return LogLevel.INFO; // Legacy implementation
     }
 }
 
 /**
  * Factory function to create logger service
+ * 
+ * @deprecated Use createLogger() from the new logger module instead
  */
 export function createLoggerService(): ILoggerService {
     return new LoggerService();
