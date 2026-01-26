@@ -6,11 +6,11 @@
  */
 
 import styled, { css } from 'styled-components';
-import { useThemeTokens, EnhancedTheme, createStyledComponent, media } from '../../../../core/theme';
+import { useThemeTokens, EnhancedTheme, createStyledComponent, media } from '@core/theme';
 
 export const Button = createStyledComponent('button') <{
-    theme: EnhancedTheme;
-    variant?: 'primary' | 'secondary' | 'danger'
+  theme: EnhancedTheme;
+  variant?: 'primary' | 'secondary' | 'danger'
 }>`
   display: block;
   margin-left: auto;
@@ -26,9 +26,9 @@ export const Button = createStyledComponent('button') <{
 
   /* Variant styles */
   ${(props: any) => {
-        switch (props.variant) {
-            case 'secondary':
-                return css`
+    switch (props.variant) {
+      case 'secondary':
+        return css`
           background-color: ${(props: any) => props.theme.colors.background.secondary};
           color: ${(props: any) => props.theme.colors.text.primary};
           border: 1px solid ${(props: any) => props.theme.colors.border.light};
@@ -44,8 +44,8 @@ export const Button = createStyledComponent('button') <{
           }
         `;
 
-            case 'danger':
-                return css`
+      case 'danger':
+        return css`
           background-color: ${(props: any) => props.theme.colors.semantic.error};
           color: ${(props: any) => props.theme.colors.text.inverse};
           
@@ -62,8 +62,8 @@ export const Button = createStyledComponent('button') <{
           }
         `;
 
-            default: // primary
-                return css`
+      default: // primary
+        return css`
           background-color: ${(props: any) => props.theme.colors.brand[500]};
           color: ${(props: any) => props.theme.colors.text.inverse};
           
@@ -78,8 +78,8 @@ export const Button = createStyledComponent('button') <{
             outline-offset: 2px;
           }
         `;
-        }
-    }}
+    }
+  }}
 
   &:active {
     transform: translateY(0);
@@ -207,16 +207,16 @@ export const FormSuccess = createStyledComponent('div') <{ theme: EnhancedTheme 
 
 // Modern export for backward compatibility
 export const FormControlStyles = {
-    button: Button,
-    controlArea: ControlArea,
-    form: FormContainer,
-    formControlGroup: FormControlGroup,
-    actionButtons: ActionButtons,
-    header: FormHeader,
-    title: FormTitle,
-    description: FormDescription,
-    error: FormError,
-    success: FormSuccess,
+  button: Button,
+  controlArea: ControlArea,
+  form: FormContainer,
+  formControlGroup: FormControlGroup,
+  actionButtons: ActionButtons,
+  header: FormHeader,
+  title: FormTitle,
+  description: FormDescription,
+  error: FormError,
+  success: FormSuccess,
 };
 
 export default FormControlStyles;

@@ -5,7 +5,7 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const CommentWrapper = styled.div<{ theme: EnhancedTheme; isReply?: boolean }>`
   display: flex;

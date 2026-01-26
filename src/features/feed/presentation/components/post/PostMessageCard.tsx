@@ -1,5 +1,5 @@
 import { ResId } from "@/shared/api/models/commonNative";
-import { Container } from "../../../../../shared/ui/components";
+import { Container } from "@shared/ui/components";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import PostMessageSkeleton from "@/shared/PostMessageSkeleton";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";

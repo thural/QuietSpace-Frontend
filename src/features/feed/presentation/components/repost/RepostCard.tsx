@@ -1,5 +1,5 @@
 import { PostResponse } from "@/features/feed/data/models/post";
-import { Container } from "../../../../../shared/ui/components";
+import { Container } from "@shared/ui/components";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
 import PostSkeleton from "@/shared/PostSkeleton";

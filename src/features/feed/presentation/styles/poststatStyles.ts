@@ -6,7 +6,7 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const PostStats = styled.div<{ theme: EnhancedTheme }>`
   opacity: 0.75;

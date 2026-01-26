@@ -6,11 +6,11 @@
  */
 
 import styled, { css } from 'styled-components';
-import { useThemeTokens, EnhancedTheme, createStyledComponent, media } from '../../../../core/theme';
+import { useThemeTokens, EnhancedTheme, createStyledComponent, media } from '@core/theme';
 
 export const Button = styled.button<{
-    theme: EnhancedTheme;
-    variant?: 'primary' | 'secondary' | 'danger'
+  theme: EnhancedTheme;
+  variant?: 'primary' | 'secondary' | 'danger'
 }>`
   display: block;
   padding: 0 ${(props: any) => props.theme.spacing.lg};
@@ -26,9 +26,9 @@ export const Button = styled.button<{
   
   /* Variant styles */
   ${(props: any) => {
-        switch (props.variant) {
-            case 'secondary':
-                return css`
+    switch (props.variant) {
+      case 'secondary':
+        return css`
           background-color: ${(props: any) => props.theme.colors.background.secondary};
           color: ${(props: any) => props.theme.colors.text.primary};
           border: 1px solid ${(props: any) => props.theme.colors.border.light};
@@ -44,8 +44,8 @@ export const Button = styled.button<{
           }
         `;
 
-            case 'danger':
-                return css`
+      case 'danger':
+        return css`
           background-color: ${(props: any) => props.theme.colors.semantic.error};
           color: ${(props: any) => props.theme.colors.text.inverse};
           
@@ -61,8 +61,8 @@ export const Button = styled.button<{
           }
         `;
 
-            default: // primary
-                return css`
+      default: // primary
+        return css`
           background-color: ${(props: any) => props.theme.colors.brand[500]};
           color: ${(props: any) => props.theme.colors.text.inverse};
           
@@ -76,8 +76,8 @@ export const Button = styled.button<{
             outline-offset: 2px;
           }
         `;
-        }
-    }}
+    }
+  }}
 `;
 
 export const ControlArea = styled.div<{ theme: EnhancedTheme }>`
@@ -159,14 +159,14 @@ export const CreatePostTitle = styled.h3<{ theme: EnhancedTheme }>`
 `;
 
 export const CharacterCount = styled.span<{
-    theme: EnhancedTheme;
-    isOverLimit?: boolean;
+  theme: EnhancedTheme;
+  isOverLimit?: boolean;
 }>`
   font-size: ${(props: any) => props.theme.typography.fontSize.sm};
   color: ${(props: any) => props.isOverLimit
-        ? props.theme.colors.semantic.error
-        : props.theme.colors.text.secondary
-    };
+    ? props.theme.colors.semantic.error
+    : props.theme.colors.text.secondary
+  };
   font-weight: ${(props: any) => props.theme.typography.fontWeight.medium};
   
   ${(props: any) => props.isOverLimit && css`
@@ -176,14 +176,14 @@ export const CharacterCount = styled.span<{
 
 // Modern export for backward compatibility
 export const CreatePostStyles = {
-    button: Button,
-    controlArea: ControlArea,
-    accessControls: AccessControls,
-    pollToggle: PollToggle,
-    form: FormContainer,
-    header: CreatePostHeader,
-    title: CreatePostTitle,
-    characterCount: CharacterCount,
+  button: Button,
+  controlArea: ControlArea,
+  accessControls: AccessControls,
+  pollToggle: PollToggle,
+  form: FormContainer,
+  header: CreatePostHeader,
+  title: CreatePostTitle,
+  characterCount: CharacterCount,
 };
 
 export default CreatePostStyles;

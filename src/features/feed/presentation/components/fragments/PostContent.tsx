@@ -1,5 +1,5 @@
 import { PostResponse } from "@/features/feed/data/models/post";
-import { Container } from "../../../../../shared/ui/components";
+import { Container } from "@shared/ui/components";
 import Conditional from "@/shared/Conditional";
 import Typography from "@/shared/Typography";
 import { ConsumerFn } from "@/shared/types/genericTypes";

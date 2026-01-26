@@ -6,7 +6,7 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const PollForm = styled.div<{ theme: EnhancedTheme; isVisible?: boolean }>`
   display: ${(props: any) => props.isVisible ? 'flex' : 'none'};

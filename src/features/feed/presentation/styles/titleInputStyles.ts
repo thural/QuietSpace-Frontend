@@ -5,11 +5,11 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const TitleInput = styled.input<{
-    theme: EnhancedTheme;
-    variant?: 'h1' | 'h2' | 'h3';
+  theme: EnhancedTheme;
+  variant?: 'h1' | 'h2' | 'h3';
 }>`
   width: 100%;
   border: none;
@@ -20,17 +20,17 @@ export const TitleInput = styled.input<{
   background-color: ${(props: any) => props.theme.colors.background.primary};
   color: ${(props: any) => props.theme.colors.text.primary};
   font-size: ${(props: any) => {
-        switch (props.variant) {
-            case 'h1':
-                return props.theme.typography.fontSize['3xl'];
-            case 'h2':
-                return props.theme.typography.fontSize['2xl'];
-            case 'h3':
-                return props.theme.typography.fontSize.xl;
-            default:
-                return props.theme.typography.fontSize.xl;
-        }
-    }};
+    switch (props.variant) {
+      case 'h1':
+        return props.theme.typography.fontSize['3xl'];
+      case 'h2':
+        return props.theme.typography.fontSize['2xl'];
+      case 'h3':
+        return props.theme.typography.fontSize.xl;
+      default:
+        return props.theme.typography.fontSize.xl;
+    }
+  }};
   font-family: ${(props: any) => props.theme.typography.fontFamily.sans.join(', ')};
   line-height: ${(props: any) => props.theme.typography.lineHeight.normal};
   padding: 0 ${(props: any) => props.theme.spacing.sm};
@@ -109,23 +109,23 @@ export const TitleInputContainer = styled.div<{ theme: EnhancedTheme }>`
 `;
 
 export const TitleInputWrapper = styled.div<{
-    theme: EnhancedTheme;
-    hasError?: boolean;
+  theme: EnhancedTheme;
+  hasError?: boolean;
 }>`
   position: relative;
   width: 100%;
 
   ${TitleInput} {
     border: 1px solid ${(props: any) => props.hasError
-        ? props.theme.colors.semantic.error
-        : 'transparent'
-    };
+    ? props.theme.colors.semantic.error
+    : 'transparent'
+  };
     
     &:focus {
       border-color: ${(props: any) => props.hasError
-        ? props.theme.colors.semantic.error
-        : props.theme.colors.brand[500]
-    };
+    ? props.theme.colors.semantic.error
+    : props.theme.colors.brand[500]
+  };
     }
   }
 
@@ -191,10 +191,10 @@ export const TitleInputPreview = styled.div<{ theme: EnhancedTheme }>`
 
 // Modern export for backward compatibility
 export const TitleInputStyles = {
-    titleInput: TitleInput,
-    container: TitleInputContainer,
-    wrapper: TitleInputWrapper,
-    preview: TitleInputPreview,
+  titleInput: TitleInput,
+  container: TitleInputContainer,
+  wrapper: TitleInputWrapper,
+  preview: TitleInputPreview,
 };
 
 export default TitleInputStyles;

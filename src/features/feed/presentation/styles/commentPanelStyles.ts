@@ -6,7 +6,7 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const CommentSection = styled.div<{ theme: EnhancedTheme }>`
   display: flex;

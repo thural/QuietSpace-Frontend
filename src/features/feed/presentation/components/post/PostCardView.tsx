@@ -1,6 +1,6 @@
 import { PostResponse } from "@/features/feed/data/models/post";
 import BatchShareForm from "@/features/chat/presentation/components/forms/BatchSendForm";
-import { Container } from "../../../../../shared/ui/components";
+import { Container } from "@shared/ui/components";
 import Conditional from "@/shared/Conditional";
 import styles from "../../styles/postStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";

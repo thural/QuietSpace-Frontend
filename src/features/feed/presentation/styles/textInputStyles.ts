@@ -5,21 +5,21 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const Textarea = styled.textarea<{
-    theme: EnhancedTheme;
-    minHeight?: string;
-    hasError?: boolean;
-    disabled?: boolean;
+  theme: EnhancedTheme;
+  minHeight?: string;
+  hasError?: boolean;
+  disabled?: boolean;
 }>`
   width: 100%;
   outline: none;
   box-sizing: border-box;
   border: 1px solid ${(props: any) => props.hasError
-        ? props.theme.colors.semantic.error
-        : props.theme.colors.border.light
-    };
+    ? props.theme.colors.semantic.error
+    : props.theme.colors.border.light
+  };
   border-radius: ${(props: any) => props.theme.radius.md};
   padding: ${(props: any) => props.theme.spacing.sm};
   background-color: ${(props: any) => props.theme.colors.background.primary};
@@ -36,9 +36,9 @@ export const Textarea = styled.textarea<{
 
   &:focus {
     outline: 2px solid ${(props: any) => props.hasError
-        ? props.theme.colors.semantic.error
-        : props.theme.colors.brand[500]
-    };
+    ? props.theme.colors.semantic.error
+    : props.theme.colors.brand[500]
+  };
     outline-offset: 2px;
     background-color: ${(props: any) => props.theme.colors.background.secondary};
   }
@@ -79,23 +79,23 @@ export const TextInputContainer = styled.div<{ theme: EnhancedTheme }>`
 `;
 
 export const TextInputWrapper = styled.div<{
-    theme: EnhancedTheme;
-    hasError?: boolean;
+  theme: EnhancedTheme;
+  hasError?: boolean;
 }>`
   position: relative;
   width: 100%;
 
   ${Textarea} {
     border: 1px solid ${(props: any) => props.hasError
-        ? props.theme.colors.semantic.error
-        : props.theme.colors.border.light
-    };
+    ? props.theme.colors.semantic.error
+    : props.theme.colors.border.light
+  };
     
     &:focus {
       border-color: ${(props: any) => props.hasError
-        ? props.theme.colors.semantic.error
-        : props.theme.colors.brand[500]
-    };
+    ? props.theme.colors.semantic.error
+    : props.theme.colors.brand[500]
+  };
     }
   }
 
@@ -131,9 +131,9 @@ export const TextInputWrapper = styled.div<{
 
 // Modern export for backward compatibility
 export const TextInputStyles = {
-    textarea: Textarea,
-    container: TextInputContainer,
-    wrapper: TextInputWrapper,
+  textarea: Textarea,
+  container: TextInputContainer,
+  wrapper: TextInputWrapper,
 };
 
 export default TextInputStyles;

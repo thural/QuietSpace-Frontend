@@ -1,9 +1,9 @@
 import { UserResponse } from "@/features/profile/data/models/user";
-import { Container } from "../../../../../shared/ui/components";
+import { Container } from "@shared/ui/components";
 import FlexStyled from "@/shared/FlexStyled";
-import { Input } from "../../../../../shared/ui/components";
+import { Input } from "@shared/ui/components";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import { Button } from "../../../../../shared/ui/components";
+import { Button } from "@shared/ui/components";
 import { ProcedureFn } from "@/shared/types/genericTypes";
 
 /**

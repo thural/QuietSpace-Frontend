@@ -1,4 +1,4 @@
-import { Input } from "../../../../../shared/ui/components";
+import { Input } from "@shared/ui/components";
 import { TitleInputContainer, TitleInputWrapper } from "../../styles/titleInputStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 

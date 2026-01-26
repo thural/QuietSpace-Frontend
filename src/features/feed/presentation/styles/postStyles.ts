@@ -6,7 +6,7 @@
  */
 
 import styled from 'styled-components';
-import { EnhancedTheme } from '../../../../core/theme';
+import { EnhancedTheme } from '@core/theme';
 
 export const PostCard = styled.div<{ theme: EnhancedTheme }>`
   padding: 0;
@@ -134,15 +134,15 @@ font - weight: ${(props: any) => props.theme.typography.fontWeight.normal};
 
 // Legacy export for backward compatibility during migration
 export const PostStyles = {
-    postCard: PostCard,
-    content: PostContent,
-    header: PostHeader,
-    title: PostTitle,
-    meta: PostMeta,
-    body: PostBody,
-    footer: PostFooter,
-    actions: PostActions,
-    timestamp: PostTimestamp,
+  postCard: PostCard,
+  content: PostContent,
+  header: PostHeader,
+  title: PostTitle,
+  meta: PostMeta,
+  body: PostBody,
+  footer: PostFooter,
+  actions: PostActions,
+  timestamp: PostTimestamp,
 };
 
 export default PostStyles;

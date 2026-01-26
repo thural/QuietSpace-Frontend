@@ -1,6 +1,6 @@
 import { PostRequest } from "@/features/feed/data/models/post";
 import Clickable from "@/shared/Clickable";
-import { Container, Input } from "../../../../../shared/ui/components";
+import { Container, Input } from "@shared/ui/components";
 import { PollForm as PollFormStyled, PollFormBody, PollOptionInput, AddOptionButton } from "../../styles/pollIFormStyles";
 import { PollView } from "@features/feed/application/hooks/useCreatePostForm";
 import { AnyFunction, ProcedureFn } from "@/shared/types/genericTypes";
