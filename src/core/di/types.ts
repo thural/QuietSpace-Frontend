@@ -7,7 +7,10 @@
 export const TYPES = {
   // Core Services
   API_CLIENT: 'ApiClient',
+  REST_CLIENT: 'RestClient',
   SOCKET_SERVICE: 'SocketService',
+  TOKEN_SERVICE: 'TokenService',
+  AUTHENTICATED_API_SERVICE: 'AuthenticatedApiService',
 
   // Repositories
   IAUTH_REPOSITORY: 'IAuthRepository',
