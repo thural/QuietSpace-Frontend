@@ -1,55 +1,109 @@
 /**
- * Core Module Index.
+ * Core System Black Box Index
  * 
- * Barrel exports for all core infrastructure components.
- * Provides centralized access to DI, network, theme, errors, and utilities.
+ * Provides clean public API for all core modules following Black Box pattern.
+ * Only interfaces, factory functions, and essential utilities are exported.
+ * Implementation details and internal modules are properly hidden.
  */
 
-// Dependency Injection
-export { container, initializeContainer, getContainer, createMockContainer } from './di/injection';
+// Public types - Clean API for consumers
+export type {
+  ICacheService,
+  ICacheServiceManager,
+  IWebSocketService,
+  IAuthService,
+  IThemeService,
+  INetworkService,
+  IServiceContainer,
+  IApiClient
+} from './types';
+
+// Factory functions - Clean service creation
+export {
+  createCoreServices,
+  createCacheService,
+  createWebSocketService,
+  createAuthService,
+  createThemeService,
+  createNetworkService,
+  createServiceContainer
+} from './factory';
+
+// Essential hooks - Clean API
+export {
+  useCoreServices,
+  useCacheService,
+  useWebSocketService,
+  useAuthService,
+  useThemeService
+} from './hooks';
+
+// Configuration types - Clean API
+export type {
+  CoreConfig,
+  CacheConfig,
+  WebSocketConfig,
+  AuthConfig,
+  ThemeConfig,
+  NetworkConfig
+} from './config';
+
+// Constants and enums - Clean API
+export {
+  CORE_CONSTANTS,
+  CORE_STATUS,
+  CORE_EVENTS
+} from './constants';
+
+// Utility functions - Clean API
+export {
+  validateCoreConfig,
+  initializeCoreSystem,
+  shutdownCoreSystem
+} from './utils';
+
+// Legacy exports for backward compatibility (with underscore prefix)
+export {
+  CacheProvider as _CacheProvider,
+  CacheServiceManager as _CacheServiceManager,
+  EnterpriseWebSocketService as _EnterpriseWebSocketService,
+  apiClient as _ApiClient
+} from './legacy';
+
+// Essential re-exports from compliant modules
+export {
+  container,
+  initializeContainer,
+  getContainer,
+  createMockContainer
+} from './di/injection';
+
 export { TYPES } from './di/types';
 
-// Cache
-export { CacheProvider } from './cache';
-export { CacheServiceManager } from './cache/CacheServiceManager';
-export type { CacheEntry, CacheStats, CacheConfig, CacheEvents } from './cache';
-export type { CacheServiceConfig, FeatureCacheService } from './cache/CacheServiceManager';
+// Re-export types from compliant modules
+export type {
+  CacheEntry,
+  CacheStats,
+  CacheEvents
+} from './cache';
 
-// Network
-export { apiClient } from './network/rest/apiClient';
-
-// WebSocket (Enterprise)
-export { 
-  EnterpriseWebSocketService,
-  useEnterpriseWebSocket,
-  useFeatureWebSocket,
-  useChatWebSocket,
-  useNotificationWebSocket,
-  useFeedWebSocket
+export type {
+  WebSocketMessage,
+  WebSocketConfig as WebSocketConfigType
 } from './websocket';
 
-// Theme
-export { colors } from './theme/appColors';
-export { typography } from './theme/appTypography';
+export type {
+  AuthResult,
+  AuthUser,
+  AuthToken
+} from './auth';
 
-// Errors
-export * from './errors/failures';
-export * from './errors/exceptions';
+export type {
+  ThemeTokens,
+  EnhancedTheme
+} from './theme';
 
-// Utils
-export {
-  transformPost,
-  transformError,
-  sanitizeInput,
-  isValidEmail,
-  formatFileSize
-} from './utils/transformers';
-export {
-  formatRelativeTime,
-  formatDate,
-  formatDateTime,
-  isToday,
-  isYesterday,
-  getStartOfDay,
-  getEndOfDay
-} from './utils/dateFormatter';
+export type {
+  ApiResponse,
+  ApiError
+} from './network';
