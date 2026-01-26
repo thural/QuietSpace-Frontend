@@ -6,12 +6,13 @@
  */
 
 import { useContext } from 'react';
-import { ThemeContext, EnhancedTheme } from '../EnhancedThemeProvider';
+import { ThemeContext, ThemeContextValue } from '../providers/ThemeContext';
+import { EnhancedTheme } from '../types/ProviderTypes';
 
 /**
  * Hook for using enhanced theme context
  */
-export const useEnhancedTheme = () => {
+export const useEnhancedTheme = (): ThemeContextValue => {
     const context = useContext(ThemeContext);
     if (!context) {
         throw new Error('useEnhancedTheme must be used within EnhancedThemeProvider');

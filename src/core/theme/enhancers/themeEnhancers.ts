@@ -6,7 +6,7 @@
  */
 
 import { ComposedTheme } from '../composer';
-import { EnhancedTheme } from '../EnhancedThemeProvider';
+import { EnhancedTheme } from '../types/ProviderTypes';
 
 /**
  * Enhances a composed theme with computed values and backward compatibility

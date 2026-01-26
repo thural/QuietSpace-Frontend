@@ -1,38 +1,25 @@
 /**
  * Modern Theme System Index.
  * 
- * Enterprise-grade theme system with composable architecture.
- * Provides centralized access to tokens, variants, composer, and utilities.
+ * Enterprise-grade theme system with complete isolation of concerns.
+ * Provides clean, modular access to all theme functionality.
  */
 
-// Core theme system
+// Public API - Clean interface for consumers
+export * from './public';
+
+// Core theme tokens and composition
 export * from './tokens';
 export * from './composer';
 export * from './variants';
-export * from './EnhancedThemeProvider';
-
-// Base tokens
-export * from './baseTokens';
-
-// Theme enhancers
-export * from './enhancers/themeEnhancers';
 
 // Application theme assets
 export { colors } from './appColors';
 export { typography } from './appTypography';
+export * from './baseTokens';
 
-// Enhanced theme provider and hooks
-export {
-  EnhancedThemeProvider,
-  ThemeContext,
-} from './EnhancedThemeProvider';
-
-export {
-  useEnhancedTheme,
-  useThemeSwitch,
-  useThemeTokens,
-  useTheme,
-} from './hooks/themeHooks';
+// Theme enhancers
+export * from './enhancers/themeEnhancers';
 
 // Performance utilities and styled components
 export {
@@ -46,6 +33,9 @@ export {
   StyledButton,
 } from './styledUtils';
 
+// Segregated interfaces for better modularity
+export * from './interfaces';
+
 // Type exports
 export type {
   ThemeTokens,
@@ -57,10 +47,6 @@ export type {
   RadiusTokens,
   AnimationTokens
 } from './tokens';
-
-export type {
-  EnhancedTheme
-} from './EnhancedThemeProvider';
 
 export type {
   ThemeConfig,
