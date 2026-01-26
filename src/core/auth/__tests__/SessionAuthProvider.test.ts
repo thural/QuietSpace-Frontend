@@ -10,6 +10,8 @@
  * - Error scenarios
  */
 
+import { jest } from '@jest/globals';
+
 // Mock localStorage
 const localStorageMock = (() => {
     let store: Record<string, string> = {};

@@ -3,14 +3,36 @@
  * 
  * Tests for SAML authentication provider including:
  * - Provider initialization
- * - SAML flow initiation
- * - SAML response handling
- * - Logout functionality
+ * - SAML 2.0 Web SSO implementation
+ * - Metadata exchange and validation
+ * - Enterprise IDP support (Okta, Azure AD, ADFS, Ping)
+ * - Digital signatures and encryption
  * - Error scenarios
  */
 
 import { SAMLAuthProvider, SAMLProviders } from '../providers/SAMLProvider';
 import { AuthCredentials, AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+import { jest } from '@jest/globals';
+
+// Mock XML handling for SAML
+const mockXMLParser = {
+    parseFromString: jest.fn().mockReturnValue({
+        documentElement: {
+            getElementsByTagName: jest.fn().mockReturnValue([]),
+            getAttribute: jest.fn().mockReturnValue(null)
+        }
+    })
+};
+
+// Mock DOMParser
+global.DOMParser = jest.fn().mockImplementation(() => ({
+    parseFromString: jest.fn().mockReturnValue({
+        documentElement: {
+            getElementsByTagName: jest.fn().mockReturnValue([]),
+            getAttribute: jest.fn().mockReturnValue(null)
+        }
+    })
+})) as any;
 
 describe('SAMLAuthProvider', () => {
     let provider: SAMLAuthProvider;

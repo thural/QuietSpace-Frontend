@@ -1,5 +1,5 @@
 // Data layer exports
-export { AnalyticsRepository } from './repositories/AnalyticsRepository';
+export { AnalyticsRepository } from './AnalyticsRepository';
 
 // Data services (Enterprise)
 export { AnalyticsDataService } from './services/AnalyticsDataService';
@@ -8,39 +8,22 @@ export { AnalyticsDataService } from './services/AnalyticsDataService';
 export { ANALYTICS_CACHE_KEYS, ANALYTICS_CACHE_TTL, ANALYTICS_CACHE_INVALIDATION, AnalyticsCacheUtils } from './cache/AnalyticsCacheKeys';
 
 // Types and interfaces (Enterprise)
-export type { 
-  IAnalyticsRepository,
+export type {
+  IAnalyticsRepository
+} from '../domain/entities/IAnalyticsRepository';
+
+// Export types from AnalyticsEntity
+export type {
   AnalyticsEntity,
+  AnalyticsEventType,
+  AnalyticsMetadata,
+  AnalyticsProperties,
+  AnalyticsSource,
   AnalyticsMetrics,
   AnalyticsDashboard,
   DashboardWidget,
-  AnalyticsReport,
-  AnalyticsInsight,
-  AnalyticsFunnel,
-  AnalyticsGoal,
-  DateRange,
-  AnalyticsEventType,
-  RealtimeAnalyticsMetrics,
-  PerformanceAnalyticsMetrics,
-  EngagementAnalyticsMetrics,
-  ConversionAnalyticsMetrics,
-  TrafficanalyticsMetrics,
-  ContentAnalyticsMetrics,
-  BehaviorAnalyticsMetrics,
-  ErrorAnalyticsMetrics,
-  AggregatedAnalyticsData,
-  TrendAnalyticsData,
-  ComparisonAnalyticsData,
-  SearchAnalyticsData,
-  MediaAnalyticsData,
-  FeatureUsageAnalyticsData,
-  ABTestAnalyticsData,
-  CustomReportData,
-  ExportAnalyticsData,
-  SystemHealthData,
-  ProcessingQueueStatus,
-  CacheStats
-} from '../domain/entities/IAnalyticsRepository';
+  DateRange
+} from '../domain/AnalyticsEntity';
 
 // Legacy exports (for backward compatibility)
-export { AnalyticsEntity as AnalyticsEntityLegacy } from '../domain/AnalyticsEntity';
+export type { AnalyticsEntity as AnalyticsEntityLegacy } from '../domain/AnalyticsEntity';

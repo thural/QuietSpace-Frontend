@@ -1,8 +1,18 @@
 /**
- * Health Check System Tests
+ * Health Checker Tests
  * 
- * Tests for provider health monitoring, circuit breaker, and automatic fallback
+ * Tests for the health checker system including:
+ * - Circuit breaker pattern
+ * - Provider health monitoring
+ * - Automatic fallback systems
+ * - Health check scheduling
+ * - Health metrics and reporting
  */
+
+import { jest } from '@jest/globals';
+
+// Mock setTimeout/setInterval for health check scheduling
+jest.useFakeTimers();
 
 import {
     HealthCheckManager,

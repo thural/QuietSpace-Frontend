@@ -10,9 +10,9 @@ import {
   useThemeTokens,
   useThemeSwitch,
   createStyledComponent
-} from '../../../core/theme';
-import { useThemeResponsive } from '../../../platform_shell';
-import { ThemeContainer, ThemeButton, ThemeText, ThemeFlexContainer } from '../../../platform_shell/components/ThemeComponents';
+} from '@core/theme';
+import { useThemeResponsive } from '@platform_shell';
+import { ThemeContainer, ThemeButton, ThemeText, ThemeFlexContainer } from '@platform_shell/components/ThemeComponents';
 import { UserAvatar } from '../widgets/UserAvatar';
 import { User } from '../../domain/entities/User';
 

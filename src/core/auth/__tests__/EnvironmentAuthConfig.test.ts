@@ -1,5 +1,12 @@
 /**
- * Tests for EnvironmentAuthConfig
+ * Environment Auth Configuration Tests
+ * 
+ * Tests for environment-based authentication configuration including:
+ * - Environment variable loading and parsing
+ * - Configuration validation and defaults
+ * - Environment detection
+ * - Configuration watching and updates
+ * - Type safety and runtime validation
  */
 
 import { EnvironmentAuthConfig, AUTH_ENV_VARS, createEnvironmentAuthConfig, getCurrentEnvironment } from '../config/EnvironmentAuthConfig';

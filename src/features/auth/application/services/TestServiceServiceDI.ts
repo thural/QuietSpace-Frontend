@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as React from 'react';
-import { Injectable, Inject, useService } from '../../../core/di';
+import { Injectable, Inject, useService } from '@core/di';
 
 // Service interfaces
 interface ITestServiceService {
@@ -22,7 +22,7 @@ export class TestServiceRepository implements ITestServiceRepository {
 export class TestServiceService implements ITestServiceService {
   constructor(
     @Inject(TestServiceRepository) private testserviceRepository: ITestServiceRepository
-  ) {}
+  ) { }
 
   // Implement service methods here
 }
@@ -30,9 +30,9 @@ export class TestServiceService implements ITestServiceService {
 // DI-enabled Hook
 export const useTestServiceDI = () => {
   const testserviceService = useService(TestServiceService);
-  
+
   // Add state management here
-  
+
   return {
     testserviceService,
     // Return hook interface here

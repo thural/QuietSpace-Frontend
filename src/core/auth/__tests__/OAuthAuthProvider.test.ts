@@ -3,11 +3,14 @@
  * 
  * Tests for OAuth authentication provider including:
  * - Provider initialization
- * - OAuth flow initiation
- * - Authorization code handling
- * - Access token handling
+ * - OAuth 2.0 flow implementation
+ * - PKCE implementation
+ * - Token management and refresh
+ * - Multiple provider support (Google, GitHub, Microsoft)
  * - Error scenarios
  */
+
+import { jest } from '@jest/globals';
 
 // Mock Web Crypto API for PKCE
 Object.defineProperty(global, 'crypto', {

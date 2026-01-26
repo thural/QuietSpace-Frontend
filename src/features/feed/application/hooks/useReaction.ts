@@ -1,6 +1,6 @@
 import useUserQueries from "@features/profile/data/userQueries";
 import { ReactionType } from "../../../feed/data/models/reaction";
-import { ContentType, ResId } from "../../../../shared/api/models/common";
+import { ContentType, ResId } from "@shared/api/models/common";
 import { useFeedServices } from "./useFeedService";
 import { useAuthStore } from "@/core/store/zustand";
 
@@ -33,9 +33,9 @@ const useReaction = (contentId: ResId) => {
     const handleReaction = async (contentType: ContentType, reactionType: ReactionType) => {
         try {
             await feedFeatureService.interactWithPost(
-                contentId, 
-                user.id, 
-                reactionType === ReactionType.LIKE ? 'like' : 'dislike', 
+                contentId,
+                user.id,
+                reactionType === ReactionType.LIKE ? 'like' : 'dislike',
                 authData.accessToken
             );
         } catch (error) {

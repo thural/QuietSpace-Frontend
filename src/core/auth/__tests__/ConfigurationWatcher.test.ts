@@ -1,8 +1,15 @@
 /**
  * Configuration Watcher Tests
  * 
- * Tests for configuration hot reload functionality
+ * Tests for the configuration file watcher including:
+ * - File system monitoring
+ * - Configuration change detection
+ * - Hot reload functionality
+ * - Debounced change handling
+ * - Multiple file format support
  */
+
+import { jest } from '@jest/globals';
 
 import { ConfigurationWatcher, ConfigurationHotReloadManager, ConfigurationChangeEvent } from '../config/ConfigurationWatcher';
 import { IAuthConfig } from '../interfaces/authInterfaces';
