@@ -58,7 +58,7 @@ export class CacheProvider {
   get<T>(key: string): T | null {
     try {
       const entry = this.cache.get(key);
-      
+
       if (!entry) {
         this.misses++;
         this.events?.onMiss?.(key);
@@ -89,7 +89,7 @@ export class CacheProvider {
   getEntry<T>(key: string): CacheEntry<T> | null {
     try {
       const entry = this.cache.get(key);
-      
+
       if (!entry) {
         return null;
       }
@@ -124,7 +124,7 @@ export class CacheProvider {
         accessCount: 1,
         lastAccessed: Date.now()
       };
-      
+
       this.cache.set(key, entry);
     } catch (error) {
       this.events?.onError?.(error as Error, 'set', key);
@@ -135,11 +135,11 @@ export class CacheProvider {
     try {
       const entry = this.cache.get(key);
       const deleted = this.cache.delete(key);
-      
+
       if (deleted && entry) {
         this.events?.onEvict?.(key, entry.data);
       }
-      
+
       return deleted;
     } catch (error) {
       this.events?.onError?.(error as Error, 'invalidate', key);
@@ -147,18 +147,23 @@ export class CacheProvider {
     }
   }
 
+  delete(key: string): boolean {
+    // Alias for invalidate for backward compatibility
+    return this.invalidate(key);
+  }
+
   invalidatePattern(pattern: string | RegExp): number {
     try {
       let count = 0;
       const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
-      
+
       for (const [key] of this.cache) {
         if (regex.test(key)) {
           this.invalidate(key);
           count++;
         }
       }
-      
+
       return count;
     } catch (error) {
       this.events?.onError?.(error as Error, 'invalidatePattern');
@@ -173,7 +178,7 @@ export class CacheProvider {
           this.events.onEvict(key, entry.data);
         }
       }
-      
+
       this.cache.clear();
       this.resetStats();
     } catch (error) {
@@ -185,12 +190,12 @@ export class CacheProvider {
     try {
       const entry = this.cache.get(key);
       if (!entry) return false;
-      
+
       if (this.isExpired(entry)) {
         this.cache.delete(key);
         return false;
       }
-      
+
       return true;
     } catch (error) {
       this.events?.onError?.(error as Error, 'has', key);
@@ -216,7 +221,7 @@ export class CacheProvider {
 
   updateConfig(newConfig: Partial<CacheConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    
+
     if (newConfig.cleanupInterval) {
       this.stopCleanupTimer();
       this.startCleanupTimer();

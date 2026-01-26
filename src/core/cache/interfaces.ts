@@ -10,6 +10,7 @@ export interface ICacheProvider {
     getEntry<T>(key: string): CacheEntry<T> | null;
     set<T>(key: string, data: T, ttl?: number): void;
     invalidate(key: string): boolean;
+    delete(key: string): boolean; // Alias for invalidate for backward compatibility
     invalidatePattern(pattern: string | RegExp): number;
     clear(): void;
     has(key: string): boolean;
