@@ -6,14 +6,14 @@ import { ChatPresenceBar, PresenceIndicator } from "@features/chat/components/Ch
 import { AnalyticsProvider, useAnalytics } from "@features/chat/presentation/components/analytics/AnalyticsProvider";
 import AnalyticsDashboard from "@features/chat/presentation/components/analytics/AnalyticsDashboard";
 import MetricsDisplay from "@features/chat/presentation/components/analytics/MetricsDisplay";
-import { 
-    ErrorBoundaryEnhanced, 
-    errorClassifier, 
-    errorReporter, 
-    type ErrorContext 
+import {
+    ErrorBoundaryEnhanced,
+    errorClassifier,
+    errorReporter,
+    type ErrorContext
 } from "@features/chat/presentation/components/errors";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import styles from "../styles/chatContainerStyles";
+import { Container, Contacts, Messages } from "../styles/chatContainerStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import LoaderStyled from "@/shared/LoaderStyled";
 import ChatSidebar from "./sidebar/ChatSidebar";
@@ -28,7 +28,6 @@ import { FiBarChart2, FiX, FiRefreshCw } from "react-icons/fi";
  * @returns {JSX.Element} - The rendered chat container component.
  */
 const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
-    const classes = styles();
     const [selectedChatId, setSelectedChatId] = useState<string | undefined>();
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [showMetrics, setShowMetrics] = useState(false);
@@ -37,7 +36,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
     try {
         const user = getSignedUserElseThrow();
-        
+
         // Use modern useUnifiedChat with all features enabled
         const chat = useUnifiedChat(user.id, undefined, {
             enableRealTime: true,
@@ -84,26 +83,20 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
         const performanceSummary = getPerformanceSummary?.();
 
         if (isLoading) return <LoaderStyled />;
-        if (isError || error) {
+        if (error) {
             const errors = chat.getErrorSummary?.();
             return (
-                <ErrorComponent 
+                <ErrorComponent
                     message={`could not fetch chat data: ${error?.message || 'Unknown error'}`}
                     action={
-                        <button 
+                        <button
                             onClick={handleRetry}
                             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
                             Retry
                         </button>
                     }
-                >
-                    {errors?.map((err, index) => (
-                        <div key={index} className="text-sm text-gray-600 mt-1">
-                            {err.type}: {err.error}
-                        </div>
-                    ))}
-                </ErrorComponent>
+                />
             );
         }
 
@@ -111,7 +104,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
         return (
             <AnalyticsProvider userId={user.id} chatId={selectedChatId} autoRefresh={true}>
-                <DefaultContainer className={classes.container}>
+                <Container>
                     {/* Analytics Toggle Buttons */}
                     <div className="fixed top-4 right-4 z-50 flex flex-col space-y-2">
                         <button
@@ -121,7 +114,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
                         >
                             {showAnalytics ? <FiX /> : <FiBarChart2 />}
                         </button>
-                        
+
                         <button
                             onClick={() => setShowMetrics(!showMetrics)}
                             className="p-2 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-colors text-xs"
@@ -136,7 +129,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
                         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
                             <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
                                 <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-                                    <Typography type="h4">Chat Analytics Dashboard</Typography>
+                                    <h4 className="text-lg font-semibold">Chat Analytics Dashboard</h4>
                                     <button
                                         onClick={() => setShowAnalytics(false)}
                                         className="p-2 hover:bg-gray-100 rounded-full"
@@ -156,7 +149,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
                         <div className="fixed bottom-4 left-4 right-4 z-40">
                             <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
                                 <div className="flex items-center justify-between mb-2">
-                                    <Typography type="h5">Real-time Metrics</Typography>
+                                    <h5 className="text-md font-medium">Real-time Metrics</h5>
                                     <button
                                         onClick={() => setShowMetrics(false)}
                                         className="p-1 hover:bg-gray-100 rounded"
@@ -171,12 +164,11 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
 
                     {/* Performance Indicator */}
                     {performanceSummary && (
-                        <div className={`px-4 py-2 border-b text-sm ${
-                            performanceSummary.overall === 'excellent' ? 'bg-green-50 text-green-700' :
+                        <div className={`px-4 py-2 border-b text-sm ${performanceSummary.overall === 'excellent' ? 'bg-green-50 text-green-700' :
                             performanceSummary.overall === 'good' ? 'bg-blue-50 text-blue-700' :
-                            performanceSummary.overall === 'fair' ? 'bg-yellow-50 text-yellow-700' :
-                            'bg-red-50 text-red-700'
-                        }`}>
+                                performanceSummary.overall === 'fair' ? 'bg-yellow-50 text-yellow-700' :
+                                    'bg-red-50 text-red-700'
+                            }`}>
                             <div className="flex items-center justify-between">
                                 <span>Performance: {performanceSummary.overall.toUpperCase()}</span>
                                 <div className="flex items-center space-x-2">
@@ -198,21 +190,21 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
                             )}
                         </div>
                     )}
-                    
+
                     {/* Chat Sidebar with real-time updates */}
-                    <ChatSidebar 
-                        chats={chats.content} 
-                        className={classes.contacts}
+                    <ChatSidebar
+                        chats={chats.content}
+                        className="chat-sidebar"
                         selectedChatId={selectedChatId}
                         onChatSelect={setSelectedChatId}
                         chat={chat}
                     />
-                    
+
                     {/* Main content area */}
                     <div className="flex-1">
                         {children}
                     </div>
-                </DefaultContainer>
+                </Container>
             </AnalyticsProvider>
         );
     } catch (error: unknown) {

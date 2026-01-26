@@ -1,19 +1,34 @@
-import { createUseStyles } from "react-jss";
+/**
+ * Chat Headline Component Styles - Enterprise Styled-Components
+ * 
+ * Migrated from JSS to styled-components while maintaining
+ * the same styling behavior and enhanced theme integration.
+ */
 
-const styles = createUseStyles({
-  chatHeadline: {
-    gap: '.8rem',
-    position: 'relative',
-    padding: '0 0.5rem 1rem .5rem',
-    alignItems: 'center',
-    '& .title': {
-      width: '100%',
-      position: 'relative',
-      fontSize: '1rem',
-      fontWeight: '600',
-      lineHeight: '1rem'
-    },
-  },
-});
+import styled from 'styled-components';
+import { EnhancedTheme } from '../../../../core/theme';
 
-export default styles
+export const ChatHeadline = styled.div<{ theme: EnhancedTheme }>`
+  gap: ${props => props.theme.spacing.md};
+  position: relative;
+  padding: ${props => `0 ${props.theme.spacing.sm} ${props.theme.spacing.md} ${props.theme.spacing.sm}`};
+  align-items: center;
+  background-color: ${props => props.theme.colors.background.primary};
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  
+  & .title {
+    width: 100%;
+    position: relative;
+    font-size: ${props => props.theme.typography.fontSize.base};
+    font-weight: ${props => props.theme.typography.fontWeight.semibold};
+    line-height: ${props => props.theme.typography.lineHeight.tight};
+    color: ${props => props.theme.colors.text.primary};
+  }
+`;
+
+// Legacy export for backward compatibility during migration
+export const chatHeadlineStyles = {
+  chatHeadline: ChatHeadline,
+};
+
+export default chatHeadlineStyles;
