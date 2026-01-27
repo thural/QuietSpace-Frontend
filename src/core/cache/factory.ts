@@ -5,8 +5,8 @@
  * Consumers use these factories to get configured cache instances.
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '../di/container/Container';
+import { TYPES } from '../di/types';
 import type {
     ICacheProvider,
     ICacheServiceManager,

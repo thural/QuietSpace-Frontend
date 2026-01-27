@@ -1,4 +1,4 @@
-import { Injectable } from '@/core/di';
+import { Injectable } from '../di';
 
 export interface CacheEntry<T> {
   data: T;

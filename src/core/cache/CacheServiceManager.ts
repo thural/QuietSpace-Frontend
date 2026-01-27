@@ -1,4 +1,4 @@
-import { CacheProvider, type CacheConfig, type CacheEvents } from '@/core/cache';
+import { CacheProvider, type CacheConfig, type CacheEvents } from './CacheProvider';
 
 export interface CacheServiceConfig {
   defaultCache?: Partial<CacheConfig>;
@@ -27,7 +27,7 @@ export class CacheServiceManager implements FeatureCacheService {
         ...this.globalConfig.defaultCache,
         ...this.globalConfig.featureCaches?.[featureName]
       };
-      
+
       const events: CacheEvents = {
         onHit: (key, data) => console.debug(`[${featureName}] Cache hit: ${key}`),
         onMiss: (key) => console.debug(`[${featureName}] Cache miss: ${key}`),

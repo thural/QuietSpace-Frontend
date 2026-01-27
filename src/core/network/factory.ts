@@ -12,7 +12,7 @@ import { createApiError, ERROR_CODES } from './utils';
 // Import implementations (internal)
 import { ApiClient } from './api/ApiClient';
 import { RestClient } from './rest/RestClient';
-import { Container } from '../di';
+import { Container } from '../di/container/Container';
 import { TYPES } from '../di/types';
 
 /**

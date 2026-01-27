@@ -159,7 +159,7 @@ export interface ServiceFactory<T = any> {
     (...args: any[]): T;
 }
 
-export interface ServiceLifecycle {
+export interface ServiceLifecycle<T = any> {
     onCreate?(instance: T): void;
     onDestroy?(instance: T): void;
     onDispose?(instance: T): void;
@@ -437,7 +437,6 @@ export function createServiceDescriptor<T>(
 
 export function createLogContext(context?: Partial<LogContext>): LogContext {
     return {
-        timestamp: Date.now(),
         ...context
     };
 }

@@ -230,7 +230,7 @@ export class EnterpriseAuthService implements IAuthService {
      * Validates credentials with all registered validators
      */
     private async validateCredentials(credentials: AuthCredentials): Promise<AuthResult<boolean>> {
-        for (const [, validator] of this.validators) {
+        for (const validator of Array.from(this.validators.values())) {
             const result = validator.validateCredentials(credentials);
             if (!result.success) {
                 return result;
@@ -311,11 +311,11 @@ export class EnterpriseAuthService implements IAuthService {
         const capabilities = ['authentication', 'validation', 'logging', 'metrics', 'security'];
 
         // Add provider-specific capabilities
-        for (const provider of this.providers.values()) {
+        for (const provider of Array.from(this.providers.values())) {
             capabilities.push(...provider.getCapabilities());
         }
 
-        return [...new Set(capabilities)];
+        return Array.from(new Set(capabilities));
     }
 
     /**
@@ -332,14 +332,14 @@ export class EnterpriseAuthService implements IAuthService {
         const initializationPromises = [];
 
         // Initialize providers
-        for (const provider of this.providers.values()) {
+        for (const provider of Array.from(this.providers.values())) {
             if (typeof provider.initialize === 'function') {
                 initializationPromises.push(provider.initialize());
             }
         }
 
         // Initialize plugins
-        for (const [name, plugin] of this.plugins) {
+        for (const [name, plugin] of Array.from(this.plugins.entries())) {
             try {
                 await plugin.initialize(this);
                 this.logger.log({
