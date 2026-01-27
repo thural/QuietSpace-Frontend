@@ -5,13 +5,13 @@
  * with the QuietSpace theme system.
  */
 
-import { Theme } from '@/app/theme';
+import { EnhancedTheme } from '@/core/theme';
 
 /**
  * Base props for enterprise styled components
  */
 export interface EnterpriseStyledProps {
-    theme: Theme;
+    theme: EnhancedTheme;
 }
 
 /**

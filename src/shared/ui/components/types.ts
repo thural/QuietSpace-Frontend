@@ -5,11 +5,11 @@
  * extending the existing Theme system.
  */
 
-import { Theme } from '@/app/theme';
+import { EnhancedTheme } from '@/core/theme';
 
 // Base component props interface
 export interface BaseComponentProps {
-    theme?: Theme;
+    theme?: EnhancedTheme;
     className?: string;
     children?: React.ReactNode;
     testId?: string;
