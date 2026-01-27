@@ -20,26 +20,49 @@ The Chat feature provides enterprise-grade real-time communication with WebSocke
 
 ### Architecture Overview
 ```
-React Components
+React Components (UI Layer)
     ↓
-Enterprise Chat Hooks (useUnifiedChat, useChatMigration)
+Custom Hooks (UI Logic Layer)
     ↓
-Chat Services (useChatServices)
+DI Container (Dependency Resolution)
     ↓
-Enterprise Services (ChatFeatureService, ChatDataService)
+Service Layer (Business Logic)
     ↓
-Repository Layer (ChatRepository)
+Cache Layer (Data Orchestration)
     ↓
-Cache Provider (Enterprise Cache with Chat Optimization)
-    ↓
-WebSocket Service (Real-time Communication)
-    ↓
-Analytics Service (Performance Monitoring)
-    ↓
-Error Handling Service (Advanced Recovery)
-    ↓
-Performance Optimization Service
+Repository Layer (Data Access)
 ```
+
+### Layer Separation Principles
+
+**Component Layer** - Pure UI rendering and local state only
+- React components with UI logic only
+- Event handlers and user interactions
+- No business logic or direct service access
+- Access services only through hooks
+
+**Hook Layer** - UI logic and state transformation
+- Custom hooks with UI-specific logic
+- State management and transformation
+- Service access through DI container only
+- No direct service imports
+
+**Service Layer** - Business logic and orchestration
+- Business validation and transformation
+- Orchestration of multiple operations
+- Cache layer dependency only (no direct repository access)
+- No direct database or API calls
+
+**Cache Layer** - Data orchestration and optimization
+- Data caching with TTL management
+- Cache invalidation strategies
+- Repository layer coordination only
+- No business logic
+
+**Repository Layer** - Raw data access
+- Database operations and external API calls
+- Data persistence and retrieval
+- No business logic or caching logic
 
 ### Directory Structure
 ```

@@ -19,25 +19,43 @@ QuietSpace is a user-friendly, privacy-focused social media application designed
 - **Real-time Updates**: Live feed updates and instant messaging
 
 ### Enterprise Architecture
-- **4-Layer Clean Architecture**: Domain, Data, Application, and Presentation layers
+- **5-Layer Clean Architecture**: Component → Hook → DI → Service → Cache → Repository
+- **Strict Layer Separation**: Each layer has single responsibility with unidirectional dependencies
 - **Dependency Injection System**: Feature-specific containers with enterprise-grade DI
 - **Modular Feature Structure**: Standardized organization with cross-platform support
 - **Type-Safe Development**: Comprehensive TypeScript interfaces and strict typing
 - **Black Box Module Pattern**: Complete isolation and encapsulation of infrastructure modules
-- **Enterprise Hook Pattern**: Comprehensive functionality with caching and performance optimization
-- **Service Layer Pattern**: Business logic orchestration with validation and cross-service coordination
-- **Repository Pattern**: Clean data access abstraction with caching and error handling
+- **Enterprise Hook Pattern**: UI logic encapsulation with proper DI access
+- **Service Layer Pattern**: Business logic orchestration with cache-only dependency
+- **Cache-First Pattern**: Data orchestration and optimization with repository coordination
+- **Repository Pattern**: Clean data access abstraction with raw data operations only
 
 ## Architecture Overview
 
-### 4-Layer Clean Architecture
+### 5-Layer Clean Architecture
 
-The project implements enterprise-grade clean architecture with clear separation of concerns:
+The project implements enterprise-grade clean architecture with strict layer separation:
 
-- **Domain Layer**: Core business logic and entities
-- **Data Layer**: Data access, storage, and external service integration
-- **Application Layer**: Use cases and business rules orchestration
-- **Presentation Layer**: UI components and user interaction handling
+```
+Component Layer (Pure UI)
+    ↓
+Hook Layer (UI Logic + DI Access)
+    ↓
+DI Container (Dependency Resolution)
+    ↓
+Service Layer (Business Logic)
+    ↓
+Cache Layer (Data Orchestration)
+    ↓
+Repository Layer (Data Access)
+```
+
+**Layer Responsibilities:**
+- **Component Layer**: Pure UI rendering and local state only
+- **Hook Layer**: UI logic, state transformation, DI container access
+- **Service Layer**: Business logic, validation, cache layer dependency only
+- **Cache Layer**: Data caching, optimization, repository coordination only
+- **Repository Layer**: Raw data access, external APIs, no business logic
 
 ### Dependency Injection System
 
@@ -127,8 +145,37 @@ QuietSpace-Frontend/
 │   │   ├── notifications/  # Real-time notifications
 │   │   ├── theme/          # UI theming system
 │   │   └── # Each feature contains:
-│   │       ├── domain/         # Business logic
-│   │       ├── data/           # Data access
+│   │       ├── domain/         # Business entities and interfaces
+│   │       ├── data/           # Repository implementations
+│   │       ├── application/    # Services and hooks
+│   │       ├── presentation/   # UI components
+│   │       └── di/             # DI container
+│   ├── core/               # Shared core functionality
+│   │   ├── auth/           # Core authentication providers
+│   │   ├── cache/          # Enterprise caching system
+│   │   ├── websocket/      # WebSocket management
+│   │   ├── theme/          # Theme system and tokens
+│   │   ├── di/             # Main DI container
+│   │   └── network/        # Network system (Black Box)
+│   ├── shared/             # Application-wide shared code
+│   │   ├── components/     # Reusable UI components
+│   │   ├── hooks/          # Shared hooks
+│   │   ├── utils/          # Utility functions
+│   │   └── types/          # Shared types
+│   └── app/                # Application-level code
+├── docs/                  # Documentation
+└── tests/                 # Test files
+```
+
+### Architecture Compliance
+
+The project strictly follows the **Component → Hook → DI → Service → Cache → Repository** pattern:
+
+- **Components** contain only pure UI logic
+- **Hooks** provide UI logic with DI container access
+- **Services** contain business logic with cache-only dependency
+- **Cache** layer coordinates data access with repository-only dependency
+- **Repository** layer handles raw data access only
 │   │       ├── application/    # Use cases
 │   │       ├── presentation/   # UI components
 │   │       ├── di/             # DI container
@@ -155,6 +202,46 @@ QuietSpace-Frontend/
 ├── scripts/                 # Build and utility scripts
 └── config/                  # Build and environment configs
 ```
+
+## Development Guidelines
+
+### Layer Separation Rules
+
+Follow strict layer separation in all development:
+
+```typescript
+// ✅ CORRECT: Component with pure UI
+const MyComponent = () => {
+  const { data, actions } = useMyHook(); // Hook provides UI logic
+  return <div>{data}</div>;
+};
+
+// ✅ CORRECT: Hook with DI access
+export const useMyHook = () => {
+  const service = useDIContainer().getMyService(); // DI access only
+  // UI logic and state management
+};
+
+// ✅ CORRECT: Service with cache dependency
+@Injectable()
+class MyService {
+  constructor(@Inject(TYPES.CACHE_SERVICE) private cache: ICacheService) {}
+  // Business logic only
+};
+
+// ❌ INCORRECT: Component with direct service access
+const BadComponent = () => {
+  const service = new MyService(); // Direct service access ❌
+  return <div />;
+};
+```
+
+### Code Quality Standards
+
+- **TypeScript**: Strict mode with comprehensive types
+- **ESLint**: React compiler integration with custom rules
+- **Testing**: 90%+ coverage with unit and integration tests
+- **Architecture**: 100% layer separation compliance
 
 ## Key Development Scripts
 

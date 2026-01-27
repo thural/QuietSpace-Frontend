@@ -20,24 +20,49 @@ The Analytics feature provides enterprise-grade data processing, real-time analy
 
 ### Architecture Overview
 ```
-React Components
+React Components (UI Layer)
     ↓
-Enterprise Analytics Hooks (useEnterpriseAnalytics, useAnalyticsMigration)
+Custom Hooks (UI Logic Layer)
     ↓
-Analytics Services (useAnalyticsServices)
+DI Container (Dependency Resolution)
     ↓
-Enterprise Services (AnalyticsFeatureService, AnalyticsDataService)
+Service Layer (Business Logic)
     ↓
-Repository Layer (AnalyticsRepository)
+Cache Layer (Data Orchestration)
     ↓
-Cache Provider (Enterprise Cache with Analytics Optimization)
-    ↓
-Data Processing Engine (Advanced Analytics)
-    ↓
-ML Service (Predictive Analytics)
-    ↓
-Reporting Service (Automated Reports)
+Repository Layer (Data Access)
 ```
+
+### Layer Separation Principles
+
+**Component Layer** - Pure UI rendering and local state only
+- React components with UI logic only
+- Event handlers and user interactions
+- No business logic or direct service access
+- Access services only through hooks
+
+**Hook Layer** - UI logic and state transformation
+- Custom hooks with UI-specific logic
+- State management and transformation
+- Service access through DI container only
+- No direct service imports
+
+**Service Layer** - Business logic and orchestration
+- Business validation and transformation
+- Orchestration of multiple operations
+- Cache layer dependency only (no direct repository access)
+- No direct database or API calls
+
+**Cache Layer** - Data orchestration and optimization
+- Data caching with TTL management
+- Cache invalidation strategies
+- Repository layer coordination only
+- No business logic
+
+**Repository Layer** - Raw data access
+- Database operations and external API calls
+- Data persistence and retrieval
+- No business logic or caching logic
 
 ### Directory Structure
 ```

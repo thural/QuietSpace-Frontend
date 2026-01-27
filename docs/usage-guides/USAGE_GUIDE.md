@@ -2,7 +2,7 @@
 
 ## 🎯 Overview
 
-This comprehensive usage guide provides practical examples and patterns for using QuietSpace Frontend components, services, and features effectively in real-world applications.
+This comprehensive usage guide provides practical examples and patterns for using QuietSpace Frontend components, services, and features effectively in real-world applications with strict layer separation compliance.
 
 ## 🚀 Quick Start
 
@@ -320,31 +320,25 @@ export const useApiResource = <T>(
 ### Service Integration
 
 ```typescript
-// Service with dependency injection
+// Service with dependency injection and cache-only dependency
 import { injectable, inject } from 'inversify';
 import { TYPES } from '@/core/di/types';
 
 @injectable()
 export class MyService {
   constructor(
-    @inject(TYPES.MY_REPOSITORY) private repository: IMyRepository,
+    // ✅ CORRECT: Cache layer dependency only
     @inject(TYPES.CACHE_SERVICE) private cache: ICacheService
   ) {}
   
   async getData(id: string): Promise<MyData> {
-    // Check cache first
-    const cached = await this.cache.get(`myfeature:${id}`);
-    if (cached) return cached;
+    // Business logic: validation
+    if (!id) {
+      throw new Error('ID is required');
+    }
     
-    // Fetch from repository
-    const data = await this.repository.findById(id);
-    
-    // Cache result
-    await this.cache.set(`myfeature:${id}`, data, {
-      ttl: 15 * 60 * 1000 // 15 minutes
-    });
-    
-    return data;
+    // Business logic: data access through cache layer only
+    return this.cache.getData(id);
   }
 }
 ```
@@ -622,6 +616,8 @@ const { data, isLoading, error } = useCustomQuery(
 ### Documentation Links
 - [Architecture Overview](../architecture/ARCHITECTURE_OVERVIEW.md)
 - [Enterprise Patterns](../architecture/ENTERPRISE_PATTERNS.md)
+- [Complete Architecture Guide](../architecture/COMPLETE_ARCHITECTURE_GUIDE.md)
+- [Architectural Decision Records](../architecture/ADRs.md)
 - [Feature Documentation](../features/)
 - [Core Modules](../core-modules/)
 - [Development Guide](../development-guides/DEVELOPMENT_GUIDE.md)

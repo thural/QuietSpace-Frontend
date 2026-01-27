@@ -17,23 +17,51 @@ The Authentication feature provides enterprise-grade security with multi-factor 
 ## 🏗️ Architecture
 
 ### Architecture Overview
+
 ```
-React Components
+React Components (UI Layer)
     ↓
-Enterprise Auth Hooks (useEnterpriseAuthWithSecurity, useAuthMigration)
+Custom Hooks (UI Logic Layer)
     ↓
-Auth Services (useAuthServices)
+DI Container (Dependency Resolution)
     ↓
-Enterprise Services (AuthFeatureService, AuthDataService)
+Service Layer (Business Logic)
     ↓
-Repository Layer (AuthRepository)
+Cache Layer (Data Orchestration)
     ↓
-Cache Provider (Enterprise Cache with Security TTL)
-    ↓
-Security Services (MFA, Device Trust, Threat Detection)
-    ↓
-Session Management Service
+Repository Layer (Data Access)
 ```
+
+### Layer Separation Principles
+
+**Component Layer** - Pure UI rendering and local state only
+- React components with UI logic only
+- Event handlers and user interactions
+- No business logic or direct service access
+- Access services only through hooks
+
+**Hook Layer** - UI logic and state transformation
+- Custom hooks with UI-specific logic
+- State management and transformation
+- Service access through DI container only
+- No direct service imports
+
+**Service Layer** - Business logic and orchestration
+- Business validation and transformation
+- Orchestration of multiple operations
+- Cache layer dependency only (no direct repository access)
+- No direct database or API calls
+
+**Cache Layer** - Data orchestration and optimization
+- Data caching with TTL management
+- Cache invalidation strategies
+- Repository layer coordination only
+- No business logic
+
+**Repository Layer** - Raw data access
+- Database operations and external API calls
+- Data persistence and retrieval
+- No business logic or caching logic
 
 ### Directory Structure
 ```
@@ -70,6 +98,7 @@ src/features/auth/
 #### useEnterpriseAuth
 ```typescript
 export const useEnterpriseAuth = () => {
+  // ✅ CORRECT: Service access through DI container
   const services = useAuthServices();
   
   const [state, setState] = useState<AuthState>({
@@ -81,28 +110,20 @@ export const useEnterpriseAuth = () => {
     deviceTrusted: false
   });
   
-  const { data, isLoading, error, refetch } = useCustomQuery(
-    ['auth', 'user'],
-    () => services.authService.getCurrentUser(),
-    {
-      staleTime: CACHE_TTL.USER_STALE_TIME,
-      cacheTime: CACHE_TTL.USER_CACHE_TIME,
-      onSuccess: (user) => {
-        setState(prev => ({
-          ...prev,
-          user,
-          isAuthenticated: true,
-          isLoading: false
-        }));
-      }
-    }
-  );
-  
   const actions = {
     login: async (credentials: LoginCredentials) => {
-      const result = await services.authService.login(credentials);
-      setState(prev => ({ ...prev, ...result }));
-      return result;
+      // UI logic: loading states
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      
+      try {
+        // Business logic delegation to service
+        const result = await services.authService.login(credentials);
+        setState(prev => ({ ...prev, ...result, isLoading: false }));
+        return result;
+      } catch (error) {
+        setState(prev => ({ ...prev, error, isLoading: false }));
+        throw error;
+      }
     },
     logout: async () => {
       await services.authService.logout();
@@ -111,29 +132,10 @@ export const useEnterpriseAuth = () => {
         user: null,
         isAuthenticated: false
       }));
-    },
-    refreshToken: async () => {
-      const result = await services.authService.refreshToken();
-      setState(prev => ({ ...prev, user: result.user }));
-      return result;
-    },
-    enableMFA: async (method: MFAMethod) => {
-      const result = await services.authService.enableMFA(method);
-      setState(prev => ({ ...prev, mfaRequired: true }));
-      return result;
-    },
-    trustDevice: async () => {
-      const result = await services.authService.trustCurrentDevice();
-      setState(prev => ({ ...prev, deviceTrusted: true }));
-      return result;
     }
   };
   
-  return {
-    ...state,
-    ...actions,
-    refetch
-  };
+  return { ...state, ...actions };
 };
 ```
 
@@ -184,141 +186,48 @@ export const useAuthMigration = (config: AuthMigrationConfig) => {
 @Injectable()
 export class AuthFeatureService {
   constructor(
-    @Inject(TYPES.DATA_SERVICE) private dataService: AuthDataService,
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
-    @Inject(TYPES.MFA_SERVICE) private mfaService: MFAService,
-    @Inject(TYPES.DEVICE_SERVICE) private deviceService: DeviceService
+    // ✅ CORRECT: Cache layer dependency only
+    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheService
   ) {}
   
   async loginWithSecurity(credentials: LoginCredentials): Promise<AuthResult> {
-    // Validate credentials
-    const validatedCredentials = await this.validateCredentials(credentials);
+    // Business logic: input validation
+    const validatedCredentials = this.validateCredentials(credentials);
     
-    // Check device trust
-    const deviceInfo = await this.deviceService.getCurrentDevice();
-    const isTrustedDevice = await this.deviceService.isTrusted(deviceInfo);
+    // Business logic: device trust check
+    const deviceInfo = await this.getDeviceInfo();
+    const isTrustedDevice = await this.cache.isDeviceTrusted(deviceInfo);
     
-    // Perform authentication
-    const authResult = await this.dataService.authenticate(validatedCredentials);
+    // Business logic: authentication orchestration
+    const authResult = await this.cache.authenticate(validatedCredentials);
     
-    // MFA check if required
+    // Business logic: MFA verification
     if (authResult.mfaRequired && !isTrustedDevice) {
-      const mfaResult = await this.mfaService.authenticate(authResult.user);
+      const mfaResult = await this.cache.verifyMFA(authResult.user);
       authResult.mfaVerified = mfaResult.verified;
     }
     
-    // Session management
+    // Business logic: session creation
     await this.createSecureSession(authResult.user, deviceInfo);
     
-    // Cache user data with security TTL
-    await this.cache.set(
-      CACHE_KEYS.USER(authResult.user.id),
-      authResult.user,
-      { ttl: CACHE_TTL.USER }
-    );
-    
-    // Security logging
-    await this.logSecurityEvent('auth.login.success', {
-      userId: authResult.user.id,
-      deviceId: deviceInfo.id,
-      mfaUsed: authResult.mfaVerified
-    });
+    // Data access through cache layer only
+    await this.cache.setUserData(authResult.user.id, authResult.user);
     
     return authResult;
   }
   
-  async enableMultiFactorAuth(userId: string, method: MFAMethod): Promise<MFASetupResult> {
-    // Generate MFA setup
-    const setupResult = await this.mfaService.setup(userId, method);
-    
-    // Update user preferences
-    await this.dataService.updateUserMFA(userId, method, setupResult.secret);
-    
-    // Invalidate user cache
-    await this.cache.invalidatePattern(CACHE_KEYS.USER(userId));
-    
-    // Security logging
-    await this.logSecurityEvent('auth.mfa.enabled', {
-      userId,
-      method
-    });
-    
-    return setupResult;
-  }
-  
-  async trustDevice(userId: string, deviceInfo: DeviceInfo): Promise<TrustResult> {
-    // Validate device security
-    const securityScore = await this.deviceService.calculateSecurityScore(deviceInfo);
-    
-    if (securityScore < MIN_SECURITY_SCORE) {
-      throw new Error('Device does not meet security requirements');
+  private validateCredentials(credentials: LoginCredentials): ValidatedCredentials {
+    // Business validation logic
+    if (!credentials.email?.includes('@')) {
+      throw new ValidationError('Invalid email format');
     }
-    
-    // Create device trust record
-    const trustRecord = await this.deviceService.createTrustRecord(
-      userId,
-      deviceInfo,
-      securityScore
-    );
-    
-    // Cache device trust
-    await this.cache.set(
-      CACHE_KEYS.DEVICE_TRUST(deviceInfo.id),
-      trustRecord,
-      { ttl: CACHE_TTL.DEVICE_TRUST }
-    );
-    
-    // Security logging
-    await this.logSecurityEvent('auth.device.trusted', {
-      userId,
-      deviceId: deviceInfo.id,
-      securityScore
-    });
-    
-    return trustRecord;
-  }
-  
-  private async validateCredentials(credentials: LoginCredentials): Promise<ValidatedCredentials> {
-    // Input sanitization
-    const sanitized = {
+    if (credentials.password?.length < 8) {
+      throw new ValidationError('Password must be at least 8 characters');
+    }
+    return {
       email: credentials.email.toLowerCase().trim(),
       password: credentials.password
     };
-    
-    // Format validation
-    if (!this.isValidEmail(sanitized.email)) {
-      throw new ValidationError('Invalid email format');
-    }
-    
-    if (sanitized.password.length < 8) {
-      throw new ValidationError('Password must be at least 8 characters');
-    }
-    
-    return sanitized;
-  }
-  
-  private async createSecureSession(user: User, deviceInfo: DeviceInfo): Promise<Session> {
-    const session = {
-      id: generateSecureId(),
-      userId: user.id,
-      deviceId: deviceInfo.id,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + SESSION_TIMEOUT),
-      isActive: true
-    };
-    
-    await this.dataService.createSession(session);
-    
-    return session;
-  }
-  
-  private async logSecurityEvent(event: string, data: any): Promise<void> {
-    await this.dataService.logSecurityEvent({
-      event,
-      data,
-      timestamp: new Date(),
-      severity: this.calculateEventSeverity(event)
-    });
   }
 }
 ```
@@ -654,6 +563,7 @@ describe('Auth Integration', () => {
 
 ### Basic Authentication
 ```typescript
+// ✅ CORRECT: Component with pure UI and hook usage
 const LoginComponent = () => {
   const { login, isLoading, error } = useEnterpriseAuth();
   
@@ -672,10 +582,37 @@ const LoginComponent = () => {
     </form>
   );
 };
+
+// ❌ INCORRECT: Component with direct service access
+const LoginComponentBad = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleSubmit = async (credentials: LoginCredentials) => {
+    // ❌ INCORRECT: Direct service import and access
+    import { AuthService } from '../services/AuthService';
+    const authService = new AuthService();
+    
+    setIsLoading(true);
+    try {
+      await authService.login(credentials);
+    } catch (error) {
+      // Handle error
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Login form */}
+    </form>
+  );
+};
 ```
 
 ### MFA Setup
 ```typescript
+// ✅ CORRECT: Component with proper hook usage
 const MFASetupComponent = () => {
   const { enableMFA, user } = useEnterpriseAuth();
   const [qrCode, setQrCode] = useState('');
@@ -687,6 +624,32 @@ const MFASetupComponent = () => {
     } catch (error) {
       // Handle error
     }
+  };
+  
+  return (
+    <div>
+      <h2>Set up Multi-Factor Authentication</h2>
+      {qrCode && <img src={qrCode} alt="QR Code" />}
+      <button onClick={handleEnableMFA}>
+        Enable MFA
+      </button>
+    </div>
+  );
+};
+
+// ❌ INCORRECT: Component with business logic
+const MFASetupComponentBad = () => {
+  const [qrCode, setQrCode] = useState('');
+  
+  const handleEnableMFA = async () => {
+    // ❌ INCORRECT: Business logic in component
+    import { TOTPService } from '../services/TOTPService';
+    const totpService = new TOTPService();
+    
+    const user = getCurrentUser(); // Direct state access ❌
+    const secret = totpService.generateSecret(user.id);
+    const qrCode = await generateQRCode(secret.otpauth_url);
+    setQrCode(qrCode);
   };
   
   return (

@@ -2,7 +2,7 @@
 
 ## 🎯 Overview
 
-This comprehensive development guide provides everything developers need to work effectively with the QuietSpace Frontend codebase, including setup procedures, coding standards, architectural patterns, and best practices for enterprise-grade React development.
+This comprehensive development guide provides everything developers need to work effectively with the QuietSpace Frontend codebase, including setup procedures, coding standards, strict layer separation patterns, and best practices for enterprise-grade React development.
 
 ## ✅ Prerequisites
 
@@ -132,32 +132,97 @@ Each feature follows this standardized structure:
 
 ```
 feature-name/
-├── domain/                    # Business logic layer
+├── domain/                    # Business entities and interfaces
 │   ├── entities/            # Business entities
 │   ├── repositories/        # Repository interfaces
 │   ├── services/           # Domain services
 │   └── types/              # Domain types
-├── data/                     # Data access layer
+├── data/                     # Data access layer (repositories)
 │   ├── repositories/        # Repository implementations
 │   ├── models/             # Data models
 │   └── migrations/         # Database migrations
-├── application/              # Application layer
-│   ├── services/           # Application services
-│   ├── hooks/              # React hooks
-│   ├── stores/             # State management
+├── application/              # Application layer (services)
+│   ├── services/           # Application services (business logic)
+│   ├── hooks/              # Application hooks (DI access)
 │   └── dto/                # Data transfer objects
 ├── presentation/             # Presentation layer
-│   ├── components/         # All React components (MANDATORY)
-│   ├── hooks/              # Presentation hooks
-│   └── styles/             # Feature-specific styles (MANDATORY)
-├── di/                       # DI container
-│   ├── container.ts         # Feature container
-│   ├── types.ts            # DI types
-│   └── index.ts            # Exports
-└── __tests__/                 # Tests
-    ├── unit/               # Unit tests
-    ├── integration/        # Integration tests
-    └── e2e/                # End-to-end tests
+│   ├── components/         # UI components (pure UI)
+│   ├── hooks/              # Presentation hooks (UI logic)
+│   └── styles/             # Feature-specific styles
+└── di/                       # DI container
+    ├── container.ts         # Feature container
+    ├── types.ts            # DI types
+    └── index.ts            # Exports
+```
+
+### Layer Separation Rules
+
+**Component Layer** - Pure UI rendering and local state only
+- React components with UI logic only
+- Event handlers and user interactions
+- No business logic or direct service access
+- Access services only through hooks
+
+**Hook Layer** - UI logic and state transformation
+- Custom hooks with UI-specific logic
+- State management and transformation
+- Service access through DI container only
+- No direct service imports
+
+**Service Layer** - Business logic and orchestration
+- Business validation and transformation
+- Orchestration of multiple operations
+- Cache layer dependency only (no direct repository access)
+- No direct database or API calls
+
+**Cache Layer** - Data orchestration and optimization
+- Data caching with TTL management
+- Cache invalidation strategies
+- Repository layer coordination only
+- No business logic
+
+**Repository Layer** - Raw data access
+- Database operations and external API calls
+- Data persistence and retrieval
+- No business logic or caching logic
+
+## 🏗️ Architecture Compliance
+
+### Strict Layer Separation
+
+The project strictly follows the **Component → Hook → DI → Service → Cache → Repository** pattern:
+
+```typescript
+// ✅ CORRECT: Component with pure UI
+const MyComponent = () => {
+  const { data, actions } = useMyHook(); // Hook provides UI logic
+  return <div>{data}</div>;
+};
+
+// ✅ CORRECT: Hook with DI access
+export const useMyHook = () => {
+  const service = useDIContainer().getMyService(); // DI access only
+  // UI logic and state management
+};
+
+// ✅ CORRECT: Service with cache dependency
+@Injectable()
+class MyService {
+  constructor(@Inject(TYPES.CACHE_SERVICE) private cache: ICacheService) {}
+  // Business logic only
+};
+
+// ❌ INCORRECT: Component with direct service access
+const BadComponent = () => {
+  const service = new MyService(); // Direct service access ❌
+  return <div />;
+};
+
+// ❌ INCORRECT: Service with repository dependency
+@Injectable()
+class BadService {
+  constructor(@Inject(TYPES.REPOSITORY) private repository: IRepository) {} // ❌
+}
 ```
 
 ## 🔧 Development Workflow
@@ -1013,6 +1078,8 @@ const usePerformanceMonitor = (componentName: string) => {
 ### Documentation
 - [Architecture Overview](../architecture/ARCHITECTURE_OVERVIEW.md)
 - [Enterprise Patterns](../architecture/ENTERPRISE_PATTERNS.md)
+- [Complete Architecture Guide](../architecture/COMPLETE_ARCHITECTURE_GUIDE.md)
+- [Architectural Decision Records](../architecture/ADRs.md)
 - [Feature Documentation](../features/)
 - [Core Modules](../core-modules/)
 

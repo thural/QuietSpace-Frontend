@@ -10,17 +10,15 @@ This document outlines the **enterprise architecture patterns** established acro
 ```
 React Components (UI Layer)
     ↓
-Enterprise Hooks (Custom Query, Advanced Features)
+Custom Hooks (UI Logic Layer)
     ↓
-Feature Services (Business Logic & Orchestration)
+DI Container (Dependency Resolution)
     ↓
-Data Services (Caching & Data Orchestration)
+Service Layer (Business Logic)
     ↓
-Repositories (Raw Data Access)
+Cache Layer (Data Orchestration)
     ↓
-Cache Provider (Enterprise Cache)
-    ↓
-Global State (Zustand - Loading, Error, Query Tracking)
+Repository Layer (Data Access)
 ```
 
 ## 🏗️ Core Architecture Patterns
@@ -28,170 +26,191 @@ Global State (Zustand - Loading, Error, Query Tracking)
 ### 1. Enterprise Hook Pattern
 
 #### Pattern Definition
-Enterprise hooks provide comprehensive functionality with caching, error handling, and performance optimization while maintaining a consistent API across all features.
+Enterprise hooks provide UI logic encapsulation with proper dependency injection access while maintaining strict layer separation and consistent API across all features.
 
 #### Implementation Template
 ```typescript
 export function useEnterpriseFeature() {
+  // ✅ CORRECT: Service access through DI container only
   const services = useFeatureServices();
   
   const [state, setState] = useState<FeatureState>({
     data: null,
     isLoading: false,
-    error: null,
-    cacheHitRate: 0,
-    lastUpdateTime: null
+    error: null
   });
   
-  // Custom query integration
-  const { data, isLoading, error, refetch } = useCustomQuery(
-    ['feature', 'data'],
-    () => services.featureService.getData(),
-    {
-      staleTime: CACHE_TTL.FEATURE_STALE_TIME,
-      cacheTime: CACHE_TTL.FEATURE_CACHE_TIME,
-      onSuccess: (data) => {
-        setState(prev => ({
-          ...prev,
-          data,
-          lastUpdateTime: new Date().toISOString()
-        }));
-      },
-      onError: (error) => {
-        setState(prev => ({ ...prev, error }));
-      }
-    }
-  );
-  
-  // Actions
+  // UI logic and state transformation
   const actions = {
     fetchData: async () => {
-      const result = await services.featureService.getData();
-      setState(prev => ({ ...prev, data: result }));
-      return result;
+      // UI logic: loading states
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      
+      try {
+        // Business logic delegation to service
+        const result = await services.featureService.getData();
+        setState(prev => ({ ...prev, data: result, isLoading: false }));
+        return result;
+      } catch (error) {
+        setState(prev => ({ ...prev, error, isLoading: false }));
+        throw error;
+      }
     },
     updateData: async (updates: any) => {
-      const result = await services.featureService.updateData(updates);
-      setState(prev => ({ ...prev, data: result }));
-      return result;
+      // UI logic: loading states
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      
+      try {
+        // Business logic delegation to service
+        const result = await services.featureService.updateData(updates);
+        setState(prev => ({ ...prev, data: result, isLoading: false }));
+        return result;
+      } catch (error) {
+        setState(prev => ({ ...prev, error, isLoading: false }));
+        throw error;
+      }
     },
-    refresh: refetch,
-    invalidateCache: () => services.featureService.invalidateCache()
+    refresh: async () => {
+      // UI logic: refresh data
+      await actions.fetchData();
+    }
   };
   
   return {
     ...state,
-    ...actions,
-    // Advanced features
-    realTimeEnabled: false,
-    performanceMetrics: {},
-    cacheHitRate: state.cacheHitRate
+    ...actions
   };
 }
 ```
 
 #### Benefits
+- **Layer Separation**: Strict UI logic only, no business logic
+- **DI Access**: Proper service access through DI container
 - **Consistency**: Same pattern across all features
-- **Performance**: Built-in caching and optimization
 - **Type Safety**: Full TypeScript coverage
-- **Extensibility**: Easy to add new features
+- **Testability**: Easy to test with mocked services
+- **Maintainability**: Clear separation of concerns
 
 ### 2. Service Layer Pattern
 
 #### Pattern Definition
-Service layer provides business logic orchestration with validation, caching, and cross-service coordination.
+Service layer provides business logic orchestration with validation and cache-only dependency (no direct repository access).
 
 #### Feature Service Template
 ```typescript
 @Injectable()
 export class FeatureService {
   constructor(
-    @Inject(TYPES.DATA_SERVICE) private dataService: DataService,
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService
+    // ✅ CORRECT: Cache layer dependency only
+    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheService
   ) {}
   
   async createWithValidation(data: CreateDataRequest): Promise<FeatureResult> {
     // Business validation
     const validatedData = await this.validateData(data);
     
-    // Sanitization
+    // Business sanitization
     const sanitizedData = await this.sanitizeData(validatedData);
     
-    // Service orchestration
-    const result = await this.dataService.create(sanitizedData);
+    // Business logic: data access through cache layer only
+    const result = await this.cache.createData(sanitizedData);
     
-    // Cache invalidation
+    // Business logic: cache invalidation
     await this.cache.invalidatePattern(`feature:*`);
     
-    // Event logging
+    // Business logic: event logging
     await this.logEvent('feature.created', { id: result.id });
     
     return result;
   }
   
   private async validateData(data: any): Promise<ValidatedData> {
-    // Validation logic
+    // Business validation logic
+    if (!data.name?.trim()) {
+      throw new ValidationError('Name is required');
+    }
     return data;
   }
   
   private async sanitizeData(data: any): Promise<SanitizedData> {
-    // Sanitization logic
-    return data;
+    // Business sanitization logic
+    return {
+      ...data,
+      name: data.name?.trim(),
+      description: data.description?.trim() || ''
+    };
   }
   
   private async logEvent(event: string, data: any): Promise<void> {
-    // Event logging logic
+    // Business event logging through cache layer
+    await this.cache.logEvent(event, data);
   }
 }
 ```
 
-#### Data Service Template
+#### Data Service Template (Cache Layer)
 ```typescript
 @Injectable()
-export class DataService {
+export class CacheService implements ICacheService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
-    @Inject(TYPES.REPOSITORY) private repository: Repository
+    // ✅ CORRECT: Repository layer dependency only
+    @Inject(TYPES.REPOSITORY) private repository: IRepository
   ) {}
   
   async getData(id: string): Promise<Data> {
     const cacheKey = CACHE_KEYS.DATA(id);
     
     // Cache-first lookup
-    const cached = await this.cache.get<Data>(cacheKey);
+    const cached = await this.memoryCache.get<Data>(cacheKey);
     if (cached) {
       return cached;
     }
     
-    // Fallback to repository
+    // Cache miss - get from repository
     const data = await this.repository.findById(id);
     
     // Cache population
-    await this.cache.set(cacheKey, data, {
+    await this.memoryCache.set(cacheKey, data, {
       ttl: CACHE_TTL.DATA
     });
     
     return data;
   }
   
+  async createData(data: CreateDataRequest): Promise<Data> {
+    // Data access through repository only
+    const result = await this.repository.create(data);
+    
+    // Cache coordination
+    await this.invalidatePattern(`feature:*`);
+    
+    return result;
+  }
+  
   async invalidateCache(patterns: string[]): Promise<void> {
     await Promise.all(
-      patterns.map(pattern => this.cache.invalidatePattern(pattern))
+      patterns.map(pattern => this.memoryCache.invalidatePattern(pattern))
     );
+  }
+  
+  async logEvent(event: string, data: any): Promise<void> {
+    // Event logging through repository
+    await this.repository.logEvent(event, data);
   }
 }
 ```
 
 #### Benefits
-- **Separation of Concerns**: Clear business logic layer
-- **Caching**: Intelligent cache management
-- **Validation**: Comprehensive data validation
-- **Orchestration**: Cross-service coordination
+- **Layer Separation**: Clear business logic layer with cache-only dependency
+- **Business Logic Focus**: Validation, transformation, orchestration only
+- **Cache Coordination**: All data access through cache layer
+- **No Repository Access**: Services never directly access repositories
+- **Testability**: Easy to test with mocked cache layer
 
 ### 3. Repository Pattern
 
 #### Pattern Definition
-Repositories provide "dumb" data access with no business logic, focusing only on raw API calls.
+Repositories provide raw data access with no business logic, focusing only on database operations and external API calls. Only cache layer can access repository layer.
 
 #### Implementation Template
 ```typescript
@@ -230,10 +249,11 @@ export class Repository implements IRepository {
 ```
 
 #### Benefits
-- **Single Responsibility**: Only data access
+- **Single Responsibility**: Only data access and persistence
+- **No Business Logic**: Pure data operations without validation or transformation
+- **Cache Layer Only**: Only accessible through cache layer coordination
 - **Testability**: Easy to mock and test
-- **Consistency**: Standardized API calls
-- **Performance**: Optimized data fetching
+- **Consistency**: Standardized API calls and database operations
 
 ### 4. Dependency Injection Pattern
 
@@ -251,10 +271,10 @@ export function createFeatureContainer(): Container {
     Repository
   );
   
-  // Data Services (Singleton - shared cache state)
+  // Cache Services (Singleton - shared cache state)
   container.registerSingletonByToken(
-    TYPES.DATA_SERVICE, 
-    DataService
+    TYPES.CACHE_SERVICE, 
+    CacheService
   );
   
   // Feature Services (Singleton - stateless business logic)
@@ -277,8 +297,8 @@ export function createFeatureChildContainer(parentContainer: Container): Contain
   );
   
   featureContainer.registerSingletonByToken(
-    TYPES.DATA_SERVICE, 
-    DataService
+    TYPES.CACHE_SERVICE, 
+    CacheService
   );
   
   return featureContainer;
@@ -291,7 +311,7 @@ export const useFeatureServices = () => {
   const container = useDIContainer();
   
   return {
-    dataService: container.get<DataService>(TYPES.DATA_SERVICE),
+    cacheService: container.get<CacheService>(TYPES.CACHE_SERVICE),
     featureService: container.get<FeatureService>(TYPES.FEATURE_SERVICE),
     repository: container.get<Repository>(TYPES.REPOSITORY)
   };
@@ -300,6 +320,7 @@ export const useFeatureServices = () => {
 
 #### Benefits
 - **Type Safety**: Compile-time dependency checking
+- **Layer Separation**: Proper dependency flow enforcement
 - **Scoping**: Proper lifecycle management
 - **Testability**: Easy to inject mocks
 - **Maintainability**: Centralized configuration
@@ -615,13 +636,13 @@ export class PerformanceMonitor {
 ### 1. Feature Implementation Checklist
 
 #### Required Components
-- [ ] **Enterprise Hook**: `useEnterpriseFeature`
-- [ ] **Migration Hook**: `useFeatureMigration`
-- [ ] **Feature Service**: Business logic and validation
-- [ ] **Data Service**: Caching and orchestration
-- [ ] **Repository**: Raw data access
+- [ ] **Enterprise Hook**: `useEnterpriseFeature` with DI access only
+- [ ] **Feature Service**: Business logic with cache-only dependency
+- [ ] **Cache Service**: Data orchestration with repository-only dependency
+- [ ] **Repository**: Raw data access only
 - [ ] **Cache Keys**: Intelligent cache management
 - [ ] **DI Container**: Proper service registration
+- [ ] **Layer Separation**: Strict Component → Hook → DI → Service → Cache → Repository flow
 
 #### Optional Components
 - [ ] **Example Component**: Demonstration implementation
@@ -630,6 +651,40 @@ export class PerformanceMonitor {
 - [ ] **Performance Tests**: Load and stress testing
 
 ### 2. Code Quality Standards
+
+#### Layer Separation Standards
+```typescript
+// ✅ CORRECT: Component with pure UI
+const MyComponent = () => {
+  const { data, actions } = useMyHook(); // Hook provides UI logic
+  return <div>{data}</div>;
+};
+
+// ✅ CORRECT: Hook with DI access
+export const useMyHook = () => {
+  const service = useDIContainer().getMyService(); // DI access only
+  // UI logic and state management
+};
+
+// ✅ CORRECT: Service with cache dependency
+@Injectable()
+class MyService {
+  constructor(@Inject(TYPES.CACHE_SERVICE) private cache: ICacheService) {}
+  // Business logic only
+};
+
+// ❌ INCORRECT: Component with direct service access
+const BadComponent = () => {
+  const service = new MyService(); // Direct service access ❌
+  return <div />;
+};
+
+// ❌ INCORRECT: Service with repository dependency
+@Injectable()
+class BadService {
+  constructor(@Inject(TYPES.REPOSITORY) private repository: IRepository) {} // ❌
+}
+```
 
 #### TypeScript Standards
 ```typescript
@@ -647,7 +702,7 @@ export function useEnterpriseFeature<T>(): EnterpriseFeatureResult<T>
 @Injectable()
 export class FeatureService {
   constructor(
-    @Inject(TYPES.DATA_SERVICE) private dataService: DataService
+    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheService
   ) {}
 }
 ```
@@ -668,7 +723,6 @@ const userError = new Error('Unable to load data. Please try again later.');
 ```
 
 ### 3. Performance Standards
-
 #### Caching Standards
 ```typescript
 // Always use appropriate TTL
@@ -695,10 +749,12 @@ const loadingMessage = isLoading ? 'Loading...' : 'Loaded';
 
 ### Architecture Quality
 - ✅ **Consistency**: Same patterns across all features
+- ✅ **Layer Separation**: Strict Component → Hook → DI → Service → Cache → Repository flow
 - ✅ **Maintainability**: Clean separation of concerns
 - ✅ **Scalability**: Enterprise-grade architecture
 - ✅ **Type Safety**: Full TypeScript coverage
 - ✅ **Testability**: Easy to test and mock
+- ✅ **Dependency Flow**: Unidirectional dependencies only
 
 ### Performance Quality
 - ✅ **Cache Hit Rates**: 80%+ average across features
