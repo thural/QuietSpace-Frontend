@@ -12,10 +12,10 @@ import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
 import { useChatWebSocket } from "@/core/websocket/hooks";
 import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
 import { useAuthStore } from "../core/store/zustand";
-import { AdvancedSecurityProvider } from "../shared/auth/AdvancedSecurityProvider";
-import { AuthProvider } from "../shared/auth/AuthProvider";
+import { AdvancedSecurityProvider } from "@/features/auth/presentation/providers/AdvancedSecurityProvider";
+import { AuthProvider } from "@/features/auth/presentation/providers/AuthProvider";
 import { useAuditLogger } from "../shared/auth/auditLogger";
-import AuthGuard from "../shared/auth/AuthGuard";
+import AuthGuard from "@/features/auth/presentation/components/guards/AuthGuard";
 
 // Lazy-loaded components for better performance
 lazy(() => import("../features/navbar/presentation/components/Navbar"));

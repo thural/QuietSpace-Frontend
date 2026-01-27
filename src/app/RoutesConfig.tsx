@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
-import { ProtectedRoute } from "@/shared/auth/ProtectedRoute";
-import { PERMISSIONS } from "@/shared/auth/permissions";
+import { ProtectedRoute } from "@/features/auth/presentation/components/guards/ProtectedRoute";
+import { PERMISSIONS } from "@/features/auth/domain/permissions";
 
 const FeedContainer = lazy(() => import("./features/feed/presentation/components/FeedContainer"));
 const FeedPage = lazy(() => import("./pages/feed/FeedPage"));

@@ -9,6 +9,7 @@ import { AuthPerformanceMonitor } from './AuthPerformanceMonitor';
  * - Session timeout management
  * - Security analytics
  * - Multi-factor authentication (MFA)
+ * - Authentication guards and route protection
  */
 
 // Performance Monitoring
@@ -18,6 +19,16 @@ export { default } from './AuthPerformanceMonitor';
 // Security Analytics
 export { SecurityMonitor } from './SecurityMonitor';
 export { default as SecurityAnalyticsExample } from './SecurityAnalyticsExample';
+
+// Authentication Guards
+export {
+  AuthGuard,
+  ProtectedRoute,
+  withAuth,
+  useAuth,
+  PermissionGate,
+  EnterpriseRoutes
+} from './guards';
 
 // Session Timeout Management
 export { SessionTimeoutManager, createSessionTimeoutManager } from '@core/auth/services/SessionTimeoutManager';
