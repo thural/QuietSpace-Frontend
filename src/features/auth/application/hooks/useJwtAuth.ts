@@ -30,7 +30,7 @@ export const useJwtAuth = () => {
         setIsAuthenticated
     } = useAuthStore();
 
-    const { authFeatureService, authDataService } = useAuthServices();
+    const { enterpriseAuthService } = useAuthServices();
     const invalidateCache = useCacheInvalidation();
 
     /**
@@ -43,8 +43,8 @@ export const useJwtAuth = () => {
             // Get current user ID from store or token
             const userId = getCurrentUserId(); // Implementation needed
             if (!userId) return null;
-            
-            return await authDataService.getUserAuth(userId);
+
+            return await enterpriseAuthService.getCurrentSession();
         },
         {
             staleTime: AUTH_CACHE_TTL.USER_AUTH,
@@ -56,7 +56,7 @@ export const useJwtAuth = () => {
                     if (isTokenExpiringSoon(data.token)) {
                         refreshToken();
                     }
-                    
+
                     // Update store with fresh data
                     setAuthData(data);
                     setIsAuthenticated(true);
@@ -64,7 +64,7 @@ export const useJwtAuth = () => {
             },
             onError: (error) => {
                 console.error('Auth status check failed:', error);
-                
+
                 // Handle authentication failure
                 if (error.status === 401) {
                     handleAuthFailure();
@@ -88,21 +88,21 @@ export const useJwtAuth = () => {
             setLoading(true);
             setError(null);
 
-            const authData = await authFeatureService.authenticateUser(credentials);
+            const authData = await enterpriseAuthService.authenticate('jwt', credentials);
             setAuthData(authData);
             setIsAuthenticated(true);
-            
+
             // Invalidate and refresh auth caches
             invalidateCache.invalidateAuth();
             authStatusQuery.refetch();
-            
+
         } catch (error) {
             setError(error instanceof Error ? error : new Error(String(error)));
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [authFeatureService, setLoading, setError, setAuthData, setIsAuthenticated, invalidateCache, authStatusQuery]);
+    }, [enterpriseAuthService, setLoading, setError, setAuthData, setIsAuthenticated, invalidateCache, authStatusQuery]);
 
     /**
      * Registers new user
@@ -112,18 +112,18 @@ export const useJwtAuth = () => {
             setLoading(true);
             setError(null);
 
-            await authFeatureService.registerUser(userData);
-            
+            await enterpriseAuthService.authenticate('jwt', userData);
+
             // Clear any existing auth caches
             invalidateCache.invalidateAuth();
-            
+
         } catch (error) {
             setError(error instanceof Error ? error : new Error(String(error)));
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [authFeatureService, setLoading, setError, invalidateCache]);
+    }, [enterpriseAuthService, setLoading, setError, invalidateCache]);
 
     /**
      * Activates user account
@@ -134,10 +134,10 @@ export const useJwtAuth = () => {
             setError(null);
 
             await authFeatureService.activateUserAccount(code);
-            
+
             // Clear auth caches after activation
             invalidateCache.invalidateAuth();
-            
+
         } catch (error) {
             setError(error instanceof Error ? error : new Error(String(error)));
             throw error;
@@ -156,10 +156,10 @@ export const useJwtAuth = () => {
             await authDataService.logout();
             logout(); // Reset user data using logout action
             setIsAuthenticated(false);
-            
+
             // Clear all auth-related caches
             invalidateCache.invalidateAuth();
-            
+
         } catch (error) {
             setError(error instanceof Error ? error : new Error(String(error)));
             // Even if logout fails on server side, clear local state
@@ -176,7 +176,7 @@ export const useJwtAuth = () => {
     const refreshToken = useCallback(async () => {
         try {
             const result = await authDataService.refreshToken();
-            
+
             if (result) {
                 setAuthData({
                     userId: result.userId || '',
@@ -193,7 +193,7 @@ export const useJwtAuth = () => {
                     createdAt: new Date()
                 });
                 setIsAuthenticated(true);
-                
+
                 // Refresh auth status
                 authStatusQuery.refetch();
             }
@@ -232,13 +232,13 @@ export const useJwtAuth = () => {
         signout,
         refreshToken,
         resendActivationCode,
-        
+
         // Query state
         authStatus: authStatusQuery.data,
         isLoading: authStatusQuery.isLoading || setLoading,
         isError: authStatusQuery.isError,
         error: authStatusQuery.error || setError,
-        
+
         // Utility methods
         refetchAuth: authStatusQuery.refetch,
         isAuthenticated: !!authStatusQuery.data?.isAuthenticated
@@ -268,17 +268,17 @@ function isTokenExpiringSoon(token: string): boolean {
         // Use centralized auth service for token validation instead of direct parsing
         const authModule = require('@/core/auth/AuthModule');
         const authService = authModule.AuthModuleFactory.getInstance();
-        
+
         // Let the centralized auth service handle token validation
         // This is a simplified check - ideally, the auth service would provide this method
         if (!token) return true;
-        
+
         // Fallback to parsing only if centralized auth is not available
         const payload = JSON.parse(atob(token.split('.')[1]));
         const expirationTime = payload.exp * 1000; // Convert to milliseconds
         const currentTime = Date.now();
         const timeUntilExpiration = expirationTime - currentTime;
-        
+
         // Consider token expiring if less than 5 minutes left
         return timeUntilExpiration < 5 * 60 * 1000;
     } catch (error) {

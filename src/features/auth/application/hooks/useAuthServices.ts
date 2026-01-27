@@ -1,30 +1,39 @@
-import { Container } from '@/core/di/container/Container';
+import { EnterpriseAuthService } from '@/core/auth';
+import { AuthCredentials, AuthResult, AuthSession } from '@/features/auth/data/models/auth';
+import { useDIContainer } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import { AuthDataService } from '@features/auth/data/services/AuthDataService';
-import { AuthFeatureService } from '@features/auth/application/services/AuthFeatureService';
 
 /**
- * Auth Services Hook
+ * Auth Services Hook - PHASE 2 MIGRATION
  * 
- * Provides access to auth data and feature services through dependency injection
- * Follows the established pattern from chat feature for consistency
+ * Now provides access to enterprise-grade authentication services
+ * from the core auth system, eliminating duplicate feature services.
  */
 export const useAuthServices = () => {
   const container = useDIContainer();
 
-  // Get services from DI container
-  const authDataService = container.get<AuthDataService>(TYPES.AUTH_DATA_SERVICE);
-  const authFeatureService = container.get<AuthFeatureService>(TYPES.AUTH_FEATURE_SERVICE);
+  // Get enterprise auth service from DI container
+  // Note: This will be configured in the DI container setup
+  const enterpriseAuthService = container.get<EnterpriseAuthService>(TYPES.AUTH_SERVICE);
 
   return {
-    // Data service for caching and data orchestration
-    authDataService,
-
-    // Feature service for business logic and validation
-    authFeatureService,
+    // Enterprise authentication service
+    enterpriseAuthService,
 
     // Convenience methods for common operations
-    data: authDataService,
-    feature: authFeatureService
+    // These provide the same interface as before but use core services
+    authenticate: (providerName: string, credentials: AuthCredentials) =>
+      enterpriseAuthService.authenticate(providerName, credentials),
+
+    logout: () => enterpriseAuthService.globalSignout(),
+
+    getCurrentSession: () => enterpriseAuthService.getCurrentSession(),
+
+    // Legacy compatibility aliases
+    data: enterpriseAuthService, // For backward compatibility
+    feature: enterpriseAuthService, // For backward compatibility
+
+    // Direct access to enterprise service
+    service: enterpriseAuthService
   };
 };
