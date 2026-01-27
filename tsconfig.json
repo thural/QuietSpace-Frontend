@@ -7,18 +7,18 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "ESNext",
+    "module": "ES2022",
     "skipLibCheck": true,
-    "moduleResolution": "Node", // Changed from 'bundler' to 'Node' for compatibility
+    "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
+    "isolatedModules": false,
     "noEmit": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "strict": false,
-    "noUnusedLocals": false, // revert after tests
-    "noUnusedParameters": false, // reevert after tests
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -26,39 +26,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@shared/*": [
-        "src/shared/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@utils/*": [
-        "src/shared/utils/*"
-      ],
-      "@services/*": [
-        "src/services/*"
-      ],
-      "@api/*": [
-        "src/api/*"
-      ],
-      "@features/*": [
-        "src/features/*"
-      ],
-      "@auth/*": [
-        "src/features/auth/*"
-      ],
-      "@chat/*": [
-        "src/features/chat/*"
-      ],
-      "@notification/*": [
-        "src/features/notification/*"
-      ],
-      "@analytics/*": [
-        "src/features/analytics/*"
       ],
       "@content/*": [
         "src/features/content/*"
@@ -91,7 +58,7 @@
         "src/platform_shell/*"
       ]
     },
-    "esModuleInterop": true,
+    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "types": [

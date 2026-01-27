@@ -28,7 +28,9 @@
         ],
         "jsx": "react-jsx",
         "isolatedModules": true,
-        "noEmit": true
+        "noEmit": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     },
     "include": [
         "src/**/__tests__/**/*",
