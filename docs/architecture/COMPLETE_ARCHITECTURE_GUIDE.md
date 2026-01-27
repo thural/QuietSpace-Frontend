@@ -65,7 +65,7 @@ This guide provides comprehensive understanding of QuietSpace's large-scale modu
 3. **Event-Driven Communication** - Asynchronous messaging
 4. **Dependency Injection** - Loose coupling, testability
 5. **Clean Architecture** - Strict layer separation and dependency inversion
-6. **Enterprise Layer Separation** - Component → Hook → DI → Service → Cache → Repository
+6. **Enterprise Layer Separation** - Component → Hook → DI → Service → Data → Cache/Repository/WebSocket
 
 ### Technology Stack
 
@@ -174,9 +174,15 @@ DI Container (Dependency Resolution)
     ↓
 Service Layer (Business Logic)
     ↓
-Cache Layer (Data Orchestration)
+Data Layer (Intelligent Coordination) ⭐
     ↓
-Repository Layer (Data Access)
+┌─────────────┬─────────────┬─────────────┐
+│ CACHE LAYER │ REPOSITORY   │ WEBSOCKET   │
+│ (Storage)   │ LAYER        │ LAYER       │
+│             │ (Data Access)│ (Real-time) │
+└─────────────┴─────────────┴─────────────┘
+    ↓
+Global State (Zustand - Loading, Error, Query Tracking)
 ```
 
 Enterprise hooks provide UI logic encapsulation with proper dependency injection, maintaining clean separation between UI concerns and business logic.
@@ -200,25 +206,25 @@ const useEnterpriseAuth = () => {
 
 ### 2. Service Layer Pattern
 
-Service layer provides business logic orchestration with validation, caching coordination, and strict dependency on cache layer only (no direct repository access).
+Service layer provides business logic orchestration with validation, and data layer dependency only (no direct cache/repository/websocket access).
 
 ```typescript
 // Service Layer Example
 @Injectable()
 class ChatService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheService
+    @Inject(TYPES.DATA_LAYER) private dataLayer: IDataLayer
   ) {}
 
   async sendMessage(message: Message): Promise<void> {
     // Business logic validation
     const validatedMessage = this.validateMessage(message);
     
-    // Access data through cache layer only
-    await this.cache.saveMessage(validatedMessage);
+    // Access data through Data Layer only
+    await this.dataLayer.saveMessage(validatedMessage);
     
     // Business logic: broadcast notification
-    await this.cache.broadcastMessage(validatedMessage);
+    await this.dataLayer.broadcastMessage(validatedMessage);
   }
   
   private validateMessage(message: Message): Message {
@@ -233,7 +239,7 @@ class ChatService {
 
 ### 3. Repository Pattern
 
-Repository pattern provides a clean abstraction layer between cache logic and data access, implementing consistent data operations with error handling. Only cache layer can access repository layer.
+Repository pattern provides a clean abstraction layer between data layer and data access, implementing consistent data operations with error handling. Only data layer can access repository layer.
 
 ```typescript
 // Repository Pattern Example
@@ -252,28 +258,46 @@ class MessageRepository implements IMessageRepository {
   }
 }
 
-// Cache Layer (only layer that can access repository)
+// Data Layer (parallel coordination of all infrastructure layers)
 @Injectable()
-class MessageCache implements ICacheService {
+class MessageDataLayer implements IDataLayer {
   constructor(
-    @Inject(TYPES.MESSAGE_REPOSITORY) private repository: IMessageRepository
+    private repository: IMessageRepository,    // Independent dependency
+    private cache: ICacheLayer,              // Independent dependency  
+    private webSocket: IWebSocketLayer       // Independent dependency
   ) {}
   
   async saveMessage(message: Message): Promise<void> {
-    // Cache coordination logic
-    await this.repository.save(message);
-    await this.invalidateCache(`messages:${message.conversationId}`);
+    // Parallel coordination - Data Layer manages all 3 layers independently
+    await Promise.all([
+      // Repository access (independent operation)
+      this.repository.save(message),
+      // Cache invalidation (independent operation) 
+      this.cache.invalidateCache(`messages:${message.conversationId}`),
+      // WebSocket broadcast (independent operation)
+      this.webSocket.broadcastMessage(message)
+    ]);
   }
   
   async getMessage(id: string): Promise<Message | null> {
-    // Try cache first
-    const cached = await this.memoryCache.get(`message:${id}`);
-    if (cached) return cached;
+    // Intelligent coordination between independent layers
+    const cached = await this.cache.get(`message:${id}`);
+    if (cached && this.isDataFresh(cached)) {
+      return cached;
+    }
     
-    // Cache miss - get from repository
+    // Repository access (independent from cache)
     const message = await this.repository.findById(id);
     if (message) {
-      await this.memoryCache.set(`message:${id}`, message, { ttl: 300000 });
+      const ttl = this.calculateOptimalTTL(message);
+      
+      // Parallel cache and WebSocket setup
+      await Promise.all([
+        // Cache storage (independent from WebSocket)
+        this.cache.set(`message:${id}`, message, { ttl }),
+        // Real-time updates (independent from cache)
+        this.setupRealTimeUpdates(message)
+      ]);
     }
     return message;
   }
@@ -489,24 +513,30 @@ export * from './services/AuthService';
 │                    SERVICE LAYER                                │
 │  • Business logic and orchestration                            │
 │  • Validation and transformation                              │
-│  • Cache layer dependency only (no direct repository access)   │
+│  • Data layer dependency only (no direct cache/repository/websocket access)   │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                     CACHE LAYER                                  │
-│  • Data caching and optimization                               │
-│  • TTL management and invalidation                             │
-│  • Repository layer coordination only                         │
+│                     DATA LAYER                                  │
+│  • Intelligent data coordination and caching strategy           │
+│  • Real-time integration and WebSocket consolidation            │
+│  • Performance optimization and predictive loading             │
+│  • Manages all data logistics complexity                        │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   REPOSITORY LAYER                              │
-│  • Raw data access and persistence                              │
-│  • External API integration                                    │
-│  • No business logic                                            │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────┬─────────────┬─────────────────────────────────────┐
+│ CACHE LAYER │ REPOSITORY   │        WEBSOCKET LAYER              │
+│             │ LAYER        │                                     │
+│ • Data      │ • Raw data   │ • Real-time communication           │
+│   storage   │   access     │ • Event streaming                   │
+│ • TTL       │ • External   │ • Connection management             │
+│   management│   APIs       │                                     │
+│ • Cache     │ • No business│ • No business logic                │
+│   invalid-  │   logic      │ • No data persistence               │
+│   ation     │             │                                     │
+└─────────────┴─────────────┴─────────────────────────────────────┘
 ```
 
 #### **File Naming Conventions**
@@ -639,10 +669,12 @@ describe('UserService', () => {
 - [ ] Component layer contains only UI logic
 - [ ] Hook layer contains only UI logic and DI access
 - [ ] Service layer contains only business logic
-- [ ] Cache layer contains only data orchestration
+- [ ] Data layer contains only intelligent data coordination
+- [ ] Cache layer contains only data storage and retrieval
 - [ ] Repository layer contains only data access
+- [ ] WebSocket layer contains only real-time communication
 - [ ] No cross-layer violations (e.g., components accessing services directly)
-- [ ] Proper dependency flow: Component → Hook → DI → Service → Cache → Repository
+- [ ] Proper dependency flow: Component → Hook → DI → Service → Data → Cache/Repository/WebSocket
 
 ### **Security Review**
 - [ ] Input validation
@@ -701,34 +733,52 @@ class UserRepository implements IUserRepository {
   }
 }
 
-// 2. Cache Layer (data orchestration only)
-export interface ICacheService {
+// 2. Data Layer (parallel coordination of infrastructure layers)
+export interface IDataLayer {
   getUser(id: string): Promise<User>;
   setUser(id: string, user: User): Promise<void>;
 }
 
-class CacheService implements ICacheService {
+class UserDataLayer implements IDataLayer {
   constructor(
-    private repository: IUserRepository,
-    private memoryCache: Map<string, User>
+    private repository: IUserRepository,    // Independent dependency
+    private cache: ICacheLayer,              // Independent dependency
+    private webSocket: IWebSocketLayer       // Independent dependency
   ) {}
   
   async getUser(id: string): Promise<User> {
-    // Try cache first
-    const cached = this.memoryCache.get(id);
-    if (cached) return cached;
+    // Intelligent coordination between independent layers
+    const cached = await this.cache.get(`user:${id}`);
+    if (cached && this.isDataFresh(cached)) {
+      return cached;
+    }
     
-    // Cache miss - get from repository
+    // Repository access (independent from cache/websocket)
     const user = await this.repository.findById(id);
     if (user) {
-      this.memoryCache.set(id, user);
+      const ttl = this.calculateOptimalTTL(user);
+      
+      // Parallel cache and WebSocket operations
+      await Promise.all([
+        // Cache storage (independent operation)
+        this.cache.set(`user:${id}`, user, { ttl }),
+        // Real-time setup (independent operation)
+        this.setupRealTimeUpdates(user)
+      ]);
     }
     return user;
   }
   
   async setUser(id: string, user: User): Promise<void> {
-    await this.repository.save(user);
-    this.memoryCache.set(id, user);
+    // Parallel coordination - all operations independent
+    await Promise.all([
+      // Repository access
+      this.repository.save(user),
+      // Cache update
+      this.cache.set(`user:${id}`, user),
+      // WebSocket broadcast
+      this.webSocket.broadcastUserUpdate(user)
+    ]);
   }
 }
 
@@ -740,7 +790,7 @@ export interface IUserService {
 @Injectable()
 class UserService implements IUserService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheService
+    @Inject(TYPES.DATA_LAYER) private dataLayer: IDataLayer
   ) {}
   
   async getUser(id: string): Promise<User> {
@@ -749,8 +799,8 @@ class UserService implements IUserService {
       throw new Error('User ID is required');
     }
     
-    // Access data through cache layer only
-    const user = await this.cache.getUser(id);
+    // Access data through Data Layer only
+    const user = await this.dataLayer.getUser(id);
     
     // Business logic transformation
     return this.sanitizeUserData(user);
@@ -839,11 +889,11 @@ QuietSpace's architecture is designed for:
 - **Scalability** - Modular design supports growth
 - **Maintainability** - Clean separation of concerns with strict layer boundaries
 - **Testability** - Dependency injection and interfaces with proper layer isolation
-- **Performance** - Optimized patterns and practices with efficient caching
+- **Performance** - Optimized patterns and practices with intelligent data coordination
 - **Developer Experience** - Clear guidelines and tools with enterprise-grade patterns
-- **Enterprise Standards** - Strict layer separation following Component → Hook → DI → Service → Cache → Repository flow
+- **Enterprise Standards** - Strict layer separation following Component → Hook → DI → Service → Data Layer → Parallel Infrastructure Layers flow
 
-By following these architectural principles and guidelines, we ensure a robust, maintainable, and scalable enterprise application with proper layer separation and dependency management.
+By following these architectural principles and guidelines, we ensure a robust, maintainable, and scalable enterprise application with proper layer separation, intelligent data coordination, and parallel infrastructure management where the Data Layer manages all data logistics complexity.
 
 ---
 

@@ -16,9 +16,13 @@ DI Container (Dependency Resolution)
     ↓
 Service Layer (Business Logic)
     ↓
-Cache Layer (Data Orchestration)
+Data Layer (Intelligent Coordination) ⭐
     ↓
-Repository Layer (Data Access)
+┌─────────────┬─────────────┬─────────────┐
+│ CACHE LAYER │ REPOSITORY   │ WEBSOCKET   │
+│ (Storage)   │ LAYER        │ LAYER       │
+│             │ (Data Access)│ (Real-time) │
+└─────────────┴─────────────┴─────────────┘
 ```
 
 ## 🏗️ Core Architecture Patterns
@@ -94,15 +98,15 @@ export function useEnterpriseFeature() {
 ### 2. Service Layer Pattern
 
 #### Pattern Definition
-Service layer provides business logic orchestration with validation and cache-only dependency (no direct repository access).
+Service layer provides business logic orchestration with validation and data layer dependency only (no direct cache/repository/websocket access).
 
 #### Feature Service Template
 ```typescript
 @Injectable()
 export class FeatureService {
   constructor(
-    // ✅ CORRECT: Cache layer dependency only
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheService
+    // ✅ CORRECT: Data layer dependency only
+    @Inject(TYPES.DATA_LAYER) private dataLayer: IDataLayer
   ) {}
   
   async createWithValidation(data: CreateDataRequest): Promise<FeatureResult> {
@@ -112,14 +116,14 @@ export class FeatureService {
     // Business sanitization
     const sanitizedData = await this.sanitizeData(validatedData);
     
-    // Business logic: data access through cache layer only
-    const result = await this.cache.createData(sanitizedData);
+    // Business logic: data access through data layer only
+    const result = await this.dataLayer.createData(sanitizedData);
     
-    // Business logic: cache invalidation
-    await this.cache.invalidatePattern(`feature:*`);
+    // Business logic: cache invalidation through data layer
+    await this.dataLayer.invalidatePattern(`feature:*`);
     
-    // Business logic: event logging
-    await this.logEvent('feature.created', { id: result.id });
+    // Business logic: event logging through data layer
+    await this.dataLayer.logEvent('feature.created', { id: result.id });
     
     return result;
   }
@@ -142,75 +146,93 @@ export class FeatureService {
   }
   
   private async logEvent(event: string, data: any): Promise<void> {
-    // Business event logging through cache layer
-    await this.cache.logEvent(event, data);
+    // Business event logging through data layer
+    await this.dataLayer.logEvent(event, data);
   }
 }
 ```
 
-#### Data Service Template (Cache Layer)
+#### Data Layer Template (Intelligent Coordination)
 ```typescript
 @Injectable()
-export class CacheService implements ICacheService {
+export class DataLayer implements IDataLayer {
   constructor(
-    // ✅ CORRECT: Repository layer dependency only
-    @Inject(TYPES.REPOSITORY) private repository: IRepository
+    // ✅ CORRECT: Parallel dependencies - Data Layer controls all 3 independently
+    @Inject(TYPES.CACHE_LAYER) private cache: ICacheLayer,
+    @Inject(TYPES.REPOSITORY) private repository: IRepository,
+    @Inject(TYPES.WEBSOCKET_LAYER) private webSocket: IWebSocketLayer
   ) {}
   
   async getData(id: string): Promise<Data> {
     const cacheKey = CACHE_KEYS.DATA(id);
     
-    // Cache-first lookup
-    const cached = await this.memoryCache.get<Data>(cacheKey);
-    if (cached) {
+    // Intelligent cache-first lookup with freshness validation
+    const cached = await this.cache.get<Data>(cacheKey);
+    if (cached && this.isDataFresh(cached)) {
       return cached;
     }
     
-    // Cache miss - get from repository
+    // Repository access (independent from cache layer)
     const data = await this.repository.findById(id);
     
-    // Cache population
-    await this.memoryCache.set(cacheKey, data, {
-      ttl: CACHE_TTL.DATA
-    });
+    if (data) {
+      // Cache storage (independent from repository layer)
+      const ttl = this.calculateOptimalTTL(data);
+      await this.cache.set(cacheKey, data, { ttl });
+      
+      // WebSocket integration (independent from cache/repository layers)
+      await this.setupRealTimeUpdates(data);
+    }
     
     return data;
   }
   
   async createData(data: CreateDataRequest): Promise<Data> {
-    // Data access through repository only
+    // Repository access (independent operation)
     const result = await this.repository.create(data);
     
-    // Cache coordination
-    await this.invalidatePattern(`feature:*`);
+    // Parallel coordination - Data Layer manages all 3 layers independently
+    await Promise.all([
+      // Cache invalidation (independent from WebSocket)
+      this.invalidateRelatedCaches(result),
+      // WebSocket broadcast (independent from cache)
+      this.webSocket.broadcastDataUpdate(result)
+    ]);
     
     return result;
   }
   
-  async invalidateCache(patterns: string[]): Promise<void> {
-    await Promise.all(
-      patterns.map(pattern => this.memoryCache.invalidatePattern(pattern))
-    );
+  // Data Layer handles all coordination complexity
+  private async setupRealTimeUpdates(data: Data): Promise<void> {
+    // WebSocket subscription managed by Data Layer
+    await this.webSocket.subscribe(`data:${data.id}`, (update) => {
+      // Cache update coordinated by Data Layer
+      this.cache.set(CACHE_KEYS.DATA(data.id), update);
+    });
   }
   
-  async logEvent(event: string, data: any): Promise<void> {
-    // Event logging through repository
-    await this.repository.logEvent(event, data);
+  private async invalidateRelatedCaches(data: Data): Promise<void> {
+    // Cache invalidation managed by Data Layer
+    const patterns = this.getInvalidationPatterns(data);
+    await Promise.all(
+      patterns.map(pattern => this.cache.invalidatePattern(pattern))
+    );
   }
 }
 ```
 
 #### Benefits
-- **Layer Separation**: Clear business logic layer with cache-only dependency
+- **Layer Separation**: Clear business logic layer with data layer dependency only
 - **Business Logic Focus**: Validation, transformation, orchestration only
-- **Cache Coordination**: All data access through cache layer
-- **No Repository Access**: Services never directly access repositories
-- **Testability**: Easy to test with mocked cache layer
+- **Intelligent Data Coordination**: All data access through intelligent data layer
+- **No Direct Cache/Repository/WebSocket Access**: Services never directly access infrastructure layers
+- **Testability**: Easy to test with mocked data layer
+- **Performance**: Intelligent caching, real-time integration, and optimization through data layer
 
 ### 3. Repository Pattern
 
 #### Pattern Definition
-Repositories provide raw data access with no business logic, focusing only on database operations and external API calls. Only cache layer can access repository layer.
+Repositories provide raw data access with no business logic, focusing only on database operations and external API calls. Only data layer can access repository layer.
 
 #### Implementation Template
 ```typescript
@@ -251,7 +273,7 @@ export class Repository implements IRepository {
 #### Benefits
 - **Single Responsibility**: Only data access and persistence
 - **No Business Logic**: Pure data operations without validation or transformation
-- **Cache Layer Only**: Only accessible through cache layer coordination
+- **Data Layer Only**: Only accessible through data layer coordination
 - **Testability**: Easy to mock and test
 - **Consistency**: Standardized API calls and database operations
 
@@ -311,9 +333,11 @@ export const useFeatureServices = () => {
   const container = useDIContainer();
   
   return {
-    cacheService: container.get<CacheService>(TYPES.CACHE_SERVICE),
+    dataLayer: container.get<DataLayer>(TYPES.DATA_LAYER),
+    cacheLayer: container.get<CacheLayer>(TYPES.CACHE_LAYER),
     featureService: container.get<FeatureService>(TYPES.FEATURE_SERVICE),
-    repository: container.get<Repository>(TYPES.REPOSITORY)
+    repository: container.get<Repository>(TYPES.REPOSITORY),
+    webSocketLayer: container.get<WebSocketLayer>(TYPES.WEBSOCKET_LAYER)
   };
 };
 ```
@@ -637,12 +661,14 @@ export class PerformanceMonitor {
 
 #### Required Components
 - [ ] **Enterprise Hook**: `useEnterpriseFeature` with DI access only
-- [ ] **Feature Service**: Business logic with cache-only dependency
-- [ ] **Cache Service**: Data orchestration with repository-only dependency
+- [ ] **Feature Service**: Business logic with data layer dependency only
+- [ ] **Data Layer**: Intelligent data coordination with cache/repository/websocket dependencies
+- [ ] **Cache Layer**: Data storage and retrieval with repository dependency only
 - [ ] **Repository**: Raw data access only
+- [ ] **WebSocket Layer**: Real-time communication with data layer coordination only
 - [ ] **Cache Keys**: Intelligent cache management
 - [ ] **DI Container**: Proper service registration
-- [ ] **Layer Separation**: Strict Component → Hook → DI → Service → Cache → Repository flow
+- [ ] **Layer Separation**: Strict Component → Hook → DI → Service → Data → Cache/Repository/WebSocket flow
 
 #### Optional Components
 - [ ] **Example Component**: Demonstration implementation
@@ -666,11 +692,43 @@ export const useMyHook = () => {
   // UI logic and state management
 };
 
-// ✅ CORRECT: Service with cache dependency
+// ✅ CORRECT: Service with data layer dependency
 @Injectable()
 class MyService {
-  constructor(@Inject(TYPES.CACHE_SERVICE) private cache: ICacheService) {}
+  constructor(@Inject(TYPES.DATA_LAYER) private dataLayer: IDataLayer) {}
   // Business logic only
+};
+
+// ✅ CORRECT: Data layer with parallel infrastructure dependencies
+@Injectable()
+class MyDataLayer {
+  constructor(
+    @Inject(TYPES.CACHE_LAYER) private cache: ICacheLayer,      // Independent
+    @Inject(TYPES.REPOSITORY) private repository: IRepository,  // Independent
+    @Inject(TYPES.WEBSOCKET_LAYER) private webSocket: IWebSocketLayer // Independent
+  ) {}
+  // Parallel coordination of all infrastructure layers
+};
+
+// ✅ CORRECT: Cache layer with no infrastructure dependencies
+@Injectable()
+class MyCacheLayer {
+  constructor() {} // No dependencies on other infrastructure layers
+  // Data caching only
+};
+
+// ✅ CORRECT: Repository layer with no infrastructure dependencies  
+@Injectable()
+class MyRepository {
+  constructor(@Inject(DATABASE_CONNECTION) private db: Database) {} // Only external DB
+  // Data access only
+};
+
+// ✅ CORRECT: WebSocket layer with no infrastructure dependencies
+@Injectable()
+class MyWebSocketLayer {
+  constructor() {} // No dependencies on other infrastructure layers
+  // Real-time communication only
 };
 
 // ❌ INCORRECT: Component with direct service access
@@ -679,10 +737,13 @@ const BadComponent = () => {
   return <div />;
 };
 
-// ❌ INCORRECT: Service with repository dependency
+// ❌ INCORRECT: Service with cache/repository dependency
 @Injectable()
 class BadService {
-  constructor(@Inject(TYPES.REPOSITORY) private repository: IRepository) {} // ❌
+  constructor(
+    @Inject(TYPES.CACHE_LAYER) private cache: ICacheLayer, // WRONG
+    @Inject(TYPES.REPOSITORY) private repository: IRepository // WRONG
+  ) {}
 }
 ```
 
@@ -749,12 +810,14 @@ const loadingMessage = isLoading ? 'Loading...' : 'Loaded';
 
 ### Architecture Quality
 - ✅ **Consistency**: Same patterns across all features
-- ✅ **Layer Separation**: Strict Component → Hook → DI → Service → Cache → Repository flow
+- ✅ **Layer Separation**: Strict Component → Hook → DI → Service → Data Layer → Parallel Infrastructure Layers flow
 - ✅ **Maintainability**: Clean separation of concerns
 - ✅ **Scalability**: Enterprise-grade architecture
 - ✅ **Type Safety**: Full TypeScript coverage
 - ✅ **Testability**: Easy to test and mock
 - ✅ **Dependency Flow**: Unidirectional dependencies only
+- ✅ **Intelligent Data Coordination**: Data Layer provides smart caching and real-time integration
+- ✅ **Parallel Infrastructure Management**: Data Layer coordinates Cache, Repository, and WebSocket layers independently
 
 ### Performance Quality
 - ✅ **Cache Hit Rates**: 80%+ average across features

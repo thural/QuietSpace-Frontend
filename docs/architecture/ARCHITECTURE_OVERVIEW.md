@@ -188,11 +188,13 @@ Enterprise Hooks (Custom Query, Advanced Features)
     ↓
 Feature Services (Business Logic & Orchestration)
     ↓
-Data Services (Caching & Data Orchestration)
+Data Layer (Intelligent Coordination) ⭐
     ↓
-Repositories (Raw Data Access)
-    ↓
-Cache Provider (Enterprise Cache)
+┌─────────────┬─────────────┬─────────────┐
+│ CACHE LAYER │ REPOSITORY   │ WEBSOCKET   │
+│ (Storage)   │ LAYER        │ LAYER       │
+│             │ (Data Access)│ (Real-time) │
+└─────────────┴─────────────┴─────────────┘
     ↓
 Global State (Zustand - Loading, Error, Query Tracking)
 ```
