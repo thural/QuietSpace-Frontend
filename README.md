@@ -19,20 +19,21 @@ QuietSpace is a user-friendly, privacy-focused social media application designed
 - **Real-time Updates**: Live feed updates and instant messaging
 
 ### Enterprise Architecture
-- **5-Layer Clean Architecture**: Component → Hook → DI → Service → Cache → Repository
+- **7-Layer Clean Architecture**: Component → Hook → DI → Service → Data → Cache/Repository/WebSocket
 - **Strict Layer Separation**: Each layer has single responsibility with unidirectional dependencies
 - **Dependency Injection System**: Feature-specific containers with enterprise-grade DI
 - **Modular Feature Structure**: Standardized organization with cross-platform support
 - **Type-Safe Development**: Comprehensive TypeScript interfaces and strict typing
 - **Black Box Module Pattern**: Complete isolation and encapsulation of infrastructure modules
 - **Enterprise Hook Pattern**: UI logic encapsulation with proper DI access
-- **Service Layer Pattern**: Business logic orchestration with cache-only dependency
-- **Cache-First Pattern**: Data orchestration and optimization with repository coordination
+- **Service Layer Pattern**: Business logic orchestration with data layer dependency only
+- **Intelligent Data Layer**: Smart caching, real-time integration, and performance optimization
 - **Repository Pattern**: Clean data access abstraction with raw data operations only
+- **WebSocket Integration**: Real-time data coordination through Data Layer
 
 ## Architecture Overview
 
-### 5-Layer Clean Architecture
+### 7-Layer Clean Architecture
 
 The project implements enterprise-grade clean architecture with strict layer separation:
 
@@ -45,17 +46,23 @@ DI Container (Dependency Resolution)
     ↓
 Service Layer (Business Logic)
     ↓
-Cache Layer (Data Orchestration)
+Data Layer (Intelligent Coordination) ⭐
+    ↓
+Cache Layer (Data Storage)
     ↓
 Repository Layer (Data Access)
+    ↓
+WebSocket Layer (Real-time Communication)
 ```
 
 **Layer Responsibilities:**
 - **Component Layer**: Pure UI rendering and local state only
 - **Hook Layer**: UI logic, state transformation, DI container access
-- **Service Layer**: Business logic, validation, cache layer dependency only
-- **Cache Layer**: Data caching, optimization, repository coordination only
+- **Service Layer**: Business logic, validation, data layer dependency only
+- **Data Layer**: ⭐ Intelligent data coordination, smart caching, real-time integration
+- **Cache Layer**: Data storage and retrieval with optimal TTL management
 - **Repository Layer**: Raw data access, external APIs, no business logic
+- **WebSocket Layer**: Real-time communication and event streaming
 
 ### Dependency Injection System
 
@@ -169,13 +176,15 @@ QuietSpace-Frontend/
 
 ### Architecture Compliance
 
-The project strictly follows the **Component → Hook → DI → Service → Cache → Repository** pattern:
+The project strictly follows the **Component → Hook → DI → Service → Data → Cache/Repository/WebSocket** pattern:
 
 - **Components** contain only pure UI logic
 - **Hooks** provide UI logic with DI container access
-- **Services** contain business logic with cache-only dependency
-- **Cache** layer coordinates data access with repository-only dependency
+- **Services** contain business logic with data layer dependency only
+- **Data Layer** provides intelligent coordination between cache, repository, and WebSocket layers
+- **Cache** layer handles data storage and retrieval with optimal TTL management
 - **Repository** layer handles raw data access only
+- **WebSocket** layer provides real-time communication and event streaming
 │   │       ├── application/    # Use cases
 │   │       ├── presentation/   # UI components
 │   │       ├── di/             # DI container
@@ -222,18 +231,37 @@ export const useMyHook = () => {
   // UI logic and state management
 };
 
-// ✅ CORRECT: Service with cache dependency
+// ✅ CORRECT: Service with data layer dependency
 @Injectable()
 class MyService {
-  constructor(@Inject(TYPES.CACHE_SERVICE) private cache: ICacheService) {}
-  // Business logic only
+  constructor(@Inject(TYPES.DATA_LAYER) private dataLayer: IDataLayer) {}
+  // Business logic only - data coordination through Data Layer
 };
+
+// ✅ CORRECT: Data Layer with intelligent coordination
+class MyDataLayer {
+  constructor(
+    @Inject(TYPES.CACHE_LAYER) private cache: ICacheLayer,
+    @Inject(TYPES.REPOSITORY_LAYER) private repository: IRepositoryLayer,
+    @Inject(TYPES.WEBSOCKET_LAYER) private webSocket: IWebSocketLayer
+  ) {}
+  // Intelligent data coordination, caching, and real-time integration
+}
 
 // ❌ INCORRECT: Component with direct service access
 const BadComponent = () => {
   const service = new MyService(); // Direct service access ❌
   return <div />;
 };
+
+// ❌ INCORRECT: Service with direct cache/repository access
+class BadService {
+  constructor(
+    @Inject(TYPES.CACHE_LAYER) private cache: ICacheLayer, // WRONG
+    @Inject(TYPES.REPOSITORY_LAYER) private repository: IRepositoryLayer // WRONG
+  ) {}
+  // Services should only access Data Layer ❌
+}
 ```
 
 ### Code Quality Standards
@@ -394,11 +422,13 @@ Reach out via GitHub issues or discussions for any queries, bug reports, or feat
 **Status**: 🚧 In Development
 
 This project represents a modern social media platform currently in development with:
-- Advanced 4-layer clean architecture
+- Advanced 7-layer clean architecture with intelligent data coordination
 - Real-time communication and content management
 - Comprehensive testing framework
 - Modern development toolchain
 - Privacy-focused design with minimal distractions
+- Enterprise-grade dependency injection and Black Box patterns
+- Intelligent caching and real-time data integration
 
 The system demonstrates modern software engineering practices and is actively being developed for production deployment.
 

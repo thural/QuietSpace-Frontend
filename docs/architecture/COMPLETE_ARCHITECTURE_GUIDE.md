@@ -512,15 +512,15 @@ export * from './services/AuthService';
 ┌─────────────────────────────────────────────────────────────────┐
 │                    SERVICE LAYER                                │
 │  • Business logic and orchestration                            │
-│  • Validation and transformation                              │
-│  • Data layer dependency only (no direct cache/repository/websocket access)   │
+│  • Validation and transformation                               │
+│  • Data layer dependency only                                   │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                     DATA LAYER                                  │
 │  • Intelligent data coordination and caching strategy           │
-│  • Real-time integration and WebSocket consolidation            │
+│  • Real-time integration and WebSocket consolidation           │
 │  • Performance optimization and predictive loading             │
 │  • Manages all data logistics complexity                        │
 └─────────────────────────────────────────────────────────────────┘
