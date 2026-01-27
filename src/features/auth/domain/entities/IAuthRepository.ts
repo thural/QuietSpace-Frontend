@@ -1,4 +1,11 @@
-import { AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest } from '@auth/data/models/auth';
+import { AuthCredentials, AuthResult, AuthSession, AuthErrorType, AuthEventType, AuthProviderType, AuthStatus } from '../../data/models/auth';
+import type { AuthRequest, AuthResponse, RegisterRequest } from '../../data/models/auth';
+
+// Re-export types for backward compatibility during migration
+export type { AuthRequest, AuthResponse, RegisterRequest, AuthCredentials, AuthResult, AuthSession } from '../../data/models/auth';
+
+// Type alias for RefreshTokenResponse during migration
+export type RefreshTokenResponse = AuthResult<{ accessToken: string; message: string }>;
 
 /**
  * Interface for Auth Repository
@@ -9,43 +16,43 @@ export interface IAuthRepository {
   login(body: AuthRequest): Promise<AuthResponse>;
   logout(): Promise<Response>;
   refreshToken(): Promise<RefreshTokenResponse>;
-  
+
   // User registration and activation
   signup(body: RegisterRequest): Promise<Response>;
   activateAccount(code: string): Promise<Response>;
   resendCode(email: string): Promise<Response>;
-  
+
   // User session management
   getUserSessions(userId: string): Promise<UserSession[]>;
   revokeSession(sessionId: string): Promise<void>;
   revokeAllSessions(userId: string): Promise<void>;
-  
+
   // Security operations
   getLoginAttempts(email: string): Promise<LoginAttempt[]>;
   recordLoginAttempt(email: string, success: boolean, ip?: string): Promise<void>;
   getSecurityEvents(userId: string): Promise<SecurityEvent[]>;
-  
+
   // User profile and preferences
   getUserProfile(userId: string): Promise<UserProfile>;
   updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile>;
   getUserPermissions(userId: string): Promise<string[]>;
   getUserRoles(userId: string): Promise<string[]>;
-  
+
   // Device management
   getUserDevices(userId: string): Promise<UserDevice[]>;
   registerDevice(userId: string, device: DeviceInfo): Promise<UserDevice>;
   revokeDevice(deviceId: string): Promise<void>;
-  
+
   // Two-factor authentication
   getTwoFactorStatus(userId: string): Promise<TwoFactorStatus>;
   enableTwoFactor(userId: string): Promise<TwoFactorSetup>;
   verifyTwoFactor(userId: string, code: string): Promise<boolean>;
   disableTwoFactor(userId: string, code: string): Promise<void>;
-  
+
   // Rate limiting
   checkRateLimit(identifier: string, action: string): Promise<RateLimitResult>;
   recordRateLimitHit(identifier: string, action: string): Promise<void>;
-  
+
   // Audit and logging
   getAuditLog(userId: string, limit?: number): Promise<AuditEntry[]>;
   recordActivity(userId: string, activity: ActivityEntry): Promise<void>;
@@ -82,7 +89,7 @@ export interface SecurityEvent {
   resolved: boolean;
 }
 
-export type SecurityEventType = 
+export type SecurityEventType =
   | 'login_success'
   | 'login_failure'
   | 'password_change'
