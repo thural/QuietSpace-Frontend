@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Injectable, Container } from '../index';
+import { Injectable, createContainer } from '../index';
 
 // Simple test service
 @Injectable({ lifetime: 'singleton' })
@@ -32,15 +32,15 @@ export class TestService {
 // Test function
 export function runSimpleTest() {
   console.log('🧪 Running Simple DI Test...');
-  
-  const container = Container.create();
+
+  const container = createContainer();
   container.registerSingleton(TestService);
-  
+
   const service = container.get(TestService);
   console.log('Count:', service.getCount());
   console.log('Increment:', service.increment());
   console.log('New count:', service.getCount());
-  
+
   console.log('✅ Simple DI test completed!');
   return { container, service };
 }

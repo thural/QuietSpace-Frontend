@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DIProvider, useService, useDIContainer } from '../providers';
-import { Container, LoggerService, AppService } from './IntegrationTest';
+import { createContainer, LoggerService, AppService } from './IntegrationTest';
 
 // Test component using DI
 const TestComponent: React.FC = () => {
@@ -24,12 +24,12 @@ const TestComponent: React.FC = () => {
 
 // Test wrapper component
 const DIIntegrationTest: React.FC = () => {
-  const container = Container.create();
-  
+  const container = createContainer();
+
   // Register services
   container.registerSingleton(LoggerService);
   container.registerSingleton(AppService);
-  
+
   return (
     <DIProvider container={container}>
       <TestComponent />

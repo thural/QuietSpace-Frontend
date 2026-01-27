@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Injectable, Inject, Container } from '../index';
+import { Injectable, Inject, createContainer } from '../index';
 
 // Example service interfaces
 interface ILogger {
@@ -48,7 +48,7 @@ export class CacheService implements ICacheService {
 
 @Injectable({ lifetime: 'transient' })
 export class ConfigService implements IConfigService {
-  constructor(@Inject(CacheService) private cache: ICacheService) {}
+  constructor(@Inject(CacheService) private cache: ICacheService) { }
 
   get(key: string): string | undefined {
     return this.cache.get<string>(`config:${key}`);
@@ -66,7 +66,7 @@ export class AppService {
     @Inject(LoggerService) private logger: ILogger,
     @Inject(CacheService) private cache: ICacheService,
     @Inject(ConfigService) private config: IConfigService
-  ) {}
+  ) { }
 
   initialize(): void {
     this.logger.log('App service initialized');
@@ -85,27 +85,27 @@ export class AppService {
 // Test function
 export function testDIIntegration() {
   console.log('🧪 Testing DI Integration...');
-  
-  const container = Container.create();
-  
+
+  const container = createContainer();
+
   // Register services
   container.registerSingleton(LoggerService);
   container.registerSingleton(CacheService);
   container.register(ConfigService);
   container.registerScoped(AppService);
-  
+
   // Test service resolution
   const logger = container.get(LoggerService);
   const appService = container.get(AppService);
-  
+
   // Test functionality
   appService.initialize();
   const status = appService.getStatus();
   logger.log(`App status: ${JSON.stringify(status)}`);
-  
+
   console.log('✅ DI Integration test completed!');
   return { container, logger, appService };
 }
 
-// Export Container for use in other test files
-export { Container };
+// Export for use in other test files - container is created via factory function
+export { createContainer };

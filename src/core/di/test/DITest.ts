@@ -5,7 +5,8 @@
  */
 
 import 'reflect-metadata';
-import { Injectable, Inject, Container } from '../index';
+import { Injectable, Inject } from '../index';
+import { Container } from '../container/Container';
 
 // Example service interfaces
 interface ILogger {
@@ -26,7 +27,7 @@ class LoggerService implements ILogger {
 
 @Injectable({ lifetime: 'transient' })
 class DataService implements IDataService {
-  constructor(@Inject(LoggerService) private logger: ILogger) {}
+  constructor(@Inject(LoggerService) private logger: ILogger) { }
 
   async getData(): Promise<string[]> {
     this.logger.log('Fetching data...');
@@ -40,7 +41,7 @@ class BusinessService {
   constructor(
     @Inject(LoggerService) private logger: ILogger,
     @Inject(DataService) private dataService: IDataService
-  ) {}
+  ) { }
 
   async processData(): Promise<string[]> {
     this.logger.log('Processing business logic...');
@@ -52,22 +53,22 @@ class BusinessService {
 // Test function
 export function testDI() {
   console.log('🧪 Testing DI System...');
-  
+
   // Create container
   const container = Container.create();
-  
+
   // Register services
   container.registerSingleton(LoggerService);
   container.register(DataService);
   container.registerScoped(BusinessService);
-  
+
   // Test service resolution
   const logger = container.get(LoggerService);
   logger.log('DI System initialized');
-  
+
   const dataService = container.get(DataService);
   const businessService = container.get(BusinessService);
-  
+
   // Test dependency injection
   businessService.processData().then(result => {
     logger.log(`Business result: ${result.join(', ')}`);
@@ -75,7 +76,7 @@ export function testDI() {
   }).catch(error => {
     console.error('❌ DI System test failed:', error);
   });
-  
+
   // Test container validation
   const errors = container.validate();
   if (errors.length > 0) {
@@ -83,10 +84,10 @@ export function testDI() {
   } else {
     console.log('✅ Container validation passed');
   }
-  
+
   // Get container stats
   const stats = container.getStats();
   console.log('📊 Container stats:', stats);
-  
+
   return { container, logger, businessService };
 }

@@ -5,12 +5,12 @@
  * Provides enterprise-grade DI with reflection support.
  */
 
-import {ServiceContainer} from '@core/di/container/ServiceContainer';
-import {getConstructorDependencies, getInjectableMetadata} from '@core/di//decorators/Injectable';
-import type {ServiceIdentifier} from '../registry/ServiceRegistry';
+import { ServiceContainer } from './ServiceContainer';
+import { getConstructorDependencies, getInjectableMetadata } from '../decorators/Injectable';
+import type { ServiceIdentifier } from '../registry/ServiceRegistry';
 // Import ServiceLifetime as value, not type
-import {ServiceLifetime} from '../registry/ServiceRegistry';
-import {TypeKeys} from '../types';
+import { ServiceLifetime } from '../registry/ServiceRegistry';
+import { TypeKeys } from '../types';
 
 /**
  * Main DI container with automatic service registration
@@ -244,7 +244,7 @@ export class Container {
     // Scan for service classes in the module
     for (const key in module) {
       const service = module[key];
-      
+
       // Check if it's a class constructor (service)
       if (typeof service === 'function' && service.prototype) {
         // Check if it has Injectable decorator or follows naming convention
