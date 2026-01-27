@@ -3,9 +3,19 @@ export type {
     AuthResponse,
     AuthRequest,
     RegisterRequest,
-    RefreshTokenResponse
+    AuthCredentials,
+    AuthResult,
+    AuthSession,
+    AuthUser,
+    AuthToken,
+    AuthEvent,
+    AuthErrorType,
+    AuthEventType,
+    AuthProviderType,
+    AuthStatus
 } from './data/models/auth';
 
+// Re-export Zod schemas for validation (will be updated to use core types)
 export {
     AuthResponseSchema,
     AuthRequestSchema,

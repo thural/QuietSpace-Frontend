@@ -1,42 +1,37 @@
 import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
-import { CacheService } from '@/core/cache/CacheProvider';
-import { AuthRepository } from '../repositories/AuthRepository';
-import { AuthDataService } from '../services/AuthDataService';
-import { AuthFeatureService } from '../services/AuthFeatureService';
+import { EnterpriseAuthService } from '@/core/auth';
+import { ICacheProvider } from '@/core/cache';
+import { IAuthRepository } from '../../domain/entities/IAuthRepository';
+import { AuthRepository } from '../../data/repositories/AuthRepository';
 
 /**
- * Auth Feature DI Container
+ * Auth Feature DI Container - PHASE 2 MIGRATION
  * 
- * Configures dependency injection for the auth feature following enterprise patterns:
+ * Now configures dependency injection using enterprise-grade services
+ * from the core auth system, eliminating duplicate feature services.
+ * 
+ * Enterprise Pattern:
+ * - EnterpriseAuthService: Singleton (centralized auth logic)
  * - Repositories: Transient scope (stateless data access)
- * - Data Services: Singleton scope (shared cache state)
- * - Feature Services: Singleton scope (business logic)
- * - Cache Service: Singleton scope (shared across features)
+ * - Cache Provider: Singleton (shared across features)
  */
 
 export function createAuthContainer(): Container {
   const container = new Container();
 
-  // Core services (inherited from main container)
-  // CacheService is registered as singleton in main AppContainer
+  // Enterprise Auth Service (Singleton - centralized authentication)
+  // Note: This should be configured with proper dependencies from core auth
+  // For now, we'll register it and let the main container configure dependencies
+  container.registerSingletonByToken(
+    TYPES.AUTH_SERVICE,
+    EnterpriseAuthService
+  );
 
-  // Repositories (Transient - new instance per injection)
+  // Legacy repository support (will be removed in Phase 3)
   container.registerTransientByToken(
     TYPES.IAUTH_REPOSITORY,
     AuthRepository
-  );
-
-  // Data Services (Singleton - shared cache state)
-  container.registerSingletonByToken(
-    TYPES.AUTH_DATA_SERVICE,
-    AuthDataService
-  );
-
-  // Feature Services (Singleton - business logic)
-  container.registerSingletonByToken(
-    TYPES.AUTH_FEATURE_SERVICE,
-    AuthFeatureService
   );
 
   return container;
@@ -49,23 +44,16 @@ export function createAuthContainer(): Container {
 export function createAuthChildContainer(parentContainer: Container): Container {
   const authContainer = parentContainer.createChild();
 
-  // Register auth-specific services
-  const authSpecificContainer = createAuthContainer();
+  // Register enterprise auth service
+  authContainer.registerSingletonByToken(
+    TYPES.AUTH_SERVICE,
+    EnterpriseAuthService
+  );
 
-  // Merge configurations
+  // Legacy repository support (will be removed in Phase 3)
   authContainer.registerTransientByToken(
     TYPES.IAUTH_REPOSITORY,
     AuthRepository
-  );
-
-  authContainer.registerSingletonByToken(
-    TYPES.AUTH_DATA_SERVICE,
-    AuthDataService
-  );
-
-  authContainer.registerSingletonByToken(
-    TYPES.AUTH_FEATURE_SERVICE,
-    AuthFeatureService
   );
 
   return authContainer;
@@ -77,20 +65,16 @@ export function createAuthChildContainer(parentContainer: Container): Container 
 export function createTestAuthContainer(): Container {
   const container = new Container();
 
-  // Mock implementations can be registered here for testing
+  // Mock EnterpriseAuthService for testing
+  container.registerSingletonByToken(
+    TYPES.AUTH_SERVICE,
+    EnterpriseAuthService // Replace with mock in tests
+  );
+
+  // Mock repository for testing
   container.registerTransientByToken(
     TYPES.IAUTH_REPOSITORY,
     AuthRepository // Replace with mock in tests
-  );
-
-  container.registerSingletonByToken(
-    TYPES.AUTH_DATA_SERVICE,
-    AuthDataService
-  );
-
-  container.registerSingletonByToken(
-    TYPES.AUTH_FEATURE_SERVICE,
-    AuthFeatureService
   );
 
   return container;
