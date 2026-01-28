@@ -5,12 +5,18 @@
  * Uses in-memory data storage and simulates API responses with realistic delays.
  */
 
-import type {ResId} from '@/shared/api/models/common';
-import type {PostPage, PostRequest, PostResponse, RepostRequest, VoteBody} from '@/features/feed/data/models/post';
-import type {IPostRepository, PostQuery} from '@feed/domain/entities/IPostRepository';
-import {PostFactory} from '@feed/domain/entities/PostEntities';
-import {ReactionType} from "@/features/feed/data/models/reactionNative";
-import {ContentType} from "@/shared/api/models/commonNative";
+import type { ResId } from '@/shared/api/models/common';
+import type { PostPage, PostRequest, PostResponse, RepostRequest, VoteBody, PollRequest } from '@/features/feed/data/models/post';
+import type { IPostRepository, PostQuery } from '@feed/domain/entities/IPostRepository';
+import type { ReactionRequest } from '@/features/feed/data/models/reaction';
+import { PostFactory } from '@feed/domain/entities/PostEntities';
+import { ReactionType } from '@/features/feed/data/models/types/reactionNative';
+
+// Define ContentType enum locally since it's not available in the expected location
+enum ContentType {
+    POST = 'POST',
+    COMMENT = 'COMMENT'
+}
 
 /**
  * Mock post data for testing
@@ -284,8 +290,8 @@ export class MockPostRepository implements IPostRepository {
             poll: post.poll ? {
                 votedOption: null,
                 voteCount: 0,
-                options: post.poll.options.map(opt => ({ label: opt, voteShare: '0%' })),
-                dueDate: post.poll.dueDate
+                options: (post.poll as PollRequest).options.map(opt => ({ label: opt, voteShare: '0%' })),
+                dueDate: (post.poll as PollRequest).dueDate
             } : null,
             repost: null,
             photo: null,
@@ -344,8 +350,8 @@ export class MockPostRepository implements IPostRepository {
             poll: post.poll ? {
                 votedOption: null,
                 voteCount: 0,
-                options: post.poll.options.map(opt => ({ label: opt, voteShare: '0%' })),
-                dueDate: post.poll.dueDate
+                options: (post.poll as PollRequest).options.map(opt => ({ label: opt, voteShare: '0%' })),
+                dueDate: (post.poll as PollRequest).dueDate
             } : undefined
         };
 
@@ -381,6 +387,36 @@ export class MockPostRepository implements IPostRepository {
         }
 
         // Mock poll voting
+        return this.simulateNetworkCall(undefined);
+    }
+
+    async reaction(reaction: ReactionRequest, token: string): Promise<void> {
+        const post = this.posts.find(p => p.id === reaction.contentId);
+        if (!post) {
+            throw new Error(`Post not found for reaction ${reaction.contentId}`);
+        }
+
+        // Mock reaction - update like/dislike counts based on reaction type
+        if (reaction.reactionType === 'LIKE') {
+            post.likeCount += 1;
+            // Update user reaction
+            post.userReaction = {
+                reactionType: ReactionType.LIKE,
+                userId: reaction.userId,
+                contentId: reaction.contentId,
+                contentType: ContentType.POST
+            };
+        } else if (reaction.reactionType === 'DISLIKE') {
+            post.dislikeCount += 1;
+            // Update user reaction
+            post.userReaction = {
+                reactionType: ReactionType.DISLIKE,
+                userId: reaction.userId,
+                contentId: reaction.contentId,
+                contentType: ContentType.POST
+            };
+        }
+
         return this.simulateNetworkCall(undefined);
     }
 

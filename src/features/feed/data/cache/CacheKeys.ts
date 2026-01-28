@@ -1,4 +1,4 @@
-import type { ResId } from '@/shared/api/models/common';
+import type { ResId } from '@shared/api/models/common';
 
 export class CacheKeys {
   private static readonly FEED_PREFIX = 'feed';

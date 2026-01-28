@@ -9,5 +9,11 @@ export { PostRepository } from './repositories/PostRepository';
 export { CommentRepository } from './repositories/CommentRepository';
 export { MockPostRepository } from './repositories/MockPostRepository';
 
-// Public API - Cross-feature data hooks
-export * from './usePostData';
+// Core data service
+export { FeedDataService } from './FeedDataService';
+
+// Unified models - single source of truth
+export * from './models';
+
+// Public API - Simplified data hooks using FeedDataService
+export * from './hooks';

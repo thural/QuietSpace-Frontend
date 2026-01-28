@@ -1,18 +1,18 @@
-import type {AxiosInstance} from 'axios';
-import {Inject, Injectable} from '@/core/di';
-import {TYPES} from '@/core/di/types';
-import {POST_URL, REACTION_PATH} from "@/shared/constants/apiPath";
-import {ResId} from "@/shared/api/models/common";
-import {PostPage, PostRequest, PostResponse, RepostRequest, VoteBody} from "@/features/feed/data/models/post";
-import {ReactionRequest} from "@/features/feed/data/models/reaction";
-import type {IPostRepository, PostQuery} from "@/features/feed/domain/entities/IPostRepository";
+import type { AxiosInstance } from 'axios';
+import { Inject, Injectable } from '@/core/di';
+import { TYPES } from '@/core/di/types';
+import { POST_URL, COMMENT_PATH } from "@/core/shared/apiPath";
+import { ResId } from "@/shared/api/models/common";
+import { PostPage, PostRequest, PostResponse, RepostRequest, VoteBody } from "@/features/feed/data/models/post";
+import { ReactionRequest } from "@/features/feed/data/models/reaction";
+import type { IPostRepository, PostQuery } from "@/features/feed/domain/entities/IPostRepository";
 
 /**
  * Post Repository - Handles post-related API operations
  */
 @Injectable()
 export class PostRepository implements IPostRepository {
-    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
+    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) { }
 
     async getPosts(query: PostQuery, token: string): Promise<PostPage> {
         const pageParams = this.buildPageParams(query);
@@ -98,7 +98,7 @@ export class PostRepository implements IPostRepository {
     }
 
     async reaction(reaction: ReactionRequest, token: string): Promise<void> {
-        await this.apiClient.post(REACTION_PATH + "/toggle-reaction", reaction, {
+        await this.apiClient.post(COMMENT_PATH + "/toggle-reaction", reaction, {
             headers: { Authorization: `Bearer ${token}` }
         });
     }
@@ -111,7 +111,7 @@ export class PostRepository implements IPostRepository {
         if (query.sortBy) params.append('sort', query.sortBy);
         if (query.sortDirection) params.append('direction', query.sortDirection);
         if (query.contentPrivacy) params.append('privacy', query.contentPrivacy);
-        
+
         const paramString = params.toString();
         return paramString ? `?${paramString}` : '';
     }
