@@ -1,4 +1,4 @@
-import { MESSAGE_PATH } from "@/shared/constants/apiPath";
+import { MESSAGE_PATH } from "@/core/shared/apiPath";
 import { createApiClient, type IApiClient } from "@/core/network";
 import { JwtToken, ResId } from "@/shared/api/models/common";
 import { MessageRequest, MessageResponse, PagedMessage } from "@/features/chat/data/models/chat";

@@ -8,7 +8,7 @@ import {
     REFRESH_TOKEN,
     RESEND_CODE,
     SIGNUP_URL
-} from "@/shared/constants/apiPath";
+} from "@/core/shared/apiPath";
 import {AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest} from "@auth/data/models/auth";
 import {AuthResponseSchema, RefreshTokenResponseSchema} from "@features/auth/data/models/authZod";
 import {getRefreshToken} from "@/shared/utils/authStoreUtils";

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
-import type { CacheProvider } from '@/core/cache';
+import { useDIContainer } from '@/core/di';
+import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Infinite query page interface
@@ -73,7 +74,7 @@ export interface CustomInfiniteQueryResult<T = any> extends InfiniteQueryState<T
  * Enterprise-grade custom infinite query hook
  * 
  * Replaces React Query's useInfiniteQuery with custom implementation
- * that integrates with our CacheProvider and DI container
+ * that integrates with our ICacheProvider and DI container
  */
 export function useCustomInfiniteQuery<T>(
   key: string | string[],
@@ -100,7 +101,7 @@ export function useCustomInfiniteQuery<T>(
   } = options;
 
   const container = useDIContainer();
-  const cache = container.getByToken<CacheProvider>(TYPES.CACHE_SERVICE);
+  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
 
   const cacheKey = Array.isArray(key) ? key.join(':') : key;
 

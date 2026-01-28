@@ -27,9 +27,10 @@ QuietSpace is a user-friendly, privacy-focused social media application designed
 - **Black Box Module Pattern**: Complete isolation and encapsulation of infrastructure modules
 - **Enterprise Hook Pattern**: UI logic encapsulation with proper DI access
 - **Service Layer Pattern**: Business logic orchestration with data layer dependency only
-- **Intelligent Data Layer**: Smart caching, real-time integration, and performance optimization
+- **Intelligent Data Layer**: Smart caching, real-time integration, and performance optimization **(SRP Compliant)**
 - **Repository Pattern**: Clean data access abstraction with raw data operations only
 - **WebSocket Integration**: Real-time data coordination through Data Layer
+- **Single Responsibility Principle**: Each service has one clear responsibility with clean composition
 
 ## Architecture Overview
 
@@ -59,7 +60,12 @@ WebSocket Layer (Real-time Communication)
 - **Component Layer**: Pure UI rendering and local state only
 - **Hook Layer**: UI logic, state transformation, DI container access
 - **Service Layer**: Business logic, validation, data layer dependency only
-- **Data Layer**: ⭐ Intelligent data coordination, smart caching, real-time integration
+- **Data Layer**: ⭐ Intelligent data coordination, smart caching, real-time integration **(SRP Compliant)**
+    - **CacheManager**: Handles cache operations only
+    - **WebSocketManager**: Handles WebSocket coordination only
+    - **UpdateStrategy**: Manages data update strategies only
+    - **QueryExecutor**: Coordinates query execution only
+    - **DataLayerConfig**: Centralized configuration only
 - **Cache Layer**: Data storage and retrieval with optimal TTL management
 - **Repository Layer**: Raw data access, external APIs, no business logic
 - **WebSocket Layer**: Real-time communication and event streaming

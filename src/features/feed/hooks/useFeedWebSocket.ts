@@ -7,15 +7,86 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useDIContainer } from '@/core/di';
-import type { IFeedWebSocketAdapter } from '@/features/feed/adapters';
-import type { 
-  FeedWebSocketMessage,
-  FeedEventHandlers,
-  FeedSubscriptionOptions,
-  PostResponse,
-  TrendingUpdateData,
-  BatchUpdateData
-} from '@/features/feed/adapters';
+import type { PostResponse } from '../data/models/post';
+
+// Define types inline to avoid module resolution issues
+export interface FeedWebSocketMessage {
+  id: string;
+  type: string;
+  feature: 'feed';
+  messageType: 'post_created' | 'post_updated' | 'post_deleted' | 'reaction_added' | 'reaction_removed' |
+  'comment_added' | 'comment_removed' | 'poll_created' | 'poll_updated' | 'poll_voted' |
+  'feed_refresh' | 'trending_update' | 'batch_update';
+  userId?: string;
+  postId?: string;
+  data: any;
+  timestamp: number;
+}
+
+export interface FeedEventHandlers {
+  onPostCreated?: (post: PostResponse) => void;
+  onPostUpdated?: (post: PostResponse) => void;
+  onPostDeleted?: (postId: string) => void;
+  onReactionAdded?: (postId: string, userId: string, reactionType: string) => void;
+  onReactionRemoved?: (postId: string, userId: string, reactionType: string) => void;
+  onCommentAdded?: (postId: string, comment: any) => void;
+  onCommentRemoved?: (postId: string, commentId: string) => void;
+  onPollVoted?: (postId: string, pollId: string, userId: string, option: string) => void;
+  onFeedRefresh?: (feedId: string, posts: PostResponse[]) => void;
+  onTrendingUpdate?: (trendingPosts: PostResponse[]) => void;
+  onBatchUpdate?: (updates: any) => void;
+  onError?: (error: any) => void;
+  onConnectionChange?: (isConnected: boolean) => void;
+}
+
+export interface FeedSubscriptionOptions {
+  feedId?: string;
+  filters?: {
+    userId?: string;
+    tags?: string[];
+    contentType?: string;
+  };
+  realTime?: boolean;
+}
+
+export interface TrendingUpdateData {
+  posts: PostResponse[];
+  timestamp: number;
+  algorithm: string;
+  timeWindow: string;
+}
+
+export interface BatchUpdateData {
+  updates: any[];
+  batchId: string;
+  timestamp: number;
+  userId?: string;
+}
+
+export interface IFeedWebSocketAdapter {
+  initialize(config: any): Promise<void>;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  get isConnected(): boolean;
+  sendPostCreated(post: PostResponse): Promise<void>;
+  sendPostUpdated(post: PostResponse): Promise<void>;
+  sendPostDeleted(postId: string): Promise<void>;
+  sendReactionAdded(postId: string, userId: string, reactionType: string): Promise<void>;
+  sendReactionRemoved(postId: string, userId: string, reactionType: string): Promise<void>;
+  sendCommentAdded(postId: string, comment: any): Promise<void>;
+  sendCommentRemoved(postId: string, commentId: string): Promise<void>;
+  sendPollVoted(postId: string, pollId: string, userId: string, option: string): Promise<void>;
+  sendFeedRefresh(feedId: string, posts: PostResponse[]): Promise<void>;
+  sendTrendingUpdate(trendingPosts: PostResponse[]): Promise<void>;
+  subscribeToPosts(callback: (post: PostResponse) => void, options?: FeedSubscriptionOptions): () => void;
+  subscribeToPostUpdates(callback: (post: PostResponse) => void): () => void;
+  subscribeToTrendingUpdates(callback: (trendingPosts: PostResponse[]) => void): () => void;
+  subscribeToReactions(callback: (postId: string, userId: string, reactionType: string, action: 'added' | 'removed') => void): () => void;
+  subscribeToComments(callback: (postId: string, comment: any, action: 'added' | 'removed' | 'updated') => void): () => void;
+  subscribeToBatchUpdates(callback: (updates: BatchUpdateData) => void): () => void;
+  setEventHandlers(handlers: FeedEventHandlers): void;
+  getMetrics(): any;
+}
 
 // Feed hook configuration
 export interface UseFeedWebSocketConfig {
@@ -49,34 +120,34 @@ export interface UseFeedWebSocketReturn extends FeedWebSocketState {
   // Connection management
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  
+
   // Post operations
   createPost: (content: string, options?: any) => Promise<void>;
   updatePost: (postId: string, content: string, options?: any) => Promise<void>;
   deletePost: (postId: string) => Promise<void>;
-  
+
   // Engagement operations
   addReaction: (postId: string, reactionType: string) => Promise<void>;
   removeReaction: (postId: string, reactionType: string) => Promise<void>;
   addComment: (postId: string, content: string) => Promise<void>;
   removeComment: (postId: string, commentId: string) => Promise<void>;
   votePoll: (postId: string, pollId: string, option: string) => Promise<void>;
-  
+
   // Subscription management
   subscribeToPosts: (callback: (post: PostResponse) => void, options?: FeedSubscriptionOptions) => () => void;
   subscribeToPostUpdates: (callback: (post: PostResponse) => void) => () => void;
   subscribeToTrending: (callback: (trendingPosts: PostResponse[]) => void) => () => void;
   subscribeToEngagement: (callback: (postId: string, type: string, data: any) => void) => () => void;
   subscribeToBatches: (callback: (batch: BatchUpdateData) => void) => () => void;
-  
+
   // Feed operations
   refreshFeed: (feedId?: string) => Promise<void>;
   getTrendingPosts: (algorithm?: string, timeWindow?: string) => Promise<void>;
-  
+
   // Preference management
   updatePreferences: (preferences: any) => Promise<void>;
   getPreferences: () => Promise<any>;
-  
+
   // Utilities
   clearPosts: () => void;
   getMetrics: () => any;
@@ -134,9 +205,9 @@ export function useFeedWebSocket(config: UseFeedWebSocketConfig = {}): UseFeedWe
         cacheTTL: 300000,
         enableContentFiltering
       });
-      
+
       adapterRef.current = adapter;
-      
+
       // Set up event handlers
       const eventHandlers: FeedEventHandlers = {
         onPostCreated: (post) => {
@@ -145,117 +216,117 @@ export function useFeedWebSocket(config: UseFeedWebSocketConfig = {}): UseFeedWe
             return { ...prev, posts: newPosts };
           });
         },
-        
+
         onPostUpdated: (post) => {
           setState(prev => ({
             ...prev,
             posts: prev.posts.map(p => p.id === post.id ? post : p)
           }));
         },
-        
+
         onPostDeleted: (postId) => {
           setState(prev => ({
             ...prev,
             posts: prev.posts.filter(p => p.id !== postId)
           }));
         },
-        
+
         onReactionAdded: (postId, userId, reactionType) => {
           setState(prev => ({
             ...prev,
-            posts: prev.posts.map(p => 
-              p.id === postId 
+            posts: prev.posts.map(p =>
+              p.id === postId
                 ? { ...p, likeCount: (p.likeCount || 0) + 1 }
                 : p
             )
           }));
         },
-        
+
         onReactionRemoved: (postId, userId, reactionType) => {
           setState(prev => ({
             ...prev,
-            posts: prev.posts.map(p => 
-              p.id === postId 
+            posts: prev.posts.map(p =>
+              p.id === postId
                 ? { ...p, likeCount: Math.max(0, (p.likeCount || 0) - 1) }
                 : p
             )
           }));
         },
-        
+
         onCommentAdded: (postId, comment) => {
           setState(prev => ({
             ...prev,
-            posts: prev.posts.map(p => 
-              p.id === postId 
+            posts: prev.posts.map(p =>
+              p.id === postId
                 ? { ...p, commentCount: (p.commentCount || 0) + 1 }
                 : p
             )
           }));
         },
-        
+
         onCommentRemoved: (postId, commentId) => {
           setState(prev => ({
             ...prev,
-            posts: prev.posts.map(p => 
-              p.id === postId 
+            posts: prev.posts.map(p =>
+              p.id === postId
                 ? { ...p, commentCount: Math.max(0, (p.commentCount || 0) - 1) }
                 : p
             )
           }));
         },
-        
+
         onPollVoted: (postId, pollId, userId, option) => {
           // Update poll vote counts - this would need more specific implementation
           setState(prev => ({
             ...prev,
-            posts: prev.posts.map(p => 
-              p.id === postId 
+            posts: prev.posts.map(p =>
+              p.id === postId
                 ? { ...p, engagementScore: (p.engagementScore || 0) + 1 }
                 : p
             )
           }));
         },
-        
+
         onFeedRefresh: (feedId, posts) => {
           setState(prev => ({
             ...prev,
             posts: posts.slice(0, maxPosts)
           }));
         },
-        
+
         onTrendingUpdate: (trendingPosts) => {
           setState(prev => ({
             ...prev,
             trendingPosts: trendingPosts.slice(0, 50) // Keep top 50 trending
           }));
         },
-        
+
         onBatchUpdate: (batch) => {
           setState(prev => ({
             ...prev,
             batches: [batch, ...prev.batches.slice(0, 49)] // Keep last 50 batches
           }));
         },
-        
+
         onConnectionChange: (isConnected) => {
-          setState(prev => ({ 
-            ...prev, 
+          setState(prev => ({
+            ...prev,
             isConnected,
-            isConnecting: false 
+            isConnecting: false
           }));
         },
-        
+
         onError: (error) => {
-          setState(prev => ({ 
-            ...prev, 
+          setState(prev => ({
+            ...prev,
             error: error.message,
-            isConnecting: false 
+            isConnecting: false
           }));
         }
       };
 
       adapter.setEventHandlers(eventHandlers);
-      
+
       setState(prev => ({
         ...prev,
         isConnected: adapter.isConnected,
@@ -294,7 +365,7 @@ export function useFeedWebSocket(config: UseFeedWebSocketConfig = {}): UseFeedWe
 
     try {
       await adapterRef.current.connect();
-      
+
       setState(prev => ({
         ...prev,
         isConnected: true,
@@ -340,7 +411,7 @@ export function useFeedWebSocket(config: UseFeedWebSocketConfig = {}): UseFeedWe
       if (adapterRef.current) {
         await adapterRef.current.disconnect();
       }
-      
+
       setState(prev => ({
         ...prev,
         isConnected: false,
@@ -699,7 +770,7 @@ export function useFeedWebSocket(config: UseFeedWebSocketConfig = {}): UseFeedWe
   // Reset hook state
   const reset = useCallback(() => {
     disconnect();
-    
+
     setState({
       isConnected: false,
       isConnecting: false,

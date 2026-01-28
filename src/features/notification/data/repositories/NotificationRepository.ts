@@ -1,7 +1,7 @@
 import type {AxiosInstance} from 'axios';
 import {Inject, Injectable} from '@/core/di';
 import {TYPES} from '@/core/di/types';
-import {NOTIFICATION_PATH} from "@/shared/constants/apiPath";
+import {NOTIFICATION_PATH} from "@/core/shared/apiPath";
 import {ResId, JwtToken} from "@/shared/api/models/common";
 import {NotificationPage, NotificationResponse, NotificationType} from "@/features/notification/data/models/notification";
 import {ReactionType} from "@/features/feed/data/models/reaction";

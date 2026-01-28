@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Container } from '@/core/di/container/Container';
+import { useDIContainer } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import type { CacheProvider } from '@/core/cache';
+import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Enterprise-grade query options interface
@@ -51,7 +51,7 @@ export interface CustomQueryResult<T = any> extends QueryState<T> {
  * Enterprise-grade custom query hook
  * 
  * Replaces React Query's useQuery with custom implementation
- * that integrates with our CacheProvider and DI container
+ * that integrates with our ICacheProvider and DI container
  */
 export function useCustomQuery<T>(
   key: string | string[],
@@ -76,7 +76,7 @@ export function useCustomQuery<T>(
   } = options;
 
   const container = useDIContainer();
-  const cache = container.getByToken<CacheProvider>(TYPES.CACHE_SERVICE);
+  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
 
   const cacheKey = Array.isArray(key) ? key.join(':') : key;
 

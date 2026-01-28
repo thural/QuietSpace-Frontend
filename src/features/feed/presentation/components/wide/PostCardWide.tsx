@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { useService } from '@core/di';
-import { FeedService } from '../../application/hooks/useFeedDI';
+import { useFeed } from '../../../application/hooks/useFeed';
 import {
   WideCard,
-  WideContent,
-  WideSidebar,
   WideHeader,
   WideAvatar,
+  WideContent,
   WideActions,
   WideStats
 } from '../wide/styles/PostCardWide.styles';
@@ -28,23 +26,21 @@ interface Post {
 
 // Wide Post Card Component
 const PostCardWide: React.FC<{ post: Post }> = ({ post }) => {
-  const feedService = useService(FeedService);
-  
+  const { likePost, commentPost } = useFeed();
+
   const handleLike = () => {
-    console.log(`Liked post: ${post.id}`);
-    // In real app, this would call feedService.likePost(post.id)
+    likePost(post.id);
   };
-  
+
   const handleComment = () => {
-    console.log(`Commented on post: ${post.id}`);
-    // In real app, this would open comment overlay
+    commentPost(post.id, 'Mock comment');
   };
-  
+
   const handleShare = () => {
     console.log(`Shared post: ${post.id}`);
     // In real app, this would open share dialog
   };
-  
+
   const formatTime = (date: Date) => {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -52,14 +48,14 @@ const PostCardWide: React.FC<{ post: Post }> = ({ post }) => {
     if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
     return `${Math.floor(diff / 3600000)}h ago`;
   };
-  
+
   return (
     <WideCard>
       <WideContent>
         <h3>{post.title}</h3>
         <p>{post.content}</p>
       </WideContent>
-      
+
       <WideSidebar>
         <WideHeader>
           <WideAvatar>
@@ -74,7 +70,7 @@ const PostCardWide: React.FC<{ post: Post }> = ({ post }) => {
             </div>
           </div>
         </WideHeader>
-        
+
         <WideActions>
           <button onClick={handleLike}>
             ❤️ Like
@@ -86,7 +82,7 @@ const PostCardWide: React.FC<{ post: Post }> = ({ post }) => {
             🔄 Share
           </button>
         </WideActions>
-        
+
         <WideStats>
           <div className="stat">
             <span className="stat-label">Likes:</span>

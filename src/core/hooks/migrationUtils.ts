@@ -1,6 +1,6 @@
-import { Container } from '@/core/di/container/Container';
+import { useDIContainer } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import type { CacheProvider } from '@/core/cache';
+import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Migration utilities for React Query to Custom Query Hooks
@@ -55,11 +55,11 @@ export function convertQueryKeyToCacheKey(queryKey: any[]): string {
  * Cache invalidation helper
  */
 export class CacheInvalidationHelper {
-  private cache: CacheProvider;
+  private cache: ICacheProvider;
 
   constructor() {
     const container = useDIContainer();
-    this.cache = container.getByToken<CacheProvider>(TYPES.CACHE_SERVICE);
+    this.cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
   }
 
   /**

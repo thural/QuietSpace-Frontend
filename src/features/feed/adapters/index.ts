@@ -12,7 +12,7 @@ export { FeedWebSocketAdapter } from './FeedWebSocketAdapter';
 export { FeedMessageHandlers } from './FeedMessageHandlers';
 
 // Migration utilities
-export { 
+export {
   useFeedSocketMigration,
   useFeedMigrationMonitor,
   type FeedMigrationConfig,
@@ -31,32 +31,32 @@ export {
   type TrendingUpdateData,
   type FeedRefreshData,
   type BatchUpdateData,
-  
+
   // Configuration
   type FeedAdapterConfig,
-  
+
   // Metrics and monitoring
   type FeedAdapterMetrics,
   type FeedWebSocketError,
-  
+
   // Event handlers
   type FeedEventHandlers,
-  
+
   // Subscriptions
   type FeedSubscriptionOptions,
   type FeedQueue,
   type QueuedUpdate,
-  
+
   // Cache
   type FeedCacheKeys,
-  
+
   // Feature configuration
   type FeedWebSocketFeatureConfig,
-  
+
   // Interfaces
   type IFeedWebSocketAdapter,
   type IFeedWebSocketFactory,
-  
+
   // Type guards
   isFeedWebSocketMessage,
   isFeedMessageData,
@@ -67,6 +67,12 @@ export {
   isBatchUpdateData,
   isFeedWebSocketError
 } from './FeedWebSocketTypes';
+
+// Re-export post types from data models
+export type {
+  PostResponse,
+  PollResponse
+} from '../data/models/post';
 
 // Constants
 export const FEED_WEBSOCKET_FEATURE_NAME = 'feed';
@@ -109,7 +115,7 @@ export const FEED_WEBSOCKET_EVENTS = {
   POST_UPDATED: 'feed:post:updated',
   POST_DELETED: 'feed:post:deleted',
   POST_PROCESSED: 'feed:post:processed',
-  
+
   // Engagement events
   REACTION_ADDED: 'feed:reaction:added',
   REACTION_REMOVED: 'feed:reaction:removed',
@@ -118,34 +124,34 @@ export const FEED_WEBSOCKET_EVENTS = {
   COMMENT_UPDATED: 'feed:comment:updated',
   SHARE_ADDED: 'feed:share:added',
   SAVE_ADDED: 'feed:save:added',
-  
+
   // Poll events
   POLL_CREATED: 'feed:poll:created',
   POLL_UPDATED: 'feed:poll:updated',
   POLL_VOTED: 'feed:poll:voted',
   POLL_ENDED: 'feed:poll:ended',
-  
+
   // Feed events
   FEED_REFRESH: 'feed:refresh',
   FEED_UPDATED: 'feed:updated',
   FEED_CLEARED: 'feed:cleared',
-  
+
   // Trending events
   TRENDING_UPDATED: 'feed:trending:updated',
   TRENDING_REFRESH: 'feed:trending:refresh',
-  
+
   // Batch events
   BATCH_STARTED: 'feed:batch:started',
   BATCH_PROCESSED: 'feed:batch:processed',
   BATCH_FAILED: 'feed:batch:failed',
   BATCH_TIMEOUT: 'feed:batch:timeout',
-  
+
   // Connection events
   FEED_CONNECTED: 'feed:connected',
   FEED_DISCONNECTED: 'feed:disconnected',
   FEED_RECONNECTING: 'feed:reconnecting',
   FEED_ERROR: 'feed:error',
-  
+
   // Cache events
   FEED_CACHE_INVALIDATED: 'feed:cache:invalidated',
   FEED_CACHE_CLEARED: 'feed:cache:cleared',
@@ -345,10 +351,10 @@ export function getFeedContentType(post: any): string {
 }
 
 export function calculateEngagementScore(post: any): number {
-  return (post.likeCount || 0) + 
-         (post.commentCount || 0) * 2 + 
-         (post.repostCount || 0) * 3 + 
-         (post.shareCount || 0) * 1.5;
+  return (post.likeCount || 0) +
+    (post.commentCount || 0) * 2 +
+    (post.repostCount || 0) * 3 +
+    (post.shareCount || 0) * 1.5;
 }
 
 export function isTrendingPost(post: any, threshold: number = 100): boolean {
@@ -364,7 +370,7 @@ export function formatRelativeFeedTime(timestamp: string | number): string {
   const now = Date.now();
   const time = typeof timestamp === 'string' ? new Date(timestamp).getTime() : timestamp;
   const diff = now - time;
-  
+
   if (diff < 60000) { // Less than 1 minute
     return 'just now';
   } else if (diff < 3600000) { // Less than 1 hour
@@ -421,7 +427,7 @@ export function getFeedPriority(post: any): string {
 
   // Determine priority based on engagement
   const engagement = calculateEngagementScore(post);
-  
+
   if (engagement > 500) {
     return FEED_PRIORITIES.HIGH;
   } else if (engagement > 50) {
@@ -612,7 +618,7 @@ export function validatePollVoteData(voteData: PollVoteData): {
 export function optimizeFeedUpdate(update: FeedWebSocketMessage): FeedWebSocketMessage {
   // Remove unnecessary data to reduce payload size
   const optimized = { ...update };
-  
+
   // Only keep essential fields
   if (optimized.data.post) {
     optimized.data.post = {
@@ -652,7 +658,7 @@ export function calculateFeedPerformanceMetrics(metrics: FeedAdapterMetrics): {
 } {
   const totalOperations = metrics.postsCreated + metrics.postsUpdated + metrics.reactionsProcessed + metrics.commentsProcessed;
   const errorRate = totalOperations > 0 ? (metrics.errorCount / totalOperations) * 100 : 0;
-  const cacheEfficiency = metrics.cacheHits + metrics.cacheMisses > 0 ? 
+  const cacheEfficiency = metrics.cacheHits + metrics.cacheMisses > 0 ?
     (metrics.cacheHits / (metrics.cacheHits + metrics.cacheMisses)) * 100 : 0;
 
   return {

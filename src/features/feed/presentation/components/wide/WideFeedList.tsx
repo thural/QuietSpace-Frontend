@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { PostCardWide } from './PostCardWide';
-import { useService } from '@core/di';
-import { FeedService } from '../../application/hooks/useFeedDI';
+import { useFeed } from '../../../application/hooks/useFeed';
 import {
   WideFeedContainer,
   WideFeedHeader,
-  WideFeedActions,
   WideFeedContent,
+  WideFeedActions,
   WideLoading,
   WideEmpty
 } from './styles/WideFeedList.styles';
@@ -37,24 +36,14 @@ const mockPosts = [
 
 // Wide Feed List Component
 const WideFeedList: React.FC = () => {
-  const feedService = useService(FeedService);
-  const [loading, setLoading] = React.useState(false);
-  const [posts, setPosts] = React.useState(mockPosts);
-  const [error, setError] = React.useState<string | null>(null);
+  const { posts, loading, error, loadPosts, refreshFeed } = useFeed();
+
+  React.useEffect(() => {
+    loadPosts(0);
+  }, [loadPosts]);
 
   const handleRefresh = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setPosts([...mockPosts]);
-    } catch (err) {
-      setError('Failed to refresh feed');
-    } finally {
-      setLoading(false);
-    }
+    await refreshFeed();
   };
 
   const handleCreatePost = () => {
@@ -86,7 +75,7 @@ const WideFeedList: React.FC = () => {
           </select>
         </WideFeedActions>
       </WideFeedHeader>
-      
+
       <WideFeedContent>
         {loading && posts.length === 0 ? (
           <WideLoading>

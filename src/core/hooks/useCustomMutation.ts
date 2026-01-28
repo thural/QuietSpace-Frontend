@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
-import { Container } from '@/core/di/container/Container';
+import { useDIContainer } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import type { CacheProvider } from '@/core/cache';
+import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Enterprise-grade mutation options interface
@@ -14,8 +14,8 @@ export interface MutationOptions<TData = any, TError = Error, TVariables = any> 
   retry?: number;
   retryDelay?: number;
   invalidateQueries?: string[];
-  cacheUpdate?: (cache: CacheProvider, data: TData, variables: TVariables) => void;
-  optimisticUpdate?: (cache: CacheProvider, variables: TVariables) => (() => void) | void;
+  cacheUpdate?: (cache: ICacheProvider, data: TData, variables: TVariables) => void;
+  optimisticUpdate?: (cache: ICacheProvider, variables: TVariables) => (() => void) | void;
 }
 
 /**
@@ -43,7 +43,7 @@ export interface CustomMutationResult<TData = any, TError = Error, TVariables = 
  * Enterprise-grade custom mutation hook
  * 
  * Replaces React Query's useMutation with custom implementation
- * that integrates with our CacheProvider and DI container
+ * that integrates with our ICacheProvider and DI container
  */
 export function useCustomMutation<TData = any, TError = Error, TVariables = any>(
   fetcher: (variables: TVariables) => Promise<TData>,
@@ -62,7 +62,7 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
   } = options;
 
   const container = useDIContainer();
-  const cache = container.getByToken<CacheProvider>(TYPES.CACHE_SERVICE);
+  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
 
   const [state, setState] = useState<MutationState<TData, TError>>({
     data: undefined,

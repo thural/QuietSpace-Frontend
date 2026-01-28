@@ -27,6 +27,12 @@
       "@/*": [
         "src/*"
       ],
+      "@shared": [
+        "src/shared"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
       "@content/*": [
         "src/features/content/*"
       ],

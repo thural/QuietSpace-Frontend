@@ -1,8 +1,8 @@
-import type {AxiosInstance} from 'axios';
-import {Inject, Injectable} from '@/core/di';
-import {TYPES} from '@/core/di/types';
-import {PHOTO_PATH, USER_PATH, USER_PROFILE_URL} from "@/shared/constants/apiPath";
-import {ResId} from "@/shared/api/models/common";
+import type { AxiosInstance } from 'axios';
+import { Inject, Injectable } from '@/core/di';
+import { TYPES } from '@/core/di/types';
+import { PHOTO_PATH, USER_PATH, USER_URL, SEARCH_URL } from "@/core/shared/apiPath";
+import { ResId } from "@/shared/api/models/common";
 import {
     ProfileSettingsRequest,
     ProfileSettingsResponse,
@@ -15,7 +15,7 @@ import {
  */
 @Injectable()
 export class UserRepository {
-    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
+    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) { }
 
     async getUser(): Promise<UserResponse> {
         const { data } = await this.apiClient.get(USER_PROFILE_URL);

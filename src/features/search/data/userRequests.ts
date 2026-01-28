@@ -1,4 +1,4 @@
-import { PHOTO_PATH, USER_PATH, USER_PROFILE_URL } from "@/shared/constants/apiPath";
+import { USER_URL, SEARCH_URL, USER_PROFILE_URL, USER_PATH, PHOTO_PATH } from "@/core/shared/apiPath";
 import { Inject, Injectable } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import type { IApiClient } from '@/core/network';

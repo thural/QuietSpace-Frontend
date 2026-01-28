@@ -5,7 +5,7 @@ import {
     RESEND_CODE,
     REFRESH_TOKEN,
     SIGNUP_URL
-} from "@/shared/constants/apiPath";
+} from "@/core/shared/apiPath";
 import { createApiClient, type IApiClient } from "@/core/network";
 import { AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest } from "@/features/auth/data/models/auth";
 import { AuthResponseSchema, RefreshTokenResponseSchema } from "@/features/auth/data/models/authZod";

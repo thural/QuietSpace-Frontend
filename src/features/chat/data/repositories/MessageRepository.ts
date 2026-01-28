@@ -1,7 +1,7 @@
 import type {AxiosInstance} from 'axios';
 import {Inject, Injectable} from '@/core/di';
 import {TYPES} from '@/core/di/types';
-import {MESSAGE_PATH} from "@/shared/constants/apiPath";
+import {MESSAGE_PATH} from "@/core/shared/apiPath";
 import {ResId} from "@/shared/api/models/common";
 import {MessageRequest, MessageResponse, PagedMessage} from "@/features/chat/data/models/chat";
 

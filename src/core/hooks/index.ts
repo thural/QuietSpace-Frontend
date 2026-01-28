@@ -3,7 +3,7 @@
  * 
  * This module provides a comprehensive replacement for React Query
  * with enterprise-grade features including:
- * - Custom caching with CacheProvider integration
+ * - Custom caching with ICacheProvider integration
  * - Dependency injection container support
  * - Global state management with Zustand
  * - Optimistic updates and rollback
@@ -20,18 +20,18 @@ export { useCustomMutation } from './useCustomMutation';
 export type { MutationOptions, MutationState, CustomMutationResult } from './useCustomMutation';
 
 export { useCustomInfiniteQuery } from './useCustomInfiniteQuery';
-export type { 
-  InfiniteQueryOptions, 
-  InfiniteQueryPage, 
-  InfiniteQueryState, 
-  CustomInfiniteQueryResult 
+export type {
+  InfiniteQueryOptions,
+  InfiniteQueryPage,
+  InfiniteQueryState,
+  CustomInfiniteQueryResult
 } from './useCustomInfiniteQuery';
 
 // Global state management
-export { 
-  useQueryState, 
-  useIsFetching, 
-  useIsMutating, 
+export {
+  useQueryState,
+  useIsFetching,
+  useIsMutating,
   useGlobalLoading,
   useQuerySubscription,
   useMutationSubscription,
@@ -40,4 +40,4 @@ export {
 export type { GlobalQueryState } from './useQueryState';
 
 // Re-export for convenience
-export type { CacheProvider, CacheConfig, CacheStats } from '@/core/cache';
+export type { ICacheProvider, CacheConfig, CacheStats } from '@/core/cache';

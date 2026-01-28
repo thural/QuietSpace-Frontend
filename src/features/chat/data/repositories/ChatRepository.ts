@@ -1,7 +1,7 @@
 import type {AxiosInstance} from 'axios';
 import {Inject, Injectable} from '@/core/di';
 import {TYPES} from '@/core/di/types';
-import {CHAT_PATH, CHAT_PATH_BY_MEMBER} from "@/shared/constants/apiPath";
+import {CHAT_PATH, CHAT_PATH_BY_MEMBER} from "@/core/shared/apiPath";
 import {ChatList, ChatResponse, CreateChatRequest, PagedMessage} from "../models/chat";
 import {JwtToken, ResId} from "@/shared/api/models/common";
 import type {IChatRepository} from "@chat/domain/entities/IChatRepository";
