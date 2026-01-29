@@ -1,6 +1,5 @@
 import { UserResponse } from "@/features/profile/data/models/user";
 import { Container } from '@/shared/ui/components/layout/Container';
-import styles from "@/shared/styles/userDetailsStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography, { headingSize } from "./Typography";
 import Conditional from "./Conditional";
@@ -39,8 +38,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({
     isDisplayName = true,
     children
 }) => {
-    const classes = styles(); // Apply styles
-
     // Determine the effective size based on the scale prop
     const size = (() => {
         if (typeof scale !== "number") return 3; // Default size
@@ -57,7 +54,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
     const heading = `h${size}` as headingSize; // Determine heading type
 
     return (
-        <Container key={user.id} className={classes.userDetails}>
+        <Container key={user.id}>
             <Conditional isEnabled={isDisplayName}>
                 <Typography type={heading} className="username">{user.username}</Typography> {/* Display username */}
             </Conditional>

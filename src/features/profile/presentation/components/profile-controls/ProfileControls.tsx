@@ -1,14 +1,11 @@
-import FlexStyled from "@/shared/FlexStyled";
-import styles from "./styles/profileControlsStyles";
+import { ProfileControlsContainer } from "../styles/ProfileControlsStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 const ProfileControls: React.FC<GenericWrapper> = ({ children }) => {
-    const classes = styles();
-
     return (
-        <FlexStyled className={classes.profileControlsSection}>
+        <ProfileControlsContainer>
             {children}
-        </FlexStyled>
+        </ProfileControlsContainer>
     )
 }
 

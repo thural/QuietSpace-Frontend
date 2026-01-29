@@ -1,6 +1,6 @@
-import styles from "@/shared/styles/overlayStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import OverlayComponent from '@/shared/ui/components/feedback/OverlayComponent';
 
 interface OverlayProps extends GenericWrapper {
   isOpen?: boolean;
@@ -8,19 +8,12 @@ interface OverlayProps extends GenericWrapper {
 }
 
 const Overlay: React.FC<OverlayProps> = ({ isOpen = false, onClose = () => { }, children }) => {
-  const classes = styles();
-
   if (!isOpen) return null;
-  if (!onClose) throw new Error("onClose handler is not provided");
 
   return (
-    <div className={classes.overlayWrapper}>
-      <div className={classes.overlay} onClick={onClose} />
-      <div className={classes.overlayContent}>
-        <button className={classes.closeButton} onClick={onClose}>X</button>
-        {children}
-      </div>
-    </div>
+    <OverlayComponent show={isOpen} onClose={onClose}>
+      {children}
+    </OverlayComponent>
   );
 };
 

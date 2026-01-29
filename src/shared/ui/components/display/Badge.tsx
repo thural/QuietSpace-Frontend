@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
-interface BadgeProps extends BaseComponentProps {
-    children: React.ReactNode;
+interface IBadgeProps extends BaseComponentProps {
+    children: ReactNode;
     variant?: 'filled' | 'outline' | 'light';
     color?: string;
     size?: 'sm' | 'md' | 'lg';
-    leftSection?: React.ReactNode;
-    rightSection?: React.ReactNode;
+    leftSection?: ReactNode;
+    rightSection?: ReactNode;
 }
 
 const BadgeContainer = styled.span<{ $variant: string; $color: string; $size: string }>`
@@ -22,13 +22,13 @@ const BadgeContainer = styled.span<{ $variant: string; $color: string; $size: st
   background-color: ${props => {
         switch (props.$variant) {
             case 'filled':
-                return props.$color || props.theme.colors?.primary || '#007bff';
+                return props.$color || (props.theme as any)?.colors?.primary || '#007bff';
             case 'outline':
                 return 'transparent';
             case 'light':
-                return `${props.$color || props.theme.colors?.primary || '#007bff'}15`;
+                return `${props.$color || (props.theme as any)?.colors?.primary || '#007bff'}15`;
             default:
-                return props.$color || props.theme.colors?.primary || '#007bff';
+                return props.$color || (props.theme as any)?.colors?.primary || '#007bff';
         }
     }};
   color: ${props => {
@@ -36,45 +36,56 @@ const BadgeContainer = styled.span<{ $variant: string; $color: string; $size: st
             case 'filled':
                 return 'white';
             case 'outline':
-                return props.$color || props.theme.colors?.primary || '#007bff';
+                return props.$color || (props.theme as any)?.colors?.primary || '#007bff';
             case 'light':
-                return props.$color || props.theme.colors?.primary || '#007bff';
+                return props.$color || (props.theme as any)?.colors?.primary || '#007bff';
             default:
                 return 'white';
         }
     }};
   border: ${props => {
         if (props.$variant === 'outline') {
-            return `1px solid ${props.$color || props.theme.colors?.primary || '#007bff'}`;
+            return `1px solid ${props.$color || (props.theme as any)?.colors?.primary || '#007bff'}`;
         }
         return 'none';
     }};
   transition: all 0.2s ease;
 `;
 
-export const Badge: React.FC<BadgeProps> = ({
-    children,
-    variant = 'filled',
-    color,
-    size = 'md',
-    leftSection,
-    rightSection,
-    className,
-    style,
-    testId,
-}) => {
-    return (
-        <BadgeContainer
-            $variant={variant}
-            $color={color}
-            $size={size}
-            className={className}
-            style={style}
-            data-testid={testId}
-        >
-            {leftSection}
-            {children}
-            {rightSection}
-        </BadgeContainer>
-    );
-};
+class Badge extends PureComponent<IBadgeProps> {
+    static defaultProps: Partial<IBadgeProps> = {
+        variant: 'filled',
+        size: 'md'
+    };
+
+    render(): ReactNode {
+        const {
+            children,
+            variant,
+            color,
+            size,
+            leftSection,
+            rightSection,
+            className,
+            style,
+            testId
+        } = this.props;
+
+        return (
+            <BadgeContainer
+                $variant={variant || 'filled'}
+                $color={color || ''}
+                $size={size || 'md'}
+                className={className}
+                style={style}
+                data-testid={testId}
+            >
+                {leftSection}
+                {children}
+                {rightSection}
+            </BadgeContainer>
+        );
+    }
+}
+
+export default Badge;

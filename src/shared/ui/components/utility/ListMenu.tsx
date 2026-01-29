@@ -1,7 +1,8 @@
-import styles from "@/shared/styles/listMenuStyles";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { useState } from "react";
 import { Container } from '@/shared/ui/components/layout/Container';
+import styled from 'styled-components';
+import { EnhancedTheme } from '@/core/theme';
 
 /**
  * MenuListStyleProps interface.
@@ -18,14 +19,14 @@ import { Container } from '@/shared/ui/components/layout/Container';
  * @property {string} [display] - The CSS display property for the menu.
  */
 export interface MenuListStyleProps {
-    position?: string;
-    width?: string;
-    fontSize?: string;
-    fontWeight?: string;
-    radius?: string;
-    iconSize?: string;
-    padding?: string;
-    display?: string;
+  position?: string;
+  width?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  radius?: string;
+  iconSize?: string;
+  padding?: string;
+  display?: string;
 }
 
 /**
@@ -37,8 +38,8 @@ export interface MenuListStyleProps {
  * @property {MenuListStyleProps} [styleProps] - Optional style properties for the menu.
  */
 export interface ListMenuProps extends GenericWrapperWithRef {
-    menuIcon: React.ReactNode;
-    styleProps?: MenuListStyleProps;
+  menuIcon: React.ReactNode;
+  styleProps?: MenuListStyleProps;
 }
 
 /**
@@ -51,37 +52,91 @@ export interface ListMenuProps extends GenericWrapperWithRef {
  * @param {ListMenuProps} props - The component props.
  * @returns {JSX.Element} - The rendered ListMenu component.
  */
+// Enterprise styled-components for list menu styling
+const MenuContainer = styled.div<{ theme: EnhancedTheme }>`
+  position: relative;
+  display: inline-block;
+`;
+
+const MenuIcon = styled.div<{ theme: EnhancedTheme }>`
+  cursor: pointer;
+  margin: 0;
+  padding: ${props => props.theme.spacing.sm};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${props => props.theme.radius.sm};
+  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  
+  &:hover {
+    background: ${props => props.theme.colors.background.tertiary};
+  }
+`;
+
+const MenuContent = styled.div<{
+  theme: EnhancedTheme;
+  position?: string;
+  width?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  radius?: string;
+  iconSize?: string;
+  padding?: string;
+  display?: string;
+}>`
+  position: ${props => props.position || 'absolute'};
+  width: ${props => props.width || '200px'};
+  font-size: ${props => props.fontSize || 'inherit'};
+  font-weight: ${props => props.fontWeight || 'inherit'};
+  border-radius: ${props => props.radius || props.theme.radius.md};
+  background: ${props => props.theme.colors.background.primary};
+  border: 1px solid ${props => props.theme.colors.border.medium};
+  box-shadow: ${props => props.theme.shadows.md};
+  z-index: 1000;
+  display: ${props => props.display || 'none'};
+  
+  // Responsive design
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    width: ${props => props.width || '180px'};
+    font-size: ${props => props.theme.typography.fontSize.sm};
+  }
+`;
+
 const ListMenu: React.FC<ListMenuProps> = ({ menuIcon, styleProps, children }) => {
-    const classes = styles(styleProps); // Apply styles based on provided styleProps
-    const [display, setDisplay] = useState("none"); // State to manage menu visibility
+  const [display, setDisplay] = useState("none"); // State to manage menu visibility
 
-    /**
-     * Toggles the display state of the menu.
-     * 
-     * @param {React.MouseEvent} event - The mouse event triggered by the click.
-     */
-    const toggleDisplay = (event: React.MouseEvent) => {
-        event.stopPropagation(); // Prevent the event from bubbling up
-        setDisplay(display === "none" ? "block" : "none"); // Toggle display state
-    };
+  /**
+   * Toggles the display state of the menu.
+   * 
+   * @param {React.MouseEvent} event - The mouse event triggered by the click.
+   */
+  const toggleDisplay = (event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent the event from bubbling up
+    setDisplay(display === "none" ? "block" : "none"); // Toggle display state
+  };
 
-    /**
-     * Hides the menu when clicked.
-     * 
-     * @param {React.MouseEvent} event - The mouse event triggered by the click.
-     */
-    const hideMenu = (event: React.MouseEvent) => {
-        event.stopPropagation(); // Prevent the event from bubbling up
-        setDisplay("none"); // Set display to none
-    };
+  /**
+   * Hides the menu when clicked.
+   * 
+   * @param {React.MouseEvent} event - The mouse event triggered by the click.
+   */
+  const hideMenu = (event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent the event from bubbling up
+    setDisplay("none"); // Set display to none
+  };
 
-    return (
-        <>
-            <Container onClick={toggleDisplay} className={classes.menuIcon}>{menuIcon}</Container> {/* Menu icon */}
-            <Container className={classes.menuOverlay} style={{ display }} onClick={hideMenu}></Container> {/* Overlay for hiding the menu */}
-            <Container className={classes.menuList} style={{ display }} onClick={hideMenu}>{children}</Container> {/* Menu items */}
-        </>
-    );
+  return (
+    <MenuContainer>
+      <MenuIcon onClick={toggleDisplay}>{menuIcon}</MenuIcon>
+      <MenuContent
+        {...styleProps}
+        display={display}
+        onClick={hideMenu}
+      >
+        {children}
+      </MenuContent>
+    </MenuContainer>
+  );
 }
 
 export default ListMenu;

@@ -5,20 +5,26 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
 // Styled components
-const SkeletonContainer = styled.div<{ theme: any; width?: string; height?: string; radius?: string }>`
+interface SkeletonContainerProps {
+  width?: string;
+  height?: string;
+  radius?: string;
+}
+
+const SkeletonContainer = styled.div<SkeletonContainerProps>`
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '20px'};
   border-radius: ${props => props.radius || '4px'};
   background: linear-gradient(
     90deg,
-    ${props => props.theme.colors?.backgroundSecondary || '#f0f0f0'} 25%,
-    ${props => props.theme.colors?.backgroundTertiary || '#e0e0e0'} 50%,
-    ${props => props.theme.colors?.backgroundSecondary || '#f0f0f0'} 75%
+    ${(props) => (props.theme as any)?.colors?.backgroundSecondary || '#f0f0f0'} 25%,
+    ${(props) => (props.theme as any)?.colors?.backgroundTertiary || '#e0e0e0'} 50%,
+    ${(props) => (props.theme as any)?.colors?.backgroundSecondary || '#f0f0f0'} 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
@@ -34,41 +40,58 @@ const SkeletonContainer = styled.div<{ theme: any; width?: string; height?: stri
 `;
 
 // Props interfaces
-export interface SkeletonProps extends BaseComponentProps {
-    width?: string | number;
-    height?: string | number;
-    radius?: string;
-    visible?: boolean;
+interface ISkeletonProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
+  width?: string | number;
+  height?: string | number;
+  radius?: string;
+  visible?: boolean;
+  ref?: React.RefObject<HTMLDivElement>;
+  id?: string;
 }
 
 // Main Skeleton component
-export const Skeleton: React.FC<SkeletonProps> = ({
-    width,
-    height,
-    radius = '4px',
-    visible = true,
-    className,
-    testId,
-    ...props
-}) => {
-    // Convert numeric dimensions to strings
-    const widthValue = typeof width === 'number' ? `${width}px` : width;
-    const heightValue = typeof height === 'number' ? `${height}px` : height;
+class Skeleton extends PureComponent<ISkeletonProps> {
+  static defaultProps: Partial<ISkeletonProps> = {
+    radius: '4px',
+    visible: true
+  };
+
+  // Convert numeric dimensions to strings
+  private convertDimension = (value: string | number | undefined): string | undefined => {
+    if (typeof value === 'number') return `${value}px`;
+    return value;
+  };
+
+  render(): ReactNode {
+    const {
+      width,
+      height,
+      radius,
+      visible,
+      className,
+      testId,
+      ...props
+    } = this.props;
 
     if (!visible) return null;
 
-    return (
-        <SkeletonContainer
-            className={className}
-            data-testid={testId}
-            width={widthValue}
-            height={heightValue}
-            radius={radius}
-            {...props}
-        />
-    );
-};
+    const widthValue = this.convertDimension(width);
+    const heightValue = this.convertDimension(height);
 
-Skeleton.displayName = 'Skeleton';
+    return (
+      <SkeletonContainer
+        className={className}
+        data-testid={testId}
+        width={widthValue}
+        height={heightValue}
+        radius={radius}
+        {...props}
+      />
+    );
+  }
+}
+
+// Set display name for debugging
+(Skeleton as any).displayName = 'Skeleton';
 
 export default Skeleton;

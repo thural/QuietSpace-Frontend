@@ -1,11 +1,10 @@
 import { viewStore } from "@/core/store/zustand";
-import styles from "@/shared/styles/overlayStyles";
 import { Container } from "@/shared/ui/components/layout/Container";
+import OverlayComponent from '@/shared/ui/components/feedback/OverlayComponent';
 
 
 const OverlayWithStore = ({ closable }: { closable: Object }) => {
   const { data: viewState, setViewData } = viewStore();
-  const classes = styles();
   const active = !(closable === undefined || closable === null);
 
   const handleClick = () => {
@@ -13,7 +12,9 @@ const OverlayWithStore = ({ closable }: { closable: Object }) => {
   }
 
   return (
-    <Container className={classes.overlay} onClick={handleClick}></Container>
+    <OverlayComponent show={active} onClose={handleClick}>
+      <Container onClick={handleClick}></Container>
+    </OverlayComponent>
   )
 }
 

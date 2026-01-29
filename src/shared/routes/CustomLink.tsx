@@ -1,12 +1,23 @@
 
 import { Link } from "react-router-dom";
+import React, { PureComponent, ReactNode } from 'react';
 
-export interface CustomLinkProps { to: string, text: string, Component: React.ReactNode }
+export interface ICustomLinkProps {
+    to: string;
+    text?: string;
+    Component?: ReactNode;
+}
 
-const CustomLink: React.FC<CustomLinkProps> = ({ to, Component }) => (
-    <Link to={to} >
-        {Component}
-    </Link>
-)
+class CustomLink extends PureComponent<ICustomLinkProps> {
+    render(): ReactNode {
+        const { to, Component } = this.props;
 
-export default CustomLink
+        return (
+            <Link to={to}>
+                {Component}
+            </Link>
+        );
+    }
+}
+
+export default CustomLink;

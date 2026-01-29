@@ -1,8 +1,6 @@
-import styles from "./styles/followSectionStyles";
+import { FollowSectionContainer, FollowSectionTitle, FollowButton, FollowStats, FollowStat } from "../styles/FollowSectionStyles";
 import { ProcedureFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import FlexStyled from "@/shared/FlexStyled";
-import Typography from "@/shared/Typography";
 
 /**
  * FollowSectionProps interface.
@@ -41,38 +39,21 @@ const FollowsSection: React.FC<FollowSectionProps> = ({
     toggleFollowers,
     children
 }) => {
-    const classes = styles();
-
     return (
-        <FlexStyled className={classes.followSection}>
-            <Typography
-                style={{ cursor: "pointer" }}
-                ta="center"
-                fw="600"
-                fz="1.1rem"
-                size="lg">
-                {postsCount} posts
-            </Typography>
-            <FlexStyled style={{ justifyContent: "space-around", gap: "2rem" }}>
-                <Typography
-                    ta="center"
-                    fz="1.1rem"
-                    style={{ cursor: "pointer" }}
-                    fw="600"
-                    onClick={toggleFollowings}>
-                    {followingsCount} followings
-                </Typography>
-                <Typography
-                    ta="center"
-                    style={{ cursor: "pointer" }}
-                    fz="1.1rem"
-                    fw="600"
-                    onClick={toggleFollowers}>
-                    {followersCount} followers
-                </Typography>
-            </FlexStyled>
+        <FollowSectionContainer>
+            <FollowSectionTitle>{postsCount} posts</FollowSectionTitle>
+            <FollowStats>
+                <FollowStat>
+                    <span className="stat-number">{followingsCount}</span>
+                    <span className="stat-label">followings</span>
+                </FollowStat>
+                <FollowStat>
+                    <span className="stat-number">{followersCount}</span>
+                    <span className="stat-label">followers</span>
+                </FollowStat>
+            </FollowStats>
             {children}
-        </FlexStyled>
+        </FollowSectionContainer>
     );
 };
 

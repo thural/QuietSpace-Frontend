@@ -5,19 +5,24 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import React, { PureComponent, ReactNode, RefObject } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
 // Styled components
-const AvatarContainer = styled.div<{ theme: any; size?: string; radius?: string }>`
+interface AvatarContainerProps {
+    size?: string;
+    radius?: string;
+}
+
+const AvatarContainer = styled.div<AvatarContainerProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: ${props => props.size || '40px'};
   height: ${props => props.size || '40px'};
   border-radius: ${props => props.radius || '50%'};
-  background-color: ${props => props.theme.colors?.primary || '#007bff'};
+  background-color: ${props => (props.theme as any)?.colors?.primary || '#007bff'};
   color: white;
   font-weight: 500;
   font-size: ${props => `calc(${props.size || '40px'} * 0.4)`};
@@ -25,90 +30,134 @@ const AvatarContainer = styled.div<{ theme: any; size?: string; radius?: string 
   position: relative;
 `;
 
-const AvatarImage = styled.img<{ theme: any; radius?: string }>`
+interface AvatarImageProps {
+    radius?: string;
+}
+
+const AvatarImage = styled.img<AvatarImageProps>`
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: ${props => props.radius || '50%'};
 `;
 
-const AvatarPlaceholder = styled.div<{ theme: any; color?: string }>`
+interface AvatarPlaceholderProps {
+    color?: string;
+}
+
+const AvatarPlaceholder = styled.div<AvatarPlaceholderProps>`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.color || props.theme.colors?.primary || '#007bff'};
+  background-color: ${props => props.color || (props.theme as any)?.colors?.primary || '#007bff'};
   color: white;
   font-weight: 500;
   text-transform: uppercase;
 `;
 
 // Props interfaces
-export interface AvatarProps extends BaseComponentProps {
+interface IAvatarProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
     src?: string;
     alt?: string;
     size?: string | number;
     radius?: string;
     color?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
+    ref?: RefObject<HTMLDivElement>;
+    id?: string;
 }
 
-// Main Avatar component
-export const Avatar: React.FC<AvatarProps> = ({
-    src,
-    alt = '',
-    size = 'md',
-    radius = '50%',
-    color,
-    children,
-    className,
-    testId,
-    ...props
-}) => {
-    // Convert numeric size to string
-    const sizeValue = typeof size === 'number' ? `${size}px` : size;
-
-    // Convert size variants to actual pixel values
-    const getSizePixels = (size: string | number) => {
-        const sizeMap: Record<string, string> = {
-            xs: '24px',
-            sm: '32px',
-            md: '40px',
-            lg: '48px',
-            xl: '64px'
-        };
-
-        if (typeof size === 'number') return `${size}px`;
-        return sizeMap[size] || size;
+// Main Avatar class component
+class Avatar extends PureComponent<IAvatarProps> {
+    static defaultProps: Partial<IAvatarProps> = {
+        alt: '',
+        size: 'md',
+        radius: '50%',
     };
 
-    const finalSize = getSizePixels(size);
-    const finalRadius = radius === '50%' ? '50%' : radius;
+    // Size mapping for consistent sizing
+    private readonly sizeMap: Record<string, string> = {
+        xs: '24px',
+        sm: '32px',
+        md: '40px',
+        lg: '48px',
+        xl: '64px'
+    };
 
-    return (
-        <AvatarContainer
-            className={className}
-            data-testid={testId}
-            size={finalSize}
-            radius={finalRadius}
-            {...props}
-        >
-            {src ? (
-                <AvatarImage
-                    src={src}
-                    alt={alt}
-                    radius={finalRadius}
-                />
-            ) : (
-                <AvatarPlaceholder color={color}>
-                    {children}
-                </AvatarPlaceholder>
-            )}
-        </AvatarContainer>
-    );
-};
+    // Convert numeric size to string
+    private convertSizeToString = (size: string | number): string => {
+        return typeof size === 'number' ? `${size}px` : size;
+    };
 
-Avatar.displayName = 'Avatar';
+    // Get size in pixels with variant support
+    private getSizePixels = (size: string | number): string => {
+        if (typeof size === 'number') return `${size}px`;
+        return this.sizeMap[size] || size;
+    };
 
+    // Get final radius value
+    private getFinalRadius = (radius?: string): string => {
+        return radius === '50%' ? '50%' : (radius || '50%');
+    };
+
+    // Render image component
+    private renderImage = (src: string, alt: string, radius: string): ReactNode => {
+        return (
+            <AvatarImage
+                src={src}
+                alt={alt}
+                radius={radius}
+            />
+        );
+    };
+
+    // Render placeholder component
+    private renderPlaceholder = (color?: string, children?: ReactNode): ReactNode => {
+        return (
+            <AvatarPlaceholder color={color}>
+                {children}
+            </AvatarPlaceholder>
+        );
+    };
+
+    render(): ReactNode {
+        const {
+            src,
+            alt,
+            size,
+            radius,
+            color,
+            children,
+            className,
+            testId,
+            ...props
+        } = this.props;
+
+        const finalSize = this.getSizePixels(size || 'md');
+        const finalRadius = this.getFinalRadius(radius);
+
+        return (
+            <AvatarContainer
+                className={className}
+                data-testid={testId}
+                size={finalSize}
+                radius={finalRadius}
+                {...props}
+            >
+                {src ?
+                    this.renderImage(src, alt || '', finalRadius) :
+                    this.renderPlaceholder(color, children)
+                }
+            </AvatarContainer>
+        );
+    }
+}
+
+// Set display name for debugging
+(Avatar as any).displayName = 'Avatar';
+
+export { Avatar };
+export type { IAvatarProps };
 export default Avatar;

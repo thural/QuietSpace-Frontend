@@ -1,61 +1,81 @@
-import { createUseStyles } from "react-jss";
-import { Theme } from "@shared-types/theme";
+import styled from 'styled-components';
+import { EnhancedTheme } from '@/core/theme';
 
-const styles = createUseStyles((theme: Theme) => ({
+// Enterprise styled-components for comment reply form styling
+export const ReplyWrapper = styled.div<{ theme: EnhancedTheme }>`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: ${props => props.theme.spacing.xs};
+  
+  // Responsive design
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    flex-direction: column;
+    gap: ${props => props.theme.spacing.sm};
+  }
+`;
 
-  wrapper: {
-    display: 'flex',
-    flexFlow: 'row no-wrap',
-    gap: '.3rem'
-  },
+export const ReplyInputWrapper = styled.div<{ theme: EnhancedTheme }>`
+  position: relative;
+  width: 16rem;
+  background: ${props => props.theme.colors.background.primary};
+  border-radius: ${props => props.theme.radius.md};
+  
+  // Responsive design
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    width: 100%;
+  }
+`;
 
-  inputWrapper: {
-    position: 'relative',
-    width: '16rem',
-    background: theme.colors.background,
-    borderRadius: '1rem',
-    minHeight: '4rem',
+export const ReplyInput = styled.input<{ theme: EnhancedTheme }>`
+  width: 100%;
+  padding: ${props => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-family: ${props => props.theme.typography.fontFamily.sans.join(', ')};
+  color: ${props => props.theme.colors.text.primary};
+  background: transparent;
+  border: 1px solid ${props => props.theme.colors.border.medium};
+  border-radius: ${props => props.theme.radius.md};
+  
+  &::placeholder {
+    color: ${props => props.theme.colors.text.tertiary};
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.brand[500]};
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.brand[200]};
+  }
+`;
 
-    '& .react-emoji': {
-      alignItems: 'normal',
-    },
-
-    '& .react-input-emoji--button': {
-      width: '2.5rem',
-      height: '2.5rem',
-      margin: '.5rem 0',
-      alignSelf: 'flex-start',
-      background: theme.colors.background,
-    },
-
-    '& .react-input-emoji--container': {
-      background: theme.colors.background,
-      margin: '.25rem .75rem',
-      border: 0
-    },
-
-    '& .react-input-emoji--wrapper': {
-      background: theme.colors.background,
-    }
-  },
-
-  commentInput: {
-    width: '100%',
-    border: 'none',
-    height: 'auto',
-    resize: 'none',
-    outline: 'none',
-    padding: '10px',
-    overflow: 'hidden',
-    boxSizing: 'border-box',
-    maxHeight: '200px',
-    borderRadius: '4px',
-    backgroundColor: theme.colors.background,
-    position: 'relative',
-    top: '10rem',
-    background: theme.colors.background,
-  },
-}))
-
-
-export default styles
+export const ReplyButton = styled.button<{ theme: EnhancedTheme }>`
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSize.sm};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  color: ${props => props.theme.colors.text.inverse};
+  background: ${props => props.theme.colors.brand[500]};
+  border: none;
+  border-radius: ${props => props.theme.radius.md};
+  cursor: pointer;
+  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  
+  &:hover {
+    background: ${props => props.theme.colors.brand[600]};
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:focus {
+    outline: 2px solid ${props => props.theme.colors.brand[300]};
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    background: ${props => props.theme.colors.border.medium};
+    color: ${props => props.theme.colors.text.tertiary};
+    cursor: not-allowed;
+    transform: none;
+  }
+`;

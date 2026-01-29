@@ -1,5 +1,3 @@
-import FlexStyled from "@/shared/FlexStyled";
-import useStyles from "../comment/styles/commentFormStyles";
 import { Text } from "@/shared/ui/components/typography/Text";
 
 /**
@@ -30,17 +28,14 @@ interface TruncatedContentProps {
  * @returns {JSX.Element} - The rendered TruncatedContent component.
  */
 const TruncatedContent: React.FC<TruncatedContentProps> = ({ text, truncate, Avatar, lineClamp }) => {
-    const classes = useStyles();
-
     return (
-        <FlexStyled className={classes.card}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {Avatar}
             <Text
-                className={classes.content}
                 truncate={truncate}
                 lineClamp={lineClamp}>{text}
             </Text>
-        </FlexStyled>
+        </div>
     );
 };
 

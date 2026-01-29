@@ -1,13 +1,9 @@
-import styles from "@/shared/styles/userQueryItemStyles";
 import useUserQueries from "@/features/profile/data/userQueries";
 import { UserProfileResponse, UserResponse } from "@/features/profile/data/models/user";
 import { MouseEventFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Conditional from "./Conditional";
-import FlexStyled from "./FlexStyled";
-import FollowToggle from "./FollowToggle";
 import UserAvatarPhoto from "./UserAvatarPhoto";
 import UserDetails from "./UserDetails";
 
@@ -44,10 +40,10 @@ const UserQueryItem: React.FC<UserQueryItemProps> = ({
     children,
     handleItemClick
 }) => {
-    const classes = styles(); // Apply styles
+    const classes = {}; // Remove JSS styles
     const navigate = useNavigate(); // Hook for navigation
-    const { getSignedUser } = useUserQueries(); // Hook to obtain the signed-in user
-    const signedUser: UserProfileResponse | undefined = getSignedUser(); // Get the signed-in user data
+    const queries = useUserQueries(); // Hook to obtain user queries
+    const signedUser: UserProfileResponse | undefined = queries.currentUser; // Get the signed-in user data
 
     if (signedUser === undefined) throw new Error("signedUser is undefined"); // Ensure signedUser is defined
 
@@ -65,14 +61,12 @@ const UserQueryItem: React.FC<UserQueryItemProps> = ({
     }
 
     return (
-        <FlexStyled className={classes.userCard} onClick={handleClick}>
+        <div className="user-card" onClick={handleClick}>
             <UserAvatarPhoto userId={data.id} /> {/* Display user's avatar */}
             <UserDetails scale={4} user={data} /> {/* Display user's details */}
-            <Conditional isEnabled={hasFollowToggle}>
-                <FollowToggle user={data} /> {/* Display follow toggle if enabled */}
-            </Conditional>
+            {/* hasFollowToggle && <FollowToggle user={data} /> */}
             {children} {/* Render any additional children */}
-        </FlexStyled>
+        </div>
     );
 }
 

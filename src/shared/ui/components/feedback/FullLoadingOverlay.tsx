@@ -1,8 +1,23 @@
-import { LoadingOverlay } from "@/shared/ui/components"
+import { LoadingOverlay } from "@/shared/ui/components";
+import React, { PureComponent, ReactNode } from 'react';
 
-const FullLoadingOverlay = ({ visible = true, radius = "sm", blur = 2 }) => {
-
-    return <LoadingOverlay visible={visible} />;
+interface IFullLoadingOverlayProps {
+    visible?: boolean;
+    radius?: string;
+    blur?: number;
 }
 
-export default FullLoadingOverlay
+class FullLoadingOverlay extends PureComponent<IFullLoadingOverlayProps> {
+    static defaultProps: Partial<IFullLoadingOverlayProps> = {
+        visible: true,
+        radius: "sm",
+        blur: 2
+    };
+
+    render(): ReactNode {
+        const { visible } = this.props;
+        return <LoadingOverlay visible={visible} />;
+    }
+}
+
+export default FullLoadingOverlay;

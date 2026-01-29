@@ -1,34 +1,41 @@
 import { ResId } from "@/shared/api/models/commonNative";
-import { ConsumerFn } from "@/shared/types/genericTypes";
 import { Container } from '@/shared/ui/components/layout/Container';
-import styles from "@/shared/styles/checkboxStyles"
+import { ChangeEvent, MouseEvent, PureComponent, ReactNode } from 'react';
+import CheckboxComponent from './CheckboxComponent';
 
-
-interface CheckBoxProps {
-    value: ResId
-    onChange: ConsumerFn
+interface ICheckBoxProps {
+    value: ResId;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CheckBox: React.FC<CheckBoxProps> = ({ value, onChange }) => {
-
-    const classes = styles();
-
-    const handleSelectClick = (event: React.MouseEvent) => {
+class CheckBox extends PureComponent<ICheckBoxProps> {
+    // Handle checkbox click to prevent event bubbling
+    private handleSelectClick = (event: MouseEvent<HTMLInputElement>): void => {
         event.stopPropagation();
         event.preventDefault();
-    }
+    };
 
-    return (
-        <Container className={classes.wrapper}>
-            <input
-                className={classes.roundedCheckbox}
-                onClick={handleSelectClick}
-                type="checkbox"
-                value={value}
-                onChange={onChange}
+    // Handle checkbox change event
+    private handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        const { onChange } = this.props;
+        onChange(event);
+    };
+
+    render(): ReactNode {
+        const { value, onChange } = this.props;
+
+        return (
+            <CheckboxComponent
+                checked={false}
+                onChange={(checked) => {
+                    const event = {
+                        target: { value: checked ? value : '', checked }
+                    } as ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                }}
             />
-        </Container>
-    );
-};
+        );
+    }
+}
 
-export default CheckBox
+export default CheckBox;

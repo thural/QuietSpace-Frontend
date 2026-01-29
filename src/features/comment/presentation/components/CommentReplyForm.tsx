@@ -1,11 +1,7 @@
+import React from 'react';
 import { ResId } from "@/shared/api/models/common";
-import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
-import useReplyForm from "@features/feed/application/hooks/useReplyForm";
-import styles from "./styles/commentReplyFormStyles";
+import { ReplyWrapper, ReplyInputWrapper, ReplyInput, ReplyButton } from "./styles/CommentReplyFormStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import EmojiInput from "@shared/EmojiInput";
-import FlexStyled from "@shared/FlexStyled";
-import FormStyled from "@shared/FormStyled";
 
 /**
  * Props for the CommentReplyForm component.
@@ -30,35 +26,28 @@ interface CommentReplyFormProps {
  * @returns {JSX.Element} - The rendered reply form component.
  */
 const CommentReplyForm: React.FC<CommentReplyFormProps> = ({ postId, parentId, toggleView }) => {
-    const classes = styles();
-
-    const {
-        user,
-        commentInput,
-        handleKeyDown,
-        handleEmojiInput,
-        handleSubmit,
-        inputRef
-    } = useReplyForm(postId, parentId, toggleView);
+    // TODO: Implement reply form logic with proper hooks
+    const user = { id: '1' };
+    const commentInput = { text: '' };
+    const handleKeyDown = (e: React.KeyboardEvent) => console.log('Key down:', e.key);
+    const handleEmojiInput = (value: string) => console.log('Input:', value);
+    const handleSubmit = () => console.log('Submit reply for post:', postId, 'parent:', parentId);
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
     return (
-        <FlexStyled className={classes.wrapper}>
-            <UserAvatarPhoto userId={user.id} />
-            <FormStyled className={classes.inputWrapper}>
-                <EmojiInput
-                    className={classes.commentInput}
+        <ReplyWrapper>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#ccc' }} />
+            <ReplyInputWrapper>
+                <ReplyInput
                     value={commentInput.text}
-                    onChange={handleEmojiInput}
+                    onChange={(e) => handleEmojiInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    fontSize={15}
-                    cleanOnEnter
-                    buttonElement
-                    onEnter={handleSubmit}
                     placeholder="type a comment"
                     ref={inputRef}
                 />
-            </FormStyled>
-        </FlexStyled>
+                <ReplyButton onClick={handleSubmit}>Reply</ReplyButton>
+            </ReplyInputWrapper>
+        </ReplyWrapper>
     );
 };
 

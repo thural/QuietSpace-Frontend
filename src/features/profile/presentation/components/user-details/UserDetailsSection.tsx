@@ -1,9 +1,10 @@
-import { Container } from "@/features/profile/presentation/components/styles/UserDetailsSectionStyles";
-import FlexStyled from "@/shared/FlexStyled";
-import Typography from "@/shared/Typography";
-
+import {
+    UserDetailsSectionContainer,
+    UserDetailsSectionHeader,
+    UserDetailsSectionTitle,
+    UserDetailsSectionContent
+} from "../styles/UserDetailsSectionStyles";
 import { UserProfileResponse, UserResponse } from "@/features/profile/data/models/user";
-import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { isUserProfile } from "@/shared/utils/typeUtils";
 
@@ -29,22 +30,33 @@ export interface UserDetailsSectionProps extends GenericWrapper {
  */
 const UserDetailsSection: React.FC<UserDetailsSectionProps> = ({ user }) => {
     // Determine the bio based on the user type
-    const bio = isUserProfile(user) ? user.settings.bio : user.bio;
+    const bio = isUserProfile(user) ? user.settings.bio : (user as UserResponse).bio;
 
     return (
-        <FlexStyled style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Container>
-                <Typography type="h2" fw={700}>{user.username}</Typography> {/* Display username */}
-                <Typography
-                    style={{ whiteSpace: "pre-wrap", lineHeight: "1.25rem" }}
-                    size="1rem"
-                    lineclamp={4} // Limit the number of lines for the bio
-                >
-                    {bio} {/* Display bio */}
-                </Typography>
-            </Container>
-            <UserAvatarPhoto size="6rem" userId={user.id} /> {/* Render user avatar */}
-        </FlexStyled>
+        <UserDetailsSectionContainer>
+            <UserDetailsSectionHeader>
+                <UserDetailsSectionTitle>{user.username}</UserDetailsSectionTitle>
+            </UserDetailsSectionHeader>
+            <UserDetailsSectionContent>
+                <div style={{
+                    whiteSpace: "pre-wrap",
+                    lineHeight: "1.25rem",
+                    display: '-webkit-box',
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                }}>
+                    {bio || ''}
+                </div>
+            </UserDetailsSectionContent>
+            <div style={{
+                width: '6rem',
+                height: '6rem',
+                borderRadius: '50%',
+                background: '#ccc',
+                flexShrink: 0
+            }} />
+        </UserDetailsSectionContainer>
     );
 };
 

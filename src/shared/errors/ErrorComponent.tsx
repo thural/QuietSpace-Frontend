@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import ErrorContainer from './ErrorContainer';
 import ErrorMessage from './ErrorMessage';
-import styles from '@/shared/styles/errorContainerStyles';
 import { PiWarningCircleBold } from "react-icons/pi";
 
-interface ErrorComponentProps {
+interface IErrorComponentProps {
     message: string | undefined | null;
 }
 
-const ErrorComponent: React.FC<ErrorComponentProps> = ({ message }) => {
-    const classes = styles();
-    return (
-        <ErrorContainer className={classes.container}>
-            <PiWarningCircleBold />
-            <ErrorMessage>{message}</ErrorMessage>
-        </ErrorContainer>
-    );
-};
+class ErrorComponent extends PureComponent<IErrorComponentProps> {
+    render(): ReactNode {
+        const { message } = this.props;
+
+        return (
+            <ErrorContainer>
+                <PiWarningCircleBold />
+                <ErrorMessage>{message}</ErrorMessage>
+            </ErrorContainer>
+        );
+    }
+}
 
 export default ErrorComponent;

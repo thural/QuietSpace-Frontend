@@ -5,40 +5,49 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
 // Styled components
-const OverlayContainer = styled.div<{ theme: any; visible?: boolean }>`
+interface OverlayContainerProps {
+  visible?: boolean;
+}
+
+const OverlayContainer = styled.div<OverlayContainerProps>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${props => props.theme.colors?.overlay || 'rgba(0, 0, 0, 0.5)'};
+  background-color: ${(props) => (props.theme as any)?.colors?.overlay || 'rgba(0, 0, 0, 0.5)'};
   display: ${props => props.visible ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
   z-index: 1000;
 `;
 
-const LoadingContent = styled.div<{ theme: any }>`
+const LoadingContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${props => props.theme.spacing(props.theme.spacingFactor.md)};
-  padding: ${props => props.theme.spacing(props.theme.spacingFactor.lg)};
-  background-color: ${props => props.theme.colors?.background || '#ffffff'};
-  border-radius: ${props => props.theme.radius?.md || '8px'};
-  box-shadow: ${props => props.theme.shadows?.lg || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+  gap: ${(props) => (props.theme as any)?.spacing?.((props.theme as any)?.spacingFactor?.md) || '1rem'};
+  padding: ${(props) => (props.theme as any)?.spacing?.((props.theme as any)?.spacingFactor?.lg) || '1.5rem'};
+  background-color: ${(props) => (props.theme as any)?.colors?.background || '#ffffff'};
+  border-radius: ${(props) => (props.theme as any)?.radius?.md || '8px'};
+  box-shadow: ${(props) => (props.theme as any)?.shadows?.lg || '0 4px 6px rgba(0, 0, 0, 0.1)'};
 `;
 
-const Spinner = styled.div<{ theme: any; size?: string; color?: string }>`
+interface SpinnerProps {
+  size?: string;
+  color?: string;
+}
+
+const Spinner = styled.div<SpinnerProps>`
   width: ${props => props.size || '40px'};
   height: ${props => props.size || '40px'};
-  border: 3px solid ${props => props.theme.colors?.backgroundSecondary || '#f0f0f0'};
-  border-top: 3px solid ${props => props.color || props.theme.colors?.primary || '#007bff'};
+  border: 3px solid ${(props) => (props.theme as any)?.colors?.backgroundSecondary || '#f0f0f0'};
+  border-top: 3px solid ${props => props.color || (props.theme as any)?.colors?.primary || '#007bff'};
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -48,49 +57,60 @@ const Spinner = styled.div<{ theme: any; size?: string; color?: string }>`
   }
 `;
 
-const LoadingText = styled.div<{ theme: any }>`
-  color: ${props => props.theme.colors?.text || '#333'};
-  font-size: ${props => props.theme.typography.fontSize.primary};
+const LoadingText = styled.div`
+  color: ${(props) => (props.theme as any)?.colors?.text || '#333'};
+  font-size: ${(props) => (props.theme as any)?.typography?.fontSize?.primary || '16px'};
   font-weight: 500;
 `;
 
 // Props interfaces
-export interface LoadingOverlayProps extends BaseComponentProps {
-    visible?: boolean;
-    loaderProps?: {
-        size?: string;
-        color?: string;
-    };
-    text?: string;
+interface ILoadingOverlayProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
+  visible?: boolean;
+  loaderProps?: {
+    size?: string;
+    color?: string;
+  };
+  text?: string;
+  ref?: React.RefObject<HTMLDivElement>;
+  id?: string;
 }
 
 // Main LoadingOverlay component
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
-    visible = true,
-    loaderProps,
-    text,
-    className,
-    testId,
-    ...props
-}) => {
-    return (
-        <OverlayContainer
-            className={className}
-            data-testid={testId}
-            visible={visible}
-            {...props}
-        >
-            <LoadingContent>
-                <Spinner
-                    size={loaderProps?.size}
-                    color={loaderProps?.color}
-                />
-                {text && <LoadingText>{text}</LoadingText>}
-            </LoadingContent>
-        </OverlayContainer>
-    );
-};
+class LoadingOverlay extends PureComponent<ILoadingOverlayProps> {
+  static defaultProps: Partial<ILoadingOverlayProps> = {
+    visible: true
+  };
 
-LoadingOverlay.displayName = 'LoadingOverlay';
+  render(): ReactNode {
+    const {
+      visible,
+      loaderProps,
+      text,
+      className,
+      testId,
+      ...props
+    } = this.props;
+
+    return (
+      <OverlayContainer
+        className={className}
+        data-testid={testId}
+        visible={visible}
+        {...props}
+      >
+        <LoadingContent>
+          <Spinner
+            size={loaderProps?.size}
+            color={loaderProps?.color}
+          />
+          {text && <LoadingText>{text}</LoadingText>}
+        </LoadingContent>
+      </OverlayContainer>
+    );
+  }
+}
+
+// Set display name for debugging
+(LoadingOverlay as any).displayName = 'LoadingOverlay';
 
 export default LoadingOverlay;

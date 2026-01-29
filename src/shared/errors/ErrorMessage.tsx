@@ -1,11 +1,22 @@
 import { CenterContainer } from "@/shared/ui/components/layout/CenterContainer";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import Typography from "../Typography";
+import Typography from "../ui/components/utility/Typography";
+import React, { PureComponent, ReactNode } from 'react';
 
-const ErrorMessage: React.FC<GenericWrapper> = ({ children }) => (
-    <CenterContainer>
-        <Typography>{children}</Typography>
-    </CenterContainer>
-)
+interface IErrorMessageProps extends GenericWrapper {
+    children?: ReactNode;
+}
 
-export default ErrorMessage
+class ErrorMessage extends PureComponent<IErrorMessageProps> {
+    render(): ReactNode {
+        const { children } = this.props;
+
+        return (
+            <CenterContainer>
+                <Typography>{children}</Typography>
+            </CenterContainer>
+        );
+    }
+}
+
+export default ErrorMessage;
