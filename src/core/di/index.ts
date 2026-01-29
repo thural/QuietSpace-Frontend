@@ -59,6 +59,15 @@ export {
   getContainerStats
 } from './factory';
 
+// Platform-specific factory functions - Manual Registration + Factory Functions
+export {
+  createPlatformContainer,
+  createDevelopmentContainer as createPlatformDevelopmentContainer,
+  createProductionContainer as createPlatformProductionContainer,
+  createTestContainer as createPlatformTestContainer,
+  getContainerStats as getPlatformContainerStats
+} from './factories/PlatformContainerFactory';
+
 // Legacy exports for backward compatibility (with underscore prefix)
 export {
   ServiceContainer as _ServiceContainer,
