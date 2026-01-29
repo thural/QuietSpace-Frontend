@@ -10,14 +10,14 @@ import { useCustomQuery, useCustomMutation } from '@/core/hooks/useCustomQuery';
 import { useContentServices } from '../di/useContentDI';
 import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
 import { useAuthStore } from '@services/store/zustand';
-import type { 
-  ContentEntity, 
-  ContentMetadata, 
-  MediaFile, 
-  ContentVersion, 
-  ContentTemplate, 
-  ContentAnalytics, 
-  ModerationData 
+import type {
+  ContentEntity,
+  ContentMetadata,
+  MediaFile,
+  ContentVersion,
+  ContentTemplate,
+  ContentAnalytics,
+  ModerationData
 } from '@features/content/domain/entities/ContentEntity';
 import { JwtToken } from '@/shared/api/models/common';
 
@@ -31,83 +31,83 @@ export interface EnterpriseContentState {
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Content lists
   contentList: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Author content
   authorContent: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Search results
   searchResults: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Trending and featured content
   trending: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   featured: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Media data
   media: {
     data: MediaFile[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Analytics
   analytics: {
     data: ContentAnalytics | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Moderation data
   moderation: {
     data: ModerationData | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Templates
   templates: {
     data: ContentTemplate[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Drafts
   drafts: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Scheduled content
   scheduled: {
     data: ContentEntity[] | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Combined state
   isLoading: boolean;
   error: Error | null;
@@ -122,31 +122,31 @@ export interface EnterpriseContentActions {
   createContent: (contentData: Omit<ContentEntity, 'id' | 'createdAt' | 'updatedAt' | 'version'>) => Promise<{ success: boolean; data?: ContentEntity; errors?: string[] }>;
   updateContent: (contentId: string, updates: Partial<ContentEntity>) => Promise<{ success: boolean; data?: ContentEntity; errors?: string[] }>;
   deleteContent: (contentId: string) => Promise<{ success: boolean; message?: string }>;
-  
+
   // Publishing actions
   publishContent: (contentId: string) => Promise<{ success: boolean; message?: string }>;
   scheduleContent: (contentId: string, publishDate: Date) => Promise<{ success: boolean; message?: string }>;
-  
+
   // Media actions
   uploadMedia: (contentId: string, file: File) => Promise<{ success: boolean; data?: MediaFile; errors?: string[] }>;
-  
+
   // Moderation actions
   moderateContent: (contentId: string, action: 'approve' | 'reject' | 'flag', reason: string) => Promise<{ success: boolean; data?: ModerationData; message?: string }>;
-  
+
   // Search and discovery
   searchContent: (query: string) => Promise<ContentEntity[]>;
   getTrendingContent: () => Promise<ContentEntity[]>;
   getFeaturedContent: () => Promise<ContentEntity[]>;
-  
+
   // Batch operations
   loadCompleteContent: (contentId: string) => Promise<void>;
   refreshContent: () => Promise<void>;
-  
+
   // Cache management
   invalidateContentCache: (contentId?: string) => void;
   invalidateAuthorCache: (authorId?: string) => void;
   invalidateSearchCache: () => void;
-  
+
   // State management
   resetChanges: () => void;
   markAsChanged: () => void;
@@ -167,11 +167,11 @@ export const useEnterpriseContent = (
 ): EnterpriseContentState & EnterpriseContentActions => {
   const [token, setToken] = useState<JwtToken | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  
+
   // Get services
   const { contentDataService, contentFeatureService } = useContentServices();
   const invalidateCache = useCacheInvalidation();
-  
+
   // Initialize token
   useEffect(() => {
     const authStore = useAuthStore.getState();
@@ -189,10 +189,10 @@ export const useEnterpriseContent = (
       enabled: !!contentId && !!token,
       onSuccess: (data) => {
         if (data) {
-          console.log('Enterprise Content: Content loaded', { 
-            contentId: data.id, 
-            title: data.title, 
-            status: data.status 
+          console.log('Enterprise Content: Content loaded', {
+            contentId: data.id,
+            title: data.title,
+            status: data.status
           });
         }
       },
@@ -314,9 +314,9 @@ export const useEnterpriseContent = (
       enabled: !!contentId && !!token,
       onSuccess: (data) => {
         if (data) {
-          console.log('Enterprise Content: Analytics loaded', { 
-            views: data.views, 
-            engagementRate: data.engagementRate 
+          console.log('Enterprise Content: Analytics loaded', {
+            views: data.views,
+            engagementRate: data.engagementRate
           });
         }
       },
@@ -336,8 +336,8 @@ export const useEnterpriseContent = (
       enabled: !!contentId && !!token,
       onSuccess: (data) => {
         if (data) {
-          console.log('Enterprise Content: Moderation data loaded', { 
-            status: data.status 
+          console.log('Enterprise Content: Moderation data loaded', {
+            status: data.status
           });
         }
       },
@@ -399,31 +399,31 @@ export const useEnterpriseContent = (
   );
 
   // Combined loading state
-  const isLoading = contentQuery.isLoading || 
-                   contentListQuery.isLoading ||
-                   authorContentQuery.isLoading ||
-                   searchQuery.isLoading ||
-                   trendingQuery.isLoading ||
-                   featuredQuery.isLoading ||
-                   mediaQuery.isLoading ||
-                   analyticsQuery.isLoading ||
-                   moderationQuery.isLoading ||
-                   templatesQuery.isLoading ||
-                   draftsQuery.isLoading ||
-                   scheduledQuery.isLoading;
-  
-  const error = contentQuery.error || 
-                contentListQuery.error ||
-                authorContentQuery.error ||
-                searchQuery.error ||
-                trendingQuery.error ||
-                featuredQuery.error ||
-                mediaQuery.error ||
-                analyticsQuery.error ||
-                moderationQuery.error ||
-                templatesQuery.error ||
-                draftsQuery.error ||
-                scheduledQuery.error;
+  const isLoading = contentQuery.isLoading ||
+    contentListQuery.isLoading ||
+    authorContentQuery.isLoading ||
+    searchQuery.isLoading ||
+    trendingQuery.isLoading ||
+    featuredQuery.isLoading ||
+    mediaQuery.isLoading ||
+    analyticsQuery.isLoading ||
+    moderationQuery.isLoading ||
+    templatesQuery.isLoading ||
+    draftsQuery.isLoading ||
+    scheduledQuery.isLoading;
+
+  const error = contentQuery.error ||
+    contentListQuery.error ||
+    authorContentQuery.error ||
+    searchQuery.error ||
+    trendingQuery.error ||
+    featuredQuery.error ||
+    mediaQuery.error ||
+    analyticsQuery.error ||
+    moderationQuery.error ||
+    templatesQuery.error ||
+    draftsQuery.error ||
+    scheduledQuery.error;
 
   // Mutations with optimistic updates
   const createContentMutation = useCustomMutation(
@@ -575,7 +575,7 @@ export const useEnterpriseContent = (
   // Batch operations
   const loadCompleteContent = useCallback(async () => {
     if (!contentId) return;
-    
+
     try {
       await contentDataService.getCompleteContent(contentId, token);
       console.log('Enterprise Content: Complete content loaded');
@@ -596,7 +596,7 @@ export const useEnterpriseContent = (
     ]);
     console.log('Enterprise Content: Content data refreshed');
   }, [
-    contentQuery, contentListQuery, trendingQuery, featuredQuery, 
+    contentQuery, contentListQuery, trendingQuery, featuredQuery,
     templatesQuery, draftsQuery, scheduledQuery
   ]);
 
