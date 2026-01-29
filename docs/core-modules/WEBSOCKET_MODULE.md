@@ -2,13 +2,13 @@
 
 ## Overview
 
-The WebSocket module provides an enterprise-grade WebSocket system with connection pooling, message routing, health monitoring, and perfect Black Box architecture compliance. It supports real-time communication with advanced features like message validation, caching, and automatic reconnection.
+The WebSocket module provides an enterprise-grade WebSocket system with connection pooling, message routing, health monitoring, and perfect BlackBox architecture compliance. It supports real-time communication with advanced features like message validation, caching, and automatic reconnection.
 
 ## Architecture
 
-### Black Box Pattern Implementation
+### Facade Pattern Implementation
 
-The WebSocket module follows the **Black Box pattern** with:
+The WebSocket module follows the **Facade pattern** with:
 - **Clean Public API**: Only interfaces and factory functions exported
 - **Hidden Implementation**: Internal WebSocket managers and routers encapsulated
 - **Factory Pattern**: Clean service creation with dependency injection support
@@ -1068,7 +1068,7 @@ webSocketService.enableDebugLogging();
 ## Version Information
 
 - **Current Version**: 1.0.0
-- **Black Box Compliance**: 95%+
+- **BlackBox Compliance**: 95%+
 - **TypeScript Support**: Full
 - **Test Coverage**: Comprehensive
 - **WebSocket Protocol**: RFC 6455 compliant

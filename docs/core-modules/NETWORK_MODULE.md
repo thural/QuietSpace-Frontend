@@ -2,13 +2,13 @@
 
 ## Overview
 
-The Network module provides an enterprise-grade HTTP client system with comprehensive authentication, caching, retry logic, and perfect Black Box architecture compliance. It supports multiple environments, request/response interceptors, and advanced error handling.
+The Network module provides an enterprise-grade HTTP client system with comprehensive authentication, caching, retry logic, and perfect BlackBox architecture compliance. It supports multiple environments, request/response interceptors, and advanced error handling.
 
 ## Architecture
 
-### Black Box Pattern Implementation
+### Facade Pattern Implementation
 
-The Network module follows the **Black Box pattern** with:
+The Network module follows the **Facade pattern** with:
 - **Clean Public API**: Only interfaces and factory functions exported
 - **Hidden Implementation**: Internal HTTP clients and providers encapsulated
 - **Factory Pattern**: Clean client creation with pre-configured setups
@@ -1169,7 +1169,7 @@ const apiClient = createApiClient({
 ## Version Information
 
 - **Current Version**: 1.0.0
-- **Black Box Compliance**: 95%+
+- **BlackBox Compliance**: 95%+
 - **TypeScript Support**: Full
 - **Test Coverage**: Comprehensive
 - **HTTP Client Support**: Fetch, Axios compatible
