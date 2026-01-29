@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-import { Injectable } from '../di';
 import { LogLevel, type ILoggerService } from './interfaces';
 
 /**
@@ -8,7 +6,6 @@ import { LogLevel, type ILoggerService } from './interfaces';
  * @deprecated Use createLogger() factory function instead
  * This class is maintained for backward compatibility only.
  */
-@Injectable({ lifetime: 'singleton' })
 export class LoggerService implements ILoggerService {
     private _prefix = '[LoggerService]';
 

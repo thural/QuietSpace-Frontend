@@ -1,43 +1,40 @@
-import 'reflect-metadata';
-import { Injectable, Inject } from '../di';
-import { User } from '@shared/domain/entities/User';
+import { UserProfileEntity } from '@/features/profile/domain/entities';
 
 // User service interface
 interface IUserService {
-  getCurrentUser(): User | null;
-  setCurrentUser(user: User): void;
-  updateUserProfile(updates: Partial<User>): Promise<User>;
+  getCurrentUser(): UserProfileEntity | null;
+  setCurrentUser(user: UserProfileEntity): void;
+  updateUserProfile(updates: Partial<UserProfileEntity>): Promise<UserProfileEntity>;
   logout(): void;
 }
 
 // User repository interface
 interface IUserRepository {
-  findById(id: string): Promise<User | null>;
-  save(user: User): Promise<User>;
-  update(id: string, updates: Partial<User>): Promise<User>;
+  findById(id: string): Promise<UserProfileEntity | null>;
+  save(user: UserProfileEntity): Promise<UserProfileEntity>;
+  update(id: string, updates: Partial<UserProfileEntity>): Promise<UserProfileEntity>;
   delete(id: string): Promise<void>;
 }
 
 // Mock repository implementation
-@Injectable({ lifetime: 'singleton' })
 export class UserRepository implements IUserRepository {
-  private users = new Map<string, User>();
+  private users = new Map<string, UserProfileEntity>();
 
-  async findById(id: string): Promise<User | null> {
+  async findById(id: string): Promise<UserProfileEntity | null> {
     return this.users.get(id) || null;
   }
 
-  async save(user: User): Promise<User> {
-    this.users.set(user.id, user);
+  async save(user: UserProfileEntity): Promise<UserProfileEntity> {
+    this.users.set(user.id.toString(), user);
     return user;
   }
 
-  async update(id: string, updates: Partial<User>): Promise<User> {
+  async update(id: string, updates: Partial<UserProfileEntity>): Promise<UserProfileEntity> {
     const existing = this.users.get(id);
     if (!existing) {
       throw new Error(`User ${id} not found`);
     }
-    const updated = existing.updateProfile(updates);
+    const updated = { ...existing, ...updates };
     this.users.set(id, updated);
     return updated;
   }
@@ -47,45 +44,52 @@ export class UserRepository implements IUserRepository {
   }
 
   // Helper method to create sample users
-  createSampleUser(id: string, username: string): User {
-    return new User(
+  createSampleUser(id: string, username: string): UserProfileEntity {
+    return {
       id,
       username,
-      new Date(),
-      new Date(),
-      `${username}@example.com`,
-      'Sample bio',
-      'avatar.jpg',
-      true,
-      false
-    );
+      email: `${username}@example.com`,
+      bio: 'Sample bio',
+      photo: {
+        type: 'avatar',
+        id,
+        name: username,
+        url: 'avatar.jpg'
+      },
+      settings: {
+        theme: 'light',
+        language: 'en',
+        notifications: true
+      },
+      isPrivateAccount: false,
+      isVerified: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
   }
 }
 
 // User service implementation
-@Injectable({ lifetime: 'singleton' })
 export class UserService implements IUserService {
-  private currentUser: User | null = null;
+  private currentUser: UserProfileEntity | null = null;
 
-  constructor(
-    @Inject(UserRepository) private userRepository: IUserRepository
-  ) { }
+  constructor(private userRepository: IUserRepository) { }
 
-  getCurrentUser(): User | null {
+  getCurrentUser(): UserProfileEntity | null {
     return this.currentUser;
   }
 
-  setCurrentUser(user: User): void {
+  setCurrentUser(user: UserProfileEntity): void {
     this.currentUser = user;
     console.log(`User logged in: ${user.username}`);
   }
 
-  async updateUserProfile(updates: Partial<User>): Promise<User> {
+  async updateUserProfile(updates: Partial<UserProfileEntity>): Promise<UserProfileEntity> {
     if (!this.currentUser) {
       throw new Error('No user logged in');
     }
 
-    const updated = await this.userRepository.update(this.currentUser.id, updates);
+    const updated = await this.userRepository.update(this.currentUser.id.toString(), updates);
     this.currentUser = updated;
 
     console.log(`User profile updated: ${JSON.stringify(updates)}`);

@@ -1,6 +1,3 @@
-import 'reflect-metadata';
-import {Injectable} from '../di';
-
 // Theme service interface
 interface IThemeService {
   getCurrentTheme(): string;
@@ -9,7 +6,6 @@ interface IThemeService {
   isDarkMode(): boolean;
 }
 
-@Injectable({ lifetime: 'singleton' })
 export class ThemeService implements IThemeService {
   private currentTheme = 'light';
   private currentVariant = 'default';
