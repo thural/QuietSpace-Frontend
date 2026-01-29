@@ -433,6 +433,8 @@ export class PostModerationService {
 
 ## 📚 Related Documentation
 
+- [Dependency Inversion & DI Registration Guide](../architecture/DEPENDENCY_INVERSION_GUIDE.md)
+- [Enterprise Architecture Patterns](../architecture/ENTERPRISE_PATTERNS.md)
 - [Feed Feature Cleanup Summary](./FEED_CLEANUP_SUMMARY.md)
 - [Feed Data Services](./FEED_DATA_SERVICES.md)
 - [Feed Migration Status](./FEED_MIGRATION_STATUS.md)
