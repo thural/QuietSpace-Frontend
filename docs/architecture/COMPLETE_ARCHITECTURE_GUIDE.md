@@ -10,7 +10,7 @@ This guide provides comprehensive understanding of QuietSpace's large-scale modu
 2. [Modular Design Principles](#modular-design-principles)
 3. [Multi-Platform Strategy](#multi-platform-strategy)
 4. [Enterprise Architecture Patterns](#enterprise-architecture-patterns)
-5. [Black Box Module Pattern](#black-box-module-pattern)
+5. [BlackBox Module Pattern](#blackbox-module-pattern)
 6. [Directory Structure Principles](#directory-structure-principles)
 7. [Import and Export Guidelines](#import-and-export-guidelines)
 8. [Development Best Practices](#development-best-practices)
@@ -304,9 +304,9 @@ class MessageDataLayer implements IDataLayer {
 }
 ```
 
-### 4. Black Box Module Pattern
+### 4. BlackBox Module Pattern
 
-The Black Box Module pattern ensures complete isolation and encapsulation of infrastructure modules, exposing only well-defined public interfaces while hiding all internal implementation details.
+The BlackBox Module pattern ensures complete isolation and encapsulation of infrastructure modules, exposing only well-defined public interfaces while hiding all internal implementation details.
 
 ### **Core Principles**
 
@@ -323,20 +323,20 @@ The Black Box Module pattern ensures complete isolation and encapsulation of inf
 | **Cache System** | 100% | ✅ Perfect |
 | **WebSocket System** | 100% | ✅ Perfect |
 | **DI System** | 95% | ✅ Excellent |
-| **Authentication System** | 90% | ✅ Very Good |
-| **Theme System** | 85% | ✅ Good |
-| **Services System** | 90% | ✅ Very Good |
-| **Network System** | 80% | ⚠️ Needs Work |
+| **Authentication System** | 95% | ✅ Excellent |
+| **Theme System** | 90% | ✅ Very Good |
+| **Services System** | 95% | ✅ Excellent |
+| **Network System** | 85% | ✅ Good |
 
-### **Example Black Box Implementation**
+### **Example BlackBox Implementation**
 
 ```typescript
-// ✅ CORRECT: Clean Black Box exports
+// ✅ CORRECT: Clean BlackBox exports
 export type { ICacheProvider, ICacheServiceManager, CacheConfig };
 export { createCacheProvider, createCacheServiceManager };
 
-// ❌ INCORRECT: Implementation leakage
-export { CacheProvider, CacheServiceManager }; // Implementation classes
+// ❌ INCORRECT: Exporting implementation
+export { CacheProvider, CacheServiceManager }; // Never export implementation classes
 ```
 
 ---
@@ -430,11 +430,11 @@ src/shared/
 
 #### **1. Core Module Imports**
 ```typescript
-// ✅ CORRECT: Import from Black Box API
+// ✅ CORRECT: Import from BlackBox API
 import { createCacheService, ICacheService } from '@/core/cache';
 
 // ❌ INCORRECT: Import implementation directly
-import { CacheService } from '@/core/cache/CacheService';
+import { CacheService } from '@/core/cache/services/CacheService';
 ```
 
 #### **2. Feature Module Imports**
@@ -459,12 +459,12 @@ import { Button } from '@/shared/ui/components/Button';
 
 #### **1. Module Index Files**
 ```typescript
-// ✅ CORRECT: Black Box exports
+// ✅ CORRECT: BlackBox exports
 export type { IAuthService, AuthConfig };
 export { createAuthService, AuthProvider };
 
-// ❌ INCORRECT: Implementation exports
-export { AuthService, AuthRepository };
+// ❌ INCORRECT: Exporting implementation
+export { AuthService, AuthProvider }; // Never export implementation
 ```
 
 #### **2. Barrel Exports**
@@ -648,7 +648,7 @@ describe('UserService', () => {
 ## ✅ Code Review Checklist
 
 ### **Architecture Review**
-- [ ] Follows Black Box pattern for modules
+- [ ] Follows BlackBox pattern for modules
 - [ ] Proper dependency injection usage
 - [ ] Single responsibility principle
 - [ ] Clean architecture layers with strict separation
@@ -698,12 +698,12 @@ describe('UserService', () => {
 #### **Step 2: Refactoring**
 1. Extract interfaces from implementations
 2. Create factory functions
-3. Update imports to use Black Box API
+3. Update imports to use BlackBox API
 4. Add proper TypeScript types
 
 #### **Step 3: Validation**
 1. Run automated tests
-2. Check Black Box compliance
+2. Check BlackBox compliance
 3. Validate architectural patterns
 4. Performance testing
 
@@ -866,7 +866,7 @@ const UserProfile: React.FC<{ userId: string }> = ({ userId }) => {
 ## 📊 Architecture Metrics
 
 ### **Current Status**
-- **Black Box Compliance**: 90% (6/7 modules compliant)
+- **BlackBox Compliance**: 90% (6/7 modules compliant)
 - **Factory Implementation**: 85% (6/7 modules)
 - **Type Definitions**: 95% (7/7 modules)
 - **Layer Separation Compliance**: 95% (strict layer separation enforced)
@@ -874,7 +874,7 @@ const UserProfile: React.FC<{ userId: string }> = ({ userId }) => {
 - **Performance Score**: 85%
 
 ### **Target Goals**
-- **Black Box Compliance**: 100% (7/7 modules)
+- **BlackBox Compliance**: 100% (7/7 modules)
 - **Factory Implementation**: 100% (7/7 modules)
 - **Type Definitions**: 100% (7/7 modules)
 - **Layer Separation Compliance**: 100% (no violations)

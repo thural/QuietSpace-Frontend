@@ -90,11 +90,11 @@ DI containers provide a clean way to manage dependencies while maintaining the s
 
 ---
 
-## ADR-003: Black Box Module Pattern
+## ADR-003: BlackBox Module Pattern
 
 **Status**: Accepted  
 **Date**: January 27, 2026  
-**Decision**: Implement Black Box pattern for all core modules
+**Decision**: Implement BlackBox pattern for all core modules
 
 ### Context
 
@@ -102,7 +102,7 @@ Core modules were leaking implementation details, creating tight coupling and ma
 
 ### Decision
 
-Implement Black Box pattern where:
+Implement BlackBox pattern where:
 - Only interfaces and types are exported from main module index
 - Implementation classes are completely hidden
 - Factory functions provide clean service creation
@@ -125,7 +125,7 @@ Implement Black Box pattern where:
 
 ### Rationale
 
-The Black Box pattern ensures that internal implementations can change without affecting external consumers. This provides stability and allows for better optimization and refactoring of internal code.
+The BlackBox pattern ensures that internal implementations can change without affecting external consumers. This provides stability and allows for better optimization and refactoring of internal code.
 
 ---
 

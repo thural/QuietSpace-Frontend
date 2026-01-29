@@ -13,7 +13,7 @@ This guide provides comprehensive understanding of QuietSpace's large-scale modu
    - [Enterprise Hook Pattern](#1-enterprise-hook-pattern)
    - [Service Layer Pattern](#2-service-layer-pattern)
    - [Repository Pattern](#3-repository-pattern)
-   - [Black Box Module Pattern](#4-black-box-module-pattern)
+   - [BlackBox Module Pattern](#4-blackbox-module-pattern)
 5. [Scalability Guidelines](#scalability-guidelines)
 6. [Development Workflow](#development-workflow)
 7. [Best Practices](#best-practices)
@@ -539,11 +539,11 @@ export const useStorage = () => {
 };
 ```
 
-### 4. Black Box Module Pattern
+### 4. BlackBox Module Pattern
 
-The Black Box Module pattern ensures complete isolation and encapsulation of infrastructure modules, exposing only well-defined public interfaces while hiding all internal implementation details.
+The BlackBox Module pattern ensures complete isolation and encapsulation of infrastructure modules, exposing only well-defined public interfaces while hiding all internal implementation details.
 
-#### 🎯 Black Box Module Principles
+#### 🎯 BlackBox Module Principles
 
 **1. Complete Isolation**
 - **Internal Implementation**: All internal logic, services, managers, and utilities are completely hidden
@@ -560,22 +560,24 @@ The Black Box Module pattern ensures complete isolation and encapsulation of inf
 - **No Business Logic**: No feature-specific business logic is embedded in infrastructure modules
 - **Pure Infrastructure**: Provides infrastructure services that any feature can utilize
 
-#### 🏗️ Black Box Module Structure
+#### 🏗️ BlackBox Module Structure
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    BLACK BOX MODULE                          │
+│                    BLACKBOX MODULE                          │
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │              Public API (index.ts)                   │   │
 │  │  • Interfaces & Types                                │   │
 │  │  • Factory Functions                                │   │
-│  │  • Public Utilities                                  │   │
+│  │  • Public Hooks                                       │   │
 │  └─────────────────────────────────────────────────────┘   │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │            Internal Implementation                    │   │
-│  │  • Services & Managers                              │   │
-│  │  • Internal Utilities                                │   │
-│  │  • Private Types & Helpers                           │   │
+│  │              Internal Implementation                 │   │
+│  │  • Services                                          │   │
+│  │  • Managers                                          │   │
+│  │  • Utilities                                         │   │
+│  │  • Internal Hooks                                   │   │
+│  │  • (Never Exported)                                  │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                               │
@@ -619,7 +621,7 @@ import { createWebSocketService, IEnterpriseWebSocketService } from '@/core/webs
 import { EnterpriseWebSocketService } from '@/core/websocket/services/EnterpriseWebSocketService';
 ```
 
-#### 📊 Black Box Compliance Checklist
+#### 📊 BlackBox Compliance Checklist
 
 | Requirement | Status | Description |
 |-------------|--------|-------------|
@@ -630,7 +632,7 @@ import { EnterpriseWebSocketService } from '@/core/websocket/services/Enterprise
 | **Single Responsibility** | ✅ Required | Module serves one clear purpose |
 | **Complete Encapsulation** | ✅ Required | Internal details fully hidden |
 
-#### 🎯 Benefits of Black Box Pattern
+#### 🎯 Benefits of BlackBox Pattern
 
 **1. Architectural Integrity**
 - **Clean Boundaries**: Clear separation between infrastructure and features
@@ -652,7 +654,7 @@ import { EnterpriseWebSocketService } from '@/core/websocket/services/Enterprise
 - **Module Reuse**: Infrastructure modules can be reused across projects
 - **Team Autonomy**: Teams can work on different modules simultaneously
 
-#### 🚀 Migration to Black Box Pattern
+#### 🚀 Migration to BlackBox Pattern
 
 **Phase 1: Fix Public API**
 - Remove all internal implementation class exports
@@ -671,15 +673,15 @@ import { EnterpriseWebSocketService } from '@/core/websocket/services/Enterprise
 
 **Phase 4: Validate & Document**
 - Verify all integrations work correctly
-- Confirm black box compliance
+- Confirm blackbox compliance
 - Update documentation and examples
 
 #### 📋 Real-World Implementation
 
-The QuietSpace WebSocket module successfully implements the Black Box pattern:
+The QuietSpace WebSocket module successfully implements the BlackBox pattern:
 
-- **Before Migration**: 10% black box compliance, feature dependencies exposed
-- **After Migration**: 100% black box compliance, complete isolation achieved
+- **Before Migration**: 10% blackbox compliance, feature dependencies exposed
+- **After Migration**: 100% blackbox compliance, complete isolation achieved
 - **Result**: Clean, maintainable, enterprise-grade WebSocket infrastructure
 
 ---
@@ -1011,4 +1013,4 @@ mkdir -p src/features/new-feature/{domain,data,application,presentation}
 
 *Last updated: January 2026*
 *Version: 1.0.0*
-*Status: Production Ready*
+*Status: Ready for Deployment*
