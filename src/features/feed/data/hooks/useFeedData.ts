@@ -4,7 +4,6 @@ import { useCustomInfiniteQuery, useCustomMutation, useCustomQuery } from '@/cor
 import {
   CACHE_TIME_MAPPINGS
 } from '@/core/hooks/migrationUtils';
-import { useAuthStore } from '@/core/store/zustand';
 import type { PostQuery } from '@/features/feed/domain';
 import type { ResId } from '@/shared/api/models/common';
 import type { FeedDataService } from '../FeedDataService';
@@ -22,7 +21,6 @@ export const useFeedDataService = (): FeedDataService => {
  * Feed posts hook with infinite scroll
  */
 export const useFeedPosts = (query: PostQuery = {}) => {
-  const { data: authData, isAuthenticated } = useAuthStore();
   const feedDataService = useFeedDataService();
 
   return useCustomInfiniteQuery(
@@ -32,7 +30,6 @@ export const useFeedPosts = (query: PostQuery = {}) => {
       return await feedDataService.getFeedPosts(feedQuery);
     },
     {
-      enabled: isAuthenticated,
       ...createInfiniteQueryConfig({ limit: 20 })
     }
   );
@@ -42,7 +39,6 @@ export const useFeedPosts = (query: PostQuery = {}) => {
  * Single post hook
  */
 export const usePost = (postId: string) => {
-  const { data: authData, isAuthenticated } = useAuthStore();
   const feedDataService = useFeedDataService();
 
   return useCustomQuery(
@@ -51,7 +47,7 @@ export const usePost = (postId: string) => {
       return await feedDataService.getPost(postId);
     },
     {
-      enabled: isAuthenticated && !!postId,
+      enabled: !!postId,
       staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
       cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
     }
@@ -62,7 +58,6 @@ export const usePost = (postId: string) => {
  * Post with comments hook
  */
 export const usePostWithComments = (postId: string) => {
-  const { data: authData, isAuthenticated } = useAuthStore();
   const feedDataService = useFeedDataService();
 
   return useCustomQuery(
@@ -71,7 +66,7 @@ export const usePostWithComments = (postId: string) => {
       return await feedDataService.getPostWithComments(postId);
     },
     {
-      enabled: isAuthenticated && !!postId,
+      enabled: !!postId,
       staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
       cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
     }

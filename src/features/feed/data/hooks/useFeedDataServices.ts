@@ -7,26 +7,27 @@
 import { useCallback } from 'react';
 import { useQuery, useMutation, useInfiniteQuery } from '@/core/dataservice';
 import { useDIContainer } from '@/core/di';
-import { 
-  createFeedDataService, 
-  createPostDataService, 
-  createCommentDataService 
-} from '../services/FeedDataServicesDI';
-import type { 
-  FeedItem, 
-  FeedQuery, 
-  FeedDataServiceConfig 
+import {
+  registerFeedDataServices,
+  createFeedDataService,
+  createPostDataService,
+  createCommentDataService
+} from '../di';
+import type {
+  FeedItem,
+  FeedQuery,
+  FeedDataServiceConfig
 } from '../services/FeedDataService';
-import type { 
-  Post, 
-  PostQuery as PostQueryType, 
-  PostRequest, 
-  PostUpdate 
+import type {
+  Post,
+  PostQuery as PostQueryType,
+  PostRequest,
+  PostUpdate
 } from '../services/PostDataService';
-import type { 
-  Comment, 
-  CommentQuery as CommentQueryType, 
-  CommentRequest 
+import type {
+  Comment,
+  CommentQuery as CommentQueryType,
+  CommentRequest
 } from '../services/CommentDataService';
 
 /**
@@ -35,7 +36,7 @@ import type {
 export function useFeed(query: FeedQuery = {}) {
   const container = useDIContainer();
   const dataService = createFeedDataService(container);
-  
+
   return useQuery(
     ['feed', query],
     () => dataService.getFeed(query),
@@ -53,7 +54,7 @@ export function useFeed(query: FeedQuery = {}) {
 export function useInfiniteFeed(query: FeedQuery = {}) {
   const container = useDIContainer();
   const dataService = createFeedDataService(container);
-  
+
   return useInfiniteQuery(
     'feed',
     ({ pageParam = 1 }) => dataService.getFeedNextPage(pageParam, query),
@@ -70,7 +71,7 @@ export function useInfiniteFeed(query: FeedQuery = {}) {
 export function useFeedStats() {
   const container = useDIContainer();
   const dataService = createFeedDataService(container);
-  
+
   return useQuery(
     'feed-stats',
     () => dataService.getFeedStats(),
@@ -87,7 +88,7 @@ export function useFeedStats() {
 export function useMarkAsViewed() {
   const container = useDIContainer();
   const dataService = createFeedDataService(container);
-  
+
   return useMutation(
     (itemId: string) => dataService.markAsViewed(itemId),
     {
@@ -107,7 +108,7 @@ export function useMarkAsViewed() {
 export function usePosts(query: PostQueryType = {}) {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   return useQuery(
     ['posts', query],
     () => dataService.getPosts(query),
@@ -125,7 +126,7 @@ export function usePosts(query: PostQueryType = {}) {
 export function usePost(id: string) {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   return useQuery(
     ['post', id],
     () => dataService.getPost(id),
@@ -143,7 +144,7 @@ export function usePost(id: string) {
 export function useCreatePost() {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   return useMutation(
     (postData: PostRequest) => dataService.createPost(postData),
     {
@@ -163,9 +164,9 @@ export function useCreatePost() {
 export function useUpdatePost() {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   return useMutation(
-    ({ id, updates }: { id: string; updates: PostUpdate }) => 
+    ({ id, updates }: { id: string; updates: PostUpdate }) =>
       dataService.updatePost(id, updates),
     {
       onSuccess: (data) => {
@@ -184,7 +185,7 @@ export function useUpdatePost() {
 export function useDeletePost() {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   return useMutation(
     (id: string) => dataService.deletePost(id),
     {
@@ -204,9 +205,9 @@ export function useDeletePost() {
 export function useTogglePostLike() {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   return useMutation(
-    ({ postId, userId }: { postId: string; userId: string }) => 
+    ({ postId, userId }: { postId: string; userId: string }) =>
       dataService.togglePostLike(postId, userId),
     {
       onSuccess: (result) => {
@@ -225,7 +226,7 @@ export function useTogglePostLike() {
 export function useComments(postId: string, query: CommentQueryType = {}) {
   const container = useDIContainer();
   const dataService = createCommentDataService(container);
-  
+
   return useQuery(
     ['comments', postId, query],
     () => dataService.getCommentsByPostId(postId, query),
@@ -243,7 +244,7 @@ export function useComments(postId: string, query: CommentQueryType = {}) {
 export function useInfiniteComments(postId: string, query: CommentQueryType = {}) {
   const container = useDIContainer();
   const dataService = createCommentDataService(container);
-  
+
   return useInfiniteQuery(
     ['comments', postId],
     ({ pageParam = 1 }) => dataService.getCommentsNextPage(postId, pageParam, query),
@@ -260,7 +261,7 @@ export function useInfiniteComments(postId: string, query: CommentQueryType = {}
 export function useCreateComment() {
   const container = useDIContainer();
   const dataService = createCommentDataService(container);
-  
+
   return useMutation(
     (commentData: CommentRequest) => dataService.createComment(commentData),
     {
@@ -280,7 +281,7 @@ export function useCreateComment() {
 export function useDeleteComment() {
   const container = useDIContainer();
   const dataService = createCommentDataService(container);
-  
+
   return useMutation(
     (id: string) => dataService.deleteComment(id),
     {
@@ -300,11 +301,11 @@ export function useDeleteComment() {
 export function useFeedUpdates(callback: (update: FeedItem) => void) {
   const container = useDIContainer();
   const dataService = createFeedDataService(container);
-  
+
   const subscribe = useCallback(() => {
     return dataService.subscribeToFeedUpdates(callback);
   }, [dataService, callback]);
-  
+
   return { subscribe };
 }
 
@@ -314,11 +315,11 @@ export function useFeedUpdates(callback: (update: FeedItem) => void) {
 export function usePostUpdates(postId: string, callback: (update: Post) => void) {
   const container = useDIContainer();
   const dataService = createPostDataService(container);
-  
+
   const subscribe = useCallback(() => {
     return dataService.subscribeToPostUpdates(postId, callback);
   }, [dataService, postId, callback]);
-  
+
   return { subscribe };
 }
 
@@ -328,10 +329,10 @@ export function usePostUpdates(postId: string, callback: (update: Post) => void)
 export function useCommentUpdates(postId: string, callback: (update: Comment) => void) {
   const container = useDIContainer();
   const dataService = createCommentDataService(container);
-  
+
   const subscribe = useCallback(() => {
     return dataService.subscribeToCommentUpdates(postId, callback);
   }, [dataService, postId, callback]);
-  
+
   return { subscribe };
 }

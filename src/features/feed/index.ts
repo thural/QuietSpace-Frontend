@@ -1,30 +1,21 @@
 /**
  * Feed Feature Main Barrel Export
  * 
- * Exports all public APIs for the Feed feature including:
- * - Domain entities and interfaces
- * - Data repositories and services
- * - Application services and business logic
- * - Application hooks
+ * Exports working feed functionality
  */
 
-// ===== DOMAIN LAYER =====
-export * from './domain';
+// ===== NEW FEED COMPONENT =====
+export { default as NewFeed } from './presentation/components/NewFeed';
 
-// ===== DATA LAYER =====
-export * from './data';
-
-// ===== DATA SERVICES =====
-export * from './data/services';
-
-// ===== APPLICATION SERVICES =====
-export * from './application/services';
-
-// ===== APPLICATION HOOKS =====
-export * from './application/hooks';
-
-// ===== WEBSOCKET ADAPTERS =====
-export * from './adapters';
-
-// ===== INTEGRATION =====
-export * from './integration';
+// ===== INTEGRATION NOTES =====
+/*
+ * Post and Comment features are now separate features.
+ * Import them directly when needed:
+ * 
+ * import { PostCard, PostResponse } from '@/features/post';
+ * import { Comment, CommentResponse } from '@/features/comment';
+ * 
+ * NewFeed demonstrates how to use both features together.
+ * 
+ * Legacy feed functionality is being refactored.
+ */

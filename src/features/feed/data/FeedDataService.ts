@@ -1,17 +1,9 @@
-import type { ICacheServiceManager } from '@/core/cache';
-import { type ICacheProvider } from '@/core/cache';
-import type { ICacheManager } from '@/core/dataservice/services';
-import type { IWebSocketService } from '@/core/websocket/types';
 import type {
-  CommentRequest,
   CommentResponse
 } from '@/features/feed/data/models/comment';
 import type {
   PostQuery,
-  PostResponse,
-  PostRequest,
-  ReactionRequest,
-  VoteBody
+  PostResponse
 } from '@/features/feed/domain';
 import type { ResId } from '@/shared/api/models/common';
 
@@ -248,13 +240,13 @@ export class FeedDataService {
     const { page = 1, limit = 20, userId, filters } = options;
 
     const posts = await this.repository.getFeedPosts(options);
-    
+
     return posts;
   }
 
   async getPost(postId: string) {
     const post = await this.repository.getPost(postId);
-    
+
     return post;
   }
 

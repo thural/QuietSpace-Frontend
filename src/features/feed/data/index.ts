@@ -5,12 +5,18 @@
  * and data access objects for the Feed feature.
  */
 
+// Repository implementations
 export { PostRepository } from './repositories/PostRepository';
 export { CommentRepository } from './repositories/CommentRepository';
 export { MockPostRepository } from './repositories/MockPostRepository';
 
-// Core data service
-export { FeedDataService } from './FeedDataService';
+// Data services
+export { FeedDataService } from './services/FeedDataService';
+export { PostDataService } from './services/PostDataService';
+export { CommentDataService } from './services/CommentDataService';
+
+// DI configuration and factory functions
+export * from './di';
 
 // Unified models - single source of truth
 export * from './models';
