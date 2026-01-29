@@ -5,7 +5,7 @@
  * Provides clean access to all core services with proper error handling.
  */
 
-import { useContext, useCallback, useMemo } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 import type {
     ICoreServices,
     ICacheService,
