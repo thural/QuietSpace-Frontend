@@ -1,13 +1,13 @@
-import type {AxiosInstance} from 'axios';
-import {Inject, Injectable} from '@/core/di';
-import {TYPES} from '@/core/di/types';
-import {NOTIFICATION_PATH} from "@/core/shared/apiPath";
-import {ResId, JwtToken} from "@/shared/api/models/common";
-import {NotificationPage, NotificationResponse, NotificationType} from "@/features/notification/data/models/notification";
-import {ReactionType} from "@/features/feed/data/models/reaction";
-import { 
-    INotificationRepository, 
-    NotificationQuery, 
+import type { AxiosInstance } from 'axios';
+import { Inject, Injectable } from '@/core/di';
+import { TYPES } from '@/core/di/types';
+import { NOTIFICATION_PATH } from "@/core/shared/apiPath";
+import { ResId, JwtToken } from "@/shared/api/models/common";
+import { NotificationPage, NotificationResponse, NotificationType } from "@/features/notification/data/models/notification";
+import { ReactionType } from "@/features/shared/types";
+import {
+    INotificationRepository,
+    NotificationQuery,
     NotificationFilters,
     NotificationSettings,
     NotificationPreferences,
@@ -29,7 +29,7 @@ export class NotificationRepository implements INotificationRepository {
     constructor(
         @Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance,
         @Inject(TYPES.AUTH_SERVICE) private authService: IAuthService
-    ) {}
+    ) { }
 
     /**
      * Helper method to get auth token from centralized service
@@ -240,7 +240,7 @@ export class NotificationRepository implements INotificationRepository {
     // Helper method to build query parameters
     private buildQueryParams(query: NotificationQuery): string {
         const params = new URLSearchParams();
-        
+
         if (query.userId) params.append('userId', query.userId);
         if (query.type) params.append('type', query.type);
         if (query.page !== undefined) params.append('page', query.page.toString());
@@ -248,7 +248,7 @@ export class NotificationRepository implements INotificationRepository {
         if (query.isSeen !== undefined) params.append('isSeen', query.isSeen.toString());
         if (query.priority) params.append('priority', query.priority);
         if (query.categories) params.append('categories', query.categories.join(','));
-        
+
         const paramString = params.toString();
         return paramString ? `?${paramString}` : '';
     }

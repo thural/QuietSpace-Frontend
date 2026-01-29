@@ -1,11 +1,15 @@
 import { ResId } from "@/shared/api/models/commonNative";
-import PostCard from "@/features/feed/presentation/components/post/PostCard";
-import PostReplyCard from "@/features/feed/presentation/components/post/PostReplyCard";
-import RepostCard from "@/features/feed/presentation/components/repost/RepostCard";
+import { PostCard, PostReplyCard } from "@/features/post/presentation/components/post";
+import { RepostCard } from "@/features/post/presentation/components/repost";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
 import LoaderStyled from "@/shared/LoaderStyled";
 import { useGetPostsByUserId, useGetRepliedPostsByUserId, useGetSavedPostsByUserId } from "@/services/data/usePostData";
+
+// Test if post components are working
+console.log('PostCard:', PostCard);
+console.log('PostReplyCard:', PostReplyCard);
+console.log('RepostCard:', RepostCard);
 
 /**
  * UserPostListProps interface.
