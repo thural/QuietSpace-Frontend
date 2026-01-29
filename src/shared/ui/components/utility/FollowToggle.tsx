@@ -1,0 +1,27 @@
+import { UserResponse } from "@/features/profile/data/models/user";
+import { useToggleFollow } from "@/services/data/useUserData";
+import LightButton from "@/shared/buttons/LightButton";
+import React from "react";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+
+interface FollowToggleProps extends GenericWrapper {
+    user: UserResponse
+    Button?: React.ComponentType
+}
+
+const FollowToggle: React.FC<FollowToggleProps> = ({ user, Button = LightButton, ...props }) => {
+
+    const followStatus = user.isFollowing ? "unfollow" : "follow";
+    const toggleFollow = useToggleFollow(user.id);
+
+    const handleFollowToggle = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        event.preventDefault();
+        toggleFollow.mutate(user.id);
+    }
+
+
+    return React.createElement(Button as any, { name: followStatus, onClick: handleFollowToggle, ...props });
+};
+
+export default FollowToggle
