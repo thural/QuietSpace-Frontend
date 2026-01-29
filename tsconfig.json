@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": [
       "ES2020",
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "ES2022",
+    "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
@@ -33,6 +33,24 @@
       "@shared/*": [
         "src/shared/*"
       ],
+      "@features": [
+        "src/features"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@auth": [
+        "src/features/auth"
+      ],
+      "@auth/*": [
+        "src/features/auth/*"
+      ],
+      "@analytics": [
+        "src/features/analytics"
+      ],
+      "@analytics/*": [
+        "src/features/analytics/*"
+      ],
       "@content/*": [
         "src/features/content/*"
       ],
@@ -47,6 +65,12 @@
       ],
       "@settings/*": [
         "src/features/settings/*"
+      ],
+      "@navbar": [
+        "src/features/navbar"
+      ],
+      "@navbar/*": [
+        "src/features/navbar/*"
       ],
       "@core/*": [
         "src/core/*"
