@@ -5,8 +5,8 @@
  * Bridges the auth plugin system with the comprehensive analytics infrastructure.
  */
 
-import {IAuthPlugin, IAuthService} from '../interfaces/authInterfaces';
-import {AnalyticsEventType, AnalyticsService} from '@features/analytics';
+import { IAuthPlugin, IAuthService } from '../interfaces/authInterfaces';
+import { AnalyticsEventType, AnalyticsService } from '@analytics';
 
 export class AnalyticsPlugin implements IAuthPlugin {
     readonly name = 'analytics';
@@ -21,7 +21,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
      */
     async initialize(authService: IAuthService): Promise<void> {
         this.authService = authService;
-        
+
         // Initialize the existing AnalyticsService through DI container
         try {
             // In a real implementation, this would use the DI container
@@ -125,7 +125,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
                     },
                     source: 'web'
                 });
-                
+
                 console.log(`[AnalyticsPlugin] Tracked ${eventType} via AnalyticsService`);
             } catch (error) {
                 console.error(`[AnalyticsPlugin] Failed to track event:`, error);

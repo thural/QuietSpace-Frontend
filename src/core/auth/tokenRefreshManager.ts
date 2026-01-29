@@ -1,5 +1,5 @@
-import { AuthResponse } from '@features/auth';
-import { fetchAccessToken } from '@features/auth/data/authRequests.ts';
+import { AuthResponse } from '@auth';
+import { fetchAccessToken } from '@auth/data/authRequests';
 import { getRefreshToken } from '@shared/utils/authStoreUtils';
 
 /**
