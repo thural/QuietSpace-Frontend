@@ -12,6 +12,10 @@
   },
   "scripts": {
     "dev": "vite --port 5000",
+    "dev:web": "vite --config vite.config.web.ts --port 5000",
+    "dev:mobile": "vite --config vite.config.mobile.ts --port 5001",
+    "dev:desktop": "vite --config vite.config.desktop.ts --port 5002",
+    "dev:server": "vite --config vite.config.server.ts --port 5003",
     "watch": "vite build --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
@@ -21,8 +25,17 @@
     "test:e2e:headed": "playwright test --headed",
     "serve-json": "json-server --watch db.json --port 4000",
     "build": "tsc -b && vite build",
+    "build:web": "tsc -b && vite build --config vite.config.web.ts",
+    "build:mobile": "tsc -b && vite build --config vite.config.mobile.ts",
+    "build:desktop": "tsc -b && vite build --config vite.config.desktop.ts",
+    "build:server": "tsc -b && vite build --config vite.config.server.ts",
+    "build:all": "npm run build:web && npm run build:mobile && npm run build:desktop && npm run build:server",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:web": "vite preview --config vite.config.web.ts",
+    "preview:mobile": "vite preview --config vite.config.mobile.ts",
+    "preview:desktop": "vite preview --config vite.config.desktop.ts",
+    "preview:server": "vite preview --config vite.config.server.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
