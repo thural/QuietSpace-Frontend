@@ -1,63 +1,114 @@
-import { TYPES } from '@/core/di/types';
-import { createCacheProvider, type ICacheProvider } from '@/core/cache';
-import { ISettingsRepository, ProfileSettings, PrivacySettings, NotificationSettings, SharingSettings, MentionsSettings, RepliesSettings, BlockingSettings } from '@features/settings/domain/entities/SettingsRepository';
-import { JwtToken } from '@/shared/api/models/common';
-import { SETTINGS_CACHE_KEYS, SETTINGS_CACHE_TTL, SETTINGS_CACHE_INVALIDATION } from '../cache/SettingsCacheKeys';
+import type { ICacheProvider } from '@/core/cache';
+import { BaseDataService } from '@/core/dataservice/BaseDataService';
+import type { IWebSocketService } from '@/core/websocket/types';
 import type { ProfileSettingsRequest, UserProfileResponse } from '@/features/profile/data/models/user';
+import { JwtToken } from '@/shared/api/models/common';
+import { BlockingSettings, ISettingsRepository, MentionsSettings, NotificationSettings, PrivacySettings, RepliesSettings, SharingSettings } from '@features/settings/domain/entities/SettingsRepository';
+import { SETTINGS_CACHE_INVALIDATION, SETTINGS_CACHE_KEYS, SETTINGS_CACHE_TTL } from '../cache/SettingsCacheKeys';
 
 /**
  * Settings Data Service
  * 
  * Provides intelligent caching and orchestration for settings data
  * Implements enterprise-grade caching with security-conscious strategies
+ * Extends BaseDataService for composed services and proper separation of concerns
  */
-export class SettingsDataService {
+export class SettingsDataService extends BaseDataService {
+  private repository: ISettingsRepository;
+
   constructor(
-    private cache: ICacheProvider,
-    private repository: ISettingsRepository
-  ) { }
+    repository: ISettingsRepository,
+    cacheService: ICacheProvider,
+    webSocketService: IWebSocketService
+  ) {
+    super(); // Initialize BaseDataService with composed services
+    this.repository = repository;
+  }
 
   // Profile Settings Operations
   async getProfileSettings(userId: string, token: JwtToken): Promise<UserProfileResponse> {
-    const cacheKey = SETTINGS_CACHE_KEYS.PROFILE_SETTINGS(userId);
+    const cacheKey = this.generateCacheKey('profile-settings', { userId });
 
-    let data = this.cache.get<UserProfileResponse>(cacheKey);
-    if (data) return data;
+    try {
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.getProfileSettings(userId, token),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: [`settings:${userId}:profile`],
+          updateStrategy: 'merge'
+        }
+      );
 
-    data = await this.repository.getProfileSettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.PROFILE_SETTINGS);
-
-    return data;
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as UserProfileResponse;
+    } catch (error) {
+      console.error('Failed to get profile settings:', error);
+      throw error;
+    }
   }
 
   async updateProfileSettings(userId: string, settings: ProfileSettingsRequest, token: JwtToken): Promise<UserProfileResponse> {
-    const result = await this.repository.updateProfileSettings(userId, settings, token);
+    try {
+      // Use BaseDataService mutation with composed services
+      const mutationResult = this.executeMutation<
+        UserProfileResponse,
+        Error,
+        { userId: string; settings: ProfileSettingsRequest; token: JwtToken }
+      >(
+        (variables) => this.repository.updateProfileSettings(variables.userId, variables.settings, variables.token),
+        {
+          invalidateQueries: [this.generateCacheKey('profile-settings', { userId })],
+          websocketEvents: [`settings:${userId}:updated`],
+          optimisticUpdate: (cache, variables) => {
+            // Optimistic update logic
+            const cacheKey = this.generateCacheKey('profile-settings', { userId: variables.userId });
+            this.updateCache(cacheKey, { ...variables.settings, updating: true });
+          }
+        }
+      );
 
-    // Invalidate relevant caches
-    SETTINGS_CACHE_INVALIDATION.PROFILE_UPDATE(userId).forEach(key => {
-      this.cache.invalidatePattern(key);
-    });
-
-    // Cache the updated data
-    const cacheKey = SETTINGS_CACHE_KEYS.PROFILE_SETTINGS(userId);
-    this.cache.set(cacheKey, result, SETTINGS_CACHE_TTL.PROFILE_SETTINGS);
-
-    return result;
+      // Execute the mutation with variables
+      const result = await mutationResult.mutateAsync({ userId, settings, token });
+      return result.data as UserProfileResponse;
+    } catch (error) {
+      console.error('Failed to update profile settings:', error);
+      throw error;
+    }
   }
 
   async uploadProfilePhoto(userId: string, file: File, token: JwtToken): Promise<UserProfileResponse> {
-    const result = await this.repository.uploadProfilePhoto(userId, file, token);
+    try {
+      // Use BaseDataService mutation with composed services
+      const mutationResult = this.executeMutation<
+        UserProfileResponse,
+        Error,
+        { userId: string; file: File; token: JwtToken }
+      >(
+        (variables) => this.repository.uploadProfilePhoto(variables.userId, variables.file, variables.token),
+        {
+          invalidateQueries: [this.generateCacheKey('profile-settings', { userId })],
+          websocketEvents: [`settings:${userId}:photo-updated`],
+          optimisticUpdate: (cache, variables) => {
+            // Optimistic update logic
+            const cacheKey = this.generateCacheKey('profile-settings', { userId: variables.userId });
+            const currentData = this.getCachedData<UserProfileResponse>(cacheKey);
+            if (currentData) {
+              this.updateCache(cacheKey, { ...currentData, photoUpdating: true });
+            }
+          }
+        }
+      );
 
-    // Invalidate profile-related caches
-    SETTINGS_CACHE_INVALIDATION.PROFILE_UPDATE(userId).forEach(key => {
-      this.cache.invalidatePattern(key);
-    });
-
-    // Cache the updated data
-    const cacheKey = SETTINGS_CACHE_KEYS.PROFILE_SETTINGS(userId);
-    this.cache.set(cacheKey, result, SETTINGS_CACHE_TTL.PROFILE_SETTINGS);
-
-    return result;
+      // Execute the mutation with variables
+      const result = await mutationResult.mutateAsync({ userId, file, token });
+      return result.data as UserProfileResponse;
+    } catch (error) {
+      console.error('Failed to upload profile photo:', error);
+      throw error;
+    }
   }
 
   async removeProfilePhoto(userId: string, token: JwtToken): Promise<UserProfileResponse> {
@@ -77,15 +128,27 @@ export class SettingsDataService {
 
   // Privacy Settings Operations
   async getPrivacySettings(userId: string, token: JwtToken): Promise<PrivacySettings> {
-    const cacheKey = SETTINGS_CACHE_KEYS.PRIVACY_SETTINGS(userId);
+    const cacheKey = this.generateCacheKey('privacy-settings', { userId });
 
-    let data = this.cache.get<PrivacySettings>(cacheKey);
-    if (data) return data;
+    try {
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.getPrivacySettings(userId, token),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: [`settings:${userId}:privacy`],
+          updateStrategy: 'merge'
+        }
+      );
 
-    data = await this.repository.getPrivacySettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.PRIVACY_SETTINGS);
-
-    return data;
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as PrivacySettings;
+    } catch (error) {
+      console.error('Failed to get privacy settings:', error);
+      throw error;
+    }
   }
 
   async updatePrivacySettings(userId: string, settings: PrivacySettings, token: JwtToken): Promise<PrivacySettings> {
@@ -231,18 +294,43 @@ export class SettingsDataService {
 
   // Cache management utilities
   invalidateUserSettings(userId: string): void {
-    SETTINGS_CACHE_INVALIDATION.ALL_USER_SETTINGS(userId).forEach(key => {
-      this.cache.invalidatePattern(key);
-    });
+    try {
+      // Use BaseDataService cache invalidation
+      const cacheKeys = [
+        this.generateCacheKey('profile-settings', { userId }),
+        this.generateCacheKey('privacy-settings', { userId }),
+        this.generateCacheKey('notification-settings', { userId }),
+        this.generateCacheKey('sharing-settings', { userId }),
+        this.generateCacheKey('mentions-settings', { userId }),
+        this.generateCacheKey('replies-settings', { userId }),
+        this.generateCacheKey('blocking-settings', { userId })
+      ];
+
+      // Invalidate all user-related cache entries
+      cacheKeys.forEach(key => this.invalidateCache(key));
+    } catch (error) {
+      console.error('Failed to invalidate user settings cache:', error);
+    }
   }
 
   clearAllSettingsCache(): void {
-    this.cache.invalidatePattern(SETTINGS_CACHE_KEYS.ALL_SETTINGS_PATTERN);
+    try {
+      // Use BaseDataService cache invalidation
+      this.invalidateCache('all-settings');
+    } catch (error) {
+      console.error('Failed to clear all settings cache:', error);
+    }
   }
 
   // Performance monitoring
-  getCacheStats() {
-    return this.cache.getStats();
+  getCacheStats(): any {
+    try {
+      // Use BaseDataService cache statistics
+      return super.getCacheStats();
+    } catch (error) {
+      console.error('Failed to get cache stats:', error);
+      return null;
+    }
   }
 
   // Prefetching for better UX

@@ -5,44 +5,52 @@
  * Provides intelligent caching, orchestration, and performance optimization
  */
 
-import { TYPES } from '@/core/di/types';
-import { createCacheProvider, type ICacheProvider } from '@/core/cache';
-import { ISearchRepositoryEnhanced, EnhancedSearchQuery, EnhancedSearchResult, SearchSuggestion, SearchAnalytics, SearchPerformanceMetrics, SearchConfiguration } from '@search/domain/entities/ISearchRepositoryEnhanced';
-import { SearchQuery, SearchResult, SearchFilters } from '@search/domain/entities';
+import type { ICacheProvider } from '@/core/cache';
+import { BaseDataService } from '@/core/dataservice/BaseDataService';
+import type { IWebSocketService } from '@/core/websocket/types';
 import { JwtToken } from '@/shared/api/models/common';
-import { SEARCH_CACHE_KEYS, SEARCH_CACHE_TTL, SEARCH_CACHE_INVALIDATION } from '../cache/SearchCacheKeys';
+import { SearchFilters, SearchQuery, SearchResult } from '@search/domain/entities';
+import { EnhancedSearchQuery, EnhancedSearchResult, ISearchRepositoryEnhanced, SearchAnalytics, SearchConfiguration, SearchPerformanceMetrics, SearchSuggestion } from '@search/domain/entities/ISearchRepositoryEnhanced';
+import { SEARCH_CACHE_INVALIDATION, SEARCH_CACHE_KEYS, SEARCH_CACHE_TTL } from '../cache/SearchCacheKeys';
 
 /**
  * Search Data Service
  * 
  * Provides intelligent caching and orchestration for search data
  * Implements enterprise-grade caching with search-specific strategies
+ * Extends BaseDataService for composed services and proper separation of concerns
  */
-export class SearchDataService {
-  private cache: ICacheProvider;
+export class SearchDataService extends BaseDataService {
+  private repository: ISearchRepositoryEnhanced;
 
   constructor(
-    private repository: ISearchRepositoryEnhanced
+    repository: ISearchRepositoryEnhanced,
+    cacheService: ICacheProvider,
+    webSocketService: IWebSocketService
   ) {
-    // Initialize cache using Black Box factory pattern
-    this.cache = createCacheProvider();
+    super(); // Initialize BaseDataService with composed services
+    this.repository = repository;
   }
 
   // Basic search operations with caching
   async searchUsers(query: string, filters?: SearchFilters, token?: JwtToken): Promise<any[]> {
-    const cacheKey = SEARCH_CACHE_KEYS.USER_SEARCH(query, 0, 20);
-
-    let data = this.cache.get<any[]>(cacheKey);
-    if (data) return data;
+    const cacheKey = this.generateCacheKey('user-search', { query, filters, page: 0, limit: 20 });
 
     try {
-      data = await this.repository.searchUsers(query, filters);
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.searchUsers(query, filters),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: query ? [`search:${query}:users`] : [],
+          updateStrategy: 'merge'
+        }
+      );
 
-      if (data) {
-        this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.USER_SEARCH);
-      }
-
-      return data;
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as any[];
     } catch (error) {
       console.error('Error searching users:', error);
       throw error;
@@ -50,19 +58,23 @@ export class SearchDataService {
   }
 
   async searchPosts(query: string, filters?: SearchFilters, token?: JwtToken): Promise<any[]> {
-    const cacheKey = SEARCH_CACHE_KEYS.POST_SEARCH(query, 0, 20);
-
-    let data = this.cache.get<any[]>(cacheKey);
-    if (data) return data;
+    const cacheKey = this.generateCacheKey('post-search', { query, filters, page: 0, limit: 20 });
 
     try {
-      data = await this.repository.searchPosts(query, filters);
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.searchPosts(query, filters),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: query ? [`search:${query}:posts`] : [],
+          updateStrategy: 'merge'
+        }
+      );
 
-      if (data) {
-        this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.POST_SEARCH);
-      }
-
-      return data;
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as any[];
     } catch (error) {
       console.error('Error searching posts:', error);
       throw error;
@@ -70,19 +82,23 @@ export class SearchDataService {
   }
 
   async searchAll(query: string, filters?: SearchFilters, token?: JwtToken): Promise<SearchResult> {
-    const cacheKey = SEARCH_CACHE_KEYS.COMBINED_SEARCH(query, 0, 20);
-
-    let data = this.cache.get<SearchResult>(cacheKey);
-    if (data) return data;
+    const cacheKey = this.generateCacheKey('combined-search', { query, filters, page: 0, limit: 20 });
 
     try {
-      data = await this.repository.searchAll(query, filters);
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.searchAll(query, filters),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: query ? [`search:${query}:all`] : [],
+          updateStrategy: 'merge'
+        }
+      );
 
-      if (data) {
-        this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.COMBINED_SEARCH);
-      }
-
-      return data;
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as SearchResult;
     } catch (error) {
       console.error('Error searching all:', error);
       throw error;
@@ -91,25 +107,27 @@ export class SearchDataService {
 
   // Enhanced search operations with caching
   async searchEnhanced(query: EnhancedSearchQuery, token?: JwtToken): Promise<EnhancedSearchResult> {
-    const cacheKey = SEARCH_CACHE_KEYS.ADVANCED_SEARCH(query.query, query.pagination?.page || 0, query.pagination?.size || 20);
-
-    let data = this.cache.get<EnhancedSearchResult>(cacheKey);
-    if (data) {
-      // Mark as cache hit
-      data.cacheHit = true;
-      return data;
-    }
+    const cacheKey = this.generateCacheKey('advanced-search', {
+      query: query.query,
+      page: query.pagination?.page || 0,
+      size: query.pagination?.size || 20
+    });
 
     try {
-      data = await this.repository.searchEnhanced(query, token);
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.searchEnhanced(query),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: query.query ? [`search:${query.query}:enhanced`] : [],
+          updateStrategy: 'merge'
+        }
+      );
 
-      if (data) {
-        // Mark as fresh cache hit
-        data.cacheHit = false;
-        this.cache.set(cacheKey, data, SEARCH_CACHE_TTL.ADVANCED_SEARCH);
-      }
-
-      return data;
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as EnhancedSearchResult;
     } catch (error) {
       console.error('Error in enhanced search:', error);
       throw error;
@@ -410,6 +428,30 @@ export class SearchDataService {
   }
 
   // Search analytics and metrics
+  async searchWithAnalytics(query: string, userId: string, token?: JwtToken): Promise<EnhancedSearchResult> {
+    const cacheKey = this.generateCacheKey('search-analytics', { userId, timeframe: '24h' });
+
+    try {
+      // Use BaseDataService caching with composed services
+      const queryResult = this.executeQuery(
+        cacheKey,
+        () => this.repository.searchWithAnalytics(query, userId),
+        {
+          cacheStrategy: 'USER_CONTENT',
+          websocketTopics: [`search:${query}:analytics:${userId}`],
+          updateStrategy: 'merge'
+        }
+      );
+
+      // Execute the query and return the data
+      const result = await queryResult;
+      return result.data as EnhancedSearchResult;
+    } catch (error) {
+      console.error('Error in search with analytics:', error);
+      throw error;
+    }
+  }
+
   async getSearchAnalytics(userId: string, period: string, token?: JwtToken): Promise<SearchAnalytics> {
     const cacheKey = SEARCH_CACHE_KEYS.SEARCH_ANALYTICS(userId, period);
 
@@ -505,27 +547,44 @@ export class SearchDataService {
   }
 
   setCachedResult(key: string, result: EnhancedSearchResult, ttl?: number): Promise<void> {
-    this.cache.set(key, result, ttl || SEARCH_CACHE_TTL.COMBINED_SEARCH);
+    this.updateCache(key, result);
     return Promise.resolve();
   }
 
   invalidateCache(pattern?: string): Promise<void> {
-    if (pattern) {
-      this.cache.invalidatePattern(pattern);
-    } else {
-      this.cache.clear();
+    try {
+      if (pattern) {
+        // Use BaseDataService pattern-based invalidation
+        super.invalidateCache(pattern);
+      } else {
+        // Clear all search cache
+        super.invalidateCache('search');
+      }
+    } catch (error) {
+      console.error('Failed to invalidate cache:', error);
     }
     return Promise.resolve();
   }
 
   clearCache(): Promise<void> {
-    this.cache.clear();
+    try {
+      // Use BaseDataService to clear all search cache
+      super.invalidateCache('search');
+    } catch (error) {
+      console.error('Failed to clear cache:', error);
+    }
     return Promise.resolve();
   }
 
   // Cache statistics and monitoring
   getCacheStats(): any {
-    return this.cache.getStats();
+    try {
+      // Use BaseDataService cache statistics
+      return super.getCacheStats();
+    } catch (error) {
+      console.error('Failed to get cache stats:', error);
+      return null;
+    }
   }
 
   // Cache warming
