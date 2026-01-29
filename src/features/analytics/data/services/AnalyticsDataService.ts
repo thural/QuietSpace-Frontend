@@ -1,9 +1,80 @@
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
-import { IAnalyticsRepository, AnalyticsEntity, AnalyticsMetrics, AnalyticsDashboard, DashboardWidget, AnalyticsReport, AnalyticsInsight, AnalyticsFunnel, AnalyticsGoal, DateRange, AnalyticsEventType } from '@features/analytics/domain/entities/IAnalyticsRepository';
+import { IAnalyticsRepository } from '../../domain/entities/IAnalyticsRepository';
 import { JwtToken } from '@/shared/api/models/common';
 import { ANALYTICS_CACHE_KEYS, ANALYTICS_CACHE_TTL, ANALYTICS_CACHE_INVALIDATION } from '../cache/AnalyticsCacheKeys';
+
+// Temporary interfaces for migration
+interface AnalyticsEntity {
+  id: string;
+  userId: string;
+  type: string;
+  data: any;
+  timestamp: string;
+}
+
+interface AnalyticsMetrics {
+  totalEvents: number;
+  uniqueUsers: number;
+  conversionRate: number;
+  engagementRate: number;
+}
+
+interface AnalyticsDashboard {
+  id: string;
+  name: string;
+  widgets: any[];
+  createdAt: string;
+}
+
+interface DashboardWidget {
+  id: string;
+  type: string;
+  title: string;
+  data: any;
+}
+
+interface AnalyticsReport {
+  id: string;
+  name: string;
+  type: string;
+  data: any;
+  generatedAt: string;
+}
+
+interface AnalyticsInsight {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  value: any;
+}
+
+interface AnalyticsFunnel {
+  id: string;
+  name: string;
+  steps: any[];
+  conversionRate: number;
+}
+
+interface AnalyticsGoal {
+  id: string;
+  name: string;
+  target: number;
+  current: number;
+  type: string;
+}
+
+interface DateRange {
+  from: string;
+  to: string;
+}
+
+interface AnalyticsEventType {
+  id: string;
+  name: string;
+  description: string;
+}
 
 /**
  * Analytics Data Service
@@ -11,11 +82,10 @@ import { ANALYTICS_CACHE_KEYS, ANALYTICS_CACHE_TTL, ANALYTICS_CACHE_INVALIDATION
  * Provides intelligent caching and orchestration for analytics data
  * Implements enterprise-grade caching with data-intensive processing strategies
  */
-@Injectable()
 export class AnalyticsDataService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheProvider,
-    @Inject(TYPES.ANALYTICS_REPOSITORY) private repository: IAnalyticsRepository
+    private cache: ICacheProvider,
+    private repository: IAnalyticsRepository
   ) { }
 
   // Analytics events operations with caching

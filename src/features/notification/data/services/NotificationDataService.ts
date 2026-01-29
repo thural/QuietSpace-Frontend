@@ -1,8 +1,7 @@
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
-import { INotificationRepository, NotificationQuery, NotificationFilters, NotificationSettings, NotificationPreferences, PushNotificationStatus, PushSubscription, DeviceToken, QuietHours } from '@features/notification/domain/entities/INotificationRepository';
-import { NotificationPage, NotificationResponse, NotificationType } from '@features/notification/data/models/notification';
+import { INotificationRepository, NotificationQuery, NotificationFilters, NotificationSettings, NotificationPreferences, PushNotificationStatus, PushSubscription, DeviceToken, QuietHours } from '../../domain/entities/INotificationRepository';
+import { NotificationPage, NotificationResponse, NotificationType } from '../models/notification';
 import { JwtToken } from '@/shared/api/models/common';
 import { NOTIFICATION_CACHE_KEYS, NOTIFICATION_CACHE_TTL, NOTIFICATION_CACHE_INVALIDATION } from '../cache/NotificationCacheKeys';
 
@@ -12,11 +11,10 @@ import { NOTIFICATION_CACHE_KEYS, NOTIFICATION_CACHE_TTL, NOTIFICATION_CACHE_INV
  * Provides intelligent caching and orchestration for notification data
  * Implements enterprise-grade caching with real-time notification strategies
  */
-@Injectable()
 export class NotificationDataService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheProvider,
-    @Inject(TYPES.NOTIFICATION_REPOSITORY) private repository: INotificationRepository
+    private cache: ICacheProvider,
+    private repository: INotificationRepository
   ) { }
 
   // Core notification operations with caching

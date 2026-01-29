@@ -2,17 +2,24 @@
  * Post Data Service
  * 
  * Provides data service functionality for post operations using the Data Service Module
- * with DI decorators for dependency injection.
+ * with manual dependency injection.
  */
 
-import { Injectable, Inject } from '@/core/di/decorators';
 import { BaseDataService } from '@/core/dataservice/BaseDataService';
 import { TYPES } from '@/core/di/types';
 import type { ICacheProvider } from '@/core/cache';
 import type { ICacheManager } from '@/core/dataservice/services';
 import type { IWebSocketService } from '@/core/websocket/types';
 import type { IPostRepository } from '../../domain/repositories/IPostRepository';
-import type { ICommentRepository } from '@/features/feed/comments/domain/repositories/ICommentRepository';
+// import type { ICommentRepository } from '../../../features/comment/domain/repositories/ICommentRepository';
+
+// Temporary interface for migration
+interface ICommentRepository {
+  findByPostId(postId: string): Promise<any[]>;
+  save(comment: any): Promise<any>;
+  update(id: string, updates: any): Promise<any>;
+  delete(id: string): Promise<void>;
+}
 
 // Post-related interfaces
 export interface Post {
@@ -80,25 +87,16 @@ export interface PostDataServiceConfig {
  * 
  * Handles post data operations with caching, state management, and real-time updates
  */
-@Injectable({
-  lifetime: 'singleton',
-  dependencies: [
-    TYPES.IPOST_REPOSITORY,
-    TYPES.ICOMMENT_REPOSITORY,
-    TYPES.CACHE_SERVICE,
-    TYPES.WEBSOCKET_SERVICE
-  ]
-})
 export class PostDataService extends BaseDataService {
   private postRepository: IPostRepository;
   private commentRepository: ICommentRepository;
   private config: PostDataServiceConfig;
 
   constructor(
-    @Inject(TYPES.IPOST_REPOSITORY) postRepository: IPostRepository,
-    @Inject(TYPES.ICOMMENT_REPOSITORY) commentRepository: ICommentRepository,
-    @Inject(TYPES.CACHE_SERVICE) cacheService: ICacheProvider,
-    @Inject(TYPES.WEBSOCKET_SERVICE) webSocketService: IWebSocketService,
+    postRepository: IPostRepository,
+    commentRepository: ICommentRepository,
+    cacheService: ICacheProvider,
+    webSocketService: IWebSocketService,
     config: Partial<PostDataServiceConfig> = {}
   ) {
     super();

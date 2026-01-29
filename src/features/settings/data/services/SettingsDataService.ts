@@ -1,4 +1,3 @@
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { ISettingsRepository, ProfileSettings, PrivacySettings, NotificationSettings, SharingSettings, MentionsSettings, RepliesSettings, BlockingSettings } from '@features/settings/domain/entities/SettingsRepository';
@@ -12,11 +11,10 @@ import type { ProfileSettingsRequest, UserProfileResponse } from '@/features/pro
  * Provides intelligent caching and orchestration for settings data
  * Implements enterprise-grade caching with security-conscious strategies
  */
-@Injectable()
 export class SettingsDataService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
-    @Inject(TYPES.SETTINGS_REPOSITORY) private repository: ISettingsRepository
+    private cache: ICacheProvider,
+    private repository: ISettingsRepository
   ) { }
 
   // Profile Settings Operations

@@ -1,4 +1,3 @@
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { INotificationRepository } from '@features/navbar/domain/repositories/INotificationRepository';
@@ -25,11 +24,10 @@ import { NAVBAR_CACHE_KEYS, NAVBAR_CACHE_TTL, NAVBAR_CACHE_INVALIDATION } from '
  * Provides intelligent caching and orchestration for navbar data
  * Implements enterprise-grade caching with real-time updates and performance optimization
  */
-@Injectable()
 export class NavbarDataService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheProvider,
-    @Inject(TYPES.NOTIFICATION_REPOSITORY) private notificationRepository: INotificationRepository
+    private cache: ICacheProvider,
+    private notificationRepository: INotificationRepository
   ) { }
 
   /**

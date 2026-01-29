@@ -6,16 +6,22 @@
  * Integrates with WebSocket for real-time updates.
  */
 
-import { Injectable } from '@/core/di';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import type { IChatRepository } from '@/features/chat/domain/entities/IChatRepository';
 import { CHAT_CACHE_KEYS, CHAT_INVALIDATION_PATTERNS } from '../cache/ChatCacheKeys';
 import { CACHE_TIME_MAPPINGS } from '@/core/hooks/migrationUtils';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
 import type { ResId, JwtToken } from "@/shared/api/models/common";
-import { WebSocketService } from './WebSocketService';
+// import { WebSocketService } from './WebSocketService';
 
-@Injectable()
+// Temporary interface for migration
+interface WebSocketService {
+  connect(token: JwtToken): Promise<void>;
+  disconnect(): void;
+  sendMessage(message: any): Promise<void>;
+  subscribe(event: string, callback: (data: any) => void): () => void;
+}
+
 export class ChatDataService {
   constructor(
     private cache: ICacheProvider,

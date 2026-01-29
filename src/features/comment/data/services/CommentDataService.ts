@@ -2,10 +2,9 @@
  * Comment Data Service
  * 
  * Provides data service functionality for comment operations using the Data Service Module
- * with DI decorators for dependency injection.
+ * with manual dependency injection.
  */
 
-import { Injectable, Inject } from '@/core/di/decorators';
 import { BaseDataService } from '@/core/dataservice/BaseDataService';
 import { TYPES } from '@/core/di/types';
 import type { ICacheProvider } from '@/core/cache';
@@ -71,22 +70,14 @@ export interface CommentDataServiceConfig {
  * 
  * Handles comment data operations with caching, state management, and real-time updates
  */
-@Injectable({
-  lifetime: 'singleton',
-  dependencies: [
-    TYPES.ICOMMENT_REPOSITORY,
-    TYPES.CACHE_SERVICE,
-    TYPES.WEBSOCKET_SERVICE
-  ]
-})
 export class CommentDataService extends BaseDataService {
   private commentRepository: ICommentRepository;
   private config: CommentDataServiceConfig;
 
   constructor(
-    @Inject(TYPES.ICOMMENT_REPOSITORY) commentRepository: ICommentRepository,
-    @Inject(TYPES.CACHE_SERVICE) cacheService: ICacheProvider,
-    @Inject(TYPES.WEBSOCKET_SERVICE) webSocketService: IWebSocketService,
+    commentRepository: ICommentRepository,
+    cacheService: ICacheProvider,
+    webSocketService: IWebSocketService,
     config: Partial<CommentDataServiceConfig> = {}
   ) {
     super();

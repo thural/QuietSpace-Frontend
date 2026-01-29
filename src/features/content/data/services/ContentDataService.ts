@@ -1,9 +1,83 @@
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
-import { IContentRepository, ContentEntity, ContentMetadata, MediaFile, ContentVersion, ContentTemplate, ContentAnalytics, ModerationData } from '@features/content/domain/entities/ContentEntity';
+// import { IContentRepository } from '../../domain/ContentEntity';
 import { JwtToken } from '@/shared/api/models/common';
 import { CONTENT_CACHE_KEYS, CONTENT_CACHE_TTL, CONTENT_CACHE_INVALIDATION } from '../cache/ContentCacheKeys';
+
+// Temporary interfaces for migration
+interface IContentRepository {
+  getContentById(id: string): Promise<ContentEntity | null>;
+  createContent(content: any): Promise<ContentEntity>;
+  updateContent(id: string, updates: any): Promise<ContentEntity>;
+  deleteContent(id: string): Promise<void>;
+  getContentList(query: any): Promise<any[]>;
+  incrementViews(id: string): Promise<void>;
+  getContentAnalytics(id: string): Promise<ContentAnalytics>;
+  searchContent(query: any): Promise<any[]>;
+}
+
+interface ContentEntity {
+  id: string;
+  title: string;
+  content: string;
+  status: string;
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
+  version: number;
+}
+
+interface ContentMetadata {
+  id: string;
+  contentId: string;
+  tags: string[];
+  category: string;
+  visibility: string;
+}
+
+interface MediaFile {
+  id: string;
+  contentId: string;
+  type: string;
+  url: string;
+  name: string;
+  size: number;
+}
+
+interface ContentVersion {
+  id: string;
+  contentId: string;
+  version: number;
+  changes: string;
+  createdAt: string;
+  authorId: string;
+}
+
+interface ContentTemplate {
+  id: string;
+  name: string;
+  structure: any;
+  styles: any;
+}
+
+interface ContentAnalytics {
+  id: string;
+  contentId: string;
+  views: number;
+  likes: number;
+  shares: number;
+  comments: number;
+  engagement: number;
+}
+
+interface ModerationData {
+  id: string;
+  contentId: string;
+  status: string;
+  flags: string[];
+  moderatedBy: string;
+  moderatedAt: string;
+}
 
 /**
  * Content Data Service
@@ -11,11 +85,10 @@ import { CONTENT_CACHE_KEYS, CONTENT_CACHE_TTL, CONTENT_CACHE_INVALIDATION } fro
  * Provides intelligent caching and orchestration for content data
  * Implements enterprise-grade caching with content management optimization
  */
-@Injectable()
 export class ContentDataService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
-    @Inject(TYPES.CONTENT_REPOSITORY) private repository: IContentRepository
+    private cache: ICacheProvider,
+    private repository: IContentRepository
   ) { }
 
   // Core Content Operations

@@ -5,7 +5,6 @@
  * Provides intelligent caching, orchestration, and performance optimization
  */
 
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { ISearchRepositoryEnhanced, EnhancedSearchQuery, EnhancedSearchResult, SearchSuggestion, SearchAnalytics, SearchPerformanceMetrics, SearchConfiguration } from '@search/domain/entities/ISearchRepositoryEnhanced';
@@ -19,12 +18,11 @@ import { SEARCH_CACHE_KEYS, SEARCH_CACHE_TTL, SEARCH_CACHE_INVALIDATION } from '
  * Provides intelligent caching and orchestration for search data
  * Implements enterprise-grade caching with search-specific strategies
  */
-@Injectable()
 export class SearchDataService {
   private cache: ICacheProvider;
 
   constructor(
-    @Inject(TYPES.SEARCH_REPOSITORY) private repository: ISearchRepositoryEnhanced
+    private repository: ISearchRepositoryEnhanced
   ) {
     // Initialize cache using Black Box factory pattern
     this.cache = createCacheProvider();

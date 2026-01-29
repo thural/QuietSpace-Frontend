@@ -1,4 +1,3 @@
-import { Injectable, Inject } from '@/core/di';
 import { TYPES } from '@/core/di/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { IProfileRepository, UserProfileEntity, UserProfileStatsEntity, UserConnectionEntity, ProfileAccessEntity } from '@features/profile/domain/entities/IProfileRepository';
@@ -11,11 +10,10 @@ import { PROFILE_CACHE_KEYS, PROFILE_CACHE_TTL, PROFILE_CACHE_INVALIDATION } fro
  * Provides intelligent caching and orchestration for profile data
  * Implements enterprise-grade caching with user profile management strategies
  */
-@Injectable()
 export class ProfileDataService {
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: ICacheProvider,
-    @Inject(TYPES.PROFILE_REPOSITORY) private repository: IProfileRepository
+    private cache: ICacheProvider,
+    private repository: IProfileRepository
   ) { }
 
   // User profile operations with caching

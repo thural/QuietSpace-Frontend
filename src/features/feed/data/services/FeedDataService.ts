@@ -2,18 +2,33 @@
  * Feed Data Service
  * 
  * Provides data service functionality for feed operations using the Data Service Module
- * with DI decorators for dependency injection.
+ * with manual dependency injection.
  */
 
-import { Injectable, Inject } from '@/core/di/decorators';
 import { BaseDataService } from '@/core/dataservice/BaseDataService';
 import { TYPES } from '@/core/di/types';
 import type { ICacheProvider } from '@/core/cache';
 import type { ICacheManager } from '@/core/dataservice/services';
 import type { IWebSocketService } from '@/core/websocket/types';
 import type { IFeedRepository } from '../../domain/repositories/IFeedRepository';
-import type { IPostRepository } from '../../domain/entities/IPostRepository';
-import type { ICommentRepository } from '../../domain/entities/ICommentRepository';
+// import type { IPostRepository } from '../../../features/post/domain/repositories/IPostRepository';
+// import type { ICommentRepository } from '../../../features/comment/domain/repositories/ICommentRepository';
+
+// Temporary interfaces for migration
+interface IPostRepository {
+  findById(id: string): Promise<any>;
+  save(post: any): Promise<any>;
+  update(id: string, updates: any): Promise<any>;
+  delete(id: string): Promise<void>;
+}
+
+interface ICommentRepository {
+  findByPostId(postId: string): Promise<any[]>;
+  getCommentsByPostId(postId: string): Promise<any[]>;
+  save(comment: any): Promise<any>;
+  update(id: string, updates: any): Promise<any>;
+  delete(id: string): Promise<void>;
+}
 
 // Feed-related interfaces
 export interface FeedItem {
@@ -71,16 +86,6 @@ export interface FeedDataServiceConfig {
  * 
  * Handles feed data operations with caching, state management, and real-time updates
  */
-@Injectable({
-  lifetime: 'singleton',
-  dependencies: [
-    TYPES.IFEED_REPOSITORY,
-    TYPES.IPOST_REPOSITORY,
-    TYPES.ICOMMENT_REPOSITORY,
-    TYPES.CACHE_SERVICE,
-    TYPES.WEBSOCKET_SERVICE
-  ]
-})
 export class FeedDataService extends BaseDataService {
   private feedRepository: IFeedRepository;
   private postRepository: IPostRepository;
@@ -88,11 +93,11 @@ export class FeedDataService extends BaseDataService {
   private config: FeedDataServiceConfig;
 
   constructor(
-    @Inject(TYPES.IFEED_REPOSITORY) feedRepository: IFeedRepository,
-    @Inject(TYPES.IPOST_REPOSITORY) postRepository: IPostRepository,
-    @Inject(TYPES.ICOMMENT_REPOSITORY) commentRepository: ICommentRepository,
-    @Inject(TYPES.CACHE_SERVICE) cacheService: ICacheProvider,
-    @Inject(TYPES.WEBSOCKET_SERVICE) webSocketService: IWebSocketService,
+    feedRepository: IFeedRepository,
+    postRepository: IPostRepository,
+    commentRepository: ICommentRepository,
+    cacheService: ICacheProvider,
+    webSocketService: IWebSocketService,
     config: Partial<FeedDataServiceConfig> = {}
   ) {
     super();
