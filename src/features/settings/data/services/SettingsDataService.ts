@@ -1,9 +1,9 @@
-import type { ICacheProvider } from '@/core/cache';
-import { BaseDataService } from '@/core/dataservice/BaseDataService';
-import type { IWebSocketService } from '@/core/websocket/types';
-import type { ProfileSettingsRequest, UserProfileResponse } from '@/features/profile/data/models/user';
-import { JwtToken } from '@/shared/api/models/common';
-import { BlockingSettings, ISettingsRepository, MentionsSettings, NotificationSettings, PrivacySettings, RepliesSettings, SharingSettings } from '@features/settings/domain/entities/SettingsRepository';
+import type { ICacheProvider } from '../../../../core/cache';
+import { BaseDataService } from '../../../../core/dataservice/BaseDataService';
+import type { IWebSocketService } from '../../../../core/websocket/types';
+import type { ProfileSettingsRequest, UserProfileResponse } from '../../../profile/data/models/user';
+import { JwtToken } from '../../../../shared/api/models/common';
+import { ISettingsRepository } from '../../domain/entities/SettingsRepository';
 import { SETTINGS_CACHE_INVALIDATION, SETTINGS_CACHE_KEYS, SETTINGS_CACHE_TTL } from '../cache/SettingsCacheKeys';
 
 /**
@@ -27,23 +27,20 @@ export class SettingsDataService extends BaseDataService {
 
   // Profile Settings Operations
   async getProfileSettings(userId: string, token: JwtToken): Promise<UserProfileResponse> {
-    const cacheKey = this.generateCacheKey('profile-settings', { userId });
+    const cacheKey = super.generateCacheKey('profile-settings', { userId });
 
     try {
-      // Use BaseDataService caching with composed services
-      const queryResult = this.executeQuery(
-        cacheKey,
-        () => this.repository.getProfileSettings(userId, token),
-        {
-          cacheStrategy: 'USER_CONTENT',
-          websocketTopics: [`settings:${userId}:profile`],
-          updateStrategy: 'merge'
-        }
-      );
+      // Check cache first
+      const cachedData = super.getCachedData<UserProfileResponse>(cacheKey);
+      if (cachedData) return cachedData;
 
-      // Execute the query and return the data
-      const result = await queryResult;
-      return result.data as UserProfileResponse;
+      // Fetch from repository
+      const data = await this.repository.getProfileSettings(userId, token);
+
+      // Update cache
+      super.updateCache(cacheKey, data);
+
+      return data;
     } catch (error) {
       console.error('Failed to get profile settings:', error);
       throw error;
@@ -52,27 +49,14 @@ export class SettingsDataService extends BaseDataService {
 
   async updateProfileSettings(userId: string, settings: ProfileSettingsRequest, token: JwtToken): Promise<UserProfileResponse> {
     try {
-      // Use BaseDataService mutation with composed services
-      const mutationResult = this.executeMutation<
-        UserProfileResponse,
-        Error,
-        { userId: string; settings: ProfileSettingsRequest; token: JwtToken }
-      >(
-        (variables) => this.repository.updateProfileSettings(variables.userId, variables.settings, variables.token),
-        {
-          invalidateQueries: [this.generateCacheKey('profile-settings', { userId })],
-          websocketEvents: [`settings:${userId}:updated`],
-          optimisticUpdate: (cache, variables) => {
-            // Optimistic update logic
-            const cacheKey = this.generateCacheKey('profile-settings', { userId: variables.userId });
-            this.updateCache(cacheKey, { ...variables.settings, updating: true });
-          }
-        }
-      );
+      // Update via repository
+      const result = await this.repository.updateProfileSettings(userId, settings, token);
 
-      // Execute the mutation with variables
-      const result = await mutationResult.mutateAsync({ userId, settings, token });
-      return result.data as UserProfileResponse;
+      // Invalidate cache
+      const cacheKey = super.generateCacheKey('profile-settings', { userId });
+      super.invalidateCache(cacheKey);
+
+      return result;
     } catch (error) {
       console.error('Failed to update profile settings:', error);
       throw error;
@@ -81,30 +65,14 @@ export class SettingsDataService extends BaseDataService {
 
   async uploadProfilePhoto(userId: string, file: File, token: JwtToken): Promise<UserProfileResponse> {
     try {
-      // Use BaseDataService mutation with composed services
-      const mutationResult = this.executeMutation<
-        UserProfileResponse,
-        Error,
-        { userId: string; file: File; token: JwtToken }
-      >(
-        (variables) => this.repository.uploadProfilePhoto(variables.userId, variables.file, variables.token),
-        {
-          invalidateQueries: [this.generateCacheKey('profile-settings', { userId })],
-          websocketEvents: [`settings:${userId}:photo-updated`],
-          optimisticUpdate: (cache, variables) => {
-            // Optimistic update logic
-            const cacheKey = this.generateCacheKey('profile-settings', { userId: variables.userId });
-            const currentData = this.getCachedData<UserProfileResponse>(cacheKey);
-            if (currentData) {
-              this.updateCache(cacheKey, { ...currentData, photoUpdating: true });
-            }
-          }
-        }
-      );
+      // Upload via repository
+      const result = await this.repository.uploadProfilePhoto(userId, file, token);
 
-      // Execute the mutation with variables
-      const result = await mutationResult.mutateAsync({ userId, file, token });
-      return result.data as UserProfileResponse;
+      // Invalidate cache
+      const cacheKey = super.generateCacheKey('profile-settings', { userId });
+      super.invalidateCache(cacheKey);
+
+      return result;
     } catch (error) {
       console.error('Failed to upload profile photo:', error);
       throw error;
@@ -112,184 +80,127 @@ export class SettingsDataService extends BaseDataService {
   }
 
   async removeProfilePhoto(userId: string, token: JwtToken): Promise<UserProfileResponse> {
-    const result = await this.repository.removeProfilePhoto(userId, token);
+    try {
+      const result = await this.repository.removeProfilePhoto(userId, token);
 
-    // Invalidate profile-related caches
-    SETTINGS_CACHE_INVALIDATION.PROFILE_UPDATE(userId).forEach(key => {
-      this.cache.invalidatePattern(key);
-    });
+      // Invalidate profile-related caches
+      const cacheKey = super.generateCacheKey('profile-settings', { userId });
+      super.invalidateCache(cacheKey);
 
-    // Cache the updated data
-    const cacheKey = SETTINGS_CACHE_KEYS.PROFILE_SETTINGS(userId);
-    this.cache.set(cacheKey, result, SETTINGS_CACHE_TTL.PROFILE_SETTINGS);
-
-    return result;
+      return result;
+    } catch (error) {
+      console.error('Failed to remove profile photo:', error);
+      throw error;
+    }
   }
 
   // Privacy Settings Operations
-  async getPrivacySettings(userId: string, token: JwtToken): Promise<PrivacySettings> {
-    const cacheKey = this.generateCacheKey('privacy-settings', { userId });
+  async getPrivacySettings(userId: string, token: JwtToken): Promise<any> {
+    const cacheKey = super.generateCacheKey('privacy-settings', { userId });
 
     try {
-      // Use BaseDataService caching with composed services
-      const queryResult = this.executeQuery(
-        cacheKey,
-        () => this.repository.getPrivacySettings(userId, token),
-        {
-          cacheStrategy: 'USER_CONTENT',
-          websocketTopics: [`settings:${userId}:privacy`],
-          updateStrategy: 'merge'
-        }
-      );
+      // Check cache first
+      const cachedData = super.getCachedData<any>(cacheKey);
+      if (cachedData) return cachedData;
 
-      // Execute the query and return the data
-      const result = await queryResult;
-      return result.data as PrivacySettings;
+      // Fetch from repository
+      const data = await this.repository.getPrivacySettings(userId, token);
+
+      // Update cache
+      super.updateCache(cacheKey, data);
+
+      return data;
     } catch (error) {
       console.error('Failed to get privacy settings:', error);
       throw error;
     }
   }
 
-  async updatePrivacySettings(userId: string, settings: PrivacySettings, token: JwtToken): Promise<PrivacySettings> {
-    const result = await this.repository.updatePrivacySettings(userId, settings, token);
+  async updatePrivacySettings(userId: string, settings: any, token: JwtToken): Promise<any> {
+    try {
+      const result = await this.repository.updatePrivacySettings(userId, settings, token);
 
-    // Invalidate privacy-related caches
-    SETTINGS_CACHE_INVALIDATION.PRIVACY_UPDATE(userId).forEach(key => {
-      this.cache.invalidatePattern(key);
-    });
+      // Invalidate privacy-related caches
+      const cacheKey = super.generateCacheKey('privacy-settings', { userId });
+      super.invalidateCache(cacheKey);
 
-    // Cache the updated data
-    const cacheKey = SETTINGS_CACHE_KEYS.PRIVACY_SETTINGS(userId);
-    this.cache.set(cacheKey, result, SETTINGS_CACHE_TTL.PRIVACY_SETTINGS);
-
-    return result;
+      return result;
+    } catch (error) {
+      console.error('Failed to update privacy settings:', error);
+      throw error;
+    }
   }
 
   // Notification Settings Operations
-  async getNotificationSettings(userId: string, token: JwtToken): Promise<NotificationSettings> {
-    const cacheKey = SETTINGS_CACHE_KEYS.NOTIFICATION_SETTINGS(userId);
+  async getNotificationSettings(userId: string, token: JwtToken): Promise<any> {
+    const cacheKey = super.generateCacheKey('notification-settings', { userId });
 
-    let data = this.cache.get<NotificationSettings>(cacheKey);
-    if (data) return data;
+    try {
+      // Check cache first
+      const cachedData = super.getCachedData<any>(cacheKey);
+      if (cachedData) return cachedData;
 
-    data = await this.repository.getNotificationSettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.NOTIFICATION_SETTINGS);
+      // Fetch from repository
+      const data = await this.repository.getNotificationSettings(userId, token);
 
-    return data;
+      // Update cache
+      super.updateCache(cacheKey, data);
+
+      return data;
+    } catch (error) {
+      console.error('Failed to get notification settings:', error);
+      throw error;
+    }
   }
 
-  async updateNotificationSettings(userId: string, settings: NotificationSettings, token: JwtToken): Promise<NotificationSettings> {
-    const result = await this.repository.updateNotificationSettings(userId, settings, token);
+  async updateNotificationSettings(userId: string, settings: any, token: JwtToken): Promise<any> {
+    try {
+      const result = await this.repository.updateNotificationSettings(userId, settings, token);
 
-    // Invalidate notification-related caches
-    SETTINGS_CACHE_INVALIDATION.NOTIFICATION_UPDATE(userId).forEach(key => {
-      this.cache.invalidatePattern(key);
-    });
+      // Invalidate notification-related caches
+      const cacheKey = super.generateCacheKey('notification-settings', { userId });
+      super.invalidateCache(cacheKey);
 
-    // Cache the updated data
-    const cacheKey = SETTINGS_CACHE_KEYS.NOTIFICATION_SETTINGS(userId);
-    this.cache.set(cacheKey, result, SETTINGS_CACHE_TTL.NOTIFICATION_SETTINGS);
-
-    return result;
-  }
-
-  // Additional Settings Categories (if needed)
-  async getSharingSettings(userId: string, token: JwtToken): Promise<SharingSettings> {
-    const cacheKey = SETTINGS_CACHE_KEYS.SHARING_SETTINGS(userId);
-
-    let data = this.cache.get<SharingSettings>(cacheKey);
-    if (data) return data;
-
-    data = await this.repository.getSharingSettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.SHARING_SETTINGS);
-
-    return data;
-  }
-
-  async getMentionsSettings(userId: string, token: JwtToken): Promise<MentionsSettings> {
-    const cacheKey = SETTINGS_CACHE_KEYS.MENTIONS_SETTINGS(userId);
-
-    let data = this.cache.get<MentionsSettings>(cacheKey);
-    if (data) return data;
-
-    data = await this.repository.getMentionsSettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.MENTIONS_SETTINGS);
-
-    return data;
-  }
-
-  async getRepliesSettings(userId: string, token: JwtToken): Promise<RepliesSettings> {
-    const cacheKey = SETTINGS_CACHE_KEYS.REPLIES_SETTINGS(userId);
-
-    let data = this.cache.get<RepliesSettings>(cacheKey);
-    if (data) return data;
-
-    data = await this.repository.getRepliesSettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.REPLIES_SETTINGS);
-
-    return data;
-  }
-
-  async getBlockingSettings(userId: string, token: JwtToken): Promise<BlockingSettings> {
-    const cacheKey = SETTINGS_CACHE_KEYS.BLOCKING_SETTINGS(userId);
-
-    let data = this.cache.get<BlockingSettings>(cacheKey);
-    if (data) return data;
-
-    data = await this.repository.getBlockingSettings(userId, token);
-    this.cache.set(cacheKey, data, SETTINGS_CACHE_TTL.BLOCKING_SETTINGS);
-
-    return data;
+      return result;
+    } catch (error) {
+      console.error('Failed to update notification settings:', error);
+      throw error;
+    }
   }
 
   // Batch operations for performance
   async getAllSettings(userId: string, token: JwtToken): Promise<{
     profile: UserProfileResponse;
-    privacy: PrivacySettings;
-    notifications: NotificationSettings;
-    sharing: SharingSettings;
-    mentions: MentionsSettings;
-    replies: RepliesSettings;
-    blocking: BlockingSettings;
+    privacy: any;
+    notifications: any;
   }> {
-    const cacheKey = SETTINGS_CACHE_KEYS.ALL_SETTINGS(userId);
+    const cacheKey = super.generateCacheKey('all-settings', { userId });
 
-    let data = this.cache.get(cacheKey);
-    if (data) return data;
+    try {
+      // Check cache first
+      const cachedData = super.getCachedData<{ profile: UserProfileResponse; privacy: any; notifications: any }>(cacheKey);
+      if (cachedData) return cachedData;
 
-    // Fetch all settings in parallel for better performance
-    const [
-      profile,
-      privacy,
-      notifications,
-      sharing,
-      mentions,
-      replies,
-      blocking
-    ] = await Promise.all([
-      this.getProfileSettings(userId, token),
-      this.getPrivacySettings(userId, token),
-      this.getNotificationSettings(userId, token),
-      this.getSharingSettings(userId, token),
-      this.getMentionsSettings(userId, token),
-      this.getRepliesSettings(userId, token),
-      this.getBlockingSettings(userId, token)
-    ]);
+      // Fetch available settings in parallel for better performance
+      const [profile, privacy, notifications] = await Promise.all([
+        this.getProfileSettings(userId, token),
+        this.getPrivacySettings(userId, token),
+        this.getNotificationSettings(userId, token)
+      ]);
 
-    const allSettings = {
-      profile,
-      privacy,
-      notifications,
-      sharing,
-      mentions,
-      replies,
-      blocking
-    };
+      const allSettings = {
+        profile,
+        privacy,
+        notifications
+      };
 
-    this.cache.set(cacheKey, allSettings, SETTINGS_CACHE_TTL.ALL_SETTINGS);
+      super.updateCache(cacheKey, allSettings);
 
-    return allSettings;
+      return allSettings;
+    } catch (error) {
+      console.error('Failed to get all settings:', error);
+      throw error;
+    }
   }
 
   // Cache management utilities
@@ -297,17 +208,13 @@ export class SettingsDataService extends BaseDataService {
     try {
       // Use BaseDataService cache invalidation
       const cacheKeys = [
-        this.generateCacheKey('profile-settings', { userId }),
-        this.generateCacheKey('privacy-settings', { userId }),
-        this.generateCacheKey('notification-settings', { userId }),
-        this.generateCacheKey('sharing-settings', { userId }),
-        this.generateCacheKey('mentions-settings', { userId }),
-        this.generateCacheKey('replies-settings', { userId }),
-        this.generateCacheKey('blocking-settings', { userId })
+        super.generateCacheKey('profile-settings', { userId }),
+        super.generateCacheKey('privacy-settings', { userId }),
+        super.generateCacheKey('notification-settings', { userId })
       ];
 
       // Invalidate all user-related cache entries
-      cacheKeys.forEach(key => this.invalidateCache(key));
+      cacheKeys.forEach(key => super.invalidateCache(key));
     } catch (error) {
       console.error('Failed to invalidate user settings cache:', error);
     }
@@ -316,7 +223,7 @@ export class SettingsDataService extends BaseDataService {
   clearAllSettingsCache(): void {
     try {
       // Use BaseDataService cache invalidation
-      this.invalidateCache('all-settings');
+      super.invalidateCache('all-settings');
     } catch (error) {
       console.error('Failed to clear all settings cache:', error);
     }

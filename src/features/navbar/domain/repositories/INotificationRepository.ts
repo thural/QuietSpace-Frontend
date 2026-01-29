@@ -16,7 +16,7 @@ import type {
   QuickActionsEntity,
   SystemStatusEntity
 } from "../entities/entities";
-import { JwtToken } from '@shared/api/models/common';
+import { JwtToken } from '../../../../shared/api/models/common';
 
 /**
  * Interface for notification and chat data repository.
