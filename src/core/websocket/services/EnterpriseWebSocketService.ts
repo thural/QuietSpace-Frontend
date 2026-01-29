@@ -5,9 +5,8 @@
  * Replaces scattered WebSocket implementations across features.
  */
 
-import { Injectable, Inject } from '../../di';
 import { TYPES } from '../../di/types';
-import { CacheServiceManager, type FeatureCacheService } from '../../cache';
+import { ICacheServiceManager, type FeatureCacheService } from '../../cache';
 import { LoggerService } from '../../services/LoggerService';
 
 // WebSocket Message Types
@@ -64,7 +63,6 @@ export interface IEnterpriseWebSocketService {
 /**
  * Enterprise WebSocket Service Implementation
  */
-@Injectable()
 export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private ws: WebSocket | null = null;
   private config: WebSocketConfig;
@@ -78,8 +76,8 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private token: string | null = null;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: FeatureCacheService,
-    @Inject(TYPES.AUTH_SERVICE) private authService: any,
+    private cache: FeatureCacheService,
+    private authService: any,
     private logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
