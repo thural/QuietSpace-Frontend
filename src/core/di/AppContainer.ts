@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { createContainer } from '../di';
 import { createLogger } from '../services';
 import { createTheme } from '../theme';
@@ -6,6 +5,23 @@ import { EnterpriseAuthService } from '../auth';
 import { createCacheProvider, createCacheServiceManager, type ICacheProvider, type ICacheServiceManager } from '../cache';
 import { TYPES } from './types';
 import { apiClient } from '../network/rest/apiClient';
+import { UserService, UserRepository } from '../services/UserService';
+import { LoggerService } from '../services/LoggerService';
+import { ThemeService } from '../services/ThemeService';
+import { EnterpriseWebSocketService } from '../websocket/services/EnterpriseWebSocketService';
+
+// Import migrated data services
+import { FeedDataService } from '../../../features/feed/data/services/FeedDataService';
+import { PostDataService } from '../../../features/post/data/services/PostDataService';
+import { CommentDataService } from '../../../features/comment/data/services/CommentDataService';
+import { NotificationDataService } from '../../../features/notification/data/services/NotificationDataService';
+import { AnalyticsDataService } from '../../../features/analytics/data/services/AnalyticsDataService';
+import { ChatDataService } from '../../../features/chat/data/services/ChatDataService';
+import { ContentDataService } from '../../../features/content/data/services/ContentDataService';
+import { NavbarDataService } from '../../../features/navbar/data/services/NavbarDataService';
+import { ProfileDataService } from '../../../features/profile/data/services/ProfileDataService';
+import { SettingsDataService } from '../../../features/settings/data/services/SettingsDataService';
+import { SearchDataService } from '../../../features/search/data/services/SearchDataService';
 // import { registerFeedContainer } from '../../../features/feed/di/container';
 // import { registerChatContainer } from '../../../features/chat/di/container';
 // import { createSearchContainer } from '../../../features/search/di/container';
@@ -49,6 +65,91 @@ export function createAppContainer() {
 
   // Register API client and repositories
   container.registerInstanceByToken(TYPES.API_CLIENT, apiClient);
+
+  // Register User services using manual registration + factory functions
+  container.registerSingletonByToken(
+    TYPES.USER_REPOSITORY,
+    UserRepository
+  );
+
+  container.registerSingletonByToken(
+    TYPES.USER_SERVICE,
+    UserService
+  );
+
+  // Register Logger service using manual registration
+  container.registerSingletonByToken(
+    TYPES.LOGGER_SERVICE,
+    LoggerService
+  );
+
+  // Register Theme service using manual registration
+  container.registerSingletonByToken(
+    TYPES.THEME_SERVICE,
+    ThemeService
+  );
+
+  // Register WebSocket service using manual registration
+  container.registerSingletonByToken(
+    TYPES.WEBSOCKET_SERVICE,
+    EnterpriseWebSocketService
+  );
+
+  // Register migrated data services using manual registration
+  container.registerSingletonByToken(
+    TYPES.FEED_DATA_SERVICE,
+    FeedDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.POST_DATA_SERVICE,
+    PostDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.COMMENT_DATA_SERVICE,
+    CommentDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.NOTIFICATION_DATA_SERVICE,
+    NotificationDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.ANALYTICS_DATA_SERVICE,
+    AnalyticsDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.CHAT_DATA_SERVICE,
+    ChatDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.CONTENT_DATA_SERVICE,
+    ContentDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.NAVBAR_DATA_SERVICE,
+    NavbarDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.PROFILE_DATA_SERVICE,
+    ProfileDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.SETTINGS_DATA_SERVICE,
+    SettingsDataService
+  );
+
+  container.registerSingletonByToken(
+    TYPES.SEARCH_DATA_SERVICE,
+    SearchDataService
+  );
 
   // Register repositories (commented out until feature modules are created)
   /*

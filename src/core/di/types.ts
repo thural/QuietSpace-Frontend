@@ -11,6 +11,9 @@ export const TYPES = {
   SOCKET_SERVICE: 'SocketService',
   TOKEN_SERVICE: 'TokenService',
   AUTHENTICATED_API_SERVICE: 'AuthenticatedApiService',
+  USER_SERVICE: 'UserService',
+  LOGGER_SERVICE: 'LoggerService',
+  THEME_SERVICE: 'ThemeService',
 
   // Repositories
   IAUTH_REPOSITORY: 'IAuthRepository',
@@ -36,6 +39,10 @@ export const TYPES = {
   FEED_DATA_SERVICE: 'FeedDataService',
   PROFILE_DATA_SERVICE: 'ProfileDataService',
   SEARCH_DATA_SERVICE: 'SearchDataService',
+  CHAT_DATA_SERVICE: 'ChatDataService',
+  CONTENT_DATA_SERVICE: 'ContentDataService',
+  NAVBAR_DATA_SERVICE: 'NavbarDataService',
+  SETTINGS_DATA_SERVICE: 'SettingsDataService',
 
   // Feature Services
   AUTH_FEATURE_SERVICE: 'AuthFeatureService',
@@ -47,7 +54,6 @@ export const TYPES = {
   SEARCH_FEATURE_SERVICE: 'SearchFeatureService',
 
   // Chat Feature Services
-  CHAT_DATA_SERVICE: 'ChatDataService',
   CHAT_FEATURE_SERVICE: 'ChatFeatureService',
   WEBSOCKET_SERVICE: 'WebSocketService',
   ICHAT_REPOSITORY: 'IChatRepository',
