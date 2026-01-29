@@ -265,6 +265,7 @@ export function createMockAuthToken(overrides?: Partial<AuthToken>): AuthToken {
         accessToken: 'mock-access-token',
         refreshToken: 'mock-refresh-token',
         expiresAt: new Date(Date.now() + 3600000),
+        tokenType: 'Bearer',
         ...overrides
     };
 }
