@@ -2,13 +2,13 @@
 
 ## Overview
 
-The Authentication module provides an enterprise-grade authentication system with multiple providers, advanced security features, and perfect Black Box architecture compliance. It supports OAuth 2.0, SAML, LDAP, Session-based, and JWT authentication with comprehensive security monitoring.
+The Authentication module provides an enterprise-grade authentication system with multiple providers, advanced security features, and perfect BlackBox architecture compliance. It supports OAuth 2.0, SAML, LDAP, Session-based, and JWT authentication with comprehensive security monitoring.
 
 ## Architecture
 
-### Black Box Pattern Implementation
+### Facade Pattern Implementation
 
-The Authentication module follows the **Black Box pattern** with:
+The Authentication module follows the **Facade pattern** with:
 - **Clean Public API**: Only interfaces, factory functions, and utilities exported
 - **Hidden Implementation**: Internal providers and services completely encapsulated
 - **Factory Pattern**: Clean service creation with dependency injection support
@@ -916,7 +916,7 @@ const authService = createAuthService({
 ## Version Information
 
 - **Current Version**: 1.0.0
-- **Black Box Compliance**: 90%+
+- **BlackBox Compliance**: 90%+
 - **TypeScript Support**: Full
 - **Test Coverage**: Comprehensive
 - **Supported Providers**: JWT, OAuth 2.0, SAML 2.0, LDAP, Session

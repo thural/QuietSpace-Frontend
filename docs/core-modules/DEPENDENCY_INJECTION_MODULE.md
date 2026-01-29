@@ -2,13 +2,13 @@
 
 ## Overview
 
-The Dependency Injection (DI) module provides an enterprise-grade IoC container system inspired by Flutter patterns. It offers comprehensive dependency management, service lifetime control, and perfect Black Box architecture compliance for scalable application architecture.
+The Dependency Injection (DI) module provides an enterprise-grade IoC container system inspired by Flutter patterns. It offers comprehensive dependency management, service lifetime control, and perfect BlackBox architecture compliance for scalable application architecture.
 
 ## Architecture
 
-### Black Box Pattern Implementation
+### Facade Pattern Implementation
 
-The DI module follows the **Black Box pattern** with:
+The DI module follows the **Facade pattern** with:
 - **Clean Public API**: Only interfaces, factory functions, and decorators exported
 - **Hidden Implementation**: Internal container and registry classes encapsulated
 - **Factory Pattern**: Clean container creation with pre-configured setups
@@ -944,7 +944,7 @@ console.log('Container Stats:', stats);
 ## Version Information
 
 - **Current Version**: 1.0.0
-- **Black Box Compliance**: 95%+
+- **BlackBox Compliance**: 95%+
 - **TypeScript Support**: Full
 - **Test Coverage**: Comprehensive
 - **Inspired By**: Flutter DI patterns
