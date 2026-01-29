@@ -5,10 +5,10 @@
  * Tests query performance, cache efficiency, and real-time capabilities.
  */
 
-import React, {useCallback, useState} from 'react';
-import {usePerformanceMonitor} from '@/features/feed/performance';
-import {useChatServices} from '../application/hooks/useChatServices';
-import {useCacheInvalidation} from '@/core/hooks/migrationUtils';
+import React, { useCallback, useState } from 'react';
+import { usePerformanceMonitor } from '@/features/shared/utils/performance';
+import { useChatServices } from '../application/hooks/useChatServices';
+import { useCacheInvalidation } from '@/core/hooks/migrationUtils';
 
 interface TestResult {
   testName: string;
@@ -31,7 +31,7 @@ export const ChatPerformanceTest: React.FC = () => {
   const { startQuery, endQuery, getMetrics, generateReport, reset, exportMetrics } = usePerformanceMonitor();
   const { chatDataService } = useChatServices();
   const invalidateCache = useCacheInvalidation();
-  
+
   const [isRunning, setIsRunning] = useState(false);
   const [currentTest, setCurrentTest] = useState<string>('');
   const [results, setResults] = useState<TestResult[]>([]);
@@ -40,7 +40,7 @@ export const ChatPerformanceTest: React.FC = () => {
     webSocketStats: {},
     queryStats: []
   });
-  
+
   const [testConfig, setTestConfig] = useState({
     iterations: 100,
     chatId: 'test-chat-123',
@@ -52,49 +52,49 @@ export const ChatPerformanceTest: React.FC = () => {
   const runTest = useCallback(async (testName: string, testFunction: () => Promise<any>) => {
     setCurrentTest(testName);
     setIsRunning(true);
-    
+
     const times: number[] = [];
     const errors: string[] = [];
     let successCount = 0;
-    
+
     console.log(`🚀 Starting ${testName} with ${testConfig.iterations} iterations...`);
-    
+
     for (let i = 0; i < testConfig.iterations; i++) {
       const trackingId = startQuery(testName);
-      
+
       try {
         const startTime = performance.now();
         await testFunction();
         const endTime = performance.now();
-        
+
         const duration = endTime - startTime;
         times.push(duration);
         successCount++;
-        
+
         endQuery(trackingId, true, undefined, 1);
-        
+
         // Show progress every 10 iterations
         if ((i + 1) % 10 === 0) {
           console.log(`  Progress: ${i + 1}/${testConfig.iterations} (${Math.round((i + 1) / testConfig.iterations * 100)}%)`);
         }
-        
+
       } catch (error) {
         errors.push(error instanceof Error ? error.message : String(error));
         endQuery(trackingId, false, error as Error);
-        
+
         // Add a penalty time for failures
         times.push(1000); // 1 second penalty
       }
-      
+
       // Small delay to prevent overwhelming the system
       await new Promise(resolve => setTimeout(resolve, 10));
     }
-    
+
     const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length;
     const minTime = Math.min(...times);
     const maxTime = Math.max(...times);
     const successRate = (successCount / testConfig.iterations) * 100;
-    
+
     const result: TestResult = {
       testName,
       iterations: testConfig.iterations,
@@ -104,17 +104,17 @@ export const ChatPerformanceTest: React.FC = () => {
       successRate,
       errors
     };
-    
+
     setResults(prev => [...prev, result]);
     setCurrentTest('');
     setIsRunning(false);
-    
+
     console.log(`✅ ${testName} completed:`, {
       averageTime: `${averageTime.toFixed(2)}ms`,
       successRate: `${successRate.toFixed(1)}%`,
       errors: errors.length
     });
-    
+
     return result;
   }, [startQuery, endQuery, chatDataService, testConfig]);
 
@@ -135,7 +135,7 @@ export const ChatPerformanceTest: React.FC = () => {
         text: testConfig.messageContent,
         userIds: [testConfig.userId, 'recipient-789']
       };
-      
+
       return await chatDataService.createChat(chatData, '');
     });
   }, [runTest, chatDataService, testConfig]);
@@ -144,29 +144,29 @@ export const ChatPerformanceTest: React.FC = () => {
   const testCachePerformance = useCallback(async () => {
     setCurrentTest('Cache Performance Test');
     setIsRunning(true);
-    
+
     const cacheTests = [
       { name: 'Cache Write', operation: () => chatDataService.setCacheData('test-key', { data: 'test' }, 60000) },
       { name: 'Cache Read', operation: () => chatDataService.getCacheData('test-key') },
       { name: 'Cache Invalidate', operation: () => chatDataService.invalidateCacheData('test-key') },
       { name: 'Cache Pattern Invalidate', operation: () => invalidateCache.invalidateChatData(testConfig.chatId) }
     ];
-    
+
     const cacheResults: TestResult[] = [];
-    
+
     for (const test of cacheTests) {
       const times: number[] = [];
-      
+
       for (let i = 0; i < 1000; i++) {
         const startTime = performance.now();
         await test.operation();
         const endTime = performance.now();
-        
+
         times.push(endTime - startTime);
       }
-      
+
       const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length;
-      
+
       cacheResults.push({
         testName: test.name,
         iterations: 1000,
@@ -177,11 +177,11 @@ export const ChatPerformanceTest: React.FC = () => {
         errors: []
       });
     }
-    
+
     setResults(prev => [...prev, ...cacheResults]);
     setCurrentTest('');
     setIsRunning(false);
-    
+
     console.log('✅ Cache Performance Test completed:', cacheResults);
   }, [chatDataService, invalidateCache, testConfig]);
 
@@ -189,30 +189,30 @@ export const ChatPerformanceTest: React.FC = () => {
   const testRealTimeSubscriptions = useCallback(async () => {
     setCurrentTest('Real-time Subscriptions');
     setIsRunning(true);
-    
+
     const subscriptionTimes: number[] = [];
     let subscriptionCount = 0;
-    
+
     // Test subscription creation and cleanup
     for (let i = 0; i < 100; i++) {
       const startTime = performance.now();
-      
+
       // Create subscription
       const unsubscribe = chatDataService.subscribeToChatMessages(testConfig.chatId, () => {
         // Handle message
       });
-      
+
       subscriptionCount++;
-      
+
       // Cleanup subscription
       unsubscribe();
-      
+
       const endTime = performance.now();
       subscriptionTimes.push(endTime - startTime);
     }
-    
+
     const averageTime = subscriptionTimes.reduce((sum, time) => sum + time, 0) / subscriptionTimes.length;
-    
+
     const result: TestResult = {
       testName: 'Real-time Subscriptions',
       iterations: 100,
@@ -222,11 +222,11 @@ export const ChatPerformanceTest: React.FC = () => {
       successRate: 100,
       errors: []
     };
-    
+
     setResults(prev => [...prev, result]);
     setCurrentTest('');
     setIsRunning(false);
-    
+
     console.log('✅ Real-time Subscriptions Test completed:', {
       averageTime: `${averageTime.toFixed(2)}ms`,
       subscriptions: subscriptionCount
@@ -236,30 +236,30 @@ export const ChatPerformanceTest: React.FC = () => {
   // Run all performance tests
   const runAllTests = useCallback(async () => {
     console.log('🚀 Starting Chat Performance Test Suite...');
-    
+
     const allTests = [
       testMessageLoading,
       testChatCreation,
       testCachePerformance,
       testRealTimeSubscriptions
     ];
-    
+
     for (const test of allTests) {
       await test();
       // Small delay between tests
       await new Promise(resolve => setTimeout(resolve, 500));
     }
-    
+
     // Collect final metrics
     const cacheStats = chatDataService.getChatCacheStats();
     const webSocketStats = chatDataService.getWebSocketStats();
-    
+
     setMetrics({
       cacheStats,
       webSocketStats,
       queryStats: results
     });
-    
+
     console.log('✅ All Performance Tests Completed!');
     console.log('📊 Final Metrics:', { cacheStats, webSocketStats, totalTests: results.length });
   }, [testMessageLoading, testChatCreation, testCachePerformance, testRealTimeSubscriptions, chatDataService, results]);
@@ -284,7 +284,7 @@ export const ChatPerformanceTest: React.FC = () => {
   return (
     <div style={{ padding: '20px', fontFamily: 'monospace' }}>
       <h2>🚀 Chat Feature Performance Test</h2>
-      
+
       <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
         <h3>Test Configuration</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
@@ -317,7 +317,7 @@ export const ChatPerformanceTest: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div style={{ marginBottom: '20px' }}>
         <button
           onClick={runAllTests}
@@ -334,7 +334,7 @@ export const ChatPerformanceTest: React.FC = () => {
         >
           {isRunning ? 'Running Tests...' : 'Run All Tests'}
         </button>
-        
+
         <button
           onClick={clearResults}
           disabled={isRunning}
@@ -350,13 +350,13 @@ export const ChatPerformanceTest: React.FC = () => {
           Clear Results
         </button>
       </div>
-      
+
       {currentTest && (
         <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#e3f2fd', borderRadius: '6px' }}>
           <strong>Running:</strong> {currentTest}
         </div>
       )}
-      
+
       {results.length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <h3>Test Results</h3>
@@ -367,10 +367,10 @@ export const ChatPerformanceTest: React.FC = () => {
                   {result.testName}
                 </div>
                 <div style={{ fontSize: '12px', color: '#666' }}>
-                  Iterations: {result.iterations} | 
-                  Avg Time: {formatTime(result.averageTime)} | 
-                  Min: {formatTime(result.minTime)} | 
-                  Max: {formatTime(result.maxTime)} | 
+                  Iterations: {result.iterations} |
+                  Avg Time: {formatTime(result.averageTime)} |
+                  Min: {formatTime(result.minTime)} |
+                  Max: {formatTime(result.maxTime)} |
                   Success: {result.successRate.toFixed(1)}%
                 </div>
                 {result.errors.length > 0 && (
@@ -383,7 +383,7 @@ export const ChatPerformanceTest: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {Object.keys(metrics.cacheStats).length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <h3>Cache Statistics</h3>
@@ -396,7 +396,7 @@ export const ChatPerformanceTest: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {Object.keys(metrics.webSocketStats).length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <h3>WebSocket Statistics</h3>
@@ -406,7 +406,7 @@ export const ChatPerformanceTest: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f5e8', borderRadius: '8px' }}>
         <h3>Performance Monitor</h3>
         <div style={{ fontSize: '12px', color: '#666' }}>
