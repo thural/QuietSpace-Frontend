@@ -11,15 +11,16 @@ This document provides comprehensive development guidelines for transitioning fr
 1. [Architecture Decision Rationale](#architecture-decision-rationale)
 2. [Component Classification Strategy](#component-classification-strategy)
 3. [Class Component Development Standards](#class-component-development-standards)
-4. [State Management Patterns](#state-management-patterns)
-5. [Lifecycle Method Implementation](#lifecycle-method-implementation)
-6. [Performance Optimization Guidelines](#performance-optimization-guidelines)
-7. [Error Boundary Implementation](#error-boundary-implementation)
-8. [Integration with Existing Systems](#integration-with-existing-systems)
-9. [Migration Strategy](#migration-strategy)
-10. [Code Examples and Templates](#code-examples-and-templates)
-11. [Testing Guidelines](#testing-guidelines)
-12. [Best Practices Checklist](#best-practices-checklist)
+4. [Single Responsibility Principle (SRP) Patterns](#single-responsibility-principle-srp-patterns)
+5. [State Management Patterns](#state-management-patterns)
+6. [Lifecycle Method Implementation](#lifecycle-method-implementation)
+7. [Performance Optimization Guidelines](#performance-optimization-guidelines)
+8. [Error Boundary Implementation](#error-boundary-implementation)
+9. [Integration with Existing Systems](#integration-with-existing-systems)
+10. [Migration Strategy](#migration-strategy)
+11. [Code Examples and Templates](#code-examples-and-templates)
+12. [Testing Guidelines](#testing-guidelines)
+13. [Best Practices Checklist](#best-practices-checklist)
 
 ### **1. Separate Logic from Rendering**
 
@@ -1112,6 +1113,374 @@ abstract class BaseClassComponent<P, S> extends Component<P, S> {
   }
 }
 ```
+
+---
+
+## 🎯 Single Responsibility Principle (SRP) Patterns
+
+To maintain cleaner, more readable class-based React components while adhering to the single responsibility principle (SRP)—where each component focuses on one primary task—you can leverage several established patterns that decouple logic (e.g., data fetching, state management, business rules) from the component's core responsibilities like rendering UI or handling user events. These approaches predate hooks and work exclusively with class components, avoiding functional components entirely. They promote modularity, reusability, and easier testing by extracting concerns into separate structures.
+
+### **1. Container/Presentational Pattern**
+
+Split a component into two: a "container" class component that handles logic (e.g., data fetching, state updates, API calls), and a "presentational" class component that focuses solely on rendering UI based on props. This ensures the presentational component has one responsibility (UI display) and the container has another (logic orchestration).
+
+**Why it fits SRP**: The container manages data/lifecycle without rendering details, while the presentational handles only markup and props, reducing reasons for each to change.
+
+```typescript
+// Container class (handles logic)
+interface IUserContainerState {
+  users: User[];
+  loading: boolean;
+  error: string | null;
+}
+
+class UserContainer extends Component<IUserContainerProps, IUserContainerState> {
+  constructor(props: IUserContainerProps) {
+    super(props);
+    this.state = { users: [], loading: true, error: null };
+  }
+
+  componentDidMount(): void {
+    // Fetch data (decoupled logic)
+    this.fetchUsers();
+  }
+
+  private fetchUsers = async (): Promise<void> => {
+    try {
+      this.setState({ loading: true, error: null });
+      const users = await this.userService.fetchUsers();
+      this.setState({ users, loading: false });
+    } catch (error) {
+      this.setState({ error: error.message, loading: false });
+    }
+  };
+
+  render(): ReactNode {
+    return <UserList users={this.state.users} loading={this.state.loading} />;
+  }
+}
+
+// Presentational class (handles only UI)
+interface IUserListProps {
+  users: User[];
+  loading: boolean;
+}
+
+class UserList extends PureComponent<IUserListProps> {
+  render(): ReactNode {
+    const { users, loading } = this.props;
+    if (loading) return <div>Loading...</div>;
+    return (
+      <ul>
+        {users.map(user => <li key={user.id}>{user.name}</li>)}
+      </ul>
+    );
+  }
+}
+```
+
+Export and use UserContainer in your app. This keeps UserList pure and testable independently.
+
+### **2. Extract Logic into Separate Utility Classes or Services**
+
+Move non-UI logic (e.g., API interactions, filtering, validations) into plain JavaScript classes outside your React components. Instantiate these in your component's methods or lifecycle hooks. This decouples business/domain logic entirely from React's component tree.
+
+**Why it fits SRP**: Your React class focuses on React-specific tasks (e.g., state and rendering), while service classes handle one domain concern each (e.g., data access).
+
+```typescript
+// Separate service class (no React imports)
+class UserService {
+  async fetchUsers(): Promise<User[]> {
+    const response = await fetch('/api/users');
+    return response.json();
+  }
+
+  filterUsers(users: User[], query: string): User[] {
+    return users.filter(user => user.name.includes(query));
+  }
+}
+
+// React class component using the service
+interface IUserDashboardState {
+  users: User[];
+  query: string;
+}
+
+class UserDashboard extends Component<IUserDashboardProps, IUserDashboardState> {
+  private userService: UserService;
+
+  constructor(props: IUserDashboardProps) {
+    super(props);
+    this.state = { users: [], query: '' };
+    this.userService = new UserService(); // Instantiate here
+  }
+
+  componentDidMount(): void {
+    this.loadUsers();
+  }
+
+  private loadUsers = async (): Promise<void> => {
+    try {
+      const users = await this.userService.fetchUsers();
+      this.setState({ users });
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  };
+
+  private handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const query = event.target.value;
+    const filtered = this.userService.filterUsers(this.state.users, query);
+    this.setState({ query, users: filtered });
+  };
+
+  render(): ReactNode {
+    return (
+      <div>
+        <input 
+          type="text" 
+          onChange={this.handleSearch} 
+          value={this.state.query} 
+          placeholder="Search users..."
+        />
+        <ul>
+          {this.state.users.map(user => <li key={user.id}>{user.name}</li>)}
+        </ul>
+      </div>
+    );
+  }
+}
+```
+
+This makes UserDashboard leaner, as logic lives in UserService.
+
+### **3. Apply Higher-Order Components (HOCs)**
+
+HOCs are functions that take a class component and return an enhanced version with injected logic (e.g., authentication, data loading). This wraps reusable logic around your base component without bloating it.
+
+**Why it fits SRP**: The HOC handles one cross-cutting concern (e.g., loading), keeping the wrapped component focused on its core role.
+
+```typescript
+// HOC function (wraps any class component)
+function withDataLoading<T extends Record<string, any>>(
+  WrappedComponent: ComponentType<T>,
+  apiUrl: string
+) {
+  return class extends Component<Omit<T, 'data' | 'loading'>> {
+    state = {
+      data: null,
+      loading: true
+    };
+
+    componentDidMount(): void {
+      this.loadData();
+    }
+
+    private loadData = async (): Promise<void> => {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        this.setState({ data, loading: false });
+      } catch (error) {
+        console.error('Failed to load data:', error);
+        this.setState({ loading: false });
+      }
+    };
+
+    render(): ReactNode {
+      return (
+        <WrappedComponent 
+          {...(this.props as T)} 
+          data={this.state.data} 
+          loading={this.state.loading} 
+        />
+      );
+    }
+  };
+}
+
+// Your base class component
+interface IProductListProps {
+  data: Product[] | null;
+  loading: boolean;
+}
+
+class ProductList extends PureComponent<IProductListProps> {
+  render(): ReactNode {
+    const { data, loading } = this.props;
+    if (loading) return <div>Loading...</div>;
+    return (
+      <ul>
+        {data?.map(product => <li key={product.id}>{product.name}</li>)}
+      </ul>
+    );
+  }
+}
+
+// Enhanced version
+const EnhancedProductList = withDataLoading(ProductList, '/api/products');
+```
+
+Use EnhancedProductList in your app. Chain multiple HOCs for more decoupling.
+
+### **4. Use Render Props**
+
+Create a class component that encapsulates logic and exposes it via a render prop (a function). This allows sharing stateful behavior without inheritance or tight coupling.
+
+**Why it fits SRP**: The render prop component manages logic isolation, while the consumer focuses on rendering.
+
+```typescript
+// Logic-sharing class
+interface IDataFetcherProps<T> {
+  url: string;
+  render: (state: { data: T[] | null; loading: boolean; error: string | null }) => ReactNode;
+}
+
+class DataFetcher<T> extends Component<IDataFetcherProps<T>> {
+  state = {
+    data: null,
+    loading: true,
+    error: null
+  };
+
+  componentDidMount(): void {
+    this.loadData();
+  }
+
+  private loadData = async (): Promise<void> => {
+    try {
+      this.setState({ loading: true, error: null });
+      const response = await fetch(this.props.url);
+      const data = await response.json();
+      this.setState({ data, loading: false });
+    } catch (error) {
+      this.setState({ error: error.message, loading: false });
+    }
+  };
+
+  render(): ReactNode {
+    // Call the render prop with logic/state
+    return this.props.render(this.state);
+  }
+}
+
+// Consumer class
+class ArticleList extends Component {
+  render(): ReactNode {
+    return (
+      <DataFetcher<Article> 
+        url="/api/articles" 
+        render={({ data, loading, error }) => (
+          <>
+            {loading && <div>Loading...</div>}
+            {error && <div>Error: {error}</div>}
+            {data && (
+              <ul>
+                {data.map(article => (
+                  <li key={article.id}>{article.title}</li>
+                ))}
+              </ul>
+            )}
+          </>
+        )} 
+      />
+    );
+  }
+}
+```
+
+This keeps ArticleList free of fetching logic.
+
+### **5. Integrate State Management like Redux**
+
+Offload global logic (e.g., async actions, reducers for business rules) to Redux. Connect your class components via react-redux's connect HOC, so they only receive props and dispatch actions without internal logic.
+
+**Why it fits SRP**: Reducers and middleware handle state/logic changes, leaving components as thin dispatchers/renderers.
+
+```typescript
+// Action creator
+export const fetchItems = () => ({
+  type: 'FETCH_ITEMS_REQUEST',
+  apiCall: () => fetch('/api/items').then(res => res.json())
+});
+
+// Connected class component
+import { connect } from 'react-redux';
+
+interface IItemListProps {
+  items: Item[];
+  loading: boolean;
+  fetchItems: () => void;
+}
+
+class ItemList extends Component<IItemListProps> {
+  componentDidMount(): void {
+    this.props.fetchItems();
+  }
+
+  render(): ReactNode {
+    const { items, loading } = this.props;
+    if (loading) return <div>Loading...</div>;
+    return (
+      <ul>
+        {items.map(item => <li key={item.id}>{item.name}</li>)}
+      </ul>
+    );
+  }
+}
+
+const mapStateToProps = state => ({ 
+  items: state.items, 
+  loading: state.loading 
+});
+
+const mapDispatchToProps = { fetchItems };
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemList);
+```
+
+Business logic lives in reducers/middleware.
+
+### **Additional Tips for SRP Compliance**
+
+#### **Compose Small Components**
+Break large classes into nested smaller class components (e.g., one for forms, one for lists). Each handles one UI/logic slice.
+
+```typescript
+class FormSection extends PureComponent<IFormSectionProps> {
+  // Handles only form logic
+  render(): ReactNode {
+    return <form>{/* Form fields */}</form>;
+  }
+}
+
+class ListSection extends PureComponent<IListSectionProps> {
+  // Handles only list logic
+  render(): ReactNode {
+    return <ul>{/* List items */}</ul>;
+  }
+}
+
+class Dashboard extends Component<IDashboardProps> {
+  render(): ReactNode {
+    return (
+      <div>
+        <FormSection {...this.props.formProps} />
+        <ListSection {...this.props.listProps} />
+      </div>
+    );
+  }
+}
+```
+
+#### **Avoid Mixins**
+They're deprecated and can violate SRP by mixing unrelated behaviors.
+
+#### **Test Independently**
+With decoupled logic, unit test services/HOCs separately from components.
+
+#### **Gradual Adoption**
+Start by refactoring one overgrown component using containers or services.
 
 ---
 
