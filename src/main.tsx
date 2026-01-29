@@ -1,9 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import RouteSwitch from "./app/RouteSwitch";
+import { createPlatformContainer } from "./core/di";
 
+// Initialize platform-specific DI container with build-time configuration
+const container = createPlatformContainer();
 
-//TODO: remove after kubernetes service tests
-
+// TODO: Remove after kubernetes service tests
 // fetch("http://locahost:8080/hello")
 //     .then(response => response.json())
 //     .then(data => {
