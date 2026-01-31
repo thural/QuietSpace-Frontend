@@ -1,86 +1,102 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
-import { useDIContainer } from '@/core/di';
-import type { ICacheProvider } from '@/core/cache';
+import { Container } from '../di/container/Container.js';
+import { TYPES } from '../di/types.js';
+import { useDIContainer } from '../di/index.js';
+
+/**
+ * Cache provider interface
+ * @typedef {Object} ICacheProvider
+ * @property {(key: string, value: any, ttl?: number) => Promise<void>} set - Set cache value
+ * @property {(key: string) => Promise<any>} get - Get cache value
+ * @property {(key: string) => Promise<void>} invalidate - Invalidate cache entry
+ * @property {(key: string) => Object} getEntry - Get cache entry with metadata
+ */
 
 /**
  * Infinite query page interface
+ * @typedef {Object} InfiniteQueryPage
+ * @property {Array} data - The page data
+ * @property {number} pageParam - The page parameter
+ * @property {boolean} hasNextPage - Whether there is a next page
+ * @property {boolean} hasPreviousPage - Whether there is a previous page
+ * @property {boolean} isFetchingNextPage - Whether currently fetching next page
+ * @property {boolean} isFetchingPreviousPage - Whether currently fetching previous page
  */
-export interface InfiniteQueryPage<T = any> {
-  data: T[];
-  pageParam: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  isFetchingNextPage: boolean;
-  isFetchingPreviousPage: boolean;
-}
 
 /**
  * Enterprise-grade infinite query options interface
+ * @typedef {Object} InfiniteQueryOptions
+ * @property {boolean} [enabled] - Whether the query should execute
+ * @property {number} [staleTime] - Time in milliseconds that data remains fresh
+ * @property {number} [cacheTime] - Time in milliseconds that data remains in cache
+ * @property {number} [refetchInterval] - Interval for automatic refetching
+ * @property {boolean} [refetchOnMount] - Whether to refetch on component mount
+ * @property {boolean} [refetchOnWindowFocus] - Whether to refetch on window focus
+ * @property {number} [retry] - Number of retry attempts on failure
+ * @property {number} [retryDelay] - Delay between retry attempts
+ * @property {Function} [onSuccess] - Callback on successful query
+ * @property {Function} [onError] - Callback on query error
+ * @property {Function} [onSettled] - Callback on query completion
+ * @property {Function} [select] - Data transformation function
+ * @property {number} [initialPageParam] - Initial page parameter
+ * @property {Function} [getNextPageParam] - Function to get next page parameter
+ * @property {Function} [getPreviousPageParam] - Function to get previous page parameter
+ * @property {number} [maxPages] - Maximum number of pages to keep
  */
-export interface InfiniteQueryOptions<T = any> {
-  enabled?: boolean;
-  staleTime?: number;
-  cacheTime?: number;
-  refetchInterval?: number;
-  refetchOnMount?: boolean;
-  refetchOnWindowFocus?: boolean;
-  retry?: number;
-  retryDelay?: number;
-  onSuccess?: (data: T[], allPages: InfiniteQueryPage<T>[]) => void;
-  onError?: (error: Error) => void;
-  onSettled?: (data: T[] | undefined, error: Error | null) => void;
-  select?: (data: any) => T;
-  initialPageParam?: number;
-  getNextPageParam?: (lastPage: any, allPages: any[]) => number | undefined;
-  getPreviousPageParam?: (firstPage: any, allPages: any[]) => number | undefined;
-  maxPages?: number;
-}
 
 /**
  * Infinite query state interface
+ * @typedef {Object} InfiniteQueryState
+ * @property {Array} data - All flattened data from pages
+ * @property {Array<InfiniteQueryPage>} pages - Array of pages
+ * @property {boolean} isLoading - Whether the query is currently loading
+ * @property {boolean} isError - Whether the query has an error
+ * @property {boolean} isSuccess - Whether the query was successful
+ * @property {Error|null} error - The query error if any
+ * @property {boolean} isFetching - Whether the query is currently fetching
+ * @property {boolean} isFetchingNextPage - Whether currently fetching next page
+ * @property {boolean} isFetchingPreviousPage - Whether currently fetching previous page
+ * @property {boolean} hasNextPage - Whether there is a next page
+ * @property {boolean} hasPreviousPage - Whether there is a previous page
+ * @property {boolean} isStale - Whether the data is stale
+ * @property {number|null} lastUpdated - Timestamp of last update
  */
-export interface InfiniteQueryState<T = any> {
-  data: T[];
-  pages: InfiniteQueryPage<T>[];
-  isLoading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  error: Error | null;
-  isFetching: boolean;
-  isFetchingNextPage: boolean;
-  isFetchingPreviousPage: boolean;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  isStale: boolean;
-  lastUpdated: number | null;
-}
 
 /**
  * Custom infinite query hook result interface
+ * @typedef {Object} CustomInfiniteQueryResult
+ * @property {Array} data - All flattened data from pages
+ * @property {Array<InfiniteQueryPage>} pages - Array of pages
+ * @property {boolean} isLoading - Whether the query is currently loading
+ * @property {boolean} isError - Whether the query has an error
+ * @property {boolean} isSuccess - Whether the query was successful
+ * @property {Error|null} error - The query error if any
+ * @property {boolean} isFetching - Whether the query is currently fetching
+ * @property {boolean} isFetchingNextPage - Whether currently fetching next page
+ * @property {boolean} isFetchingPreviousPage - Whether currently fetching previous page
+ * @property {boolean} hasNextPage - Whether there is a next page
+ * @property {boolean} hasPreviousPage - Whether there is a previous page
+ * @property {boolean} isStale - Whether the data is stale
+ * @property {number|null} lastUpdated - Timestamp of last update
+ * @property {Function} refetch - Function to refetch the query
+ * @property {Function} fetchNextPage - Function to fetch next page
+ * @property {Function} fetchPreviousPage - Function to fetch previous page
+ * @property {Function} invalidate - Function to invalidate the query cache
+ * @property {Function} setData - Function to manually set query data
  */
-export interface CustomInfiniteQueryResult<T = any> extends InfiniteQueryState<T> {
-  refetch: () => Promise<void>;
-  fetchNextPage: () => Promise<void>;
-  fetchPreviousPage: () => Promise<void>;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  invalidate: () => void;
-  setData: (data: T[], pageIndex?: number) => void;
-}
 
 /**
  * Enterprise-grade custom infinite query hook
  * 
  * Replaces React Query's useInfiniteQuery with custom implementation
  * that integrates with our ICacheProvider and DI container
+ * 
+ * @param {string|Array<string>} key - Query key or array of keys
+ * @param {Function} fetcher - Function to fetch data for a given page parameter
+ * @param {InfiniteQueryOptions} options - Query options
+ * @returns {CustomInfiniteQueryResult} Infinite query result
  */
-export function useCustomInfiniteQuery<T>(
-  key: string | string[],
-  fetcher: (pageParam: number) => Promise<{ data: T[]; hasNextPage: boolean; hasPreviousPage?: boolean }>,
-  options: InfiniteQueryOptions<T> = {}
-): CustomInfiniteQueryResult<T> {
+export function useCustomInfiniteQuery(key, fetcher, options = {}) {
   const {
     enabled = true,
     staleTime = 5 * 60 * 1000, // 5 minutes default
@@ -101,11 +117,11 @@ export function useCustomInfiniteQuery<T>(
   } = options;
 
   const container = useDIContainer();
-  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
+  const cache = container.getByToken(TYPES.CACHE_SERVICE);
 
   const cacheKey = Array.isArray(key) ? key.join(':') : key;
 
-  const [state, setState] = useState<InfiniteQueryState<T>>({
+  const [state, setState] = useState({
     data: [],
     pages: [],
     isLoading: false,
@@ -122,16 +138,16 @@ export function useCustomInfiniteQuery<T>(
   });
 
   const retryCountRef = useRef(0);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const refetchIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef(null);
+  const refetchIntervalRef = useRef(null);
 
   // Execute query for a specific page
   const executeQuery = useCallback(async (
-    pageParam: number,
+    pageParam,
     isRefetch = false,
     isFetchingNext = false,
     isFetchingPrevious = false
-  ): Promise<void> => {
+  ) => {
     try {
       setState(prev => ({
         ...prev,
@@ -150,10 +166,10 @@ export function useCustomInfiniteQuery<T>(
       if (cachedEntry && !isRefetch) {
         const cacheAge = Date.now() - cachedEntry.timestamp;
         if (cacheAge < staleTime) {
-          const pageData: InfiniteQueryPage<T> = cachedEntry.data as InfiniteQueryPage<T>;
+          const pageData = cachedEntry.data;
 
           setState(prev => {
-            let newPages: InfiniteQueryPage<T>[];
+            let newPages;
 
             if (isFetchingNext) {
               newPages = [...prev.pages, pageData];
@@ -195,7 +211,7 @@ export function useCustomInfiniteQuery<T>(
       // Fetch new data
       const result = await fetcher(pageParam);
 
-      const pageData: InfiniteQueryPage<T> = {
+      const pageData = {
         data: result.data.map(item => select ? select(item) : item),
         pageParam,
         hasNextPage: result.hasNextPage,
@@ -208,7 +224,7 @@ export function useCustomInfiniteQuery<T>(
       cache.set(pageCacheKey, pageData, cacheTime);
 
       setState(prev => {
-        let newPages: InfiniteQueryPage<T>[];
+        let newPages;
 
         if (isFetchingNext) {
           newPages = [...prev.pages, pageData];
@@ -390,7 +406,7 @@ export function useCustomInfiniteQuery<T>(
   }, [cache, cacheKey, state.pages, initialPageParam, executeQuery]);
 
   // Set data manually
-  const setData = useCallback((newData: T[], pageIndex?: number) => {
+  const setData = useCallback((newData, pageIndex) => {
     if (pageIndex !== undefined && pageIndex < state.pages.length) {
       const updatedPages = [...state.pages];
       updatedPages[pageIndex] = {
@@ -408,7 +424,7 @@ export function useCustomInfiniteQuery<T>(
       }));
     } else {
       // Replace all data
-      const newPage: InfiniteQueryPage<T> = {
+      const newPage = {
         data: newData,
         pageParam: initialPageParam,
         hasNextPage: false,

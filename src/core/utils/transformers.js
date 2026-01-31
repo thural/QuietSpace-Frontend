@@ -10,12 +10,15 @@ import {
   AuthenticationFailure,
   AuthorizationFailure,
   NetworkFailure
-} from '../errors/failures';
+} from '../errors/failures.js';
 
 /**
  * Transform API post response to domain entity
+ * 
+ * @param {*} apiPost - API post response
+ * @returns {*} Transformed post entity
  */
-export const transformPost = (apiPost: any): any => {
+export const transformPost = (apiPost) => {
   // This will be implemented when we have the PostFactory
   // For now, return the transformed data
   return {
@@ -27,13 +30,16 @@ export const transformPost = (apiPost: any): any => {
 
 /**
  * Transform API error to domain failure
+ * 
+ * @param {*} error - Error object
+ * @returns {Error} Transformed error
  */
-export const transformError = (error: any): Error => {
+export const transformError = (error) => {
   if (error.response) {
     // API error
     const statusCode = error.response.status;
     const message = error.response.data?.message || error.message;
-    
+
     switch (statusCode) {
       case 400:
         return new ValidationError(message);
@@ -61,10 +67,13 @@ export const transformError = (error: any): Error => {
 
 /**
  * Sanitize user input
+ * 
+ * @param {string} input - Input string to sanitize
+ * @returns {string} Sanitized string
  */
-export const sanitizeInput = (input: string): string => {
+export const sanitizeInput = (input) => {
   if (!input) return '';
-  
+
   return input
     .trim()
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^>]*>)*>/gi, '')
@@ -74,21 +83,27 @@ export const sanitizeInput = (input: string): string => {
 
 /**
  * Validate email format
+ * 
+ * @param {string} email - Email to validate
+ * @returns {boolean} Whether email is valid
  */
-export const isValidEmail = (email: string): boolean => {
+export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
 /**
  * Format file size
+ * 
+ * @param {number} bytes - Bytes to format
+ * @returns {string} Formatted file size string
  */
-export const formatFileSize = (bytes: number): string => {
+export const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };

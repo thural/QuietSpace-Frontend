@@ -1,6 +1,14 @@
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
-import type { ICacheProvider } from '@/core/cache';
+import { useDIContainer } from '../di/index.js';
+import { TYPES } from '../di/types.js';
+
+/**
+ * Cache provider interface
+ * @typedef {Object} ICacheProvider
+ * @property {(key: string, value: any, ttl?: number) => Promise<void>} set - Set cache value
+ * @property {(key: string) => Promise<any>} get - Get cache value
+ * @property {(key: string) => Promise<void>} invalidate - Invalidate cache entry
+ * @property {(key: string) => Object} getEntry - Get cache entry with metadata
+ */
 
 /**
  * Migration utilities for React Query to Custom Query Hooks
@@ -42,12 +50,15 @@ export const CACHE_TIME_MAPPINGS = {
   // Search data - 30 seconds stale, 2 minutes cache
   SEARCH_STALE_TIME: 30 * 1000,
   SEARCH_CACHE_TIME: 2 * 60 * 1000
-} as const;
+};
 
 /**
  * React Query key to custom cache key converter
+ * 
+ * @param {Array} queryKey - React Query key array
+ * @returns {string} Custom cache key
  */
-export function convertQueryKeyToCacheKey(queryKey: any[]): string {
+export function convertQueryKeyToCacheKey(queryKey) {
   return queryKey.join(':');
 }
 
@@ -55,17 +66,15 @@ export function convertQueryKeyToCacheKey(queryKey: any[]): string {
  * Cache invalidation helper
  */
 export class CacheInvalidationHelper {
-  private cache: ICacheProvider;
-
   constructor() {
     const container = useDIContainer();
-    this.cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
+    this.cache = container.getByToken(TYPES.CACHE_SERVICE);
   }
 
   /**
    * Invalidate all feed-related cache entries
    */
-  invalidateFeed(): void {
+  invalidateFeed() {
     const patterns = [
       'feed:*',
       'posts:*',
@@ -81,8 +90,10 @@ export class CacheInvalidationHelper {
 
   /**
    * Invalidate post-specific cache entries
+   * 
+   * @param {string} postId - Post ID to invalidate
    */
-  invalidatePost(postId: string): void {
+  invalidatePost(postId) {
     const patterns = [
       `posts:*:${postId}`,
       `post:${postId}`,
@@ -97,8 +108,11 @@ export class CacheInvalidationHelper {
 
   /**
    * Invalidate comment-specific cache entries
+   * 
+   * @param {string} commentId - Comment ID to invalidate
+   * @param {string} postId - Post ID associated with the comment
    */
-  invalidateComment(commentId: string, postId: string): void {
+  invalidateComment(commentId, postId) {
     const patterns = [
       `posts:${postId}:comments:*`,
       `comment:${commentId}`,
@@ -112,8 +126,10 @@ export class CacheInvalidationHelper {
 
   /**
    * Invalidate user-specific cache entries
+   * 
+   * @param {string} userId - User ID to invalidate
    */
-  invalidateUser(userId: string): void {
+  invalidateUser(userId) {
     const patterns = [
       `posts:${userId}:*`,
       `user:${userId}:*`,
@@ -127,8 +143,10 @@ export class CacheInvalidationHelper {
 
   /**
    * Invalidate chat-specific cache entries
+   * 
+   * @param {string} chatId - Chat ID to invalidate
    */
-  invalidateChatData(chatId: string): void {
+  invalidateChatData(chatId) {
     const patterns = [
       `chat:${chatId}:*`,
       `chat:message:*${chatId}*`,
@@ -142,8 +160,10 @@ export class CacheInvalidationHelper {
 
   /**
    * Invalidate user-specific chat cache entries
+   * 
+   * @param {string} userId - User ID to invalidate
    */
-  invalidateUserChatData(userId: string): void {
+  invalidateUserChatData(userId) {
     const patterns = [
       `chat:user:${userId}:*`,
       `chat:*:user:${userId}:*`
@@ -157,29 +177,28 @@ export class CacheInvalidationHelper {
   /**
    * Clear all cache entries (use with caution)
    */
-  clearAll(): void {
+  clearAll() {
     this.cache.clear();
   }
 }
 
 /**
  * Hook to get cache invalidation helper
+ * 
+ * @returns {CacheInvalidationHelper} Cache invalidation helper instance
  */
-export function useCacheInvalidation(): CacheInvalidationHelper {
+export function useCacheInvalidation() {
   return new CacheInvalidationHelper();
 }
 
 /**
  * React Query to Custom Query options converter
+ * 
+ * @param {*} reactQueryOptions - React Query options
+ * @returns {Object} Converted options for custom hooks
  */
-export function convertReactQueryOptions<T = any>(
-  reactQueryOptions: any
-): {
-  query?: import('./useCustomQuery').QueryOptions<T>;
-  mutation?: import('./useCustomMutation').MutationOptions<T>;
-  infiniteQuery?: import('./useCustomInfiniteQuery').InfiniteQueryOptions<T>;
-} {
-  const converted: any = {};
+export function convertReactQueryOptions(reactQueryOptions) {
+  const converted = {};
 
   // Common options
   if (reactQueryOptions.enabled !== undefined) {
@@ -268,23 +287,24 @@ export function convertReactQueryOptions<T = any>(
  * Performance monitoring for query hooks
  */
 export class QueryPerformanceMonitor {
-  private static instance: QueryPerformanceMonitor;
-  private metrics: Map<string, {
-    fetchCount: number;
-    cacheHits: number;
-    cacheMisses: number;
-    averageFetchTime: number;
-    totalFetchTime: number;
-  }> = new Map();
+  static instance = null;
+  metrics = new Map();
 
-  static getInstance(): QueryPerformanceMonitor {
+  static getInstance() {
     if (!QueryPerformanceMonitor.instance) {
       QueryPerformanceMonitor.instance = new QueryPerformanceMonitor();
     }
     return QueryPerformanceMonitor.instance;
   }
 
-  recordFetch(key: string, fetchTime: number, fromCache: boolean): void {
+  /**
+   * Record fetch performance metrics
+   * 
+   * @param {string} key - Query key
+   * @param {number} fetchTime - Fetch time in milliseconds
+   * @param {boolean} fromCache - Whether data came from cache
+   */
+  recordFetch(key, fetchTime, fromCache) {
     const existing = this.metrics.get(key) || {
       fetchCount: 0,
       cacheHits: 0,
@@ -306,23 +326,39 @@ export class QueryPerformanceMonitor {
     this.metrics.set(key, existing);
   }
 
-  getMetrics(key: string) {
+  /**
+   * Get metrics for a specific query
+   * 
+   * @param {string} key - Query key
+   * @returns {Object} Metrics object
+   */
+  getMetrics(key) {
     return this.metrics.get(key);
   }
 
+  /**
+   * Get all metrics
+   * 
+   * @returns {Object} All metrics
+   */
   getAllMetrics() {
     return Object.fromEntries(this.metrics);
   }
 
-  reset(): void {
+  /**
+   * Reset all metrics
+   */
+  reset() {
     this.metrics.clear();
   }
 }
 
 /**
  * Hook to get performance monitor
+ * 
+ * @returns {QueryPerformanceMonitor} Performance monitor instance
  */
-export function useQueryPerformanceMonitor(): QueryPerformanceMonitor {
+export function useQueryPerformanceMonitor() {
   return QueryPerformanceMonitor.getInstance();
 }
 
@@ -330,48 +366,80 @@ export function useQueryPerformanceMonitor(): QueryPerformanceMonitor {
  * Migration status tracker
  */
 export class MigrationTracker {
-  private static instance: MigrationTracker;
-  private migratedHooks: Set<string> = new Set();
-  private pendingHooks: Set<string> = new Set();
+  static instance = null;
+  migratedHooks = new Set();
+  pendingHooks = new Set();
 
-  static getInstance(): MigrationTracker {
+  static getInstance() {
     if (!MigrationTracker.instance) {
       MigrationTracker.instance = new MigrationTracker();
     }
     return MigrationTracker.instance;
   }
 
-  markMigrated(hookName: string): void {
+  /**
+   * Mark a hook as migrated
+   * 
+   * @param {string} hookName - Hook name
+   */
+  markMigrated(hookName) {
     this.migratedHooks.add(hookName);
     this.pendingHooks.delete(hookName);
   }
 
-  markPending(hookName: string): void {
+  /**
+   * Mark a hook as pending migration
+   * 
+   * @param {string} hookName - Hook name
+   */
+  markPending(hookName) {
     this.pendingHooks.add(hookName);
   }
 
-  isMigrated(hookName: string): boolean {
+  /**
+   * Check if a hook is migrated
+   * 
+   * @param {string} hookName - Hook name
+   * @returns {boolean} Whether the hook is migrated
+   */
+  isMigrated(hookName) {
     return this.migratedHooks.has(hookName);
   }
 
-  isPending(hookName: string): boolean {
+  /**
+   * Check if a hook is pending migration
+   * 
+   * @param {string} hookName - Hook name
+   * @returns {boolean} Whether the hook is pending
+   */
+  isPending(hookName) {
     return this.pendingHooks.has(hookName);
   }
 
-  getMigratedHooks(): string[] {
+  /**
+   * Get list of migrated hooks
+   * 
+   * @returns {Array<string>} List of migrated hooks
+   */
+  getMigratedHooks() {
     return Array.from(this.migratedHooks);
   }
 
-  getPendingHooks(): string[] {
+  /**
+   * Get list of pending hooks
+   * 
+   * @returns {Array<string>} List of pending hooks
+   */
+  getPendingHooks() {
     return Array.from(this.pendingHooks);
   }
 
-  getMigrationStatus(): {
-    total: number;
-    migrated: number;
-    pending: number;
-    percentage: number;
-  } {
+  /**
+   * Get migration status
+   * 
+   * @returns {Object} Migration status object
+   */
+  getMigrationStatus() {
     const total = this.migratedHooks.size + this.pendingHooks.size;
     const migrated = this.migratedHooks.size;
     const pending = this.pendingHooks.size;
@@ -383,7 +451,9 @@ export class MigrationTracker {
 
 /**
  * Hook to get migration tracker
+ * 
+ * @returns {MigrationTracker} Migration tracker instance
  */
-export function useMigrationTracker(): MigrationTracker {
+export function useMigrationTracker() {
   return MigrationTracker.getInstance();
 }

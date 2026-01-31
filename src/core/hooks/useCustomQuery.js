@@ -1,63 +1,78 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
-import type { ICacheProvider } from '@/core/cache';
+import { useDIContainer } from '../di/index.js';
+import { TYPES } from '../di/types.js';
+
+/**
+ * Cache provider interface
+ * @typedef {Object} ICacheProvider
+ * @property {(key: string, value: any, ttl?: number) => Promise<void>} set - Set cache value
+ * @property {(key: string) => Promise<any>} get - Get cache value
+ * @property {(key: string) => Promise<void>} invalidate - Invalidate cache entry
+ * @property {(key: string) => Object} getEntry - Get cache entry with metadata
+ */
 
 /**
  * Enterprise-grade query options interface
+ * @typedef {Object} QueryOptions
+ * @property {boolean} [enabled] - Whether the query should execute
+ * @property {number} [staleTime] - Time in milliseconds that data remains fresh
+ * @property {number} [cacheTime] - Time in milliseconds that data remains in cache
+ * @property {number} [refetchInterval] - Interval for automatic refetching
+ * @property {boolean} [refetchOnMount] - Whether to refetch on component mount
+ * @property {boolean} [refetchOnWindowFocus] - Whether to refetch on window focus
+ * @property {number} [retry] - Number of retry attempts on failure
+ * @property {number} [retryDelay] - Delay between retry attempts
+ * @property {Function} [onSuccess] - Callback on successful query
+ * @property {Function} [onError] - Callback on query error
+ * @property {Function} [onSettled] - Callback on query completion
+ * @property {Function} [select] - Data transformation function
+ * @property {*} [initialData] - Initial data to use while loading
+ * @property {*} [placeholderData] - Placeholder data to use while loading
  */
-export interface QueryOptions<T = any> {
-  enabled?: boolean;
-  staleTime?: number;
-  cacheTime?: number;
-  refetchInterval?: number;
-  refetchOnMount?: boolean;
-  refetchOnWindowFocus?: boolean;
-  retry?: number;
-  retryDelay?: number;
-  onSuccess?: (data: T) => void;
-  onError?: (error: Error) => void;
-  onSettled?: (data: T | undefined, error: Error | null) => void;
-  select?: (data: any) => T;
-  initialData?: T;
-  placeholderData?: T;
-}
 
 /**
  * Query state interface
+ * @typedef {Object} QueryState
+ * @property {*} data - The query data
+ * @property {boolean} isLoading - Whether the query is currently loading
+ * @property {boolean} isError - Whether the query has an error
+ * @property {boolean} isSuccess - Whether the query was successful
+ * @property {Error|null} error - The query error if any
+ * @property {boolean} isFetching - Whether the query is currently fetching
+ * @property {boolean} isRefetching - Whether the query is currently refetching
+ * @property {boolean} isStale - Whether the data is stale
+ * @property {number|null} lastUpdated - Timestamp of last update
  */
-export interface QueryState<T = any> {
-  data: T | undefined;
-  isLoading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  error: Error | null;
-  isFetching: boolean;
-  isRefetching: boolean;
-  isStale: boolean;
-  lastUpdated: number | null;
-}
 
 /**
  * Custom query hook result interface
+ * @typedef {Object} CustomQueryResult
+ * @property {*} data - The query data
+ * @property {boolean} isLoading - Whether the query is currently loading
+ * @property {boolean} isError - Whether the query has an error
+ * @property {boolean} isSuccess - Whether the query was successful
+ * @property {Error|null} error - The query error if any
+ * @property {boolean} isFetching - Whether the query is currently fetching
+ * @property {boolean} isRefetching - Whether the query is currently refetching
+ * @property {boolean} isStale - Whether the data is stale
+ * @property {number|null} lastUpdated - Timestamp of last update
+ * @property {Function} refetch - Function to refetch the query
+ * @property {Function} invalidate - Function to invalidate the query cache
+ * @property {Function} setData - Function to manually set query data
  */
-export interface CustomQueryResult<T = any> extends QueryState<T> {
-  refetch: () => Promise<void>;
-  invalidate: () => void;
-  setData: (data: T | ((old: T | undefined) => T)) => void;
-}
 
 /**
  * Enterprise-grade custom query hook
  * 
  * Replaces React Query's useQuery with custom implementation
  * that integrates with our ICacheProvider and DI container
+ * 
+ * @param {string|Array<string>} key - Query key or array of keys
+ * @param {Function} fetcher - Function to fetch data
+ * @param {QueryOptions} options - Query options
+ * @returns {CustomQueryResult} Query result
  */
-export function useCustomQuery<T>(
-  key: string | string[],
-  fetcher: () => Promise<T>,
-  options: QueryOptions<T> = {}
-): CustomQueryResult<T> {
+export function useCustomQuery(key, fetcher, options = {}) {
   const {
     enabled = true,
     staleTime = 5 * 60 * 1000, // 5 minutes default
@@ -76,11 +91,11 @@ export function useCustomQuery<T>(
   } = options;
 
   const container = useDIContainer();
-  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
+  const cache = container.getByToken(TYPES.CACHE_SERVICE);
 
   const cacheKey = Array.isArray(key) ? key.join(':') : key;
 
-  const [state, setState] = useState<QueryState<T>>({
+  const [state, setState] = useState({
     data: initialData,
     isLoading: false,
     isError: false,
@@ -93,14 +108,14 @@ export function useCustomQuery<T>(
   });
 
   const retryCountRef = useRef(0);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const refetchIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef(null);
+  const refetchIntervalRef = useRef(null);
 
   // Execute the query with retry logic
   const executeQuery = useCallback(async (
     isRefetch = false,
-    signal?: AbortSignal
-  ): Promise<T> => {
+    signal
+  ) => {
     try {
       setState(prev => ({
         ...prev,
@@ -116,10 +131,10 @@ export function useCustomQuery<T>(
       if (cachedEntry && !isRefetch) {
         const cacheAge = Date.now() - cachedEntry.timestamp;
         if (cacheAge < staleTime) {
-          const data = select ? select(cachedEntry.data) : cachedEntry.data as T;
+          const data = select ? select(cachedEntry.data) : cachedEntry.data;
           setState(prev => ({
             ...prev,
-            data: data as T,
+            data: data,
             isLoading: false,
             isFetching: false,
             isSuccess: true,
@@ -248,7 +263,7 @@ export function useCustomQuery<T>(
   }, [state.lastUpdated, staleTime]);
 
   // Refetch function
-  const refetch = useCallback(async (): Promise<void> => {
+  const refetch = useCallback(async () => {
     await executeQuery(true);
   }, [executeQuery]);
 
@@ -259,9 +274,9 @@ export function useCustomQuery<T>(
   }, [cache, cacheKey, executeQuery]);
 
   // Set data manually
-  const setData = useCallback((newData: T | ((old: T | undefined) => T)) => {
+  const setData = useCallback((newData) => {
     const data = typeof newData === 'function'
-      ? (newData as Function)(state.data)
+      ? newData(state.data)
       : newData;
 
     cache.set(cacheKey, data, cacheTime);

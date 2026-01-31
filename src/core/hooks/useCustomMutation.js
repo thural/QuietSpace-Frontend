@@ -1,54 +1,66 @@
 import { useState, useCallback, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
-import type { ICacheProvider } from '@/core/cache';
+import { useDIContainer } from '../di/index.js';
+import { TYPES } from '../di/types.js';
+
+/**
+ * Cache provider interface
+ * @typedef {Object} ICacheProvider
+ * @property {(key: string, value: any, ttl?: number) => Promise<void>} set - Set cache value
+ * @property {(key: string) => Promise<any>} get - Get cache value
+ * @property {(key: string) => Promise<void>} invalidate - Invalidate cache entry
+ * @property {(key: string) => Object} getEntry - Get cache entry with metadata
+ */
 
 /**
  * Enterprise-grade mutation options interface
+ * @typedef {Object} MutationOptions
+ * @property {Function} [onSuccess] - Callback on successful mutation
+ * @property {Function} [onError] - Callback on mutation error
+ * @property {Function} [onSettled] - Callback on mutation completion
+ * @property {Function} [onMutate] - Callback before mutation execution
+ * @property {number} [retry] - Number of retry attempts on failure
+ * @property {number} [retryDelay] - Delay between retry attempts
+ * @property {Array<string>} [invalidateQueries] - Queries to invalidate on success
+ * @property {Function} [cacheUpdate] - Function to update cache on success
+ * @property {Function} [optimisticUpdate] - Function for optimistic updates
  */
-export interface MutationOptions<TData = any, TError = Error, TVariables = any> {
-  onSuccess?: (data: TData, variables: TVariables) => void;
-  onError?: (error: TError, variables: TVariables) => void;
-  onSettled?: (data: TData | undefined, error: TError | null, variables: TVariables) => void;
-  onMutate?: (variables: TVariables) => Promise<any> | any;
-  retry?: number;
-  retryDelay?: number;
-  invalidateQueries?: string[];
-  cacheUpdate?: (cache: ICacheProvider, data: TData, variables: TVariables) => void;
-  optimisticUpdate?: (cache: ICacheProvider, variables: TVariables) => (() => void) | void;
-}
 
 /**
  * Mutation state interface
+ * @typedef {Object} MutationState
+ * @property {*} data - The mutation data
+ * @property {boolean} isLoading - Whether the mutation is currently loading
+ * @property {boolean} isError - Whether the mutation has an error
+ * @property {boolean} isSuccess - Whether the mutation was successful
+ * @property {Error|null} error - The mutation error if any
+ * @property {boolean} isIdle - Whether the mutation is idle
  */
-export interface MutationState<TData = any, TError = Error> {
-  data: TData | undefined;
-  isLoading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  error: TError | null;
-  isIdle: boolean;
-}
 
 /**
  * Custom mutation hook result interface
+ * @typedef {Object} CustomMutationResult
+ * @property {*} data - The mutation data
+ * @property {boolean} isLoading - Whether the mutation is currently loading
+ * @property {boolean} isError - Whether the mutation has an error
+ * @property {boolean} isSuccess - Whether the mutation was successful
+ * @property {Error|null} error - The mutation error if any
+ * @property {boolean} isIdle - Whether the mutation is idle
+ * @property {Function} mutate - Function to execute the mutation
+ * @property {Function} mutateAsync - Async function to execute the mutation
+ * @property {Function} reset - Function to reset the mutation state
  */
-export interface CustomMutationResult<TData = any, TError = Error, TVariables = any> extends MutationState<TData, TError> {
-  mutate: (variables: TVariables) => void;
-  mutateAsync: (variables: TVariables) => Promise<TData>;
-  reset: () => void;
-}
 
 /**
  * Enterprise-grade custom mutation hook
  * 
  * Replaces React Query's useMutation with custom implementation
  * that integrates with our ICacheProvider and DI container
+ * 
+ * @param {Function} fetcher - Function to execute the mutation
+ * @param {MutationOptions} options - Mutation options
+ * @returns {CustomMutationResult} Mutation result
  */
-export function useCustomMutation<TData = any, TError = Error, TVariables = any>(
-  fetcher: (variables: TVariables) => Promise<TData>,
-  options: MutationOptions<TData, TError, TVariables> = {}
-): CustomMutationResult<TData, TError, TVariables> {
+export function useCustomMutation(fetcher, options = {}) {
   const {
     onSuccess,
     onError,
@@ -62,9 +74,9 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
   } = options;
 
   const container = useDIContainer();
-  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
+  const cache = container.getByToken(TYPES.CACHE_SERVICE);
 
-  const [state, setState] = useState<MutationState<TData, TError>>({
+  const [state, setState] = useState({
     data: undefined,
     isLoading: false,
     isError: false,
@@ -74,14 +86,14 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
   });
 
   const retryCountRef = useRef(0);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const rollbackRef = useRef<(() => void) | null>(null);
+  const abortControllerRef = useRef(null);
+  const rollbackRef = useRef(null);
 
   // Execute the mutation with retry logic
   const executeMutation = useCallback(async (
-    variables: TVariables,
+    variables,
     isAsync = false
-  ): Promise<TData> => {
+  ) => {
     try {
       // Cancel previous mutation if running
       if (abortControllerRef.current) {
@@ -100,7 +112,7 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
       }));
 
       // Run onMutate if provided
-      let context: any;
+      let context;
       if (onMutate) {
         context = await onMutate(variables);
       }
@@ -140,7 +152,7 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
       return data;
 
     } catch (error) {
-      const err = error instanceof Error ? error as TError : new Error('Unknown error') as TError;
+      const err = error instanceof Error ? error : new Error('Unknown error');
 
       // Rollback optimistic update if it failed
       if (rollbackRef.current) {
@@ -177,14 +189,14 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
   }, [fetcher, cache, retry, retryDelay, invalidateQueries, cacheUpdate, optimisticUpdate, onMutate, onSuccess, onError, onSettled]);
 
   // Mutate function (void return, handles errors internally)
-  const mutate = useCallback((variables: TVariables) => {
+  const mutate = useCallback((variables) => {
     executeMutation(variables, false).catch(() => {
       // Errors are handled in the executeMutation function
     });
   }, [executeMutation]);
 
   // MutateAsync function (returns promise, caller handles errors)
-  const mutateAsync = useCallback((variables: TVariables): Promise<TData> => {
+  const mutateAsync = useCallback((variables) => {
     return executeMutation(variables, true);
   }, [executeMutation]);
 

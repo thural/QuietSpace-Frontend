@@ -1,34 +1,52 @@
 import { useEffect, useCallback } from 'react';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
-import type { ICacheProvider } from '@/core/cache';
-import type { IWebSocketService } from '@/core/websocket/types';
+import { useDIContainer } from '../di/index.js';
+import { TYPES } from '../di/types.js';
+
+/**
+ * Cache provider interface
+ * @typedef {Object} ICacheProvider
+ * @property {(key: string, value: any, ttl?: number) => Promise<void>} set - Set cache value
+ * @property {(key: string) => Promise<any>} get - Get cache value
+ * @property {(key: string) => Promise<void>} invalidate - Invalidate cache entry
+ * @property {(key: string) => Promise<boolean>} has - Check if key exists
+ * @property {(key: string) => Promise<void>} delete - Delete cache entry
+ * @property {() => Promise<void>} clear - Clear all cache
+ * @property {(key: string) => Object} getEntry - Get cache entry with metadata
+ * @property {() => Object} getStats - Get cache statistics
+ */
+
+/**
+ * WebSocket service interface
+ * @typedef {Object} IWebSocketService
+ * @property {(topic: string, callback: Function) => Function} subscribe - Subscribe to topic
+ * @property {(topic: string, message: any) => Promise<void>} publish - Publish message
+ * @property {() => Promise<void>} connect - Connect to WebSocket
+ * @property {() => Promise<void>} disconnect - Disconnect from WebSocket
+ * @property {() => boolean} isConnected - Check connection status
+ */
 
 /**
  * WebSocket cache update configuration
+ * @typedef {Object} WebSocketCacheConfig
+ * @property {string} queryKey - Cache key to update
+ * @property {string} updateStrategy - Strategy for updating cache
+ * @property {string} [messageProperty] - Property path to extract data from WebSocket message
+ * @property {string} [mergeKey] - Key for merging objects (e.g., 'id')
  */
-export interface WebSocketCacheConfig {
-  queryKey: string;
-  updateStrategy: 'replace' | 'merge' | 'append' | 'prepend' | 'increment';
-  messageProperty?: string; // Property path to extract data from WebSocket message
-  mergeKey?: string; // Key for merging objects (e.g., 'id')
-}
 
 /**
  * Hook for integrating WebSocket updates with query cache
  * 
- * @param topic WebSocket topic to subscribe to
- * @param config Cache update configuration
+ * @param {string} topic - WebSocket topic to subscribe to
+ * @param {WebSocketCacheConfig} config - Cache update configuration
+ * @returns {void}
  */
-export function useWebSocketCacheUpdater(
-  topic: string,
-  config: WebSocketCacheConfig
-) {
+export function useWebSocketCacheUpdater(topic, config) {
   const container = useDIContainer();
-  const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
-  const webSocket = container.getByToken<IWebSocketService>(TYPES.WEBSOCKET_SERVICE);
+  const cache = container.getByToken(TYPES.CACHE_SERVICE);
+  const webSocket = container.getByToken(TYPES.WEBSOCKET_SERVICE);
 
-  const updateCache = useCallback((message: any) => {
+  const updateCache = useCallback((message) => {
     const { queryKey, updateStrategy, messageProperty, mergeKey } = config;
 
     // Extract data from message if property specified
@@ -42,7 +60,7 @@ export function useWebSocketCacheUpdater(
     const currentEntry = cache.getEntry(queryKey);
     const currentData = currentEntry?.data;
 
-    let updatedData: any;
+    let updatedData;
 
     switch (updateStrategy) {
       case 'replace':
@@ -52,7 +70,7 @@ export function useWebSocketCacheUpdater(
       case 'merge':
         if (Array.isArray(currentData) && mergeKey) {
           // Merge array items by key
-          updatedData = currentData.map((item: any) =>
+          updatedData = currentData.map((item) =>
             item[mergeKey] === newData[mergeKey] ? { ...item, ...newData } : item
           );
         } else if (typeof currentData === 'object' && typeof newData === 'object') {
@@ -76,7 +94,7 @@ export function useWebSocketCacheUpdater(
         break;
 
       case 'increment':
-        // For numeric values like like counts
+        // For numeric values like counts
         if (typeof currentData === 'number' && typeof newData === 'number') {
           updatedData = currentData + newData;
         } else if (typeof currentData === 'object' && typeof newData === 'object') {
@@ -114,15 +132,22 @@ export function useWebSocketCacheUpdater(
 
 /**
  * Helper function to get nested property from object
+ * 
+ * @param {any} obj - Object to get property from
+ * @param {string} path - Dot-separated path to property
+ * @returns {any} - Property value or undefined
  */
-function getNestedProperty(obj: any, path: string): any {
+function getNestedProperty(obj, path) {
   return path.split('.').reduce((current, key) => current?.[key], obj);
 }
 
 /**
  * Hook for specific like count updates
+ * 
+ * @param {string} postId - Post ID to track likes for
+ * @returns {void}
  */
-export function useLikeCountUpdater(postId: string) {
+export function useLikeCountUpdater(postId) {
   return useWebSocketCacheUpdater(`post.${postId}.likes`, {
     queryKey: `posts`,
     updateStrategy: 'merge',
@@ -133,6 +158,8 @@ export function useLikeCountUpdater(postId: string) {
 
 /**
  * Hook for real-time post updates
+ * 
+ * @returns {void}
  */
 export function usePostUpdater() {
   return useWebSocketCacheUpdater('post.updates', {
@@ -144,6 +171,8 @@ export function usePostUpdater() {
 
 /**
  * Hook for new post notifications
+ * 
+ * @returns {void}
  */
 export function useNewPostHandler() {
   return useWebSocketCacheUpdater('post.created', {
