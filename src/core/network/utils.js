@@ -5,20 +5,45 @@
  * Provides helpers for error handling, validation, and common operations.
  */
 
-import { ERROR_CODES, HTTP_STATUS } from './types';
-import type { ApiError, ApiResponse } from './interfaces';
+import { ERROR_CODES, HTTP_STATUS } from './types.js';
+
+/**
+ * API error interface
+ * @typedef {Object} ApiError
+ * @property {string} code - Error code
+ * @property {string} message - Error message
+ * @property {*} [details] - Error details
+ * @property {number} timestamp - Error timestamp
+ * @property {string} [stack] - Error stack trace
+ */
+
+/**
+ * API response interface
+ * @typedef {Object} ApiResponse
+ * @property {*} [data] - Response data
+ * @property {boolean} success - Success flag
+ * @property {string} [message] - Response message
+ * @property {string} [error] - Error message
+ * @property {number} [status] - HTTP status
+ * @property {Object} [headers] - Response headers
+ */
 
 // Re-export ERROR_CODES for factory use
 export { ERROR_CODES };
 
 /**
  * Creates a standardized API error
+ * 
+ * @param {string} code - Error code
+ * @param {string} message - Error message
+ * @param {*} [details] - Error details
+ * @returns {ApiError} API error object
  */
 export function createApiError(
-    code: string,
-    message: string,
-    details?: any
-): ApiError {
+    code,
+    message,
+    details
+) {
     return {
         code,
         message,
@@ -30,8 +55,11 @@ export function createApiError(
 
 /**
  * Creates a network error
+ * 
+ * @param {string} [message] - Error message
+ * @returns {ApiError} Network error object
  */
-export function createNetworkError(message?: string): ApiError {
+export function createNetworkError(message) {
     return createApiError(
         ERROR_CODES.NETWORK_ERROR,
         message || 'Network error occurred',
@@ -41,13 +69,17 @@ export function createNetworkError(message?: string): ApiError {
 
 /**
  * Creates a timeout error
+ * 
+ * @param {number} timeout - Timeout duration
+ * @returns {ApiError} Timeout error object
  */
-export function createTimeoutError(timeout: number): ApiError {
+export function createTimeoutError(timeout) {
     return createApiError(
         ERROR_CODES.TIMEOUT_ERROR,
         `Request timeout after ${timeout}ms`,
         { timeout }
     );
+}
 }
 
 /**

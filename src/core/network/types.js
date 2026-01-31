@@ -6,16 +6,20 @@
  */
 
 // Import types from interfaces
-import type {
+import {
     ApiError,
     ApiResponse,
     IApiClientConfig,
     RetryConfig,
     CacheConfig
-} from './interfaces';
+} from './interfaces.js';
 
-// HTTP Status Codes
-export const HTTP_STATUS = {
+/**
+ * HTTP Status Codes
+ * @readonly
+ * @enum {number}
+ */
+export const HTTP_STATUS = Object.freeze({
     OK: 200,
     CREATED: 201,
     ACCEPTED: 202,
@@ -32,10 +36,14 @@ export const HTTP_STATUS = {
     BAD_GATEWAY: 502,
     SERVICE_UNAVAILABLE: 503,
     GATEWAY_TIMEOUT: 504
-} as const;
+});
 
-// HTTP Methods
-export const HTTP_METHODS = {
+/**
+ * HTTP Methods
+ * @readonly
+ * @enum {string}
+ */
+export const HTTP_METHODS = Object.freeze({
     GET: 'GET',
     POST: 'POST',
     PUT: 'PUT',
@@ -43,17 +51,143 @@ export const HTTP_METHODS = {
     DELETE: 'DELETE',
     HEAD: 'HEAD',
     OPTIONS: 'OPTIONS'
-} as const;
+});
 
-// Content Types
-export const CONTENT_TYPES = {
+/**
+ * Content Types
+ * @readonly
+ * @enum {string}
+ */
+export const CONTENT_TYPES = Object.freeze({
     JSON: 'application/json',
-    FORM_URLENCODED: 'application/x-www-form-urlencoded',
     FORM_DATA: 'multipart/form-data',
+    FORM_URLENCODED: 'application/x-www-form-urlencoded',
     TEXT: 'text/plain',
     HTML: 'text/html',
     XML: 'application/xml'
-} as const;
+});
+
+/**
+ * Request types enumeration
+ * @readonly
+ * @enum {string}
+ */
+export const REQUEST_TYPES = Object.freeze({
+    AUTHENTICATED: 'authenticated',
+    PUBLIC: 'public',
+    UPLOAD: 'upload',
+    DOWNLOAD: 'download'
+});
+
+/**
+ * Network error types enumeration
+ * @readonly
+ * @enum {string}
+ */
+export const NETWORK_ERROR_TYPES = Object.freeze({
+    NETWORK_ERROR: 'NETWORK_ERROR',
+    TIMEOUT_ERROR: 'TIMEOUT_ERROR',
+    AUTHENTICATION_ERROR: 'AUTHENTICATION_ERROR',
+    AUTHORIZATION_ERROR: 'AUTHORIZATION_ERROR',
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
+    SERVER_ERROR: 'SERVER_ERROR',
+    UNKNOWN_ERROR: 'UNKNOWN_ERROR'
+});
+
+/**
+ * Request priority enumeration
+ * @readonly
+ * @enum {string}
+ */
+export const REQUEST_PRIORITY = Object.freeze({
+    LOW: 'low',
+    NORMAL: 'normal',
+    HIGH: 'high',
+    URGENT: 'urgent'
+});
+
+/**
+ * Cache strategies enumeration
+ * @readonly
+ * @enum {string}
+ */
+export const CACHE_STRATEGIES = Object.freeze({
+    NO_CACHE: 'no-cache',
+    CACHE_FIRST: 'cache-first',
+    NETWORK_FIRST: 'network-first',
+    STALE_WHILE_REVALIDATE: 'stale-while-revalidate'
+});
+
+/**
+ * API request configuration interface
+ * @typedef {Object} ApiRequestConfig
+ * @property {string} url - Request URL
+ * @property {string} method - HTTP method
+ * @property {*} [data] - Request data
+ * @property {Object} [headers] - Request headers
+ * @property {number} [timeout] - Request timeout
+ * @property {RetryConfig} [retry] - Retry configuration
+ * @property {CacheConfig} [cache] - Cache configuration
+ * @property {string} [priority] - Request priority
+ * @property {Function} [onUploadProgress] - Upload progress callback
+ * @property {Function} [onDownloadProgress] - Download progress callback
+ * @property {AbortSignal} [signal] - Abort signal
+ */
+
+/**
+ * Network response interface
+ * @typedef {Object} NetworkResponse
+ * @property {*} data - Response data
+ * @property {number} status - HTTP status code
+ * @property {string} statusText - HTTP status text
+ * @property {Object} headers - Response headers
+ * @property {Object} config - Request configuration
+ * @property {ApiError} [error] - Error information
+ */
+
+/**
+ * Request interceptor interface
+ * @typedef {Object} RequestInterceptor
+ * @property {Function} onFulfilled - Success callback
+ * @property {Function} onRejected - Error callback
+ */
+
+/**
+ * Response interceptor interface
+ * @typedef {Object} ResponseInterceptor
+ * @property {Function} onFulfilled - Success callback
+ * @property {Function} onRejected - Error callback
+ */
+
+/**
+ * Network client configuration interface
+ * @typedef {Object} NetworkClientConfig
+ * @property {string} [baseURL] - Base URL
+ * @property {number} [timeout] - Default timeout
+ * @property {Object} [headers] - Default headers
+ * @property {RetryConfig} [retry] - Default retry configuration
+ * @property {CacheConfig} [cache] - Default cache configuration
+ * @property {Array<RequestInterceptor>} [requestInterceptors] - Request interceptors
+ * @property {Array<ResponseInterceptor>} [responseInterceptors] - Response interceptors
+ * @property {Function} [transformRequest] - Request transformer
+ * @property {Function} [transformResponse] - Response transformer
+ * @property {Function} [validateStatus] - Status validator
+ */
+
+// Export all types for external use
+export {
+    ApiError,
+    ApiResponse,
+    IApiClientConfig,
+    RetryConfig,
+    CacheConfig
+};
+FORM_URLENCODED: 'application/x-www-form-urlencoded',
+    FORM_DATA: 'multipart/form-data',
+        TEXT: 'text/plain',
+            HTML: 'text/html',
+                XML: 'application/xml'
+} as const ;
 
 // Error Codes
 export const ERROR_CODES = {

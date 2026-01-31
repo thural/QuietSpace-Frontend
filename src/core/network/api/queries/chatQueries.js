@@ -6,14 +6,14 @@
  */
 
 // Mock React Query hooks for testing
-const mockUseQuery = (options: any) => ({
+const mockUseQuery = (options) => ({
     data: [],
     isLoading: false,
     error: null,
     refetch: jest.fn()
 });
 
-const mockUseMutation = (options: any) => ({
+const mockUseMutation = (options) => ({
     mutate: jest.fn(),
     isLoading: false,
     error: null,
@@ -26,21 +26,24 @@ const mockUseQueryClient = () => ({
     setQueryData: jest.fn()
 });
 
-// Mock types
-interface MockChatMessage {
-    id: string;
-    content: string;
-    senderId: string;
-    timestamp: Date;
-    type: 'text' | 'image' | 'file';
-}
+/**
+ * Mock chat message interface
+ * @typedef {Object} MockChatMessage
+ * @property {string} id - Message ID
+ * @property {string} content - Message content
+ * @property {string} senderId - Sender ID
+ * @property {Date} timestamp - Message timestamp
+ * @property {'text'|'image'|'file'} type - Message type
+ */
 
-interface MockChatRoom {
-    id: string;
-    name: string;
-    participants: string[];
-    lastMessage?: MockChatMessage;
-}
+/**
+ * Mock chat room interface
+ * @typedef {Object} MockChatRoom
+ * @property {string} id - Room ID
+ * @property {string} name - Room name
+ * @property {Array<string>} participants - Participant IDs
+ * @property {MockChatMessage} [lastMessage] - Last message in room
+ */
 
 // Mock hooks for chat queries
 export const useChatRooms = () => {
@@ -61,12 +64,17 @@ export const useChatRooms = () => {
                         type: 'text'
                     }
                 }
-            ] as MockChatRoom[];
+            ];
         }
     });
 };
 
-export const useChatMessages = (roomId: string) => {
+/**
+ * Hook for getting chat messages
+ * @param {string} roomId - Room ID
+ * @returns {Object} Query result
+ */
+export const useChatMessages = (roomId) => {
     return mockUseQuery({
         queryKey: ['chatMessages', roomId],
         queryFn: async () => {
@@ -79,19 +87,23 @@ export const useChatMessages = (roomId: string) => {
                     timestamp: new Date(),
                     type: 'text'
                 }
-            ] as MockChatMessage[];
+            ];
         },
         enabled: !!roomId
     });
 };
 
+/**
+ * Hook for sending messages
+ * @returns {Object} Mutation result
+ */
 export const useSendMessage = () => {
     const queryClient = mockUseQueryClient();
 
     return mockUseMutation({
-        mutationFn: async ({ roomId, content }: { roomId: string; content: string }) => {
+        mutationFn: async ({ roomId, content }) => {
             // Mock implementation
-            const newMessage: MockChatMessage = {
+            const newMessage = {
                 id: `msg-${Date.now()}`,
                 content,
                 senderId: 'current-user',
@@ -101,20 +113,24 @@ export const useSendMessage = () => {
 
             return newMessage;
         },
-        onSuccess: (data: any, variables: any) => {
+        onSuccess: (data, variables) => {
             // Invalidate and refetch
             queryClient.invalidateQueries({ queryKey: ['chatMessages', variables.roomId] });
         }
     });
 };
 
+/**
+ * Hook for creating chat rooms
+ * @returns {Object} Mutation result
+ */
 export const useCreateChatRoom = () => {
     const queryClient = mockUseQueryClient();
 
     return mockUseMutation({
-        mutationFn: async ({ name, participants }: { name: string; participants: string[] }) => {
+        mutationFn: async ({ name, participants }) => {
             // Mock implementation
-            const newRoom: MockChatRoom = {
+            const newRoom = {
                 id: `room-${Date.now()}`,
                 name,
                 participants

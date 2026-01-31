@@ -6,7 +6,7 @@
  */
 
 // Public interfaces - Clean API for consumers
-export type {
+export {
     IApiClient,
     IApiClientConfig,
     ApiResponse,
@@ -25,7 +25,7 @@ export type {
     HttpMethod,
     ContentType,
     ResponseType
-} from './interfaces';
+} from './interfaces.js';
 
 // Factory functions - Clean API for service creation
 export {
@@ -34,7 +34,7 @@ export {
     createRestClient,
     createAuthenticatedApiClient,
     createMockApiClient
-} from './factory';
+} from './factory.js';
 
 // Authenticated factory functions - Pre-configured with authentication
 export {
@@ -43,7 +43,7 @@ export {
     createTokenProvider,
     createAutoAuthApiClient,
     SimpleTokenProvider
-} from './authenticatedFactory';
+} from './authenticatedFactory.js';
 
 // DI-based factory functions
 export {
@@ -51,15 +51,15 @@ export {
     createAutoAuthApiClient as createDIAutoAuthApiClient,
     createTokenProvider as createDITokenProvider,
     createApiClientFactory
-} from './factory/diApiClientFactory';
+} from './factory/diApiClientFactory.js';
 
 // Token provider interface
-export type { ITokenProvider } from './authenticatedFactory';
+export { ITokenProvider } from './authenticatedFactory.js';
 
 // Authenticated services - DI-based singleton services
 export {
     AuthenticatedApiService
-} from './services/AuthenticatedApiService';
+} from './services/AuthenticatedApiService.js';
 
 // DI Container utilities
 export {
@@ -67,7 +67,7 @@ export {
     registerNetworkServices,
     getAuthenticatedApiService,
     getApiClient
-} from './di/NetworkDIContainer';
+} from './di/NetworkDIContainer.js';
 
 // Constants and utilities - Public API
 export {
@@ -85,7 +85,7 @@ export {
     DEFAULT_API_CONFIG,
     DEFAULT_REQUEST_HEADERS,
     DEFAULT_RESPONSE_HEADERS
-} from './constants';
+} from './constants.js';
 
 // Utility functions - Public API
 export {
@@ -114,7 +114,7 @@ export {
     parseJsonResponse,
     createSuccessResponse,
     createErrorResponse
-} from './utils';
+} from './utils.js';
 
 // Type guards and enums - Public API
 export {
@@ -126,15 +126,15 @@ export {
     LogLevel,
     RequestPriority,
     STATUS_CATEGORIES
-} from './types';
+} from './types.js';
 
 // Default client instance for convenience
-export { defaultApiClient } from './factory';
+export { defaultApiClient } from './factory.js';
 
 // Legacy exports for backward compatibility (deprecated)
 // These will be removed in a future major version
-export { ApiClient as _ApiClient } from './api/ApiClient';
-export { RestClient as _RestClient } from './rest/RestClient';
+export { ApiClient as _ApiClient } from './api/ApiClient.js';
+export { RestClient as _RestClient } from './rest/RestClient.js';
 
 /**
  * Network Module Version

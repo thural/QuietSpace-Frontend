@@ -5,7 +5,16 @@
  * instead of direct store access, following Black Box pattern.
  */
 
-import type { ITokenProvider } from '../interfaces';
+/**
+ * Token provider interface
+ * @typedef {Object} ITokenProvider
+ * @property {() => string|null} getToken - Get current token
+ * @property {(token: string) => void} setToken - Set token
+ * @property {() => void} clearToken - Clear token
+ * @property {() => boolean} hasToken - Check if token exists
+ * @property {(callback: Function) => Function} subscribe - Subscribe to token changes
+ * @property {() => Promise<string|null>} refreshToken - Refresh token
+ */
 
 /**
  * DI-based Token Provider Implementation
@@ -13,11 +22,8 @@ import type { ITokenProvider } from '../interfaces';
  * This provider gets tokens from the DI container instead of
  * directly accessing the auth store, maintaining proper separation.
  */
-export class TokenProvider implements ITokenProvider {
-  private authService: any;
-  private container: any;
-
-  constructor(container: any) {
+export class TokenProvider {
+  constructor(container) {
     this.container = container;
     // Try to get auth service from DI container
     try {
@@ -29,9 +35,9 @@ export class TokenProvider implements ITokenProvider {
 
   /**
    * Get current authentication token
-   * @returns Current token or null if not authenticated
+   * @returns {string|null} Current token or null if not authenticated
    */
-  getToken(): string | null {
+  getToken() {
     try {
       // Try to get token from auth service first
       if (this.authService) {
@@ -51,9 +57,9 @@ export class TokenProvider implements ITokenProvider {
 
   /**
    * Set authentication token
-   * @param token - New authentication token
+   * @param {string} token - New authentication token
    */
-  setToken(token: string): void {
+  setToken(token) {
     try {
       // Try to set token through auth service
       if (this.authService) {
@@ -72,7 +78,7 @@ export class TokenProvider implements ITokenProvider {
   /**
    * Clear authentication token
    */
-  clearToken(): void {
+  clearToken() {
     try {
       // Try to clear token through auth service
       if (this.authService) {
@@ -90,9 +96,9 @@ export class TokenProvider implements ITokenProvider {
 
   /**
    * Check if user is authenticated
-   * @returns True if token exists and is valid
+   * @returns {boolean} True if token exists and is valid
    */
-  isAuthenticated(): boolean {
+  isAuthenticated() {
     const token = this.getToken();
     if (!token) return false;
 
@@ -110,9 +116,9 @@ export class TokenProvider implements ITokenProvider {
 
   /**
    * Refresh authentication token
-   * @returns New token or null if refresh failed
+   * @returns {Promise<string|null>} New token or null if refresh failed
    */
-  async refreshToken(): Promise<string | null> {
+  async refreshToken() {
     try {
       // Try to refresh through auth service
       if (this.authService?.refreshToken) {
@@ -124,11 +130,11 @@ export class TokenProvider implements ITokenProvider {
       if (!token) return null;
 
       // Make refresh request using current API client
-      const { createApiClient } = await import('../factory');
+      const { createApiClient } = await import('../factory.js');
       const client = createApiClient();
 
       const response = await client.post('/auth/refresh-token');
-      const newToken = (response.data as any)?.accessToken;
+      const newToken = response.data?.accessToken;
 
       if (newToken) {
         this.setToken(newToken);
@@ -140,5 +146,26 @@ export class TokenProvider implements ITokenProvider {
       console.error('Error refreshing authentication token:', error);
       return null;
     }
+  }
+
+  /**
+   * Check if token exists
+   * 
+   * @returns {boolean} Whether token exists
+   */
+  hasToken() {
+    return !!this.getToken();
+  }
+
+  /**
+   * Subscribe to token changes
+   * 
+   * @param {(token: string|null) => void} callback - Callback function
+   * @returns {Function} Unsubscribe function
+   */
+  subscribe(callback) {
+    // This would typically integrate with the auth service or store
+    // For now, return a no-op function
+    return () => { };
   }
 }

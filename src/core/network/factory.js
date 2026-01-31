@@ -5,25 +5,57 @@
  * Internal implementation classes are completely hidden from consumers.
  */
 
-import type { IApiClient, IApiClientConfig } from './interfaces';
-import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
-import { createApiError, ERROR_CODES } from './utils';
+import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants.js';
+import { createApiError, ERROR_CODES } from './utils.js';
 
 // Import implementations (internal)
-import { ApiClient } from './api/ApiClient';
-import { RestClient } from './rest/RestClient';
-import { Container } from '../di/container/Container';
-import { TYPES } from '../di/types';
+import { ApiClient } from './api/ApiClient.js';
+import { RestClient } from './rest/RestClient.js';
+import { Container } from '../di/container/Container.js';
+import { TYPES } from '../di/types.js';
+
+/**
+ * API client interface
+ * @typedef {Object} IApiClient
+ * @property {(url: string, config?: Object) => Promise<Object>} get - GET request
+ * @property {(url: string, data?: any, config?: Object) => Promise<Object>} post - POST request
+ * @property {(url: string, data?: any, config?: Object) => Promise<Object>} put - PUT request
+ * @property {(url: string, config?: Object) => Promise<Object>} patch - PATCH request
+ * @property {(url: string, config?: Object) => Promise<Object>} delete - DELETE request
+ * @property {(token: string) => void} setAuth - Set authentication token
+ * @property {() => void} clearAuth - Clear authentication
+ * @property {() => string|null} getAuth - Get authentication token
+ * @property {(config: Object) => void} updateConfig - Update configuration
+ * @property {() => Object} getConfig - Get configuration
+ * @property {() => Object} getHealth - Get health status
+ * @property {() => Object} getMetrics - Get metrics
+ */
+
+/**
+ * API client configuration interface
+ * @typedef {Object} IApiClientConfig
+ * @property {string} [baseURL] - Base URL
+ * @property {number} [timeout] - Request timeout
+ * @property {Object} [headers] - Default headers
+ * @property {Object} [auth] - Authentication configuration
+ * @property {Object} [retryConfig] - Retry configuration
+ * @property {Object} [cacheConfig] - Cache configuration
+ * @property {boolean} [enableMetrics] - Enable metrics
+ * @property {boolean} [enableLogging] - Enable logging
+ * @property {Function} [transformRequest] - Request transformer
+ * @property {Function} [transformResponse] - Response transformer
+ * @property {Function} [validateStatus] - Status validator
+ */
 
 /**
  * Creates an API client with the specified configuration.
  * 
- * @param config - Optional configuration for the API client
- * @returns Configured API client instance
+ * @param {Partial<IApiClientConfig>} [config] - Optional configuration for the API client
+ * @returns {IApiClient} Configured API client instance
  */
-export function createApiClient(config?: Partial<IApiClientConfig>): IApiClient {
+export function createApiClient(config) {
     // Merge with default configuration
-    const finalConfig: IApiClientConfig = {
+    const finalConfig = {
         ...DEFAULT_API_CONFIG,
         ...config,
         headers: {
@@ -55,17 +87,17 @@ export function createApiClient(config?: Partial<IApiClientConfig>): IApiClient 
 /**
  * Creates an API client using dependency injection container.
  * 
- * @param container - DI container instance
- * @param config - Optional configuration for the API client
- * @returns API client from DI container or fallback
+ * @param {Container} container - DI container instance
+ * @param {Partial<IApiClientConfig>} [config] - Optional configuration for the API client
+ * @returns {IApiClient} API client from DI container or fallback
  */
 export function createApiClientFromDI(
-    container: Container,
-    config?: Partial<IApiClientConfig>
-): IApiClient {
+    container,
+    config
+) {
     try {
         // Try to get from DI container first
-        return container.getByToken<IApiClient>(TYPES.API_CLIENT);
+        return container.getByToken(TYPES.API_CLIENT);
     } catch (error) {
         // Fallback to direct creation
         console.warn('API client not found in DI container, using fallback creation');
@@ -76,12 +108,12 @@ export function createApiClientFromDI(
 /**
  * Creates a REST client with the specified configuration.
  * 
- * @param config - Optional configuration for the REST client
- * @returns Configured REST client instance
+ * @param {Partial<IApiClientConfig>} [config] - Optional configuration for the REST client
+ * @returns {IApiClient} Configured REST client instance
  */
-export function createRestClient(config?: Partial<IApiClientConfig>): IApiClient {
+export function createRestClient(config) {
     // Merge with default configuration
-    const finalConfig: IApiClientConfig = {
+    const finalConfig = {
         ...DEFAULT_API_CONFIG,
         ...config,
         headers: {
@@ -105,17 +137,17 @@ export function createRestClient(config?: Partial<IApiClientConfig>): IApiClient
 /**
  * Creates a REST client using dependency injection container.
  * 
- * @param container - DI container instance
- * @param config - Optional configuration for the REST client
- * @returns REST client from DI container or fallback
+ * @param {Container} container - DI container instance
+ * @param {Partial<IApiClientConfig>} [config] - Optional configuration for the REST client
+ * @returns {IApiClient} REST client from DI container or fallback
  */
 export function createRestClientFromDI(
-    container: Container,
-    config?: Partial<IApiClientConfig>
-): IApiClient {
+    container,
+    config
+) {
     try {
         // Try to get from DI container first
-        return container.getByToken<IApiClient>(TYPES.REST_CLIENT);
+        return container.getByToken(TYPES.REST_CLIENT);
     } catch (error) {
         // Fallback to direct creation
         console.warn('REST client not found in DI container, using fallback creation');
@@ -126,14 +158,14 @@ export function createRestClientFromDI(
 /**
  * Creates an API client for a specific environment.
  * 
- * @param environment - Target environment (development, staging, production)
- * @param config - Optional additional configuration
- * @returns Environment-specific API client
+ * @param {string} environment - Target environment (development, staging, production)
+ * @param {Partial<IApiClientConfig>} [config] - Optional additional configuration
+ * @returns {IApiClient} Environment-specific API client
  */
 export function createApiClientForEnvironment(
-    environment: keyof typeof ENVIRONMENT_CONFIG,
-    config?: Partial<IApiClientConfig>
-): IApiClient {
+    environment,
+    config
+) {
     const envConfig = ENVIRONMENT_CONFIG[environment];
 
     if (!envConfig) {
@@ -145,7 +177,7 @@ export function createApiClientForEnvironment(
     }
 
     // Merge environment config with provided config
-    const finalConfig: IApiClientConfig = {
+    const finalConfig = {
         ...envConfig,
         ...config,
         headers: {
@@ -164,18 +196,18 @@ export function createApiClientForEnvironment(
 /**
  * Creates an authenticated API client.
  * 
- * @param token - Authentication token
- * @param config - Optional additional configuration
- * @returns Authenticated API client
+ * @param {string} token - Authentication token
+ * @param {Partial<IApiClientConfig>} [config] - Optional additional configuration
+ * @returns {IApiClient} Authenticated API client
  */
 export function createAuthenticatedApiClient(
-    token: string,
-    config?: Partial<IApiClientConfig>
-): IApiClient {
+    token,
+    config
+) {
     const authConfig = {
         ...config,
         auth: {
-            type: 'bearer' as const,
+            type: 'bearer',
             token
         }
     };
@@ -186,20 +218,20 @@ export function createAuthenticatedApiClient(
 /**
  * Creates an authenticated API client using dependency injection.
  * 
- * @param container - DI container instance
- * @param token - Authentication token
- * @param config - Optional additional configuration
- * @returns Authenticated API client from DI container or fallback
+ * @param {Container} container - DI container instance
+ * @param {string} token - Authentication token
+ * @param {Partial<IApiClientConfig>} [config] - Optional additional configuration
+ * @returns {IApiClient} Authenticated API client from DI container or fallback
  */
 export function createAuthenticatedApiClientFromDI(
-    container: Container,
-    token: string,
-    config?: Partial<IApiClientConfig>
-): IApiClient {
+    container,
+    token,
+    config
+) {
     const authConfig = {
         ...config,
         auth: {
-            type: 'bearer' as const,
+            type: 'bearer',
             token
         }
     };
@@ -210,13 +242,13 @@ export function createAuthenticatedApiClientFromDI(
 /**
  * Creates a mock API client for testing.
  * 
- * @param config - Optional configuration for the mock client
- * @returns Mock API client instance
+ * @param {Partial<IApiClientConfig>} [config] - Optional configuration for the mock client
+ * @returns {IApiClient} Mock API client instance
  */
-export function createMockApiClient(config?: Partial<IApiClientConfig>): IApiClient {
+export function createMockApiClient(config) {
     // This would typically use a mock implementation
     // For now, we'll create a real client with test configuration
-    const mockConfig: IApiClientConfig = {
+    const mockConfig = {
         ...DEFAULT_API_CONFIG,
         baseURL: 'http://localhost:3001/mock-api',
         timeout: 1000,
@@ -237,19 +269,28 @@ export const defaultApiClient = createApiClient();
  * Allows registration of custom factory functions.
  */
 class ApiClientFactoryRegistry {
-    private factories = new Map<string, (config?: Partial<IApiClientConfig>) => IApiClient>();
+    constructor() {
+        this.factories = new Map();
+    }
 
     /**
      * Registers a custom factory function.
+     * 
+     * @param {string} name - Factory name
+     * @param {Function} factory - Factory function
      */
-    register(name: string, factory: (config?: Partial<IApiClientConfig>) => IApiClient): void {
+    register(name, factory) {
         this.factories.set(name, factory);
     }
 
     /**
      * Creates a client using a registered factory.
+     * 
+     * @param {string} name - Factory name
+     * @param {Partial<IApiClientConfig>} [config] - Optional configuration
+     * @returns {IApiClient} API client from factory
      */
-    create(name: string, config?: Partial<IApiClientConfig>): IApiClient {
+    create(name, config) {
         const factory = this.factories.get(name);
         if (!factory) {
             throw createApiError(
@@ -263,8 +304,10 @@ class ApiClientFactoryRegistry {
 
     /**
      * Lists all registered factories.
+     * 
+     * @returns {Array<string>} List of factory names
      */
-    list(): string[] {
+    list() {
         return Array.from(this.factories.keys());
     }
 }
@@ -280,13 +323,13 @@ apiClientFactoryRegistry.register('mock', createMockApiClient);
 /**
  * Creates an API client using a registered factory.
  * 
- * @param factoryName - Name of the registered factory
- * @param config - Optional configuration
- * @returns API client from the specified factory
+ * @param {string} factoryName - Name of the registered factory
+ * @param {Partial<IApiClientConfig>} [config] - Optional configuration
+ * @returns {IApiClient} API client from the specified factory
  */
 export function createApiClientWithFactory(
-    factoryName: string,
-    config?: Partial<IApiClientConfig>
-): IApiClient {
+    factoryName,
+    config
+) {
     return apiClientFactoryRegistry.create(factoryName, config);
 }

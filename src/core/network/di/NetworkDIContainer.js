@@ -5,16 +5,16 @@
  * Follows enterprise patterns for service registration and resolution.
  */
 
-import { Container } from '../../di/container/Container';
-import { AuthenticatedApiService } from '../services/AuthenticatedApiService';
-import { TYPES } from '../../di/types';
+import { Container } from '../../di/container/Container.js';
+import { AuthenticatedApiService } from '../services/AuthenticatedApiService.js';
+import { TYPES } from '../../di/types.js';
 
 /**
  * Creates and configures the network DI container
  * 
- * @returns Configured DI container with network services
+ * @returns {Container} Configured DI container with network services
  */
-export function createNetworkContainer(): Container {
+export function createNetworkContainer() {
     const container = new Container();
 
     // Create and register authenticated API service instance
@@ -31,9 +31,9 @@ export function createNetworkContainer(): Container {
 /**
  * Registers network services in an existing container
  * 
- * @param container - Existing DI container to register services in
+ * @param {Container} container - Existing DI container to register services in
  */
-export function registerNetworkServices(container: Container): void {
+export function registerNetworkServices(container) {
     // Create and register authenticated API service instance
     const authService = new AuthenticatedApiService();
     container.registerInstanceByToken(TYPES.AUTHENTICATED_API_SERVICE, authService);
@@ -46,20 +46,20 @@ export function registerNetworkServices(container: Container): void {
 /**
  * Gets the authenticated API service from container
  * 
- * @param container - DI container instance
- * @returns Authenticated API service instance
+ * @param {Container} container - DI container instance
+ * @returns {AuthenticatedApiService} Authenticated API service instance
  */
-export function getAuthenticatedApiService(container: Container): AuthenticatedApiService {
-    return container.getByToken<AuthenticatedApiService>(TYPES.AUTHENTICATED_API_SERVICE);
+export function getAuthenticatedApiService(container) {
+    return container.getByToken(TYPES.AUTHENTICATED_API_SERVICE);
 }
 
 /**
  * Gets the API client from container
  * 
- * @param container - DI container instance
- * @returns Authenticated API client instance
+ * @param {Container} container - DI container instance
+ * @returns {Object} Authenticated API client instance
  */
-export function getApiClient(container: Container) {
-    const service = container.getByToken<AuthenticatedApiService>(TYPES.AUTHENTICATED_API_SERVICE);
+export function getApiClient(container) {
+    const service = container.getByToken(TYPES.AUTHENTICATED_API_SERVICE);
     return service.getApiClient();
 }

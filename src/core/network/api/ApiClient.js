@@ -1,25 +1,16 @@
 /**
- * REST Client Implementation
+ * API Client Implementation
  * 
- * Internal implementation of the IApiClient interface specialized for REST APIs.
+ * Internal implementation of the IApiClient interface.
  * This file is part of the internal implementation and should not be exported.
  */
 
-import type {
-    IApiClient,
-    IApiClientConfig,
-    ApiResponse,
-    ApiConfig,
-    ApiError,
-    ApiHealthStatus,
-    ApiMetrics
-} from '../interfaces';
 import {
     HTTP_STATUS,
     ERROR_CODES,
     CONTENT_TYPES,
     DEFAULT_REQUEST_HEADERS
-} from '../constants';
+} from '../constants.js';
 import {
     createApiError,
     createSuccessResponse,
@@ -28,20 +19,97 @@ import {
     mergeHeaders,
     isJsonContent,
     parseJsonResponse
-} from '../utils';
+} from '../utils.js';
 
 /**
- * Internal REST Client implementation
+ * API client interface
+ * @typedef {Object} IApiClient
+ * @property {(url: string, config?: Object) => Promise<Object>} get - GET request
+ * @property {(url: string, data?: any, config?: Object) => Promise<Object>} post - POST request
+ * @property {(url: string, data?: any, config?: Object) => Promise<Object>} put - PUT request
+ * @property {(url: string, data?: any, config?: Object) => Promise<Object>} patch - PATCH request
+ * @property {(url: string, config?: Object) => Promise<Object>} delete - DELETE request
+ * @property {(token: string) => void} setAuth - Set authentication token
+ * @property {() => void} clearAuth - Clear authentication
+ * @property {() => string|null} getAuth - Get authentication token
+ * @property {(config: Object) => void} updateConfig - Update configuration
+ * @property {() => Object} getConfig - Get configuration
+ * @property {() => Object} getHealth - Get health status
+ * @property {() => Object} getMetrics - Get metrics
  */
-export class RestClient implements IApiClient {
-    private config: IApiClientConfig;
-    private interceptors: {
-        request: Array<(config: ApiConfig) => ApiConfig>;
-        response: Array<(response: ApiResponse<any>) => ApiResponse<any>>;
-        error: Array<(error: ApiError) => ApiError | Promise<ApiError>>;
-    };
 
-    constructor(config: IApiClientConfig) {
+/**
+ * API client configuration interface
+ * @typedef {Object} IApiClientConfig
+ * @property {string} [baseURL] - Base URL
+ * @property {number} [timeout] - Request timeout
+ * @property {Object} [headers] - Default headers
+ * @property {Object} [auth] - Authentication configuration
+ * @property {Object} [retryConfig] - Retry configuration
+ * @property {Object} [cacheConfig] - Cache configuration
+ * @property {boolean} [enableMetrics] - Enable metrics
+ * @property {boolean} [enableLogging] - Enable logging
+ * @property {Function} [transformRequest] - Request transformer
+ * @property {Function} [transformResponse] - Response transformer
+ * @property {Function} [validateStatus] - Status validator
+ */
+
+/**
+ * API response interface
+ * @typedef {Object} ApiResponse
+ * @property {*} data - Response data
+ * @property {number} status - HTTP status code
+ * @property {Object} headers - Response headers
+ * @property {Object} metadata - Response metadata
+ */
+
+/**
+ * API config interface
+ * @typedef {Object} ApiConfig
+ * @property {string} [method] - HTTP method
+ * @property {string} [url] - Request URL
+ * @property {*} [data] - Request data
+ * @property {Object} [headers] - Request headers
+ * @property {AbortSignal} [signal] - Abort signal
+ */
+
+/**
+ * API error interface
+ * @typedef {Object} ApiError
+ * @property {string} code - Error code
+ * @property {string} message - Error message
+ * @property {Object} [details] - Error details
+ * @property {number} [status] - HTTP status code
+ */
+
+/**
+ * API health status interface
+ * @typedef {Object} ApiHealthStatus
+ * @property {string} status - Health status
+ * @property {number} lastCheck - Last check timestamp
+ * @property {number} responseTime - Response time
+ * @property {number} errorRate - Error rate
+ * @property {number} uptime - Uptime
+ */
+
+/**
+ * API metrics interface
+ * @typedef {Object} ApiMetrics
+ * @property {number} totalRequests - Total requests
+ * @property {number} successfulRequests - Successful requests
+ * @property {number} failedRequests - Failed requests
+ * @property {number} averageResponseTime - Average response time
+ * @property {number} cacheHitRate - Cache hit rate
+ * @property {number} retryRate - Retry rate
+ * @property {number} errorRate - Error rate
+ * @property {Object} requestsByStatus - Requests by status
+ */
+
+/**
+ * Internal API Client implementation
+ */
+export class ApiClient {
+    constructor(config) {
         this.config = {
             baseURL: '',
             timeout: 10000,
@@ -65,50 +133,50 @@ export class RestClient implements IApiClient {
         };
     }
 
-    async get<T>(url: string, config?: ApiConfig): Promise<ApiResponse<T>> {
-        return this.request<T>({ ...config, method: 'GET', url });
+    async get(url, config) {
+        return this.request({ ...config, method: 'GET', url });
     }
 
-    async post<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>> {
-        return this.request<T>({ ...config, method: 'POST', url, data });
+    async post(url, data, config) {
+        return this.request({ ...config, method: 'POST', url, data });
     }
 
-    async put<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>> {
-        return this.request<T>({ ...config, method: 'PUT', url, data });
+    async put(url, data, config) {
+        return this.request({ ...config, method: 'PUT', url, data });
     }
 
-    async patch<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>> {
-        return this.request<T>({ ...config, method: 'PATCH', url, data });
+    async patch(url, data, config) {
+        return this.request({ ...config, method: 'PATCH', url, data });
     }
 
-    async delete<T>(url: string, config?: ApiConfig): Promise<ApiResponse<T>> {
-        return this.request<T>({ ...config, method: 'DELETE', url });
+    async delete(url, config) {
+        return this.request({ ...config, method: 'DELETE', url });
     }
 
-    setAuth(token: string): void {
+    setAuth(token) {
         this.config.auth = {
             type: 'bearer',
             token
         };
     }
 
-    clearAuth(): void {
+    clearAuth() {
         this.config.auth = undefined;
     }
 
-    getAuth(): string | null {
+    getAuth() {
         return this.config.auth?.token || null;
     }
 
-    updateConfig(config: Partial<IApiClientConfig>): void {
+    updateConfig(config) {
         this.config = { ...this.config, ...config };
     }
 
-    getConfig(): IApiClientConfig {
+    getConfig() {
         return { ...this.config };
     }
 
-    getHealth(): ApiHealthStatus {
+    getHealth() {
         return {
             status: 'healthy',
             lastCheck: Date.now(),
@@ -118,7 +186,7 @@ export class RestClient implements IApiClient {
         };
     }
 
-    getMetrics(): ApiMetrics {
+    getMetrics() {
         return {
             totalRequests: 0,
             successfulRequests: 0,
@@ -131,7 +199,7 @@ export class RestClient implements IApiClient {
         };
     }
 
-    private async request<T>(config: ApiConfig): Promise<ApiResponse<T>> {
+    async request(config) {
         const requestId = generateRequestId();
         const startTime = Date.now();
 
@@ -165,11 +233,11 @@ export class RestClient implements IApiClient {
             // Apply error interceptors
             const apiError = await this.applyErrorInterceptors(error, requestId);
 
-            return createErrorResponse<T>(apiError);
+            return createErrorResponse(apiError);
         }
     }
 
-    private async applyRequestInterceptors(config: ApiConfig): Promise<ApiConfig> {
+    async applyRequestInterceptors(config) {
         let finalConfig = { ...config };
 
         for (const interceptor of this.interceptors.request) {
@@ -179,7 +247,7 @@ export class RestClient implements IApiClient {
         return finalConfig;
     }
 
-    private async applyResponseInterceptors<T>(response: ApiResponse<T>): Promise<ApiResponse<T>> {
+    async applyResponseInterceptors(response) {
         let finalResponse = { ...response };
 
         for (const interceptor of this.interceptors.response) {
@@ -189,7 +257,7 @@ export class RestClient implements IApiClient {
         return finalResponse;
     }
 
-    private async applyErrorInterceptors(error: any, requestId: string): Promise<ApiError> {
+    async applyErrorInterceptors(error, requestId) {
         let apiError = this.normalizeError(error);
 
         for (const interceptor of this.interceptors.error) {
@@ -199,8 +267,8 @@ export class RestClient implements IApiClient {
         return apiError;
     }
 
-    private buildRequest(config: ApiConfig): RequestInit {
-        const url = this.buildUrl(config.url!);
+    buildRequest(config) {
+        const url = this.buildUrl(config.url);
         const headers = this.buildHeaders(config);
         const body = this.buildBody(config.data, headers);
 
@@ -212,13 +280,13 @@ export class RestClient implements IApiClient {
         };
     }
 
-    private buildUrl(path: string): string {
+    buildUrl(path) {
         const baseURL = this.config.baseURL || '';
         const url = path.startsWith('http') ? path : `${baseURL}${path}`;
         return url;
     }
 
-    private buildHeaders(config: ApiConfig): Record<string, string> {
+    buildHeaders(config) {
         let headers = mergeHeaders(
             this.config.headers || {},
             config.headers || {}
@@ -234,7 +302,7 @@ export class RestClient implements IApiClient {
         return headers;
     }
 
-    private buildBody(data: any, headers: Record<string, string>): string | undefined {
+    buildBody(data, headers) {
         if (!data) return undefined;
 
         const contentType = headers['Content-Type'] || headers['content-type'];
@@ -244,15 +312,15 @@ export class RestClient implements IApiClient {
         }
 
         if (data instanceof FormData) {
-            return data as any;
+            return data;
         }
 
         return String(data);
     }
 
-    private async executeRequest(request: RequestInit): Promise<ApiResponse<any>> {
+    async executeRequest(request) {
         const { method, headers, body, signal } = request;
-        const url = (request as any).url || '';
+        const url = request.url || '';
 
         try {
             // Create AbortController for timeout
@@ -278,7 +346,7 @@ export class RestClient implements IApiClient {
             clearTimeout(timeoutId);
 
             // Parse response
-            let data: any = null;
+            let data = null;
             const contentType = response.headers.get('content-type') || '';
 
             if (contentType.includes('application/json')) {
@@ -291,7 +359,7 @@ export class RestClient implements IApiClient {
             }
 
             // Convert headers to object
-            const headersObj: Record<string, string> = {};
+            const headersObj = {};
             response.headers.forEach((value, key) => {
                 headersObj[key] = value;
             });
@@ -299,7 +367,7 @@ export class RestClient implements IApiClient {
             // Create success response
             return createSuccessResponse(data, response.status);
 
-        } catch (error: any) {
+        } catch (error) {
             // Handle different error types
             if (error.name === 'AbortError') {
                 throw createApiError(
@@ -325,9 +393,9 @@ export class RestClient implements IApiClient {
         }
     }
 
-    private normalizeError(error: any): ApiError {
+    normalizeError(error) {
         if (error && typeof error === 'object' && 'code' in error) {
-            return error as ApiError;
+            return error;
         }
 
         if (error instanceof Error) {
