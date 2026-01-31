@@ -9,72 +9,376 @@ import { TYPES } from '../../di/types';
 import { ICacheServiceManager, type FeatureCacheService } from '../../cache';
 import { LoggerService } from '../../services/LoggerService';
 
-// WebSocket Message Types
+/**
+ * WebSocket message interface for enterprise communication
+ * 
+ * @interface WebSocketMessage
+ * @description Standardized message format for WebSocket communications
+ */
 export interface WebSocketMessage {
+  /**
+   * Unique message identifier
+   * 
+   * @type {string}
+   */
   id: string;
+
+  /**
+   * Message type for routing and handling
+   * 
+   * @type {string}
+   */
   type: string;
+
+  /**
+   * Feature identifier for message categorization
+   * 
+   * @type {string}
+   */
   feature: string;
+
+  /**
+   * Message payload data
+   * 
+   * @type {any}
+   */
   payload: any;
+
+  /**
+   * Message creation timestamp
+   * 
+   * @type {Date}
+   */
   timestamp: Date;
+
+  /**
+   * Additional metadata for message processing
+   * 
+   * @type {Record<string, any>}
+   */
   metadata?: Record<string, any>;
 }
 
+/**
+ * WebSocket configuration interface
+ * 
+ * @interface WebSocketConfig
+ * @description Configuration options for WebSocket connections
+ */
 export interface WebSocketConfig {
+  /**
+   * WebSocket server URL
+   * 
+   * @type {string}
+   */
   url: string;
+
+  /**
+   * Number of reconnection attempts
+   * 
+   * @type {number}
+   */
   reconnectAttempts: number;
+
+  /**
+   * Delay between reconnection attempts in milliseconds
+   * 
+   * @type {number}
+   */
   reconnectDelay: number;
+
+  /**
+   * Heartbeat interval in milliseconds
+   * 
+   * @type {number}
+   */
   heartbeatInterval: number;
+
+  /**
+   * Whether to enable metrics collection
+   * 
+   * @type {boolean}
+   */
   enableMetrics: boolean;
+
+  /**
+   * Connection timeout in milliseconds
+   * 
+   * @type {number}
+   */
   connectionTimeout: number;
 }
 
+/**
+ * Connection metrics interface for WebSocket performance monitoring
+ * 
+ * @interface ConnectionMetrics
+ * @description Performance and usage statistics for WebSocket connections
+ */
 export interface ConnectionMetrics {
+  /**
+   * Timestamp when connection was established
+   * 
+   * @type {Date | null}
+   */
   connectedAt: Date | null;
+
+  /**
+   * Timestamp of last received message
+   * 
+   * @type {Date | null}
+   */
   lastMessageAt: Date | null;
+
+  /**
+   * Total number of messages received
+   * 
+   * @type {number}
+   */
   messagesReceived: number;
+
+  /**
+   * Total number of messages sent
+   * 
+   * @type {number}
+   */
   messagesSent: number;
+
+  /**
+   * Number of reconnection attempts made
+   * 
+   * @type {number}
+   */
   reconnectAttempts: number;
+
+  /**
+   * Average message latency in milliseconds
+   * 
+   * @type {number}
+   */
   averageLatency: number;
+
+  /**
+   * Connection uptime in milliseconds
+   * 
+   * @type {number}
+   */
   connectionUptime: number;
 }
 
+/**
+ * WebSocket event listener interface
+ * 
+ * @interface WebSocketEventListener
+ * @description Event handlers for WebSocket connection lifecycle events
+ */
 export interface WebSocketEventListener {
+  /**
+   * Called when WebSocket connection is established
+   * 
+   * @returns {void}
+   */
   onConnect?: () => void;
+
+  /**
+   * Called when WebSocket connection is closed
+   * 
+   * @param {CloseEvent} event - The close event details
+   * @returns {void}
+   */
   onDisconnect?: (event: CloseEvent) => void;
+
+  /**
+   * Called when a message is received
+   * 
+   * @param {WebSocketMessage} message - The received message
+   * @returns {void}
+   */
   onMessage?: (message: WebSocketMessage) => void;
+
+  /**
+   * Called when an error occurs
+   * 
+   * @param {Event} error - The error event
+   * @returns {void}
+   */
   onError?: (error: Event) => void;
+
+  /**
+   * Called when reconnection attempt is made
+   * 
+   * @param {number} attempt - The current attempt number
+   * @returns {void}
+   */
   onReconnect?: (attempt: number) => void;
 }
 
 /**
  * Enterprise WebSocket Service Interface
+ * 
+ * @interface IEnterpriseWebSocketService
+ * @description Main interface for enterprise WebSocket service operations
  */
 export interface IEnterpriseWebSocketService {
+  /**
+   * Establishes WebSocket connection with authentication
+   * 
+   * @param {string} token - Authentication token
+   * @param {Partial<WebSocketConfig>} [config] - Optional configuration overrides
+   * @returns {Promise<void>} Promise resolving when connection is established
+   */
   connect(token: string, config?: Partial<WebSocketConfig>): Promise<void>;
+
+  /**
+   * Closes WebSocket connection
+   * 
+   * @returns {void}
+   */
   disconnect(): void;
+
+  /**
+   * Sends a message through the WebSocket
+   * 
+   * @param {Omit<WebSocketMessage, 'id' | 'timestamp'>} message - Message to send (without auto-generated fields)
+   * @returns {Promise<void>} Promise resolving when message is sent
+   */
   sendMessage(message: Omit<WebSocketMessage, 'id' | 'timestamp'>): Promise<void>;
+
+  /**
+   * Subscribes to messages for a specific feature
+   * 
+   * @param {string} feature - Feature identifier
+   * @param {WebSocketEventListener} listener - Event listener for the feature
+   * @returns {() => void} Unsubscribe function
+   */
   subscribe(feature: string, listener: WebSocketEventListener): () => void;
+
+  /**
+   * Unsubscribes all listeners for a specific feature
+   * 
+   * @param {string} feature - Feature identifier
+   * @returns {void}
+   */
   unsubscribe(feature: string): void;
+
+  /**
+   * Checks if WebSocket is currently connected
+   * 
+   * @returns {boolean} Connection status
+   */
   isConnected(): boolean;
+  /**
+   * Gets current connection metrics
+   * 
+   * @returns {ConnectionMetrics} Current connection performance metrics
+   */
   getConnectionMetrics(): ConnectionMetrics;
+
+  /**
+   * Gets current connection state
+   * 
+   * @returns {'connecting' | 'connected' | 'disconnected' | 'reconnecting' | 'error'} Current connection state
+   */
   getConnectionState(): 'connecting' | 'connected' | 'disconnected' | 'reconnecting' | 'error';
 }
 
 /**
  * Enterprise WebSocket Service Implementation
+ * 
+ * @class EnterpriseWebSocketService
+ * @implements {IEnterpriseWebSocketService}
+ * @description Enterprise-grade WebSocket service with reconnection, metrics, and event handling
  */
 export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
+  /**
+   * WebSocket instance
+   * 
+   * @private
+   * @type {WebSocket | null}
+   */
   private ws: WebSocket | null = null;
+
+  /**
+   * WebSocket configuration
+   * 
+   * @private
+   * @type {WebSocketConfig}
+   */
   private config: WebSocketConfig;
+
+  /**
+   * Current connection state
+   * 
+   * @private
+   * @type {'connecting' | 'connected' | 'disconnected' | 'reconnecting' | 'error'}
+   */
   private connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting' | 'error' = 'disconnected';
+
+  /**
+   * Connection performance metrics
+   * 
+   * @private
+   * @type {ConnectionMetrics}
+   */
   private metrics: ConnectionMetrics;
+
+  /**
+   * Event listeners by feature
+   * 
+   * @private
+   * @type {Map<string, WebSocketEventListener[]>}
+   */
   private listeners: Map<string, WebSocketEventListener[]> = new Map();
+
+  /**
+   * Reconnection timer
+   * 
+   * @private
+   * @type {NodeJS.Timeout | null}
+   */
   private reconnectTimer: NodeJS.Timeout | null = null;
+
+  /**
+   * Heartbeat timer for connection monitoring
+   * 
+   * @private
+   * @type {NodeJS.Timeout | null}
+   */
   private heartbeatTimer: NodeJS.Timeout | null = null;
+
+  /**
+   * Latency measurement timer
+   * 
+   * @private
+   * @type {NodeJS.Timeout | null}
+   */
   private latencyTimer: NodeJS.Timeout | null = null;
+
+  /**
+   * Connection start timestamp
+   * 
+   * @private
+   * @type {number}
+   */
   private connectionStartTime: number = 0;
+
+  /**
+   * Authentication token
+   * 
+   * @private
+   * @type {string | null}
+   */
   private token: string | null = null;
 
+  /**
+   * Creates a new EnterpriseWebSocketService instance
+   * 
+   * @constructor
+   * @param {FeatureCacheService} cache - Cache service for WebSocket data
+   * @param {any} authService - Authentication service
+   * @param {LoggerService} logger - Logger service for debugging
+   * @description Initializes WebSocket service with default configuration and metrics
+   */
   constructor(
     private cache: FeatureCacheService,
     private authService: any,
@@ -84,6 +388,14 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
     this.metrics = this.getDefaultMetrics();
   }
 
+  /**
+   * Establishes WebSocket connection with authentication
+   * 
+   * @param {string} token - Authentication token
+   * @param {Partial<WebSocketConfig>} [config] - Optional configuration overrides
+   * @returns {Promise<void>} Promise resolving when connection is established
+   * @description Connects to WebSocket server with authentication and optional configuration
+   */
   async connect(token: string, config?: Partial<WebSocketConfig>): Promise<void> {
     if (this.connectionState === 'connected' || this.connectionState === 'connecting') {
       this.logger.warn('[WebSocket] Already connecting or connected');
