@@ -48,6 +48,10 @@ export class LoggerService {
  */
 @Injectable({ lifetime: 'singleton' })
 export class TestService {
+    /**
+     * Create test service
+     * @param {LoggerService} logger - Logger service dependency
+     */
     constructor(logger) {
         super();
         this.logger = logger;

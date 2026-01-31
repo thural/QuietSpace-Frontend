@@ -15,9 +15,20 @@ import { Injectable, Inject, createContainer } from '../index.js';
  * @description Defines contract for logging services
  */
 export class ILogger {
+    /**
+     * Log a message
+     * @param {string} message - Message to log
+     * @returns {void}
+     */
     log(message) {
         throw new Error('Method log() must be implemented');
     }
+    
+    /**
+     * Log an error
+     * @param {string} message - Error message
+     * @returns {void}
+     */
     error(message) {
         throw new Error('Method error() must be implemented');
     }
@@ -30,12 +41,29 @@ export class ILogger {
  * @description Defines contract for cache services
  */
 export class ICacheService {
+    /**
+     * Get value from cache
+     * @param {string} key - Cache key
+     * @returns {*} Cached value or null
+     */
     get(key) {
         throw new Error('Method get() must be implemented');
     }
+    
+    /**
+     * Set value in cache
+     * @param {string} key - Cache key
+     * @param {*} value - Value to cache
+     * @returns {void}
+     */
     set(key, value) {
         throw new Error('Method set() must be implemented');
     }
+    
+    /**
+     * Clear cache
+     * @returns {void}
+     */
     clear() {
         throw new Error('Method clear() must be implemented');
     }
@@ -48,9 +76,21 @@ export class ICacheService {
  * @description Defines contract for configuration services
  */
 export class IConfigService {
+    /**
+     * Get configuration value
+     * @param {string} key - Configuration key
+     * @returns {*} Configuration value
+     */
     get(key) {
         throw new Error('Method get() must be implemented');
     }
+    
+    /**
+     * Set configuration value
+     * @param {string} key - Configuration key
+     * @param {*} value - Configuration value
+     * @returns {void}
+     */
     set(key, value) {
         throw new Error('Method set() must be implemented');
     }
@@ -65,10 +105,20 @@ export class IConfigService {
  */
 @Injectable({ lifetime: 'singleton' })
 export class LoggerService extends ILogger {
+    /**
+     * Log a message
+     * @param {string} message - Message to log
+     * @returns {void}
+     */
     log(message) {
         console.log(`[LOG] ${message}`);
     }
     
+    /**
+     * Log an error
+     * @param {string} message - Error message
+     * @returns {void}
+     */
     error(message) {
         console.error(`[ERROR] ${message}`);
     }
@@ -87,14 +137,29 @@ export class CacheService extends ICacheService {
         this.cache = new Map();
     }
     
+    /**
+     * Get value from cache
+     * @param {string} key - Cache key
+     * @returns {*} Cached value or null
+     */
     get(key) {
         return this.cache.get(key) || null;
     }
     
+    /**
+     * Set value in cache
+     * @param {string} key - Cache key
+     * @param {*} value - Value to cache
+     * @returns {void}
+     */
     set(key, value) {
         this.cache.set(key, value);
     }
     
+    /**
+     * Clear cache
+     * @returns {void}
+     */
     clear() {
         this.cache.clear();
     }
@@ -113,10 +178,21 @@ export class ConfigService extends IConfigService {
         this.config = new Map();
     }
     
+    /**
+     * Get configuration value
+     * @param {string} key - Configuration key
+     * @returns {*} Configuration value
+     */
     get(key) {
         return this.config.get(key);
     }
     
+    /**
+     * Set configuration value
+     * @param {string} key - Configuration key
+     * @param {*} value - Configuration value
+     * @returns {void}
+     */
     set(key, value) {
         this.config.set(key, value);
     }

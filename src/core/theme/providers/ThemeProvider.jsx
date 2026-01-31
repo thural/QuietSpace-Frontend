@@ -11,8 +11,30 @@ import { ThemeContext } from './ThemeContext.js';
 
 // Import types via JSDoc typedefs
 /**
- * @typedef {import('../types/ProviderTypes.js').ThemeProviderProps} ThemeProviderProps
- * @typedef {import('../types/ProviderTypes.js').EnhancedTheme} EnhancedTheme
+ * @typedef {Object} ThemeProviderProps
+ * @property {React.ReactNode} children - Child components
+ * @property {string} [defaultVariant='light'] - Default theme variant
+ * @property {Object} [overrides] - Theme overrides
+ */
+
+/**
+ * @typedef {Object} EnhancedTheme
+ * @property {string} variant - Current theme variant
+ * @property {Object} colors - Theme colors
+ * @property {string} colors.primary - Primary color
+ * @property {string} colors.secondary - Secondary color
+ * @property {string} colors.background - Background color
+ * @property {string} colors.text - Text color
+ * @property {Object} spacing - Theme spacing
+ * @property {string} spacing.xs - Extra small spacing
+ * @property {string} spacing.sm - Small spacing
+ * @property {string} spacing.md - Medium spacing
+ * @property {string} spacing.lg - Large spacing
+ * @property {string} spacing.xl - Extra large spacing
+ * @property {Object} breakpoints - Theme breakpoints
+ * @property {string} breakpoints.mobile - Mobile breakpoint
+ * @property {string} breakpoints.tablet - Tablet breakpoint
+ * @property {string} breakpoints.desktop - Desktop breakpoint
  */
 
 /**

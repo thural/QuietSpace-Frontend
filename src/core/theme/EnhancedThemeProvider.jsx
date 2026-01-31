@@ -11,38 +11,36 @@ import { ThemeTokens } from './tokens';
 import { getTheme, getThemeVariants } from './variants';
 import { enhanceTheme } from './enhancers/themeEnhancers';
 
-export interface EnhancedTheme extends ThemeTokens {
-  // Add any computed theme values here
-  getSpacing: (key: keyof ThemeTokens['spacing']) => string;
-  getColor: (path: string) => string;
-  getTypography: (key: keyof ThemeTokens['typography']) => any;
-  getBreakpoint: (key: keyof ThemeTokens['breakpoints']) => string;
-  // Backward compatibility: flat color structure
-  primary: ThemeTokens['colors']['brand'];
-  secondary: ThemeTokens['colors']['neutral'];
-  success: string;
-  warning: string;
-  error: string;
-  info: string;
-}
+/**
+ * Enhanced theme interface
+ * @typedef {Object} EnhancedTheme
+ * @property {Object} spacing - Theme spacing tokens
+ * @property {Object} colors - Theme color tokens
+ * @property {Object} typography - Theme typography tokens
+ * @property {Object} breakpoints - Theme breakpoint tokens
+ * @property {Function} getSpacing - Get spacing value by key
+ * @property {Function} getColor - Get color value by path
+ * @property {Function} getTypography - Get typography value by key
+ * @property {Function} getBreakpoint - Get breakpoint value by key
+ * @property {Object} primary - Primary color (backward compatibility)
+ * @property {Object} secondary - Secondary color (backward compatibility)
+ * @property {string} success - Success color
+ * @property {string} warning - Warning color
+ * @property {string} error - Error color
+ * @property {string} info - Info color
+ */
 
-export const ThemeContext = createContext<{
-  theme: EnhancedTheme;
-  currentVariant: string;
-  setVariant: (variant: string) => void;
-  availableVariants: string[];
-} | null>(null);
-
-interface EnhancedThemeProviderProps {
-  children: React.ReactNode;
-  defaultVariant?: string;
-  overrides?: Partial<ThemeTokens>;
-}
+export const ThemeContext = createContext(null);
 
 /**
  * Enhanced Theme Provider with composable theme support
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ * @param {string} [props.defaultVariant='light'] - Default theme variant
+ * @param {Partial<ThemeTokens>} [props.overrides] - Theme overrides
+ * @returns {React.ReactElement} Enhanced theme provider component
  */
-export const EnhancedThemeProvider = memo<EnhancedThemeProviderProps>(({
+export const EnhancedThemeProvider = memo(({
   children,
   defaultVariant = 'light',
   overrides

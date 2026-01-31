@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { createContext, useContext, useCallback, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 // Import types using JSDoc for JavaScript compatibility
 /**
@@ -33,7 +33,8 @@ export class ServiceProvider {
    * @returns {any} Service instance
    * @description Retrieves service from container
    */
-  get(identifier) {
+  // eslint-disable-next-line no-unused-vars
+  _get(identifier) {
     throw new Error('Method get() must be implemented');
   }
 
@@ -44,7 +45,8 @@ export class ServiceProvider {
    * @returns {any|null} Service instance or null
    * @description Attempts to retrieve service from container
    */
-  tryGet(identifier) {
+  // eslint-disable-next-line no-unused-vars
+  _tryGet(identifier) {
     throw new Error('Method tryGet() must be implemented');
   }
 
@@ -55,7 +57,8 @@ export class ServiceProvider {
    * @returns {boolean} Whether service is registered
    * @description Checks if service exists in container
    */
-  has(identifier) {
+  // eslint-disable-next-line no-unused-vars
+  _has(identifier) {
     throw new Error('Method has() must be implemented');
   }
 }
@@ -149,11 +152,11 @@ export const DIProvider = ({ container, children }) => {
  */
 export const useDIContainer = () => {
   const context = useContext(ReactDIContext);
-  
+
   if (!context) {
     throw new Error('useDIContainer must be used within a DIProvider');
   }
-  
+
   return context;
 };
 
@@ -206,11 +209,6 @@ export const useDIScope = () => {
 };
 
 export {
-  ReactDIContext,
-  DIProvider,
-  useDIContainer,
-  useService,
-  useTryService,
-  useHasService,
-  useDIScope
+  DIProvider, ReactDIContext, useDIContainer, useDIScope, useHasService, useService,
+  useTryService
 };
