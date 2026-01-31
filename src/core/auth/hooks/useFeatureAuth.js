@@ -6,7 +6,7 @@
  */
 
 import { useCallback } from 'react';
-import { useDIContainer } from '../../di/index.js';
+import { useDIContainer } from '@core/di/index.js';
 import { createFeatureAuthService } from '../factory/featureAuthFactory.js';
 
 /**

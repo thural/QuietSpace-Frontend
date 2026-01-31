@@ -80,29 +80,29 @@ export function createCoreServices(config) {
  */
 export function createServiceContainer(config) {
     const container = new Container();
-    
+
     // Configure container if config provided
     if (config) {
         if (config.enableDI) {
             // Configure dependency injection
             container.enableAutoRegistration = true;
         }
-        
+
         if (config.enableDiscovery) {
             // Configure service discovery
             container.enableServiceDiscovery = true;
         }
-        
+
         if (config.registryUrl) {
             // Configure service registry
             container.setRegistryUrl(config.registryUrl);
         }
-        
+
         if (config.healthCheckInterval) {
             // Configure health checking
             container.setHealthCheckInterval(config.healthCheckInterval);
         }
-        
+
         if (config.enableMetrics) {
             // Enable metrics collection
             container.enableMetrics();
@@ -186,8 +186,8 @@ export function createWebSocketService(config) {
         connect: () => Promise.resolve(),
         disconnect: () => Promise.resolve(),
         send: () => Promise.resolve(),
-        on: () => {},
-        off: () => {},
+        on: () => { },
+        off: () => { },
         isConnected: () => false
     };
 }
@@ -201,7 +201,7 @@ export function createWebSocketService(config) {
  */
 export function createTestCoreServices() {
     const container = createServiceContainer({ enableMetrics: false });
-    
+
     // Create mock services for testing
     const cache = createCacheService({ maxSize: 10, defaultTtl: 60000 });
     const auth = createAuthService({ sessionTimeout: 300000 });
@@ -296,11 +296,11 @@ export function createProductionCoreServices() {
 /**
  * Creates a test core services instance
  * 
- * @function createTestCoreServices
+ * @function createOptimizedTestCoreServices
  * @returns {ICoreServices} Test core services
  * @description Creates a core services instance optimized for testing
  */
-export function createTestCoreServices() {
+export function createOptimizedTestCoreServices() {
     const config = {
         cache: {
             maxSize: 50,
@@ -350,7 +350,7 @@ export function validateCoreServicesConfig(config) {
         if (config.cache.maxSize !== undefined && (typeof config.cache.maxSize !== 'number' || config.cache.maxSize < 1)) {
             errors.push('Cache maxSize must be a positive number');
         }
-        
+
         if (config.cache.defaultTtl !== undefined && (typeof config.cache.defaultTtl !== 'number' || config.cache.defaultTtl < 1000)) {
             errors.push('Cache defaultTtl must be at least 1000ms');
         }
@@ -361,7 +361,7 @@ export function validateCoreServicesConfig(config) {
         if (config.auth.tokenRefreshInterval !== undefined && (typeof config.auth.tokenRefreshInterval !== 'number' || config.auth.tokenRefreshInterval < 60000)) {
             errors.push('Auth tokenRefreshInterval must be at least 60000ms');
         }
-        
+
         if (config.auth.sessionTimeout !== undefined && (typeof config.auth.sessionTimeout !== 'number' || config.auth.sessionTimeout < 300000)) {
             errors.push('Auth sessionTimeout must be at least 300000ms');
         }

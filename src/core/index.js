@@ -44,7 +44,8 @@ import {
     createThemeService,
     createLoggerService,
     createNetworkService,
-    createWebSocketService
+    createWebSocketService,
+    validateCoreServicesConfig
 } from './factory.js';
 
 // Import constants and enums
@@ -125,9 +126,9 @@ export { CoreServicesContext } from './hooks.js';
 // Export utility functions for backward compatibility
 export {
     // Legacy exports with underscore prefix for deprecation
-    _createCoreServices as createCoreServicesLegacy,
-    _createServiceContainer as createServiceContainerLegacy,
-    _validateCoreServicesConfig as validateCoreServicesConfigLegacy
+    createCoreServices as createCoreServicesLegacy,
+    createServiceContainer as createServiceContainerLegacy,
+    validateCoreServicesConfig as validateCoreServicesConfigLegacy
 };
 
 // Default export for convenience

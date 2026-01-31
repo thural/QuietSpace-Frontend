@@ -56,6 +56,5 @@ export {
     createWebSocketMessageBuilder,
     createWebSocketMessageValidator,
     createWebSocketConnectionMonitor,
-    isValidWebSocketUrl,
-    createWebSocketError
+    isValidWebSocketUrl
 } from './WebSocketUtils.js';

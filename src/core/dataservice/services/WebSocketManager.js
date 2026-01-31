@@ -8,136 +8,106 @@
  * WebSocket Manager implementation class
  */
 export class WebSocketManager {
-  /** @type {Map} */
-  #unsubscribeFunctions = new Map();
+    /**
+     * @type {Map}
+     */
+    #unsubscribeFunctions = new Map();
 
-  constructor(webSocket, updateStrategy) {
-    this.#webSocket = webSocket;
-    this.#updateStrategy = updateStrategy;
-  }
+    /**
+     * @type {Object}
+     */
+    #webSocket;
 
-  /**
-   * Set up WebSocket listeners for real-time updates
-   * @param {string|string[]} queryKey - Query key
-   * @param {string[]} topics - WebSocket topics to subscribe to
-   * @param {string} updateStrategyType - Update strategy type
-   * @param {Object} cacheManager - Cache manager instance
-   * @param {Object} cacheConfig - Cache configuration
-   */
-  setupListeners(queryKey, topics, updateStrategyType, cacheManager, cacheConfig) {
-    const cacheKey = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
+    /**
+     * @type {Object}
+     */
+    #updateStrategy;
 
-    topics.forEach(topic => {
-      const unsubscribe = this.#webSocket.subscribe(topic, (message) => {
-        this.handleMessage(cacheKey, message, updateStrategyType, cacheManager, cacheConfig);
-      });
-
-      this.storeUnsubscribeFunction(cacheKey, topic, unsubscribe);
-    });
-  }
-
-  /**
-   * Handle WebSocket message and update cache
-   * @param {string} cacheKey - Cache key
-   * @param {*} message - WebSocket message
-   * @param {string} updateStrategyType - Update strategy type
-   * @param {Object} cacheManager - Cache manager instance
-   * @param {Object} cacheConfig - Cache configuration
-   */
-  handleMessage(cacheKey, message, updateStrategyType, cacheManager, cacheConfig) {
-    try {
-      const currentEntry = cacheManager.getEntry(cacheKey);
-      const currentData = currentEntry?.data;
-      const newData = message.data || message;
-
-      if (!newData) return;
-
-      const updatedData = this.#updateStrategy.apply(currentData, newData, updateStrategyType);
-
-      // Update cache with same TTL as original
-      const ttl = currentEntry?.ttl || cacheConfig.USER_CONTENT?.cacheTime;
-      cacheManager.set(cacheKey, updatedData, ttl);
-
-    } catch (error) {
-      console.error(`Error handling WebSocket update for ${cacheKey}:`, error);
+    /**
+     * Creates a WebSocket manager instance
+     * @param {Object} webSocket - WebSocket instance
+     * @param {Object} updateStrategy - Update strategy instance
+     */
+    constructor(webSocket, updateStrategy) {
+        this.#webSocket = webSocket;
+        this.#updateStrategy = updateStrategy;
     }
-  }
 
-  /**
-   * Clean up WebSocket listeners
-   * @param {string} cacheKey - Cache key
-   * @param {string[]} topics - Topics to clean up
-   */
-  cleanup(cacheKey, topics) {
-    topics.forEach(topic => {
-      const unsubscribeKey = `${cacheKey}:${topic}`;
-      const unsubscribe = this.getUnsubscribeFunction(unsubscribeKey);
-      if (unsubscribe) {
-        unsubscribe();
-        this.removeUnsubscribeFunction(unsubscribeKey);
-      }
-    });
-  }
+    /**
+     * Set up WebSocket listeners for real-time updates
+     * @param {string|string[]} queryKey - Query key
+     * @param {string[]} topics - WebSocket topics to subscribe to
+     * @param {string} updateStrategyType - Update strategy type
+     * @param {Object} cacheManager - Cache manager instance
+     * @param {Object} cacheConfig - Cache configuration
+     */
+    setupListeners(queryKey, topics, updateStrategyType, cacheManager, cacheConfig) {
+        const cacheKey = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
 
-  /**
-   * Store unsubscribe function for cleanup
-   * @param {string} cacheKey - Cache key
-   * @param {string} topic - Topic name
-   * @param {function} unsubscribe - Unsubscribe function
-   */
-  storeUnsubscribeFunction(cacheKey, topic, unsubscribe) {
-    const unsubscribeKey = `${cacheKey}:${topic}`;
-    
-    if (!this.#unsubscribeFunctions.has(cacheKey)) {
-      this.#unsubscribeFunctions.set(cacheKey, new Map());
+        topics.forEach(topic => {
+            const unsubscribe = this.#webSocket.subscribe(topic, (data) => {
+                this.#updateStrategy.update(cacheKey, data, updateStrategyType, cacheManager, cacheConfig);
+            });
+
+            this.#unsubscribeFunctions.set(cacheKey, unsubscribe);
+        });
     }
-    
-    this.#unsubscribeFunctions.get(cacheKey).set(topic, unsubscribe);
-  }
 
-  /**
-   * Get unsubscribe function
-   * @private
-   * @param {string} unsubscribeKey - Unsubscribe key
-   * @returns {function|undefined} Unsubscribe function
-   */
-  getUnsubscribeFunction(unsubscribeKey) {
-    const [cacheKey, topic] = unsubscribeKey.split(':');
-    const cacheMap = this.#unsubscribeFunctions.get(cacheKey);
-    return cacheMap?.get(topic);
-  }
+    /**
+     * Clean up WebSocket listeners
+     * @param {string|string[]} queryKey - Query key to clean up
+     */
+    cleanupListeners(queryKey) {
+        const cacheKey = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
+        const unsubscribe = this.#unsubscribeFunctions.get(cacheKey);
 
-  /**
-   * Remove unsubscribe function
-   * @private
-   * @param {string} unsubscribeKey - Unsubscribe key
-   */
-  removeUnsubscribeFunction(unsubscribeKey) {
-    const [cacheKey, topic] = unsubscribeKey.split(':');
-    const cacheMap = this.#unsubscribeFunctions.get(cacheKey);
-    if (cacheMap) {
-      cacheMap.delete(topic);
-      if (cacheMap.size === 0) {
-        this.#unsubscribeFunctions.delete(cacheKey);
-      }
-    }
-  }
-
-  /**
-   * Clean up resources
-   */
-  destroy() {
-    // Clean up all subscriptions
-    this.#unsubscribeFunctions.forEach((topicMap, cacheKey) => {
-      topicMap.forEach((unsubscribe, topic) => {
-        try {
-          unsubscribe();
-        } catch (error) {
-          console.error(`Error cleaning up WebSocket subscription for ${cacheKey}:${topic}:`, error);
+        if (unsubscribe) {
+            unsubscribe();
+            this.#unsubscribeFunctions.delete(cacheKey);
         }
-      });
-    });
-    
-    this.#unsubscribeFunctions.clear();
-  }
+    }
+
+    /**
+     * Get WebSocket instance
+     * @returns {Object} WebSocket instance
+     */
+    getWebSocket() {
+        return this.#webSocket;
+    }
+
+    /**
+     * Get update strategy instance
+     * @returns {Object} Update strategy instance
+     */
+    getUpdateStrategy() {
+        return this.#updateStrategy;
+    }
+
+    /**
+     * Check if manager has active listeners
+     * @param {string|string[]} queryKey - Query key to check
+     * @returns {boolean} Whether listeners are active
+     */
+    hasListeners(queryKey) {
+        const cacheKey = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
+        return this.#unsubscribeFunctions.has(cacheKey);
+    }
+
+    /**
+     * Get number of active listeners
+     * @returns {number} Number of active listeners
+     */
+    getListenerCount() {
+        return this.#unsubscribeFunctions.size;
+    }
+
+    /**
+     * Clean up all listeners
+     */
+    cleanupAllListeners() {
+        this.#unsubscribeFunctions.forEach((unsubscribe) => {
+            unsubscribe();
+        });
+        this.#unsubscribeFunctions.clear();
+    }
 }

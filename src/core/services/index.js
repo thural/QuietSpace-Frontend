@@ -135,7 +135,6 @@ import {
     getLogLevelPriority,
     shouldLog,
     createLoggerConfig,
-    validateLoggerConfig,
     createLoggerTarget,
     createConsoleTarget,
     createFileTarget,
@@ -151,13 +150,24 @@ import {
     createLogBuffer
 } from './utils.js';
 
+// Import interfaces from interfaces module
+import {
+    ILoggerService,
+    ILogFormatter,
+    ILogFilter,
+    ITransport,
+    ICacheService,
+    IThemeService,
+    INetworkService,
+    IWebSocketService,
+    IAuthService,
+    IUserService
+} from './interfaces/index.js';
+
 // Export interfaces (using JSDoc for JavaScript compatibility)
 // Note: In JavaScript, we export the classes directly as they serve as interfaces
 export {
     ILoggerService,
-    ILoggerConfig,
-    ILogEntry,
-    ILoggerTarget,
     ILoggerFactory,
     LogLevel
 };
@@ -263,6 +273,5 @@ export default {
 
     // Utilities
     createLogEntry,
-    validateLoggerConfig,
     createLoggerConfig
 };

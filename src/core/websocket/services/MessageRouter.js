@@ -5,8 +5,8 @@
  * for enterprise WebSocket communications.
  */
 
-import { TYPES } from '../../di/types.js';
-import { LoggerService } from '../../services/LoggerService.js';
+import { TYPES } from '@core/di/types.js';
+import { LoggerService } from '@core/services/index.js';
 import { WebSocketMessage } from './EnterpriseWebSocketService.js';
 
 /**
@@ -522,16 +522,16 @@ export class MessageRouter {
      * @description Unregisters message route
      */
     unregisterRoute(feature, messageType) {
-        const index = this.routes.findIndex(route => 
+        const index = this.routes.findIndex(route =>
             route.feature === feature && route.messageType === messageType
         );
-        
+
         if (index > -1) {
             this.routes.splice(index, 1);
             this.logger.info(`Unregistered message route: ${feature}:${messageType}`);
             return true;
         }
-        
+
         return false;
     }
 
@@ -544,10 +544,10 @@ export class MessageRouter {
      */
     async routeMessage(message) {
         const startTime = Date.now();
-        
+
         try {
             this.metrics.totalMessages++;
-            
+
             // Find matching route
             const route = this.findRoute(message);
             if (!route) {
@@ -580,27 +580,27 @@ export class MessageRouter {
 
             // Handle message
             await route.handler(processedMessage);
-            
+
             // Update metrics
             this.metrics.messagesRouted++;
             const processingTime = Date.now() - startTime;
             this.metrics.updateAverageProcessingTime(processingTime);
-            
+
             // Update feature stats
             const featureStats = this.metrics.getFeatureStats(message.feature);
             featureStats.incrementMessageCount();
             featureStats.updateAverageLatency(processingTime);
-            
+
             this.logger.debug(`Message routed successfully: ${message.id}`);
-            
+
             return { success: true, message: processedMessage };
-            
+
         } catch (error) {
             // Update error metrics
             this.metrics.messagesDropped++;
             const featureStats = this.metrics.getFeatureStats(message.feature);
             featureStats.incrementErrorCount();
-            
+
             this.logger.error(`Error routing message: ${message.id}`, error);
             return { success: false, reason: 'Handler error', error };
         }
@@ -676,7 +676,7 @@ export class MessageRouter {
      * @description Finds route that matches message
      */
     findRoute(message) {
-        return this.routes.find(route => 
+        return this.routes.find(route =>
             route.enabled &&
             route.feature === message.feature &&
             route.messageType === message.type

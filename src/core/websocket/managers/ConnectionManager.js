@@ -5,8 +5,8 @@
  * for enterprise WebSocket connections.
  */
 
-import { TYPES } from '../../di/types.js';
-import { LoggerService } from '../../services/LoggerService.js';
+import { TYPES } from '@core/di/types.js';
+import { LoggerService } from '@core/services/index.js';
 
 // Import types via JSDoc typedefs
 /**
@@ -386,7 +386,7 @@ export class ConnectionManager extends IConnectionManager {
             // Create new connection
             const connectionId = this.generateConnectionId();
             const connection = this.createWebSocketService();
-            
+
             const poolEntry = ConnectionPool.create({
                 id: connectionId,
                 feature,
@@ -414,9 +414,9 @@ export class ConnectionManager extends IConnectionManager {
             await connection.connect();
 
             this.logger.info(`Created new connection for feature: ${feature} (${connectionId})`);
-            
+
             return connectionId;
-            
+
         } catch (error) {
             this.logger.error(`Failed to create connection for feature: ${feature}`, error);
             throw error;
@@ -436,7 +436,7 @@ export class ConnectionManager extends IConnectionManager {
             connection.lastUsed = new Date();
             return connection.service;
         }
-        
+
         // Create new connection if none available
         const connectionId = await this.createConnection(feature);
         const poolEntry = this.findConnectionById(connectionId);
@@ -477,7 +477,7 @@ export class ConnectionManager extends IConnectionManager {
      */
     async getAllConnections() {
         const allConnections = [];
-        
+
         for (const [feature, connections] of this.connectionPools) {
             for (const poolEntry of connections) {
                 allConnections.push({
@@ -491,7 +491,7 @@ export class ConnectionManager extends IConnectionManager {
                 });
             }
         }
-        
+
         return allConnections;
     }
 
@@ -503,18 +503,18 @@ export class ConnectionManager extends IConnectionManager {
      */
     async closeAllConnections() {
         const closePromises = [];
-        
+
         for (const [feature, connections] of this.connectionPools) {
             for (const poolEntry of connections) {
                 closePromises.push(this.closeConnection(poolEntry.id));
             }
         }
-        
+
         await Promise.all(closePromises);
-        
+
         this.connectionPools.clear();
         this.connectionHealth.clear();
-        
+
         this.logger.info('All connections closed');
     }
 
@@ -529,7 +529,7 @@ export class ConnectionManager extends IConnectionManager {
     async getAvailableConnection(feature) {
         const connections = this.getFeatureConnections(feature);
         const activeConnections = connections.filter(conn => conn.isActive);
-        
+
         if (activeConnections.length === 0) {
             return null;
         }
@@ -537,19 +537,19 @@ export class ConnectionManager extends IConnectionManager {
         // Apply load balancing strategy
         switch (this.config.loadBalancingStrategy) {
             case 'least-connections':
-                return activeConnections.reduce((min, conn) => 
+                return activeConnections.reduce((min, conn) =>
                     conn.lastUsed < min.lastUsed ? conn : min
                 );
-            
+
             case 'priority':
-                return activeConnections.reduce((max, conn) => 
+                return activeConnections.reduce((max, conn) =>
                     conn.priority > max.priority ? conn : max
                 );
-            
+
             case 'round-robin':
             default:
                 // Simple round-robin based on last used time
-                return activeConnections.reduce((oldest, conn) => 
+                return activeConnections.reduce((oldest, conn) =>
                     conn.lastUsed < oldest.lastUsed ? conn : oldest
                 );
         }
@@ -599,7 +599,7 @@ export class ConnectionManager extends IConnectionManager {
             try {
                 await poolEntry.service.disconnect();
                 poolEntry.isActive = false;
-                
+
                 // Remove from pool
                 for (const [feature, connections] of this.connectionPools) {
                     const index = connections.findIndex(conn => conn.id === connectionId);
@@ -608,10 +608,10 @@ export class ConnectionManager extends IConnectionManager {
                         break;
                     }
                 }
-                
+
                 // Remove health tracking
                 this.connectionHealth.delete(connectionId);
-                
+
                 this.logger.info(`Connection closed: ${connectionId}`);
             } catch (error) {
                 this.logger.error(`Failed to close connection: ${connectionId}`, error);
@@ -630,9 +630,9 @@ export class ConnectionManager extends IConnectionManager {
         // This would create an actual WebSocket service instance
         // For now, return a mock implementation
         return {
-            connect: async () => {},
-            disconnect: async () => {},
-            send: async () => {},
+            connect: async () => { },
+            disconnect: async () => { },
+            send: async () => { },
             getConnectionState: () => 'connected'
         };
     }
@@ -674,14 +674,14 @@ export class ConnectionManager extends IConnectionManager {
      */
     async performHealthCheck() {
         const now = new Date();
-        
+
         for (const [connectionId, health] of this.connectionHealth) {
             try {
                 const poolEntry = this.findConnectionById(connectionId);
                 if (poolEntry && poolEntry.isActive) {
                     // Check connection state
                     const connectionState = poolEntry.service.getConnectionState();
-                    
+
                     if (connectionState === 'connected') {
                         health.status = 'healthy';
                         health.latency = this.measureLatency(poolEntry);
@@ -694,12 +694,12 @@ export class ConnectionManager extends IConnectionManager {
                 } else {
                     health.status = 'unhealthy';
                 }
-                
+
                 health.lastHealthCheck = now;
-                
+
                 // Update health score
                 poolEntry.healthScore = this.calculateHealthScore(health);
-                
+
             } catch (error) {
                 health.status = 'unhealthy';
                 health.errorCount++;
@@ -734,24 +734,24 @@ export class ConnectionManager extends IConnectionManager {
      */
     calculateHealthScore(health) {
         let score = 100;
-        
+
         // Penalize unhealthy status
         if (health.status === 'unhealthy') {
             score -= 50;
         } else if (health.status === 'degraded') {
             score -= 25;
         }
-        
+
         // Penalize high latency
         if (health.latency > 1000) {
             score -= 20;
         } else if (health.latency > 500) {
             score -= 10;
         }
-        
+
         // Penalize errors
         score -= Math.min(health.errorCount * 5, 30);
-        
+
         return Math.max(0, score);
     }
 }

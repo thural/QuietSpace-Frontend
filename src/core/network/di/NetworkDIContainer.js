@@ -5,9 +5,9 @@
  * Follows enterprise patterns for service registration and resolution.
  */
 
-import { Container } from '../../di/container/Container.js';
+import { Container } from '@core/di/container/Container.js';
 import { AuthenticatedApiService } from '../services/AuthenticatedApiService.js';
-import { TYPES } from '../../di/types.js';
+import { TYPES } from '@core/di/types.js';
 
 /**
  * Creates and configures the network DI container

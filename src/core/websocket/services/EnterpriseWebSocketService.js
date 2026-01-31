@@ -5,13 +5,13 @@
  * Replaces scattered WebSocket implementations across features.
  */
 
-import { TYPES } from '../../di/types.js';
-import { LoggerService } from '../../services/LoggerService.js';
+import { TYPES } from '@core/di/types.js';
+import { LoggerService } from '@core/services/index.js';
 
 // Import types via JSDoc typedefs
 /**
- * @typedef {import('../../cache/index.js').ICacheServiceManager} ICacheServiceManager
- * @typedef {import('../../cache/index.js').FeatureCacheService} FeatureCacheService
+ * @typedef {import('@core/cache/index.js').ICacheServiceManager} ICacheServiceManager
+ * @typedef {import('@core/cache/index.js').FeatureCacheService} FeatureCacheService
  */
 
 /**
@@ -611,16 +611,16 @@ export class EnterpriseWebSocketService {
      */
     async connect(url) {
         const connectUrl = url || this.config.url;
-        
+
         try {
             this.connectionState = 'connecting';
             this.connection = new WebSocket(connectUrl);
-            
+
             this.setupConnectionHandlers();
             this.startHeartbeat();
-            
+
             this.logger.info(`WebSocket connecting to: ${connectUrl}`);
-            
+
             return new Promise((resolve, reject) => {
                 this.connection.onopen = () => {
                     this.connectionState = 'connected';
@@ -628,7 +628,7 @@ export class EnterpriseWebSocketService {
                     this.logger.info('WebSocket connected successfully');
                     resolve();
                 };
-                
+
                 this.connection.onerror = (error) => {
                     this.connectionState = 'error';
                     this.logger.error('WebSocket connection error:', error);
@@ -653,7 +653,7 @@ export class EnterpriseWebSocketService {
             this.connectionState = 'disconnecting';
             this.stopHeartbeat();
             this.stopReconnectTimer();
-            
+
             return new Promise((resolve) => {
                 this.connection.onclose = () => {
                     this.connectionState = 'disconnected';
@@ -661,7 +661,7 @@ export class EnterpriseWebSocketService {
                     this.logger.info('WebSocket disconnected');
                     resolve();
                 };
-                
+
                 this.connection.close();
             });
         }
@@ -682,12 +682,12 @@ export class EnterpriseWebSocketService {
         try {
             const messageJson = message.toJSON();
             this.connection.send(messageJson);
-            
+
             this.metrics.messagesSent++;
             this.metrics.bytesSent += new Blob([messageJson]).size;
-            
+
             this.logger.debug(`Message sent: ${message.id}`);
-            
+
             return message;
         } catch (error) {
             this.logger.error('Failed to send message:', error);
@@ -706,14 +706,14 @@ export class EnterpriseWebSocketService {
      */
     addEventListener(eventType, handler, priority = 0) {
         const listener = new WebSocketEventListener(eventType, handler, priority);
-        
+
         if (!this.listeners.has(eventType)) {
             this.listeners.set(eventType, []);
         }
-        
+
         this.listeners.get(eventType).push(listener);
         this.listeners.get(eventType).sort((a, b) => b.priority - a.priority);
-        
+
         return listener;
     }
 
@@ -729,15 +729,15 @@ export class EnterpriseWebSocketService {
         if (!this.listeners.has(eventType)) {
             return false;
         }
-        
+
         const listeners = this.listeners.get(eventType);
         const index = listeners.indexOf(listener);
-        
+
         if (index > -1) {
             listeners.splice(index, 1);
             return true;
         }
-        
+
         return false;
     }
 
@@ -772,11 +772,11 @@ export class EnterpriseWebSocketService {
         this.connection.onmessage = (event) => {
             this.handleMessage(event);
         };
-        
+
         this.connection.onclose = (event) => {
             this.handleDisconnection(event);
         };
-        
+
         this.connection.onerror = (event) => {
             this.handleError(event);
         };
@@ -795,9 +795,9 @@ export class EnterpriseWebSocketService {
             const message = WebSocketMessage.fromJSON(event.data);
             this.metrics.messagesReceived++;
             this.metrics.bytesReceived += new Blob([event.data]).size;
-            
+
             this.emitEvent('message', message);
-            
+
             this.logger.debug(`Message received: ${message.id}`);
         } catch (error) {
             this.logger.error('Failed to handle message:', error);
@@ -815,13 +815,13 @@ export class EnterpriseWebSocketService {
     handleDisconnection(event) {
         this.connectionState = 'disconnected';
         this.metrics.endTime = new Date();
-        
+
         this.emitEvent('disconnect', event);
-        
+
         if (this.config.enableAutoReconnect) {
             this.scheduleReconnect();
         }
-        
+
         this.logger.info(`WebSocket disconnected: ${event.code} ${event.reason}`);
     }
 
@@ -835,9 +835,9 @@ export class EnterpriseWebSocketService {
      */
     handleError(event) {
         this.connectionState = 'error';
-        
+
         this.emitEvent('error', event);
-        
+
         this.logger.error('WebSocket error:', event);
     }
 
@@ -852,7 +852,7 @@ export class EnterpriseWebSocketService {
      */
     async emitEvent(eventType, data) {
         const listeners = this.listeners.get(eventType) || [];
-        
+
         for (const listener of listeners) {
             try {
                 await listener.handle(data);
@@ -873,7 +873,7 @@ export class EnterpriseWebSocketService {
         if (this.heartbeatTimer) {
             clearInterval(this.heartbeatTimer);
         }
-        
+
         this.heartbeatTimer = setInterval(() => {
             if (this.connectionState === 'connected') {
                 this.sendHeartbeat();
@@ -908,7 +908,7 @@ export class EnterpriseWebSocketService {
             feature: 'system',
             payload: { timestamp: new Date().toISOString() }
         });
-        
+
         this.send(heartbeatMessage).catch(error => {
             this.logger.error('Failed to send heartbeat:', error);
         });
@@ -925,7 +925,7 @@ export class EnterpriseWebSocketService {
         if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer);
         }
-        
+
         this.reconnectTimer = setTimeout(() => {
             if (this.metrics.reconnections < this.config.maxReconnectAttempts) {
                 this.metrics.reconnections++;
@@ -965,11 +965,11 @@ export class EnterpriseWebSocketService {
         this.addEventListener('connect', () => {
             this.logger.info('WebSocket connected');
         });
-        
+
         this.addEventListener('disconnect', () => {
             this.logger.info('WebSocket disconnected');
         });
-        
+
         this.addEventListener('error', (error) => {
             this.logger.error('WebSocket error:', error);
         });

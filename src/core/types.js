@@ -342,38 +342,5 @@ export const LogLevel = Object.freeze({
  * @property {Date} lastUpdated - Last update timestamp
  */
 
-// Export all interfaces for external use
-export {
-    ICacheService,
-    ICacheServiceManager,
-    IWebSocketService,
-    IAuthService,
-    IThemeService,
-    ILoggerService,
-    INetworkService,
-    IServiceContainer,
-    ICoreServices,
-    CacheEntry,
-    CacheStats,
-    CacheConfig,
-    WebSocketMessage,
-    WebSocketConfig,
-    AuthCredentials,
-    AuthUser,
-    AuthToken,
-    AuthSession,
-    AuthResult,
-    ThemeConfig,
-    ThemeTokens,
-    EnhancedTheme,
-    ApiResponse,
-    ApiError,
-    LogLevel,
-    IServiceConfig,
-    ServiceIdentifier,
-    ServiceFactory,
-    ServiceDescriptor,
-    CoreConfig,
-    CoreSystemEvent,
-    CoreSystemStatus
-};
+// Note: Interfaces are defined as JSDoc typedefs above for type checking
+// They are not exported as actual values in JavaScript

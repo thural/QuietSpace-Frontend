@@ -5,15 +5,15 @@
  * Handles theme creation logic separated from composition.
  */
 
-import { colors } from '../../../appColors.js';
-import { typography } from '../../../appTypography.js';
+import { colors } from '@core/theme/appColors.js';
+import { typography } from '@core/theme/appTypography.js';
 import {
   baseSpacing,
   baseShadows,
   baseBreakpoints,
   baseRadius,
   baseAnimation
-} from '../../../baseTokens.js';
+} from '@core/theme/baseTokens.js';
 
 /**
  * Theme Factory interface

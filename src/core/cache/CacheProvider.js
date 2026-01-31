@@ -9,350 +9,317 @@ import { Injectable } from '../di/index.js';
  */
 export class CacheEntry {
     /**
+     * Creates a cache entry
+     * @param {any} data - The cached data
+     * @param {number} timestamp - Timestamp when the entry was created (Unix timestamp)
+     * @param {number} ttl - Time to live in milliseconds
+     */
+    constructor(data, timestamp, ttl) {
+        this.data = data;
+        this.timestamp = timestamp;
+        this.ttl = ttl;
+    }
+
+    /**
      * The cached data
-     * 
      * @type {any}
      */
     data;
 
     /**
      * Timestamp when the entry was created (Unix timestamp)
-     * 
      * @type {number}
      */
     timestamp;
 
     /**
      * Time to live in milliseconds
-     * 
      * @type {number}
      */
     ttl;
 
     /**
-     * Number of times this entry has been accessed
-     * 
-     * @type {number}
-     */
-    accessCount;
-
-    /**
-     * Timestamp of last access (Unix timestamp)
-     * 
-     * @type {number}
-     */
-    lastAccessed;
-
-    /**
-     * Create cache entry
-     * 
-     * @param {any} data - Data to cache
-     * @param {number} ttl - Time to live in milliseconds
-     */
-    constructor(data, ttl) {
-        this.data = data;
-        this.timestamp = Date.now();
-        this.ttl = ttl;
-        this.accessCount = 0;
-        this.lastAccessed = this.timestamp;
-    }
-
-    /**
-     * Check if entry is expired
-     * 
-     * @returns {boolean} Whether entry is expired
+     * Checks if the entry has expired
+     * @returns {boolean} Whether the entry has expired
      */
     isExpired() {
-        return Date.now() > (this.timestamp + this.ttl);
+        return Date.now() - this.timestamp > this.ttl;
     }
 
     /**
-     * Update access information
+     * Gets the age of the entry in milliseconds
+     * @returns {number} Age in milliseconds
      */
-    updateAccess() {
-        this.accessCount++;
-        this.lastAccessed = Date.now();
+    getAge() {
+        return Date.now() - this.timestamp;
     }
 }
 
 /**
- * Cache configuration interface
- * 
- * @interface CacheConfig
- * @description Configuration options for cache providers
+ * Cache provider interface
+ * @typedef {Object} ICacheProvider
+ * @property {(key: string, value: any, ttl?: number) => Promise<void>} set - Set cache value
+ * @property {(key: string) => Promise<any>} get - Get cache value
+ * @property {(key: string) => Promise<boolean>} has - Check if key exists
+ * @property {(key: string) => Promise<void>} delete - Delete cache value
+ * @property {() => Promise<void>} clear - Clear all cache
+ * @property {() => Promise<number>} size - Get cache size
+ * @property {() => Promise<CacheEntry[]>} entries - Get all entries
+ * @property {(key: string) => Promise<CacheEntry|null>} getEntry - Get cache entry
+ * @property {() => Promise<Object>} getStats - Get cache statistics
  */
-export class CacheConfig {
+
+/**
+ * In-memory cache provider with TTL and size limits
+ * @class MemoryCacheProvider
+ * @description In-memory cache provider with TTL and size limits
+ * @Injectable({ lifetime: 'singleton' })
+ */
+export class MemoryCacheProvider {
     /**
-     * Default time to live in milliseconds
-     * 
-     * @type {number}
+     * @type {Map<string, CacheEntry>}
      */
-    defaultTtl;
+    cache = new Map();
 
     /**
-     * Maximum number of entries in cache
-     * 
      * @type {number}
      */
     maxSize;
 
     /**
-     * Cleanup interval in milliseconds
-     * 
      * @type {number}
      */
-    cleanupInterval;
+    defaultTtl;
 
     /**
-     * Whether to enable compression
-     * 
-     * @type {boolean}
+     * @type {Object}
      */
-    enableCompression;
+    stats = {
+        hits: 0,
+        misses: 0,
+        sets: 0,
+        deletes: 0,
+        evictions: 0
+    };
 
     /**
-     * Create cache configuration
-     * 
-     * @param {Object} options - Configuration options
-     * @param {number} [options.defaultTtl=300000] - Default TTL (5 minutes)
-     * @param {number} [options.maxSize=1000] - Maximum size
-     * @param {number} [options.cleanupInterval=60000] - Cleanup interval (1 minute)
-     * @param {boolean} [options.enableCompression=false] - Enable compression
+     * Creates a memory cache provider
+     * @param {Object} [config] - Cache configuration
      */
-    constructor(options = {}) {
-        this.defaultTtl = options.defaultTtl || 300000; // 5 minutes
-        this.maxSize = options.maxSize || 1000;
-        this.cleanupInterval = options.cleanupInterval || 60000; // 1 minute
-        this.enableCompression = options.enableCompression || false;
-    }
-}
-
-/**
- * Cache statistics interface
- * 
- * @interface CacheStats
- * @description Statistics about cache performance
- */
-export class CacheStats {
-    /**
-     * Total number of entries
-     * 
-     * @type {number}
-     */
-    totalEntries;
-
-    /**
-     * Number of expired entries
-     * 
-     * @type {number}
-     */
-    expiredEntries;
-
-    /**
-     * Cache hit rate (0-1)
-     * 
-     * @type {number}
-     */
-    hitRate;
-
-    /**
-     * Total number of hits
-     * 
-     * @type {number}
-     */
-    hits;
-
-    /**
-     * Total number of misses
-     * 
-     * @type {number}
-     */
-    misses;
-
-    /**
-     * Create cache statistics
-     * 
-     * @param {Object} stats - Statistics data
-     */
-    constructor(stats = {}) {
-        this.totalEntries = stats.totalEntries || 0;
-        this.expiredEntries = stats.expiredEntries || 0;
-        this.hitRate = stats.hitRate || 0;
-        this.hits = stats.hits || 0;
-        this.misses = stats.misses || 0;
-    }
-}
-
-/**
- * Memory cache provider implementation
- * 
- * @class MemoryCacheProvider
- * @description In-memory cache provider with TTL and size limits
- */
-@Injectable({ lifetime: 'singleton' })
-export class MemoryCacheProvider {
-    /**
-     * Create memory cache provider
-     * 
-     * @param {CacheConfig} [config] - Cache configuration
-     */
-    constructor(config = new CacheConfig()) {
-        this.config = config;
-        this.cache = new Map();
-        this.stats = new CacheStats();
-        this.setupCleanup();
+    constructor(config = {}) {
+        this.maxSize = config.maxSize || 1000;
+        this.defaultTtl = config.defaultTtl || 300000; // 5 minutes
     }
 
     /**
-     * Get value from cache
-     * 
+     * Sets a value in cache
      * @param {string} key - Cache key
-     * @returns {any|null} Cached value or null if not found/expired
+     * @param {any} value - Value to cache
+     * @param {number} [ttl] - Time to live in milliseconds
+     * @returns {Promise<void>} Promise that resolves when value is set
      */
-    get(key) {
+    async set(key, value, ttl = this.defaultTtl) {
+        const entry = new CacheEntry(value, Date.now(), ttl);
+
+        // Enforce size limit
+        if (this.cache.size >= this.maxSize) {
+            this.#evictOldest();
+        }
+
+        this.cache.set(key, entry);
+        this.stats.sets++;
+    }
+
+    /**
+     * Gets a value from cache
+     * @param {string} key - Cache key
+     * @returns {Promise<any>} Promise that resolves to the cached value
+     */
+    async get(key) {
         const entry = this.cache.get(key);
-        
+
         if (!entry) {
             this.stats.misses++;
-            this.updateHitRate();
-            return null;
+            return undefined;
         }
 
         if (entry.isExpired()) {
             this.cache.delete(key);
             this.stats.misses++;
-            this.updateHitRate();
-            return null;
+            return undefined;
         }
 
-        entry.updateAccess();
         this.stats.hits++;
-        this.updateHitRate();
         return entry.data;
     }
 
     /**
-     * Set value in cache
-     * 
+     * Checks if key exists in cache
      * @param {string} key - Cache key
-     * @param {any} value - Value to cache
-     * @param {number} [ttl] - Time to live (uses default if not provided)
-     * @returns {void}
+     * @returns {Promise<boolean>} Promise that resolves to whether key exists
      */
-    set(key, value, ttl) {
-        const entryTtl = ttl || this.config.defaultTtl;
-        const entry = new CacheEntry(value, entryTtl);
-        
-        // Enforce size limit
-        if (this.cache.size >= this.config.maxSize) {
-            this.evictLeastRecentlyUsed();
-        }
-        
-        this.cache.set(key, entry);
-    }
-
-    /**
-     * Remove value from cache
-     * 
-     * @param {string} key - Cache key
-     * @returns {boolean} Whether key was removed
-     */
-    delete(key) {
-        return this.cache.delete(key);
-    }
-
-    /**
-     * Clear all entries from cache
-     * 
-     * @returns {void}
-     */
-    clear() {
-        this.cache.clear();
-        this.stats = new CacheStats();
-    }
-
-    /**
-     * Check if key exists in cache
-     * 
-     * @param {string} key - Cache key
-     * @returns {boolean} Whether key exists
-     */
-    has(key) {
+    async has(key) {
         const entry = this.cache.get(key);
         return entry && !entry.isExpired();
     }
 
     /**
-     * Get cache statistics
-     * 
-     * @returns {CacheStats} Current cache statistics
+     * Deletes a value from cache
+     * @param {string} key - Cache key
+     * @returns {Promise<void>} Promise that resolves when value is deleted
      */
-    getStats() {
-        this.stats.totalEntries = this.cache.size;
-        return this.stats;
+    async delete(key) {
+        const deleted = this.cache.delete(key);
+        if (deleted) {
+            this.stats.deletes++;
+        }
     }
 
     /**
-     * Setup periodic cleanup
-     * 
-     * @private
-     * @returns {void}
+     * Clears all cache entries
+     * @returns {Promise<void>} Promise that resolves when cache is cleared
      */
-    setupCleanup() {
-        setInterval(() => {
-            this.cleanup();
-        }, this.config.cleanupInterval);
+    async clear() {
+        this.cache.clear();
+        this.stats.hits = 0;
+        this.stats.misses = 0;
+        this.stats.sets = 0;
+        this.stats.deletes = 0;
+        this.stats.evictions = 0;
     }
 
     /**
-     * Remove expired entries
-     * 
-     * @private
-     * @returns {void}
+     * Gets cache size
+     * @returns {Promise<number>} Promise that resolves to cache size
      */
-    cleanup() {
-        let expiredCount = 0;
-        
-        for (const [key, entry] of this.cache.entries()) {
-            if (entry.isExpired()) {
-                this.cache.delete(key);
-                expiredCount++;
+    async size() {
+        return this.cache.size;
+    }
+
+    /**
+     * Gets all cache entries
+     * @returns {Promise<CacheEntry[]>} Promise that resolves to all entries
+     */
+    async entries() {
+        return Array.from(this.cache.values());
+    }
+
+    /**
+     * Gets a cache entry with metadata
+     * @param {string} key - Cache key
+     * @returns {Promise<CacheEntry|null>} Promise that resolves to cache entry
+     */
+    async getEntry(key) {
+        const entry = this.cache.get(key);
+        if (entry && !entry.isExpired()) {
+            return entry;
+        }
+        return null;
+    }
+
+    /**
+     * Gets cache statistics
+     * @returns {Promise<Object>} Promise that resolves to cache statistics
+     */
+    async getStats() {
+        return {
+            size: this.cache.size,
+            maxSize: this.maxSize,
+            hitRate: this.#calculateHitRate(),
+            ...this.stats
+        };
+    }
+
+    /**
+     * Evicts oldest cache entries
+     * @private
+     */
+    #evictOldest() {
+        let oldestKey = null;
+        let oldestTime = Date.now();
+
+        for (const [key, entry] of this.cache) {
+            if (entry.timestamp < oldestTime) {
+                oldestTime = entry.timestamp;
+                oldestKey = key;
             }
         }
-        
-        this.stats.expiredEntries = expiredCount;
+
+        if (oldestKey) {
+            this.cache.delete(oldestKey);
+            this.stats.evictions++;
+        }
     }
 
     /**
-     * Evict least recently used entry
-     * 
+     * Calculates cache hit rate
+     * @returns {number} Hit rate as percentage
      * @private
-     * @returns {void}
      */
-    evictLeastRecentlyUsed() {
-        let lruKey = null;
-        let lruTime = Date.now();
-        
-        for (const [key, entry] of this.cache.entries()) {
-            if (entry.lastAccessed < lruTime) {
-                lruTime = entry.lastAccessed;
-                lruKey = key;
-            }
-        }
-        
-        if (lruKey) {
-            this.cache.delete(lruKey);
-        }
+    #calculateHitRate() {
+        const total = this.stats.hits + this.stats.misses;
+        return total > 0 ? this.stats.hits / total : 0;
     }
 
     /**
-     * Update hit rate
-     * 
+     * Updates hit rate statistics
      * @private
-     * @returns {void}
      */
     updateHitRate() {
         const total = this.stats.hits + this.stats.misses;
         this.stats.hitRate = total > 0 ? this.stats.hits / total : 0;
+    }
+
+    /**
+     * Cleans up expired entries
+     * @returns {Promise<number>} Number of entries cleaned up
+     */
+    async cleanup() {
+        let cleaned = 0;
+        const now = Date.now();
+
+        for (const [key, entry] of this.cache) {
+            if (entry.isExpired()) {
+                this.cache.delete(key);
+                cleaned++;
+            }
+        }
+
+        return cleaned;
+    }
+
+    /**
+     * Gets cache keys
+     * @returns {Promise<string[]>} Promise that resolves to cache keys
+     */
+    async keys() {
+        return Array.from(this.cache.keys());
+    }
+
+    /**
+     * Checks if cache is empty
+     * @returns {Promise<boolean>} Promise that resolves to whether cache is empty
+     */
+    async isEmpty() {
+        return this.cache.size === 0;
+    }
+
+    /**
+     * Gets memory usage estimate
+     * @returns {Promise<Object>} Promise that resolves to memory usage
+     */
+    async getMemoryUsage() {
+        let totalSize = 0;
+
+        for (const entry of this.cache.values()) {
+            // Rough estimate of entry size
+            totalSize += JSON.stringify(entry).length;
+        }
+
+        return {
+            entries: this.cache.size,
+            estimatedSizeBytes: totalSize,
+            estimatedSizeKB: Math.round(totalSize / 1024 * 100) / 100
+        };
     }
 }

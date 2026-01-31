@@ -7,8 +7,8 @@
 
 import { createApiClient } from '../factory.js';
 import { TokenProvider } from '../providers/TokenProvider.js';
-import { createContainer } from '../../di/factory.js';
-import { TYPES } from '../../di/types.js';
+import { createContainer } from '@core/di/factory.js';
+import { TYPES } from '@core/di/types.js';
 
 /**
  * API client interface

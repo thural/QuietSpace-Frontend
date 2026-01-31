@@ -6,7 +6,7 @@
  */
 
 import { FeatureAuthService } from '../services/FeatureAuthService.js';
-import { Container } from '../../di/factory/index.js';
+import { Container } from '@core/di/factory/index.js';
 
 /**
  * Create a feature authentication service

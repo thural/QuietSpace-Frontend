@@ -5,8 +5,8 @@
  * This eliminates direct store access and maintains proper separation of concerns.
  */
 
-import { TokenProvider } from '../../network/providers/TokenProvider.js';
-import { Container } from '../../di/factory.js';
+import { TokenProvider } from '@core/network/providers/TokenProvider.js';
+import { Container } from '@core/di/factory.js';
 
 /**
  * Authentication service for feature modules
@@ -101,7 +101,7 @@ export class FeatureAuthService {
     hasPermission(permission) {
         const authData = this.getAuthData();
         if (!authData?.user) return false;
-        
+
         // TODO: Implement proper permission checking
         // For now, return true if authenticated
         return this.isAuthenticated();
@@ -115,7 +115,7 @@ export class FeatureAuthService {
     hasAnyPermission(permissions) {
         const authData = this.getAuthData();
         if (!authData?.user) return false;
-        
+
         // TODO: Implement proper permission checking
         // For now, return true if authenticated
         return this.isAuthenticated();
@@ -128,7 +128,7 @@ export class FeatureAuthService {
     getUserRoles() {
         const authData = this.getAuthData();
         if (!authData?.user) return [];
-        
+
         // TODO: Extract roles from token or user data
         // For now, return empty array
         return [];
