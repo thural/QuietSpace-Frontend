@@ -5,26 +5,21 @@
  * Follows Black Box pattern by hiding implementation details.
  */
 
-import { Container } from '../di/container/Container';
-import { TYPES } from '../di/types';
-import type { IBaseDataService, IDataServiceFactoryOptions } from './interfaces';
+import { Container } from '../di/container/Container.js';
 
 /**
  * Creates a data service using dependency injection container.
  * 
- * @param container - DI container instance
- * @param options - Optional data service configuration
- * @returns Data service from DI container
+ * @param {Container} container - DI container instance
+ * @param {Object} [options] - Optional data service configuration
+ * @returns {Object} Data service from DI container
  */
-export function createDataServiceFromDI(
-  container: Container,
-  options?: IDataServiceFactoryOptions
-): IBaseDataService {
+export function createDataServiceFromDI(container, options) {
   // Try to get from DI container first
   try {
     // Use AUTH_DATA_SERVICE token as it's the closest match
-    return container.getByToken<IBaseDataService>(TYPES.AUTH_DATA_SERVICE);
-  } catch {
+    return container.getByToken('AUTH_DATA_SERVICE');
+  } catch (error) {
     // Fallback: throw error with guidance
     throw new Error(
       'Data Service not found in DI container. ' +
@@ -36,16 +31,14 @@ export function createDataServiceFromDI(
 /**
  * Creates a default data service using dependency injection container.
  * 
- * @param container - DI container instance
- * @returns Default data service from DI container
+ * @param {Container} container - DI container instance
+ * @returns {Object} Default data service from DI container
  */
-export function createDefaultDataServiceFromDI(
-  container: Container
-): IBaseDataService {
+export function createDefaultDataServiceFromDI(container) {
   // Try to get from DI container first
   try {
-    return container.getByToken<IBaseDataService>(TYPES.AUTH_DATA_SERVICE);
-  } catch {
+    return container.getByToken('AUTH_DATA_SERVICE');
+  } catch (error) {
     // Fallback: throw error with guidance
     throw new Error(
       'Data Service not found in DI container. ' +
@@ -57,18 +50,15 @@ export function createDefaultDataServiceFromDI(
 /**
  * Creates a data service with cache using dependency injection container.
  * 
- * @param container - DI container instance
- * @param options - Optional data service configuration
- * @returns Data service with cache from DI container
+ * @param {Container} container - DI container instance
+ * @param {Object} [options] - Optional data service configuration
+ * @returns {Object} Data service with cache from DI container
  */
-export function createDataServiceWithCacheFromDI(
-  container: Container,
-  options?: IDataServiceFactoryOptions
-): IBaseDataService {
+export function createDataServiceWithCacheFromDI(container, options) {
   // Try to get from DI container first
   try {
-    return container.getByToken<IBaseDataService>(TYPES.AUTH_DATA_SERVICE);
-  } catch {
+    return container.getByToken('AUTH_DATA_SERVICE');
+  } catch (error) {
     // Fallback: throw error with guidance
     throw new Error(
       'Data Service not found in DI container. ' +
@@ -80,13 +70,10 @@ export function createDataServiceWithCacheFromDI(
 /**
  * Register Data Service in DI container (for advanced usage)
  * 
- * @param container - DI container instance
- * @param dataService - Data service instance to register
+ * @param {Container} container - DI container instance
+ * @param {Object} dataService - Data service instance to register
  */
-export function registerDataServiceInDI(
-  container: Container,
-  dataService: IBaseDataService
-): void {
+export function registerDataServiceInDI(container, dataService) {
   // This would require the container to have registration methods
   // For now, consumers should register their data services manually
   console.warn('Data Service DI registration not implemented. Please register manually.');
@@ -95,9 +82,9 @@ export function registerDataServiceInDI(
 /**
  * Data Service DI utilities
  */
-export const DataServiceDI = {
+export const DataServiceDI = Object.freeze({
   createFromDI: createDataServiceFromDI,
   createDefaultFromDI: createDefaultDataServiceFromDI,
   createWithCacheFromDI: createDataServiceWithCacheFromDI,
   register: registerDataServiceInDI
-} as const;
+});

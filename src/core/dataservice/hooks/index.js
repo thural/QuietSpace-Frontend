@@ -9,288 +9,103 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Configuration options for useQuery hook
+ * @typedef {Object} UseQueryOptions
+ * @property {boolean} [refetchOnWindowFocus] - Whether to automatically refetch on window focus
+ * @property {boolean} [refetchOnReconnect] - Whether to automatically refetch on network reconnect
+ * @property {number|boolean} [refetchInterval] - Whether to automatically refetch at intervals
+ * @property {number|boolean} [retry] - Number of retry attempts on failure
+ * @property {number} [retryDelay] - Retry delay in milliseconds
+ * @property {boolean} [enableRequestCancellation] - Whether to enable request cancellation
+ * @property {*} [initialData] - Initial data to use before first fetch
+ * @property {number} [staleTime] - Stale time in milliseconds
+ * @property {number} [cacheTime] - Cache time in milliseconds
  */
-export interface UseQueryOptions<TData, TError> {
-  /**
-   * Whether to automatically refetch on window focus
-   */
-  refetchOnWindowFocus?: boolean;
-  
-  /**
-   * Whether to automatically refetch on network reconnect
-   */
-  refetchOnReconnect?: boolean;
-  
-  /**
-   * Whether to automatically refetch at intervals
-   */
-  refetchInterval?: number | false;
-  
-  /**
-   * Number of retry attempts on failure
-   */
-  retry?: number | false;
-  
-  /**
-   * Retry delay in milliseconds
-   */
-  retryDelay?: number;
-  
-  /**
-   * Whether to enable request cancellation
-   */
-  enableRequestCancellation?: boolean;
-  
-  /**
-   * Initial data to use before first fetch
-   */
-  initialData?: TData;
-  
-  /**
-   * Stale time in milliseconds
-   */
-  staleTime?: number;
-  
-  /**
-   * Cache time in milliseconds
-   */
-  cacheTime?: number;
-}
 
 /**
  * Return type for useQuery hook
+ * @typedef {Object} UseQueryResult
+ * @property {boolean} isLoading - Whether data is currently being loaded
+ * @property {boolean} isFetching - Whether data is currently being fetched
+ * @property {boolean} isError - Whether there was an error
+ * @property {boolean} isSuccess - Whether data was successfully loaded
+ * @property {Error|null} error - Error information
+ * @property {number|null} lastUpdated - Timestamp of the last data update
+ * @property {number} refetchCount - Number of times the data has been refetched
+ * @property {*} data - The fetched data
+ * @property {function} refetch - Function to manually refetch data
+ * @property {function} invalidate - Function to invalidate cache
  */
-export interface UseQueryResult<TData, TError> {
-  /**
-   * Whether data is currently being loaded
-   */
-  isLoading: boolean;
-  
-  /**
-   * Whether data is currently being fetched
-   */
-  isFetching: boolean;
-  
-  /**
-   * Whether there was an error
-   */
-  isError: boolean;
-  
-  /**
-   * Whether data was successfully loaded
-   */
-  isSuccess: boolean;
-  
-  /**
-   * Error information
-   */
-  error: TError | null;
-  
-  /**
-   * Timestamp of the last data update
-   */
-  lastUpdated: number | null;
-  
-  /**
-   * Number of times the data has been refetched
-   */
-  refetchCount: number;
-  
-  /**
-   * The fetched data
-   */
-  data: TData | null;
-  
-  /**
-   * Function to manually refetch data
-   */
-  refetch: () => Promise<TData>;
-  
-  /**
-   * Function to invalidate cache
-   */
-  invalidate: () => void;
-}
 
 /**
  * Configuration options for useMutation hook
+ * @typedef {Object} UseMutationOptions
+ * @property {function} [onSuccess] - Function called when mutation is successful
+ * @property {function} [onError] - Function called when mutation fails
+ * @property {function} [onSettled] - Function called when mutation settles (success or error)
+ * @property {number|boolean} [retry] - Whether to retry on failure
+ * @property {number} [retryDelay] - Retry delay in milliseconds
  */
-export interface UseMutationOptions<TData, TVariables, TError> {
-  /**
-   * Function called when mutation is successful
-   */
-  onSuccess?: (data: TData, variables: TVariables) => void;
-  
-  /**
-   * Function called when mutation fails
-   */
-  onError?: (error: TError, variables: TVariables) => void;
-  
-  /**
-   * Function called when mutation settles (success or error)
-   */
-  onSettled?: (data: TData | undefined, error: TError | null, variables: TVariables) => void;
-  
-  /**
-   * Whether to retry on failure
-   */
-  retry?: number | false;
-  
-  /**
-   * Retry delay in milliseconds
-   */
-  retryDelay?: number;
-}
 
 /**
  * Return type for useMutation hook
+ * @typedef {Object} UseMutationResult
+ * @property {boolean} isLoading - Whether mutation is currently being loaded
+ * @property {boolean} isFetching - Whether mutation is currently being executed
+ * @property {boolean} isError - Whether there was an error
+ * @property {boolean} isSuccess - Whether mutation was successful
+ * @property {Error|null} error - Error information
+ * @property {number|null} lastUpdated - Timestamp of the last mutation
+ * @property {number} refetchCount - Number of times the mutation was attempted
+ * @property {*} data - The mutation result data
+ * @property {function} mutate - Function to trigger the mutation
+ * @property {function} reset - Function to reset the mutation state
  */
-export interface UseMutationResult<TData, TVariables, TError> {
-  /**
-   * Whether mutation is currently being loaded
-   */
-  isLoading: boolean;
-  
-  /**
-   * Whether mutation is currently being executed
-   */
-  isFetching: boolean;
-  
-  /**
-   * Whether there was an error
-   */
-  isError: boolean;
-  
-  /**
-   * Whether mutation was successful
-   */
-  isSuccess: boolean;
-  
-  /**
-   * Error information
-   */
-  error: TError | null;
-  
-  /**
-   * Timestamp of the last mutation
-   */
-  lastUpdated: number | null;
-  
-  /**
-   * Number of times the mutation was attempted
-   */
-  refetchCount: number;
-  
-  /**
-   * The mutation result data
-   */
-  data: TData | null;
-  
-  /**
-   * Function to trigger the mutation
-   */
-  mutate: (variables: TVariables) => Promise<TData>;
-  
-  /**
-   * Function to reset the mutation state
-   */
-  reset: () => void;
-}
 
 /**
  * Return type for useInfiniteQuery hook
+ * @typedef {Object} UseInfiniteQueryResult
+ * @property {boolean} isLoading - Whether data is currently being loaded
+ * @property {boolean} isFetching - Whether data is currently being fetched
+ * @property {boolean} isError - Whether there was an error
+ * @property {boolean} isSuccess - Whether data was successfully loaded
+ * @property {Error|null} error - Error information
+ * @property {number|null} lastUpdated - Timestamp of the last data update
+ * @property {number} refetchCount - Number of times the data has been refetched
+ * @property {Array} data - The fetched data array
+ * @property {boolean} hasNextPage - Whether there's more data to fetch
+ * @property {boolean} isFetchingNextPage - Whether currently fetching next page
+ * @property {function} fetchNextPage - Function to fetch next page
+ * @property {function} refetch - Function to refetch all pages
  */
-export interface UseInfiniteQueryResult<TData, TError> {
-  /**
-   * Whether data is currently being loaded
-   */
-  isLoading: boolean;
-  
-  /**
-   * Whether data is currently being fetched
-   */
-  isFetching: boolean;
-  
-  /**
-   * Whether there was an error
-   */
-  isError: boolean;
-  
-  /**
-   * Whether data was successfully loaded
-   */
-  isSuccess: boolean;
-  
-  /**
-   * Error information
-   */
-  error: TError | null;
-  
-  /**
-   * Timestamp of the last data update
-   */
-  lastUpdated: number | null;
-  
-  /**
-   * Number of times the data has been refetched
-   */
-  refetchCount: number;
-  
-  /**
-   * The fetched data array
-   */
-  data: TData[];
-  
-  /**
-   * Whether there's more data to fetch
-   */
-  hasNextPage: boolean;
-  
-  /**
-   * Whether currently fetching next page
-   */
-  isFetchingNextPage: boolean;
-  
-  /**
-   * Function to fetch next page
-   */
-  fetchNextPage: () => Promise<void>;
-  
-  /**
-   * Function to refetch all pages
-   */
-  refetch: () => Promise<void>;
-}
 
 /**
  * Internal state interface for hooks
+ * @typedef {Object} HookState
+ * @property {boolean} isLoading - Loading state
+ * @property {boolean} isFetching - Fetching state
+ * @property {boolean} isError - Error state
+ * @property {boolean} isSuccess - Success state
+ * @property {Error|null} error - Error object
+ * @property {number|null} lastUpdated - Last update timestamp
+ * @property {number} refetchCount - Refetch count
+ * @property {*} data - Data payload
+ * @property {Object} metadata - Request metadata
+ * @property {string} metadata.source - Data source
+ * @property {boolean} metadata.cacheHit - Cache hit flag
+ * @property {number} metadata.requestDuration - Request duration
+ * @property {number} metadata.retryCount - Retry count
  */
-interface HookState<TData, TError> {
-  isLoading: boolean;
-  isFetching: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  error: TError | null;
-  lastUpdated: number | null;
-  refetchCount: number;
-  data: TData | null;
-  metadata: {
-    source: 'network' | 'cache' | 'websocket';
-    cacheHit: boolean;
-    requestDuration: number;
-    retryCount: number;
-  };
-}
 
 /**
  * React hook for data fetching with automatic state management
+ * 
+ * @param {string|string[]} key - Query key for caching
+ * @param {function} fetcher - Function to fetch data
+ * @param {UseQueryOptions} [options] - Configuration options
+ * @returns {UseQueryResult} Query result with state and actions
  */
-export function useQuery<TData, TError = Error>(
-  key: string | string[],
-  fetcher: () => Promise<TData>,
-  options: UseQueryOptions<TData, TError> = {}
-): UseQueryResult<TData, TError> {
-  const [state, setState] = useState<HookState<TData, TError>>({
+export function useQuery(key, fetcher, options = {}) {
+  const [state, setState] = useState({
     isLoading: true,
     isFetching: false,
     isError: false,
@@ -307,11 +122,11 @@ export function useQuery<TData, TError = Error>(
     }
   });
 
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const refetchIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef(null);
+  const retryTimeoutRef = useRef(null);
+  const refetchIntervalRef = useRef(null);
 
-  const executeQuery = useCallback(async (isRefetch = false): Promise<TData> => {
+  const executeQuery = useCallback(async (isRefetch = false) => {
     // Cancel previous request if enabled
     if (options.enableRequestCancellation && abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -344,7 +159,7 @@ export function useQuery<TData, TError = Error>(
     const maxRetries = options.retry === false ? 0 : (options.retry || 3);
     const retryDelay = options.retryDelay || 1000;
 
-    const attemptFetch = async (): Promise<TData> => {
+    const attemptFetch = async () => {
       try {
         const startTime = Date.now();
         
@@ -386,7 +201,7 @@ export function useQuery<TData, TError = Error>(
           
           return attemptFetch();
         } else {
-          const errorObj = error as TError;
+          const errorObj = error;
           
           setState(prev => ({
             ...prev,
@@ -489,12 +304,13 @@ export function useQuery<TData, TError = Error>(
 
 /**
  * React hook for mutations with automatic state management
+ * 
+ * @param {function} mutator - Mutation function
+ * @param {UseMutationOptions} [options] - Configuration options
+ * @returns {UseMutationResult} Mutation result with state and actions
  */
-export function useMutation<TData, TVariables = void, TError = Error>(
-  mutator: (variables: TVariables) => Promise<TData>,
-  options: UseMutationOptions<TData, TVariables, TError> = {}
-): UseMutationResult<TData, TVariables, TError> {
-  const [state, setState] = useState<HookState<TData, TError>>({
+export function useMutation(mutator, options = {}) {
+  const [state, setState] = useState({
     isLoading: false,
     isFetching: false,
     isError: false,
@@ -511,7 +327,7 @@ export function useMutation<TData, TVariables = void, TError = Error>(
     }
   });
 
-  const mutate = useCallback(async (variables: TVariables): Promise<TData> => {
+  const mutate = useCallback(async (variables) => {
     setState(prev => ({
       ...prev,
       isLoading: true,
@@ -526,7 +342,7 @@ export function useMutation<TData, TVariables = void, TError = Error>(
     const maxRetries = options.retry === false ? 0 : (options.retry || 3);
     const retryDelay = options.retryDelay || 1000;
 
-    const attemptMutation = async (): Promise<TData> => {
+    const attemptMutation = async () => {
       try {
         const startTime = Date.now();
         const result = await mutator(variables);
@@ -569,7 +385,7 @@ export function useMutation<TData, TVariables = void, TError = Error>(
           
           return attemptMutation();
         } else {
-          const errorObj = error as TError;
+          const errorObj = error;
           
           setState(prev => ({
             ...prev,
@@ -625,17 +441,14 @@ export function useMutation<TData, TVariables = void, TError = Error>(
 
 /**
  * React hook for infinite queries with pagination
+ * 
+ * @param {string|string[]} key - Query key for caching
+ * @param {function} fetcher - Function to fetch data
+ * @param {UseQueryOptions} [options] - Configuration options
+ * @returns {UseInfiniteQueryResult} Infinite query result with state and actions
  */
-export function useInfiniteQuery<TData, TError = Error>(
-  key: string | string[],
-  fetcher: (pageParam: any) => Promise<{
-    data: TData[];
-    nextPage?: any;
-    hasMore?: boolean;
-  }>,
-  options: UseQueryOptions<TData[], TError> = {}
-): UseInfiniteQueryResult<TData, TError> {
-  const [state, setState] = useState<HookState<TData[], TError>>({
+export function useInfiniteQuery(key, fetcher, options = {}) {
+  const [state, setState] = useState({
     isLoading: true,
     isFetching: false,
     isError: false,
@@ -652,11 +465,11 @@ export function useInfiniteQuery<TData, TError = Error>(
     }
   });
 
-  const [pageParam, setPageParam] = useState<any>(undefined);
+  const [pageParam, setPageParam] = useState(undefined);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
 
-  const executeQuery = useCallback(async (isRefetch = false): Promise<void> => {
+  const executeQuery = useCallback(async (isRefetch = false) => {
     if (isFetchingNextPage) return;
 
     if (!isRefetch) {
@@ -708,7 +521,7 @@ export function useInfiniteQuery<TData, TError = Error>(
       }
 
     } catch (error) {
-      const errorObj = error as TError;
+      const errorObj = error;
       
       setState(prev => ({
         ...prev,
