@@ -116,7 +116,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
     searchQuery: '',
     activeFilter: null,
     realTimeEnabled: false,
-    pushNotificationStatus: 'disabled',
+    pushNotificationStatus: { enabled: false, subscribed: false, deviceCount: 0, activeDevices: 0 },
     quietHours: null,
     preferences: null,
     lastSyncTime: null,
@@ -449,7 +449,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
       setState(prev => ({
         ...prev,
-        pushNotificationStatus: status
+        pushNotificationStatus: { ...prev.pushNotificationStatus, ...status }
       }));
     } catch (error) {
       setState(prev => ({
@@ -468,7 +468,7 @@ export const useEnterpriseNotifications = (): EnterpriseNotificationState & Ente
 
       setState(prev => ({
         ...prev,
-        pushNotificationStatus: 'disabled'
+        pushNotificationStatus: { enabled: false, subscribed: false, deviceCount: 0, activeDevices: 0 }
       }));
     } catch (error) {
       setState(prev => ({

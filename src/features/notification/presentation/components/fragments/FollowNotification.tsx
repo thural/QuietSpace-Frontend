@@ -1,6 +1,6 @@
-import FollowToggle from "@shared/FollowToggle";
-import { useGetUserById } from "@services/data/useUserData";
-import { NotificationItemProps } from "@shared-types/notificationTypes";
+import { FollowToggle } from "@shared/ui/components/utility";
+import { useGetUserById } from "@profile/data/useUserData";
+import { NotificationItemProps } from "../../../types/notificationTypes";
 import { useNavigate } from "react-router-dom";
 import NotificationCard from "../NotificationCard";
 import NotificationSkeleton from "../../../shared/NotificationSkeleton";
@@ -20,7 +20,7 @@ import NotificationSkeleton from "../../../shared/NotificationSkeleton";
 const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) => {
     const navigate = useNavigate();
     const { actorId } = notification;
-    const { data: user, isLoading } = useGetUserById(actorId);
+    const { user, loading } = useGetUserById(actorId);
 
     /**
      * Handles click events on the notification card.
@@ -33,7 +33,7 @@ const FollowNotification: React.FC<NotificationItemProps> = ({ notification }) =
     };
 
     // Return a loading skeleton if the user data is still being fetched
-    if (isLoading || user === undefined) return <NotificationSkeleton />;
+    if (loading || user === undefined) return <NotificationSkeleton />;
 
     return (
         <NotificationCard notification={notification} onClick={handleClick} text={"followed you"}>

@@ -88,15 +88,16 @@ export interface ChatReaction {
  * Chat Settings entity.
  */
 export interface ChatSettings {
-    notifications: boolean;
     sound: boolean;
     vibration: boolean;
-    desktopNotifications: boolean;
-    mobileNotifications: boolean;
-    emailNotifications: boolean;
     doNotDisturb: boolean;
     autoMarkAsRead: boolean;
     messagePreview: boolean;
+    typingIndicators: boolean;
+    onlineStatus: boolean;
+    readReceipts: boolean;
+    theme: 'light' | 'dark' | 'auto';
+    fontSize: 'small' | 'medium' | 'large';
 }
 
 /**
@@ -140,19 +141,4 @@ export interface ChatTypingIndicator {
     userName: string;
     isTyping: boolean;
     timestamp: string;
-}
-
-/**
- * Chat Notification entity.
- */
-export interface ChatNotification {
-    id: string;
-    chatId: ResId;
-    userId: string;
-    type: 'new_message' | 'new_chat' | 'participant_added' | 'participant_removed' | 'chat_updated';
-    title: string;
-    message: string;
-    timestamp: string;
-    isRead: boolean;
-    data?: any;
 }

@@ -32,21 +32,21 @@ const LoadingSpinner: React.FC = () => (
 /**
  * Error Message Component
  */
-const ErrorMessage: React.FC<{ error: string; onRetry: () => void; onClear: () => void }> = ({ 
-  error, 
-  onRetry, 
-  onClear 
+const ErrorMessage: React.FC<{ error: string; onRetry: () => void; onClear: () => void }> = ({
+  error,
+  onRetry,
+  onClear
 }) => (
   <div className="error-message p-4 bg-red-50 border border-red-200 rounded-lg">
     <div className="text-red-700">{error}</div>
     <div className="mt-2 flex space-x-2">
-      <button 
+      <button
         onClick={onRetry}
         className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
       >
         Retry
       </button>
-      <button 
+      <button
         onClick={onClear}
         className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600"
       >
@@ -67,19 +67,17 @@ const NotificationItem: React.FC<{
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className={`notification-item p-4 border rounded-lg mb-2 ${
-      notification.isRead ? 'bg-white border-gray-200' : 'bg-blue-50 border-blue-200'
-    }`}>
+    <div className={`notification-item p-4 border rounded-lg mb-2 ${notification.isRead ? 'bg-white border-gray-200' : 'bg-blue-50 border-blue-200'
+      }`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-2">
             <h4 className="font-medium text-gray-900">{notification.title}</h4>
-            <span className={`px-2 py-1 text-xs rounded ${
-              notification.type === 'info' ? 'bg-blue-100 text-blue-800' :
+            <span className={`px-2 py-1 text-xs rounded ${notification.type === 'info' ? 'bg-blue-100 text-blue-800' :
               notification.type === 'success' ? 'bg-green-100 text-green-800' :
-              notification.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-red-100 text-red-800'
-            }`}>
+                notification.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-red-100 text-red-800'
+              }`}>
               {notification.type}
             </span>
             {!notification.isRead && (
@@ -128,77 +126,77 @@ const NotificationItem: React.FC<{
  */
 const RealTimeStatus: React.FC<{
   realTimeEnabled: boolean;
-  pushNotificationStatus: string;
+  pushNotificationStatus: import('../../domain/entities/INotificationRepository').PushNotificationStatus;
   onEnableRealTime: () => void;
   onDisableRealTime: () => void;
   onSubscribePush: () => void;
   onUnsubscribePush: () => void;
-}> = ({ 
-  realTimeEnabled, 
-  pushNotificationStatus, 
-  onEnableRealTime, 
+}> = ({
+  realTimeEnabled,
+  pushNotificationStatus,
+  onEnableRealTime,
   onDisableRealTime,
   onSubscribePush,
   onUnsubscribePush
 }) => (
-  <div className="real-time-status p-4 bg-green-50 border border-green-200 rounded-lg">
-    <div className="font-medium mb-2">Real-time Features</div>
-    <div className="space-y-2 text-sm">
-      <div className="flex items-center justify-between">
-        <span>Real-time Notifications:</span>
-        <span className={`px-2 py-1 rounded text-xs ${
-          realTimeEnabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-        }`}>
-          {realTimeEnabled ? 'Enabled' : 'Disabled'}
-        </span>
+    <div className="real-time-status p-4 bg-green-50 border border-green-200 rounded-lg">
+      <div className="font-medium mb-2">Real-time Features</div>
+      <div className="space-y-2 text-sm">
+        <div className="flex items-center justify-between">
+          <span>Real-time Notifications:</span>
+          <span className={`px-2 py-1 rounded text-xs ${realTimeEnabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+            }`}>
+            {realTimeEnabled ? 'Enabled' : 'Disabled'}
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span>Push Notifications:</span>
+          <span className={`px-2 py-1 rounded text-xs ${pushNotificationStatus.enabled && pushNotificationStatus.subscribed ? 'bg-green-100 text-green-800' :
+            pushNotificationStatus.enabled && !pushNotificationStatus.subscribed ? 'bg-yellow-100 text-yellow-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+            {pushNotificationStatus.enabled && pushNotificationStatus.subscribed ? 'enabled' :
+              pushNotificationStatus.enabled && !pushNotificationStatus.subscribed ? 'pending' :
+                'disabled'}
+          </span>
+        </div>
       </div>
-      <div className="flex items-center justify-between">
-        <span>Push Notifications:</span>
-        <span className={`px-2 py-1 rounded text-xs ${
-          pushNotificationStatus === 'enabled' ? 'bg-green-100 text-green-800' :
-          pushNotificationStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-          'bg-gray-100 text-gray-800'
-        }`}>
-          {pushNotificationStatus}
-        </span>
+      <div className="mt-3 space-y-2">
+        {!realTimeEnabled && (
+          <button
+            onClick={onEnableRealTime}
+            className="w-full px-3 py-2 bg-green-500 text-white rounded text-sm hover:bg-green-600"
+          >
+            Enable Real-time
+          </button>
+        )}
+        {realTimeEnabled && (
+          <button
+            onClick={onDisableRealTime}
+            className="w-full px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+          >
+            Disable Real-time
+          </button>
+        )}
+        {!pushNotificationStatus.enabled && (
+          <button
+            onClick={onSubscribePush}
+            className="w-full px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+          >
+            Enable Push Notifications
+          </button>
+        )}
+        {pushNotificationStatus.enabled && pushNotificationStatus.subscribed && (
+          <button
+            onClick={onUnsubscribePush}
+            className="w-full px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+          >
+            Disable Push Notifications
+          </button>
+        )}
       </div>
     </div>
-    <div className="mt-3 space-y-2">
-      {!realTimeEnabled && (
-        <button 
-          onClick={onEnableRealTime}
-          className="w-full px-3 py-2 bg-green-500 text-white rounded text-sm hover:bg-green-600"
-        >
-          Enable Real-time
-        </button>
-      )}
-      {realTimeEnabled && (
-        <button 
-          onClick={onDisableRealTime}
-          className="w-full px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600"
-        >
-          Disable Real-time
-        </button>
-      )}
-      {pushNotificationStatus === 'disabled' && (
-        <button 
-          onClick={onSubscribePush}
-          className="w-full px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-        >
-          Enable Push Notifications
-        </button>
-      )}
-      {pushNotificationStatus === 'enabled' && (
-        <button 
-          onClick={onUnsubscribePush}
-          className="w-full px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600"
-        >
-          Disable Push Notifications
-        </button>
-      )}
-    </div>
-  </div>
-);
+  );
 
 /**
  * Notification Filters Component
@@ -218,7 +216,7 @@ const NotificationFilters: React.FC<{
   return (
     <div className="notification-filters p-4 bg-gray-50 border border-gray-200 rounded-lg">
       <div className="font-medium mb-3">Filters</div>
-      
+
       {/* Type filters */}
       <div className="mb-4">
         <div className="text-sm font-medium mb-2">By Type</div>
@@ -227,11 +225,10 @@ const NotificationFilters: React.FC<{
             <button
               key={filter}
               onClick={() => onFilterChange(filter === 'all' ? null : filter)}
-              className={`px-3 py-1 text-xs rounded ${
-                (filter === 'all' && !activeFilter) || activeFilter === filter
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+              className={`px-3 py-1 text-xs rounded ${(filter === 'all' && !activeFilter) || activeFilter === filter
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
@@ -297,14 +294,14 @@ export const EnterpriseNotificationExample: React.FC<EnterpriseNotificationExamp
   const [showFilters, setShowFilters] = useState(false);
 
   // Use either migration hook or direct enterprise hook
-  const notifications = enableMigrationMode 
+  const notifications = enableMigrationMode
     ? useNotificationMigration({
-        useEnterpriseHooks: true,
-        enableFallback: true,
-        logMigrationEvents: true,
-        realTimeLevel,
-        pushNotificationLevel
-      })
+      useEnterpriseHooks: true,
+      enableFallback: true,
+      logMigrationEvents: true,
+      realTimeLevel,
+      pushNotificationLevel
+    })
     : useEnterpriseNotifications();
 
   // Handle notification actions
@@ -322,17 +319,31 @@ export const EnterpriseNotificationExample: React.FC<EnterpriseNotificationExamp
 
   const handleFilterChange = (filter: string | null) => {
     notifications.setFilters({ type: filter as NotificationType });
-    notifications.fetchNotifications();
+    // Handle different hook signatures for migration vs enterprise mode
+    if (enableMigrationMode) {
+      // Migration mode: fetchNotifications(userId, query)
+      (notifications as any).fetchNotifications('current-user-id', {});
+    } else {
+      // Enterprise mode: fetchNotifications(query)
+      (notifications as any).fetchNotifications({ userId: 'current-user-id' });
+    }
   };
 
   const handleSearch = (query: string) => {
-    notifications.searchNotifications(query);
+    // Handle different hook signatures for migration vs enterprise mode
+    if (enableMigrationMode) {
+      // Migration mode: searchNotifications(query, userId)
+      (notifications as any).searchNotifications(query, 'current-user-id');
+    } else {
+      // Enterprise mode: searchNotifications(query)
+      (notifications as any).searchNotifications(query);
+    }
   };
 
   return (
     <div className={`enterprise-notification-example max-w-4xl mx-auto ${className}`}>
       {/* Migration Info */}
-      {enableMigrationMode && (
+      {enableMigrationMode && 'migration' in notifications && (
         <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Migration Mode</span>
@@ -424,14 +435,16 @@ export const EnterpriseNotificationExample: React.FC<EnterpriseNotificationExamp
               <h2 className="text-lg font-semibold mb-4">
                 {notifications.activeFilter ? `${notifications.activeFilter.charAt(0).toUpperCase() + notifications.activeFilter.slice(1)} Notifications` : 'All Notifications'}
               </h2>
-              
+
               {/* Loading State */}
               {notifications.isLoading && <LoadingSpinner />}
 
               {/* Error State */}
               {notifications.error && (
-                <ErrorMessage 
-                  error={notifications.error} 
+                <ErrorMessage
+                  error={typeof notifications.error === 'string'
+                    ? notifications.error
+                    : notifications.error?.message || 'An error occurred'}
                   onRetry={notifications.retry}
                   onClear={notifications.clearError}
                 />
@@ -491,9 +504,9 @@ export const EnterpriseNotificationExample: React.FC<EnterpriseNotificationExamp
               <h3 className="text-lg font-semibold mb-4">Debug Information</h3>
               <div className="space-y-2 text-xs">
                 <div>Real-time Enabled: {notifications.realTimeEnabled.toString()}</div>
-                <div>Push Status: {notifications.pushNotificationStatus}</div>
+                <div>Push Status: {JSON.stringify(notifications.pushNotificationStatus)}</div>
                 <div>Loading: {notifications.isLoading.toString()}</div>
-                <div>Error: {notifications.error || 'None'}</div>
+                <div>Error: {typeof notifications.error === 'string' ? notifications.error : notifications.error?.message || 'Unknown error'}</div>
                 <div>Sync In Progress: {notifications.syncInProgress.toString()}</div>
                 <div>Active Filter: {notifications.activeFilter || 'None'}</div>
                 {notifications.quietHours && (

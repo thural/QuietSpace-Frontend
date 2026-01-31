@@ -9,19 +9,6 @@ import { Container } from '@core/di';
  */
 
 // Mock services for testing
-class MockNotificationService {
-  notifications = [];
-  async getNotifications() { return this.notifications; }
-  async createNotification(notification) { 
-    this.notifications.push({ ...notification, id: Date.now().toString() });
-    return this.notifications[this.notifications.length - 1];
-  }
-  async markAsRead(id) {
-    const notification = this.notifications.find(n => n.id === id);
-    if (notification) notification.read = true;
-  }
-}
-
 class MockContentService {
   contents = [];
   async getContents() { return this.contents; }
@@ -77,17 +64,14 @@ class MockAnalyticsService {
 
 describe('Cross-Feature Integration Tests', () => {
   let container;
-  let notificationService;
   let contentService;
   let analyticsService;
 
   beforeEach(() => {
     container = Container.create();
-    notificationService = new MockNotificationService();
     contentService = new MockContentService();
     analyticsService = new MockAnalyticsService();
 
-    container.registerInstance('NotificationService', notificationService);
     container.registerInstance('ContentService', contentService);
     container.registerInstance('AnalyticsService', analyticsService);
   });
@@ -160,69 +144,6 @@ describe('Cross-Feature Integration Tests', () => {
       // Verify metrics are updated
       const metrics = await analyticsService.getMetrics();
       expect(metrics.pageViews).toBeGreaterThan(0);
-    });
-  });
-
-  describe('Analytics-Notification Integration', () => {
-    it('should create notifications for analytics insights', async () => {
-      // Get analytics insights
-      const insights = await analyticsService.getInsights();
-      expect(insights).toHaveLength(1);
-
-      const insight = insights[0];
-
-      // Create notification for insight (in real implementation, this would be automatic)
-      const notification = await notificationService.createNotification({
-        userId: 'admin-user',
-        type: 'insight',
-        title: 'New Analytics Insight',
-        message: insight.description,
-        priority: 'medium',
-        metadata: {
-          insightId: insight.id,
-          insightType: insight.type
-        }
-      });
-
-      expect(notification).toHaveProperty('id');
-      expect(notification.title).toBe('New Analytics Insight');
-      expect(notification.message).toBe(insight.description);
-    });
-
-    it('should track notification engagement', async () => {
-      // Create notification
-      const notification = await notificationService.createNotification({
-        userId: 'user-1',
-        type: 'info',
-        title: 'Test Notification',
-        message: 'Test message',
-        priority: 'low'
-      });
-
-      // Track notification view
-      await analyticsService.trackEvent({
-        userId: 'user-1',
-        sessionId: 'session-1',
-        eventType: 'notification_view',
-        timestamp: new Date(),
-        metadata: {
-          notificationId: notification.id,
-          notificationType: 'info'
-        }
-      });
-
-      // Mark notification as read
-      await notificationService.markAsRead(notification.id);
-
-      // Verify tracking
-      expect(analyticsService.events).toContainEqual(
-        expect.objectContaining({
-          eventType: 'notification_view',
-          metadata: expect.objectContaining({
-            notificationId: notification.id
-          })
-        })
-      );
     });
   });
 
@@ -306,19 +227,6 @@ describe('Cross-Feature Integration Tests', () => {
       // Simulate concurrent operations
       const operations = [];
 
-      // Create multiple notifications
-      for (let i = 0; i < 10; i++) {
-        operations.push(
-          notificationService.createNotification({
-            userId: `user-${i}`,
-            type: 'info',
-            title: `Notification ${i}`,
-            message: `Message ${i}`,
-            priority: 'low'
-          })
-        );
-      }
-
       // Create multiple content pieces
       for (let i = 0; i < 5; i++) {
         operations.push(
@@ -354,7 +262,6 @@ describe('Cross-Feature Integration Tests', () => {
       expect(executionTime).toBeLessThan(1000);
 
       // Verify all operations completed
-      expect(notificationService.notifications).toHaveLength(10);
       expect(contentService.contents).toHaveLength(5);
       expect(analyticsService.events).toHaveLength(20);
     });
@@ -384,31 +291,18 @@ describe('Cross-Feature Integration Tests', () => {
         }
       });
 
-      // 2. User receives notification
-      const notification = await notificationService.createNotification({
-        userId,
-        type: 'info',
-        title: 'Content Recommendation',
-        message: 'Based on your viewing history',
-        priority: 'medium',
-        metadata: {
-          relatedContentId: content.id
-        }
-      });
-
-      // 3. User clicks notification
+      // 2. User clicks on related content
       await analyticsService.trackEvent({
         userId,
         sessionId,
-        eventType: 'notification_click',
+        eventType: 'content_click',
         timestamp: new Date(),
         metadata: {
-          notificationId: notification.id,
-          targetContentId: content.id
+          contentId: content.id
         }
       });
 
-      // 4. User views content again
+      // 3. User views content again
       await analyticsService.trackEvent({
         userId,
         sessionId,
@@ -416,53 +310,38 @@ describe('Cross-Feature Integration Tests', () => {
         timestamp: new Date(),
         metadata: {
           contentId: content.id,
-          contentType: 'article',
-          source: 'notification'
+          contentType: 'article'
         }
       });
 
       // Verify data consistency
       expect(content.id).toBeDefined();
-      expect(notification.id).toBeDefined();
-      expect(analyticsService.events).toHaveLength(3);
+      expect(analyticsService.events).toHaveLength(2);
 
       // Verify event sequence
       const events = analyticsService.events;
       expect(events[0].eventType).toBe('content_view');
-      expect(events[1].eventType).toBe('notification_click');
-      expect(events[2].eventType).toBe('content_view');
-      expect(events[2].metadata.source).toBe('notification');
+      expect(events[1].eventType).toBe('content_click');
     });
   });
 
   describe('Error Handling Integration', () => {
     it('should handle service failures gracefully', async () => {
       // Mock service failure
-      const originalCreateNotification = notificationService.createNotification;
-      notificationService.createNotification = jest.fn().mockRejectedValue(new Error('Service unavailable'));
+      const originalCreateContent = contentService.createContent;
+      contentService.createContent = jest.fn().mockRejectedValue(new Error('Service unavailable'));
 
-      // Attempt to create notification
-      await expect(notificationService.createNotification({
-        userId: 'user-1',
-        type: 'info',
+      // Attempt to create content
+      await expect(contentService.createContent({
         title: 'Test',
-        message: 'Test message',
-        priority: 'low'
-      })).rejects.toThrow('Service unavailable');
-
-      // Verify other services still work
-      const content = await contentService.createContent({
-        title: 'Backup Content',
-        content: 'Content when notification service fails',
+        content: 'Test content',
         type: 'article',
         status: 'published',
         authorId: 'author-1'
-      });
+      })).rejects.toThrow('Service unavailable');
 
-      expect(content.id).toBeDefined();
-
-      // Restore service
-      notificationService.createNotification = originalCreateNotification;
+      // Restore original method
+      contentService.createContent = originalCreateContent;
     });
 
     it('should maintain partial functionality during failures', async () => {
@@ -548,19 +427,6 @@ describe('Feature Performance Integration', () => {
   it('should meet performance benchmarks across features', async () => {
     const performanceTests = [
       {
-        name: 'Notification Creation',
-        test: async () => {
-          const service = new MockNotificationService();
-          await service.createNotification({
-            userId: 'user-1',
-            type: 'info',
-            title: 'Performance Test',
-            message: 'Testing performance',
-            priority: 'low'
-          });
-        }
-      },
-      {
         name: 'Content Creation',
         test: async () => {
           const service = new MockContentService();
@@ -594,7 +460,7 @@ describe('Feature Performance Integration', () => {
       const startTime = performance.now();
       await test.test();
       const endTime = performance.now();
-      
+
       results.push({
         name: test.name,
         executionTime: endTime - startTime

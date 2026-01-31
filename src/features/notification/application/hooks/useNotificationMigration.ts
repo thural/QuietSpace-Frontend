@@ -82,12 +82,12 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
   useEffect(() => {
     if (config.logMigrationEvents) {
       const startTime = performance.now();
-      
+
       // Simulate performance measurement
       setTimeout(() => {
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         setMigrationState(prev => ({
           ...prev,
           performanceMetrics: {
@@ -95,7 +95,7 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
             enterpriseHookTime: duration
           }
         }));
-        
+
         console.log(`🔔 Enterprise notification hook performance: ${duration.toFixed(2)}ms`);
       }, 0);
     }
@@ -104,21 +104,21 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
   // Error handling and fallback
   useEffect(() => {
     const errors: string[] = [];
-    
+
     if (enterpriseNotifications.error) {
       errors.push(`Enterprise notification error: ${enterpriseNotifications.error}`);
     }
-    
+
     if (legacyNotifications.error) {
       errors.push(`Legacy notification error: ${legacyNotifications.error}`);
     }
-    
+
     if (errors.length > 0) {
       setMigrationState(prev => ({
         ...prev,
         migrationErrors: errors
       }));
-      
+
       if (config.logMigrationEvents) {
         console.warn('🔔 Notification migration errors:', errors);
       }
@@ -135,7 +135,7 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
       ...prev,
       features: {
         realTimeEnabled: enterpriseNotifications.realTimeEnabled || false,
-        pushNotificationsEnabled: enterpriseNotifications.pushNotificationStatus !== 'disabled',
+        pushNotificationsEnabled: enterpriseNotifications.pushNotificationStatus.enabled,
         advancedFiltering: !!enterpriseNotifications.filters,
         intelligentCaching: !!enterpriseNotifications.lastSyncTime
       }
@@ -148,7 +148,7 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
   ]);
 
   // Determine which hooks to use based on configuration and errors
-  const shouldUseEnterprise = config.useEnterpriseHooks && 
+  const shouldUseEnterprise = config.useEnterpriseHooks &&
     (migrationState.migrationErrors.length === 0 || !config.enableFallback);
 
   // Update migration state
@@ -228,7 +228,9 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
         searchQuery: '',
         activeFilter: null,
         realTimeEnabled: config.realTimeLevel !== 'basic',
-        pushNotificationStatus: config.pushNotificationLevel === 'disabled' ? 'disabled' : 'enabled',
+        pushNotificationStatus: config.pushNotificationLevel === 'disabled'
+          ? { enabled: false, subscribed: false, deviceCount: 0, activeDevices: 0 }
+          : { enabled: true, subscribed: false, deviceCount: 0, activeDevices: 0 },
         quietHours: null,
         preferences: null,
         lastSyncTime: null,
@@ -246,10 +248,10 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
         deleteMultipleNotifications: enterpriseNotifications.deleteMultipleNotifications,
         getNotificationById: enterpriseNotifications.getNotificationById,
         searchNotifications: enterpriseNotifications.searchNotifications,
-        enableRealTimeNotifications: config.realTimeLevel !== 'basic' ? enterpriseNotifications.enableRealTimeNotifications : async () => {},
-        disableRealTimeNotifications: config.realTimeLevel !== 'basic' ? enterpriseNotifications.disableRealTimeNotifications : async () => {},
-        subscribeToPushNotifications: config.pushNotificationLevel !== 'disabled' ? enterpriseNotifications.subscribeToPushNotifications : async () => {},
-        unsubscribeFromPushNotifications: config.pushNotificationLevel !== 'disabled' ? enterpriseNotifications.unsubscribeFromPushNotifications : async () => {},
+        enableRealTimeNotifications: config.realTimeLevel !== 'basic' ? enterpriseNotifications.enableRealTimeNotifications : async () => { },
+        disableRealTimeNotifications: config.realTimeLevel !== 'basic' ? enterpriseNotifications.disableRealTimeNotifications : async () => { },
+        subscribeToPushNotifications: config.pushNotificationLevel !== 'disabled' ? enterpriseNotifications.subscribeToPushNotifications : async () => { },
+        unsubscribeFromPushNotifications: config.pushNotificationLevel !== 'disabled' ? enterpriseNotifications.unsubscribeFromPushNotifications : async () => { },
         updateNotificationSettings: enterpriseNotifications.updateNotificationSettings,
         updateNotificationPreferences: enterpriseNotifications.updateNotificationPreferences,
         setQuietHours: enterpriseNotifications.setQuietHours,
@@ -284,37 +286,37 @@ export const useNotificationMigration = (config: NotificationMigrationConfig = {
     searchQuery: legacyNotifications.searchQuery || '',
     activeFilter: legacyNotifications.activeFilter,
     realTimeEnabled: false,
-    pushNotificationStatus: 'disabled',
+    pushNotificationStatus: { enabled: false, subscribed: false, deviceCount: 0, activeDevices: 0 },
     quietHours: null,
     preferences: null,
     lastSyncTime: null,
     syncInProgress: false,
 
     // Legacy notification actions
-    fetchNotifications: legacyNotifications.fetchNotifications || (async () => {}),
-    fetchNotificationsByType: legacyNotifications.fetchNotificationsByType || (async () => {}),
-    fetchUnreadCount: legacyNotifications.fetchUnreadCount || (async () => {}),
-    refreshNotifications: async () => {},
-    markAsRead: legacyNotifications.markAsRead || (async () => {}),
-    markMultipleAsRead: legacyNotifications.markMultipleAsRead || (async () => {}),
-    markAllAsRead: legacyNotifications.markAllAsRead || (async () => {}),
-    deleteNotification: legacyNotifications.deleteNotification || (async () => {}),
-    deleteMultipleNotifications: legacyNotifications.deleteMultipleNotifications || (async () => {}),
-    getNotificationById: legacyNotifications.getNotificationById || (async () => {}),
-    searchNotifications: legacyNotifications.searchNotifications || (async () => {}),
-    enableRealTimeNotifications: async () => {},
-    disableRealTimeNotifications: async () => {},
-    subscribeToPushNotifications: async () => {},
-    unsubscribeFromPushNotifications: async () => {},
-    updateNotificationSettings: async () => {},
-    updateNotificationPreferences: async () => {},
-    setQuietHours: async () => {},
-    clearQuietHours: async () => {},
-    setSelectedNotification: legacyNotifications.setSelectedNotification || (() => {}),
-    setFilters: legacyNotifications.setFilters || (() => {}),
-    clearError: legacyNotifications.setError || (() => {}),
-    retry: () => {},
-    syncNotifications: async () => {},
+    fetchNotifications: legacyNotifications.fetchNotifications || (async () => { }),
+    fetchNotificationsByType: legacyNotifications.fetchNotificationsByType || (async () => { }),
+    fetchUnreadCount: legacyNotifications.fetchUnreadCount || (async () => { }),
+    refreshNotifications: async () => { },
+    markAsRead: legacyNotifications.markAsRead || (async () => { }),
+    markMultipleAsRead: legacyNotifications.markMultipleAsRead || (async () => { }),
+    markAllAsRead: legacyNotifications.markAllAsRead || (async () => { }),
+    deleteNotification: legacyNotifications.deleteNotification || (async () => { }),
+    deleteMultipleNotifications: legacyNotifications.deleteMultipleNotifications || (async () => { }),
+    getNotificationById: legacyNotifications.getNotificationById || (async () => { }),
+    searchNotifications: legacyNotifications.searchNotifications || (async () => { }),
+    enableRealTimeNotifications: async () => { },
+    disableRealTimeNotifications: async () => { },
+    subscribeToPushNotifications: async () => { },
+    unsubscribeFromPushNotifications: async () => { },
+    updateNotificationSettings: async () => { },
+    updateNotificationPreferences: async () => { },
+    setQuietHours: async () => { },
+    clearQuietHours: async () => { },
+    setSelectedNotification: legacyNotifications.setSelectedNotification || (() => { }),
+    setFilters: legacyNotifications.setFilters || (() => { }),
+    clearError: legacyNotifications.setError || (() => { }),
+    retry: () => { },
+    syncNotifications: async () => { },
 
     // Migration state
     migration: {
@@ -343,35 +345,35 @@ export const NotificationMigrationUtils = {
    */
   getMigrationRecommendations: (migrationState: NotificationMigrationState, config: NotificationMigrationConfig) => {
     const recommendations: string[] = [];
-    
+
     if (!migrationState.isUsingEnterprise) {
       recommendations.push('Enable enterprise hooks for better performance and features');
     }
-    
+
     if (migrationState.migrationErrors.length > 0) {
       recommendations.push('Fix migration errors before completing migration');
     }
-    
+
     if (config.realTimeLevel !== 'maximum') {
       recommendations.push('Consider using maximum real-time level for best experience');
     }
-    
+
     if (config.pushNotificationLevel !== 'enhanced') {
       recommendations.push('Consider enabling enhanced push notifications');
     }
-    
+
     if (!migrationState.features.realTimeEnabled) {
       recommendations.push('Enable real-time notifications for instant updates');
     }
-    
+
     if (!migrationState.features.pushNotificationsEnabled) {
       recommendations.push('Enable push notifications for better user engagement');
     }
-    
+
     if (migrationState.performanceMetrics.enterpriseHookTime > 100) {
       recommendations.push('Consider optimizing notification queries for better performance');
     }
-    
+
     return recommendations;
   },
 

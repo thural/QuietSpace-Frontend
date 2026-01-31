@@ -9,15 +9,10 @@ export type { IChatRepository } from './entities/IChatRepository';
 
 // Domain entities
 export type {
-    ChatQuery,
-    ChatFilters,
-    ChatResult,
-    ChatMessage,
-    ChatAttachment,
-    ChatReaction,
-    ChatSettings,
     ChatParticipant,
     ChatStatus,
     ChatTypingIndicator,
-    ChatNotification
+    ChatMessage,
+    ChatReaction,
+    ChatSettings
 } from './entities/ChatEntities';
