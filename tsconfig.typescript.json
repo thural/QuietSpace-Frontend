@@ -13,8 +13,8 @@
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "allowJs": true,
-    "checkJs": true,
+    "allowJs": false,
+    "checkJs": false,
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
@@ -102,13 +102,15 @@
     ]
   },
   "include": [
-    "src/**/*.js",
-    "src/**/*.jsx"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
     "**/*.spec.js",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "src/**/*.js",
+    "src/**/*.jsx"
   ]
 }
