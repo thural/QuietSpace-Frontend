@@ -6,7 +6,7 @@
  */
 
 // Base API paths
-export const API_PATHS = {
+export const API_PATHS = Object.freeze({
   // Feed/Post endpoints
   POST_URL: '/api/posts',
   COMMENT_PATH: '/api/comments',
@@ -40,7 +40,7 @@ export const API_PATHS = {
   // Chat endpoints
   CHAT_URL: '/api/chat',
   MESSAGE_URL: '/api/messages'
-} as const;
+});
 
 // Export individual constants for backward compatibility
 export const {
@@ -59,9 +59,6 @@ export const {
   CHAT_URL,
   MESSAGE_URL
 } = API_PATHS;
-
-// Type definitions for API paths
-export type ApiPath = typeof API_PATHS[keyof typeof API_PATHS];
 
 // Default export
 export default API_PATHS;

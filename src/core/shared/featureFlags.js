@@ -6,7 +6,7 @@
  */
 
 // Core Feature Flags
-export const CORE_FEATURE_FLAGS = {
+export const CORE_FEATURE_FLAGS = Object.freeze({
     // Metrics and Monitoring
     ENABLE_METRICS: true,
     ENABLE_PERFORMANCE_MONITORING: true,
@@ -51,10 +51,10 @@ export const CORE_FEATURE_FLAGS = {
     ENABLE_SERVICE_LOGGING: true,
     ENABLE_SERVICE_PROFILING: false,
     ENABLE_SERVICE_HEALTH_CHECKS: true
-} as const;
+});
 
 // Environment-specific Feature Flags
-export const ENVIRONMENT_FEATURE_FLAGS = {
+export const ENVIRONMENT_FEATURE_FLAGS = Object.freeze({
     development: {
         ...CORE_FEATURE_FLAGS,
         ENABLE_DEBUG_MODE: true,
@@ -76,25 +76,43 @@ export const ENVIRONMENT_FEATURE_FLAGS = {
         ENABLE_DEVELOPER_TOOLS: false,
         ENABLE_SERVICE_PROFILING: false
     }
-} as const;
-
-// Feature Flag Types
-export type FeatureFlag = keyof typeof CORE_FEATURE_FLAGS;
-export type Environment = 'development' | 'production' | 'test';
+});
 
 // Feature Flag Utilities
-export function isFeatureEnabled(flag: FeatureFlag, environment: Environment = 'production'): boolean {
+
+/**
+ * Check if a feature is enabled for a specific environment
+ * @param {string} flag - Feature flag name
+ * @param {string} environment - Environment name (development, production, test)
+ * @returns {boolean} Whether the feature is enabled
+ */
+export function isFeatureEnabled(flag, environment = 'production') {
     return ENVIRONMENT_FEATURE_FLAGS[environment][flag];
 }
 
-export function getAllFeatureFlags(environment: Environment = 'production'): Record<string, boolean> {
+/**
+ * Get all feature flags for a specific environment
+ * @param {string} environment - Environment name (development, production, test)
+ * @returns {Record<string, boolean>} All feature flags for the environment
+ */
+export function getAllFeatureFlags(environment = 'production') {
     return ENVIRONMENT_FEATURE_FLAGS[environment];
 }
 
-export function enableFeature(flag: FeatureFlag, environment: Environment): void {
-    (ENVIRONMENT_FEATURE_FLAGS[environment] as any)[flag] = true;
+/**
+ * Enable a feature for a specific environment
+ * @param {string} flag - Feature flag name
+ * @param {string} environment - Environment name (development, production, test)
+ */
+export function enableFeature(flag, environment) {
+    ENVIRONMENT_FEATURE_FLAGS[environment][flag] = true;
 }
 
-export function disableFeature(flag: FeatureFlag, environment: Environment): void {
-    (ENVIRONMENT_FEATURE_FLAGS[environment] as any)[flag] = false;
+/**
+ * Disable a feature for a specific environment
+ * @param {string} flag - Feature flag name
+ * @param {string} environment - Environment name (development, production, test)
+ */
+export function disableFeature(flag, environment) {
+    ENVIRONMENT_FEATURE_FLAGS[environment][flag] = false;
 }
