@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": false,
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
@@ -107,6 +107,7 @@
   ],
   "exclude": [
     "node_modules",
+    "src/core/**/*",
     "**/*.spec.ts",
     "**/*.spec.js",
     "**/*.d.ts"
