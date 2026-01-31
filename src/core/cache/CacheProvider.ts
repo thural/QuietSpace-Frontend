@@ -1,47 +1,258 @@
 import { Injectable } from '../di';
 
+/**
+ * Cache entry interface for storing cached data with metadata
+ * 
+ * @interface CacheEntry
+ * @description Represents a single cache entry with data and metadata
+ * @template T - The type of data being cached
+ */
 export interface CacheEntry<T> {
+  /**
+   * The cached data
+   * 
+   * @type {T}
+   */
   data: T;
+
+  /**
+   * Timestamp when the entry was created (Unix timestamp)
+   * 
+   * @type {number}
+   */
   timestamp: number;
+
+  /**
+   * Time to live in milliseconds
+   * 
+   * @type {number}
+   */
   ttl: number;
+
+  /**
+   * Number of times this entry has been accessed
+   * 
+   * @type {number}
+   */
   accessCount: number;
+
+  /**
+   * Timestamp of last access (Unix timestamp)
+   * 
+   * @type {number}
+   */
   lastAccessed: number;
 }
 
+/**
+ * Cache configuration interface
+ * 
+ * @interface CacheConfig
+ * @description Configuration options for cache behavior
+ */
 export interface CacheConfig {
+  /**
+   * Default time to live for cache entries in milliseconds
+   * 
+   * @type {number}
+   */
   defaultTTL: number;
+
+  /**
+   * Maximum number of entries the cache can hold
+   * 
+   * @type {number}
+   */
   maxSize: number;
+
+  /**
+   * Cleanup interval in milliseconds for expired entries
+   * 
+   * @type {number}
+   */
   cleanupInterval: number;
+
+  /**
+   * Whether to enable cache statistics collection
+   * 
+   * @type {boolean}
+   */
   enableStats: boolean;
+
+  /**
+   * Whether to enable Least Recently Used (LRU) eviction
+   * 
+   * @type {boolean}
+   */
   enableLRU: boolean;
 }
 
+/**
+ * Cache statistics interface
+ * 
+ * @interface CacheStats
+ * @description Performance and usage statistics for the cache
+ */
 export interface CacheStats {
+  /**
+   * Current number of entries in the cache
+   * 
+   * @type {number}
+   */
   size: number;
+
+  /**
+   * Number of cache hits
+   * 
+   * @type {number}
+   */
   hits: number;
+
+  /**
+   * Number of cache misses
+   * 
+   * @type {number}
+   */
   misses: number;
+
+  /**
+   * Cache hit rate as percentage (0-100)
+   * 
+   * @type {number}
+   */
   hitRate: number;
+
+  /**
+   * Number of entries evicted from cache
+   * 
+   * @type {number}
+   */
   evictions: number;
+
+  /**
+   * Total number of cache requests
+   * 
+   * @type {number}
+   */
   totalRequests: number;
 }
 
+/**
+ * Cache event handlers interface
+ * 
+ * @interface CacheEvents
+ * @description Event handlers for cache operations
+ */
 export interface CacheEvents {
+  /**
+   * Called when cache hit occurs
+   * 
+   * @param {string} key - The cache key
+   * @param {any} data - The cached data
+   * @returns {void}
+   */
   onHit?: (key: string, data: any) => void;
+
+  /**
+   * Called when cache miss occurs
+   * 
+   * @param {string} key - The cache key
+   * @returns {void}
+   */
   onMiss?: (key: string) => void;
+
+  /**
+   * Called when entry is evicted from cache
+   * 
+   * @param {string} key - The cache key
+   * @param {any} data - The evicted data
+   * @returns {void}
+   */
   onEvict?: (key: string, data: any) => void;
+
+  /**
+   * Called when an error occurs during cache operations
+   * 
+   * @param {Error} error - The error that occurred
+   * @param {string} operation - The operation being performed
+   * @param {string} [key] - The cache key (optional)
+   * @returns {void}
+   */
   onError?: (error: Error, operation: string, key?: string) => void;
 }
 
+/**
+ * Cache provider class for managing in-memory caching
+ * 
+ * @class CacheProvider
+ * @description Provides caching functionality with TTL, LRU eviction, and statistics
+ */
 @Injectable()
 export class CacheProvider {
+  /**
+   * Internal cache storage
+   * 
+   * @private
+   * @type {Map<string, CacheEntry<any>>}
+   */
   private cache = new Map<string, CacheEntry<any>>();
+
+  /**
+   * Cache hit counter
+   * 
+   * @private
+   * @type {number}
+   */
   private hits = 0;
+
+  /**
+   * Cache miss counter
+   * 
+   * @private
+   * @type {number}
+   */
   private misses = 0;
+
+  /**
+   * Cache eviction counter
+   * 
+   * @private
+   * @type {number}
+   */
   private evictions = 0;
+
+  /**
+   * Cleanup timer for expired entries
+   * 
+   * @private
+   * @type {NodeJS.Timeout}
+   */
   private cleanupTimer?: NodeJS.Timeout;
+
+  /**
+   * Cache configuration
+   * 
+   * @private
+   * @type {CacheConfig}
+   */
   private config: CacheConfig;
+
+  /**
+   * Cache event handlers
+   * 
+   * @private
+   * @type {CacheEvents}
+   */
   private events?: CacheEvents;
 
+  /**
+   * Creates a new CacheProvider instance
+   * 
+   * @constructor
+   * @param {Partial<CacheConfig>} [config={}] - Optional cache configuration
+   * @param {CacheEvents} [events] - Optional event handlers
+   * @description Initializes cache with default configuration and starts cleanup timer
+   */
   constructor(config: Partial<CacheConfig> = {}, events?: CacheEvents) {
     this.config = {
       defaultTTL: 300000,
@@ -55,6 +266,14 @@ export class CacheProvider {
     this.startCleanupTimer();
   }
 
+  /**
+   * Retrieves a value from the cache
+   * 
+   * @template T - The type of the cached value
+   * @param {string} key - The cache key
+   * @returns {T | null} The cached value or null if not found/expired
+   * @description Gets a value from cache, updating access statistics and triggering events
+   */
   get<T>(key: string): T | null {
     try {
       const entry = this.cache.get(key);
@@ -86,6 +305,14 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Retrieves a cache entry with metadata
+   * 
+   * @template T - The type of the cached value
+   * @param {string} key - The cache key
+   * @returns {CacheEntry<T> | null} The cache entry with metadata or null if not found/expired
+   * @description Gets the full cache entry including metadata without updating access statistics
+   */
   getEntry<T>(key: string): CacheEntry<T> | null {
     try {
       const entry = this.cache.get(key);
