@@ -10,7 +10,7 @@ export class ServerException extends Error {
   public readonly errorCode: string;
   public readonly timestamp: Date;
 
-  constructor(message: string, statusCode: number, errorCode: string) {
+  public constructor(message: string, statusCode: number, errorCode: string) {
     super(message);
     this.statusCode = statusCode;
     this.errorCode = errorCode;
@@ -20,49 +20,49 @@ export class ServerException extends Error {
 }
 
 export class BadRequestException extends ServerException {
-  constructor(message: string, errorCode: string = 'BAD_REQUEST') {
+  public constructor(message: string, errorCode: string = 'BAD_REQUEST') {
     super(message, 400, errorCode);
   }
 }
 
 export class UnauthorizedException extends ServerException {
-  constructor(message: string, errorCode: string = 'UNAUTHORIZED') {
+  public constructor(message: string, errorCode: string = 'UNAUTHORIZED') {
     super(message, 401, errorCode);
   }
 }
 
 export class ForbiddenException extends ServerException {
-  constructor(message: string, errorCode: string = 'FORBIDDEN') {
+  public constructor(message: string, errorCode: string = 'FORBIDDEN') {
     super(message, 403, errorCode);
   }
 }
 
 export class NotFoundException extends ServerException {
-  constructor(message: string, errorCode: string = 'NOT_FOUND') {
+  public constructor(message: string, errorCode: string = 'NOT_FOUND') {
     super(message, 404, errorCode);
   }
 }
 
 export class ConflictException extends ServerException {
-  constructor(message: string, errorCode: string = 'CONFLICT') {
+  public constructor(message: string, errorCode: string = 'CONFLICT') {
     super(message, 409, errorCode);
   }
 }
 
 export class TooManyRequestsException extends ServerException {
-  constructor(message: string, errorCode: string = 'TOO_MANY_REQUESTS') {
+  public constructor(message: string, errorCode: string = 'TOO_MANY_REQUESTS') {
     super(message, 429, errorCode);
   }
 }
 
 export class InternalServerException extends ServerException {
-  constructor(message: string, errorCode: string = 'INTERNAL_SERVER_ERROR') {
+  public constructor(message: string, errorCode: string = 'INTERNAL_SERVER_ERROR') {
     super(message, 500, errorCode);
   }
 }
 
 export class ServiceUnavailableException extends ServerException {
-  constructor(message: string, errorCode: string = 'SERVICE_UNAVAILABLE') {
+  public constructor(message: string, errorCode: string = 'SERVICE_UNAVAILABLE') {
     super(message, 503, errorCode);
   }
 }
