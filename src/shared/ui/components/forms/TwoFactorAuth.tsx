@@ -21,7 +21,7 @@ export interface ITwoFactorAuthProps extends IBaseComponentProps {
 export interface ITwoFactorAuthState extends IBaseComponentState {
   code: string;
   isSubmitting: boolean;
-  error: string | null;
+  errorMessage: string | null;
   attempts: number;
   lastAttemptTime: Date | null;
 }
@@ -56,9 +56,9 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
   /**
    * Handle form submission
    */
-  private handleSubmit = async (e: React.FormEvent): Promise<void> => => {
+  private handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    
+
     const { code, isSubmitting } = this.state;
     const { onVerify, maxLength = 6 } = this.props;
 
@@ -67,35 +67,36 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
     }
 
     if (code.length !== maxLength) {
-      this.safeSetState({ 
-        error: `Please enter exactly ${maxLength} digits` 
+      this.safeSetState({
+        errorMessage: `Please enter exactly ${maxLength} digits`
       });
       return;
     }
 
-    this.safeSetState({ 
-      isSubmitting: true, 
-      error: null 
+    this.safeSetState({
+      isSubmitting: true,
+      errorMessage: null
     });
 
     try {
       await onVerify(code.trim());
       // Success - let parent handle the result
-      this.safeSetState({ 
-        code: '', 
+      this.safeSetState({
+        code: '',
         isSubmitting: false,
         attempts: 0,
-        error: null
+        error: null,
+        errorMessage: null
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Verification failed';
-      this.safeSetState({ 
-        isSubmitting: false, 
-        error: errorMessage,
+      this.safeSetState({
+        isSubmitting: false,
+        errorMessage: errorMessage,
         attempts: this.state.attempts + 1,
         lastAttemptTime: new Date()
       });
-      
+
       // Clear input and refocus
       this.safeSetState({ code: '' });
       if (this.inputRef.current) {
@@ -110,13 +111,13 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
   private handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value } = e.target;
     const { maxLength = 6 } = this.props;
-    
+
     // Only allow digits and limit to max length
     const digitsOnly = value.replace(/\D/g, '').slice(0, maxLength);
-    
-    this.safeSetState({ 
+
+    this.safeSetState({
       code: digitsOnly,
-      error: null 
+      errorMessage: null
     });
   };
 
@@ -126,13 +127,13 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
   private handlePaste = (e: React.ClipboardEvent<HTMLInputElement>): void => {
     e.preventDefault();
     const { maxLength = 6 } = this.props;
-    
+
     const pastedText = e.clipboardData.getData('text');
     const digitsOnly = pastedText.replace(/\D/g, '').slice(0, maxLength);
-    
-    this.safeSetState({ 
+
+    this.safeSetState({
       code: digitsOnly,
-      error: null 
+      errorMessage: null
     });
   };
 
@@ -140,9 +141,9 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
    * Clear the form
    */
   public clear(): void {
-    this.safeSetState({ 
-      code: '', 
-      error: null,
+    this.safeSetState({
+      code: '',
+      errorMessage: null,
       isSubmitting: false
     });
     if (this.inputRef.current) {
@@ -206,29 +207,28 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
   }
 
   protected override renderContent(): React.ReactNode {
-    const { 
-      isLoading = false, 
+    const {
+      isLoading = false,
       maxLength = 6,
       placeholder = 'Enter 6-digit code',
       title = 'Two-Factor Authentication',
       description = 'Enter the verification code from your authenticator app',
-      variant = 'default',
-      className = '' 
+      className = ''
     } = this.props;
-    const { code, isSubmitting, error, attempts } = this.state;
+    const { code, isSubmitting, errorMessage, attempts } = this.state;
 
     const isRateLimited = this.isRateLimited();
     const isDisabled = isLoading || isSubmitting || isRateLimited;
     const isValidLength = code.length === maxLength;
 
     return (
-      <div 
+      <div
         className={`two-factor-auth ${this.getVariantClasses()} bg-yellow-50 border border-yellow-200 rounded-lg ${className}`}
         data-testid="two-factor-auth"
       >
         <div className="font-medium mb-2">{title}</div>
         <p className="text-sm text-gray-600 mb-4">{description}</p>
-        
+
         {/* Rate Limit Warning */}
         {isRateLimited && (
           <div className="mb-4 p-3 bg-red-100 border border-red-200 rounded text-sm text-red-800">
@@ -249,19 +249,18 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
               onPaste={this.handlePaste}
               placeholder={placeholder}
               disabled={isDisabled}
-              className={`w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg font-mono ${
-                error 
-                  ? 'border-red-300 bg-red-50' 
-                  : isValidLength 
-                    ? 'border-green-300 bg-green-50' 
-                    : 'border-gray-300'
-              } disabled:bg-gray-100 disabled:text-gray-500`}
+              className={`w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg font-mono ${errorMessage
+                ? 'border-red-300 bg-red-50'
+                : isValidLength
+                  ? 'border-green-300 bg-green-50'
+                  : 'border-gray-300'
+                } disabled:bg-gray-100 disabled:text-gray-500`}
               maxLength={maxLength}
               inputMode="numeric"
               autoComplete="one-time-code"
               data-testid="two-factor-input"
             />
-            
+
             {/* Character Count */}
             <div className="mt-1 text-xs text-gray-500 text-center">
               {code.length}/{maxLength} digits
@@ -269,9 +268,9 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
           </div>
 
           {/* Error Message */}
-          {error && (
+          {errorMessage && (
             <div className="text-sm text-red-600 bg-red-50 p-2 rounded" data-testid="two-factor-error">
-              {error}
+              {errorMessage}
             </div>
           )}
 
@@ -279,11 +278,10 @@ export class TwoFactorAuth extends BaseClassComponent<ITwoFactorAuthProps, ITwoF
           <button
             type="submit"
             disabled={isDisabled || !isValidLength}
-            className={`w-full px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-1 ${
-              isDisabled || !isValidLength
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-yellow-500 text-white hover:bg-yellow-600'
-            }`}
+            className={`w-full px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-1 ${isDisabled || !isValidLength
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-yellow-500 text-white hover:bg-yellow-600'
+              }`}
             data-testid="two-factor-submit"
           >
             {isSubmitting ? 'Verifying...' : 'Verify Code'}
