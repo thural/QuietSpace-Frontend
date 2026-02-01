@@ -13,41 +13,54 @@ This comprehensive usage guide provides practical examples and patterns for usin
 import { Container, Button, Input, Text, Title } from '@/shared/ui/components';
 
 // Use in your components
-const MyComponent = () => {
-  return (
-    <Container padding="lg" center>
-      <Title level={1}>Welcome to QuietSpace</Title>
-      <Text>
-        Experience our modern UI component library with enterprise-grade features.
-      </Text>
-      <Button variant="primary" onClick={() => console.log('Clicked')}>
-        Get Started
-      </Button>
-    </Container>
-  );
-};
+import React, { Component, ReactNode } from 'react';
+import { Container, Button, Input, Text, Title } from '@/shared/ui/components';
+
+interface IMyComponentProps {}
+
+class MyComponent extends Component<IMyComponentProps> {
+  render(): ReactNode {
+    return (
+      <Container padding="lg" center>
+        <Title level={1}>Welcome to QuietSpace</Title>
+        <Text>
+          Experience our modern UI component library with enterprise-grade features.
+        </Text>
+        <Button variant="primary" onClick={() => console.log('Clicked')}>
+          Get Started
+        </Button>
+      </Container>
+    );
+  }
+}
 ```
 
 ### Theme Integration
 
 ```typescript
 import { useEnhancedTheme } from '@/core/theme';
+import React, { Component, ReactNode } from 'react';
 
-const ThemedComponent = () => {
-  const { theme, switchTheme } = useEnhancedTheme();
-  
-  return (
-    <div 
-      style={{
-        backgroundColor: theme.colors.background.primary,
-        color: theme.colors.text.primary,
-        padding: theme.spacing.lg
-      }}
-    >
-      <h1>Current Theme: {theme.currentVariant}</h1>
-      <button onClick={() => switchTheme('dark')}>
-        Switch to Dark Theme
-      </button>
+interface IThemedComponentProps {}
+
+class ThemedComponent extends Component<IThemedComponentProps> {
+  private themeService = useEnhancedTheme();
+
+  render(): ReactNode {
+    const { theme, switchTheme } = this.themeService;
+    
+    return (
+      <div 
+        style={{
+          backgroundColor: theme.colors.background.primary,
+          color: theme.colors.text.primary,
+          padding: theme.spacing.lg
+        }}
+      >
+        <h1>Current Theme: {theme.currentVariant}</h1>
+        <button onClick={() => switchTheme('dark')}>
+          Switch to Dark Theme
+        </button>
     </div>
   );
 };
@@ -61,97 +74,193 @@ const ThemedComponent = () => {
 
 ```typescript
 import { useEnterpriseAuth } from '@/features/auth/application/hooks/useEnterpriseAuth';
+import React, { Component, ReactNode } from 'react';
+import { Container, Button, Input, Text, Title } from '@/shared/ui/components';
 
-const LoginForm = () => {
-  const { login, isLoading, error } = useEnterpriseAuth();
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: ''
-  });
-  
-  const handleSubmit = async (e: React.FormEvent) => {
+interface ILoginFormState {
+  credentials: {
+    email: string;
+    password: string;
+  };
+  isLoading: boolean;
+  error: string | null;
+}
+
+interface ILoginFormProps {}
+
+class LoginForm extends Component<ILoginFormProps, ILoginFormState> {
+  private authService = useEnterpriseAuth();
+
+  constructor(props: ILoginFormProps) {
+    super(props);
+    this.state = {
+      credentials: {
+        email: '',
+        password: ''
+      },
+      isLoading: false,
+      error: null
+    };
+  }
+
+  private handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     
+    this.safeSetState({ isLoading: true, error: null });
+    
     try {
-      await login(credentials);
+      await this.authService.login(this.state.credentials);
       // Redirect to dashboard
     } catch (error) {
-      console.error('Login failed:', error);
+      this.safeSetState({ error: error.message });
     }
   };
-  
-  return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        type="email"
-        value={credentials.email}
-        onChange={(e) => setCredentials({...credentials, email: e.target.value})}
-        placeholder="Email address"
-        required
-      />
-      <Input
-        type="password"
-        value={credentials.password}
-        onChange={(e) => setCredentials({...credentials, password: e.target.value})}
-        placeholder="Password"
-        required
-      />
-      <Button 
-        type="submit" 
-        variant="primary"
-        loading={isLoading}
-        fullWidth
-      >
-        Sign In
-      </Button>
-      {error && <ErrorMessage error={error} />}
-    </form>
-  );
-};
+
+  private safeSetState = (partialState: Partial<ILoginFormState>): void => {
+    if (this._isMounted) {
+      this.setState(partialState as ILoginFormState);
+    }
+  };
+
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  private _isMounted = false;
+
+  render(): ReactNode {
+    const { credentials, isLoading, error } = this.state;
+    
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <Input
+          type="email"
+          value={credentials.email}
+          onChange={(e) => this.safeSetState({ 
+            credentials: { ...credentials, email: e.target.value }
+          })}
+          placeholder="Email address"
+          required
+        />
+        <Input
+          type="password"
+          value={credentials.password}
+          onChange={(e) => this.safeSetState({ 
+            credentials: { ...credentials, password: e.target.value }
+          })}
+          placeholder="Password"
+          required
+        />
+        <Button 
+          type="submit" 
+          variant="primary"
+          loading={isLoading}
+          fullWidth
+        >
+          Sign In
+        </Button>
+        {error && <Text color="error">{error}</Text>}
+      </form>
+    );
+  }
+}
 ```
 
 #### Multi-Factor Authentication
 
 ```typescript
 import { useEnterpriseAuth } from '@/features/auth/application/hooks/useEnterpriseAuth';
+import React, { Component, ReactNode } from 'react';
+import { Button, Text } from '@/shared/ui/components';
 
-const MFASetup = () => {
-  const { enableMFA, generateTOTPSecret } = useEnterpriseAuth();
-  const [qrCode, setQrCode] = useState('');
-  const [backupCodes, setBackupCodes] = useState<string[]>([]);
-  
-  const handleEnableMFA = async () => {
+interface IMFASetupState {
+  qrCode: string;
+  backupCodes: string[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+interface IMFASetupProps {}
+
+class MFASetup extends Component<IMFASetupProps, IMFASetupState> {
+  private authService = useEnterpriseAuth();
+
+  constructor(props: IMFASetupProps) {
+    super(props);
+    this.state = {
+      qrCode: '',
+      backupCodes: [],
+      isLoading: false,
+      error: null
+    };
+  }
+
+  private handleEnableMFA = async (): Promise<void> => {
+    this.safeSetState({ isLoading: true, error: null });
+    
     try {
-      const setup = await generateTOTPSecret();
-      setQrCode(setup.qrCode);
-      setBackupCodes(setup.backupCodes);
-      await enableMFA('totp');
+      const setup = await this.authService.generateTOTPSecret();
+      this.safeSetState({ 
+        qrCode: setup.qrCode,
+        backupCodes: setup.backupCodes
+      });
+      await this.authService.enableMFA('totp');
     } catch (error) {
-      console.error('MFA setup failed:', error);
+      this.safeSetState({ error: error.message });
+    } finally {
+      this.safeSetState({ isLoading: false });
     }
   };
-  
-  return (
-    <div>
-      <h2>Set Up Multi-Factor Authentication</h2>
-      <Button onClick={handleEnableMFA}>
-        Enable TOTP
-      </Button>
-      {qrCode && (
-        <div>
-          <p>Scan this QR code with your authenticator app:</p>
-          <img src={qrCode} alt="TOTP QR Code" />
-          <p>Backup codes (save these!):</p>
-          <ul>
-            {backupCodes.map((code, index) => (
-              <li key={index}>{code}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
+
+  private safeSetState = (partialState: Partial<IMFASetupState>): void => {
+    if (this._isMounted) {
+      this.setState(partialState as IMFASetupState);
+    }
+  };
+
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  private _isMounted = false;
+
+  render(): ReactNode {
+    const { qrCode, backupCodes, isLoading, error } = this.state;
+    
+    return (
+      <div>
+        <h2>Set Up Multi-Factor Authentication</h2>
+        <Button 
+          onClick={this.handleEnableMFA}
+          loading={isLoading}
+        >
+          Enable TOTP
+        </Button>
+        {error && <Text color="error">{error}</Text>}
+        {qrCode && (
+          <div>
+            <p>Scan this QR code with your authenticator app:</p>
+            <img src={qrCode} alt="TOTP QR Code" />
+            <p>Backup codes (save these!):</p>
+            <ul>
+              {backupCodes.map((code, index) => (
+                <li key={index}>{code}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  }
+}
 ```
 
 ### Chat Feature
@@ -160,62 +269,113 @@ const MFASetup = () => {
 
 ```typescript
 import { useUnifiedChat } from '@/features/chat/application/hooks/useUnifiedChat';
+import React, { Component, ReactNode } from 'react';
+import { Button, Input } from '@/shared/ui/components';
 
-const ChatRoom = ({ roomId }: { roomId: string }) => {
-  const {
-    messages,
-    sendMessage,
-    sendTypingIndicator,
-    isLoading,
-    error
-  } = useUnifiedChat(roomId);
-  
-  const [message, setMessage] = useState('');
-  
-  const handleSendMessage = async () => {
-    if (message.trim()) {
-      await sendMessage(message);
-      setMessage('');
+interface IChatRoomProps {
+  roomId: string;
+}
+
+interface IChatRoomState {
+  message: string;
+  isLoading: boolean;
+  error: string | null;
+}
+
+class ChatRoom extends Component<IChatRoomProps, IChatRoomState> {
+  private chatService = useUnifiedChat(this.props.roomId);
+
+  constructor(props: IChatRoomProps) {
+    super(props);
+    this.state = {
+      message: '',
+      isLoading: false,
+      error: null
+    };
+  }
+
+  private handleSendMessage = async (): Promise<void> => {
+    if (this.state.message.trim()) {
+      this.safeSetState({ isLoading: true });
+      try {
+        await this.chatService.sendMessage(this.state.message);
+        this.safeSetState({ message: '' });
+      } catch (error) {
+        this.safeSetState({ error: error.message });
+      } finally {
+        this.safeSetState({ isLoading: false });
+      }
     }
   };
-  
-  const handleTyping = async (isTyping: boolean) => {
-    await sendTypingIndicator(isTyping);
+
+  private handleTyping = async (isTyping: boolean): Promise<void> => {
+    try {
+      await this.chatService.sendTypingIndicator(isTyping);
+    } catch (error) {
+      console.error('Typing indicator failed:', error);
+    }
   };
-  
-  return (
-    <div className="chat-room">
-      <div className="messages">
-        {messages.map(msg => (
-          <MessageComponent key={msg.id} message={msg} />
-        ))}
+
+  private handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.safeSetState({ message: e.target.value });
+    this.handleTyping(true);
+  };
+
+  private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      this.handleSendMessage();
+    }
+  };
+
+  private safeSetState = (partialState: Partial<IChatRoomState>): void => {
+    if (this._isMounted) {
+      this.setState(partialState as IChatRoomState);
+    }
+  };
+
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  private _isMounted = false;
+
+  render(): ReactNode {
+    const { message, isLoading, error } = this.state;
+    const { messages } = this.chatService;
+    
+    return (
+      <div className="chat-room">
+        <div className="messages">
+          {messages.map(msg => (
+            <MessageComponent key={msg.id} message={msg} />
+          ))}
+        </div>
+        
+        <div className="input-area">
+          <Input
+            type="text"
+            value={message}
+            onChange={this.handleMessageChange}
+            onKeyPress={this.handleKeyPress}
+            placeholder="Type a message..."
+          />
+          <Button 
+            onClick={this.handleSendMessage}
+            disabled={isLoading}
+            loading={isLoading}
+          >
+            Send
+          </Button>
+          {error && <div className="error">{error}</div>}
+        </div>
       </div>
-      
-      <div className="input-area">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
-            handleTyping(true);
-          }}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              handleSendMessage();
-            }
-          }}
-          placeholder="Type a message..."
-        />
-        <button 
-          onClick={handleSendMessage}
-          disabled={isLoading}
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 ```
 
 ### Analytics Feature
@@ -224,53 +384,95 @@ const ChatRoom = ({ roomId }: { roomId: string }) => {
 
 ```typescript
 import { useEnterpriseAnalytics } from '@/features/analytics/application/hooks/useEnterpriseAnalytics';
+import React, { Component, ReactNode } from 'react';
+import { Container, Title, Button } from '@/shared/ui/components';
 
-const AnalyticsDashboard = () => {
-  const {
-    dashboards,
-    generateReport,
-    runPrediction,
-    exportData
-  } = useEnterpriseAnalytics();
-  
-  const [selectedDashboard, setSelectedDashboard] = useState<string | null>(null);
-  
-  const handleGenerateReport = async (reportConfig: ReportConfig) => {
+interface IAnalyticsDashboardState {
+  selectedDashboard: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+interface IAnalyticsDashboardProps {}
+
+class AnalyticsDashboard extends Component<IAnalyticsDashboardProps, IAnalyticsDashboardState> {
+  private analyticsService = useEnterpriseAnalytics();
+
+  constructor(props: IAnalyticsDashboardProps) {
+    super(props);
+    this.state = {
+      selectedDashboard: null,
+      isLoading: false,
+      error: null
+    };
+  }
+
+  private handleGenerateReport = async (reportConfig: ReportConfig): Promise<void> => {
+    this.safeSetState({ isLoading: true, error: null });
     try {
-      const report = await generateReport(reportConfig);
+      const report = await this.analyticsService.generateReport(reportConfig);
       console.log('Report generated:', report.id);
     } catch (error) {
-      console.error('Report generation failed:', error);
+      this.safeSetState({ error: error.message });
+    } finally {
+      this.safeSetState({ isLoading: false });
     }
   };
-  
-  return (
-    <Container>
-      <Title level={1}>Analytics Dashboard</Title>
-      
-      <select
-        value={selectedDashboard || ''}
-        onChange={(e) => setSelectedDashboard(e.target.value)}
-      >
-        <option value="">Select Dashboard</option>
-        {dashboards.map(dashboard => (
-          <option key={dashboard.id} value={dashboard.id}>
-            {dashboard.name}
-          </option>
-        ))}
-      </select>
-      
-      {selectedDashboard && (
-        <DashboardView 
-          dashboard={dashboards.find(d => d.id === selectedDashboard)!}
-          onGenerateReport={handleGenerateReport}
-          onRunPrediction={runPrediction}
-          onExportData={exportData}
-        />
-      )}
-    </Container>
-  );
-};
+
+  private handleDashboardChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    this.safeSetState({ selectedDashboard: e.target.value });
+  };
+
+  private safeSetState = (partialState: Partial<IAnalyticsDashboardState>): void => {
+    if (this._isMounted) {
+      this.setState(partialState as IAnalyticsDashboardState);
+    }
+  };
+
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  private _isMounted = false;
+
+  render(): ReactNode {
+    const { selectedDashboard, isLoading, error } = this.state;
+    const { dashboards, runPrediction, exportData } = this.analyticsService;
+    
+    return (
+      <Container>
+        <Title level={1}>Analytics Dashboard</Title>
+        
+        <select
+          value={selectedDashboard || ''}
+          onChange={this.handleDashboardChange}
+        >
+          <option value="">Select Dashboard</option>
+          {dashboards.map(dashboard => (
+            <option key={dashboard.id} value={dashboard.id}>
+              {dashboard.name}
+            </option>
+          ))}
+        </select>
+        
+        {error && <div className="error">{error}</div>}
+        
+        {selectedDashboard && (
+          <DashboardView 
+            dashboard={dashboards.find(d => d.id === selectedDashboard)!}
+            onGenerateReport={this.handleGenerateReport}
+            onRunPrediction={runPrediction}
+            onExportData={exportData}
+          />
+        )}
+      </Container>
+    );
+  }
+}
 ```
 
 ## 🔧 Advanced Usage Patterns
@@ -420,51 +622,66 @@ import { Input } from '@/shared/ui/components';
 
 ```typescript
 import { useEnhancedTheme } from '@/core/theme';
+import React, { Component, ReactNode } from 'react';
 
-const CustomComponent = () => {
-  const { theme } = useEnhancedTheme();
-  
-  return (
-    <div
-      style={{
-        backgroundColor: theme.colors.background.primary,
-        color: theme.colors.text.primary,
-        padding: theme.spacing.lg,
-        borderRadius: theme.radius.lg,
-        boxShadow: theme.shadows.md
-      }}
-    >
-      <h1 style={{
-        color: theme.colors.brand[500],
-        fontSize: theme.typography.fontSize['2xl']
-      }}>
-        Custom Styled Component
-      </h1>
-    </div>
-  );
-};
+interface ICustomComponentProps {}
+
+class CustomComponent extends Component<ICustomComponentProps> {
+  private themeService = useEnhancedTheme();
+
+  render(): ReactNode {
+    const { theme } = this.themeService;
+    
+    return (
+      <div
+        style={{
+          backgroundColor: theme.colors.background.primary,
+          color: theme.colors.text.primary,
+          padding: theme.spacing.lg,
+          borderRadius: theme.radius.lg,
+          boxShadow: theme.shadows.md
+        }}
+      >
+        <h1 style={{
+          color: theme.colors.brand[500],
+          fontSize: theme.typography.fontSize['2xl']
+        }}>
+          Custom Styled Component
+        </h1>
+      </div>
+    );
+  }
+}
 ```
 
 ### Responsive Design
 
 ```typescript
 import { media } from '@/core/theme';
+import { useEnhancedTheme } from '@/core/theme';
+import React, { Component, ReactNode } from 'react';
 
-const ResponsiveComponent = () => {
-  const { theme } = useEnhancedTheme();
-  
-  return (
-    <div
-      style={{
-        padding: theme.spacing.md,
-        [media.mobile]: { padding: theme.spacing.sm },
-        [media.desktop]: { padding: theme.spacing.xl }
-      }}
-    >
-      <h1>Responsive Design</h1>
-    </div>
-  );
-};
+interface IResponsiveComponentProps {}
+
+class ResponsiveComponent extends Component<IResponsiveComponentProps> {
+  private themeService = useEnhancedTheme();
+
+  render(): ReactNode {
+    const { theme } = this.themeService;
+    
+    return (
+      <div
+        style={{
+          padding: theme.spacing.md,
+          [media.mobile]: { padding: theme.spacing.sm },
+          [media.desktop]: { padding: theme.spacing.xl }
+        }}
+      >
+        <h1>Responsive Design</h1>
+      </div>
+    );
+  }
+}
 ```
 
 ## 🧪 Testing Patterns
@@ -514,32 +731,49 @@ describe('useApiResource', () => {
 
 ```typescript
 import { lazy, Suspense } from 'react';
+import React, { Component, ReactNode } from 'react';
 
 const HeavyComponent = lazy(() => import('./HeavyComponent'));
 
-const App = () => (
-  <div>
-    <Suspense fallback={<div>Loading...</div>}>
-      <HeavyComponent />
-    </Suspense>
-  </div>
-);
+interface IAppState {}
+
+class App extends Component<IAppState> {
+  render(): ReactNode {
+    return (
+      <div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <HeavyComponent />
+        </Suspense>
+      </div>
+    );
+  }
+}
 ```
 
 ### Memoization
 
 ```typescript
-import React, { memo } from 'react';
+import React, { Component, ReactNode } from 'react';
 
-const ExpensiveList = memo(({ items }: { items: Item[] }) => {
-  return (
-    <ul>
-      {items.map(item => (
-        <li key={item.id}>{item.name}</li>
-      ))}
-    </ul>
-  );
-});
+interface IExpensiveListProps {
+  items: Item[];
+}
+
+class ExpensiveList extends Component<IExpensiveListProps> {
+  shouldComponentUpdate(nextProps: IExpensiveListProps): boolean {
+    return nextProps.items !== this.props.items;
+  }
+
+  render(): ReactNode {
+    return (
+      <ul>
+        {this.props.items.map(item => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    );
+  }
+}
 ```
 
 ## 📱 Accessibility Guidelines
@@ -548,30 +782,74 @@ const ExpensiveList = memo(({ items }: { items: Item[] }) => {
 
 ```typescript
 // Use semantic HTML elements
-const Header = () => <header>Header content</header>;
-const Main = () => <main>Main content</main>;
-const Footer = () => <footer>Footer content</footer>;
+import React, { Component, ReactNode } from 'react';
+
+interface IHeaderProps {
+  children?: ReactNode;
+}
+
+class Header extends Component<IHeaderProps> {
+  render(): ReactNode {
+    return <header>{this.props.children}</header>;
+  }
+}
+
+interface IMainProps {
+  children?: ReactNode;
+}
+
+class Main extends Component<IMainProps> {
+  render(): ReactNode {
+    return <main>{this.props.children}</main>;
+  }
+}
+
+interface IFooterProps {
+  children?: ReactNode;
+}
+
+class Footer extends Component<IFooterProps> {
+  render(): ReactNode {
+    return <footer>{this.props.children}</footer>;
+  }
+}
 ```
 
 ### ARIA Attributes
 
 ```typescript
-const FormField = ({ label, error, required }: FormFieldProps) => (
-  <div>
-    <label htmlFor={id}>{label}</label>
-    <input
-      id={id}
-      aria-describedby={helperText}
-      aria-invalid={!!error}
-      aria-required={required}
-    />
-    {error && (
-      <span id={`${id}-error`} role="alert">
-        {error}
-      </span>
-    )}
-  </div>
-);
+import React, { Component, ReactNode } from 'react';
+
+interface IFormFieldProps {
+  label: string;
+  error?: string;
+  required?: boolean;
+  id: string;
+  helperText?: string;
+}
+
+class FormField extends Component<IFormFieldProps> {
+  render(): ReactNode {
+    const { label, error, required, id, helperText } = this.props;
+    
+    return (
+      <div>
+        <label htmlFor={id}>{label}</label>
+        <input
+          id={id}
+          aria-describedby={helperText}
+          aria-invalid={!!error}
+          aria-required={required}
+        />
+        {error && (
+          <span id={`${id}-error`} role="alert">
+            {error}
+          </span>
+        )}
+      </div>
+    );
+  }
+}
 ```
 
 ## 🔧 Debugging Tools
@@ -580,19 +858,28 @@ const FormField = ({ label, error, required }: FormFieldProps) => (
 
 ```typescript
 import { Profiler } from 'react';
+import React, { Component, ReactNode } from 'react';
 
-const ProfileComponent = () => (
-  <Profiler
-    id="ProfileComponent"
-    onRender={(id, phase, actualDuration) => {
-      if (actualDuration > 16) {
-        console.warn(`Slow render: ${actualDuration}ms for ${id}`);
-      }
-    }}
-  >
-    <ProfileComponent />
-  </Profiler>
-);
+interface IProfileComponentProps {}
+
+class ProfileComponent extends Component<IProfileComponentProps> {
+  private handleProfilerRender = (id: string, phase: string, actualDuration: number): void => {
+    if (actualDuration > 16) {
+      console.warn(`Slow render: ${actualDuration}ms for ${id}`);
+    }
+  };
+
+  render(): ReactNode {
+    return (
+      <Profiler
+        id="ProfileComponent"
+        onRender={this.handleProfilerRender}
+      >
+        <div>Profiled Component Content</div>
+      </Profiler>
+    );
+  }
+}
 ```
 
 ### Custom Query Debugging

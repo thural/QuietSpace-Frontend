@@ -22,39 +22,82 @@ This document provides interactive examples and working demos that demonstrate k
 
 ```typescript
 // Example 1: Basic Form Component
-import { useState } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Container, Button, Input, Text, Title } from '@/shared/ui/components';
 
-const BasicForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+interface IBasicFormState {
+  formData: {
+    name: string;
+    email: string;
+    message: string;
+  };
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+interface IBasicFormProps {}
+
+class BasicForm extends Component<IBasicFormProps, IBasicFormState> {
+  constructor(props: IBasicFormProps) {
+    super(props);
+    this.state = {
+      formData: {
+        name: '',
+        email: '',
+        message: ''
+      }
+    };
+  }
+
+  private handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    console.log('Form submitted:', this.state.formData);
   };
 
-  return (
-    <Container padding="lg" maxWidth="md">
-      <Title level={2}>Contact Form</Title>
-      
-      <form onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="Your Name"
-          value={formData.name}
-          onChange={(value) => setFormData({...formData, name: value})}
-          marginBottom="md"
+  private handleFieldChange = (field: string, value: string): void => {
+    this.safeSetState({
+      formData: {
+        ...this.state.formData,
+        [field]: value
+      }
+    });
+  };
+
+  private safeSetState = (partialState: Partial<IBasicFormState>): void => {
+    if (this._isMounted) {
+      this.setState(partialState as IBasicFormState);
+    }
+  };
+
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  private _isMounted = false;
+
+  render(): ReactNode {
+    const { formData } = this.state;
+    
+    return (
+      <Container padding="lg" maxWidth="md">
+        <Title level={2}>Contact Form</Title>
+        
+        <form onSubmit={this.handleSubmit}>
+          <Input
+            type="text"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={(value) => this.handleFieldChange('name', value)}
+            marginBottom="md"
         />
         
         <Input
           type="email"
           placeholder="Your Email"
           value={formData.email}
-          onChange={(value) => setFormData({...formData, email: value})}
+          onChange={(value) => this.handleFieldChange('email', value)}
           marginBottom="md"
         />
         
@@ -62,7 +105,7 @@ const BasicForm = () => {
           type="text"
           placeholder="Your Message"
           value={formData.message}
-          onChange={(value) => setFormData({...formData, message: value})}
+          onChange={(value) => this.handleFieldChange('message', value)}
           marginBottom="lg"
         />
         
@@ -71,8 +114,9 @@ const BasicForm = () => {
         </Button>
       </form>
     </Container>
-  );
-};
+    );
+  }
+}
 ```
 
 ### **Theme Integration**
@@ -81,37 +125,49 @@ const BasicForm = () => {
 // Example 2: Theme-Aware Component
 import { useEnhancedTheme } from '@/core/theme';
 import { Container, Text, Button } from '@/shared/ui/components';
+import React, { Component, ReactNode } from 'react';
 
-const ThemeDemo = () => {
-  const { theme, switchTheme, currentVariant } = useEnhancedTheme();
+interface IThemeDemoProps {}
 
-  return (
-    <Container 
-      padding="lg"
-      style={{
-        backgroundColor: theme.colors.background.secondary,
-        borderRadius: theme.radius.lg,
-        border: `1px solid ${theme.colors.border.light}`
-      }}
-    >
-      <Text marginBottom="md">
-        Current theme: <strong>{currentVariant}</strong>
-      </Text>
-      
-      <Button 
-        variant="outline" 
-        onClick={() => switchTheme(currentVariant === 'light' ? 'dark' : 'light')}
-        marginBottom="sm"
+class ThemeDemo extends Component<IThemeDemoProps> {
+  private themeService = useEnhancedTheme();
+
+  private handleThemeSwitch = (): void => {
+    const { currentVariant, switchTheme } = this.themeService;
+    switchTheme(currentVariant === 'light' ? 'dark' : 'light');
+  };
+
+  render(): ReactNode {
+    const { theme, currentVariant } = this.themeService;
+
+    return (
+      <Container 
+        padding="lg"
+        style={{
+          backgroundColor: theme.colors.background.secondary,
+          borderRadius: theme.radius.lg,
+          border: `1px solid ${theme.colors.border.light}`
+        }}
       >
-        Switch to {currentVariant === 'light' ? 'Dark' : 'Light'} Theme
-      </Button>
-      
-      <Text variant="small" color="secondary">
-        Theme colors: {JSON.stringify(theme.colors.primary)}
-      </Text>
-    </Container>
-  );
-};
+        <Text marginBottom="md">
+          Current theme: <strong>{currentVariant}</strong>
+        </Text>
+        
+        <Button 
+          variant="outline" 
+          onClick={this.handleThemeSwitch}
+          marginBottom="sm"
+        >
+          Switch to {currentVariant === 'light' ? 'Dark' : 'Light'} Theme
+        </Button>
+        
+        <Text variant="small" color="secondary">
+          Theme colors: {JSON.stringify(theme.colors.primary)}
+        </Text>
+      </Container>
+    );
+  }
+}
 ```
 
 ---
@@ -122,56 +178,95 @@ const ThemeDemo = () => {
 
 ```typescript
 // Example 3: Button Variants and States
-const ButtonDemo = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
+import React, { Component, ReactNode } from 'react';
+import { Container, Button, Text, Title } from '@/shared/ui/components';
 
-  const handleLoadingClick = async () => {
-    setIsLoading(true);
+interface IButtonDemoState {
+  isLoading: boolean;
+  clickCount: number;
+}
+
+interface IButtonDemoProps {}
+
+class ButtonDemo extends Component<IButtonDemoProps, IButtonDemoState> {
+  constructor(props: IButtonDemoProps) {
+    super(props);
+    this.state = {
+      isLoading: false,
+      clickCount: 0
+    };
+  }
+
+  private handleLoadingClick = async (): Promise<void> => {
+    this.safeSetState({ isLoading: true });
     await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsLoading(false);
+    this.safeSetState({ isLoading: false });
   };
 
-  return (
-    <Container padding="lg">
-      <Title level={3}>Button Variants</Title>
-      
-      {/* Primary Buttons */}
-      <Container marginBottom="md">
-        <Text fontWeight="bold">Primary:</Text>
-        <Button variant="primary" marginRight="sm">Primary</Button>
-        <Button variant="primary" disabled marginRight="sm">Disabled</Button>
-        <Button variant="primary" loading>Loading</Button>
+  private handleIncrementClick = (): void => {
+    this.safeSetState(prevState => ({ clickCount: prevState.clickCount + 1 }));
+  };
+
+  private safeSetState = (partialState: Partial<IButtonDemoState>): void => {
+    if (this._isMounted) {
+      this.setState(partialState as IButtonDemoState);
+    }
+  };
+
+  componentDidMount(): void {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount(): void {
+    this._isMounted = false;
+  }
+
+  private _isMounted = false;
+
+  render(): ReactNode {
+    const { isLoading, clickCount } = this.state;
+    
+    return (
+      <Container padding="lg">
+        <Title level={3}>Button Variants</Title>
+        
+        {/* Primary Buttons */}
+        <Container marginBottom="md">
+          <Text fontWeight="bold">Primary:</Text>
+          <Button variant="primary" marginRight="sm">Primary</Button>
+          <Button variant="primary" disabled marginRight="sm">Disabled</Button>
+          <Button variant="primary" loading>Loading</Button>
+        </Container>
+        
+        {/* Secondary Buttons */}
+        <Container marginBottom="md">
+          <Text fontWeight="bold">Secondary:</Text>
+          <Button variant="secondary" marginRight="sm">Secondary</Button>
+          <Button variant="secondary" outline>Outline</Button>
+        </Container>
+        
+        {/* Interactive Demo */}
+        <Container>
+          <Text fontWeight="bold">Interactive:</Text>
+          <Button 
+            variant="primary" 
+            onClick={this.handleIncrementClick}
+            marginRight="sm"
+          >
+            Clicked {clickCount} times
+          </Button>
+          <Button 
+            variant="secondary" 
+            loading={isLoading}
+            onClick={this.handleLoadingClick}
+          >
+            Simulate Loading
+          </Button>
+        </Container>
       </Container>
-      
-      {/* Secondary Buttons */}
-      <Container marginBottom="md">
-        <Text fontWeight="bold">Secondary:</Text>
-        <Button variant="secondary" marginRight="sm">Secondary</Button>
-        <Button variant="secondary" outline>Outline</Button>
-      </Container>
-      
-      {/* Interactive Demo */}
-      <Container>
-        <Text fontWeight="bold">Interactive:</Text>
-        <Button 
-          variant="primary" 
-          onClick={() => setClickCount(count => count + 1)}
-          marginRight="sm"
-        >
-          Clicked {clickCount} times
-        </Button>
-        <Button 
-          variant="secondary" 
-          loading={isLoading}
-          onClick={handleLoadingClick}
-        >
-          Simulate Loading
-        </Button>
-      </Container>
-    </Container>
-  );
-};
+    );
+  }
+}
 ```
 
 ### **Form Components Demo**

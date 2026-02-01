@@ -13,6 +13,14 @@ Welcome to the comprehensive documentation center for QuietSpace Frontend. This 
 - **[Development Guide](development-guides/DEVELOPMENT_GUIDE.md)** - Setup, standards, and best practices
 - **[Complete Architecture Guide](architecture/COMPLETE_ARCHITECTURE_GUIDE.md)** - Comprehensive system architecture and design principles
 
+### 🛠️ **Development Resources**
+- **[TypeScript Guide](development-guides/typescript/)** - TypeScript style guide and best practices
+  - **[Google TypeScript Style Guide](development-guides/typescript/GOOGLE_TYPESCRIPT_STYLE_GUIDE.md)** - Comprehensive TypeScript standards
+- **[Code Quality](development-guides/quality/)** - Documentation and quality standards
+  - **[JSDoc Compliance](development-guides/quality/JSDOC_COMPLIANCE_CHECKER.md)** - JSDoc validation and standards
+- **[Development Scripts](development-guides/scripts/)** - Automation and build scripts
+  - **[Scripts Overview](development-guides/scripts/README.md)** - Development scripts documentation
+
 ### 🏗️ **Core Architecture**
 - **[Enterprise Patterns](architecture/ENTERPRISE_PATTERNS.md)** - Advanced architectural patterns and guidelines
 - **[Core System Complete Guide](core-modules/CORE_SYSTEM_COMPLETE_GUIDE.md)** - Complete core system analysis and implementation
@@ -22,14 +30,28 @@ Welcome to the comprehensive documentation center for QuietSpace Frontend. This 
 
 ### 🎯 **Feature Documentation**
 - **[Authentication](features/AUTHENTICATION.md)** - Enterprise authentication with OAuth, SAML, LDAP
-- **[Chat](features/CHAT.md)** - Real-time communication with WebSocket integration
+- **[Chat](features/chat/)** - Real-time communication with WebSocket integration
+  - **[Migration Checklist](features/chat/MIGRATION_CHECKLIST.md)** - Chat feature migration progress
+  - **[Hook Cleanup Summary](features/chat/CHAT_HOOK_CLEANUP_SUMMARY.md)** - Chat hook consolidation
 - **[Analytics](features/ANALYTICS.md)** - Advanced analytics and reporting system
+- **[Feed](features/feed/)** - Feed aggregation and content management
+  - **[Dependency Analysis](features/feed/DEPENDENCY_ANALYSIS.md)** - Feed feature dependencies
+  - **[Data README](features/feed/data/README.md)** - Feed data layer documentation
+- **[Profile](features/profile/)** - User profile management
+  - **[Feature Overview](features/profile/README.md)** - Profile feature documentation
+  - **[Testing Guide](features/profile/testing/README.md)** - Profile testing documentation
 
 ### 🔧 **API & Reference**
 - **[API Documentation](api/API_DOCUMENTATION.md)** - Complete API reference for all modules
 - **[Interactive Examples](examples/INTERACTIVE_EXAMPLES.md)** - Working code examples and demos
 - **[Troubleshooting Guide](troubleshooting/TROUBLESHOOTING_GUIDE.md)** - Common issues and solutions
 - **[FAQ](faq/FAQ.md)** - Frequently asked questions and quick answers
+
+### 📚 **Additional Resources**
+- **[Testing Documentation](testing/)** - Testing framework and guidelines
+  - **[Testing Overview](testing/README.md)** - Testing setup and practices
+- **[Legacy Documentation](legacy/)** - Historical documentation and reference
+  - **[Legacy Overview](legacy/README.md)** - Legacy system documentation
 
 ---
 
@@ -40,7 +62,8 @@ docs/
 ├── 📁 architecture/           # System architecture & patterns
 │   ├── COMPLETE_ARCHITECTURE_GUIDE.md  # 🆕 Comprehensive architecture guide
 │   ├── ARCHITECTURE_OVERVIEW.md       # System overview
-│   └── ENTERPRISE_PATTERNS.md         # Enterprise patterns
+│   ├── ENTERPRISE_PATTERNS.md         # Enterprise patterns
+│   └── FEATURE_SEPARATION_ACTION_PLAN.md  # Feature separation strategy
 ├── 📁 core-modules/           # Core system documentation
 │   ├── CORE_SYSTEM_COMPLETE_GUIDE.md  # 🆕 Complete core system guide
 │   ├── THEME_SYSTEM.md               # Theme system documentation
@@ -48,16 +71,35 @@ docs/
 │   └── AUTHENTICATION_SYSTEM.md      # Authentication system
 ├── 📁 features/              # Feature-specific documentation
 │   ├── AUTHENTICATION.md             # Authentication feature
-│   ├── CHAT.md                        # Chat feature
-│   └── ANALYTICS.md                   # Analytics feature
+│   ├── ANALYTICS.md                   # Analytics feature
+│   ├── chat/                         # Chat feature documentation
+│   │   ├── MIGRATION_CHECKLIST.md     # Chat migration progress
+│   │   └── CHAT_HOOK_CLEANUP_SUMMARY.md  # Chat hook cleanup
+│   ├── feed/                         # Feed feature documentation
+│   │   ├── DEPENDENCY_ANALYSIS.md     # Feed dependencies
+│   │   ├── data/README.md             # Feed data layer
+│   │   └── README.md                  # Feed overview
+│   └── profile/                      # Profile feature documentation
+│       ├── README.md                  # Profile overview
+│       └── testing/README.md          # Profile testing
 ├── 📁 development-guides/     # Development resources
-│   └── DEVELOPMENT_GUIDE.md          # Development setup & best practices
+│   ├── DEVELOPMENT_GUIDE.md          # Development setup & best practices
+│   ├── typescript/                   # TypeScript-specific guides
+│   │   └── GOOGLE_TYPESCRIPT_STYLE_GUIDE.md  # TypeScript style guide
+│   ├── quality/                      # Code quality standards
+│   │   └── JSDOC_COMPLIANCE_CHECKER.md  # JSDoc validation
+│   └── scripts/                      # Development scripts
+│       └── README.md                  # Scripts documentation
 ├── 📁 usage-guides/          # Usage examples & patterns
 │   └── USAGE_GUIDE.md                # Practical usage guide
 ├── 📁 api/                   # API documentation
 │   └── API_DOCUMENTATION.md          # Complete API reference
 ├── 📁 examples/              # Code examples
 │   └── INTERACTIVE_EXAMPLES.md       # Interactive examples
+├── 📁 testing/               # Testing documentation
+│   └── README.md                      # Testing overview
+├── 📁 legacy/               # Legacy documentation
+│   └── README.md                      # Legacy system docs
 ├── 📁 troubleshooting/       # Troubleshooting resources
 │   └── TROUBLESHOOTING_GUIDE.md     # Troubleshooting guide
 ├── 📁 faq/                   # Frequently asked questions
