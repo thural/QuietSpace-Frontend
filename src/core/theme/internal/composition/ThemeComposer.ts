@@ -8,6 +8,16 @@
 import type { ThemeTokens } from '../tokens';
 import type { ThemeConfig, ComposedTheme } from '../types';
 
+import { colors } from '../../appColors';
+import { typography } from '../../appTypography';
+import {
+    baseSpacing,
+    baseShadows,
+    baseBreakpoints,
+    baseRadius,
+    baseAnimation
+} from '../../baseTokens';
+
 /**
  * Theme Composer interface
  */
@@ -144,15 +154,6 @@ export class ThemeComposer implements IThemeComposer {
      */
     private getDefaultTokens(): ThemeTokens {
         // Import from existing token system
-        const { colors } = require('../../../appColors');
-        const { typography } = require('../../../appTypography');
-        const {
-            baseSpacing,
-            baseShadows,
-            baseBreakpoints,
-            baseRadius,
-            baseAnimation
-        } = require('../../../baseTokens');
 
         return {
             colors,

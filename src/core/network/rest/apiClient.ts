@@ -12,6 +12,8 @@ import axios from 'axios';
 
 import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
+import { useAuthStore } from '../../store/zustand';
+
 // Extend axios config to include metadata
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   metadata?: {
@@ -41,7 +43,6 @@ apiClient.interceptors.request.use(
     // TODO: Replace with DI-based token provider
     // This is a temporary implementation for backward compatibility
     try {
-      const { useAuthStore } = require('@/core/store/zustand');
       const { token } = useAuthStore.getState();
 
       if (token) {
@@ -90,7 +91,6 @@ apiClient.interceptors.response.use(
 
         if (newToken) {
           // Update token in store
-          const { useAuthStore } = require('@/core/store/zustand');
           useAuthStore.getState().setAuthData({
             ...data,
             accessToken: newToken
@@ -106,7 +106,6 @@ apiClient.interceptors.response.use(
         console.error('Token refresh failed:', refreshError);
 
         try {
-          const { useAuthStore } = require('@/core/store/zustand');
           useAuthStore.getState().logout();
         } catch (logoutError) {
           console.error('Failed to logout:', logoutError);

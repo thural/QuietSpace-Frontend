@@ -8,6 +8,16 @@
 import type { ThemeTokens } from '../tokens';
 import type { EnhancedTheme, ThemeConfig } from '../types';
 
+import { colors } from '../../appColors';
+import { typography } from '../../appTypography';
+import {
+    baseSpacing,
+    baseShadows,
+    baseBreakpoints,
+    baseRadius,
+    baseAnimation
+} from '../../baseTokens';
+
 /**
  * Theme Factory interface
  */
@@ -43,15 +53,6 @@ export class ThemeFactory implements IThemeFactory {
      */
     private getDefaultTokens(): ThemeTokens {
         // Import from existing token system
-        const { colors } = require('../../../appColors');
-        const { typography } = require('../../../appTypography');
-        const {
-            baseSpacing,
-            baseShadows,
-            baseBreakpoints,
-            baseRadius,
-            baseAnimation
-        } = require('../../../baseTokens');
 
         return {
             colors,

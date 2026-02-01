@@ -9,6 +9,9 @@ import { LogLevel, DEFAULT_LOGGER_CONFIG, LOG_LEVEL_NAMES, LOG_LEVEL_COLORS, CON
 
 import type { ILogEntry, ILoggerConfig, ILoggerTarget, ILoggerService } from './interfaces';
 
+import * as fs from 'fs';
+import * as path from 'path';
+
 /**
  * Creates a standardized log entry
  *
@@ -215,7 +218,7 @@ export function isLogEntry(value: unknown): value is ILogEntry {
         value !== null &&
         'level' in value &&
         'message' in value &&
-        isLogLevel((value as any).level));
+        isLogLevel((value as { level: unknown }).level));
 }
 
 /**
@@ -232,7 +235,7 @@ export function isLoggerTarget(value: unknown): value is ILoggerTarget {
         'name' in value &&
         'level' in value &&
         'write' in value &&
-        typeof (value as any).write === 'function'
+        typeof (value as { write: unknown }).write === 'function'
     );
 }
 
@@ -310,9 +313,6 @@ export function createConsoleTarget(name: string, level: LogLevel = LogLevel.DEB
  * @returns File logger target
  */
 export function createFileTarget(name: string, filePath: string, level: LogLevel = LogLevel.DEBUG): ILoggerTarget {
-    const fs = require('fs');
-    const path = require('path');
-
     return {
         name,
         level,

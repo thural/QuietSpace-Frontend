@@ -7,6 +7,8 @@
 
 import type { ITokenProvider } from '../interfaces';
 
+import { useAuthStore } from '../../store/zustand';
+
 // DI Container interface for type safety
 interface IDIContainer {
   getByToken<T>(token: string): T;
@@ -54,7 +56,6 @@ export class TokenProvider implements ITokenProvider {
 
       // Fallback to store access (temporary for backward compatibility)
       // This should be removed once all components use DI
-      const { useAuthStore } = require('@/core/store/zustand');
       const { token } = useAuthStore.getState();
       return token || null;
     } catch (error) {
@@ -76,7 +77,6 @@ export class TokenProvider implements ITokenProvider {
       }
 
       // Fallback to store access (temporary for backward compatibility)
-      const { useAuthStore } = require('@/core/store/zustand');
       useAuthStore.getState().setAuthData({ accessToken: token });
     } catch (error) {
       console.error('Error setting authentication token:', error);
@@ -95,7 +95,6 @@ export class TokenProvider implements ITokenProvider {
       }
 
       // Fallback to store access (temporary for backward compatibility)
-      const { useAuthStore } = require('@/core/store/zustand');
       useAuthStore.getState().logout();
     } catch (error) {
       console.error('Error clearing authentication token:', error);
