@@ -127,20 +127,20 @@ export enum RequestPriority {
 
 // HTTP Status Categories
 export const STATUS_CATEGORIES = {
-    INFORMATIONAL: (status: number) => status >= 100 && status < 200,
-    SUCCESS: (status: number) => status >= 200 && status < 300,
-    REDIRECTION: (status: number) => status >= 300 && status < 400,
-    CLIENT_ERROR: (status: number) => status >= 400 && status < 500,
-    SERVER_ERROR: (status: number) => status >= 500 && status < 600
+    informational: (status: number): boolean => status >= 100 && status < 200,
+    success: (status: number): boolean => status >= 200 && status < 300,
+    redirection: (status: number): boolean => status >= 300 && status < 400,
+    clientError: (status: number): boolean => status >= 400 && status < 500,
+    serverError: (status: number): boolean => status >= 500 && status < 600
 } as const;
 
 // Type Guards
-export function isApiError(error: any): error is ApiError {
-    return error && typeof error === 'object' && 'code' in error && 'message' in error;
+export function isApiError(error: unknown): error is ApiError {
+    return Boolean(error && typeof error === 'object' && 'code' in error && 'message' in error);
 }
 
-export function isApiResponse(response: any): response is ApiResponse<any> {
-    return response && typeof response === 'object' && 'data' in response && 'status' in response;
+export function isApiResponse(response: unknown): response is ApiResponse<unknown> {
+    return Boolean(response && typeof response === 'object' && 'data' in response && 'status' in response);
 }
 
 export function isSuccessStatus(status: number): boolean {
@@ -170,7 +170,7 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export const DEFAULT_API_CONFIG: IApiClientConfig = {
     timeout: 10000,
     headers: {
-        'Content-Type': CONTENT_TYPES.JSON
+        CONTENT_TYPE: CONTENT_TYPES.JSON
     },
     retryConfig: {
         maxAttempts: 3,

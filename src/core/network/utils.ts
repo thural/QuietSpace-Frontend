@@ -5,7 +5,7 @@
  * Provides helpers for error handling, validation, and common operations.
  */
 
-import { ERROR_CODES, HTTP_STATUS } from './types';
+import { ERROR_CODES } from './types';
 
 import type { ApiError, ApiResponse } from './interfaces';
 
@@ -18,14 +18,14 @@ export { ERROR_CODES };
 export function createApiError(
     code: string,
     message: string,
-    details?: any
+    details?: unknown
 ): ApiError {
     return {
         code,
         message,
         details,
         timestamp: Date.now(),
-        stack: new Error().stack
+        stack: new Error().stack || ''
     };
 }
 
@@ -109,15 +109,15 @@ export function createServerError(status: number, message?: string): ApiError {
 /**
  * Checks if an error is an API error
  */
-export function isApiError(error: any): error is ApiError {
-    return error && typeof error === 'object' && 'code' in error && 'message' in error;
+export function isApiError(error: unknown): error is ApiError {
+    return Boolean(error && typeof error === 'object' && 'code' in error && 'message' in error);
 }
 
 /**
  * Checks if a response is an API response
  */
-export function isApiResponse(response: any): response is ApiResponse<any> {
-    return response && typeof response === 'object' && 'data' in response && 'status' in response;
+export function isApiResponse(response: unknown): response is ApiResponse<unknown> {
+    return Boolean(response && typeof response === 'object' && 'data' in response && 'status' in response);
 }
 
 /**
@@ -163,13 +163,13 @@ export function getErrorMessage(error: any): string {
 /**
  * Gets status code from error or response
  */
-export function getStatusCode(error: any): number {
+export function getStatusCode(error: unknown): number {
     if (isApiError(error)) {
-        return error.details?.status || 500;
+        return (error.details as { status?: number })?.status || 500;
     }
 
-    if (error?.response?.status) {
-        return error.response.status;
+    if ((error as { response?: { status?: number } })?.response?.status) {
+        return (error as { response: { status: number } }).response.status;
     }
 
     return 500;
@@ -178,19 +178,13 @@ export function getStatusCode(error: any): number {
 /**
  * Checks if an error should be retried
  */
-export function shouldRetryError(error: any): boolean {
+export function shouldRetryError(error: unknown): boolean {
     if (!isApiError(error)) {
         return false;
     }
 
-    const status = getStatusCode(error);
-
-    // Retry on network errors, timeouts, and 5xx errors
-    return (
-        error.code === ERROR_CODES.NETWORK_ERROR ||
-        error.code === ERROR_CODES.TIMEOUT_ERROR ||
-        isServerError(status)
-    );
+    const statusCode = getStatusCode(error);
+    return statusCode >= 500 || statusCode === 429; // Retry server errors and rate limits
 }
 
 /**
