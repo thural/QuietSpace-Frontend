@@ -1,61 +1,39 @@
 /**
- * UI Components Black Box Index
+ * Shared UI Components Index
  * 
- * Provides clean public API for the UI components following Black Box pattern.
- * Only interfaces, factory functions, and essential components are exported.
- * Implementation details and internal modules are properly hidden.
+ * Exports all UI components from the shared UI library.
+ * This provides a single entry point for all component imports.
  */
 
-// Public types and utilities - Clean API
-export type {
-    BaseComponentProps,
-    LayoutProps,
-    FlexProps,
-    TypographyProps,
-    InteractiveProps,
-    ButtonProps,
-    InputProps,
-    ComponentVariant,
-    ComponentSize,
-    ComponentStyles,
-    ComponentConfig
-} from './types';
+// Layout components
+export * from './layout';
 
-// Export layout components
-export { Container } from './layout/Container';
-export { CenterContainer } from './layout/CenterContainer';
-export { FlexContainer } from './layout/FlexContainer';
+// Display components
+export * from './display';
 
-// Export typography components
-export { default as Text } from './typography/Text';
-export { default as Title } from './typography/Title';
+// Form components
+export * from './forms';
 
-// Export interactive components
-export { Button } from './interactive/Button';
-export { Input } from './interactive/Input';
-export { Switch } from './interactive/Switch';
-export { PinInput } from './interactive/PinInput';
-export { FileInput } from './interactive/FileInput';
-export { Progress } from './interactive/Progress';
+// Navigation components
+export * from './navigation';
 
-// Export navigation components
-export { Tabs } from './navigation/Tabs';
-export { SegmentedControl } from './navigation/SegmentedControl';
+// User components
+export * from './user';
 
-// Export display components
-export { Avatar } from './display/Avatar';
-export { Skeleton } from './display/Skeleton';
-export { LoadingOverlay } from './display/LoadingOverlay';
-export { Loader } from './display/Loader';
-export { Image } from './display/Image';
-export { Badge } from './display/Badge';
+// Feedback components
+export * from './feedback';
 
-// Export feedback components
+// Utility components
+export * from './utility';
+
+// Core exports
+export { default as TokenRefreshProvider } from './TokenRefreshProvider';
+export { default as TokenRefreshExample } from './TokenRefreshExample';
+
+// New enterprise components (highlighted for easy access)
+export { default as EnterpriseInput } from './forms/EnterpriseInput';
 export { default as LoadingSpinner } from './feedback/LoadingSpinner';
-export { default as ErrorMessage } from './feedback/ErrorMessage';
-
-// Export form components
-export { default as TwoFactorAuth } from './forms/TwoFactorAuth';
+export { default as UserProfileAvatar } from './user/UserProfileAvatar';
 
 // Export user components
 export { default as AuthStatus } from './user/AuthStatus';
@@ -66,7 +44,17 @@ export { default as AuthenticatedActions } from './user/AuthenticatedActions';
 export { default as MigrationInfo } from './utility/MigrationInfo';
 
 // Theme integration - Clean API
-export type { Theme } from '@/app/theme';
+export type {
+    ThemeTokens,
+    EnhancedTheme,
+    ColorTokens,
+    TypographyTokens,
+    SpacingTokens,
+    ShadowTokens,
+    BreakpointTokens,
+    RadiusTokens,
+    AnimationTokens
+} from '@/core/theme';
 
 // Essential hooks for UI integration
 export {
