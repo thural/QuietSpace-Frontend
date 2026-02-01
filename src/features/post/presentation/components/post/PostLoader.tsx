@@ -4,18 +4,30 @@ import PostSkeleton from "@/shared/PostSkeleton";
 import { useGetPostById } from "@features/feed/data";
 import PostCard from "./PostCard";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from "@/shared/components/base/BaseClassComponent";
+import { ReactNode } from "react";
 
 /**
  * Props for the PostLoader component.
  * 
- * @interface PostLoaderProps
+ * @interface IPostLoaderProps
  * @extends GenericWrapper
  * @property {ResId} postId - The ID of the post to load.
  * @property {boolean} [isMenuHidden] - Optional flag to control the visibility of the post menu.
  */
-export interface PostLoaderProps extends GenericWrapper {
+export interface IPostLoaderProps extends IBaseComponentProps, GenericWrapper {
     postId: ResId;
     isMenuHidden?: boolean;
+}
+
+/**
+ * State for the PostLoader component.
+ */
+interface IPostLoaderState extends IBaseComponentState {
+    post: any;
+    isLoading: boolean;
+    isError: boolean;
+    error: any;
 }
 
 /**
@@ -26,22 +38,60 @@ export interface PostLoaderProps extends GenericWrapper {
  * it displays a loading skeleton, an error message, or the actual PostCard component
  * containing the post details.
  * 
- * @param {PostLoaderProps} props - The component props.
- * @returns {JSX.Element} - The rendered PostLoader component, which may be a loading skeleton,
- *                          an error message, or the PostCard component.
+ * Converted to class-based component following enterprise patterns.
  */
-export const PostLoader: React.FC<PostLoaderProps> = ({ postId, isMenuHidden, children }) => {
-    // Fetch the post data using the custom hook
-    const { data: post, isLoading, isError, error } = useGetPostById(postId);
+class PostLoader extends BaseClassComponent<IPostLoaderProps, IPostLoaderState> {
 
-    // If post data is not available or still loading, return the loading skeleton
-    if (post === undefined || isLoading) return <PostSkeleton />;
+    private postHook: any;
 
-    // If there was an error fetching the post, return the error component
-    if (isError) return <ErrorComponent message={error.message} />;
+    protected override getInitialState(): Partial<IPostLoaderState> {
+        return {
+            post: undefined,
+            isLoading: true,
+            isError: false,
+            error: null
+        };
+    }
 
-    // If post data is successfully fetched, return the PostCard with the post details
-    return <PostCard post={post} isMenuHidden={isMenuHidden}>{children}</PostCard>;
+    protected override onMount(): void {
+        super.onMount();
+        // Initialize hook
+        this.postHook = useGetPostById(this.props.postId);
+        this.updatePostState();
+    }
+
+    protected override onUpdate(): void {
+        this.updatePostState();
+    }
+
+    /**
+     * Update post state from hook
+     */
+    private updatePostState = (): void => {
+        if (this.postHook) {
+            const { data: post, isLoading, isError, error } = this.postHook;
+            this.safeSetState({
+                post,
+                isLoading,
+                isError,
+                error
+            });
+        }
+    };
+
+    protected override renderContent(): ReactNode {
+        const { isMenuHidden, children } = this.props;
+        const { post, isLoading, isError, error } = this.state;
+
+        // If post data is not available or still loading, return the loading skeleton
+        if (post === undefined || isLoading) return <PostSkeleton />;
+
+        // If there was an error fetching the post, return the error component
+        if (isError) return <ErrorComponent message={error?.message} />;
+
+        // If post data is successfully fetched, return the PostCard with the post details
+        return <PostCard post={post} isMenuHidden={isMenuHidden}>{children}</PostCard>;
+    }
 }
 
 export default PostLoader;
