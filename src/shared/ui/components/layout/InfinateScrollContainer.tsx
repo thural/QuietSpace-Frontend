@@ -5,7 +5,7 @@ import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { useEffect } from "react";
 import { Container } from "@/shared/ui/components/layout/Container";
 import Conditional from "./Conditional";
-import LoaderStyled from "./LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 
 /**
  * InfinateScrollContainerProps interface.
@@ -61,7 +61,7 @@ const InfinateScrollContainer: React.FC<InfinateScrollContainerProps> = ({
             {children} {/* Render child components */}
             <Container ref={wasSeenRef} /> {/* Reference for visibility detection */}
             <Conditional isEnabled={isFetchingNextPage}>
-                <LoaderStyled /> {/* Show loader while fetching next page */}
+                <LoadingSpinner size="sm" /> {/* Show loader while fetching next page */}
             </Conditional>
         </>
     );

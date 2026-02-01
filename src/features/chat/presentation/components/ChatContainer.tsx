@@ -15,7 +15,7 @@ import {
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import { Container, Contacts, Messages } from "../styles/chatContainerStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import ChatSidebar from "./sidebar/ChatSidebar";
 import React, { useState } from "react";
 import { FiBarChart2, FiX, FiRefreshCw } from "react-icons/fi";
@@ -82,7 +82,7 @@ const ChatContainer: React.FC<GenericWrapper> = ({ children }) => {
         // Get performance summary for monitoring
         const performanceSummary = getPerformanceSummary?.();
 
-        if (isLoading) return <LoaderStyled />;
+        if (isLoading) return <LoadingSpinner size="md" />;
         if (error) {
             const errors = chat.getErrorSummary?.();
             return (

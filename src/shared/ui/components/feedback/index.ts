@@ -11,7 +11,6 @@ export { default as LoadingSpinner } from './LoadingSpinner';
 
 // New reusable components
 export { default as NotificationItem } from './NotificationItem';
-export { default as LoaderStyled } from './LoaderStyled';
 export { default as ModalStyled } from './ModalStyled';
 export { default as PostMessageSkeleton } from './PostMessageSkeleton';
 export { default as PostSkeleton } from './PostSkeleton';

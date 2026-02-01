@@ -11,7 +11,7 @@ import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import DefaultContainer from "@/shared/DefaultContainer";
 import Typography from "@/shared/Typography";
 import { useProfile } from "@features/profile/application/hooks/useProfile";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 
 /**
  * ProfileSearchContainer component.
@@ -50,13 +50,13 @@ function ProfileSearchContainer() {
     const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const query = event.target.value;
         setSearchQuery(query);
-        
+
         // Debounced search
         if (query.length >= 2) {
             const timeoutId = setTimeout(() => {
                 performSearch(query);
             }, 300);
-            
+
             return () => clearTimeout(timeoutId);
         } else {
             // Clear results if query is too short
@@ -93,8 +93,8 @@ function ProfileSearchContainer() {
     if (error) {
         return (
             <DefaultContainer>
-                <ErrorComponent 
-                    message={`Error searching users: ${error.message}`} 
+                <ErrorComponent
+                    message={`Error searching users: ${error.message}`}
                     onRetry={clearError}
                 />
             </DefaultContainer>
@@ -133,7 +133,7 @@ function ProfileSearchContainer() {
                 <Typography variant="h3" className="mb-4">
                     Search Filters
                 </Typography>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Limit Filter */}
                     <div>
@@ -203,7 +203,7 @@ function ProfileSearchContainer() {
             {/* Loading State */}
             {(isLoading || isSearching) && (
                 <div className="flex justify-center py-8">
-                    <LoaderStyled />
+                    <LoadingSpinner size="md" />
                 </div>
             )}
 
@@ -213,7 +213,7 @@ function ProfileSearchContainer() {
                     <Typography variant="h3" className="mb-4">
                         Search Results ({searchResults.length})
                     </Typography>
-                    
+
                     {searchResults.length === 0 ? (
                         <div className="text-center py-8 text-gray-500">
                             <Typography>No users found matching your search.</Typography>
@@ -233,13 +233,13 @@ function ProfileSearchContainer() {
                                             </Typography>
                                         </div>
                                     </div>
-                                    
+
                                     {user.bio && (
                                         <Typography variant="small" className="text-gray-600 mb-3">
                                             {user.bio.substring(0, 100)}{user.bio.length > 100 ? '...' : ''}
                                         </Typography>
                                     )}
-                                    
+
                                     <div className="flex justify-between items-center">
                                         <Typography variant="small" className="text-gray-500">
                                             {user.followersCount || 0} followers
@@ -261,7 +261,7 @@ function ProfileSearchContainer() {
                     <Typography variant="h3" className="mb-4">
                         Suggested for You
                     </Typography>
-                    
+
                     {suggestions.length === 0 ? (
                         <div className="text-center py-8 text-gray-500">
                             <Typography>No suggestions available at the moment.</Typography>
@@ -281,7 +281,7 @@ function ProfileSearchContainer() {
                                             </Typography>
                                         </div>
                                     </div>
-                                    
+
                                     <button className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                                         Follow
                                     </button>

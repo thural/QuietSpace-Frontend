@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { Component, ReactNode } from "react";
 import { useAuthStore, AuthState, User } from "@/core/store/zustand";
-import LoaderStyled from "@/shared/ui/components/feedback/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 
 // Define strict TypeScript interfaces
 interface IProtectedRouteProps {
@@ -96,7 +96,7 @@ export class ProtectedRoute extends Component<IProtectedRouteProps, IProtectedRo
 
     // Extract render helpers for clean JSX
     private renderLoadingState = (): ReactNode => {
-        return <LoaderStyled />;
+        return <LoadingSpinner size="md" />;
     };
 
     private renderRedirectToSignIn = (): ReactNode => {

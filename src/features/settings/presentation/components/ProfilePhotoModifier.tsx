@@ -8,7 +8,7 @@ import BoxStyled from "@/shared/BoxStyled";
 import LightButton from "@/shared/buttons/LightButton";
 import Clickable from "@/shared/Clickable";
 import HiddenFileInput from "@/shared/HiddenFileInput";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import ModalStyled from "@/shared/ModalStyled";
 import Overlay from "@/shared/Overlay";
 import Typography from "@shared/Typography";
@@ -92,7 +92,7 @@ const ProfilePhotoModifier = () => {
                             <Typography ta="center" type="h4">cancel</Typography> {/* Option to cancel the action */}
                         </ProfileModifierStyles.listItem>
                     </BoxStyled>
-                    {isLoading && <LoaderStyled />} {/* Show loader if upload is in progress */}
+                    {isLoading && <LoadingSpinner size="sm" />} {/* Show loader if upload is in progress */}
                 </ModalStyled>
                 <Clickable handleClick={null} text="remove photo" /> {/* Placeholder for remove photo action */}
             </Overlay>

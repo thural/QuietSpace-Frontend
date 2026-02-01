@@ -1,5 +1,5 @@
 import { ChatResponse } from "@/features/chat/data/models/chat";
-import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import styles from "../../styles/chatCardStyles";
 import useChatCard from "../../styles/useChatCard";
 import { Container } from "@/shared/ui/components/layout/Container";
@@ -32,7 +32,7 @@ const ChatCard: React.FC<{
 
     return (
         <Container id={contactId} className={classes.chatCard} onClick={handleClick}>
-            <UserAvatarPhoto userId={contactId} />
+            <UserProfileAvatarWithData userId={contactId} size="sm" />
             <FlexContainer className={classes.chatDetails} style={appliedStyle}>
                 <Typography size="sm" lineClamp={1}>{username}</Typography>
                 <Typography size="xs" lineClamp={1}>{recentText}</Typography>

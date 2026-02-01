@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
 import { useAuthStore } from "@/core/store/zustand";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 
 interface ProtectedRouteProps {
     children: ReactNode;
@@ -21,17 +21,17 @@ interface ProtectedRouteProps {
  * @param {string} props.fallback - Optional redirect path (defaults to /signin)
  * @returns {JSX.Element} - Protected route component
  */
-export const ProtectedRoute = ({ 
-    children, 
-    requiredPermissions = [], 
-    fallback = "/signin" 
+export const ProtectedRoute = ({
+    children,
+    requiredPermissions = [],
+    fallback = "/signin"
 }: ProtectedRouteProps) => {
     const { isAuthenticated, isLoading, user } = useAuthStore();
     const location = useLocation();
 
     // Show loading spinner while checking authentication
     if (isLoading) {
-        return <LoaderStyled />;
+        return <LoadingSpinner size="md" />;
     }
 
     // Redirect to signin if not authenticated
@@ -41,10 +41,10 @@ export const ProtectedRoute = ({
 
     // Check permissions if required
     if (requiredPermissions.length > 0) {
-        const hasPermission = requiredPermissions.every(permission => 
+        const hasPermission = requiredPermissions.every(permission =>
             user?.permissions?.includes(permission)
         );
-        
+
         if (!hasPermission) {
             return <Navigate to="/unauthorized" replace />;
         }

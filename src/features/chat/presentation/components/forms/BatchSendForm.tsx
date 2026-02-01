@@ -7,7 +7,7 @@ import { Button } from "../../../../shared/ui/components";
 import CheckBox from "@/shared/CheckBox";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { Input } from "../../../../shared/ui/components";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "../../../../shared/ui/components";
 import { Text } from "../../../../shared/ui/components";
 import UserQueryItem from "@/shared/UserQueryItem";
 import useBatchShareForm from "@features/chat/application/hooks/useBatchShareForm";
@@ -75,7 +75,7 @@ const BatchShareForm: React.FC<BatchShareFormProps> = ({ postId, toggleForm }) =
         e.stopPropagation();
     }
 
-    if (fetchUserQuery.isPending) return <LoaderStyled />;
+    if (fetchUserQuery.isPending) return <LoadingSpinner size="md" />;
 
     return (
         <Container onClick={handleContainerClick}>

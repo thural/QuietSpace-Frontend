@@ -13,7 +13,7 @@ import DefaultContainer from "@/shared/DefaultContainer";
 import Typography from "@/shared/Typography";
 import { useProfileSettings } from "@features/profile/application/hooks/useProfileSettings";
 import { useAuthStore } from '@services/store/zustand';
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 
 /**
  * ProfileSettingsContainer component.
@@ -30,7 +30,7 @@ import LoaderStyled from "@/shared/LoaderStyled";
 function ProfileSettingsContainer() {
     const { data: authData } = useAuthStore();
     const currentUserId = authData?.userId || 'current-user';
-    
+
     // Enterprise settings hook
     const {
         settings,
@@ -65,8 +65,8 @@ function ProfileSettingsContainer() {
     if (error) {
         return (
             <DefaultContainer>
-                <ErrorComponent 
-                    message={`Error loading settings: ${error.message}`} 
+                <ErrorComponent
+                    message={`Error loading settings: ${error.message}`}
                     onRetry={clearError}
                 />
             </DefaultContainer>
@@ -75,7 +75,7 @@ function ProfileSettingsContainer() {
 
     // Loading state
     if (isLoading) {
-        return <LoaderStyled />;
+        return <LoadingSpinner size="md" />;
     }
 
     // Handle settings update
@@ -137,7 +137,7 @@ function ProfileSettingsContainer() {
                 <Typography variant="h3" className="mb-4">
                     General Settings
                 </Typography>
-                
+
                 {/* Theme Setting */}
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">
@@ -204,7 +204,7 @@ function ProfileSettingsContainer() {
                 <Typography variant="h3" className="mb-4">
                     Privacy Settings
                 </Typography>
-                
+
                 {/* Profile Visibility */}
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">
@@ -282,7 +282,7 @@ function ProfileSettingsContainer() {
                 >
                     Save Changes
                 </OutlineButton>
-                
+
                 {hasUnsavedChanges && (
                     <OutlineButton
                         onClick={handleDiscardChanges}
@@ -292,7 +292,7 @@ function ProfileSettingsContainer() {
                         Discard Changes
                     </OutlineButton>
                 )}
-                
+
                 <OutlineButton
                     onClick={handleReset}
                     color="red"

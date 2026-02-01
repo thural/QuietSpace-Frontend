@@ -3,7 +3,7 @@ import { PostCard, PostReplyCard } from "@/features/post/presentation/components
 import { RepostCard } from "@/features/post/presentation/components/repost";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import { useGetPostsByUserId, useGetRepliedPostsByUserId, useGetSavedPostsByUserId } from "@/services/data/usePostData";
 
 // Test if post components are working
@@ -60,7 +60,7 @@ const UserPostList: React.FC<UserPostListProps> = ({
                 : useGetPostsByUserId(userId); // Default to fetching regular posts
 
     // Show a loader while data is being fetched
-    if (isLoading || !data) return <LoaderStyled />;
+    if (isLoading || !data) return <LoadingSpinner size="md" />;
 
     // Display an error component if there was an error fetching data
     if (isError) return <ErrorComponent message={error.message} />;

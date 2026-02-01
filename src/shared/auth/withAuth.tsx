@@ -1,6 +1,6 @@
 import { ReactNode, ComponentType } from "react";
 import { useAuthStore } from "@/core/store/zustand";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 
 interface WithAuthProps {
@@ -33,7 +33,7 @@ export const withAuth = <P extends object>(
 
         // Show loading spinner while checking authentication
         if (isLoading) {
-            return <LoaderStyled />;
+            return <LoadingSpinner size="md" />;
         }
 
         // Show fallback component if provided and not authenticated
@@ -48,10 +48,10 @@ export const withAuth = <P extends object>(
 
         // Check permissions if required
         if (requiredPermissions.length > 0) {
-            const hasPermission = requiredPermissions.every(permission => 
+            const hasPermission = requiredPermissions.every(permission =>
                 user?.permissions?.includes(permission)
             );
-            
+
             if (!hasPermission) {
                 return <ErrorComponent message="Insufficient permissions" />;
             }
@@ -71,7 +71,7 @@ export const withAuth = <P extends object>(
 export const useAuth = (requiredPermissions: string[] = []) => {
     const { isAuthenticated, isLoading, user, isError, error } = useAuthStore();
 
-    const hasPermission = requiredPermissions.every(permission => 
+    const hasPermission = requiredPermissions.every(permission =>
         user?.permissions?.includes(permission)
     );
 
@@ -96,10 +96,10 @@ export const useAuth = (requiredPermissions: string[] = []) => {
  * @param {ReactNode} props.children - Children to render if authorized
  * @param {ReactNode} props.fallback - Fallback to render if not authorized
  */
-export const PermissionGate = ({ 
-    permissions, 
-    children, 
-    fallback = null 
+export const PermissionGate = ({
+    permissions,
+    children,
+    fallback = null
 }: {
     permissions: string[];
     children: ReactNode;

@@ -5,7 +5,7 @@ import useFeed from "@features/feed/application/hooks/useFeed";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import CreatePostForm from "./forms/CreatePostForm";
 import ToggleFormSection from "./fragments/ToggleFormSection";
 import PostListBox from "./post/PostList";
@@ -37,7 +37,7 @@ const FeedContainer = () => {
     const { user, posts, isOverlayOpen, toggleOverlay } = data;
 
     // Render a loading indicator if posts are loading or undefined
-    if (posts.isLoading || posts === undefined) return <LoaderStyled />;
+    if (posts.isLoading || posts === undefined) return <LoadingSpinner size="md" />;
 
     // Render an error component if there was an error fetching posts
     if (posts.isError) return <ErrorComponent message={posts.error.message} />;

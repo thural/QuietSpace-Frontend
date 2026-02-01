@@ -1,5 +1,5 @@
 import { ResId } from "@/shared/api/models/commonNative";
-import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import { ChatHeadline as ChatHeadlineStyles } from "../../styles/chatHeadlineStyles";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { FlexContainer } from "../../../../../shared/ui/components";
@@ -29,7 +29,7 @@ interface ChatHeadlineProps {
 const ChatHeadline: React.FC<ChatHeadlineProps> = ({ userId, recipientName, handleDeleteChat }) => {
     return (
         <ChatHeadlineStyles>
-            <UserProfileAvatarWithData userId={userId} size="md" />
+            <UserAvatarPhoto userId={userId} />
             <Title variant="h5" className="title">{recipientName}</Title>
             <ChatMenu handleDeleteChat={handleDeleteChat} isMutable={true} />
         </ChatHeadlineStyles>

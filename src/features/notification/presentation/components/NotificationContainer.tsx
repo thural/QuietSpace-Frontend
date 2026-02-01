@@ -6,7 +6,7 @@ import DefaultContainer from "@shared/DefaultContainer";
 import { SegmentedControl } from "@/shared/ui/components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoaderStyled from "@shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 
 /**
  * NotificationContainer component.
@@ -37,7 +37,7 @@ const NotificationContainer: React.FC<GenericWrapper> = ({ children }) => {
     const { isLoading, isError, error } = data;
 
     // Display a loading indicator while fetching data
-    if (isLoading) return <LoaderStyled />;
+    if (isLoading) return <LoadingSpinner size="md" />;
 
     // Display an error component if there was an error fetching notifications
     if (isError) return <ErrorComponent message={error.message} />;

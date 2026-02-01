@@ -1,5 +1,5 @@
 import { UserResponse } from "@/features/profile/data/models/user";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "../../../../../shared/ui/components";
 import useChatQuery from "@features/chat/application/hooks/useChatQuery";
 import styles from "../../styles/chatQueryStyles";
 import AnchorStyled from "@shared/AnchorStyled";
@@ -55,7 +55,7 @@ const ChatQuery: React.FC<ChatQueryProps> = ({ chat }) => {
     };
 
     const RenderResult = React.memo(() => {
-        if (makeQueryMutation.isPending) return <LoaderStyled />;
+        if (makeQueryMutation.isPending) return <LoadingSpinner size="md" />;
         if (queryResult.length === 0) return <RecentQueries />;
 
         return queryResult.map((user: UserResponse, key: number) => {

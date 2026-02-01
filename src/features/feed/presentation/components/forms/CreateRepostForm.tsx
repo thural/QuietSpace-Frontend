@@ -1,7 +1,7 @@
 import { PostResponse } from "@/features/feed/data/models/post";
 import FormStyled from "@/shared/FormStyled";
 import ModalStyled from "@/shared/ModalStyled";
-import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useCreateRepostForm from "@features/feed/application/hooks/useCreateRepostForm";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
@@ -44,7 +44,7 @@ const CreateRepostForm: React.FC<CreateRepostProps> = ({ toggleForm, post }) => 
     return (
         <ModalStyled onClick={(e: Event) => e.stopPropagation()}>
             <FormStyled>
-                <UserProfileAvatarWithData userId={signedUser.id} size="md" />
+                <UserAvatarPhoto userId={signedUser.id} />
                 <TextInput minHeight="3rem" value={repostData.text} handleChange={handleChange} />
             </FormStyled>
             <PostCardBase post={post} />

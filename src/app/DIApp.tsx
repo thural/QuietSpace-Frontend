@@ -10,7 +10,7 @@ import { DIProvider, useService } from "@core/di";
 import { initializeApp } from "@core/di/AppContainer";
 
 // Legacy imports (to be migrated)
-import LoaderStyled from "../shared/LoaderStyled";
+import { LoadingSpinner } from "../shared/ui/components";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
 import { useGetChats } from "@chat/data/useChatData.ts";
@@ -135,7 +135,7 @@ const DIApp = () => {
                 ) : (
                     <>
                         <NavBar />
-                        <Suspense fallback={<LoaderStyled />}>
+                        <Suspense fallback={<LoadingSpinner size="md" />}>
                             <RoutesConfig />
                         </Suspense>
                     </>

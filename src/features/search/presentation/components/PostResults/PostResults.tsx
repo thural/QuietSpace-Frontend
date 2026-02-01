@@ -7,7 +7,7 @@
 
 import { PostResponse, PostList, PostPage } from "@/features/feed/data/models/post";
 import PostCard from "@/features/feed/presentation/components/post/PostCard";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import Typography from "@/shared/Typography";
 import { useEnterpriseSearch } from "@search/application/hooks/useEnterpriseSearch";
@@ -38,7 +38,7 @@ export interface PostResultsProps extends GenericWrapper {
 const PostResults: React.FC<PostResultsProps> = ({ isLoading, error, postQueryList }) => (
     // Check if the fetch operation is pending
     isLoading ? (
-        <LoaderStyled /> // Show loader while data is being fetched
+        <LoadingSpinner size="md" /> // Show loader while data is being fetched
     ) : error ? (
         // Check if there was an error in the fetch operation
         <Typography type="h1">{error.message}</Typography> // Display error message

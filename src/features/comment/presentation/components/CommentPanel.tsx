@@ -1,7 +1,7 @@
 import { ResId } from "@/shared/api/models/commonNative";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import FlexStyled from "@/shared/FlexStyled";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import { useGetComments } from "@features/feed/data/useCommentData";
 import { CommentSection, CommentPanelContainer } from "../../styles/commentPanelStyles";
 import CommentBox from "./Comment";
@@ -39,7 +39,7 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ postId }) => {
     const comments = useGetComments(postId);
 
     // Show loading indicator while comments are being fetched
-    if (comments.isLoading) return <LoaderStyled />;
+    if (comments.isLoading) return <LoadingSpinner size="md" />;
 
     // Show error component if there was an error fetching comments
     if (comments.isError) return <ErrorComponent message="could not load comments" />;

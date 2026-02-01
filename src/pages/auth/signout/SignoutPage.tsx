@@ -1,4 +1,4 @@
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import { useAuthStore } from "@/core/store/zustand";
 import Typography from "@/shared/Typography";
 import { useSignout } from "./hooks/useSignout";
@@ -21,7 +21,7 @@ const SignoutPage = () => {
     const { isLoading, isError, error } = useSignout(); // Hook to handle sign-out process
 
     // Show loader while the sign-out process is in progress
-    if (isLoading) return <LoaderStyled />;
+    if (isLoading) return <LoadingSpinner size="md" />;
 
     // Show error message if there was an error during sign-out
     if (isError) {

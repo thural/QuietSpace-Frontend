@@ -12,7 +12,7 @@ import PassInput from "@/shared/PassInput";
 import { Text } from "@/shared/ui/components/typography/Text";
 import { Title } from "@/shared/ui/components/typography/Title";
 import React, { PureComponent, ReactNode } from "react";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/base/BaseClassComponent";
 
 /**
@@ -115,7 +115,7 @@ class LoginForm extends BaseClassComponent<ILoginFormProps, ILoginFormState> {
             handleSignupBtn,
         } = this.getFormData();
 
-        if (isAuthenticating) return <LoaderStyled />;
+        if (isAuthenticating) return <LoadingSpinner size="md" />;
         if (isError) return <ErrorComponent message={`could not authenticate! error: ${error}`} />;
 
         return (

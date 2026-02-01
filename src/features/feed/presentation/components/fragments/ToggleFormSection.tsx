@@ -2,7 +2,7 @@ import { UserResponse } from "@/features/profile/data/models/user";
 import { Container } from "@shared/ui/components";
 import FlexStyled from "@/shared/FlexStyled";
 import { Input } from "@shared/ui/components";
-import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import { Button } from "@shared/ui/components";
 import { ProcedureFn } from "@/shared/types/genericTypes";
 
@@ -31,7 +31,7 @@ interface CreatePostSection {
 const ToggleFormSection: React.FC<CreatePostSection> = ({ user, handleClick }) => (
     <Container style={{ margin: "1rem 0" }}>
         <FlexStyled justify="space-between" gap="1rem">
-            <UserProfileAvatarWithData userId={user.id} size="sm" />
+            <UserAvatarPhoto userId={user.id} />
             <Input
                 variant="unstyled"
                 style={{ width: "100%" }}

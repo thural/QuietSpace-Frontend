@@ -3,7 +3,7 @@ import Conditional from "@/shared/Conditional";
 import FormStyled from "@/shared/FormStyled";
 import ModalStyled from "@/shared/ModalStyled";
 import Typography from "@/shared/Typography";
-import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
+import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useCreatePostForm from "@features/feed/application/hooks/useCreatePostForm";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
@@ -54,7 +54,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ toggleForm }) => {
         <ModalStyled>
             <CloseButtonStyled handleToggle={toggleForm} />
             <Typography style={{ alignSelf: "center" }} type="h4">Create Post</Typography>
-            <UserProfileAvatarWithData userId={postData.userId} size="md" />
+            <UserAvatarPhoto userId={postData.userId} />
             <FormStyled>
                 <TitleInput value={postData.title} handleChange={handleChange} />
                 <TextInput minHeight="7rem" value={postData.text} handleChange={handleChange} />

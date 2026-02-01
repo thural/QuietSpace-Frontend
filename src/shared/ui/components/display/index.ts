@@ -9,7 +9,6 @@
 export { default as Avatar } from './Avatar';
 export { default as Badge } from './Badge';
 export { default as Image } from './Image';
-export { default as Loader } from './Loader';
 export { default as LoadingOverlay } from './LoadingOverlay';
 export { default as Skeleton } from './Skeleton';
 

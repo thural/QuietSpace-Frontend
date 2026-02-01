@@ -7,7 +7,7 @@
 
 import { UserList, UserPage, UserResponse } from "@/features/profile/data/models/user";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import LoaderStyled from "@/shared/LoaderStyled";
+import { LoadingSpinner } from "@/shared/ui/components";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import BoxStyled from "@/shared/BoxStyled";
 import UserQueryItem from "@/shared/UserQueryItem";
@@ -54,7 +54,7 @@ const UserResults: React.FC<UserResultsProps> = ({ isLoading, error, userQueryLi
      */
     const RenderResult = () => (
         isLoading ? (
-            <LoaderStyled /> // Show loader while data is being fetched
+            <LoadingSpinner size="md" /> // Show loader while data is being fetched
         ) : error ? (
             <ErrorComponent message={error.message} /> // Display error message
         ) : (
