@@ -1,8 +1,36 @@
-import withForwardedRefAndErrBoundary from "@shared/hooks/withForwardedRef"
-import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes"
+import { ReactNode } from 'react';
+import { BaseClassComponent, IBaseComponentProps } from '@/shared/components/base/BaseClassComponent';
 
-const NavStyled: React.FC<GenericWrapperWithRef> = ({ forwardedRef, children, ...props }) => {
-    return <nav ref={forwardedRef} {...props}>{children}</nav>
+/**
+ * Props for NavStyled component
+ */
+interface INavStyledProps extends IBaseComponentProps {
+    forwardedRef?: React.Ref<HTMLElement>;
 }
 
-export default withForwardedRefAndErrBoundary(NavStyled)
+/**
+ * State for NavStyled component
+ */
+interface INavStyledState {
+    // No state needed for this component
+}
+
+/**
+ * NavStyled component
+ * 
+ * A simple navigation wrapper component converted to class-based pattern.
+ * Provides a styled nav element with ref forwarding support.
+ */
+export class NavStyled extends BaseClassComponent<INavStyledProps, INavStyledState> {
+    protected override renderContent(): ReactNode {
+        const { forwardedRef, children, ...props } = this.props;
+
+        return (
+            <nav ref={forwardedRef} {...props} data-testid="nav-styled">
+                {children}
+            </nav>
+        );
+    }
+}
+
+export default NavStyled;

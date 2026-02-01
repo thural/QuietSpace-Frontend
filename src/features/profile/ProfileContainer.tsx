@@ -1,16 +1,11 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import Overlay from "@/shared/Overlay";
-import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import { Button } from "../../../../shared/ui/components";
-import Conditional from "@/shared/Conditional";
-import DefaultContainer from "@/shared/DefaultContainer";
-import FollowToggle from "@/shared/FollowToggle";
-import Typography from "@/shared/Typography";
-import { useNavigate, useParams } from "react-router-dom";
-import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from "@/shared/components/base/BaseClassComponent";
-import useUserProfile from "@features/feed/application/hooks/useUserProfile";
-import LoaderStyled from "@/shared/LoaderStyled";
-import PrivateBlock from "@/shared/PrivateBlock";
+import { Button } from "@/shared/ui/components";
+import { Container as DefaultContainer } from "@/shared/ui/components";
+import { FlexContainer } from "@/shared/ui/components";
+import { Text as Typography } from "@/shared/ui/components";
+import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/base/BaseClassComponent";
+import { Loader } from "@/shared/ui/components";
+import { Skeleton } from "@/shared/ui/components";
 import {
     ConnectionsList as UserConnections,
     ProfileHeader as UserDetailsSection,
