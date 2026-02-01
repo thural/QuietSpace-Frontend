@@ -18,11 +18,11 @@ export type UserStatusType = 'online' | 'offline' | 'away' | 'busy' | 'invisible
  */
 export interface IUserProfileAvatarProps extends IBaseComponentProps {
   src?: string;
-  alt: string;
-  name: string;
+  alt?: string;
+  name?: string;
   username?: string;
   status?: UserStatusType;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string | number;
   showStatus?: boolean;
   showName?: boolean;
   showUsername?: boolean;
@@ -32,6 +32,30 @@ export interface IUserProfileAvatarProps extends IBaseComponentProps {
   fallback?: string;
   statusPosition?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
   shape?: 'circle' | 'square' | 'rounded';
+  /**
+   * Custom size in pixels (overrides size prop)
+   */
+  customSize?: string;
+  /**
+   * Custom background color
+   */
+  backgroundColor?: string;
+  /**
+   * Custom text color
+   */
+  textColor?: string;
+  /**
+   * Border radius for custom shapes
+   */
+  radius?: string;
+  /**
+   * Children content (for compatibility with Avatar component)
+   */
+  children?: React.ReactNode;
+  /**
+   * Whether to use theme colors (default: true)
+   */
+  useTheme?: boolean;
 }
 
 /**
@@ -57,7 +81,7 @@ export interface IUserProfileAvatarState extends IBaseComponentState {
  * Built using enterprise BaseClassComponent pattern with lifecycle management.
  */
 export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProps, IUserProfileAvatarState> {
-  
+
   protected override getInitialState(): Partial<IUserProfileAvatarState> {
     return {
       imageError: false,
@@ -99,9 +123,15 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
    * Get initials from name
    */
   private getInitials = (name: string): string => {
+    if (!name || name.trim() === '') {
+      return '?';
+    }
+
     const parts = name.trim().split(' ');
     if (parts.length >= 2) {
-      return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
+      const first = parts[0]?.charAt(0) || '';
+      const last = parts[parts.length - 1]?.charAt(0) || '';
+      return `${first}${last}`.toUpperCase();
     }
     return name.charAt(0).toUpperCase();
   };
@@ -122,25 +152,37 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
   };
 
   /**
-   * Get status border color
-   */
-  private getStatusBorderColor = (status: UserStatusType): string => {
-    const colors = {
-      online: 'border-green-500',
-      offline: 'border-gray-400',
-      away: 'border-yellow-500',
-      busy: 'border-red-500',
-      invisible: 'border-transparent'
-    };
-
-    return colors[status] || colors.offline;
-  };
-
-  /**
    * Get avatar size styles
    */
   private getAvatarSizeStyles = (): { container: string; image: string; status: string } => {
-    const { size = 'md' } = this.props;
+    const { size = 'md', customSize } = this.props;
+
+    // Handle custom size
+    if (customSize) {
+      return {
+        container: `w-[${customSize}] h-[${customSize}]`,
+        image: `w-[${customSize}] h-[${customSize}]`,
+        status: 'w-3 h-3'
+      };
+    }
+
+    // Handle numeric size
+    if (typeof size === 'number') {
+      return {
+        container: `w-[${size}px] h-[${size}px]`,
+        image: `w-[${size}px] h-[${size}px]`,
+        status: 'w-3 h-3'
+      };
+    }
+
+    // Handle string size with pixels
+    if (typeof size === 'string' && size.includes('px')) {
+      return {
+        container: `w-[${size}] h-[${size}]`,
+        image: `w-[${size}] h-[${size}]`,
+        status: 'w-3 h-3'
+      };
+    }
 
     const sizes = {
       xs: {
@@ -170,7 +212,8 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
       }
     };
 
-    return sizes[size];
+    const sizeKey = size as keyof typeof sizes;
+    return sizes[sizeKey] || sizes.md;
   };
 
   /**
@@ -194,14 +237,19 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
   private getStatusPositionStyles = (): string => {
     const { statusPosition = 'bottom-right' } = this.props;
 
-    const positions = {
-      'bottom-right': 'bottom-0 right-0',
-      'bottom-left': 'bottom-0 left-0',
-      'top-right': 'top-0 right-0',
-      'top-left': 'top-0 left-0'
-    };
-
-    return positions[statusPosition];
+    // Simple approach with explicit mapping
+    switch (statusPosition) {
+      case 'bottom-right':
+        return 'bottom-0 right-0';
+      case 'bottom-left':
+        return 'bottom-0 left-0';
+      case 'top-right':
+        return 'top-0 right-0';
+      case 'top-left':
+        return 'top-0 left-0';
+      default:
+        return 'bottom-0 right-0';
+    }
   };
 
   /**
@@ -216,7 +264,7 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
       ? isHovered ? 'cursor-pointer opacity-80' : 'cursor-pointer'
       : '';
 
-    return `${baseStyles} ${interactionStyles} ${className}`;
+    return `${baseStyles} ${interactionStyles} ${className || ''}`;
   };
 
   /**
@@ -230,17 +278,18 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
 
     // Show fallback if image error or no src
     if (imageError || !src) {
-      const initials = this.getInitials(fallback || name);
-      const bgColor = this.getInitialsBackgroundColor(name);
+      const displayName = fallback || name || 'User';
+      const initials = this.getInitials(displayName);
+      const bgColor = this.getInitialsBackgroundColor(displayName);
 
       return (
         <div
           className={`${sizeStyles.container} ${shapeStyles} ${bgColor} flex items-center justify-center text-white font-medium`}
         >
-          <span className={`${sizeStyles.image === 'w-6 h-6' ? 'text-xs' : 
-                          sizeStyles.image === 'w-8 h-8' ? 'text-sm' :
-                          sizeStyles.image === 'w-10 h-10' ? 'text-base' :
-                          sizeStyles.image === 'w-12 h-12' ? 'text-lg' : 'text-xl'}`}>
+          <span className={`${sizeStyles.image === 'w-6 h-6' ? 'text-xs' :
+            sizeStyles.image === 'w-8 h-8' ? 'text-sm' :
+              sizeStyles.image === 'w-10 h-10' ? 'text-base' :
+                sizeStyles.image === 'w-12 h-12' ? 'text-lg' : 'text-xl'}`}>
             {initials}
           </span>
         </div>
@@ -277,7 +326,7 @@ export class UserProfileAvatar extends BaseClassComponent<IUserProfileAvatarProp
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    return colors[Math.abs(hash) % colors.length];
+    return colors[Math.abs(hash) % colors.length] as string;
   };
 
   /**

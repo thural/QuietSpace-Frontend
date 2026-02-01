@@ -1,12 +1,15 @@
 import { EnhancedTheme } from '@/core/theme';
 import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 
 // Enterprise styled-components for enhanced switch styling
-const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | 'sm' | 'lg' }>`
+const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | 'sm' | 'lg'; disabled?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${props => props.theme.spacing.sm};
+  opacity: ${props => props.disabled ? 0.6 : 1};
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   
   .switch-label {
     font-family: ${props => props.theme.typography.fontFamily.sans.join(', ')};
@@ -18,16 +21,16 @@ const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | '
     }
   }};
     font-weight: ${props => props.theme.typography.fontWeight.medium};
-    color: ${props => props.theme.colors.text.primary};
+    color: ${props => props.disabled ? props.theme.colors.text.tertiary : props.theme.colors.text.primary};
     user-select: none;
-    cursor: pointer;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
     transition: color ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
   }
   
   .switch-input {
     position: relative;
     display: inline-block;
-    cursor: pointer;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
     
     input[type="checkbox"] {
       opacity: 0;
@@ -38,8 +41,8 @@ const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | '
     .switch-slider {
       position: relative;
       display: inline-block;
-      cursor: pointer;
-      background: ${props => props.theme.colors.border.medium};
+      cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+      background: ${props => props.disabled ? props.theme.colors.border.light : props.theme.colors.border.medium};
       border-radius: ${props => {
     switch (props.size) {
       case 'sm': return props.theme.radius.sm;
@@ -54,16 +57,16 @@ const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | '
         content: "";
         height: ${props => {
     switch (props.size) {
-      case 'sm': return '16px';
+      case 'sm': return '12px';
       case 'lg': return '24px';
-      default: return '20px';
+      default: return '18px';
     }
   }};
         width: ${props => {
     switch (props.size) {
-      case 'sm': return '16px';
+      case 'sm': return '12px';
       case 'lg': return '24px';
-      default: return '20px';
+      default: return '18px';
     }
   }};
         left: ${props => {
@@ -80,126 +83,217 @@ const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | '
       default: return '2px';
     }
   }};
-        background-color: ${props => props.theme.colors.background.inverse};
+        background-color: white;
         border-radius: 50%;
         transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
-        box-shadow: ${props => props.theme.shadows.sm};
-      }
-      
-      &:hover {
-        background: ${props => props.theme.colors.border.dark};
       }
     }
     
     input:checked + .switch-slider {
-      background: ${props => props.theme.colors.brand[500]};
-      border-color: ${props => props.theme.colors.brand[500]};
+      background-color: ${props => props.disabled ? props.theme.colors.border.light : props.theme.colors.brand[500]};
       
       &:before {
         transform: translateX(${props => {
     switch (props.size) {
       case 'sm': return '16px';
-      case 'lg': return '24px';
-      default: return '20px';
+      case 'lg': return '32px';
+      default: return '24px';
     }
   }});
-      }
-      
-      &:hover {
-        background: ${props => props.theme.colors.brand[600]};
       }
     }
     
     input:focus + .switch-slider {
-      outline: 2px solid ${props => props.theme.colors.brand[500]};
-      outline-offset: 2px;
+      box-shadow: 0 0 0 3px ${props => props.theme.colors.brand[200]};
     }
     
     input:disabled + .switch-slider {
       opacity: 0.6;
       cursor: not-allowed;
-      background: ${props => props.theme.colors.border.light};
-      
-      &:hover {
-        background: ${props => props.theme.colors.border.light};
-      }
-    }
-  }
-  
-  // Responsive adjustments
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    gap: ${props => props.theme.spacing.xs};
-    
-    .switch-label {
-      font-size: ${props => props.theme.typography.fontSize.sm};
     }
   }
 `;
 
-interface ISwitchStyledProps {
-  label?: string;
-  size?: "md" | "sm" | "lg";
+interface ISwitchStyledProps extends IBaseComponentProps {
   checked?: boolean;
-  onChange?: (checked: boolean) => void;
   disabled?: boolean;
-  id?: string;
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+  labelPosition?: 'left' | 'right';
+  onChange?: (checked: boolean) => void;
   className?: string;
-  variant?: 'default' | 'primary' | 'success';
+
+  // Enhanced props for Switch compatibility
+  name?: string;
+  required?: boolean;
+  autoFocus?: boolean;
+
+  // Event handling compatibility
+  onValueChange?: (value: string | number, checked: boolean) => void;
+  value?: string | number;
+
+  // Accessibility
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
 }
 
-class SwitchStyled extends PureComponent<ISwitchStyledProps> {
+interface ISwitchStyledState extends IBaseComponentState {
+  isFocused: boolean;
+}
+
+/**
+ * Enterprise Switch Component
+ * 
+ * Consolidated switch component that handles both SwitchStyled and Switch use cases.
+ * Features enhanced theme integration, accessibility, and enterprise patterns.
+ */
+class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledState> {
   static defaultProps: Partial<ISwitchStyledProps> = {
-    label: "switch label",
-    size: "md",
     checked: false,
-    onChange: (checked: boolean) => console.log("missing change event for switch: ", checked),
     disabled: false,
-    variant: 'default'
+    size: 'md',
+    labelPosition: 'right'
   };
 
-  private getVariantStyles = (): string => {
-    const { variant } = this.props;
-    return `switch-${variant}`;
-  };
+  protected override getInitialState(): Partial<ISwitchStyledState> {
+    return {
+      isFocused: false
+    };
+  }
 
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { onChange } = this.props;
-    onChange?.(event.target.checked);
+    const { disabled, onChange, onValueChange, value } = this.props;
+    const isChecked = event.target.checked;
+
+    if (!disabled) {
+      // Call the original onChange prop
+      onChange?.(isChecked);
+
+      // Call the enhanced onValueChange prop for Switch compatibility
+      if (onValueChange && value !== undefined) {
+        onValueChange(value, isChecked);
+      }
+    }
   };
 
-  private renderSwitch = (): ReactNode => {
-    const { checked, disabled, id, size } = this.props;
-
-    return (
-      <label className="switch-input">
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={this.handleChange}
-          disabled={disabled}
-          id={id}
-        />
-        <span className="switch-slider" />
-      </label>
-    );
+  private handleFocus = (): void => {
+    this.safeSetState({ isFocused: true });
   };
 
-  render(): ReactNode {
-    const { label, size, disabled, className } = this.props;
+  private handleBlur = (): void => {
+    this.safeSetState({ isFocused: false });
+  };
+
+  /**
+   * Public method to turn on the switch
+   */
+  public turnOn(): void {
+    const { onChange, disabled } = this.props;
+    if (!disabled) {
+      onChange?.(true);
+    }
+  }
+
+  /**
+   * Public method to turn off the switch
+   */
+  public turnOff(): void {
+    const { onChange, disabled } = this.props;
+    if (!disabled) {
+      onChange?.(false);
+    }
+  }
+
+  /**
+   * Public method to toggle the switch
+   */
+  public toggle(): void {
+    const { checked, onChange, disabled } = this.props;
+    if (!disabled) {
+      onChange?.(!checked);
+    }
+  }
+
+  /**
+   * Public method to get current checked state
+   */
+  public isOn(): boolean {
+    return this.props.checked || false;
+  }
+
+  protected override renderContent(): ReactNode {
+    const {
+      checked = false,
+      disabled = false,
+      size = 'md',
+      label,
+      labelPosition = 'right',
+      className = '',
+      value,
+      name,
+      required,
+      autoFocus,
+      ariaLabel,
+      ariaDescribedBy,
+      testId,
+      ...props
+    } = this.props;
+
+    const { isFocused } = this.state;
+
+    const switchSize = {
+      sm: { width: '32px', height: '16px' },
+      md: { width: '48px', height: '24px' },
+      lg: { width: '64px', height: '32px' }
+    };
+
+    const currentSize = switchSize[size] || switchSize.md;
 
     return (
       <SwitchStyledContainer
+        className={className}
         size={size}
-        className={`switch-styled ${className || ''} ${this.getVariantStyles()}`}
+        disabled={disabled}
+        data-testid={testId || 'switch-styled'}
       >
-        {this.renderSwitch()}
-        {label && (
-          <span
-            className="switch-label"
-            style={{ opacity: disabled ? 0.6 : 1 }}
-          >
+        {label && labelPosition === 'left' && (
+          <label className="switch-label">
             {label}
-          </span>
+            {required && <span className="required-indicator" aria-label="required">*</span>}
+          </label>
+        )}
+
+        <label className="switch-input">
+          <input
+            type="checkbox"
+            checked={checked}
+            disabled={disabled}
+            value={value}
+            name={name}
+            required={required}
+            autoFocus={autoFocus}
+            aria-label={ariaLabel}
+            aria-describedby={ariaDescribedBy}
+            aria-checked={checked}
+            onChange={this.handleChange}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
+            {...props}
+          />
+          <span
+            className="switch-slider"
+            style={{
+              width: currentSize.width,
+              height: currentSize.height
+            }}
+          />
+        </label>
+
+        {label && labelPosition === 'right' && (
+          <label className="switch-label">
+            {label}
+            {required && <span className="required-indicator" aria-label="required">*</span>}
+          </label>
         )}
       </SwitchStyledContainer>
     );
