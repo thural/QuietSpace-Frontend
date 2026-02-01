@@ -10,6 +10,11 @@ import { createApiError, ERROR_CODES } from './utils';
 
 import type { IApiClient, IApiClientConfig, ApiError } from './interfaces';
 
+// DI Container interface for type safety
+interface IDIContainer {
+    getByToken<T>(token: string): T;
+}
+
 /**
  * Creates an authenticated API client with token already configured
  *
@@ -43,7 +48,7 @@ export function createAuthenticatedApiClient(
  * @returns Pre-configured authenticated API client from DI
  */
 export function createAuthenticatedApiClientFromDI(
-    container: any,
+    container: IDIContainer,
     token: string,
     config?: Partial<IApiClientConfig>
 ): IApiClient {
@@ -70,7 +75,7 @@ export function createAuthenticatedApiClientFromDI(
  * @param container - DI container instance
  * @returns Token provider interface
  */
-export function createTokenProvider(container: any): ITokenProvider {
+export function createTokenProvider(container: IDIContainer): ITokenProvider {
     try {
         return container.getByToken<ITokenProvider>('TOKEN_PROVIDER');
     } catch {

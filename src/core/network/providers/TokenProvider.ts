@@ -7,6 +7,19 @@
 
 import type { ITokenProvider } from '../interfaces';
 
+// DI Container interface for type safety
+interface IDIContainer {
+  getByToken<T>(token: string): T;
+}
+
+// Auth service interface for type safety
+interface IAuthService {
+  getToken(): string | undefined;
+  setToken(token: string): void;
+  clearToken(): void;
+  refreshToken(): Promise<string>;
+}
+
 /**
  * DI-based Token Provider Implementation
  *
@@ -14,16 +27,17 @@ import type { ITokenProvider } from '../interfaces';
  * directly accessing the auth store, maintaining proper separation.
  */
 export class TokenProvider implements ITokenProvider {
-  private readonly authService: any;
-  private readonly container: any;
+  private readonly authService: IAuthService | null;
+  private readonly container: IDIContainer;
 
-  constructor(container: any) {
+  constructor(container: IDIContainer) {
     this.container = container;
     // Try to get auth service from DI container
     try {
-      this.authService = container.getByToken('AUTH_SERVICE');
+      this.authService = container.getByToken<IAuthService>('AUTH_SERVICE');
     } catch {
       console.warn('Auth service not found in DI container, token provider may not work correctly');
+      this.authService = null;
     }
   }
 
@@ -128,7 +142,7 @@ export class TokenProvider implements ITokenProvider {
       const client = createApiClient();
 
       const response = await client.post('/auth/refresh-token');
-      const newToken = (response.data as any)?.accessToken;
+      const newToken = (response.data as { accessToken?: string })?.accessToken;
 
       if (newToken) {
         this.setToken(newToken);
