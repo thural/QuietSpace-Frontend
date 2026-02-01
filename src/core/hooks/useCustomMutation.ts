@@ -8,11 +8,11 @@ import { TYPES } from '@/core/di/types';
 /**
  * Enterprise-grade mutation options interface
  */
-export interface MutationOptions<TData = any, TError = Error, TVariables = any> {
+export interface MutationOptions<TData = unknown, TError = Error, TVariables = unknown> {
   onSuccess?: (data: TData, variables: TVariables) => void;
   onError?: (error: TError, variables: TVariables) => void;
   onSettled?: (data: TData | undefined, error: TError | null, variables: TVariables) => void;
-  onMutate?: (variables: TVariables) => Promise<any> | any;
+  onMutate?: (variables: TVariables) => Promise<unknown> | unknown;
   retry?: number;
   retryDelay?: number;
   invalidateQueries?: string[];
@@ -23,7 +23,7 @@ export interface MutationOptions<TData = any, TError = Error, TVariables = any> 
 /**
  * Mutation state interface
  */
-export interface MutationState<TData = any, TError = Error> {
+export interface MutationState<TData = unknown, TError = Error> {
   data: TData | undefined;
   isLoading: boolean;
   isError: boolean;
@@ -35,7 +35,7 @@ export interface MutationState<TData = any, TError = Error> {
 /**
  * Custom mutation hook result interface
  */
-export interface CustomMutationResult<TData = any, TError = Error, TVariables = any> extends MutationState<TData, TError> {
+export interface CustomMutationResult<TData = unknown, TError = Error, TVariables = unknown> extends MutationState<TData, TError> {
   mutate: (variables: TVariables) => void;
   mutateAsync: (variables: TVariables) => Promise<TData>;
   reset: () => void;
@@ -47,7 +47,7 @@ export interface CustomMutationResult<TData = any, TError = Error, TVariables = 
  * Replaces React Query's useMutation with custom implementation
  * that integrates with our ICacheProvider and DI container
  */
-export function useCustomMutation<TData = any, TError = Error, TVariables = any>(
+export function useCustomMutation<TData = unknown, TError = Error, TVariables = unknown>(
   fetcher: (variables: TVariables) => Promise<TData>,
   options: MutationOptions<TData, TError, TVariables> = {}
 ): CustomMutationResult<TData, TError, TVariables> {
@@ -102,7 +102,7 @@ export function useCustomMutation<TData = any, TError = Error, TVariables = any>
       }));
 
       // Run onMutate if provided
-      let context: any;
+      let context: unknown;
       if (onMutate) {
         context = await onMutate(variables);
       }

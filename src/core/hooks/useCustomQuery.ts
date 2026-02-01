@@ -8,7 +8,7 @@ import { TYPES } from '@/core/di/types';
 /**
  * Enterprise-grade query options interface
  */
-export interface QueryOptions<T = any> {
+export interface QueryOptions<T = unknown> {
   enabled?: boolean;
   staleTime?: number;
   cacheTime?: number;
@@ -20,7 +20,7 @@ export interface QueryOptions<T = any> {
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
   onSettled?: (data: T | undefined, error: Error | null) => void;
-  select?: (data: any) => T;
+  select?: (data: unknown) => T;
   initialData?: T;
   placeholderData?: T;
 }
@@ -28,7 +28,7 @@ export interface QueryOptions<T = any> {
 /**
  * Query state interface
  */
-export interface QueryState<T = any> {
+export interface QueryState<T = unknown> {
   data: T | undefined;
   isLoading: boolean;
   isError: boolean;
@@ -43,7 +43,7 @@ export interface QueryState<T = any> {
 /**
  * Custom query hook result interface
  */
-export interface CustomQueryResult<T = any> extends QueryState<T> {
+export interface CustomQueryResult<T = unknown> extends QueryState<T> {
   refetch: () => Promise<void>;
   invalidate: () => void;
   setData: (data: T | ((old: T | undefined) => T)) => void;
