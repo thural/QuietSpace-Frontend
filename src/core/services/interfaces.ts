@@ -135,7 +135,7 @@ export interface ILogEntry {
     /**
      * Additional metadata
      */
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 
     /**
      * Error details if applicable
@@ -255,32 +255,32 @@ export interface ILoggerService {
     /**
      * Log debug message
      */
-    debug(message: string, ...args: any[]): void;
+    debug(message: string, ...args: unknown[]): void;
 
     /**
      * Log informational message
      */
-    info(message: string, ...args: any[]): void;
+    info(message: string, ...args: unknown[]): void;
 
     /**
      * Log warning message
      */
-    warn(message: string, ...args: any[]): void;
+    warn(message: string, ...args: unknown[]): void;
 
     /**
      * Log error message
      */
-    error(message: string, error?: Error, ...args: any[]): void;
+    error(message: string, error?: Error, ...args: unknown[]): void;
 
     /**
      * Log fatal error message
      */
-    fatal(message: string, error?: Error, ...args: any[]): void;
+    fatal(message: string, error?: Error, ...args: unknown[]): void;
 
     /**
      * Log message with custom level
      */
-    log(level: LogLevel, message: string, ...args: any[]): void;
+    log(level: LogLevel, message: string, ...args: unknown[]): void;
 
     /**
      * Update logger configuration
@@ -345,7 +345,7 @@ export interface ILoggerFactoryConfig extends ILoggerConfig {
     /**
      * DI container for dependency injection
      */
-    container?: any;
+    container?: unknown;
 }
 
 /**
@@ -360,7 +360,7 @@ export interface ILoggerContext {
     /**
      * Context metadata
      */
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 
     /**
      * Parent context

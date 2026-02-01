@@ -70,12 +70,12 @@ export interface WebSocketCacheConfig {
 }
 
 // Event Types
-export interface WebSocketEvent<T = any> {
+export interface WebSocketEvent<T = unknown> {
   type: string;
   timestamp: Date;
   data: T;
   source: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface WebSocketConnectionEvent extends WebSocketEvent {
@@ -221,7 +221,7 @@ export interface MessageValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  custom?: (value: any) => boolean | string;
+  custom?: (value: unknown) => boolean | string;
 }
 
 export interface MessageValidationResult {
@@ -285,7 +285,7 @@ export type WebSocketEventListener = {
   onReconnect?: (attempt: number) => void;
 };
 
-export type WebSocketEventHandler<T = any> = (event: WebSocketEvent<T>) => void;
+export type WebSocketEventHandler<T = unknown> = (event: WebSocketEvent<T>) => void;
 
 export type WebSocketFeatureHandler = {
   feature: string;
@@ -305,8 +305,8 @@ export type WebSocketConnectionInfo = {
 };
 
 // Type Guards
-export function isWebSocketError(error: any): error is WebSocketError {
-  return error && typeof error === 'object' && 'code' in error && 'timestamp' in error;
+export function isWebSocketError(error: unknown): error is WebSocketError {
+  return Boolean(error && typeof error === 'object' && 'code' in error && 'timestamp' in error);
 }
 
 export function isConnectionError(error: WebSocketError): error is WebSocketConnectionError {

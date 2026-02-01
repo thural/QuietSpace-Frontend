@@ -24,7 +24,7 @@ export interface ICacheServiceManager {
     getCache(featureName: string): ICacheProvider;
     invalidateFeature(featureName: string): void;
     invalidatePattern(pattern: string): number;
-    getGlobalStats(): Record<string, any>;
+    getGlobalStats(): Record<string, unknown>;
     dispose(): void;
 }
 
@@ -54,9 +54,9 @@ export interface CacheStats {
 }
 
 export interface CacheEvents {
-    onHit?: (key: string, data: any) => void;
+    onHit?: (key: string, data: unknown) => void;
     onMiss?: (key: string) => void;
-    onEvict?: (key: string, data: any) => void;
+    onEvict?: (key: string, data: unknown) => void;
     onError?: (error: Error, operation: string, key?: string) => void;
 }
 
