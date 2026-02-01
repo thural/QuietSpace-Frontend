@@ -187,12 +187,12 @@ export class Container {
     const scopedContainer = this.container.createScope();
     const childContainer = new Container();
     // Copy parent's singletons to child
-    const dependencyGraph = scopedContainer.getStats().dependencyGraph || {};
+    const dependencyGraph = scopedContainer.getStats().dependencyGraph as Record<string, { lifetime?: ServiceLifetime }>;
     for (const [identifier, descriptor] of Object.entries(dependencyGraph)) {
-      if ((descriptor as { lifetime?: ServiceLifetime }).lifetime === ServiceLifetime.Singleton) {
-        const instance = this.container.tryGet(identifier as ServiceIdentifier);
+      if (descriptor.lifetime === ServiceLifetime.Singleton) {
+        const instance = this.container.tryGet(identifier);
         if (instance) {
-          childContainer.registerInstance(identifier as ServiceIdentifier, instance);
+          childContainer.registerInstance(identifier, instance);
         }
       }
     }
@@ -274,13 +274,13 @@ export class Container {
     const childContainer = new Container();
 
     // Copy parent's singletons to child
-    const dependencyGraph = this.container.getStats().dependencyGraph || {};
-    const entries = Object.entries(dependencyGraph as Record<string, any>);
+    const dependencyGraph = this.container.getStats().dependencyGraph as Record<string, { lifetime?: ServiceLifetime }>;
+    const entries = Object.entries(dependencyGraph);
     for (const [identifier, descriptor] of entries) {
       if (descriptor.lifetime === ServiceLifetime.Singleton) {
-        const instance = this.container.tryGet(identifier as any);
+        const instance = this.container.tryGet(identifier);
         if (instance) {
-          childContainer.registerInstance(identifier as any, instance);
+          childContainer.registerInstance(identifier, instance);
         }
       }
     }

@@ -11,64 +11,138 @@ import FormStyled from "@/shared/FormStyled";
 import PassInput from "@/shared/PassInput";
 import { Text } from "@/shared/ui/components/typography/Text";
 import { Title } from "@/shared/ui/components/typography/Title";
-import React from "react";
+import React, { PureComponent, ReactNode } from "react";
 import LoaderStyled from "@/shared/LoaderStyled";
+import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/base/BaseClassComponent";
+
+/**
+ * Props for LoginForm component
+ */
+interface ILoginFormProps extends IBaseComponentProps {
+    // No additional props needed
+}
+
+/**
+ * State for LoginForm component
+ */
+interface ILoginFormState {
+    formData: any;
+    isAuthenticating: boolean;
+    isError: boolean;
+    error: string | null;
+    hookData: any;
+    hookError: Error | null;
+}
 
 /**
  * LoginForm component for user authentication.
  * Uses global auth store for state management.
- *
- * @returns {JSX.Element} - The rendered login form component.
+ * 
+ * Converted to class-based component following enterprise patterns with proper state management
+ * and lifecycle handling.
  */
-const LoginForm: React.FC = () => {
+class LoginForm extends BaseClassComponent<ILoginFormProps, ILoginFormState> {
 
-    let data;
-
-    try {
-        data = useLoginForm();
-    } catch (error: unknown) {
-        console.error(error);
-        const errorMessage = `error on login form: ${(error as Error).message}`;
-        return <ErrorComponent message={errorMessage} />;
+    protected override getInitialState(): Partial<ILoginFormState> {
+        return {
+            formData: { email: '', password: '' },
+            isAuthenticating: false,
+            isError: false,
+            error: null,
+            hookData: null,
+            hookError: null
+        };
     }
 
-    const {
-        formData,
-        isAuthenticating,
-        isError,
-        error,
-        handleLoginForm,
-        handleFormChange,
-        handleSignupBtn,
-    } = data;
+    protected override onMount(): void {
+        super.onMount();
+        this.initializeHookData();
+    }
 
-    if (isAuthenticating) return <LoaderStyled />;
-    if (isError) return <ErrorComponent message={`could not authenticate! error: ${error}`} />;
+    private initializeHookData(): void {
+        try {
+            const hookData = useLoginForm();
+            this.safeSetState({
+                hookData,
+                hookError: null
+            });
+        } catch (error) {
+            console.error(error);
+            this.safeSetState({
+                hookError: error as Error
+            });
+        }
+    }
 
-    return (
-        <FormContainer>
-            <Title variant="h2">login</Title>
-            <FormStyled>
-                <Container>
-                    <Input
-                        placeholder="username or email"
-                        name='email'
-                        value={formData.email}
-                        onChange={handleFormChange}
-                    />
-                    <PassInput
-                        placeholder="password"
-                        name='password'
-                        value={formData.password}
-                        handleChange={handleFormChange}
-                    />
-                </Container>
-            </FormStyled>
-            <GradientButton onClick={handleLoginForm} />
-            <Text variant="h4">don't have an account?</Text>
-            <OutlineButton onClick={handleSignupBtn} name="signup" />
-        </FormContainer>
-    );
-};
+    private getFormData() {
+        const { hookData } = this.state;
+        if (!hookData) return {
+            formData: { email: '', password: '' },
+            isAuthenticating: false,
+            isError: false,
+            error: null,
+            handleLoginForm: () => { },
+            handleFormChange: () => { },
+            handleSignupBtn: () => { }
+        };
+
+        return {
+            formData: hookData.formData,
+            isAuthenticating: hookData.isAuthenticating,
+            isError: hookData.isError,
+            error: hookData.error,
+            handleLoginForm: hookData.handleLoginForm,
+            handleFormChange: hookData.handleFormChange,
+            handleSignupBtn: hookData.handleSignupBtn
+        };
+    }
+
+    protected override renderContent(): ReactNode {
+        const { hookError } = this.state;
+
+        if (hookError) {
+            const errorMessage = `error on login form: ${hookError.message}`;
+            return <ErrorComponent message={errorMessage} />;
+        }
+
+        const {
+            formData,
+            isAuthenticating,
+            isError,
+            error,
+            handleLoginForm,
+            handleFormChange,
+            handleSignupBtn,
+        } = this.getFormData();
+
+        if (isAuthenticating) return <LoaderStyled />;
+        if (isError) return <ErrorComponent message={`could not authenticate! error: ${error}`} />;
+
+        return (
+            <FormContainer>
+                <Title variant="h2">login</Title>
+                <FormStyled>
+                    <Container>
+                        <Input
+                            placeholder="username or email"
+                            name='email'
+                            value={formData.email}
+                            onChange={handleFormChange}
+                        />
+                        <PassInput
+                            placeholder="password"
+                            name='password'
+                            value={formData.password}
+                            handleChange={handleFormChange}
+                        />
+                    </Container>
+                </FormStyled>
+                <GradientButton onClick={handleLoginForm} />
+                <Text variant="h4">don't have an account?</Text>
+                <OutlineButton onClick={handleSignupBtn} name="signup" />
+            </FormContainer>
+        );
+    }
+}
 
 export default withErrorBoundary(LoginForm);

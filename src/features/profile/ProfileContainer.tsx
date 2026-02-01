@@ -1,25 +1,22 @@
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import { Button } from "@/shared/ui/components";
 import { Container as DefaultContainer } from "@/shared/ui/components";
-import { FlexContainer } from "@/shared/ui/components";
 import { Text as Typography } from "@/shared/ui/components";
 import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/base/BaseClassComponent";
-import { Loader } from "@/shared/ui/components";
-import { Skeleton } from "@/shared/ui/components";
-import { Overlay } from "@/shared/ui/components/layout/Overlay";
-import { Conditional } from "@/shared/ui/components/utility/Conditional";
-import { FollowToggle } from "@/shared/ui/components/utility/FollowToggle";
-import { PrivateBlock } from "@/shared/ui/components/utility/PrivateBlock";
-import { LoaderStyled } from "@/shared/ui/components/feedback/LoaderStyled";
-import useUserProfile from "@/features/profile/application/hooks/useUserProfile";
-import { useNavigate } from "react-router-dom";
+import Overlay from "@/shared/ui/components/layout/Overlay";
+import Conditional from "@/shared/ui/components/utility/Conditional";
+import FollowToggle from "@/shared/ui/components/utility/FollowToggle";
+import PrivateBlock from "@/shared/ui/components/utility/PrivateBlock";
+import LoaderStyled from "@/shared/ui/components/feedback/LoaderStyled";
+import { withErrorBoundary } from "@/shared/components/hoc/withErrorBoundary";
+import type { ReactNode } from "react";
 import {
     ConnectionsList as UserConnections,
     ProfileHeader as UserDetailsSection,
     ProfileStats as FollowsSection,
     ProfileControls,
     ProfileTabs,
-} from "./components";
+} from "./presentation/components";
 
 /**
  * Props for ProfileContainer component
@@ -35,7 +32,7 @@ interface IProfileContainerState {
     userId: string | undefined;
     userProfileData: any;
     isLoading: boolean;
-    error: string | null;
+    error: Error | null;
     viewFollowers: boolean;
     viewFollowings: boolean;
 }
@@ -50,8 +47,6 @@ interface IProfileContainerState {
  * and lifecycle handling.
  */
 class ProfileContainer extends BaseClassComponent<IProfileContainerProps, IProfileContainerState> {
-    private navigate: ReturnType<typeof useNavigate>;
-    private userProfileHook: ReturnType<typeof useUserProfile>;
 
     protected override getInitialState(): Partial<IProfileContainerState> {
         return {
@@ -69,7 +64,7 @@ class ProfileContainer extends BaseClassComponent<IProfileContainerProps, IProfi
         this.initializeComponent();
     }
 
-    protected override onUpdate(prevProps: IProfileContainerProps, prevState: IProfileContainerState): void {
+    protected override onUpdate(_prevProps: IProfileContainerProps, prevState: IProfileContainerState): void {
         // Handle userId changes if needed
         const currentUserId = this.getUserIdFromParams();
         if (currentUserId !== prevState.userId) {
@@ -92,10 +87,9 @@ class ProfileContainer extends BaseClassComponent<IProfileContainerProps, IProfi
 
         } catch (error) {
             console.error(error);
-            const errorMessage = `error loading user profile data: ${(error as Error).message}`;
 
             this.safeSetState({
-                error: errorMessage,
+                error: error as Error,
                 isLoading: false
             });
         }
@@ -160,7 +154,7 @@ class ProfileContainer extends BaseClassComponent<IProfileContainerProps, IProfi
         const { error } = this.state;
 
         if (error) {
-            return <ErrorComponent message={error} />;
+            return <ErrorComponent message={error.message} />;
         }
 
         if (this.isLoading()) {
@@ -178,7 +172,6 @@ class ProfileContainer extends BaseClassComponent<IProfileContainerProps, IProfi
             followers,
             followings,
             isHasAccess,
-            userPosts,
             viewFollowers,
             viewFollowings,
             toggleFollowers,
@@ -213,7 +206,7 @@ class ProfileContainer extends BaseClassComponent<IProfileContainerProps, IProfi
 
                 {/* Conditionally render ProfileTabs if the user has access */}
                 <Conditional isEnabled={isHasAccess.data}>
-                    <ProfileTabs userId={this.state.userId} />
+                    <ProfileTabs userId={this.state.userId!} />
                 </Conditional>
 
                 {/* Render PrivateBlock if the account is private */}
