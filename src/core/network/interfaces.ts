@@ -138,7 +138,11 @@ export interface ITokenProvider {
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
 // Content Types
-export type ContentType = 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
+export type ContentType =
+    | 'application/json'
+    | 'application/x-www-form-urlencoded'
+    | 'multipart/form-data'
+    | 'text/plain';
 
 // Response Types
 export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'stream';

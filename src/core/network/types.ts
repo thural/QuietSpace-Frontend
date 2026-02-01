@@ -140,7 +140,12 @@ export function isApiError(error: unknown): error is ApiError {
 }
 
 export function isApiResponse(response: unknown): response is ApiResponse<unknown> {
-    return Boolean(response && typeof response === 'object' && 'data' in response && 'status' in response);
+    return Boolean(
+        response &&
+        typeof response === 'object' &&
+        'data' in response &&
+        'status' in response
+    );
 }
 
 export function isSuccessStatus(status: number): boolean {

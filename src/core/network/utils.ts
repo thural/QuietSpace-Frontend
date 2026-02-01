@@ -117,7 +117,12 @@ export function isApiError(error: unknown): error is ApiError {
  * Checks if a response is an API response
  */
 export function isApiResponse(response: unknown): response is ApiResponse<unknown> {
-    return Boolean(response && typeof response === 'object' && 'data' in response && 'status' in response);
+    return Boolean(
+        response &&
+        typeof response === 'object' &&
+        'data' in response &&
+        'status' in response
+    );
 }
 
 /**
@@ -191,7 +196,9 @@ export function shouldRetryError(error: unknown): boolean {
  * Generates a unique request ID
  */
 export function generateRequestId(): string {
-    return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    return `req_${timestamp}_${random}`;
 }
 
 /**
