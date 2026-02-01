@@ -9,21 +9,29 @@
     ],
     "module": "ESNext",
     "skipLibCheck": true,
-    "moduleResolution": "Node",
-    "allowImportingTsExtensions": false,
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "allowJs": true,
-    "checkJs": false,
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -99,17 +107,20 @@
       "react-dom",
       "@babel/core",
       "jest"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/__mocks__"
     ]
   },
   "include": [
-    "src/**/*.js",
-    "src/**/*.jsx"
+    "src",
+    "src/**/*",
+    "src/__mocks__/**/*.d.ts",
+    "src/shared/types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "src/core/**/*",
-    "**/*.spec.ts",
-    "**/*.spec.js",
-    "**/*.d.ts"
+    "**/*.spec.ts"
   ]
 }

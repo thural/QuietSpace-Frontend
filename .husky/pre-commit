@@ -1,0 +1,1 @@
+npm run type-check && npm run lint:fix && npm run format && npm run pre-commit
