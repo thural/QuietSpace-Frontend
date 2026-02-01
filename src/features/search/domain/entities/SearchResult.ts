@@ -4,8 +4,8 @@
  * Represents search results with metadata and pagination.
  */
 
-import type { UserList } from "@/features/profile/data/models/user";
-import type { PostList } from "@/features/feed/data/models/post";
+import type { UserList } from "../../../profile/data/models/user";
+import type { PostList } from "../../../feed/data/models/index";
 import type { SearchQuery } from './SearchQuery';
 
 /**
