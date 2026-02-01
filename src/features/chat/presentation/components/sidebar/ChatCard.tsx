@@ -1,5 +1,5 @@
 import { ChatResponse } from "@/features/chat/data/models/chat";
-import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
+import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
 import styles from "../../styles/chatCardStyles";
 import useChatCard from "../../styles/useChatCard";
 import { Container } from "@/shared/ui/components/layout/Container";
