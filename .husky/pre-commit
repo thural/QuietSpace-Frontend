@@ -1,1 +1,23 @@
-npm run type-check && npm run lint:fix && npm run format && npm run pre-commit
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Google TypeScript Style Guide Enforcement
+echo "🔍 Running Google Style Guide checks..."
+
+# Type checking
+echo "📋 Type checking..."
+npm run type-check
+
+# Linting with auto-fix
+echo "🔧 ESLint auto-fix..."
+npm run lint:fix
+
+# Formatting
+echo "✨ Formatting code..."
+npm run format
+
+# Lint-staged for staged files
+echo "🚀 Running lint-staged..."
+npm run pre-commit
+
+echo

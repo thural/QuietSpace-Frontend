@@ -4,9 +4,9 @@ export default {
   printWidth: 100,              // Line length limit
   tabWidth: 2,                  // Indentation
   useTabs: false,               // Spaces only
-  trailingComma: 'es5',        // Consistent trailing commas
+  trailingComma: 'none',        // Google Style Guide: no trailing commas
   bracketSpacing: true,         // Space in brackets
-  arrowParens: 'avoid',         // Omit parens when possible
+  arrowParens: 'always',        // Google Style Guide: always use parens
   endOfLine: 'lf',              // Line endings
   bracketSameLine: false,       // Braces on new line
   quoteProps: 'as-needed',      // Quote object props when needed
