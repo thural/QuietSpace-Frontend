@@ -14,10 +14,11 @@
  * - Theme integration
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { Container, Button, Text, Avatar } from '@/shared/ui/components';
 import { useTheme } from '@/core/theme';
 import { useEnterpriseWebSocket } from '@/core/websocket/hooks/useEnterpriseWebSocket';
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from "@/shared/components/base/BaseClassComponent";
+import { ReactNode } from "react";
 
 /**
  * Notification type enum
@@ -50,680 +51,514 @@ export interface INotification {
         id: string;
         name: string;
     };
-    metadata?: {
-        chatId?: string;
-        messageId?: string;
-        actionUrl?: string;
-        actionText?: string;
-        imageUrl?: string;
-        category?: string;
-        tags?: string[];
-        expiresAt?: Date;
-        persistent?: boolean;
-    };
+    metadata?: Record<string, any>;
     actions?: Array<{
         id: string;
         label: string;
         action: () => void;
-        primary?: boolean;
-        icon?: React.ReactNode;
+        variant?: 'primary' | 'secondary' | 'danger';
     }>;
+    autoClose?: boolean;
+    autoCloseDelay?: number;
 }
 
 /**
- * Notification configuration interface
+ * Notification context interface
  */
-export interface INotificationConfig {
-    enableRealTimeNotifications: boolean;
-    enableNotificationQueue: boolean;
-    maxQueueSize: number;
-    defaultTTL: number;
-    enablePersistence: boolean;
-    enableSound: boolean;
-    enableDesktopNotifications: boolean;
-    enableEmailNotifications: boolean;
-    enablePushNotifications: boolean;
-    soundEnabled: boolean;
-    vibrationEnabled: boolean;
-    enableGrouping: boolean;
-    enableFiltering: boolean;
-    enableSearch: boolean;
-    enableArchiving: boolean;
-    archiveAfterDays: number;
-    maxArchiveSize: number;
-    enablePriority: boolean;
-    enableReadStatus: boolean;
-    enableAutoMarkRead: boolean;
-    autoMarkReadDelay: number;
-}
-
-/**
- * Notification filters interface
- */
-export interface INotificationFilters {
-    types?: NotificationType[];
-    priorities?: NotificationPriority[];
-    readStatus?: 'read' | 'unread' | 'archived';
-    dateRange?: {
-        start: Date;
-        end: Date;
-    };
-    searchQuery?: string;
-    tags?: string[];
-}
-
-/**
- * Notification context type
- */
-interface INotificationContextType {
+export interface INotificationContext {
     notifications: INotification[];
     unreadCount: number;
-    config: INotificationConfig;
-    addNotification: (notification: Omit<INotification, 'id' | 'timestamp'>) => string;
-    removeNotification: (id: string) => void;
+    addNotification: (notification: Omit<INotification, 'id' | 'timestamp' | 'read'>) => void;
     markAsRead: (id: string) => void;
     markAllAsRead: () => void;
-    clearAll: () => void;
-    archiveNotification: (id: string) => void;
-    unarchiveNotification: (id: string) => void;
-    getNotification: (id: string) => INotification | undefined;
-    getUnreadNotifications: () => INotification[];
-    getNotificationsByType: (type: NotificationType) => INotification[];
-    getNotificationsByPriority: (priority: NotificationPriority) => INotification[];
-    searchNotifications: (query: string) => INotification[];
-    filterNotifications: (filters: INotificationFilters) => INotification[];
-    updateConfig: (config: Partial<INotificationConfig>) => void;
-    playNotificationSound: (type: NotificationType) => void;
-    vibrate: (pattern: number[]) => void;
-    requestPermission: () => Promise<boolean>;
+    clearNotification: (id: string) => void;
+    clearAllNotifications: () => void;
+    setPriority: (id: string, priority: NotificationPriority) => void;
 }
 
-/**
- * Notification provider props
- */
-interface INotificationProviderProps {
-    children: React.ReactNode;
+export interface IRealTimeNotificationManagerProps extends IBaseComponentProps {
     userId: string;
-    config?: Partial<INotificationConfig>;
+    maxNotifications?: number;
+    enableWebSocket?: boolean;
+    enableSound?: boolean;
+    enableDesktop?: boolean;
+    position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+}
+
+interface IRealTimeNotificationManagerState extends IBaseComponentState {
+    notifications: INotification[];
+    unreadCount: number;
+    websocketHook: any;
+    theme: any;
+    isWebSocketConnected: boolean;
+    soundEnabled: boolean;
+    desktopEnabled: boolean;
+    notificationQueue: INotification[];
+    maxNotifications: number;
+    position: string;
+    autoCloseTimers: Map<string, NodeJS.Timeout>;
 }
 
 /**
- * Notification context
- */
-const NotificationContext = createContext<INotificationContextType | null>(null);
-
-/**
- * Enterprise Real-Time Notification Manager Component
+ * Enterprise Real-Time Notification Manager component.
  * 
- * Provides comprehensive notification management with real-time updates,
- * priority handling, and enterprise-grade features.
+ * This component provides advanced real-time notification management with priority handling,
+ * notification queuing, and comprehensive notification types. It integrates with WebSocket
+ * for real-time updates and supports desktop notifications.
+ * 
+ * Converted to class-based component following enterprise patterns.
  */
-export const RealTimeNotificationManager: React.FC<INotificationProviderProps> = ({
-    children,
-    userId,
-    config: userConfig = {}
-}) => {
-    const theme = useTheme();
-    const { sendMessage, subscribe } = useEnterpriseWebSocket({
-        autoConnect: true,
-        enableMetrics: true
-    });
+class RealTimeNotificationManager extends BaseClassComponent<IRealTimeNotificationManagerProps, IRealTimeNotificationManagerState> {
 
-    // State management
-    const [notifications, setNotifications] = useState<INotification[]>([]);
-    const [config, setConfig] = useState<INotificationConfig>({
-        enableRealTimeNotifications: true,
-        enableNotificationQueue: true,
-        maxQueueSize: 100,
-        defaultTTL: 86400000, // 24 hours
-        enablePersistence: true,
-        enableSound: true,
-        enableDesktopNotifications: true,
-        enableEmailNotifications: false,
-        enablePushNotifications: true,
-        soundEnabled: true,
-        vibrationEnabled: true,
-        enableGrouping: true,
-        enableFiltering: true,
-        enableSearch: true,
-        enableArchiving: true,
-        archiveAfterDays: 30,
-        maxArchiveSize: 1000,
-        enablePriority: true,
-        enableReadStatus: true,
-        enableAutoMarkRead: false,
-        autoMarkReadDelay: 5000,
-        ...userConfig
-    });
+    protected override getInitialState(): Partial<IRealTimeNotificationManagerState> {
+        return {
+            notifications: [],
+            unreadCount: 0,
+            websocketHook: null,
+            theme: null,
+            isWebSocketConnected: false,
+            soundEnabled: true,
+            desktopEnabled: true,
+            notificationQueue: [],
+            maxNotifications: 10,
+            position: 'top-right',
+            autoCloseTimers: new Map()
+        };
+    }
 
-    // Refs for timers and timeouts
-    const notificationTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
-    const audioContextRef = useRef<AudioContext | null>(null);
+    protected override onMount(): void {
+        super.onMount();
+        this.initializeNotifications();
+    }
 
-    // Generate unique notification ID
-    const generateNotificationId = useCallback((): string => {
-        return `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    }, []);
+    protected override onUnmount(): void {
+        super.onUnmount();
+        // Clear all auto-close timers
+        this.state.autoCloseTimers.forEach(timer => clearTimeout(timer));
+    }
 
-    // Add notification
-    const addNotification = useCallback((
-        notification: Omit<INotification, 'id' | 'timestamp'>
-    ): string => {
-        const id = generateNotificationId();
-        const timestamp = new Date();
+    protected override onUpdate(): void {
+        this.updateNotificationState();
+    }
 
-        const newNotification: INotification = {
-            id,
-            ...notification,
-            timestamp,
-            read: false,
-            metadata: {
-                ...notification.metadata,
-                expiresAt: new Date(timestamp.getTime() + config.defaultTTL)
+    /**
+     * Initialize notification system
+     */
+    private initializeNotifications = (): void => {
+        const { userId, maxNotifications = 10, enableWebSocket = true, enableSound = true, enableDesktop = true, position = 'top-right' } = this.props;
+
+        const theme = useTheme();
+        const websocketHook = enableWebSocket ? useEnterpriseWebSocket(userId) : null;
+
+        this.safeSetState({
+            theme,
+            websocketHook,
+            maxNotifications,
+            soundEnabled: enableSound,
+            desktopEnabled: enableDesktop,
+            position
+        });
+
+        this.updateNotificationState();
+    };
+
+    /**
+     * Update notification state from hooks
+     */
+    private updateNotificationState = (): void => {
+        if (this.state.websocketHook) {
+            const { isConnected, lastMessage } = this.state.websocketHook;
+
+            this.safeSetState({
+                isWebSocketConnected: isConnected
+            });
+
+            // Handle WebSocket messages
+            if (lastMessage && lastMessage.type === 'notification') {
+                this.handleWebSocketNotification(lastMessage.data);
             }
+        }
+    };
+
+    /**
+     * Handle WebSocket notification
+     */
+    private handleWebSocketNotification = (notificationData: any): void => {
+        const notification: Omit<INotification, 'id' | 'timestamp' | 'read'> = {
+            type: notificationData.type || 'info',
+            title: notificationData.title || 'New Notification',
+            message: notificationData.message || '',
+            priority: notificationData.priority || 'medium',
+            sender: notificationData.sender,
+            recipient: notificationData.recipient,
+            metadata: notificationData.metadata,
+            actions: notificationData.actions,
+            autoClose: notificationData.autoClose !== false,
+            autoCloseDelay: notificationData.autoCloseDelay || 5000
         };
 
-        // Add to notifications list
-        setNotifications(prev => {
-            const updated = [newNotification, ...prev];
+        this.addNotification(notification);
+    };
 
-            // Apply queue size limit
-            if (config.enableNotificationQueue && updated.length > config.maxQueueSize) {
-                return updated.slice(0, config.maxQueueSize);
+    /**
+     * Add notification
+     */
+    private addNotification = (notificationData: Omit<INotification, 'id' | 'timestamp' | 'read'>): void => {
+        const notification: INotification = {
+            ...notificationData,
+            id: this.generateNotificationId(),
+            timestamp: new Date(),
+            read: false
+        };
+
+        this.safeSetState(prev => {
+            const newNotifications = [...prev.notifications, notification];
+            const filteredNotifications = this.filterNotifications(newNotifications);
+            const unreadCount = filteredNotifications.filter(n => !n.read).length;
+
+            // Play sound if enabled
+            if (this.state.soundEnabled) {
+                this.playNotificationSound(notification);
             }
 
-            return updated;
-        });
-
-        // Set up auto-expiry
-        if (newNotification.metadata?.expiresAt) {
-            const timeout = setTimeout(() => {
-                removeNotification(id);
-            }, newNotification.metadata.expiresAt.getTime() - Date.now());
-
-            notificationTimeoutsRef.current.set(id, timeout);
-        }
-
-        // Play sound if enabled
-        if (config.enableSound && config.soundEnabled) {
-            playNotificationSound(notification.type);
-        }
-
-        // Vibrate if enabled
-        if (config.vibrationEnabled) {
-            vibrate([200, 100, 200]);
-        }
-
-        // Send desktop notification if enabled
-        if (config.enableDesktopNotifications) {
-            sendDesktopNotification(newNotification);
-        }
-
-        return id;
-    }, [config]);
-
-    // Remove notification
-    const removeNotification = useCallback((id: string): void => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
-
-        // Clear timeout
-        const timeout = notificationTimeoutsRef.current.get(id);
-        if (timeout) {
-            clearTimeout(timeout);
-            notificationTimeoutsRef.current.delete(id);
-        }
-    }, []);
-
-    // Mark as read
-    const markAsRead = useCallback((id: string): void => {
-        setNotifications(prev => prev.map(n =>
-            n.id === id ? { ...n, read: true } : n
-        ));
-    }, []);
-
-    // Mark all as read
-    const markAllAsRead = useCallback((): void => {
-        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    }, []);
-
-    // Clear all notifications
-    const clearAll = useCallback((): void => {
-        setNotifications([]);
-
-        // Clear all timeouts
-        notificationTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
-        notificationTimeoutsRef.current.clear();
-    }, []);
-
-    // Archive notification
-    const archiveNotification = useCallback((id: string): void => {
-        // In a real implementation, this would move to archive storage
-        removeNotification(id);
-    }, [removeNotification]);
-
-    // Unarchive notification
-    const unarchiveNotification = useCallback((id: string): void => {
-        // In a real implementation, this would restore from archive
-        // For now, just log
-        console.log('Unarchive notification:', id);
-    }, []);
-
-    // Get notification by ID
-    const getNotification = useCallback((id: string): INotification | undefined => {
-        return notifications.find(n => n.id === id);
-    }, [notifications]);
-
-    // Get unread notifications
-    const getUnreadNotifications = useCallback((): INotification[] => {
-        return notifications.filter(n => !n.read);
-    }, [notifications]);
-
-    // Get notifications by type
-    const getNotificationsByType = useCallback((type: NotificationType): INotification[] => {
-        return notifications.filter(n => n.type === type);
-    }, [notifications]);
-
-    // Get notifications by priority
-    const getNotificationsByPriority = useCallback((priority: NotificationPriority): INotification[] => {
-        return notifications.filter(n => n.priority === priority);
-    }, [notifications]);
-
-    // Search notifications
-    const searchNotifications = useCallback((query: string): INotification[] => {
-        const lowercaseQuery = query.toLowerCase();
-        return notifications.filter(n =>
-            n.title.toLowerCase().includes(lowercaseQuery) ||
-            n.message.toLowerCase().includes(lowercaseQuery) ||
-            n.body?.toLowerCase().includes(lowercaseQuery)
-        );
-    }, [notifications]);
-
-    // Filter notifications
-    const filterNotifications = useCallback((filters: INotificationFilters): INotification[] => {
-        return notifications.filter(n => {
-            // Type filter
-            if (filters.types && !filters.types.includes(n.type)) {
-                return false;
+            // Show desktop notification if enabled
+            if (this.state.desktopEnabled) {
+                this.showDesktopNotification(notification);
             }
 
-            // Priority filter
-            if (filters.priorities && !filters.priorities.includes(n.priority)) {
-                return false;
+            // Set auto-close timer
+            if (notification.autoClose) {
+                this.setAutoCloseTimer(notification);
             }
 
-            // Read status filter
-            if (filters.readStatus) {
-                if (filters.readStatus === 'read' && !n.read) return false;
-                if (filters.readStatus === 'unread' && n.read) return false;
-            }
-
-            // Date range filter
-            if (filters.dateRange) {
-                const notificationDate = n.timestamp;
-                if (notificationDate < filters.dateRange.start || notificationDate > filters.dateRange.end) {
-                    return false;
-                }
-            }
-
-            // Search query filter
-            if (filters.searchQuery) {
-                const query = filters.searchQuery.toLowerCase();
-                if (!n.title.toLowerCase().includes(query) &&
-                    !n.message.toLowerCase().includes(query) &&
-                    !n.body?.toLowerCase().includes(query)) {
-                    return false;
-                }
-            }
-
-            // Tags filter
-            if (filters.tags && filters.tags.length > 0) {
-                const notificationTags = n.metadata?.tags || [];
-                if (!filters.tags.some(tag => notificationTags.includes(tag))) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-    }, [notifications]);
-
-    // Update configuration
-    const updateConfig = useCallback((newConfig: Partial<INotificationConfig>): void => {
-        setConfig(prev => ({ ...prev, ...newConfig }));
-    }, []);
-
-    // Play notification sound
-    const playNotificationSound = useCallback((type: NotificationType): void => {
-        if (!config.enableSound || !config.soundEnabled) return;
-
-        try {
-            // Initialize audio context if needed
-            if (!audioContextRef.current) {
-                audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-            }
-
-            const audioContext = audioContextRef.current;
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-
-            // Different sounds for different types
-            const frequencies = {
-                message: 800,
-                mention: 1000,
-                reaction: 600,
-                system: 400,
-                presence: 500,
-                error: 300,
-                warning: 350,
-                success: 900,
-                info: 700
+            return {
+                notifications: filteredNotifications,
+                unreadCount
             };
+        });
+    };
 
-            oscillator.frequency.value = frequencies[type] || 600;
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+    /**
+     * Generate notification ID
+     */
+    private generateNotificationId = (): string => {
+        return `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    };
 
-            gainNode.gain.value = 0.1;
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.1);
-        } catch (error) {
-            console.error('Error playing notification sound:', error);
+    /**
+     * Filter notifications based on max count and priority
+     */
+    private filterNotifications = (notifications: INotification[]): INotification[] => {
+        const { maxNotifications } = this.state;
+
+        if (notifications.length <= maxNotifications) {
+            return notifications;
         }
-    }, [config.enableSound, config.soundEnabled]);
 
-    // Vibrate device
-    const vibrate = useCallback((pattern: number[]): void => {
-        if (!config.vibrationEnabled || !('vibrate' in navigator)) return;
+        // Sort by priority and timestamp, keeping the most important ones
+        return notifications
+            .sort((a, b) => {
+                const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+                const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
+                if (priorityDiff !== 0) return priorityDiff;
+                return b.timestamp.getTime() - a.timestamp.getTime();
+            })
+            .slice(0, maxNotifications);
+    };
 
+    /**
+     * Play notification sound
+     */
+    private playNotificationSound = (notification: INotification): void => {
         try {
-            navigator.vibrate(pattern);
+            const audio = new Audio('/notification-sound.mp3');
+            audio.volume = 0.3;
+            audio.play().catch(() => {
+                // Ignore audio play errors
+            });
         } catch (error) {
-            console.error('Error vibrating device:', error);
+            // Ignore audio errors
         }
-    }, [config.vibrationEnabled]);
+    };
 
-    // Request notification permission
-    const requestPermission = useCallback(async (): Promise<boolean> => {
-        if (!('Notification' in window)) {
-            return false;
-        }
-
-        if (Notification.permission === 'granted') {
-            return true;
-        }
-
-        if (Notification.permission !== 'denied') {
-            const permission = await Notification.requestPermission();
-            return permission === 'granted';
-        }
-
-        return false;
-    }, []);
-
-    // Send desktop notification
-    const sendDesktopNotification = useCallback((notification: INotification): void => {
-        if (!('Notification' in window) || Notification.permission !== 'granted') {
-            return;
-        }
-
-        try {
-            const desktopNotification = new Notification(notification.title, {
+    /**
+     * Show desktop notification
+     */
+    private showDesktopNotification = (notification: INotification): void => {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(notification.title, {
                 body: notification.message,
-                icon: notification.sender?.avatar || '/favicon.ico',
+                icon: notification.sender?.avatar || '/notification-icon.png',
                 tag: notification.id,
                 requireInteraction: notification.priority === 'critical'
             });
-
-            desktopNotification.onclick = () => {
-                window.focus();
-                desktopNotification.close();
-
-                // Mark as read
-                markAsRead(notification.id);
-
-                // Handle action URL
-                if (notification.metadata?.actionUrl) {
-                    window.location.href = notification.metadata.actionUrl;
-                }
-            };
-
-            // Auto-close after 5 seconds for non-critical notifications
-            if (notification.priority !== 'critical') {
-                setTimeout(() => {
-                    desktopNotification.close();
-                }, 5000);
-            }
-        } catch (error) {
-            console.error('Error sending desktop notification:', error);
         }
-    }, [markAsRead]);
-
-    // Calculate unread count
-    const unreadCount = notifications.filter(n => !n.read).length;
-
-    // WebSocket message handling
-    useEffect(() => {
-        if (!config.enableRealTimeNotifications) return;
-
-        const unsubscribe = subscribe('notification', {
-            onMessage: (message: any) => {
-                if (message.type === 'notification') {
-                    addNotification({
-                        type: message.data.type || 'info',
-                        title: message.data.title || 'New Notification',
-                        message: message.data.message || '',
-                        priority: message.data.priority || 'medium',
-                        sender: message.data.sender,
-                        metadata: message.data.metadata,
-                        read: false
-                    });
-                }
-            }
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, [config.enableRealTimeNotifications, addNotification, subscribe]);
-
-    // Request permission on mount
-    useEffect(() => {
-        if (config.enableDesktopNotifications) {
-            requestPermission();
-        }
-    }, [config.enableDesktopNotifications, requestPermission]);
-
-    // Cleanup on unmount
-    useEffect(() => {
-        return () => {
-            // Clear all timeouts
-            notificationTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
-            notificationTimeoutsRef.current.clear();
-
-            // Close audio context
-            if (audioContextRef.current) {
-                audioContextRef.current.close();
-            }
-        };
-    }, []);
-
-    // Context value
-    const contextValue: INotificationContextType = {
-        notifications,
-        unreadCount,
-        config,
-        addNotification,
-        removeNotification,
-        markAsRead,
-        markAllAsRead,
-        clearAll,
-        archiveNotification,
-        unarchiveNotification,
-        getNotification,
-        getUnreadNotifications,
-        getNotificationsByType,
-        getNotificationsByPriority,
-        searchNotifications,
-        filterNotifications,
-        updateConfig,
-        playNotificationSound,
-        vibrate,
-        requestPermission
     };
 
-    return (
-        <NotificationContext.Provider value={contextValue}>
-            {children}
-        </NotificationContext.Provider>
-    );
-};
+    /**
+     * Set auto-close timer
+     */
+    private setAutoCloseTimer = (notification: INotification): void => {
+        const timer = setTimeout(() => {
+            this.markAsRead(notification.id);
+        }, notification.autoCloseDelay);
 
-/**
- * Hook to use notification context
- */
-export const useRealTimeNotifications = (): INotificationContextType => {
-    const context = useContext(NotificationContext);
-    if (!context) {
-        throw new Error('useRealTimeNotifications must be used within a RealTimeNotificationManager');
-    }
-    return context;
-};
+        this.safeSetState(prev => ({
+            autoCloseTimers: new Map(prev.autoCloseTimers).set(notification.id, timer)
+        }));
+    };
 
-/**
- * Notification Bell Component
- */
-export const NotificationBell: React.FC<{
-    className?: string;
-    onClick?: () => void;
-}> = ({ className, onClick }) => {
-    const { unreadCount } = useRealTimeNotifications();
-    const theme = useTheme();
+    /**
+     * Mark notification as read
+     */
+    private markAsRead = (id: string): void => {
+        this.safeSetState(prev => {
+            const notifications = prev.notifications.map(n =>
+                n.id === id ? { ...n, read: true } : n
+            );
+            const unreadCount = notifications.filter(n => !n.read).length;
 
-    return (
-        <Container
-            className={`notification-bell ${className || ''}`}
-            onClick={onClick}
-            style={{
-                position: 'relative',
-                cursor: 'pointer',
-                padding: theme.spacing.sm
-            }}
-        >
-            <Text variant="h6">🔔</Text>
-            {unreadCount > 0 && (
-                <Container
-                    style={{
+            // Clear auto-close timer
+            const timer = prev.autoCloseTimers.get(id);
+            if (timer) {
+                clearTimeout(timer);
+                const newTimers = new Map(prev.autoCloseTimers);
+                newTimers.delete(id);
+                return { notifications, unreadCount, autoCloseTimers: newTimers };
+            }
+
+            return { notifications, unreadCount };
+        });
+    };
+
+    /**
+     * Mark all notifications as read
+     */
+    private markAllAsRead = (): void => {
+        this.safeSetState(prev => {
+            const notifications = prev.notifications.map(n => ({ ...n, read: true }));
+
+            // Clear all auto-close timers
+            prev.autoCloseTimers.forEach(timer => clearTimeout(timer));
+
+            return {
+                notifications,
+                unreadCount: 0,
+                autoCloseTimers: new Map()
+            };
+        });
+    };
+
+    /**
+     * Clear notification
+     */
+    private clearNotification = (id: string): void => {
+        this.safeSetState(prev => {
+            const notifications = prev.notifications.filter(n => n.id !== id);
+            const unreadCount = notifications.filter(n => !n.read).length;
+
+            // Clear auto-close timer
+            const timer = prev.autoCloseTimers.get(id);
+            if (timer) {
+                clearTimeout(timer);
+                const newTimers = new Map(prev.autoCloseTimers);
+                newTimers.delete(id);
+                return { notifications, unreadCount, autoCloseTimers: newTimers };
+            }
+
+            return { notifications, unreadCount };
+        });
+    };
+
+    /**
+     * Clear all notifications
+     */
+    private clearAllNotifications = (): void => {
+        this.safeSetState(prev => {
+            // Clear all auto-close timers
+            prev.autoCloseTimers.forEach(timer => clearTimeout(timer));
+
+            return {
+                notifications: [],
+                unreadCount: 0,
+                autoCloseTimers: new Map()
+            };
+        });
+    };
+
+    /**
+     * Set notification priority
+     */
+    private setPriority = (id: string, priority: NotificationPriority): void => {
+        this.safeSetState(prev => {
+            const notifications = prev.notifications.map(n =>
+                n.id === id ? { ...n, priority } : n
+            );
+            return { notifications };
+        });
+    };
+
+    /**
+     * Get notification icon
+     */
+    private getNotificationIcon = (type: NotificationType): string => {
+        const icons = {
+            message: '💬',
+            mention: '@',
+            reaction: '❤️',
+            system: '⚙️',
+            presence: '👤',
+            error: '❌',
+            warning: '⚠️',
+            success: '✅',
+            info: 'ℹ️'
+        };
+        return icons[type] || '📢';
+    };
+
+    /**
+     * Get notification color
+     */
+    private getNotificationColor = (priority: NotificationPriority): string => {
+        const colors = {
+            critical: '#ef4444',
+            high: '#f59e0b',
+            medium: '#3b82f6',
+            low: '#10b981'
+        };
+        return colors[priority] || '#6b7280';
+    };
+
+    protected override renderContent(): ReactNode {
+        const { notifications, unreadCount, position } = this.state;
+
+        if (notifications.length === 0) {
+            return null;
+        }
+
+        const positionStyles = {
+            'top-right': { top: '20px', right: '20px' },
+            'top-left': { top: '20px', left: '20px' },
+            'bottom-right': { bottom: '20px', right: '20px' },
+            'bottom-left': { bottom: '20px', left: '20px' }
+        };
+
+        return (
+            <div
+                style={{
+                    position: 'fixed',
+                    zIndex: 9999,
+                    ...positionStyles[position],
+                    maxWidth: '400px',
+                    width: '100%'
+                }}
+            >
+                {notifications.map(notification => (
+                    <div
+                        key={notification.id}
+                        style={{
+                            backgroundColor: notification.read ? '#f3f4f6' : '#ffffff',
+                            border: `1px solid ${this.getNotificationColor(notification.priority)}`,
+                            borderRadius: '8px',
+                            padding: '12px',
+                            marginBottom: '8px',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease-in-out'
+                        }}
+                        onClick={() => this.markAsRead(notification.id)}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                            <div style={{ fontSize: '20px' }}>
+                                {this.getNotificationIcon(notification.type)}
+                            </div>
+
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                                    <Text variant="h6" style={{ margin: 0, fontWeight: 'bold' }}>
+                                        {notification.title}
+                                    </Text>
+                                    {!notification.read && (
+                                        <div style={{
+                                            width: '8px',
+                                            height: '8px',
+                                            borderRadius: '50%',
+                                            backgroundColor: this.getNotificationColor(notification.priority)
+                                        }} />
+                                    )}
+                                </div>
+
+                                <Text variant="body2" style={{ margin: 0, color: '#4b5563' }}>
+                                    {notification.message}
+                                </Text>
+
+                                {notification.sender && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                                        <Avatar
+                                            src={notification.sender.avatar}
+                                            name={notification.sender.name}
+                                            size="small"
+                                        />
+                                        <Text variant="caption" style={{ color: '#6b7280' }}>
+                                            {notification.sender.name}
+                                        </Text>
+                                    </div>
+                                )}
+
+                                {notification.actions && (
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                                        {notification.actions.map(action => (
+                                            <Button
+                                                key={action.id}
+                                                variant={action.variant || 'secondary'}
+                                                size="small"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    action.action();
+                                                }}
+                                            >
+                                                {action.label}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div style={{
+                            fontSize: '10px',
+                            color: '#9ca3af',
+                            marginTop: '8px',
+                            textAlign: 'right'
+                        }}>
+                            {notification.timestamp.toLocaleTimeString()}
+                        </div>
+                    </div>
+                ))}
+
+                {unreadCount > 0 && (
+                    <div style={{
                         position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: theme.colors.semantic.error,
-                        color: theme.colors.text.primary,
-                        borderRadius: theme.radius.full,
-                        minWidth: '16px',
-                        height: '16px',
+                        top: '-10px',
+                        right: '-10px',
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '24px',
+                        height: '24px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: theme.typography.fontSize.xs,
-                        fontWeight: theme.typography.fontWeight.bold
-                    }}
-                >
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                </Container>
-            )}
-        </Container>
-    );
-};
-
-/**
- * Notification Item Component
- */
-export const NotificationItem: React.FC<{
-    notification: INotification;
-    onRead?: (id: string) => void;
-    onRemove?: (id: string) => void;
-}> = ({ notification, onRead, onRemove }) => {
-    const theme = useTheme();
-
-    return (
-        <Container
-            style={{
-                padding: theme.spacing.md,
-                borderBottom: `1px solid ${theme.colors.border.light}`,
-                backgroundColor: notification.read
-                    ? theme.colors.background.primary
-                    : theme.colors.background.secondary,
-                cursor: 'pointer',
-                transition: `all ${theme.animation.duration.fast} ${theme.animation.easing.easeOut}`
-            }}
-        >
-            <Container style={{ display: 'flex', alignItems: 'flex-start', gap: theme.spacing.md }}>
-                {/* Notification icon */}
-                <Container style={{ fontSize: '24px' }}>
-                    {notification.type === 'message' && '💬'}
-                    {notification.type === 'mention' && '@'}
-                    {notification.type === 'reaction' && '❤️'}
-                    {notification.type === 'system' && '⚙️'}
-                    {notification.type === 'presence' && '👤'}
-                    {notification.type === 'error' && '❌'}
-                    {notification.type === 'warning' && '⚠️'}
-                    {notification.type === 'success' && '✅'}
-                    {notification.type === 'info' && 'ℹ️'}
-                </Container>
-
-                {/* Notification content */}
-                <Container style={{ flex: 1 }}>
-                    <Container style={{ marginBottom: theme.spacing.xs }}>
-                        <Text
-                            variant="h6"
-                            fontWeight={notification.read ? 'normal' : 'bold'}
-                        >
-                            {notification.title}
-                        </Text>
-                    </Container>
-
-                    <Text variant="body2" color="textSecondary">
-                        {notification.message}
-                    </Text>
-
-                    {notification.body && (
-                        <Container style={{ marginTop: theme.spacing.xs }}>
-                            <Text variant="body2" color="textSecondary">
-                                {notification.body}
-                            </Text>
-                        </Container>
-                    )}
-
-                    <Container style={{ marginTop: theme.spacing.xs }}>
-                        <Text variant="caption" color="textSecondary">
-                            {notification.timestamp.toLocaleString()}
-                        </Text>
-                    </Container>
-                </Container>
-
-                {/* Actions */}
-                <Container style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.xs }}>
-                    {!notification.read && (
-                        <Button
-                            variant="secondary"
-                            size="xs"
-                            onClick={() => onRead?.(notification.id)}
-                        >
-                            ✓
-                        </Button>
-                    )}
-
-                    <Button
-                        variant="secondary"
-                        size="xs"
-                        onClick={() => onRemove?.(notification.id)}
-                    >
-                        ×
-                    </Button>
-                </Container>
-            </Container>
-        </Container>
-    );
-};
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                    }}>
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                    </div>
+                )}
+            </div>
+        );
+    }
+}
 
 export default RealTimeNotificationManager;

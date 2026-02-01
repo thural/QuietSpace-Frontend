@@ -5,8 +5,7 @@
  * Replaces scattered WebSocket implementations across features.
  */
 
-import { ICacheServiceManager, type FeatureCacheService } from '../../cache';
-import { TYPES } from '../../di/types';
+import { type FeatureCacheService } from '../../cache';
 
 import type { LoggerService } from '../../services/LoggerService';
 
