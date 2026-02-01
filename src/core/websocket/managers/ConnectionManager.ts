@@ -5,10 +5,10 @@
  * for enterprise WebSocket connections.
  */
 
-import { CacheService } from '../../cache';
+import { ICacheServiceManager } from '../../cache';
 import { Injectable, Inject } from '../../di';
 import { TYPES } from '../../di/types';
-import { LoggerService } from '../../services/ThemeService';
+import { LoggerService } from '../../services/LoggerService';
 import { IEnterpriseWebSocketService, WebSocketMessage, ConnectionMetrics } from '../services/EnterpriseWebSocketService';
 
 export interface ConnectionPool {
@@ -65,7 +65,7 @@ export class ConnectionManager implements IConnectionManager {
   private roundRobinIndex = 0;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private readonly cache: CacheService,
+    @Inject(TYPES.CACHE_SERVICE) private readonly cache: ICacheServiceManager,
     private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();

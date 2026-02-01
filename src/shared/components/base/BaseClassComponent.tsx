@@ -1,4 +1,4 @@
-import React, { PureComponent, ReactNode, ErrorInfo } from 'react';
+import { PureComponent, ReactNode, ErrorInfo } from 'react';
 import { Container } from '@/core/di';
 
 /**
@@ -55,23 +55,23 @@ export abstract class BaseClassComponent<
    */
   protected getContainer?(): Container;
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.setState({ isMounted: true });
     this.onMount();
   }
 
-  componentDidUpdate(prevProps: P, prevState: S): void {
+  override componentDidUpdate(prevProps: P, prevState: S): void {
     this.onUpdate(prevProps, prevState);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.isDestroyed = true;
     this.setState({ isMounted: false });
     this.cleanup();
     this.onUnmount();
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.error(`${this.constructor.name} error:`, { error, errorInfo });
     this.setState({
       hasError: true,
@@ -91,7 +91,7 @@ export abstract class BaseClassComponent<
   /**
    * Override to implement update-specific logic
    */
-  protected onUpdate(prevProps: P, prevState: S): void {
+  protected onUpdate(_prevProps: P, _prevState: S): void {
     // Override in subclasses
   }
 
@@ -105,7 +105,7 @@ export abstract class BaseClassComponent<
   /**
    * Override to implement error-specific logic
    */
-  protected onError(error: Error, errorInfo: ErrorInfo): void {
+  protected onError(_error: Error, _errorInfo: ErrorInfo): void {
     // Override in subclasses
   }
 
@@ -155,7 +155,7 @@ export abstract class BaseClassComponent<
         if (typeof timer === 'number') {
           clearTimeout(timer);
         } else {
-          timer.clear();
+          clearTimeout(timer as number);
         }
       } catch (error) {
         console.error('Error cleaning up timer:', error);
@@ -194,7 +194,7 @@ export abstract class BaseClassComponent<
     return this.props.children || null;
   }
 
-  render(): ReactNode {
+  override render(): ReactNode {
     const { hasError } = this.state;
     const { className, testId } = this.props;
 
@@ -223,7 +223,7 @@ export abstract class ContainerClassComponent<
 > extends BaseClassComponent<P, S> {
   protected abstract container: Container;
 
-  protected getContainer(): Container {
+  protected override getContainer(): Container {
     return this.container;
   }
 
@@ -239,7 +239,7 @@ export abstract class ContainerClassComponent<
    */
   protected getServiceSafe<T>(token: string | symbol, fallback: T): T {
     try {
-      return this.container.get<T>(token);
+      return this.container.get<T>(token as any);
     } catch {
       return fallback;
     }
@@ -295,7 +295,7 @@ export abstract class QueryClassComponent<
     if (!this.queryCache) return null;
 
     const key = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
-    return this.queryCache.get<T>(key);
+    return this.queryCache.get(key);
   }
 
   /**
@@ -325,7 +325,7 @@ export abstract class QueryClassComponent<
     if (!this.queryCache) return null;
 
     const key = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
-    return this.queryCache.subscribe(key, callback);
+    return this.queryCache.subscribe(key, callback) || (() => { });
   }
 
   /**
@@ -351,7 +351,7 @@ export abstract class QueryClassComponent<
           error: null,
           data: null
         }
-      } as Partial<S>);
+      } as unknown as Partial<S>);
 
       // Check cache first
       if (options?.cache !== false) {
@@ -364,7 +364,7 @@ export abstract class QueryClassComponent<
               error: null,
               data: cached
             }
-          } as Partial<S>);
+          } as unknown as Partial<S>);
 
           this.performanceMonitor.endQuery(trackingId, true, undefined, 'cache_hit');
           return cached;
@@ -389,7 +389,7 @@ export abstract class QueryClassComponent<
           error: null,
           data: result
         }
-      } as Partial<S>);
+      } as unknown as Partial<S>);
 
       this.performanceMonitor.endQuery(trackingId, true);
       return result;
@@ -404,7 +404,7 @@ export abstract class QueryClassComponent<
           error: errorObj,
           data: null
         }
-      } as Partial<S>);
+      } as unknown as Partial<S>);
 
       this.performanceMonitor.endQuery(trackingId, false, errorObj);
       throw errorObj;
@@ -414,7 +414,7 @@ export abstract class QueryClassComponent<
   /**
    * Check if cache entry is valid
    */
-  private isCacheValid<T>(cached: any, options?: any): boolean {
+  private isCacheValid(cached: any, options?: any): boolean {
     if (!cached || !cached.timestamp) return false;
 
     const now = Date.now();

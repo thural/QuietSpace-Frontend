@@ -5,10 +5,10 @@
  * for enterprise WebSocket communications.
  */
 
-import { CacheService } from '../../cache';
+import { ICacheServiceManager } from '../../cache';
 import { Injectable, Inject } from '../../di';
 import { TYPES } from '../../di/types';
-import { LoggerService } from '../../services/ThemeService';
+import { LoggerService } from '../../services/LoggerService';
 
 import { WebSocketMessage } from './EnterpriseWebSocketService';
 
@@ -78,7 +78,7 @@ export class MessageRouter implements IMessageRouter {
   private deadLetterQueue: WebSocketMessage[] = [];
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private readonly cache: CacheService,
+    @Inject(TYPES.CACHE_SERVICE) private readonly cache: ICacheServiceManager,
     private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
@@ -228,7 +228,8 @@ export class MessageRouter implements IMessageRouter {
 
     // Cache processed message for debugging/audit
     if (this.config.enableMetrics) {
-      await this.cache.set(`msg:processed:${processedMessage.id}`, {
+      const defaultCache = this.cache.getDefaultCache();
+      await defaultCache.set(`msg:processed:${processedMessage.id}`, {
         original: message,
         processed: processedMessage,
         route: `${route.feature}:${route.messageType}`,
