@@ -1,7 +1,7 @@
 import { formatFileSize } from "@/shared/utils/stringUtils";
 import { Container } from '@/shared/ui/components/layout/Container';
 import OutlineButton from "../../buttons/OutlineButton";
-import InputStyled from "./InputStyled";
+import { EnterpriseInput } from "@/shared/ui/components";
 import Typography from "../utility/Typography";
 import React, { PureComponent, ReactNode } from 'react';
 
@@ -27,7 +27,7 @@ class FileUploader extends PureComponent<IFileUploaderProps, IFileUploaderState>
     private handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const files = event.target.files;
         if (files && files.length > 0) {
-            this.setState({ file: files[0] });
+            this.setState({ file: files[0] || null });
         }
     };
 
@@ -49,12 +49,12 @@ class FileUploader extends PureComponent<IFileUploaderProps, IFileUploaderState>
             });
     };
 
-    render(): ReactNode {
+    override render(): ReactNode {
         const { file, status } = this.state;
 
         return (
             <Container>
-                <InputStyled type="file" onChange={this.handleFileChange} />
+                <EnterpriseInput type="file" onChange={this.handleFileChange} useTheme={false} />
                 <OutlineButton
                     name="upload"
                     disabled={!file}

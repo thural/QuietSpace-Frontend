@@ -5,10 +5,10 @@
  * Handles user input events and provides search functionality.
  */
 
-import InputStyled from "@/shared/InputStyled";
+import { EnterpriseInput } from "@/shared/ui/components";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { Container } from "@shared/ui/components/layout/Container";
-import { ChangeEventHandler, CSSProperties, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
+import { ChangeEventHandler, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
 import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
 import { SearchBarStyles } from "@/features/search/presentation/styles/SearchBarStyles";
 
@@ -24,13 +24,13 @@ import { SearchBarStyles } from "@/features/search/presentation/styles/SearchBar
  * @property {ChangeEventHandler<HTMLInputElement>} handleInputChange - Callback function triggered when the input value changes.
  * @property {RefObject<HTMLInputElement>} queryInputRef - Reference object for the input element.
  */
-export interface SearchBarProps extends GenericWrapperWithRef {
-    style?: CSSProperties;
+export interface SearchBarProps extends Omit<GenericWrapperWithRef, 'style'> {
+    style?: React.CSSProperties;
     handleKeyDown: KeyboardEventHandler<HTMLInputElement>;
     handleInputBlur: FocusEventHandler<HTMLInputElement>;
     handleInputFocus: FocusEventHandler<HTMLInputElement>;
     handleInputChange: ChangeEventHandler<HTMLInputElement>;
-    queryInputRef: RefObject<HTMLInputElement | null>;
+    queryInputRef: RefObject<HTMLInputElement>;
 }
 
 /**
@@ -51,17 +51,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
     queryInputRef
 }) => {
     return (
-        <Container style={style}>
+        <Container style={style || {}}>
             <SearchBarStyles.searchbar>
                 <PiMagnifyingGlassBold className={SearchBarStyles.searchIconLarge} /> {/* Search icon */}
-                <InputStyled
+                <EnterpriseInput
                     placeholder="Search"
-                    ref={queryInputRef}
+                    inputRef={queryInputRef}
                     onKeyDown={handleKeyDown}
                     onBlur={handleInputBlur}
                     onFocus={handleInputFocus}
                     onChange={handleInputChange}
                     className={SearchBarStyles.searchInput}
+                    useTheme={false}
                 />
                 <PiMicrophone className={SearchBarStyles.microphoneIcon} /> {/* Voice search icon */}
             </SearchBarStyles.searchbar>
