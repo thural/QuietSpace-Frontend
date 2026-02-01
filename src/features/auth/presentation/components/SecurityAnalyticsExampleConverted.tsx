@@ -1,9 +1,8 @@
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 import React from 'react';
 import { SecurityMonitor } from './SecurityMonitor';
-import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 
 // Import reusable components from shared UI
-import { LoadingSpinner, ErrorMessage } from '@shared/ui/components';
 
 /**
  * Demo User interface
@@ -56,7 +55,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
   private refreshTimer: number | null = null;
 
   protected override getInitialState(): Partial<ISecurityAnalyticsExampleState> {
-    const { 
+    const {
       initialUserId = 'demo-user-123',
       initialRefreshInterval = 30000,
       showAdvancedFeatures = true
@@ -125,7 +124,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
    */
   private refreshSecurityData(): void {
     // Simulate data refresh
-    this.safeSetState({ 
+    this.safeSetState({
       lastRefresh: new Date(),
       securityScore: Math.max(60, Math.min(100, this.state.securityScore + (Math.random() - 0.5) * 10)),
       threatCount: Math.max(0, this.state.threatCount + Math.floor((Math.random() - 0.8) * 3))
@@ -145,7 +144,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
    */
   private handleRefreshIntervalChange = (interval: number): void => {
     this.safeSetState({ refreshInterval: interval });
-    
+
     // Restart timer with new interval
     this.stopRefreshTimer();
     if (this.state.isMonitoring) {
@@ -157,8 +156,8 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
    * Toggle advanced features
    */
   private toggleAdvancedFeatures = (): void => {
-    this.safeSetState(prev => ({ 
-      showAdvancedFeatures: !prev.showAdvancedFeatures 
+    this.safeSetState(prev => ({
+      showAdvancedFeatures: !prev.showAdvancedFeatures
     }));
   };
 
@@ -202,7 +201,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
    */
   private renderControlPanel(): React.ReactNode {
     const { selectedUserId, refreshInterval, showAdvancedFeatures, isMonitoring, lastRefresh, securityScore, threatCount } = this.state;
-    
+
     const demoUsers = this.getDemoUsers();
     const intervalOptions = this.getRefreshIntervalOptions();
 
@@ -214,9 +213,9 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
         boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
         marginBottom: '20px'
       }}>
-        <h2 style={{ 
-          margin: '0 0 15px 0', 
-          color: '#2c3e50', 
+        <h2 style={{
+          margin: '0 0 15px 0',
+          color: '#2c3e50',
           fontSize: '20px',
           fontWeight: '600'
         }}>
@@ -289,7 +288,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
             >
               {isMonitoring ? 'Stop Monitoring' : 'Start Monitoring'}
             </button>
-            
+
             <button
               onClick={this.toggleAdvancedFeatures}
               style={{
@@ -309,10 +308,10 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
         </div>
 
         {/* Status Indicators */}
-        <div style={{ 
-          marginTop: '20px', 
-          padding: '15px', 
-          backgroundColor: '#f8f9fa', 
+        <div style={{
+          marginTop: '20px',
+          padding: '15px',
+          backgroundColor: '#f8f9fa',
           borderRadius: '8px',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
@@ -320,9 +319,9 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
         }}>
           <div>
             <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>Status</div>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: '5px',
               fontSize: '14px',
               fontWeight: '500'
@@ -336,21 +335,21 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
               {isMonitoring ? 'Monitoring' : 'Stopped'}
             </div>
           </div>
-          
+
           <div>
             <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>Security Score</div>
             <div style={{ fontSize: '16px', fontWeight: '600', color: '#2c3e50' }}>
               {securityScore}/100
             </div>
           </div>
-          
+
           <div>
             <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>Threats Detected</div>
             <div style={{ fontSize: '16px', fontWeight: '600', color: threatCount > 0 ? '#e74c3c' : '#27ae60' }}>
               {threatCount}
             </div>
           </div>
-          
+
           <div>
             <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>Last Refresh</div>
             <div style={{ fontSize: '14px', color: '#555' }}>
@@ -366,7 +365,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
     const { selectedUserId, showAdvancedFeatures } = this.state;
 
     return (
-      <div style={{ 
+      <div style={{
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
         padding: '20px',
         background: '#f5f5f5',
@@ -380,18 +379,18 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
           boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
           marginBottom: '20px'
         }}>
-          <h1 style={{ 
-            margin: '0 0 10px 0', 
-            color: '#2c3e50', 
+          <h1 style={{
+            margin: '0 0 10px 0',
+            color: '#2c3e50',
             fontSize: '32px',
             fontWeight: '600'
           }}>
             🔒 Security Analytics Dashboard
           </h1>
-          <p style={{ 
-            margin: 0, 
-            color: '#7f8c8d', 
-            fontSize: '16px' 
+          <p style={{
+            margin: 0,
+            color: '#7f8c8d',
+            fontSize: '16px'
           }}>
             Real-time security monitoring, threat detection, and analytics for enterprise applications
           </p>
@@ -413,7 +412,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
             showAdvancedFeatures={showAdvancedFeatures}
             onThreatDetected={(threat) => {
               console.log('🚨 Threat detected:', threat);
-              this.safeSetState(prev => ({ 
+              this.safeSetState(prev => ({
                 threatCount: prev.threatCount + 1,
                 securityScore: Math.max(0, prev.securityScore - 5)
               }));
@@ -438,7 +437,7 @@ export class SecurityAnalyticsExample extends BaseClassComponent<ISecurityAnalyt
             <strong>Security Analytics Example</strong> - Monitoring user: <strong>{selectedUserId}</strong>
           </div>
           <div style={{ marginTop: '5px', fontSize: '12px' }}>
-            This dashboard demonstrates real-time security monitoring capabilities including threat detection, 
+            This dashboard demonstrates real-time security monitoring capabilities including threat detection,
             IP tracking, and security analytics.
           </div>
         </div>

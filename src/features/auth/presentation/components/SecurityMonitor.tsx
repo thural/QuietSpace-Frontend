@@ -30,11 +30,17 @@ import { SecurityMonitorStyles } from './SecurityMonitor.styles.ts';
 interface SecurityAnalyticsProps {
   userId?: string;
   refreshInterval?: number;
+  showAdvancedFeatures?: boolean;
+  onThreatDetected?: (threat: any) => void;
+  onSecurityScoreChange?: (score: any) => void;
 }
 
 export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
   userId,
-  refreshInterval = 30000
+  refreshInterval = 30000,
+  showAdvancedFeatures,
+  onThreatDetected,
+  onSecurityScoreChange
 }) => {
   const {
     securityData,
@@ -57,17 +63,6 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
 
-  // Auto refresh functionality
-  useEffect(() => {
-    if (!autoRefresh) return;
-
-    const interval = setInterval(() => {
-      refreshSecurityData();
-    }, refreshInterval);
-
-    return () => clearInterval(interval);
-  }, [autoRefresh, refreshInterval, refreshSecurityData]);
-
   // Calculate advanced security metrics
   const calculateSecurityMetrics = () => {
     const now = Date.now();
@@ -80,22 +75,22 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
     const cutoff = timeframes[selectedTimeframe];
 
-    const recentEvents = securityEvents.filter(event =>
+    const recentEvents = securityEvents.filter((event: any) =>
       new Date(event.timestamp).getTime() > cutoff
     );
 
-    const recentAttempts = loginAttempts.filter(attempt =>
+    const recentAttempts = loginAttempts.filter((attempt: any) =>
       new Date(attempt.timestamp).getTime() > cutoff
     );
 
-    const failedAttempts = recentAttempts.filter(attempt => !attempt.success);
-    const successfulAttempts = recentAttempts.filter(attempt => attempt.success);
+    const failedAttempts = recentAttempts.filter((attempt: any) => !attempt.success);
+    const successfulAttempts = recentAttempts.filter((attempt: any) => attempt.success);
 
-    const criticalEvents = recentEvents.filter(event =>
+    const criticalEvents = recentEvents.filter((event: any) =>
       event.severity === 'critical'
     );
 
-    const highRiskEvents = recentEvents.filter(event =>
+    const highRiskEvents = recentEvents.filter((event: any) =>
       event.severity === 'high'
     );
 
@@ -126,6 +121,39 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
   const metrics = calculateSecurityMetrics();
 
+  // Auto refresh functionality
+  useEffect(() => {
+    if (!autoRefresh) return;
+
+    const interval = setInterval(() => {
+      refreshSecurityData();
+    }, refreshInterval);
+
+    return () => clearInterval(interval);
+  }, [autoRefresh, refreshInterval, refreshSecurityData]);
+
+  // Call callbacks when metrics change
+  useEffect(() => {
+    if (onThreatDetected && metrics.threatScore >= 70) {
+      onThreatDetected({
+        threatLevel: metrics.threatScore,
+        type: 'high_threat_level',
+        timestamp: new Date().toISOString(),
+        details: {
+          criticalEvents: metrics.criticalEvents,
+          highRiskEvents: metrics.highRiskEvents,
+          failedAttempts: metrics.failedAttempts
+        }
+      });
+    }
+  }, [metrics.threatScore, onThreatDetected, metrics.criticalEvents, metrics.highRiskEvents, metrics.failedAttempts]);
+
+  useEffect(() => {
+    if (onSecurityScoreChange) {
+      onSecurityScoreChange(metrics.healthScore);
+    }
+  }, [metrics.healthScore, onSecurityScoreChange]);
+
   const getThreatLevelColor = (score: number) => {
     if (score >= 80) return '#dc3545'; // Critical
     if (score >= 60) return '#fd7e14'; // High
@@ -142,186 +170,172 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
   if (isLoading && !securityData) {
     return (
-      <SecurityMonitorStyles.LoadingState>
-        <SecurityMonitorStyles.LoadingSpinner></SecurityMonitorStyles.LoadingSpinner>
+      <SecurityMonitorStyles.loading>
+        <SecurityMonitorStyles.loadingSpinner></SecurityMonitorStyles.loadingSpinner>
         <p>Loading security analytics...</p>
-      </SecurityMonitorStyles.LoadingState>
+      </SecurityMonitorStyles.loading>
     );
   }
 
   if (error) {
     return (
-      <div style={styles.securityAnalyticsDashboard.error}>
-        <div style={styles.errorMessage}>
-          <span style={styles.errorIcon}>⚠️</span>
+      <SecurityMonitorStyles.error>
+        <SecurityMonitorStyles.errorMessage>
+          <span style={{ fontSize: '20px', marginRight: '8px' }}>⚠️</span>
           <p>Failed to load security analytics: {error}</p>
-          <button onClick={refreshSecurityData} style={styles.retryBtn}>
+          <SecurityMonitorStyles.retryBtn onClick={refreshSecurityData}>
             Retry
-          </button>
-        </div>
-      </div>
+          </SecurityMonitorStyles.retryBtn>
+        </SecurityMonitorStyles.errorMessage>
+      </SecurityMonitorStyles.error>
     );
   }
 
   return (
-    <div style={styles.securityAnalyticsDashboard.container}>
+    <SecurityMonitorStyles.securityAnalyticsDashboard>
       {/* Header */}
-      <div style={styles.dashboardHeader.container}>
-        <div style={styles.dashboardHeader.headerLeft}>
-          <h2 style={styles.dashboardHeader.title}>Security Analytics Dashboard</h2>
-          <p style={styles.dashboardHeader.subtitle}>Real-time security monitoring and threat intelligence</p>
-        </div>
-        <div style={styles.dashboardHeader.headerControls}>
-          <div style={styles.timeframeSelector.container}>
+      <SecurityMonitorStyles.dashboardHeader>
+        <SecurityMonitorStyles.headerLeft>
+          <h2 style={{ margin: 0, marginBottom: '4px', color: '#333', fontSize: '24px', fontWeight: 600 }}>Security Analytics Dashboard</h2>
+          <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Real-time security monitoring and threat intelligence</p>
+        </SecurityMonitorStyles.headerLeft>
+        <SecurityMonitorStyles.headerControls>
+          <SecurityMonitorStyles.timeframeSelector>
             {(['1h', '24h', '7d', '30d'] as const).map(timeframe => (
-              <button
+              <SecurityMonitorStyles.timeframeBtn
                 key={timeframe}
-                style={{
-                  ...styles.timeframeSelector.timeframeBtn,
-                  ...(selectedTimeframe === timeframe ? styles.timeframeSelector.active : {})
-                }}
+                active={selectedTimeframe === timeframe}
                 onClick={() => setSelectedTimeframe(timeframe)}
               >
                 {timeframe === '1h' && '1 Hour'}
                 {timeframe === '24h' && '24 Hours'}
                 {timeframe === '7d' && '7 Days'}
                 {timeframe === '30d' && '30 Days'}
-              </button>
+              </SecurityMonitorStyles.timeframeBtn>
             ))}
-          </div>
-          <label style={styles.autoRefreshToggle.container}>
+          </SecurityMonitorStyles.timeframeSelector>
+          <SecurityMonitorStyles.autoRefreshToggle>
             <input
               type="checkbox"
               checked={autoRefresh}
               onChange={(e) => setAutoRefresh(e.target.checked)}
             />
             <span>Auto-refresh</span>
-          </label>
-          <button
+          </SecurityMonitorStyles.autoRefreshToggle>
+          <SecurityMonitorStyles.detailsToggle
             onClick={() => setShowDetails(!showDetails)}
-            style={styles.detailsToggle}
           >
             {showDetails ? 'Hide Details' : 'Show Details'}
-          </button>
-        </div>
-      </div>
+          </SecurityMonitorStyles.detailsToggle>
+        </SecurityMonitorStyles.headerControls>
+      </SecurityMonitorStyles.dashboardHeader>
 
       {/* Key Security Metrics */}
-      <div style={styles.securityMetricsGrid.container}>
-        <div style={styles.metricCard.threatLevel}>
-          <div style={styles.metricCard.header}>
-            <h3 style={styles.metricCard.title}>Threat Level</h3>
-            <span style={styles.metricCard.icon}>🚨</span>
-          </div>
-          <div
-            style={{
-              ...styles.metricCard.value,
-              color: getThreatLevelColor(metrics.threatScore)
-            }}
-          >
+      <SecurityMonitorStyles.securityMetricsGrid>
+        <SecurityMonitorStyles.metricCard variant="threat-level">
+          <SecurityMonitorStyles.metricHeader>
+            <h3 style={{ margin: 0, color: '#333', fontSize: '16px', fontWeight: 600 }}>Threat Level</h3>
+            <SecurityMonitorStyles.metricIcon>🚨</SecurityMonitorStyles.metricIcon>
+          </SecurityMonitorStyles.metricHeader>
+          <SecurityMonitorStyles.metricValue style={{ color: getThreatLevelColor(metrics.threatScore) }}>
             {metrics.threatScore}/100
-          </div>
-          <div style={styles.metricCard.description}>
+          </SecurityMonitorStyles.metricValue>
+          <SecurityMonitorStyles.metricDescription>
             {metrics.threatScore >= 80 ? 'Critical' :
               metrics.threatScore >= 60 ? 'High' :
                 metrics.threatScore >= 40 ? 'Medium' : 'Low'}
-          </div>
-        </div>
+          </SecurityMonitorStyles.metricDescription>
+        </SecurityMonitorStyles.metricCard>
 
-        <div style={styles.metricCard.healthScore}>
-          <div style={styles.metricCard.header}>
-            <h3 style={styles.metricCard.title}>Security Health</h3>
-            <span style={styles.metricCard.icon}>🛡️</span>
-          </div>
-          <div
-            style={{
-              ...styles.metricCard.value,
-              color: getHealthLevelColor(metrics.healthScore)
-            }}
-          >
+        <SecurityMonitorStyles.metricCard variant="health-score">
+          <SecurityMonitorStyles.metricHeader>
+            <h3 style={{ margin: 0, color: '#333', fontSize: '16px', fontWeight: 600 }}>Security Health</h3>
+            <SecurityMonitorStyles.metricIcon>🛡️</SecurityMonitorStyles.metricIcon>
+          </SecurityMonitorStyles.metricHeader>
+          <SecurityMonitorStyles.metricValue style={{ color: getHealthLevelColor(metrics.healthScore) }}>
             {metrics.healthScore}/100
-          </div>
-          <div style={styles.metricCard.description}>
+          </SecurityMonitorStyles.metricValue>
+          <SecurityMonitorStyles.metricDescription>
             {metrics.healthScore >= 80 ? 'Excellent' :
               metrics.healthScore >= 60 ? 'Good' :
                 metrics.healthScore >= 40 ? 'Fair' : 'Poor'}
-          </div>
-        </div>
+          </SecurityMonitorStyles.metricDescription>
+        </SecurityMonitorStyles.metricCard>
 
-        <div style={styles.metricCard.blockedIPs}>
-          <div style={styles.metricCard.header}>
-            <h3 style={styles.metricCard.title}>Blocked IPs</h3>
-            <span style={styles.metricCard.icon}>🚫</span>
-          </div>
-          <div style={styles.metricCard.value}>{metrics.blockedIPs}</div>
-          <div style={styles.metricCard.description}>Currently blocked</div>
-        </div>
+        <SecurityMonitorStyles.metricCard variant="blocked-ips">
+          <SecurityMonitorStyles.metricHeader>
+            <h3 style={{ margin: 0, color: '#333', fontSize: '16px', fontWeight: 600 }}>Blocked IPs</h3>
+            <SecurityMonitorStyles.metricIcon>🚫</SecurityMonitorStyles.metricIcon>
+          </SecurityMonitorStyles.metricHeader>
+          <SecurityMonitorStyles.metricValue>{metrics.blockedIPs}</SecurityMonitorStyles.metricValue>
+          <SecurityMonitorStyles.metricDescription>Currently blocked</SecurityMonitorStyles.metricDescription>
+        </SecurityMonitorStyles.metricCard>
 
-        <div style={styles.metricCard.failedAttempts}>
-          <div style={styles.metricCard.header}>
-            <h3 style={styles.metricCard.title}>Failed Attempts</h3>
-            <span style={styles.metricCard.icon}>❌</span>
-          </div>
-          <div style={styles.metricCard.value}>{metrics.failedAttempts}</div>
-          <div style={styles.metricCard.description}>
+        <SecurityMonitorStyles.metricCard variant="failed-attempts">
+          <SecurityMonitorStyles.metricHeader>
+            <h3 style={{ margin: 0, color: '#333', fontSize: '16px', fontWeight: 600 }}>Failed Attempts</h3>
+            <SecurityMonitorStyles.metricIcon>❌</SecurityMonitorStyles.metricIcon>
+          </SecurityMonitorStyles.metricHeader>
+          <SecurityMonitorStyles.metricValue>{metrics.failedAttempts}</SecurityMonitorStyles.metricValue>
+          <SecurityMonitorStyles.metricDescription>
             {metrics.totalAttempts > 0 ?
               `${((metrics.failedAttempts / metrics.totalAttempts) * 100).toFixed(1)}% failure rate` :
               'No attempts'
             }
-          </div>
-        </div>
+          </SecurityMonitorStyles.metricDescription>
+        </SecurityMonitorStyles.metricCard>
 
-        <div style={styles.metricCard.securityEvents}>
-          <div style={styles.metricCard.header}>
-            <h3 style={styles.metricCard.title}>Security Events</h3>
-            <span style={styles.metricCard.icon}>📊</span>
-          </div>
-          <div style={styles.metricCard.value}>{metrics.totalEvents}</div>
-          <div style={styles.metricCard.description}>
+        <SecurityMonitorStyles.metricCard variant="security-events">
+          <SecurityMonitorStyles.metricHeader>
+            <h3 style={{ margin: 0, color: '#333', fontSize: '16px', fontWeight: 600 }}>Security Events</h3>
+            <SecurityMonitorStyles.metricIcon>📊</SecurityMonitorStyles.metricIcon>
+          </SecurityMonitorStyles.metricHeader>
+          <SecurityMonitorStyles.metricValue>{metrics.totalEvents}</SecurityMonitorStyles.metricValue>
+          <SecurityMonitorStyles.metricDescription>
             {metrics.criticalEvents} critical, {metrics.highRiskEvents} high risk
-          </div>
-        </div>
+          </SecurityMonitorStyles.metricDescription>
+        </SecurityMonitorStyles.metricCard>
 
-        <div style={styles.metricCard.rateLimits}>
-          <div style={styles.metricCard.header}>
-            <h3 style={styles.metricCard.title}>Rate Limits</h3>
-            <span style={styles.metricCard.icon}>⏱️</span>
-          </div>
-          <div style={styles.metricCard.value}>{metrics.rateLimitEntries}</div>
-          <div style={styles.metricCard.description}>Active rate limits</div>
-        </div>
-      </div>
+        <SecurityMonitorStyles.metricCard variant="rate-limits">
+          <SecurityMonitorStyles.metricHeader>
+            <h3 style={{ margin: 0, color: '#333', fontSize: '16px', fontWeight: 600 }}>Rate Limits</h3>
+            <SecurityMonitorStyles.metricIcon>⏱️</SecurityMonitorStyles.metricIcon>
+          </SecurityMonitorStyles.metricHeader>
+          <SecurityMonitorStyles.metricValue>{metrics.rateLimitEntries}</SecurityMonitorStyles.metricValue>
+          <SecurityMonitorStyles.metricDescription>Active rate limits</SecurityMonitorStyles.metricDescription>
+        </SecurityMonitorStyles.metricCard>
+      </SecurityMonitorStyles.securityMetricsGrid>
 
       {/* Security Status Overview */}
       {securityStatus && (
-        <div style={styles.securityStatusOverview.container}>
-          <h3 style={styles.sectionTitle}>Security Status Overview</h3>
-          <div style={styles.statusGrid.container}>
-            <div style={styles.statusItem.container}>
-              <span style={styles.statusLabel}>Risk Level:</span>
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ margin: '0 0 16px 0', color: '#333', fontSize: '18px', fontWeight: 600 }}>Security Status Overview</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Risk Level:</span>
               <span style={{
-                ...styles.statusValue.container,
-                ...(styles.statusValue[`risk-${securityStatus.riskLevel}`] || {})
+                fontWeight: 600,
+                color: securityStatus.riskLevel === 'high' ? '#dc3545' : securityStatus.riskLevel === 'medium' ? '#fd7e14' : '#28a745'
               }}>
                 {securityStatus.riskLevel?.toUpperCase()}
               </span>
             </div>
-            <div style={styles.statusItem.container}>
-              <span style={styles.statusLabel}>Active Sessions:</span>
-              <span style={styles.statusValue.container}>{securityStatus.activeSessions || 0}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Active Sessions:</span>
+              <span style={{ fontWeight: 600, color: '#333' }}>{securityStatus.activeSessions || 0}</span>
             </div>
-            <div style={styles.statusItem.container}>
-              <span style={styles.statusLabel}>Last Activity:</span>
-              <span style={styles.statusValue.container}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Last Activity:</span>
+              <span style={{ fontWeight: 600, color: '#333' }}>
                 {securityStatus.lastActivity ?
                   new Date(securityStatus.lastActivity).toLocaleString() :
                   'No activity'
                 }
               </span>
             </div>
-            <div style={styles.statusItem.container}>
-              <span style={styles.statusLabel}>Security Score:</span>
-              <span style={styles.statusValue.container}>{securityStatus.securityScore || 0}/100</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Security Score:</span>
+              <span style={{ fontWeight: 600, color: '#333' }}>{securityStatus.securityScore || 0}/100</span>
             </div>
           </div>
         </div>
@@ -329,28 +343,29 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
       {/* Recent Security Events */}
       {securityEvents.length > 0 && (
-        <div style={styles.recentEvents.container}>
-          <h3 style={styles.sectionTitle}>Recent Security Events</h3>
-          <div style={styles.eventsTable.container}>
-            <div style={styles.tableHeader.container}>
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ margin: '0 0 16px 0', color: '#333', fontSize: '18px', fontWeight: 600 }}>Recent Security Events</h3>
+          <div style={{ background: '#fff', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 2fr 1fr', gap: '16px', padding: '16px', background: '#f8f9fa', fontWeight: 600, color: '#333' }}>
               <div>Timestamp</div>
               <div>Type</div>
               <div>Severity</div>
               <div>Description</div>
               <div>Status</div>
             </div>
-            <div style={styles.tableBody.container}>
+            <div>
               {securityEvents.slice(0, 10).map((event, index) => (
-                <div key={index} style={styles.eventRow.container}>
-                  <div>{new Date(event.timestamp).toLocaleString()}</div>
-                  <div style={styles.eventType}>{event.type}</div>
+                <div key={index} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 2fr 1fr', gap: '16px', padding: '16px', borderBottom: '1px solid #eee', alignItems: 'center' }}>
+                  <div style={{ fontSize: '12px', color: '#666' }}>{new Date(event.timestamp).toLocaleString()}</div>
+                  <div style={{ fontWeight: 500, color: '#333' }}>{event.type}</div>
                   <div style={{
-                    ...(styles[`severity-${event.severity}`] || {})
+                    fontWeight: 600,
+                    color: event.severity === 'critical' ? '#dc3545' : event.severity === 'high' ? '#fd7e14' : event.severity === 'medium' ? '#ffc107' : '#28a745'
                   }}>{event.severity}</div>
-                  <div style={styles.eventDescription}>{event.description}</div>
+                  <div style={{ color: '#666' }}>{event.description}</div>
                   <div style={{
-                    ...styles.eventStatus.container,
-                    ...(event.resolved ? styles.eventStatus.resolved : styles.eventStatus.active)
+                    fontWeight: 500,
+                    color: event.resolved ? '#28a745' : '#dc3545'
                   }}>
                     {event.resolved ? '✅ Resolved' : '🔴 Active'}
                   </div>
@@ -363,24 +378,24 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
       {/* Login Attempts Analysis */}
       {loginAttempts.length > 0 && (
-        <div style={styles.loginAttemptsAnalysis.container}>
-          <h3 style={styles.sectionTitle}>Login Attempts Analysis</h3>
-          <div style={styles.attemptsStats.container}>
-            <div style={styles.attemptStat.container}>
-              <h4>Total Attempts</h4>
-              <span style={styles.statValue}>{metrics.totalAttempts}</span>
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ margin: '0 0 16px 0', color: '#333', fontSize: '18px', fontWeight: 600 }}>Login Attempts Analysis</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
+            <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+              <h4 style={{ margin: '0 0 8px 0', color: '#333', fontSize: '14px', fontWeight: 500 }}>Total Attempts</h4>
+              <span style={{ fontSize: '24px', fontWeight: 700, color: '#333' }}>{metrics.totalAttempts}</span>
             </div>
-            <div style={{ ...styles.attemptStat.container, ...styles.attemptStat.success }}>
-              <h4>Successful</h4>
-              <span style={styles.statValue}>{metrics.successfulAttempts}</span>
+            <div style={{ padding: '16px', background: '#d4edda', borderRadius: '8px', textAlign: 'center' }}>
+              <h4 style={{ margin: '0 0 8px 0', color: '#155724', fontSize: '14px', fontWeight: 500 }}>Successful</h4>
+              <span style={{ fontSize: '24px', fontWeight: 700, color: '#155724' }}>{metrics.successfulAttempts}</span>
             </div>
-            <div style={{ ...styles.attemptStat.container, ...styles.attemptStat.failed }}>
-              <h4>Failed</h4>
-              <span style={styles.statValue}>{metrics.failedAttempts}</span>
+            <div style={{ padding: '16px', background: '#f8d7da', borderRadius: '8px', textAlign: 'center' }}>
+              <h4 style={{ margin: '0 0 8px 0', color: '#721c24', fontSize: '14px', fontWeight: 500 }}>Failed</h4>
+              <span style={{ fontSize: '24px', fontWeight: 700, color: '#721c24' }}>{metrics.failedAttempts}</span>
             </div>
-            <div style={styles.attemptStat.container}>
-              <h4>Success Rate</h4>
-              <span style={styles.statValue}>
+            <div style={{ padding: '16px', background: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+              <h4 style={{ margin: '0 0 8px 0', color: '#333', fontSize: '14px', fontWeight: 500 }}>Success Rate</h4>
+              <span style={{ fontSize: '24px', fontWeight: 700, color: '#333' }}>
                 {metrics.totalAttempts > 0 ?
                   `${((metrics.successfulAttempts / metrics.totalAttempts) * 100).toFixed(1)}%` :
                   'N/A'
@@ -393,23 +408,23 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
       {/* IP Blocking Management */}
       {securityData?.blockedIPs && securityData.blockedIPs.length > 0 && (
-        <div style={styles.ipBlockingManagement.container}>
-          <h3 style={styles.sectionTitle}>IP Blocking Management</h3>
-          <div style={styles.blockedIPsList.container}>
-            <div style={styles.listHeader.container}>
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ margin: '0 0 16px 0', color: '#333', fontSize: '18px', fontWeight: 600 }}>IP Blocking Management</h3>
+          <div style={{ background: '#fff', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 2fr 1fr', gap: '16px', padding: '16px', background: '#f8f9fa', fontWeight: 600, color: '#333' }}>
               <span>IP Address</span>
               <span>Blocked Since</span>
               <span>Reason</span>
               <span>Actions</span>
             </div>
             {securityData.blockedIPs.map((ip, index) => (
-              <div key={index} style={styles.blockedIPRow.container}>
-                <span style={styles.ipAddress}>{ip}</span>
-                <span style={styles.blockedTime}>Recently</span>
-                <span style={styles.blockReason}>Suspicious activity</span>
+              <div key={index} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 2fr 1fr', gap: '16px', padding: '16px', borderBottom: '1px solid #eee', alignItems: 'center' }}>
+                <span style={{ fontFamily: 'monospace', color: '#333' }}>{ip}</span>
+                <span style={{ color: '#666' }}>Recently</span>
+                <span style={{ color: '#666' }}>Suspicious activity</span>
                 <button
                   onClick={() => {/* unblockIP function would go here */ }}
-                  style={styles.unblockBtn}
+                  style={{ padding: '4px 12px', background: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
                 >
                   Unblock
                 </button>
@@ -420,13 +435,13 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
       )}
 
       {/* Security Actions Panel */}
-      <div style={styles.securityActionsPanel.container}>
-        <h3 style={styles.sectionTitle}>Security Actions</h3>
-        <div style={styles.actionsGrid.container}>
+      <div style={{ marginBottom: '32px' }}>
+        <h3 style={{ margin: '0 0 16px 0', color: '#333', fontSize: '18px', fontWeight: 600 }}>Security Actions</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
           <button
             onClick={() => recordSecurityEvent('manual_check', 'Manual security check triggered', 'medium')}
             disabled={isRecordingEvent}
-            style={styles.actionBtn.container}
+            style={{ padding: '12px 24px', background: '#007bff', color: '#fff', border: 'none', borderRadius: '6px', cursor: isRecordingEvent ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 500, opacity: isRecordingEvent ? 0.6 : 1 }}
           >
             {isRecordingEvent ? 'Recording...' : 'Record Security Event'}
           </button>
@@ -434,14 +449,14 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
           <button
             onClick={() => revokeAllSessions()}
             disabled={isRevokingAllSessions}
-            style={{ ...styles.actionBtn.container, ...styles.actionBtn.danger }}
+            style={{ padding: '12px 24px', background: '#dc3545', color: '#fff', border: 'none', borderRadius: '6px', cursor: isRevokingAllSessions ? 'not-allowed' : 'pointer', fontSize: '14px', fontWeight: 500, opacity: isRevokingAllSessions ? 0.6 : 1 }}
           >
             {isRevokingAllSessions ? 'Revoking...' : 'Revoke All Sessions'}
           </button>
 
           <button
             onClick={refreshSecurityData}
-            style={styles.actionBtn.container}
+            style={{ padding: '12px 24px', background: '#6c757d', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}
           >
             Refresh Data
           </button>
@@ -450,33 +465,33 @@ export const SecurityMonitor: React.FC<SecurityAnalyticsProps> = ({
 
       {/* Detailed Security Settings */}
       {showDetails && securitySettings && (
-        <div style={styles.detailedSettings.container}>
-          <h3 style={styles.sectionTitle}>Detailed Security Settings</h3>
-          <div style={styles.settingsGrid.container}>
-            <div style={styles.settingItem.container}>
-              <span style={styles.settingLabel}>Two-Factor Auth:</span>
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ margin: '0 0 16px 0', color: '#333', fontSize: '18px', fontWeight: 600 }}>Detailed Security Settings</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Two-Factor Auth:</span>
               <span style={{
-                ...styles.settingValue.container,
-                ...(securitySettings.twoFactorEnabled ? styles.settingValue.enabled : styles.settingValue.disabled)
+                fontWeight: 600,
+                color: securitySettings.twoFactorEnabled ? '#28a745' : '#dc3545'
               }}>
                 {securitySettings.twoFactorEnabled ? '✅ Enabled' : '❌ Disabled'}
               </span>
             </div>
-            <div style={styles.settingItem.container}>
-              <span style={styles.settingLabel}>Session Timeout:</span>
-              <span style={styles.settingValue.container}>{securitySettings.sessionTimeout || 30} minutes</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Session Timeout:</span>
+              <span style={{ fontWeight: 600, color: '#333' }}>{securitySettings.sessionTimeout || 30} minutes</span>
             </div>
-            <div style={styles.settingItem.container}>
-              <span style={styles.settingLabel}>Max Login Attempts:</span>
-              <span style={styles.settingValue.container}>{securitySettings.maxLoginAttempts || 5}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Max Login Attempts:</span>
+              <span style={{ fontWeight: 600, color: '#333' }}>{securitySettings.maxLoginAttempts || 5}</span>
             </div>
-            <div style={styles.settingItem.container}>
-              <span style={styles.settingLabel}>Lockout Duration:</span>
-              <span style={styles.settingValue.container}>{securitySettings.lockoutDuration || 15} minutes</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: '#f8f9fa', borderRadius: '8px' }}>
+              <span style={{ fontWeight: 500, color: '#666' }}>Lockout Duration:</span>
+              <span style={{ fontWeight: 600, color: '#333' }}>{securitySettings.lockoutDuration || 15} minutes</span>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </SecurityMonitorStyles.securityAnalyticsDashboard>
   );
 };
