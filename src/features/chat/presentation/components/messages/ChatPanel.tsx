@@ -13,29 +13,120 @@ import { validateIsNotUndefined } from "@/shared/utils/validations";
 import { PiChatsCircle } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import useUserQueries from "@/core/network/api/queries/userQueries";
-import React, { useState } from "react";
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from "@/shared/components/base/BaseClassComponent";
+import { ReactNode } from "react";
+
+/**
+ * Props for the ChatPanel component.
+ */
+export interface IChatPanelProps extends IBaseComponentProps {
+    // No additional props needed - uses URL params
+}
+
+/**
+ * State for the ChatPanel component.
+ */
+interface IChatPanelState extends IBaseComponentState {
+    showAnalytics: boolean;
+    chatId: string;
+    user: any;
+    validatedChatId: string;
+    chat: any;
+    isLoading: boolean;
+    isError: boolean;
+    error: any;
+    messages: any;
+    participants: any;
+    onlineUsers: any[];
+    typingUsers: any[];
+    recipient: any;
+    recipientId: string;
+    recipientName: string;
+    performanceSummary: any;
+}
 
 /**
  * ChatPanel component that handles displaying and sending messages in a chat.
+ * 
  * Now uses modern useUnifiedChat with real-time features, presence management, and performance monitoring.
- *
- * @returns {JSX.Element} - The rendered chat panel component.
+ * 
+ * Converted to class-based component following enterprise patterns.
  */
-const ChatPanel = () => {
-    const { chatId } = useParams();
-    const [showAnalytics, setShowAnalytics] = useState(false);
+class ChatPanel extends BaseClassComponent<IChatPanelProps, IChatPanelState> {
 
-    try {
-        const { chatId: validatedChatId } = validateIsNotUndefined({ chatId });
-        const { getSignedUserElseThrow } = useUserQueries();
-        const user = getSignedUserElseThrow();
+    private userQueries: any;
 
-        // Use modern useUnifiedChat with all features enabled
-        const chat = useUnifiedChat(user.id, validatedChatId, {
-            enableRealTime: true,
-            enableOptimisticUpdates: true,
-            cacheStrategy: 'moderate'
-        });
+    protected override getInitialState(): Partial<IChatPanelState> {
+        return {
+            showAnalytics: false,
+            chatId: '',
+            user: null,
+            validatedChatId: '',
+            chat: null,
+            isLoading: true,
+            isError: false,
+            error: null,
+            messages: null,
+            participants: null,
+            onlineUsers: [],
+            typingUsers: [],
+            recipient: null,
+            recipientId: '',
+            recipientName: '',
+            performanceSummary: null
+        };
+    }
+
+    protected override onMount(): void {
+        super.onMount();
+        this.initializeChat();
+    }
+
+    protected override onUpdate(): void {
+        this.updateChatState();
+    }
+
+    /**
+     * Initialize chat data
+     */
+    private initializeChat = (): void => {
+        try {
+            const { chatId } = useParams();
+            const { chatId: validatedChatId } = validateIsNotUndefined({ chatId });
+
+            this.userQueries = useUserQueries();
+            const user = this.userQueries.getSignedUserElseThrow();
+
+            // Use modern useUnifiedChat with all features enabled
+            const chat = useUnifiedChat(user.id, validatedChatId, {
+                enableRealTime: true,
+                enableOptimisticUpdates: true,
+                cacheStrategy: 'moderate'
+            });
+
+            this.safeSetState({
+                chatId: chatId || '',
+                validatedChatId,
+                user,
+                chat
+            });
+
+            this.updateChatState();
+        } catch (error: unknown) {
+            console.error(error);
+            const errorMessage = `Error loading chat: ${(error as Error).message}`;
+            this.safeSetState({
+                isError: true,
+                error: errorMessage
+            });
+        }
+    };
+
+    /**
+     * Update chat state from hook
+     */
+    private updateChatState = (): void => {
+        if (!this.state.chat) return;
 
         const {
             messages,
@@ -43,136 +134,181 @@ const ChatPanel = () => {
             isLoading,
             isError,
             error,
-            createChat,
-            sendMessage,
-            deleteChat,
-            // Performance monitoring
             getMetrics,
             getPerformanceSummary,
-            // Presence features
             getUserPresence,
             getTypingUsers,
-            getOnlineUsers,
-            startTyping,
-            stopTyping,
-            // Analytics
-            recordAnalyticsEvent
-        } = chat;
+            getOnlineUsers
+        } = this.state.chat;
 
-        // Handle errors with modern error recovery
-        const handleRetry = async () => {
-            await chat.retryFailedQueries?.();
-        };
+        const { validatedChatId, user } = this.state;
 
         // Get participant information
-        const participantIds = participants?.map(p => p.id) || [];
+        const participantIds = participants?.map((p: any) => p.id) || [];
         const onlineUsers = getOnlineUsers?.(validatedChatId, participantIds) || [];
         const typingUsers = getTypingUsers?.(validatedChatId) || [];
 
         // Get recipient information (first other participant)
-        const recipient = participants?.find(p => p.id !== user.id);
-        const recipientId = recipient?.id;
+        const recipient = participants?.find((p: any) => p.id !== user.id);
+        const recipientId = recipient?.id || '';
         const recipientName = recipient?.username || 'Unknown';
-
-        // Handle message sending with analytics
-        const handleSendMessage = async (messageText: string) => {
-            try {
-                await sendMessage({
-                    chatId: validatedChatId,
-                    messageData: {
-                        content: messageText,
-                        type: 'text',
-                        timestamp: Date.now()
-                    }
-                });
-
-                // Track analytics event
-                recordAnalyticsEvent?.({
-                    type: 'message_sent',
-                    userId: user.id,
-                    chatId: validatedChatId,
-                    timestamp: Date.now(),
-                    metadata: {
-                        messageLength: messageText.length,
-                        recipientId: recipientId
-                    }
-                });
-            } catch (error) {
-                console.error('Failed to send message:', error);
-            }
-        };
-
-        // Handle chat deletion with analytics
-        const handleDeleteChat = async () => {
-            try {
-                await deleteChat(validatedChatId);
-                recordAnalyticsEvent?.({
-                    type: 'chat_deleted',
-                    userId: user.id,
-                    chatId: validatedChatId,
-                    timestamp: Date.now()
-                });
-            } catch (error) {
-                console.error('Failed to delete chat:', error);
-            }
-        };
 
         // Get performance summary
         const performanceSummary = getPerformanceSummary?.();
 
-        if (isError || error) {
-            const errors = chat.getErrorSummary?.();
+        this.safeSetState({
+            messages,
+            participants,
+            isLoading,
+            isError,
+            error,
+            onlineUsers,
+            typingUsers,
+            recipient,
+            recipientId,
+            recipientName,
+            performanceSummary
+        });
+    };
+
+    /**
+     * Handle errors with modern error recovery
+     */
+    private handleRetry = async (): Promise<void> => {
+        await this.state.chat?.retryFailedQueries?.();
+    };
+
+    /**
+     * Handle message sending with analytics
+     */
+    private handleSendMessage = async (messageText: string): Promise<void> => {
+        try {
+            const { validatedChatId, chat, recipientId } = this.state;
+
+            await chat.sendMessage({
+                chatId: validatedChatId,
+                messageData: {
+                    content: messageText,
+                    type: 'text',
+                    timestamp: Date.now()
+                }
+            });
+
+            // Track analytics event
+            chat.recordAnalyticsEvent?.({
+                type: 'message_sent',
+                userId: this.state.user.id,
+                chatId: validatedChatId,
+                timestamp: Date.now(),
+                metadata: {
+                    messageLength: messageText.length,
+                    recipientId
+                }
+            });
+        } catch (error) {
+            console.error('Failed to send message:', error);
+        }
+    };
+
+    /**
+     * Handle chat deletion with analytics
+     */
+    private handleDeleteChat = async (): Promise<void> => {
+        try {
+            const { validatedChatId, chat } = this.state;
+            await chat.deleteChat(validatedChatId);
+            chat.recordAnalyticsEvent?.({
+                type: 'chat_deleted',
+                userId: this.state.user.id,
+                chatId: validatedChatId,
+                timestamp: Date.now()
+            });
+        } catch (error) {
+            console.error('Failed to delete chat:', error);
+        }
+    };
+
+    /**
+     * Toggle analytics visibility
+     */
+    private toggleAnalytics = (): void => {
+        this.safeSetState(prev => ({ showAnalytics: !prev.showAnalytics }));
+    };
+
+    /**
+     * Render error state
+     */
+    private renderError = (): ReactNode => {
+        const { chat, error } = this.state;
+        const errors = chat?.getErrorSummary?.();
+
+        return (
+            <ErrorComponent
+                message={`Error loading chat: ${error?.message || 'Unknown error'}`}
+                action={
+                    <button
+                        onClick={this.handleRetry}
+                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Retry
+                    </button>
+                }
+            >
+                {errors?.map((err: any, index: number) => (
+                    <div key={index} className="text-sm text-gray-600 mt-1">
+                        {err.type}: {err.error}
+                    </div>
+                ))}
+            </ErrorComponent>
+        );
+    };
+
+    /**
+     * Render messages or placeholder
+     */
+    private renderMessages = (): ReactNode => {
+        const { messages, user, recipientName } = this.state;
+
+        if (!messages?.pages?.length) {
+            return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
+        }
+
+        // Flatten all message pages
+        const allMessages = messages.pages.flatMap((page: any) => page.data || []);
+        const messageCount = allMessages.length;
+
+        if (messageCount === 0) {
             return (
-                <ErrorComponent
-                    message={`Error loading chat: ${error?.message || 'Unknown error'}`}
-                    action={
-                        <button
-                            onClick={handleRetry}
-                            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        >
-                            Retry
-                        </button>
-                    }
-                >
-                    {errors?.map((err, index) => (
-                        <div key={index} className="text-sm text-gray-600 mt-1">
-                            {err.type}: {err.error}
-                        </div>
-                    ))}
-                </ErrorComponent>
+                <Text className="system-message" textAlign="center">
+                    send your first message to <strong>{recipientName}</strong>
+                </Text>
             );
+        }
+
+        return (
+            <MessagesList
+                hasNextPage={messages.hasNextPage}
+                isFetchingNextPage={messages.isFetchingNextPage}
+                signedUserId={user.id}
+                fetchNextPage={messages.fetchNextPage}
+                messages={allMessages}
+            />
+        );
+    };
+
+    protected override renderContent(): ReactNode {
+        const { isLoading, isError, showAnalytics, recipientName, onlineUsers, typingUsers, recipientId, performanceSummary, messages, participants, validatedChatId } = this.state;
+
+        if (isError) {
+            return this.renderError();
         }
 
         if (isLoading) return <Text className="system-message" textAlign="center">loading messages ...</Text>;
-        if (!messages?.pages?.length) return <Placeholder Icon={PiChatsCircle} message="there's no messages, start a chat" type="h4" />;
 
-        // Flatten all message pages
-        const allMessages = messages.pages.flatMap(page => page.data || []);
+        // Flatten all message pages for analytics
+        const allMessages = messages?.pages?.flatMap((page: any) => page.data || []) || [];
         const messageCount = allMessages.length;
-
-        /**
-         * Renders the appropriate result based on the current chat state.
-         *
-         * @returns {JSX.Element} - The rendered messages list or a loading/error message.
-         */
-        const RenderResult = () => {
-            if (messageCount === 0) {
-                return (
-                    <Text className="system-message" textAlign="center">
-                        send your first message to <strong>{recipientName}</strong>
-                    </Text>
-                );
-            }
-            return (
-                <MessagesList
-                    hasNextPage={messages.hasNextPage}
-                    isFetchingNextPage={messages.isFetchingNextPage}
-                    signedUserId={user.id}
-                    fetchNextPage={messages.fetchNextPage}
-                    messages={allMessages}
-                />
-            );
-        }
+        const participantIds = participants?.map((p: any) => p.id) || [];
 
         return (
             <ChatBoard>
@@ -209,13 +345,13 @@ const ChatPanel = () => {
                                 </div>
                             )}
                             <button
-                                onClick={() => setShowAnalytics(!showAnalytics)}
+                                onClick={this.toggleAnalytics}
                                 className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
                             >
                                 {showAnalytics ? 'Hide' : 'Show'} Analytics
                             </button>
                             <button
-                                onClick={handleDeleteChat}
+                                onClick={this.handleDeleteChat}
                                 className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
                             >
                                 Delete Chat
@@ -225,7 +361,7 @@ const ChatPanel = () => {
                 </div>
 
                 {/* Analytics Panel */}
-                {showAnalytics && getMetrics && (
+                {showAnalytics && this.state.chat?.getMetrics && (
                     <div className="border-b border-gray-200 px-4 py-3 bg-gray-50">
                         <h4 className="text-sm font-medium text-gray-900 mb-2">Chat Analytics</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
@@ -250,7 +386,7 @@ const ChatPanel = () => {
                 )}
 
                 {/* Messages */}
-                <RenderResult />
+                {this.renderMessages()}
 
                 {/* Typing Indicator */}
                 <TypingIndicator
@@ -267,14 +403,10 @@ const ChatPanel = () => {
                 {/* Message Input with Typing */}
                 <MessageInputWithTyping
                     chatId={validatedChatId}
-                    onSendMessage={handleSendMessage}
+                    onSendMessage={this.handleSendMessage}
                 />
             </ChatBoard>
         );
-    } catch (error: unknown) {
-        console.error(error);
-        const errorMessage = `Error loading chat: ${(error as Error).message}`;
-        return <ErrorComponent message={errorMessage} />;
     }
 }
 
