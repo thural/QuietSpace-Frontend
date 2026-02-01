@@ -7,6 +7,7 @@
 
 import { getConstructorDependencies, getInjectableMetadata } from '../decorators/Injectable';
 import { ServiceLifetime } from '../registry/ServiceRegistry';
+
 import { ServiceContainer } from './ServiceContainer';
 
 import type { ServiceIdentifier } from '../registry/ServiceRegistry';
@@ -48,7 +49,7 @@ export class Container {
       });
 
       // Create instance with dependencies
-      return new serviceClass(...(resolvedDependencies as unknown[]));
+      return new serviceClass(...resolvedDependencies);
     };
 
     return { factory, dependencies, metadata };
