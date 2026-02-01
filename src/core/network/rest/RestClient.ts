@@ -70,15 +70,15 @@ export class RestClient implements IApiClient {
         return this.request<T>({ ...config, method: 'GET', url });
     }
 
-    async post<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>> {
+    async post<T>(url: string, data?: unknown, config?: ApiConfig): Promise<ApiResponse<T>> {
         return this.request<T>({ ...config, method: 'POST', url, data });
     }
 
-    async put<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>> {
+    async put<T>(url: string, data?: unknown, config?: ApiConfig): Promise<ApiResponse<T>> {
         return this.request<T>({ ...config, method: 'PUT', url, data });
     }
 
-    async patch<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>> {
+    async patch<T>(url: string, data?: unknown, config?: ApiConfig): Promise<ApiResponse<T>> {
         return this.request<T>({ ...config, method: 'PATCH', url, data });
     }
 
@@ -190,7 +190,7 @@ export class RestClient implements IApiClient {
         return finalResponse;
     }
 
-    private async applyErrorInterceptors(error: any, requestId: string): Promise<ApiError> {
+    private async applyErrorInterceptors(error: unknown, requestId: string): Promise<ApiError> {
         let apiError = this.normalizeError(error);
 
         for (const interceptor of this.interceptors.error) {
@@ -235,7 +235,7 @@ export class RestClient implements IApiClient {
         return headers;
     }
 
-    private buildBody(data: any, headers: Record<string, string>): string | undefined {
+    private buildBody(data: unknown, headers: Record<string, string>): string | undefined {
         if (!data) return undefined;
 
         const contentType = headers['Content-Type'] || headers['content-type'];
@@ -245,15 +245,15 @@ export class RestClient implements IApiClient {
         }
 
         if (data instanceof FormData) {
-            return data as any;
+            return data as unknown as string;
         }
 
         return String(data);
     }
 
-    private async executeRequest(request: RequestInit): Promise<ApiResponse<any>> {
+    private async executeRequest(request: RequestInit): Promise<ApiResponse<unknown>> {
         const { method, headers, body, signal } = request;
-        const url = (request as any).url || '';
+        const url = (request as { url?: string }).url || '';
 
         try {
             // Create AbortController for timeout
@@ -279,7 +279,7 @@ export class RestClient implements IApiClient {
             clearTimeout(timeoutId);
 
             // Parse response
-            let data: any = null;
+            let data: unknown = null;
             const contentType = response.headers.get('content-type') || '';
 
             if (contentType.includes('application/json')) {
@@ -300,7 +300,7 @@ export class RestClient implements IApiClient {
             // Create success response
             return createSuccessResponse(data, response.status);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             // Handle different error types
             if (error.name === 'AbortError') {
                 throw createApiError(
@@ -326,7 +326,7 @@ export class RestClient implements IApiClient {
         }
     }
 
-    private normalizeError(error: any): ApiError {
+    private normalizeError(error: unknown): ApiError {
         if (error && typeof error === 'object' && 'code' in error) {
             return error as ApiError;
         }
