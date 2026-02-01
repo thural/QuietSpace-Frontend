@@ -221,7 +221,7 @@ export const useEnterpriseContent = (
 
   // Author content query
   const authorContentQuery = useCustomQuery(
-    ['content', 'author', contentId].filter(Boolean)],
+    ['content', 'author', contentId].filter(Boolean),
     () => contentId ? contentDataService.getContentByAuthor(contentId, 0, 20, token || '') : Promise.resolve([]),
     {
       staleTime: 10 * 60 * 1000, // 10 minutes
@@ -289,7 +289,7 @@ export const useEnterpriseContent = (
 
   // Media query
   const mediaQuery = useCustomQuery(
-    ['content', 'media', contentId].filter(Boolean)],
+    ['content', 'media', contentId].filter(Boolean),
     () => contentId ? contentDataService.getContentMedia(contentId, token || '') : Promise.resolve([]),
     {
       staleTime: 60 * 60 * 1000, // 1 hour
