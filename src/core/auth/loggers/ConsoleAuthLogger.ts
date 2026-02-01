@@ -5,7 +5,7 @@
  * with structured console output and filtering capabilities.
  */
 
-import { AuthErrorType } from '../types/auth.domain.types';
+import { AuthErrorType, AuthEventType } from '../types/auth.domain.types';
 
 import type { IAuthLogger } from '../interfaces/authInterfaces';
 import type { AuthEvent } from '../types/auth.domain.types';
@@ -87,9 +87,9 @@ export class ConsoleAuthLogger implements IAuthLogger {
     /**
      * Logs error with context
      */
-    logError(error: Error, context?: Record<string, any>): void {
+    logError(error: Error, context?: Record<string, unknown>): void {
         this.log({
-            type: 'error' as any,
+            type: AuthEventType.ERROR,
             timestamp: new Date(),
             error: this.mapErrorToAuthErrorType(error),
             details: {
@@ -106,7 +106,7 @@ export class ConsoleAuthLogger implements IAuthLogger {
      */
     logSecurity(event: AuthEvent): void {
         this.log({
-            type: 'security' as any,
+            type: AuthEventType.SECURITY,
             timestamp: new Date(),
             error: event.error || AuthErrorType.UNKNOWN_ERROR,
             details: {
@@ -200,6 +200,10 @@ export class ConsoleAuthLogger implements IAuthLogger {
                 return 'info';
             case 'logout_failure':
                 return 'warn';
+            case 'error':
+                return 'error';
+            case 'security':
+                return 'security';
             default:
                 return 'error';
         }

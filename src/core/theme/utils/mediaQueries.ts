@@ -11,12 +11,12 @@ import { css } from 'styled-components';
  * Responsive utility for media queries
  */
 export const media = {
-    mobile: (styles: any) => css`
+  mobile: (styles: unknown) => css`
     @media (max-width: 768px) {
       ${styles}
     }
   `,
-    wide: (styles: any) => css`
+  wide: (styles: unknown) => css`
     @media (min-width: 769px) {
       ${styles}
     }

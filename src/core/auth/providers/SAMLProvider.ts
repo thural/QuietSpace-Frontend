@@ -79,7 +79,7 @@ interface SAMLAuthRequest {
 export class SAMLAuthProvider implements IAuthProvider {
     readonly name = 'SAML Provider';
     readonly type = AuthProviderType.SAML;
-    readonly config: Record<string, any> = {
+    readonly config: Record<string, unknown> = {
         tokenRefreshInterval: 300000, // 5 minutes
         maxRetries: 3,
         signingEnabled: true,
@@ -200,7 +200,7 @@ export class SAMLAuthProvider implements IAuthProvider {
                     data: undefined,
                     metadata: {
                         logoutUrl: `${providerConfig.sloUrl}?SAMLRequest=${encodeURIComponent(logoutRequest)}`
-                    } as any
+                    } as unknown
                 };
             }
 
@@ -263,7 +263,7 @@ export class SAMLAuthProvider implements IAuthProvider {
     /**
      * Configures provider
      */
-    configure(config: Record<string, any>): void {
+    configure(config: Record<string, unknown>): void {
         Object.assign(this.config, config);
 
         // Update provider configurations if provided
@@ -427,7 +427,7 @@ export class SAMLAuthProvider implements IAuthProvider {
                         ssoUrl,
                         requestId: authRequest.id,
                         provider
-                    } as any
+                    } as unknown
                 }
             };
         } catch (error) {
@@ -503,7 +503,7 @@ export class SAMLAuthProvider implements IAuthProvider {
                     provider,
                     assertionId: assertion.data!.id,
                     issuer: assertion.data!.issuer
-                } as any
+                } as unknown
             };
 
             return {

@@ -58,7 +58,7 @@ export interface AuthConfigFile {
         retentionDays?: number;
     };
 
-    [key: string]: any; // Allow for environment-specific sections
+    [key: string]: unknown; // Allow for environment-specific sections
 }
 
 /**
@@ -87,7 +87,7 @@ export class FileBasedAuthConfig implements IAuthConfig {
     readonly name = 'FileBasedAuthConfig';
 
     private config: AuthConfigFile;
-    private readonly watchers: Map<string, ((value: any) => void)[]> = new Map();
+    private readonly watchers: Map<string, ((value: unknown) => void)[]> = new Map();
 
     constructor(config: AuthConfigFile) {
         this.config = { ...config };
@@ -102,11 +102,11 @@ export class FileBasedAuthConfig implements IAuthConfig {
         this.notifyWatchers(key, value);
     }
 
-    getAll(): Record<string, any> {
+    getAll(): Record<string, unknown> {
         return { ...this.config };
     }
 
-    validate(): { success: boolean; data?: boolean; error?: any } {
+    validate(): { success: boolean; data?: boolean; error?: unknown } {
         return { success: true, data: true };
     }
 
@@ -114,7 +114,7 @@ export class FileBasedAuthConfig implements IAuthConfig {
         // File-based config doesn't have a concept of "defaults" to reset to
     }
 
-    watch(key: string, callback: (value: any) => void): () => void {
+    watch(key: string, callback: (value: unknown) => void): () => void {
         if (!this.watchers.has(key)) {
             this.watchers.set(key, []);
         }
@@ -135,7 +135,7 @@ export class FileBasedAuthConfig implements IAuthConfig {
         this.notifyAllWatchers();
     }
 
-    private notifyWatchers(key: string, value: any): void {
+    private notifyWatchers(key: string, value: unknown): void {
         const keyWatchers = this.watchers.get(key);
         if (keyWatchers) {
             keyWatchers.forEach(callback => callback(value));
@@ -368,7 +368,7 @@ export class AuthConfigLoader {
         }, {});
     }
 
-    private deepMerge(target: any, source: any): any {
+    private deepMerge(target: unknown, source: unknown): unknown {
         const result = { ...target };
 
         for (const key in source) {
@@ -382,7 +382,7 @@ export class AuthConfigLoader {
         return result;
     }
 
-    private loadEnvironmentOverrides(): Record<string, any> {
+    private loadEnvironmentOverrides(): Record<string, unknown> {
         const env = this.customEnv || this.getEnvironmentVariables();
 
         return {
@@ -428,7 +428,7 @@ export class AuthConfigLoader {
         };
     }
 
-    private applyEnvironmentOverrides(config: AuthConfigFile, overrides: Record<string, any>): AuthConfigFile {
+    private applyEnvironmentOverrides(config: AuthConfigFile, overrides: Record<string, unknown>): AuthConfigFile {
         return this.deepMerge(config, overrides);
     }
 
@@ -442,8 +442,8 @@ export class AuthConfigLoader {
             return process.env;
         }
 
-        if (typeof import.meta !== 'undefined' && (import.meta as any).env) {
-            return (import.meta as any).env as Record<string, string | undefined>;
+        if (typeof import.meta !== 'undefined' && (import.meta as Record<string, unknown>).env) {
+            return (import.meta as Record<string, unknown>).env as Record<string, string | undefined>;
         }
 
         return {};

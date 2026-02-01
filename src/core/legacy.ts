@@ -17,6 +17,6 @@ export const _LegacyExports = {
 };
 
 // Legacy export function (deprecated)
-export function getLegacyExport(name: string): any {
+export function getLegacyExport(name: string): unknown {
     return _LegacyExports[name as keyof typeof _LegacyExports];
 }

@@ -22,52 +22,66 @@ import type { ILogEntry, ILoggerConfig, ILoggerTarget, ILoggerService } from './
 export function createLogEntry(
     level: LogLevel,
     message: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
     error?: Error,
     prefix?: string
 ): ILogEntry {
-    return {
+    const entry: ILogEntry = {
         ...DEFAULT_LOG_ENTRY,
         level,
-        message,
-        metadata,
-        error,
-        prefix
+        message
     };
+
+    // Only add metadata if it's provided (not undefined)
+    if (metadata !== undefined) {
+        entry.metadata = metadata;
+    }
+
+    // Only add error if it's provided (not undefined)
+    if (error !== undefined) {
+        entry.error = error;
+    }
+
+    // Only add prefix if it's provided (not undefined)
+    if (prefix !== undefined) {
+        entry.prefix = prefix;
+    }
+
+    return entry;
 }
 
 /**
  * Creates a debug log entry
  */
-export function createDebugEntry(message: string, metadata?: Record<string, any>): ILogEntry {
+export function createDebugEntry(message: string, metadata?: Record<string, unknown>): ILogEntry {
     return createLogEntry(LogLevel.DEBUG, message, metadata);
 }
 
 /**
  * Creates an info log entry
  */
-export function createInfoEntry(message: string, metadata?: Record<string, any>): ILogEntry {
+export function createInfoEntry(message: string, metadata?: Record<string, unknown>): ILogEntry {
     return createLogEntry(LogLevel.INFO, message, metadata);
 }
 
 /**
  * Creates a warning log entry
  */
-export function createWarnEntry(message: string, metadata?: Record<string, any>): ILogEntry {
+export function createWarnEntry(message: string, metadata?: Record<string, unknown>): ILogEntry {
     return createLogEntry(LogLevel.WARN, message, metadata);
 }
 
 /**
  * Creates an error log entry
  */
-export function createErrorEntry(message: string, error?: Error, metadata?: Record<string, any>): ILogEntry {
+export function createErrorEntry(message: string, error?: Error, metadata?: Record<string, unknown>): ILogEntry {
     return createLogEntry(LogLevel.ERROR, message, metadata, error);
 }
 
 /**
  * Creates a fatal error log entry
  */
-export function createFatalEntry(message: string, error?: Error, metadata?: Record<string, any>): ILogEntry {
+export function createFatalEntry(message: string, error?: Error, metadata?: Record<string, unknown>): ILogEntry {
     return createLogEntry(LogLevel.FATAL, message, metadata, error);
 }
 
@@ -182,7 +196,7 @@ export function shouldLog(currentLevel: LogLevel, targetLevel: LogLevel): boolea
  * @param value - Value to check
  * @returns Whether the value is a LogLevel
  */
-export function isLogLevel(value: any): value is LogLevel {
+export function isLogLevel(value: unknown): value is LogLevel {
     return typeof value === 'number' &&
         value >= LogLevel.DEBUG &&
         value <= LogLevel.FATAL &&
@@ -195,12 +209,13 @@ export function isLogLevel(value: any): value is LogLevel {
  * @param value - Value to check
  * @returns Whether the value is a LogEntry
  */
-export function isLogEntry(value: any): value is ILogEntry {
-    return value &&
+export function isLogEntry(value: unknown): value is ILogEntry {
+    return Boolean(value &&
         typeof value === 'object' &&
+        value !== null &&
         'level' in value &&
         'message' in value &&
-        isLogLevel(value.level);
+        isLogLevel((value as any).level));
 }
 
 /**
@@ -209,13 +224,16 @@ export function isLogEntry(value: any): value is ILogEntry {
  * @param value - Value to check
  * @returns Whether the value is a LoggerTarget
  */
-export function isLoggerTarget(value: any): value is ILoggerTarget {
-    return value &&
+export function isLoggerTarget(value: unknown): value is ILoggerTarget {
+    return Boolean(
+        value &&
         typeof value === 'object' &&
+        value !== null &&
         'name' in value &&
         'level' in value &&
         'write' in value &&
-        typeof value.write === 'function';
+        typeof (value as any).write === 'function'
+    );
 }
 
 /**
@@ -337,7 +355,12 @@ export function createRemoteTarget(name: string, endpoint: string, level: LogLev
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(entry)
+                    body: JSON.stringify({
+                        message,
+                        level: entry.level,
+                        timestamp: entry.timestamp,
+                        prefix: entry.prefix
+                    })
                 });
 
                 if (!response.ok) {
@@ -376,8 +399,8 @@ export function createCustomTarget(
  * @param error - Error object
  * @returns Error information object
  */
-export function extractErrorInfo(error: Error): Record<string, any> {
-    const info: Record<string, any> = {
+export function extractErrorInfo(error: Error): Record<string, unknown> {
+    const info: Record<string, unknown> = {
         name: error.name,
         message: error.message
     };
@@ -451,7 +474,7 @@ export function createTimer(message: string): () => void {
 export function createLoggerTimer(
     logger: ILoggerService,
     message: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
 ): () => void {
     const startTime = new Date();
 

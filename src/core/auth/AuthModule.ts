@@ -18,6 +18,7 @@ import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { AnalyticsPlugin } from './plugins/AnalyticsPlugin';
 import { SecurityPlugin } from './plugins/SecurityPlugin';
 import { JwtAuthProvider } from './providers/JwtAuthProvider';
+import { AuthErrorType } from './types/auth.domain.types';
 import { LDAPAuthProvider } from './providers/LDAPProvider';
 import { OAuthAuthProvider } from './providers/OAuthProvider';
 import { SAMLAuthProvider } from './providers/SAMLProvider';
@@ -208,7 +209,10 @@ export class AuthModuleFactory {
         // Validate configuration
         const validation = config.validate();
         if (!validation.success) {
-            throw new Error(`Invalid environment configuration: ${validation.error?.message || 'Unknown validation error'}`);
+            const errorMessage = validation.error && typeof validation.error === 'object' && 'message' in validation.error
+                ? (validation.error as { message: string }).message
+                : 'Unknown validation error';
+            throw new Error(`Invalid environment configuration: ${errorMessage}`);
         }
 
         const repository = new LocalAuthRepository();
@@ -294,11 +298,11 @@ export class AuthModuleFactory {
         additionalProviders: IAuthProvider[]
     ): EnterpriseAuthService {
         const enhancedService = this.createWithDependencies({
-            repository: (baseService as any).repository,
-            logger: (baseService as any).logger,
-            metrics: (baseService as any).metrics,
-            security: (baseService as any).security,
-            config: (baseService as any).config
+            repository: baseService.getRepository(),
+            logger: baseService.getLogger(),
+            metrics: baseService.getMetricsInstance(),
+            security: baseService.getSecurityService(),
+            config: baseService.getConfig()
         });
 
         // Register additional providers
@@ -317,11 +321,11 @@ export class AuthModuleFactory {
         plugins: IAuthPlugin[]
     ): EnterpriseAuthService {
         const enhancedService = this.createWithDependencies({
-            repository: (baseService as any).repository,
-            logger: (baseService as any).logger,
-            metrics: (baseService as any).metrics,
-            security: (baseService as any).security,
-            config: (baseService as any).config
+            repository: baseService.getRepository(),
+            logger: baseService.getLogger(),
+            metrics: baseService.getMetricsInstance(),
+            security: baseService.getSecurityService(),
+            config: baseService.getConfig()
         });
 
         // Register plugins
@@ -404,7 +408,7 @@ export class AuthModuleFactory {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
+                    type: AuthErrorType.SERVER_ERROR,
                     message: `Failed to register provider: ${error instanceof Error ? error.message : String(error)}`,
                     code: 'PROVIDER_REGISTRATION_FAILED'
                 }
@@ -430,7 +434,7 @@ export class AuthModuleFactory {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error' as any,
+                    type: 'validation_error' as const,
                     message: `Provider ${providerName} not found`,
                     code: 'PROVIDER_NOT_FOUND'
                 }
@@ -444,7 +448,7 @@ export class AuthModuleFactory {
         this.providerRegistry.delete(providerName);
                     success: false,
                     error: {
-                        type: 'validation_error' as any,
+                        type: 'validation_error' as const,
                         message: `Service ${serviceId} not found`,
                         code: 'SERVICE_NOT_FOUND'
                     }
@@ -457,7 +461,7 @@ export class AuthModuleFactory {
                 return {
                     success: false,
                     error: {
-                        type: 'validation_error' as any,
+                        type: 'validation_error' as const,
                         message: `Provider ${newProviderName} not found`,
                         code: 'PROVIDER_NOT_FOUND'
                     }
@@ -475,7 +479,7 @@ export class AuthModuleFactory {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
+                    type: 'server_error' as const,
                     message: `Failed to switch provider: ${error instanceof Error ? error.message : String(error)}`,
                     code: 'PROVIDER_SWITCH_FAILED'
                 }

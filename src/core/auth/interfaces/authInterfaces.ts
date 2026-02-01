@@ -26,7 +26,7 @@ export type { AuthEvent, AuthErrorType, AuthProviderType, AuthCredentials, AuthR
 export interface IAuthProvider {
     readonly name: string;
     readonly type: AuthProviderType;
-    readonly config: Record<string, any>;
+    readonly config: Record<string, unknown>;
 
     /**
      * Authenticates user with credentials
@@ -61,7 +61,7 @@ export interface IAuthProvider {
     /**
      * Configures provider with settings
      */
-    configure(config: Record<string, any>): void;
+    configure(config: Record<string, unknown>): void;
 
     /**
      * Gets provider capabilities
@@ -120,7 +120,7 @@ export interface IAuthRepository {
  */
 export interface IAuthValidator {
     readonly name: string;
-    readonly rules: Record<string, any>;
+    readonly rules: Record<string, unknown>;
 
     /**
      * Validates credentials
@@ -135,12 +135,12 @@ export interface IAuthValidator {
     /**
      * Validates user data
      */
-    validateUser(user: any): AuthResult<boolean>;
+    validateUser(user: unknown): AuthResult<boolean>;
 
     /**
      * Adds validation rule
      */
-    addRule(name: string, rule: (data: any) => boolean): void;
+    addRule(name: string, rule: (data: unknown) => boolean): void;
 
     /**
      * Removes validation rule
@@ -166,7 +166,7 @@ export interface IAuthLogger {
     /**
      * Logs error with context
      */
-    logError(error: Error, context?: Record<string, any>): void;
+    logError(error: Error, context?: Record<string, unknown>): void;
 
     /**
      * Logs security event
@@ -257,12 +257,12 @@ export interface IAuthSecurityService {
     /**
      * Encrypts sensitive data
      */
-    encryptSensitiveData(data: any): string;
+    encryptSensitiveData(data: unknown): string;
 
     /**
      * Decrypts sensitive data
      */
-    decryptSensitiveData(encryptedData: string): any;
+    decryptSensitiveData(encryptedData: string): unknown;
 
     /**
      * Gets client IP address
@@ -290,7 +290,7 @@ export interface IAuthConfig {
     /**
      * Gets all configuration
      */
-    getAll(): Record<string, any>;
+    getAll(): Record<string, unknown>;
 
     /**
      * Validates configuration
@@ -305,7 +305,7 @@ export interface IAuthConfig {
     /**
      * Watches for configuration changes
      */
-    watch(key: string, callback: (value: any) => void): () => void;
+    watch(key: string, callback: (value: unknown) => void): () => void;
 }
 
 /**
@@ -370,7 +370,7 @@ export interface IAuthPlugin {
     /**
      * Executes plugin hook
      */
-    execute(hook: string, ...args: any[]): Promise<any>;
+    execute(hook: string, ...args: unknown[]): Promise<unknown>;
 
     /**
      * Cleans up plugin
@@ -380,5 +380,5 @@ export interface IAuthPlugin {
     /**
      * Gets plugin metadata
      */
-    getMetadata(): Record<string, any>;
+    getMetadata(): Record<string, unknown>;
 }

@@ -284,9 +284,10 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Determines if token should be refreshed based on expiration time
      */
-    private shouldRefreshToken(session: any): boolean {
+    private shouldRefreshToken(session: unknown): boolean {
         const now = new Date();
-        const expiresAt = new Date(session.expiresAt);
+        const typedSession = session as { expiresAt: string | Date };
+        const expiresAt = new Date(typedSession.expiresAt);
         const timeUntilExpiration = expiresAt.getTime() - now.getTime();
 
         // Refresh if token expires within 5 minutes
@@ -296,7 +297,7 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Refreshes token through enterprise auth service
      */
-    private async refreshTokenThroughEnterprise(session: any): Promise<any> {
+    private async refreshTokenThroughEnterprise(session: unknown): Promise<unknown> {
         // This would integrate with the enterprise auth service's token refresh mechanism
         // For now, we'll simulate the refresh process
 
@@ -423,7 +424,7 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Logs events to enterprise auth logger
      */
-    private logEvent(type: string, details: any): void {
+    private logEvent(type: string, details: unknown): void {
         // This would integrate with the enterprise auth logger
         console.log(`[TokenRefresh] ${type}:`, details);
     }
@@ -431,7 +432,7 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Logs errors to enterprise auth logger
      */
-    private logError(message: string, error: Error, context?: any): void {
+    private logError(message: string, error: Error, context?: unknown): void {
         // This would integrate with the enterprise auth logger
         console.error(`[TokenRefresh] ${message}:`, error, context);
     }

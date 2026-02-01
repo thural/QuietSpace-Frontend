@@ -26,7 +26,7 @@ import type {
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
-export function validateThemeConfig(config: any): string[] {
+export function validateThemeConfig(config: unknown): string[] {
     const errors: string[] = [];
 
     if (!config || typeof config !== 'object') {
@@ -155,7 +155,7 @@ export function createDefaultColors(): Record<string, string> {
  *
  * @returns Default typography scale
  */
-export function createDefaultTypography(): Record<string, any> {
+export function createDefaultTypography(): Record<string, unknown> {
     return {
         // Font families
         fontFamily: {
@@ -303,9 +303,9 @@ export function createDefaultBreakpoints(): Record<string, string> {
 export function createThemeError(
     message: string,
     code: string = CORE_ERROR_CODES.THEME_ERROR,
-    details?: any
+    details?: unknown
 ): Error {
-    const error = new Error(message) as any;
+    const error = new Error(message) as Record<string, unknown>;
     error.code = code;
     error.details = details;
     error.timestamp = Date.now();
@@ -321,7 +321,7 @@ export function createThemeError(
  */
 export function getColor(tokens: ThemeTokens, path: string): string {
     const keys = path.split('.');
-    let value: any = tokens.colors;
+    let value: unknown = tokens.colors;
 
     for (const key of keys) {
         value = value?.[key];
@@ -348,9 +348,9 @@ export function getSpacing(tokens: ThemeTokens, key: string): string {
  * @param path - Typography path (e.g., 'fontSize.base' or 'fontWeight.bold')
  * @returns Typography value or fallback
  */
-export function getTypography(tokens: ThemeTokens, path: string): any {
+export function getTypography(tokens: ThemeTokens, path: string): unknown {
     const keys = path.split('.');
-    let value: any = tokens.typography;
+    let value: unknown = tokens.typography;
 
     for (const key of keys) {
         value = value?.[key];

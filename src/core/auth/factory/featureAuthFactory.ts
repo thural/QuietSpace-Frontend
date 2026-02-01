@@ -28,7 +28,7 @@ export function createFeatureAuthService(container: Container): FeatureAuthServi
 export function createFeatureAuthServiceFromDI(container: Container): FeatureAuthService | null {
     try {
         // Try to get from DI container first
-        return container.getByToken<FeatureAuthService>('FEATURE_AUTH_SERVICE' as any);
+        return container.getByToken<FeatureAuthService>('FEATURE_AUTH_SERVICE');
     } catch {
         // Fallback to direct creation
         return createFeatureAuthService(container);
@@ -43,11 +43,11 @@ export function createFeatureAuthServiceFromDI(container: Container): FeatureAut
  */
 export function createSingletonFeatureAuthService(container: Container): FeatureAuthService {
     try {
-        return container.getByToken<FeatureAuthService>('FEATURE_AUTH_SERVICE' as any);
+        return container.getByToken<FeatureAuthService>('FEATURE_AUTH_SERVICE');
     } catch {
         // Register as singleton if not found
         const service = createFeatureAuthService(container);
-        container.registerInstanceByToken('FEATURE_AUTH_SERVICE' as any, service);
+        container.registerInstanceByToken('FEATURE_AUTH_SERVICE', service);
         return service;
     }
 }

@@ -34,13 +34,13 @@ export interface EnterpriseWebSocketState {
   isConnecting: boolean;
   error: string | null;
   lastMessage: WebSocketMessage | null;
-  metrics: any;
+  metrics: unknown;
 }
 
 export const useEnterpriseWebSocket = (
   config?: UseEnterpriseWebSocketOptions
 ): EnterpriseWebSocketState & {
-  sendMessage: (message: any) => Promise<void>;
+  sendMessage: (message: unknown) => Promise<void>;
   disconnect: () => Promise<void>;
   reconnect: () => Promise<void>;
 } => {
@@ -132,7 +132,7 @@ export const useEnterpriseWebSocket = (
   }, []);
 
   // Send message
-  const sendMessage = useCallback(async (message: any) => {
+  const sendMessage = useCallback(async (message: unknown) => {
     if (webSocketRef.current && state.isConnected) {
       try {
         await webSocketRef.current.sendMessage(message);

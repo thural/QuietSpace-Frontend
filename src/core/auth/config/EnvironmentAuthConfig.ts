@@ -8,8 +8,8 @@
  */
 
 import { AuthProviderType } from '../types/auth.domain.types';
-
 import type { IAuthConfig } from '../interfaces/authInterfaces';
+import type { AuthResult, AuthErrorType } from '../types/auth.domain.types';
 
 /**
  * Environment variable names for authentication configuration
@@ -57,7 +57,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     readonly name = 'EnvironmentAuthConfig';
 
     private config: Record<string, any>;
-    private readonly watchers: Map<string, ((value: any) => void)[]> = new Map();
+    private readonly watchers: Map<string, ((value: unknown) => void)[]> = new Map();
 
     constructor(customEnv?: Record<string, string | undefined>) {
         this.config = this.loadConfiguration(customEnv);
@@ -82,14 +82,14 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     /**
      * Gets all configuration as object
      */
-    getAll(): Record<string, any> {
+    getAll(): Record<string, unknown> {
         return { ...this.config };
     }
 
     /**
      * Validates configuration values
      */
-    validate(): { success: boolean; data?: boolean; error?: any } {
+    validate(): AuthResult<boolean> {
         return this.validateConfiguration();
     }
 
@@ -104,7 +104,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     /**
      * Watches for configuration changes
      */
-    watch(key: string, callback: (value: any) => void): () => void {
+    watch(key: string, callback: (value: unknown) => void): () => void {
         if (!this.watchers.has(key)) {
             this.watchers.set(key, []);
         }
@@ -124,7 +124,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     /**
      * Loads configuration from environment variables
      */
-    private loadConfiguration(customEnv?: Record<string, string | undefined>): Record<string, any> {
+    private loadConfiguration(customEnv?: Record<string, string | undefined>): Record<string, unknown> {
         const env = customEnv || this.getEnvironmentVariables();
 
         return {
@@ -237,7 +237,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     /**
      * Validates configuration values
      */
-    private validateConfiguration(): { success: boolean; data?: boolean; error?: any } {
+    private validateConfiguration(): AuthResult<boolean> {
         const requiredKeys = [
             'provider',
             'defaultProvider',
@@ -257,7 +257,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error',
+                    type: 'validation_error' as AuthErrorType,
                     message: `Missing required configuration: ${missingKeys.join(', ')}`,
                     details: { missingKeys }
                 }
@@ -269,7 +269,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error',
+                    type: 'validation_error' as AuthErrorType,
                     message: `Provider ${this.config.provider} is not in allowed providers: ${this.config.allowedProviders.join(', ')}`,
                     details: {
                         provider: this.config.provider,
@@ -284,7 +284,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error',
+                    type: 'validation_error' as AuthErrorType,
                     message: 'tokenRefreshInterval must be greater than 0',
                     details: { tokenRefreshInterval: this.config.tokenRefreshInterval }
                 }
@@ -297,7 +297,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     /**
      * Notifies watchers of configuration changes
      */
-    private notifyWatchers(key: string, value: any): void {
+    private notifyWatchers(key: string, value: unknown): void {
         const keyWatchers = this.watchers.get(key);
         if (keyWatchers) {
             keyWatchers.forEach(callback => callback(value));

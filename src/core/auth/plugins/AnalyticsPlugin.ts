@@ -28,7 +28,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
         try {
             // In a real implementation, this would use the DI container
             // For now, we'll create a simple instance
-            this.analyticsService = new AnalyticsService({} as any);
+            this.analyticsService = new AnalyticsService({} as Record<string, unknown>);
             console.log('[AnalyticsPlugin] Initialized with existing AnalyticsService');
         } catch (error) {
             console.warn('[AnalyticsPlugin] Could not initialize AnalyticsService:', error);
@@ -40,7 +40,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
     /**
      * Executes plugin hooks for different authentication events
      */
-    async execute(hook: string, ...args: any[]): Promise<any> {
+    async execute(hook: string, ...args: unknown[]): Promise<unknown> {
         switch (hook) {
             case 'auth_success':
                 await this.trackAuthEvent('user_login', {
@@ -81,7 +81,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
     /**
      * Tracks authentication events using the existing AnalyticsService
      */
-    private async trackAuthEvent(eventType: AnalyticsEventType, data: Record<string, any>): Promise<void> {
+    private async trackAuthEvent(eventType: AnalyticsEventType, data: Record<string, unknown>): Promise<void> {
         if (this.analyticsService) {
             try {
                 // Enhance analytics data with current session information
@@ -143,7 +143,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
     /**
      * Fallback logging when AnalyticsService is unavailable
      */
-    private fallbackLog(eventType: string, data: Record<string, any>): void {
+    private fallbackLog(eventType: string, data: Record<string, unknown>): void {
         console.log(`[AnalyticsPlugin] Fallback - ${eventType}:`, data);
     }
 
@@ -182,7 +182,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
     /**
      * Gets plugin metadata
      */
-    getMetadata(): Record<string, any> {
+    getMetadata(): Record<string, unknown> {
         return {
             name: this.name,
             version: this.version,

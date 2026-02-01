@@ -359,10 +359,10 @@ export function createMockTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme
     } as unknown as EnhancedTheme;
 
     // Mock methods
-    (mockTheme as any).getSpacing = (key: string) => '16px';
-    (mockTheme as any).getColor = (path: string) => '#1976d2';
-    (mockTheme as any).getTypography = (key: string) => '16px';
-    (mockTheme as any).getBreakpoint = (key: string) => '1024px';
+    (mockTheme as Record<string, unknown>).getSpacing = (key: string) => '16px';
+    (mockTheme as Record<string, unknown>).getColor = (path: string) => '#1976d2';
+    (mockTheme as Record<string, unknown>).getTypography = (key: string) => '16px';
+    (mockTheme as Record<string, unknown>).getBreakpoint = (key: string) => '1024px';
 
     return mockTheme;
 }
@@ -373,7 +373,7 @@ export function createMockTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme
  * @param container - DI container instance
  * @returns Theme factory function
  */
-export function createThemeFactory(container: any): (overrides?: Partial<ThemeTokens>) => EnhancedTheme {
+export function createThemeFactory(container: unknown): (overrides?: Partial<ThemeTokens>) => EnhancedTheme {
     return (overrides?: Partial<ThemeTokens>) => {
         try {
             // Try to get theme service from DI container
@@ -440,6 +440,6 @@ export function createRuntimeTheme(initialConfig?: ThemeConfig): EnhancedTheme {
         switchVariant: (variant: string, overrides?: Partial<ThemeTokens>) => void;
         getVariant: () => string;
         getTokens: () => EnhancedTheme;
-        getMetrics: () => any;
+        getMetrics: () => unknown;
     };
 }

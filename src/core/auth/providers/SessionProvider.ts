@@ -58,7 +58,7 @@ interface SessionData {
 export class SessionAuthProvider implements IAuthProvider {
     readonly name = 'Session Provider';
     readonly type = AuthProviderType.SESSION;
-    readonly config: Record<string, any> = {
+    readonly config: Record<string, unknown> = {
         sessionTimeout: 30 * 60 * 1000, // 30 minutes
         refreshInterval: 5 * 60 * 1000, // 5 minutes
         cookieName: 'auth_session',
@@ -348,7 +348,7 @@ export class SessionAuthProvider implements IAuthProvider {
     /**
      * Configures provider
      */
-    configure(config: Record<string, any>): void {
+    configure(config: Record<string, unknown>): void {
         Object.assign(this.config, config);
 
         // Restart auto-refresh with new interval if enabled
@@ -456,7 +456,7 @@ export class SessionAuthProvider implements IAuthProvider {
                     ipAddress: this.currentSession.ipAddress!,
                     userAgent: this.currentSession.userAgent!,
                     sessionId
-                } as any
+                } as unknown
             };
 
             return {
@@ -529,7 +529,7 @@ export class SessionAuthProvider implements IAuthProvider {
                     ipAddress: this.currentSession.ipAddress!,
                     userAgent: this.currentSession.userAgent!,
                     sessionId: this.currentSession.sessionId
-                } as any
+                } as unknown
             };
 
             return {
@@ -744,7 +744,7 @@ export class SessionAuthProvider implements IAuthProvider {
     /**
      * Simulates user authentication (replace with real API call)
      */
-    private async authenticateUser(credentials: AuthCredentials): Promise<AuthResult<any>> {
+    private async authenticateUser(credentials: AuthCredentials): Promise<AuthResult<unknown>> {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
 

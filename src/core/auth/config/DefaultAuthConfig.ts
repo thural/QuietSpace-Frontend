@@ -5,7 +5,7 @@
  * with environment-specific overrides.
  */
 
-import type { IAuthConfig } from '../interfaces/authInterfaces';
+import type { IAuthConfig, AuthResult, AuthErrorType } from '../interfaces/authInterfaces';
 
 /**
  * Default authentication configuration
@@ -13,7 +13,7 @@ import type { IAuthConfig } from '../interfaces/authInterfaces';
 export class DefaultAuthConfig implements IAuthConfig {
     readonly name = 'DefaultAuthConfig';
 
-    private config: Record<string, any> = {
+    private config: Record<string, unknown> = {
         // Token configuration
         tokenRefreshInterval: 540000, // 9 minutes
         tokenExpiration: 3600000, // 1 hour
@@ -49,7 +49,7 @@ export class DefaultAuthConfig implements IAuthConfig {
         debugMode: true
     };
 
-    private readonly watchers: Map<string, ((value: any) => void)[]> = new Map();
+    private readonly watchers: Map<string, ((value: unknown) => void)[]> = new Map();
 
     /**
      * Gets configuration value
@@ -74,14 +74,14 @@ export class DefaultAuthConfig implements IAuthConfig {
     /**
      * Gets all configuration
      */
-    getAll(): Record<string, any> {
+    getAll(): Record<string, unknown> {
         return { ...this.config };
     }
 
     /**
      * Validates configuration
      */
-    validate(): { success: boolean; data?: boolean; error?: any } {
+    validate(): AuthResult<boolean> {
         const requiredKeys = [
             'tokenRefreshInterval',
             'tokenExpiration',
@@ -99,7 +99,7 @@ export class DefaultAuthConfig implements IAuthConfig {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error',
+                    type: 'validation_error' as AuthErrorType,
                     message: `Missing required configuration: ${missingKeys.join(', ')}`,
                     details: { missingKeys }
                 }
@@ -143,7 +143,7 @@ export class DefaultAuthConfig implements IAuthConfig {
     /**
      * Watches for configuration changes
      */
-    watch(key: string, callback: (value: any) => void): () => void {
+    watch(key: string, callback: (value: unknown) => void): () => void {
         if (!this.watchers.has(key)) {
             this.watchers.set(key, []);
         }

@@ -15,11 +15,12 @@ import {
 /**
  * Transform API post response to domain entity
  */
-export const transformPost = (apiPost: any): any => {
+export const transformPost = (apiPost: unknown): unknown => {
   // This will be implemented when we have the PostFactory
   // For now, return the transformed data
+  const typedApiPost = apiPost as Record<string, unknown>;
   return {
-    ...apiPost,
+    ...typedApiPost,
     // Add any necessary transformations
     transformedAt: new Date().toISOString()
   };
@@ -28,19 +29,20 @@ export const transformPost = (apiPost: any): any => {
 /**
  * Transform API error to domain failure
  */
-export const transformError = (error: any): Error => {
-  if (error.response) {
+export const transformError = (error: unknown): Error => {
+  if (error && typeof error === 'object' && 'response' in error) {
+    const typedError = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
     // API error
-    const statusCode = error.response.status;
-    const message = error.response.data?.message || error.message;
+    const statusCode = typedError.response?.status;
+    const message = typedError.response?.data?.message || typedError.message;
 
     switch (statusCode) {
       case 400:
-        return new ValidationError(message);
+        return new ValidationError(message || 'Bad request');
       case 401:
-        return new AuthenticationFailure(message);
+        return new AuthenticationFailure(message || 'Authentication failed');
       case 403:
-        return new AuthorizationFailure(message);
+        return new AuthorizationFailure(message || 'Authorization failed');
       case 404:
         return new NetworkFailure('Resource not found');
       case 429:
@@ -48,14 +50,17 @@ export const transformError = (error: any): Error => {
       case 500:
         return new NetworkFailure('Server error');
       default:
-        return new NetworkFailure(message);
+        return new NetworkFailure(message || 'Unknown error');
     }
-  } else if (error.request) {
+  } else if (error && typeof error === 'object' && 'request' in error) {
     // Network error
     return new NetworkFailure('Network connection failed');
+  } else if (error instanceof Error) {
+    // JavaScript error
+    return error;
   } else {
-    // Unknown error
-    return new NetworkFailure(error.message || 'Unknown error');
+    // Unknown error type
+    return new Error(String(error));
   }
 };
 

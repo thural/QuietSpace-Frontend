@@ -32,8 +32,9 @@ export function createAuthWithIntegratedPlugins() {
 /**
  * Example: Getting integration information from plugins
  */
-export function getPluginIntegrationInformation(authService: any) {
-    const plugins = authService['plugins'];
+export function getPluginIntegrationInformation(authService: unknown) {
+    const typedAuthService = authService as { plugins?: Map<string, unknown> };
+    const plugins = typedAuthService.plugins;
 
     if (!plugins) {
         console.log('No plugins registered');
@@ -42,11 +43,13 @@ export function getPluginIntegrationInformation(authService: any) {
 
     console.log('Registered plugins with integration status:');
     for (const [name, plugin] of plugins) {
-        const metadata = plugin.getMetadata();
+        const typedPlugin = plugin as { getMetadata: () => unknown };
+        const metadata = typedPlugin.getMetadata();
+        const typedMetadata = metadata as Record<string, unknown>;
         console.log(`- ${name}:`, {
-            description: metadata.description,
-            integrationStatus: metadata.integrationStatus || metadata.analyticsServiceAvailable,
-            capabilities: metadata.capabilities
+            description: typedMetadata.description,
+            integrationStatus: typedMetadata.integrationStatus || typedMetadata.analyticsServiceAvailable,
+            capabilities: typedMetadata.capabilities
         });
     }
 }

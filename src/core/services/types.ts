@@ -109,7 +109,7 @@ export const LOGGER_HEALTH_THRESHOLDS = {
 /**
  * Check if a value is a valid LogLevel
  */
-export function isLogLevel(value: any): value is LogLevel {
+export function isLogLevel(value: unknown): value is LogLevel {
     return typeof value === 'number' &&
         value >= LogLevel.DEBUG &&
         value <= LogLevel.FATAL &&
@@ -119,7 +119,7 @@ export function isLogLevel(value: any): value is LogLevel {
 /**
  * Check if a value is a valid LogEntry
  */
-export function isLogEntry(value: any): value is ILogEntry {
+export function isLogEntry(value: unknown): value is ILogEntry {
     return value &&
         typeof value === 'object' &&
         'level' in value &&
@@ -130,7 +130,7 @@ export function isLogEntry(value: any): value is ILogEntry {
 /**
  * Check if a value is a valid LoggerTarget
  */
-export function isLoggerTarget(value: any): value is ILoggerTarget {
+export function isLoggerTarget(value: unknown): value is ILoggerTarget {
     return value &&
         typeof value === 'object' &&
         'name' in value &&
@@ -202,7 +202,7 @@ export function formatLogEntry(entry: ILogEntry): string {
 export function createLogEntry(
     level: LogLevel,
     message: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
     error?: Error,
     prefix?: string
 ): ILogEntry {

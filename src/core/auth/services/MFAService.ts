@@ -334,7 +334,7 @@ export class MFAService {
   /**
    * Enroll in TOTP authentication
    */
-  public async enrollTOTP(userId: string, deviceInfo?: any): Promise<TOTPEnrollmentData> {
+  public async enrollTOTP(userId: string, deviceInfo?: unknown): Promise<TOTPEnrollmentData> {
     if (!this.config.enableTOTP) {
       throw new Error('TOTP authentication is not enabled');
     }

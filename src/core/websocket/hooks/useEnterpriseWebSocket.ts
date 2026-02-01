@@ -108,13 +108,13 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
 
     const connectionMetrics = webSocketService.getConnectionMetrics();
 
-    setMetrics(prev => ({
+    setMetrics({
       connectionMetrics,
       messagesReceived: connectionMetrics.messagesReceived,
       messagesSent: connectionMetrics.messagesSent,
       averageLatency: connectionMetrics.averageLatency,
       connectionUptime: connectionMetrics.connectionUptime
-    }));
+    });
   }, [webSocketService, enableMetrics]);
 
   // Connect to WebSocket
@@ -176,9 +176,9 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
         updateConnectionState();
         listener.onConnect?.();
       },
-      onDisconnect: () => {
+      onDisconnect: (event) => {
         updateConnectionState();
-        listener.onDisconnect?.();
+        listener.onDisconnect?.(event);
       },
       onError: (error) => {
         updateConnectionState();
@@ -258,11 +258,6 @@ export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
     onDisconnect
   } = options;
 
-  const container = useDIContainer();
-  const connectionManager = container.getByToken<IConnectionManager>(
-    TYPES.CONNECTION_MANAGER
-  );
-
   const webSocket = useEnterpriseWebSocket({
     autoConnect,
     enableMetrics: true
@@ -273,8 +268,10 @@ export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
 
   // Subscribe to feature messages
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
     if (webSocket.isConnected && !isSubscribed) {
-      const unsubscribe = webSocket.subscribe(feature, {
+      unsubscribe = webSocket.subscribe(feature, {
         onMessage: (message) => {
           setFeatureMessages(prev => [message, ...prev.slice(0, 99)]); // Keep last 100 messages
           onMessage?.(message);
@@ -291,16 +288,18 @@ export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
           onDisconnect?.();
         }
       });
+    }
 
-      return () => {
+    return () => {
+      if (unsubscribe) {
         unsubscribe();
         setIsSubscribed(false);
-      };
-    }
+      }
+    };
   }, [webSocket.isConnected, feature, isSubscribed, onMessage, onError, onConnect, onDisconnect]);
 
   // Send feature-specific message
-  const sendFeatureMessage = useCallback(async (type: string, payload: any, metadata?: any) => {
+  const sendFeatureMessage = useCallback(async (type: string, payload: unknown, metadata?: Record<string, unknown>) => {
     return webSocket.sendMessage({
       type,
       feature,
@@ -348,7 +347,7 @@ export function useWebSocketConnection() {
   );
 
   const [connections, setConnections] = useState(connectionManager.getAllConnections());
-  const [healthStatus, setHealthStatus] = useState<Record<string, any>>({});
+  const [healthStatus, setHealthStatus] = useState<Record<string, unknown>>({});
 
   // Refresh connections
   const refreshConnections = useCallback(() => {

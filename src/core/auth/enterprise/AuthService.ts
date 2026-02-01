@@ -415,6 +415,41 @@ export class EnterpriseAuthService implements IAuthService {
     }
 
     /**
+     * Gets the repository instance
+     */
+    getRepository(): IAuthRepository {
+        return this.repository;
+    }
+
+    /**
+     * Gets the logger instance
+     */
+    getLogger(): IAuthLogger {
+        return this.logger;
+    }
+
+    /**
+     * Gets the metrics instance
+     */
+    getMetricsInstance(): IAuthMetrics {
+        return this.metrics;
+    }
+
+    /**
+     * Gets the security service instance
+     */
+    getSecurityService(): IAuthSecurityService {
+        return this.security;
+    }
+
+    /**
+     * Gets the config instance
+     */
+    getConfig(): IAuthConfig {
+        return this.config;
+    }
+
+    /**
      * Gets active sessions (mock implementation)
      */
     async getActiveSessions(): Promise<AuthSession[]> {

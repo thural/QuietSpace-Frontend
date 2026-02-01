@@ -29,7 +29,9 @@ export enum AuthEventType {
     LOGOUT_FAILURE = 'logout_failure',
     TOKEN_REFRESH = 'token_refresh',
     TOKEN_REFRESH_SUCCESS = 'token_refresh_success',
-    TOKEN_REFRESH_FAILURE = 'token_refresh_failure'
+    TOKEN_REFRESH_FAILURE = 'token_refresh_failure',
+    ERROR = 'error',
+    SECURITY = 'security'
 }
 
 export enum AuthErrorType {
@@ -57,7 +59,7 @@ export interface AuthEvent {
     timestamp: Date;
     userId?: string;
     providerType?: AuthProviderType;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
     error?: AuthErrorType;
     metadata?: {
         ipAddress?: string;
@@ -67,14 +69,14 @@ export interface AuthEvent {
     };
 }
 
-export interface AuthResult<T = any> {
+export interface AuthResult<T = unknown> {
     success: boolean;
     data?: T;
     error?: {
         type: AuthErrorType;
         message: string;
         code?: string;
-        details?: Record<string, any>;
+        details?: Record<string, unknown>;
     };
     metadata?: {
         timestamp: Date;
@@ -89,7 +91,7 @@ export interface AuthCredentials {
     username?: string;
     token?: string;
     apiKey?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface AuthToken {
@@ -140,7 +142,7 @@ export interface AuthSession {
             country?: string;
             city?: string;
         };
-        [key: string]: any; // Allow additional properties for provider-specific metadata
+        [key: string]: unknown; // Allow additional properties for provider-specific metadata
     };
 }
 
@@ -177,7 +179,7 @@ export interface AuthRepository {
 
 export interface AuthLogger {
     log(event: AuthEvent): void;
-    logError(error: Error, context?: Record<string, any>): void;
+    logError(error: Error, context?: Record<string, unknown>): void;
     logSecurity(event: AuthEvent): void;
     getEvents(filters?: Partial<AuthEvent>): AuthEvent[];
     clear(): void;
@@ -200,6 +202,6 @@ export interface AuthSecurityService {
     detectSuspiciousActivity(events: AuthEvent[]): AuthEvent[];
     validateSecurityHeaders(headers: Record<string, string>): boolean;
     checkRateLimit(userId: string, attempts: number): boolean;
-    encryptSensitiveData(data: any): string;
-    decryptSensitiveData(encryptedData: string): any;
+    encryptSensitiveData(data: unknown): string;
+    decryptSensitiveData(encryptedData: string): unknown;
 }

@@ -122,7 +122,7 @@ export class LoggerService implements ILoggerService {
      */
     createChild(prefix: string, _config?: Partial<ILoggerConfig>): ILoggerService {
         const child = new LoggerService();
-        (child as any)._prefix = `${this._prefix}`;
+        (child as { _prefix: string })._prefix = `${this._prefix}`;
         return child;
     }
 

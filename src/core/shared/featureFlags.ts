@@ -92,9 +92,9 @@ export function getAllFeatureFlags(environment: Environment = 'production'): Rec
 }
 
 export function enableFeature(flag: FeatureFlag, environment: Environment): void {
-    (ENVIRONMENT_FEATURE_FLAGS[environment] as any)[flag] = true;
+    (ENVIRONMENT_FEATURE_FLAGS[environment] as Record<string, boolean>)[flag] = true;
 }
 
 export function disableFeature(flag: FeatureFlag, environment: Environment): void {
-    (ENVIRONMENT_FEATURE_FLAGS[environment] as any)[flag] = false;
+    (ENVIRONMENT_FEATURE_FLAGS[environment] as Record<string, boolean>)[flag] = false;
 }

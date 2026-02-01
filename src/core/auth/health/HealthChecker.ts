@@ -24,7 +24,7 @@ export interface HealthCheckResult {
     responseTime: number;
     timestamp: Date;
     error?: string;
-    details?: any;
+    details?: unknown;
 }
 
 /**
@@ -96,7 +96,7 @@ export class CircuitBreaker {
                 return {
                     success: false,
                     error: {
-                        type: 'server_error' as any,
+                        type: 'server_error' as const,
                         message: 'Circuit breaker is OPEN',
                         code: 'CIRCUIT_BREAKER_OPEN'
                     }
@@ -113,7 +113,7 @@ export class CircuitBreaker {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
+                    type: 'server_error' as const,
                     message: `Operation failed: ${error.message}`,
                     code: 'OPERATION_FAILED'
                 }
@@ -285,7 +285,7 @@ export class ProviderHealthMonitor {
     getHealthStatus(): {
         status: 'healthy' | 'unhealthy' | 'degraded';
         metrics: HealthMetrics;
-        circuitBreaker: any;
+        circuitBreaker: unknown;
         lastCheck: HealthCheckResult | null;
     } {
         const lastCheck = this.healthHistory.length > 0
@@ -335,7 +335,7 @@ export class ProviderHealthMonitor {
     /**
      * Executes the actual health check
      */
-    private async executeHealthCheck(provider: IAuthProvider): Promise<AuthResult<any>> {
+    private async executeHealthCheck(provider: IAuthProvider): Promise<AuthResult<unknown>> {
         // Try to validate current session first
         try {
             const validationResult = await provider.validateSession();
@@ -360,7 +360,7 @@ export class ProviderHealthMonitor {
         return {
             success: false,
             error: {
-                type: 'server_error' as any,
+                type: 'server_error' as const,
                 message: 'Provider health check failed',
                 code: 'HEALTH_CHECK_FAILED'
             }
@@ -440,7 +440,7 @@ export class HealthCheckManager {
     /**
      * Gets health status for all providers
      */
-    getAllHealthStatus(): Map<string, any> {
+    getAllHealthStatus(): Map<string, unknown> {
         const status = new Map();
 
         for (const [providerName, monitor] of this.monitors) {
@@ -453,7 +453,7 @@ export class HealthCheckManager {
     /**
      * Gets health status for a specific provider
      */
-    getProviderHealthStatus(providerName: string): any {
+    getProviderHealthStatus(providerName: string): unknown {
         const monitor = this.monitors.get(providerName);
         return monitor ? monitor.getHealthStatus() : null;
     }
@@ -498,7 +498,7 @@ export class HealthCheckManager {
         return {
             success: false,
             error: {
-                type: 'server_error' as any,
+                type: 'server_error' as const,
                 message: 'All providers failed',
                 code: 'ALL_PROVIDERS_FAILED'
             }
@@ -543,7 +543,7 @@ export class HealthCheckManager {
      */
     getHealthReport(): {
         timestamp: Date;
-        providers: any;
+        providers: unknown;
         summary: {
             total: number;
             healthy: number;

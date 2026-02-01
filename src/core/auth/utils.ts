@@ -14,7 +14,7 @@ import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession } fr
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
-export function validateAuthConfig(config: any): string[] {
+export function validateAuthConfig(config: unknown): string[] {
     const errors: string[] = [];
 
     if (!config || typeof config !== 'object') {
@@ -23,15 +23,16 @@ export function validateAuthConfig(config: any): string[] {
     }
 
     // Validate required fields
-    if (!config.provider) {
+    const typedConfig = config as Record<string, unknown>;
+    if (!typedConfig.provider) {
         errors.push('Provider is required');
     }
 
-    if (typeof config.tokenRefreshInterval !== 'number' || config.tokenRefreshInterval <= 0) {
+    if (typeof typedConfig.tokenRefreshInterval !== 'number' || typedConfig.tokenRefreshInterval <= 0) {
         errors.push('Token refresh interval must be a positive number');
     }
 
-    if (typeof config.sessionTimeout !== 'number' || config.sessionTimeout <= 0) {
+    if (typeof typedConfig.sessionTimeout !== 'number' || typedConfig.sessionTimeout <= 0) {
         errors.push('Session timeout must be a positive number');
     }
 
@@ -44,19 +45,20 @@ export function validateAuthConfig(config: any): string[] {
  * @param data - Data to sanitize
  * @returns Sanitized data
  */
-export function sanitizeAuthData(data: any): any {
+export function sanitizeAuthData(data: unknown): unknown {
     if (!data || typeof data !== 'object') {
         return {};
     }
 
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
 
     // Only allow known safe fields
     const allowedFields = ['email', 'username', 'password', 'firstName', 'lastName', 'phone'];
 
+    const typedData = data as Record<string, unknown>;
     for (const field of allowedFields) {
-        if (data[field] && typeof data[field] === 'string') {
-            sanitized[field] = data[field].trim();
+        if (typedData[field] && typeof typedData[field] === 'string') {
+            sanitized[field] = (typedData[field] as string).trim();
         }
     }
 
@@ -69,7 +71,7 @@ export function sanitizeAuthData(data: any): any {
  * @param result - Authentication result
  * @returns Error information or null
  */
-export function extractAuthError(result: AuthResult<any>): { type: AuthErrorType; message: string; code?: string } | null {
+export function extractAuthError(result: AuthResult<unknown>): { type: AuthErrorType; message: string; code?: string } | null {
     if (!result.error) {
         return null;
     }
@@ -77,7 +79,7 @@ export function extractAuthError(result: AuthResult<any>): { type: AuthErrorType
     return {
         type: result.error.type || AuthErrorType.UNKNOWN_ERROR,
         message: result.error.message || 'Unknown error occurred',
-        code: result.error.code
+        code: result.error.code || undefined
     };
 }
 
@@ -87,7 +89,7 @@ export function extractAuthError(result: AuthResult<any>): { type: AuthErrorType
  * @param result - Authentication result
  * @returns Formatted result
  */
-export function formatAuthResult(result: AuthResult<any>): { success: boolean; message: string; data?: any } {
+export function formatAuthResult(result: AuthResult<unknown>): { success: boolean; message: string; data?: unknown } {
     if (result.success) {
         return {
             success: true,
@@ -110,8 +112,8 @@ export function formatAuthResult(result: AuthResult<any>): { success: boolean; m
  * @param result - Result to check
  * @returns True if result is a valid AuthResult
  */
-export function isAuthResult(result: any): result is AuthResult<any> {
-    return result && typeof result === 'object' && typeof result.success === 'boolean';
+export function isAuthResult(result: unknown): result is AuthResult<unknown> {
+    return Boolean(result && typeof result === 'object' && (result as { success?: unknown }).success === true);
 }
 
 /**
@@ -120,8 +122,12 @@ export function isAuthResult(result: any): result is AuthResult<any> {
  * @param error - Error to check
  * @returns True if error is a valid AuthError
  */
-export function isAuthError(error: any): error is { type: AuthErrorType; message: string; code?: string } {
-    return error && typeof error === 'object' && typeof error.type === 'string' && typeof error.message === 'string';
+export function isAuthError(error: unknown): error is { type: AuthErrorType; message: string; code?: string } {
+    return Boolean(
+        error && typeof error === 'object' &&
+        typeof (error as { type?: unknown }).type === 'string' &&
+        typeof (error as { message?: unknown }).message === 'string'
+    );
 }
 
 /**
@@ -130,12 +136,13 @@ export function isAuthError(error: any): error is { type: AuthErrorType; message
  * @param token - Token to check
  * @returns True if token is a valid AuthToken
  */
-export function isAuthToken(token: any): token is AuthToken {
-    return token &&
-        typeof token === 'object' &&
-        typeof token.accessToken === 'string' &&
-        typeof token.refreshToken === 'string' &&
-        token.expiresAt instanceof Date;
+export function isAuthToken(token: unknown): token is AuthToken {
+    return Boolean(
+        token && typeof token === 'object' &&
+        typeof (token as { accessToken?: unknown }).accessToken === 'string' &&
+        typeof (token as { refreshToken?: unknown }).refreshToken === 'string' &&
+        (token as { expiresAt?: unknown }).expiresAt instanceof Date
+    );
 }
 
 /**
@@ -144,12 +151,13 @@ export function isAuthToken(token: any): token is AuthToken {
  * @param session - Session to check
  * @returns True if session is a valid AuthSession
  */
-export function isAuthSession(session: any): session is AuthSession {
-    return session &&
-        typeof session === 'object' &&
-        isAuthUser(session.user) &&
-        isAuthToken(session.token) &&
-        session.isActive === true;
+export function isAuthSession(session: unknown): session is AuthSession {
+    return Boolean(
+        session && typeof session === 'object' &&
+        isAuthUser((session as { user?: unknown }).user) &&
+        isAuthToken((session as { token?: unknown }).token) &&
+        (session as { isActive?: unknown }).isActive === true
+    );
 }
 
 /**
@@ -158,11 +166,12 @@ export function isAuthSession(session: any): session is AuthSession {
  * @param user - User to check
  * @returns True if user is a valid AuthUser
  */
-export function isAuthUser(user: any): user is AuthUser {
-    return user &&
-        typeof user === 'object' &&
-        typeof user.id === 'string' &&
-        typeof user.email === 'string';
+export function isAuthUser(user: unknown): user is AuthUser {
+    return Boolean(
+        user && typeof user === 'object' &&
+        typeof (user as { id?: unknown }).id === 'string' &&
+        typeof (user as { email?: unknown }).email === 'string'
+    );
 }
 
 /**
@@ -281,7 +290,7 @@ export function createMockAuthSession(overrides?: Partial<AuthSession>): AuthSes
     return {
         user: createMockAuthUser(),
         token: createMockAuthToken(),
-        provider: 'jwt' as any,
+        provider: 'jwt' as const,
         createdAt: new Date(),
         expiresAt: new Date(Date.now() + 3600000),
         isActive: true,

@@ -7,12 +7,12 @@
 
 // Core service interfaces
 export interface ILoggerService {
-    debug(message: string, ...args: any[]): void;
-    info(message: string, ...args: any[]): void;
-    warn(message: string, ...args: any[]): void;
-    error(message: string, error?: Error, ...args: any[]): void;
-    fatal(message: string, error?: Error, ...args: any[]): void;
-    trace(message: string, ...args: any[]): void;
+    debug(message: string, ...args: unknown[]): void;
+    info(message: string, ...args: unknown[]): void;
+    warn(message: string, ...args: unknown[]): void;
+    error(message: string, error?: Error, ...args: unknown[]): void;
+    fatal(message: string, error?: Error, ...args: unknown[]): void;
+    trace(message: string, ...args: unknown[]): void;
     setLevel(level: LogLevel): void;
     getLevel(): LogLevel;
     isLevelEnabled(level: LogLevel): boolean;
@@ -69,7 +69,7 @@ export interface LogContext {
     correlationId?: string;
     component?: string;
     action?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 export interface LogEntry {
@@ -78,10 +78,10 @@ export interface LogEntry {
     timestamp: number;
     context?: LogContext;
     error?: Error;
-    args?: any[];
+    args?: unknown[];
     stack?: string;
     source?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 // Log level and format interfaces
@@ -146,7 +146,7 @@ export interface IRemoteTransport extends LogTransport {
 }
 
 // Service container interfaces
-export interface ServiceDescriptor<T = any> {
+export interface ServiceDescriptor<T = unknown> {
     identifier: ServiceIdentifier;
     factory: ServiceFactory<T>;
     singleton?: boolean;
@@ -155,9 +155,9 @@ export interface ServiceDescriptor<T = any> {
     metadata?: ServiceMetadata;
 }
 
-export type ServiceFactory<T = any> = (...args: any[]) => T;
+export type ServiceFactory<T = unknown> = (...args: unknown[]) => T;
 
-export interface ServiceLifecycle<T = any> {
+export interface ServiceLifecycle<T = unknown> {
     onCreate?(instance: T): void;
     onDestroy?(instance: T): void;
     onDispose?(instance: T): void;
@@ -174,7 +174,7 @@ export interface ServiceMetadata {
 }
 
 // Service identifier types
-export type ServiceIdentifier = string | symbol | (new (...args: any[]) => any);
+export type ServiceIdentifier = string | symbol | (new (...args: unknown[]) => unknown);
 
 // Service scope interfaces
 export interface IServiceScope {
@@ -197,7 +197,7 @@ export interface IServiceRegistry {
     clear(): void;
     has(identifier: ServiceIdentifier): boolean;
     findByTag(tag: string): ServiceDescriptor[];
-    findByMetadata(key: string, value: any): ServiceDescriptor[];
+    findByMetadata(key: string, value: unknown): ServiceDescriptor[];
 }
 
 // Service factory interfaces
@@ -231,7 +231,7 @@ export interface ServiceHealthCheck {
     score: number;
     message: string;
     duration?: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     error?: Error;
 }
 
@@ -254,12 +254,12 @@ export interface ServiceMetrics {
     errorCount: number;
     averageResponseTime: number;
     lastActivity: Date;
-    customMetrics: Record<string, any>;
+    customMetrics: Record<string, unknown>;
     lastReset: Date;
 }
 
 export interface MetricCollector {
-    collect(): any;
+    collect(): unknown;
     reset(): void;
 }
 
@@ -277,15 +277,15 @@ export interface IServicePlugin {
 export interface IServiceMiddleware {
     name: string;
     priority: number;
-    execute(context: ServiceContext, next: () => Promise<any>): Promise<any>;
+    execute(context: ServiceContext, next: () => Promise<unknown>): Promise<unknown>;
 }
 
 export interface ServiceContext {
-    service: any;
+    service: unknown;
     identifier: ServiceIdentifier;
     method: string;
-    args: any[];
-    metadata?: Record<string, any>;
+    args: unknown[];
+    metadata?: Record<string, unknown>;
 }
 
 // Service configuration interfaces
@@ -401,15 +401,15 @@ export interface ServiceError extends Error {
     type: ServiceErrorType;
     identifier?: ServiceIdentifier;
     timestamp: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 // Utility types
 export type LogLevelName = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 export type LogLevelValue = 0 | 1 | 2 | 3 | 4 | 5;
 
-export type ServiceIdentifierMap<T = any> = Record<string, T>;
-export type ServiceFactoryMap<T = any> = Record<string, ServiceFactory<T>>;
+export type ServiceIdentifierMap<T = unknown> = Record<string, T>;
+export type ServiceFactoryMap<T = unknown> = Record<string, ServiceFactory<T>>;
 export type ServiceDescriptorMap = Record<string, ServiceDescriptor>;
 
 // Helper functions
@@ -423,14 +423,25 @@ export function createServiceDescriptor<T>(
         metadata?: ServiceMetadata;
     }
 ): ServiceDescriptor<T> {
-    return {
+    const descriptor: ServiceDescriptor<T> = {
         identifier,
-        factory,
-        singleton: options?.singleton,
-        dependencies: options?.dependencies,
-        lifecycle: options?.lifecycle,
-        metadata: options?.metadata
+        factory
     };
+
+    if (options?.singleton !== undefined) {
+        descriptor.singleton = options.singleton;
+    }
+    if (options?.dependencies !== undefined) {
+        descriptor.dependencies = options.dependencies;
+    }
+    if (options?.lifecycle !== undefined) {
+        descriptor.lifecycle = options.lifecycle;
+    }
+    if (options?.metadata !== undefined) {
+        descriptor.metadata = options.metadata;
+    }
+
+    return descriptor;
 }
 
 export function createLogContext(context?: Partial<LogContext>): LogContext {
@@ -444,16 +455,31 @@ export function createLogEntry(
     message: string,
     context?: LogContext,
     error?: Error,
-    args?: any[]
+    args?: unknown[]
 ): LogEntry {
-    return {
+    const entry: LogEntry = {
         level,
         message,
         timestamp: Date.now(),
-        context,
-        error,
-        args,
-        stack: error?.stack,
-        metadata: context?.metadata
     };
+
+    if (context !== undefined) {
+        entry.context = context;
+        if (context.metadata !== undefined) {
+            entry.metadata = context.metadata;
+        }
+    }
+
+    if (error !== undefined) {
+        entry.error = error;
+        if (error.stack !== undefined) {
+            entry.stack = error.stack;
+        }
+    }
+
+    if (args !== undefined) {
+        entry.args = args;
+    }
+
+    return entry;
 }

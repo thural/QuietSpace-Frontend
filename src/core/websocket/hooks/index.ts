@@ -70,18 +70,22 @@ export const DEFAULT_WEBSOCKET_CONFIG = {
 } as const;
 
 // Utility functions
-export function createWebSocketConfig<T extends Record<string, any>>(
+export function createWebSocketConfig<T extends Record<string, unknown>>(
   defaults: T,
   overrides: Partial<T>
 ): T {
   return { ...defaults, ...overrides };
 }
 
-export function validateWebSocketConfig(config: any): boolean {
+export function validateWebSocketConfig(config: unknown): boolean {
   return (
     config &&
-    typeof config.autoConnect === 'boolean' &&
-    typeof config.connectionTimeout === 'number'
+    typeof config === 'object' &&
+    config !== null &&
+    'autoConnect' in config &&
+    typeof (config as { autoConnect?: unknown }).autoConnect === 'boolean' &&
+    'connectionTimeout' in config &&
+    typeof (config as { connectionTimeout?: unknown }).connectionTimeout === 'number'
   );
 }
 

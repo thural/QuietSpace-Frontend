@@ -18,7 +18,7 @@ export const enhanceTheme = (composedTheme: ComposedTheme): EnhancedTheme => {
         getSpacing: (key: keyof typeof composedTheme.tokens.spacing) => composedTheme.tokens.spacing[key],
         getColor: (path: string) => {
             const keys = path.split('.');
-            return keys.reduce((obj: any, key) => obj?.[key], composedTheme.tokens.colors);
+            return keys.reduce((obj: unknown, key) => (obj as Record<string, unknown>)?.[key], composedTheme.tokens.colors);
         },
         getTypography: (key: keyof typeof composedTheme.tokens.typography) => composedTheme.tokens.typography[key],
         getBreakpoint: (key: keyof typeof composedTheme.tokens.breakpoints) => composedTheme.tokens.breakpoints[key],

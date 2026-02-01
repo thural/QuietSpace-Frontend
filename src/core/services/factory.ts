@@ -44,27 +44,27 @@ export class LoggerService implements ILoggerService {
         };
     }
 
-    debug(message: string, ...args: any[]): void {
+    debug(message: string, ...args: unknown[]): void {
         this.log(LogLevel.DEBUG, message, ...args);
     }
 
-    info(message: string, ...args: any[]): void {
+    info(message: string, ...args: unknown[]): void {
         this.log(LogLevel.INFO, message, ...args);
     }
 
-    warn(message: string, ...args: any[]): void {
+    warn(message: string, ...args: unknown[]): void {
         this.log(LogLevel.WARN, message, ...args);
     }
 
-    error(message: string, error?: Error, ...args: any[]): void {
+    error(message: string, error?: Error, ...args: unknown[]): void {
         this.log(LogLevel.ERROR, message, error, ...args);
     }
 
-    fatal(message: string, error?: Error, ...args: any[]): void {
+    fatal(message: string, error?: Error, ...args: unknown[]): void {
         this.log(LogLevel.FATAL, message, error, ...args);
     }
 
-    log(level: LogLevel, message: string, ...args: any[]): void {
+    log(level: LogLevel, message: string, ...args: unknown[]): void {
         if (!this.isLevelEnabled(level)) {
             return;
         }
@@ -131,7 +131,7 @@ export class LoggerService implements ILoggerService {
         return { ...this.config };
     }
 
-    addTarget(target: any): void {
+    addTarget(target: unknown): void {
         if (!this.config.targets) {
             this.config.targets = [];
         }
@@ -295,7 +295,7 @@ export function createStructuredLogger(config?: Partial<ILoggerConfig>): ILogger
  * @param config - Logger configuration
  * @returns Logger service instance from DI
  */
-export function createLoggerFromDI(container: any, config?: ILoggerConfig): ILoggerService {
+export function createLoggerFromDI(container: unknown, config?: ILoggerConfig): ILoggerService {
     try {
         // Try to get logger service from DI container
         const loggerService = container.getByToken('LOGGER_SERVICE') as ILoggerService;
@@ -365,29 +365,29 @@ export function createMockLogger(config?: ILoggerConfig): ILoggerService {
     const logs: { level: LogLevel; message: string; timestamp: Date }[] = [];
 
     return {
-        debug: (message: string, ...args: any[]) => {
+        debug: (message: string, ...args: unknown[]) => {
             logs.push({ level: LogLevel.DEBUG, message, timestamp: new Date() });
         },
-        info: (message: string, ...args: any[]) => {
+        info: (message: string, ...args: unknown[]) => {
             logs.push({ level: LogLevel.INFO, message, timestamp: new Date() });
         },
-        warn: (message: string, ...args: any[]) => {
+        warn: (message: string, ...args: unknown[]) => {
             logs.push({ level: LogLevel.WARN, message, timestamp: new Date() });
         },
-        error: (message: string, error?: Error, ...args: any[]) => {
+        error: (message: string, error?: Error, ...args: unknown[]) => {
             logs.push({ level: LogLevel.ERROR, message, timestamp: new Date() });
         },
-        fatal: (message: string, error?: Error, ...args: any[]) => {
+        fatal: (message: string, error?: Error, ...args: unknown[]) => {
             logs.push({ level: LogLevel.FATAL, message, timestamp: new Date() });
         },
-        log: (level: LogLevel, message: string, ...args: any[]) => {
+        log: (level: LogLevel, message: string, ...args: unknown[]) => {
             logs.push({ level, message, timestamp: new Date() });
         },
         updateConfig: (config: Partial<ILoggerConfig>) => {
             // Mock implementation
         },
         getConfig: () => ({ ...DEFAULT_LOGGER_CONFIG, ...config }),
-        addTarget: (target: any) => {
+        addTarget: (target: unknown) => {
             // Mock implementation
         },
         removeTarget: (name: string) => {

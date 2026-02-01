@@ -43,7 +43,7 @@ export type ConfigurationChangeListener = (event: ConfigurationChangeEvent) => v
  * Configuration Watcher Implementation
  */
 export class ConfigurationWatcher {
-    private readonly watchers: Map<string, any> = new Map();
+    private readonly watchers: Map<string, unknown> = new Map();
     private readonly listeners: Map<string, ConfigurationChangeListener[]> = new Map();
     private readonly options: ConfigurationWatcherOptions;
     private isWatching = false;
@@ -80,7 +80,7 @@ export class ConfigurationWatcher {
                 return {
                     success: false,
                     error: {
-                        type: 'validation_error' as any,
+                        type: 'validation_error' as const,
                         message: 'Configuration watcher is already running',
                         code: 'WATCHER_ALREADY_RUNNING'
                     }
@@ -102,7 +102,7 @@ export class ConfigurationWatcher {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
+                    type: 'server_error' as const,
                     message: `Failed to start configuration watcher: ${error.message}`,
                     code: 'WATCHER_START_FAILED'
                 }
@@ -119,7 +119,7 @@ export class ConfigurationWatcher {
                 return {
                     success: false,
                     error: {
-                        type: 'validation_error' as any,
+                        type: 'validation_error' as const,
                         message: 'Configuration watcher is not running',
                         code: 'WATCHER_NOT_RUNNING'
                     }
@@ -148,7 +148,7 @@ export class ConfigurationWatcher {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
+                    type: 'server_error' as const,
                     message: `Failed to stop configuration watcher: ${error.message}`,
                     code: 'WATCHER_STOP_FAILED'
                 }
@@ -383,7 +383,7 @@ export class ConfigurationWatcher {
     /**
      * Creates a debounced function
      */
-    private debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+    private debounce<T extends (...args: unknown[]) => unknown>(func: T, wait: number): (...args: Parameters<T>) => void {
         let timeout: NodeJS.Timeout;
 
         return (...args: Parameters<T>) => {
@@ -401,7 +401,7 @@ export class ConfigurationWatcher {
 export class ConfigurationHotReloadManager {
     private readonly watcher: ConfigurationWatcher;
     private readonly config: IAuthConfig;
-    private readonly reloadHandlers: Map<string, (newConfig: any) => void> = new Map();
+    private readonly reloadHandlers: Map<string, (newConfig: unknown) => void> = new Map();
 
     constructor(config: IAuthConfig, options?: ConfigurationWatcherOptions) {
         this.config = config;
@@ -428,7 +428,7 @@ export class ConfigurationHotReloadManager {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
+                    type: 'server_error' as const,
                     message: `Failed to start hot reload: ${error.message}`,
                     code: 'HOT_RELOAD_START_FAILED'
                 }
@@ -446,7 +446,7 @@ export class ConfigurationHotReloadManager {
     /**
      * Adds a reload handler for a specific configuration type
      */
-    addReloadHandler(configType: string, handler: (newConfig: any) => void): void {
+    addReloadHandler(configType: string, handler: (newConfig: unknown) => void): void {
         this.reloadHandlers.set(configType, handler);
     }
 
@@ -531,7 +531,7 @@ export class ConfigurationHotReloadManager {
     /**
      * Updates the current configuration
      */
-    private updateConfiguration(newConfig: any): void {
+    private updateConfiguration(newConfig: unknown): void {
         // Merge with existing configuration
         Object.assign(this.config, newConfig);
 
@@ -554,7 +554,7 @@ export class ConfigurationHotReloadManager {
     /**
      * Notifies about configuration changes
      */
-    private notifyConfigurationChange(newConfig: any): void {
+    private notifyConfigurationChange(newConfig: unknown): void {
         // This could emit events or notify other parts of the system
         console.log('Configuration updated:', newConfig);
     }

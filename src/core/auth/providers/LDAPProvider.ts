@@ -89,7 +89,7 @@ interface LDAPAuthResult {
 export class LDAPAuthProvider implements IAuthProvider {
     readonly name = 'LDAP Provider';
     readonly type = AuthProviderType.LDAP;
-    readonly config: Record<string, any> = {
+    readonly config: Record<string, unknown> = {
         timeout: 30000,
         maxConnections: 10,
         useTLS: true,
@@ -100,7 +100,7 @@ export class LDAPAuthProvider implements IAuthProvider {
 
     private readonly providerConfigs: Map<string, LDAPProviderConfig> = new Map();
     private currentProvider?: string;
-    private readonly connectionPool: Map<string, any> = new Map();
+    private readonly connectionPool: Map<string, unknown> = new Map();
 
     constructor() {
         this.initializeProviderConfigs();
@@ -292,7 +292,7 @@ export class LDAPAuthProvider implements IAuthProvider {
     /**
      * Configures provider
      */
-    configure(config: Record<string, any>): void {
+    configure(config: Record<string, unknown>): void {
         Object.assign(this.config, config);
 
         // Update provider configurations if provided
@@ -510,7 +510,7 @@ export class LDAPAuthProvider implements IAuthProvider {
     /**
      * Gets LDAP connection from pool or creates new one
      */
-    private async getLDAPConnection(config: LDAPProviderConfig): Promise<any> {
+    private async getLDAPConnection(config: LDAPProviderConfig): Promise<unknown> {
         const connectionKey = `${config.url}:${config.port}`;
 
         if (this.connectionPool.has(connectionKey)) {
@@ -527,7 +527,7 @@ export class LDAPAuthProvider implements IAuthProvider {
     /**
      * Creates LDAP connection
      */
-    private async createLDAPConnection(config: LDAPProviderConfig): Promise<any> {
+    private async createLDAPConnection(config: LDAPProviderConfig): Promise<unknown> {
         // Simulate LDAP connection creation
         await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -541,7 +541,7 @@ export class LDAPAuthProvider implements IAuthProvider {
     /**
      * Binds to LDAP with credentials
      */
-    private async bindLDAP(connection: any, dn: string, password: string): Promise<boolean> {
+    private async bindLDAP(connection: unknown, dn: string, password: string): Promise<boolean> {
         try {
             // Simulate LDAP bind
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -562,11 +562,11 @@ export class LDAPAuthProvider implements IAuthProvider {
      * Searches LDAP directory
      */
     private async searchLDAP(
-        connection: any,
+        connection: unknown,
         baseDN: string,
         filter: string,
         attributes: string[]
-    ): Promise<{ success: boolean; entries: any[] }> {
+    ): Promise<{ success: boolean; entries: unknown[] }> {
         try {
             // Simulate LDAP search
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -605,7 +605,7 @@ export class LDAPAuthProvider implements IAuthProvider {
     /**
      * Closes LDAP connection
      */
-    private async closeLDAPConnection(connection: any): Promise<void> {
+    private async closeLDAPConnection(connection: unknown): Promise<void> {
         try {
             // Simulate connection close
             await new Promise(resolve => setTimeout(resolve, 10));
@@ -665,7 +665,7 @@ export class LDAPAuthProvider implements IAuthProvider {
                 provider,
                 userDN: userAttributes.dn,
                 groups
-            } as any
+            } as unknown
         };
     }
 

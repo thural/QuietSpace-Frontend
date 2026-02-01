@@ -9,6 +9,8 @@
  */
 
 import type { IAuthSecurityService } from '../interfaces/authInterfaces';
+import type { AuthEvent } from '../types/auth.domain.types';
+import { AuthEventType } from '../types/auth.domain.types';
 
 /**
  * Enterprise security service implementation
@@ -22,20 +24,22 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
     /**
      * Detects suspicious activity patterns
      */
-    detectSuspiciousActivity(events: any[]): any[] {
-        const suspiciousEvents = [];
+    detectSuspiciousActivity(events: AuthEvent[]): AuthEvent[] {
+        const suspiciousEvents: AuthEvent[] = [];
+        const typedEvents = events as Array<{ details?: { ipAddress?: string }; timestamp: Date }>;
 
         // Analyze patterns
-        for (const event of events) {
+        for (const event of typedEvents) {
             const ipAddress = event.details?.ipAddress;
 
             if (ipAddress) {
                 // Multiple failed attempts from same IP
-                const ipEvents = events.filter(e => e.details?.ipAddress === ipAddress);
+                const ipEvents = typedEvents.filter(e => e.details?.ipAddress === ipAddress);
                 if (ipEvents.length > 5) {
                     suspiciousEvents.push({
-                        type: 'multiple_failures' as any,
-                        details: { ip: ipAddress, count: ipEvents.length }
+                        type: AuthEventType.SECURITY,
+                        timestamp: new Date(),
+                        details: { ip: ipAddress, count: ipEvents.length, reason: 'multiple_failures' }
                     });
 
                     // Auto-block IP after multiple failures
@@ -46,16 +50,18 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
             // Rapid successive attempts
             const timeWindows = this.getTimeWindows(events);
             for (const window of timeWindows) {
-                const windowEvents = events.filter(e =>
+                const windowEvents = typedEvents.filter(e =>
                     e.timestamp >= window.start && e.timestamp <= window.end
                 );
 
                 if (windowEvents.length > 10) {
                     suspiciousEvents.push({
-                        type: 'rapid_attempts' as any,
+                        type: AuthEventType.SECURITY,
+                        timestamp: new Date(),
                         details: {
                             timeWindow: `${window.start.toISOString()} - ${window.end.toISOString()}`,
-                            count: windowEvents.length
+                            count: windowEvents.length,
+                            reason: 'rapid_attempts'
                         }
                     });
                 }
@@ -104,7 +110,7 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
     /**
      * Encrypts sensitive data
      */
-    encryptSensitiveData(data: any): string {
+    encryptSensitiveData(data: unknown): string {
         // Simple XOR encryption for demo (use proper encryption in production)
         const dataStr = JSON.stringify(data);
         let encrypted = '';
@@ -119,7 +125,7 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
     /**
      * Decrypts sensitive data
      */
-    decryptSensitiveData(encryptedData: string): any {
+    decryptSensitiveData(encryptedData: string): unknown {
         const decrypted = atob(encryptedData);
         return JSON.parse(decrypted);
     }
@@ -189,12 +195,13 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
     /**
      * Gets time windows for analysis
      */
-    private getTimeWindows(events: any[]): { start: Date; end: Date }[] {
+    private getTimeWindows(events: AuthEvent[]): { start: Date; end: Date }[] {
         const windows = [];
-        const sortedEvents = events.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+        const sortedEvents = events.sort((a: AuthEvent, b: AuthEvent) => a.timestamp.getTime() - b.timestamp.getTime());
 
         for (let i = 0; i < sortedEvents.length; i++) {
             const event = sortedEvents[i];
+            if (!event) continue;
             const windowStart = new Date(event.timestamp.getTime() - 5 * 60 * 1000);
             const windowEnd = new Date(event.timestamp.getTime() + 5 * 60 * 1000);
 

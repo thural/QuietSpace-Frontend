@@ -154,7 +154,7 @@ export function createAuthProvider(type: AuthProviderType, config?: Partial<IAut
  * @param config - Repository configuration
  * @returns Authentication repository
  */
-export function createAuthRepository(type: 'local' | 'remote' = 'local', config?: any): IAuthRepository {
+export function createAuthRepository(type: 'local' | 'remote' = 'local', config?: unknown): IAuthRepository {
     switch (type) {
         case 'local':
             return new LocalAuthRepository();
@@ -191,7 +191,7 @@ export function createAuthRepository(type: 'local' | 'remote' = 'local', config?
  * @param config - Logger configuration
  * @returns Authentication logger
  */
-export function createAuthLogger(type: 'console' | 'file' | 'remote' = 'console', config?: any): IAuthLogger {
+export function createAuthLogger(type: 'console' | 'file' | 'remote' = 'console', config?: unknown): IAuthLogger {
     switch (type) {
         case 'console':
             return new ConsoleAuthLogger();
@@ -213,7 +213,7 @@ export function createAuthLogger(type: 'console' | 'file' | 'remote' = 'console'
  * @param config - Metrics configuration
  * @returns Authentication metrics
  */
-export function createAuthMetrics(type: 'memory' | 'database' | 'remote' = 'memory', config?: any): IAuthMetrics {
+export function createAuthMetrics(type: 'memory' | 'database' | 'remote' = 'memory', config?: unknown): IAuthMetrics {
     switch (type) {
         case 'memory':
             return new InMemoryAuthMetrics();
@@ -234,7 +234,7 @@ export function createAuthMetrics(type: 'memory' | 'database' | 'remote' = 'memo
  * @param config - Security configuration
  * @returns Authentication security service
  */
-export function createAuthSecurityService(config?: any): IAuthSecurityService {
+export function createAuthSecurityService(config?: unknown): IAuthSecurityService {
     return new EnterpriseSecurityService();
 }
 
@@ -259,7 +259,7 @@ export function createMockAuthService(): EnterpriseAuthService {
  * @param plugin - Plugin implementation
  * @returns Authentication plugin
  */
-export function createAuthPlugin(name: string, plugin: any): any {
+export function createAuthPlugin(name: string, plugin: unknown): unknown {
     return {
         name,
         ...plugin
@@ -271,7 +271,7 @@ export function createAuthPlugin(name: string, plugin: any): any {
  *
  * @param plugin - Plugin to register
  */
-export function registerAuthPlugin(plugin: any): void {
+export function registerAuthPlugin(plugin: unknown): void {
     // In a real implementation, this would register the plugin
     console.log(`Registered auth plugin: ${plugin.name}`);
 }
@@ -282,7 +282,7 @@ export function registerAuthPlugin(plugin: any): void {
  * @param name - Plugin name
  * @returns Authentication plugin or undefined
  */
-export function getAuthPlugin(name: string): any | undefined {
+export function getAuthPlugin(name: string): unknown | undefined {
     // In a real implementation, this would return the registered plugin
     console.log(`Getting auth plugin: ${name}`);
     return undefined;

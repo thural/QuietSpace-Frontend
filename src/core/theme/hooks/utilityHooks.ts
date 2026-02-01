@@ -19,7 +19,7 @@ export const useResponsiveStyles = () => {
         getSpacing: (key: keyof typeof theme.spacing) => theme.spacing[key],
         getColor: (colorPath: string) => {
             const keys = colorPath.split('.');
-            return keys.reduce((obj: any, key) => obj?.[key], theme.colors);
+            return keys.reduce((obj: unknown, key) => (obj as Record<string, unknown>)?.[key], theme.colors);
         },
         getTypography: (key: keyof typeof theme.typography) => theme.typography[key],
         getBreakpoint: (key: keyof typeof theme.breakpoints) => theme.breakpoints[key]

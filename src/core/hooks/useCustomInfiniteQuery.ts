@@ -9,7 +9,7 @@ import { TYPES } from '@/core/di/types';
 /**
  * Infinite query page interface
  */
-export interface InfiniteQueryPage<T = any> {
+export interface InfiniteQueryPage<T = unknown> {
   data: T[];
   pageParam: number;
   hasNextPage: boolean;
@@ -21,7 +21,7 @@ export interface InfiniteQueryPage<T = any> {
 /**
  * Enterprise-grade infinite query options interface
  */
-export interface InfiniteQueryOptions<T = any> {
+export interface InfiniteQueryOptions<T = unknown> {
   enabled?: boolean;
   staleTime?: number;
   cacheTime?: number;
@@ -33,17 +33,17 @@ export interface InfiniteQueryOptions<T = any> {
   onSuccess?: (data: T[], allPages: InfiniteQueryPage<T>[]) => void;
   onError?: (error: Error) => void;
   onSettled?: (data: T[] | undefined, error: Error | null) => void;
-  select?: (data: any) => T;
+  select?: (data: unknown) => T;
   initialPageParam?: number;
-  getNextPageParam?: (lastPage: any, allPages: any[]) => number | undefined;
-  getPreviousPageParam?: (firstPage: any, allPages: any[]) => number | undefined;
+  getNextPageParam?: (lastPage: unknown, allPages: unknown[]) => number | undefined;
+  getPreviousPageParam?: (firstPage: unknown, allPages: unknown[]) => number | undefined;
   maxPages?: number;
 }
 
 /**
  * Infinite query state interface
  */
-export interface InfiniteQueryState<T = any> {
+export interface InfiniteQueryState<T = unknown> {
   data: T[];
   pages: InfiniteQueryPage<T>[];
   isLoading: boolean;
@@ -62,7 +62,7 @@ export interface InfiniteQueryState<T = any> {
 /**
  * Custom infinite query hook result interface
  */
-export interface CustomInfiniteQueryResult<T = any> extends InfiniteQueryState<T> {
+export interface CustomInfiniteQueryResult<T = unknown> extends InfiniteQueryState<T> {
   refetch: () => Promise<void>;
   fetchNextPage: () => Promise<void>;
   fetchPreviousPage: () => Promise<void>;

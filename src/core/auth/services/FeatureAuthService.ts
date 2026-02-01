@@ -35,7 +35,7 @@ export class FeatureAuthService {
      * Get current authentication data
      * @returns Authentication data object or null
      */
-    getAuthData(): { accessToken: string; user?: any } | null {
+    getAuthData(): { accessToken: string; user?: unknown } | null {
         const token = this.getToken();
         if (!token) return null;
 

@@ -8,10 +8,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-import { useChatWebSocket } from './useChatWebSocketHook';
-import { useFeatureWebSocket } from './useFeatureWebSocket';
-import { useFeedWebSocket } from './useFeedWebSocketHook';
-import { useNotificationWebSocket } from './useNotificationWebSocketHook';
+import { useEnterpriseWebSocket } from './useEnterpriseWebSocket';
 
 // Migration configuration
 export interface WebSocketMigrationConfig {
@@ -41,16 +38,28 @@ export interface WebSocketMigrationState {
 export interface MigrationEvent {
   timestamp: number;
   type: 'mode_switch' | 'fallback_triggered' | 'performance_comparison' | 'error';
-  data: any;
+  data: unknown;
   message: string;
+}
+
+// Performance comparison data interface
+interface PerformanceComparisonData {
+  improvement: number;
+  legacyLatency?: number;
+  enterpriseLatency?: number;
+}
+
+// Type guard for performance comparison data
+function isPerformanceComparisonData(data: unknown): data is PerformanceComparisonData {
+  return typeof data === 'object' && data !== null && 'improvement' in data;
 }
 
 // Legacy WebSocket interface (for backward compatibility)
 export interface LegacyWebSocket {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  sendMessage: (message: any) => Promise<void>;
-  subscribe: (callback: (message: any) => void) => () => void;
+  sendMessage: (message: unknown) => Promise<void>;
+  subscribe: (callback: (message: unknown) => void) => () => void;
   isConnected: boolean;
   isConnecting: boolean;
   error: string | null;
@@ -64,8 +73,8 @@ export interface UseWebSocketMigrationReturn {
   // WebSocket operations (unified interface)
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  sendMessage: (message: any) => Promise<void>;
-  subscribe: (callback: (message: any) => void) => () => void;
+  sendMessage: (message: unknown) => Promise<void>;
+  subscribe: (callback: (message: unknown) => void) => () => void;
 
   // State getters
   isConnected: boolean;
@@ -78,7 +87,7 @@ export interface UseWebSocketMigrationReturn {
   switchToHybrid: () => void;
 
   // Utilities
-  addMigrationEvent: (type: MigrationEvent['type'], data: any, message: string) => void;
+  addMigrationEvent: (type: MigrationEvent['type'], data: unknown, message: string) => void;
   clearMigrationEvents: () => void;
   getMigrationReport: () => MigrationReport;
 }
@@ -122,16 +131,8 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
 
   // Get appropriate hook based on feature
   const getEnterpriseHook = () => {
-    switch (feature) {
-      case 'chat':
-        return useChatWebSocket({ autoConnect: false });
-      case 'notification':
-        return useNotificationWebSocket({ autoConnect: false });
-      case 'feed':
-        return useFeedWebSocket({ autoConnect: false });
-      default:
-        throw new Error(`Unknown feature: ${feature}`);
-    }
+    // Use the unified enterprise WebSocket hook for all features
+    return useEnterpriseWebSocket({ autoConnect: false });
   };
 
   // Get legacy implementation (mock for now - would be actual legacy hook)
@@ -164,7 +165,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
   const legacyImpl = getLegacyImplementation();
 
   // Add migration event
-  const addMigrationEvent = useCallback((type: MigrationEvent['type'], data: any, message: string) => {
+  const addMigrationEvent = useCallback((type: MigrationEvent['type'], data: unknown, message: string) => {
     if (!logMigrationEvents) return;
 
     const event: MigrationEvent = {
@@ -237,7 +238,8 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
     try {
       if (state.isUsingEnterprise) {
         enterpriseStartTimeRef.current = Date.now();
-        await enterpriseHook.connect();
+        // Enterprise WebSocket requires a token - use mock token for migration
+        await enterpriseHook.connect('mock-migration-token');
 
         const latency = Date.now() - enterpriseStartTimeRef.current;
         setState(prev => ({
@@ -275,7 +277,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
         // Hybrid mode - try enterprise first
         try {
           enterpriseStartTimeRef.current = Date.now();
-          await enterpriseHook.connect();
+          await enterpriseHook.connect('mock-migration-token');
 
           const enterpriseLatency = Date.now() - enterpriseStartTimeRef.current;
 
@@ -342,11 +344,60 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
     }
   }, [state.isUsingEnterprise, state.isUsingLegacy, enterpriseHook, legacyImpl, addMigrationEvent]);
 
-  // Send message
-  const sendMessage = useCallback(async (message: any) => {
+  // Send message - using unified enterprise WebSocket interface
+  const sendMessage = useCallback(async (message: unknown) => {
     try {
       if (state.isUsingEnterprise) {
-        await enterpriseHook.sendMessage(message);
+        // Enterprise WebSocket uses unified sendMessage with WebSocketMessage format
+        // Convert feature-specific message to WebSocketMessage format
+        let webSocketMessage: unknown;
+
+        switch (feature) {
+          case 'chat':
+            // Convert chat message to WebSocketMessage
+            if (typeof message === 'object' && message !== null && 'chatId' in message && 'content' in message) {
+              webSocketMessage = {
+                type: 'chat_message',
+                feature: 'chat',
+                data: {
+                  chatId: message.chatId,
+                  content: message.content,
+                  type: (message as { type?: string }).type || 'text'
+                }
+              };
+            } else {
+              throw new Error('Chat sendMessage requires { chatId, content } object');
+            }
+            break;
+          case 'notification':
+            // Convert notification action to WebSocketMessage
+            if (typeof message === 'object' && message !== null && 'action' in message) {
+              webSocketMessage = {
+                type: 'notification_action',
+                feature: 'notification',
+                data: message
+              };
+            } else {
+              throw new Error('Notification sendMessage requires { action, ...data } object');
+            }
+            break;
+          case 'feed':
+            // Convert feed action to WebSocketMessage
+            if (typeof message === 'object' && message !== null && 'action' in message) {
+              webSocketMessage = {
+                type: 'feed_action',
+                feature: 'feed',
+                data: message
+              };
+            } else {
+              throw new Error('Feed sendMessage requires { action, ...data } object');
+            }
+            break;
+          default:
+            throw new Error(`Unknown feature: ${feature}`);
+        }
+
+        await enterpriseHook.sendMessage(webSocketMessage);
       } else if (state.isUsingLegacy) {
         await legacyImpl.sendMessage(message);
       }
@@ -354,13 +405,19 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
       addMigrationEvent('error', { error, message }, `Send message failed: ${error}`);
       throw error;
     }
-  }, [state.isUsingEnterprise, state.isUsingLegacy, enterpriseHook, legacyImpl, addMigrationEvent]);
+  }, [state.isUsingEnterprise, state.isUsingLegacy, enterpriseHook, legacyImpl, addMigrationEvent, feature]);
 
   // Subscribe
-  const subscribe = useCallback((callback: (message: any) => void) => {
+  const subscribe = useCallback((callback: (message: unknown) => void) => {
     try {
       if (state.isUsingEnterprise) {
-        return enterpriseHook.subscribe(callback);
+        // Enterprise WebSocket subscribe requires feature and listener
+        return enterpriseHook.subscribe(feature, {
+          onMessage: (message) => callback(message.payload),
+          onConnect: () => { },
+          onDisconnect: () => { },
+          onError: () => { }
+        });
       } else if (state.isUsingLegacy) {
         return legacyImpl.subscribe(callback);
       }
@@ -370,13 +427,15 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
     }
 
     // Should never reach here, but TypeScript needs this
-    return () => {};
-  }, [state.isUsingEnterprise, state.isUsingLegacy, enterpriseHook, legacyImpl, addMigrationEvent]);
+    return () => { };
+  }, [state.isUsingEnterprise, state.isUsingLegacy, enterpriseHook, legacyImpl, addMigrationEvent, feature]);
 
   // Get connection state
   const isConnected = state.isUsingEnterprise ? enterpriseHook.isConnected : legacyImpl.isConnected;
   const isConnecting = state.isUsingEnterprise ? enterpriseHook.isConnecting : legacyImpl.isConnecting;
-  const error = state.isUsingEnterprise ? enterpriseHook.error : legacyImpl.error;
+  const error = state.isUsingEnterprise
+    ? (enterpriseHook.error ? enterpriseHook.error.message : null)
+    : legacyImpl.error;
 
   // Clear migration events
   const clearMigrationEvents = useCallback(() => {
@@ -397,6 +456,18 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
     } else if (fallbackCount > 0) {
       recommendedMode = 'hybrid';
       issues.push('Some fallbacks occurred - consider hybrid approach');
+    }
+
+    // Analyze performance events for additional insights
+    if (performanceEvents.length > 0) {
+      const negativePerformanceEvents = performanceEvents.filter(e =>
+        isPerformanceComparisonData(e.data) && e.data.improvement < 0
+      ).length;
+
+      if (negativePerformanceEvents > performanceEvents.length / 2) {
+        recommendedMode = 'legacy';
+        issues.push('Majority of performance comparisons show degradation');
+      }
     }
 
     if (state.performance.improvement && state.performance.improvement < 0) {
@@ -457,13 +528,6 @@ export function useMultiFeatureMigration(features: ('chat' | 'notification' | 'f
     await Promise.all(migrations.map(migration => migration.disconnect()));
   }, [migrations]);
 
-  const getAllReports = useCallback(() => {
-    return migrations.map(migration => ({
-      feature: migration.state.mode,
-      report: migration.getMigrationReport()
-    }));
-  }, [migrations]);
-
   const switchAllToEnterprise = useCallback(() => {
     migrations.forEach(migration => migration.switchToEnterprise());
   }, [migrations]);
@@ -476,11 +540,8 @@ export function useMultiFeatureMigration(features: ('chat' | 'notification' | 'f
     migrations,
     connectAll,
     disconnectAll,
-    getAllReports,
     switchAllToEnterprise,
-    switchAllToLegacy,
-    isAnyUsingLegacy: migrations.some(m => m.state.isUsingLegacy),
-    isAllEnterprise: migrations.every(m => m.state.mode === 'enterprise')
+    switchAllToLegacy
   };
 }
 
