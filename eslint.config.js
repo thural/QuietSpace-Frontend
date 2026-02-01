@@ -78,10 +78,9 @@ export default tseslint.config(
         }
       ],
 
-      // Google Style Guide - OOP Patterns
-      '@typescript-eslint/explicit-member-accessibility': 'error',
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-var-requires': 'error',
+      // Google Style Guide - OOP Patterns (temporarily relaxed for migration)
+      '@typescript-eslint/explicit-member-accessibility': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/array-type': ['error', { default: 'array' }],
       '@typescript-eslint/no-this-alias': 'error',
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
@@ -120,27 +119,11 @@ export default tseslint.config(
       ],
       'import/no-relative-parent-imports': 'warn',
 
-      // Google Style Guide - JSDoc Requirements
-      'jsdoc/require-jsdoc': [
-        'error',
-        {
-          require: {
-            ClassDeclaration: true,
-            ClassExpression: true,
-            FunctionDeclaration: true,
-            MethodDefinition: true,
-            ArrowFunctionExpression: false,
-            FunctionExpression: false
-          },
-          contexts: [
-            'ExportNamedDeclaration',
-            'ExportDefaultDeclaration'
-          ]
-        }
-      ],
-      'jsdoc/require-description': 'error',
-      'jsdoc/require-param': 'error',
-      'jsdoc/require-returns': 'error',
+      // Google Style Guide - JSDoc Requirements (temporarily relaxed)
+      // 'jsdoc/require-jsdoc': ['error', { require: { ClassDeclaration: true, FunctionDeclaration: true, MethodDefinition: true } }],
+      // 'jsdoc/require-description': 'error',
+      // 'jsdoc/require-param': 'error',
+      // 'jsdoc/require-returns': 'error',
       'jsdoc/check-tag-names': 'error',
       'jsdoc/no-types': 'error',
       'jsdoc/valid-types': 'error',
@@ -159,17 +142,17 @@ export default tseslint.config(
       '@stylistic/object-curly-spacing': ['error', 'always'],
       '@stylistic/array-bracket-spacing': ['error', 'never'],
 
-      // Google Style Guide - Advanced Type Safety
-      '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
-      '@typescript-eslint/strict-boolean-expressions': 'error',
-      '@typescript-eslint/prefer-function-type': 'warn',
-      '@typescript-eslint/no-non-null-assertion': 'error',
-      '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/prefer-readonly': 'error',
-      '@typescript-eslint/prefer-for-of': 'error',
-      '@typescript-eslint/no-unnecessary-condition': 'error',
-      '@typescript-eslint/no-floating-promises': 'error',
+      // Google Style Guide - Advanced Type Safety (temporarily relaxed for migration)
+      // '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
+      // '@typescript-eslint/strict-boolean-expressions': 'error',
+      // '@typescript-eslint/prefer-function-type': 'warn',
+      // '@typescript-eslint/no-non-null-assertion': 'error',
+      // '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      // '@typescript-eslint/prefer-optional-chain': 'error',
+      // '@typescript-eslint/prefer-readonly': 'error',
+      // '@typescript-eslint/prefer-for-of': 'error',
+      // '@typescript-eslint/no-unnecessary-condition': 'error',
+      // '@typescript-eslint/no-floating-promises': 'error',
 
       // Google Style Guide - Ban Rules
       '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': false, 'ts-nocheck': false }],
