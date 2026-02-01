@@ -50,6 +50,21 @@ export { Loader } from './display/Loader';
 export { Image } from './display/Image';
 export { Badge } from './display/Badge';
 
+// Export feedback components
+export { default as LoadingSpinner } from './feedback/LoadingSpinner';
+export { default as ErrorMessage } from './feedback/ErrorMessage';
+
+// Export form components
+export { default as TwoFactorAuth } from './forms/TwoFactorAuth';
+
+// Export user components
+export { default as AuthStatus } from './user/AuthStatus';
+export { default as SecurityStatus } from './user/SecurityStatus';
+export { default as AuthenticatedActions } from './user/AuthenticatedActions';
+
+// Export utility components
+export { default as MigrationInfo } from './utility/MigrationInfo';
+
 // Theme integration - Clean API
 export type { Theme } from '@/app/theme';
 

@@ -76,7 +76,7 @@ export function createAuthorizationError(message?: string): ApiError {
 /**
  * Creates a validation error
  */
-export function createValidationError(details?: any): ApiError {
+export function createValidationError(details?: unknown): ApiError {
     return createApiError(
         ERROR_CODES.VALIDATION_ERROR,
         'Validation failed',
@@ -149,7 +149,7 @@ export function isServerError(status: number): boolean {
 /**
  * Gets error message from various error types
  */
-export function getErrorMessage(error: any): string {
+export function getErrorMessage(error: unknown): string {
     if (isApiError(error)) {
         return error.message;
     }
@@ -204,7 +204,7 @@ export function generateRequestId(): string {
 /**
  * Builds query string from parameters
  */
-export function buildQueryString(params: Record<string, any>): string {
+export function buildQueryString(params: Record<string, unknown>): string {
     const searchParams = new URLSearchParams();
 
     for (const [key, value] of Object.entries(params)) {

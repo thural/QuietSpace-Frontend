@@ -44,7 +44,7 @@ export interface ThemeConfig {
     name: string;
     variant?: string;
     colors?: Record<string, string>;
-    typography?: Record<string, any>;
+    typography?: Record<string, unknown>;
     spacing?: Record<string, string>;
     shadows?: Record<string, string>;
 }

@@ -84,7 +84,7 @@ export function createWebSocketService(config?: WebSocketConfig): IWebSocketServ
         send: async (message) => { },
         subscribe: (event, handler) => () => { },
         isConnected: () => false,
-        getState: () => 'disconnected' as any
+        getState: () => 'disconnected' as const
     };
 }
 
@@ -94,7 +94,7 @@ export function createWebSocketService(config?: WebSocketConfig): IWebSocketServ
  * @param config - Authentication configuration
  * @returns Authentication service instance
  */
-export function createAuthService(config?: any): IAuthService {
+export function createAuthService(config?: unknown): IAuthService {
     return createDefaultAuthService(config);
 }
 
@@ -122,7 +122,7 @@ export function createThemeService(config?: ThemeConfig): IThemeService {
  * @param config - Network configuration
  * @returns Network service instance
  */
-export function createNetworkService(config?: any): INetworkService {
+export function createNetworkService(config?: unknown): INetworkService {
     return createApiClient(config);
 }
 
@@ -187,7 +187,7 @@ function createMockWebSocketService(): IWebSocketService {
         send: async () => { },
         subscribe: () => () => { },
         isConnected: () => false,
-        getState: () => 'disconnected' as any
+        getState: () => 'disconnected' as const
     };
 }
 

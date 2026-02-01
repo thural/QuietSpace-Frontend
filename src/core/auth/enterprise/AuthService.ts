@@ -33,7 +33,7 @@ export class EnterpriseAuthService implements IAuthService {
     private readonly security: IAuthSecurityService;
     private readonly config: IAuthConfig;
     private readonly providers: Map<string, IAuthProvider> = new Map();
-    private readonly plugins: Map<string, any> = new Map();
+    private readonly plugins: Map<string, IAuthPlugin> = new Map();
     private readonly validators: Map<string, IAuthValidator> = new Map();
     private activeProvider?: string;
 

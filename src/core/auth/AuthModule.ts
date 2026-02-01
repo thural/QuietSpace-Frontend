@@ -9,9 +9,9 @@
  * - Multiple provider support
  */
 
-import { createAuthConfigLoader, loadAuthConfiguration } from './config/AuthConfigLoader';
+import { loadAuthConfiguration } from './config/AuthConfigLoader';
 import { DefaultAuthConfig } from './config/DefaultAuthConfig';
-import { EnvironmentAuthConfig, createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
+import { createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
 import { EnterpriseAuthService } from './enterprise/AuthService';
 import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
 import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
@@ -52,8 +52,11 @@ export class AuthModuleFactory {
     /**
      * Registers providers based on configuration
      */
-    private static async registerProvidersFromConfig(authService: EnterpriseAuthService, config: IAuthConfig): Promise<void> {
-        const allowedProviders = (config.get('allowedProviders')) || ['jwt'];
+    private static registerProvidersFromConfig(
+        authService: EnterpriseAuthService,
+        config: IAuthConfig
+    ): void {
+        const allowedProviders = (config.get<string[]>('allowedProviders')) || ['jwt'];
 
         // Always register JWT provider as fallback
         if (allowedProviders.includes('jwt')) {
@@ -93,7 +96,7 @@ export class AuthModuleFactory {
      * Registers providers based on configuration (synchronous version)
      */
     private static registerProvidersFromConfigSync(authService: EnterpriseAuthService, config: IAuthConfig): void {
-        const allowedProviders = (config.get('allowedProviders')) || ['jwt'];
+        const allowedProviders = (config.get<string[]>('allowedProviders')) || ['jwt'];
 
         // Always register JWT provider as fallback
         if (allowedProviders.includes('jwt')) {
@@ -184,10 +187,10 @@ export class AuthModuleFactory {
             );
 
             // Register providers based on configuration
-            await this.registerProvidersFromConfig(authService, config);
+            this.registerProvidersFromConfig(authService, config);
 
             return authService;
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Failed to create authentication service for environment:', error);
 
             // Fallback to default service
@@ -205,7 +208,7 @@ export class AuthModuleFactory {
         // Validate configuration
         const validation = config.validate();
         if (!validation.success) {
-            throw new Error(`Invalid environment configuration: ${validation.error?.message}`);
+            throw new Error(`Invalid environment configuration: ${validation.error?.message || 'Unknown validation error'}`);
         }
 
         const repository = new LocalAuthRepository();
@@ -253,7 +256,7 @@ export class AuthModuleFactory {
         );
 
         // Register providers based on configuration
-        await this.registerProvidersFromConfig(authService, config);
+        this.registerProvidersFromConfig(authService, config);
 
         return authService;
     }
@@ -397,12 +400,12 @@ export class AuthModuleFactory {
                 success: true,
                 data: undefined
             };
-        } catch (error) {
+        } catch (error: unknown) {
             return {
                 success: false,
                 error: {
                     type: 'server_error' as any,
-                    message: `Failed to register provider: ${error.message}`,
+                    message: `Failed to register provider: ${error instanceof Error ? error.message : String(error)}`,
                     code: 'PROVIDER_REGISTRATION_FAILED'
                 }
             };
@@ -424,75 +427,21 @@ export class AuthModuleFactory {
     }
 
     /**
-     * Unregisters a provider dynamically at runtime
-     */
-    static async unregisterProvider(
-        serviceId: string,
-        providerName: string,
-        migrateSessions: boolean = true
-    ): Promise<AuthResult<void>> {
-        try {
-            const authService = this.activeServices.get(serviceId);
-
-            if (!authService) {
-                return {
-                    success: false,
-                    error: {
-                        type: 'validation_error' as any,
-                        message: `Service ${serviceId} not found`,
-                        code: 'SERVICE_NOT_FOUND'
-                    }
-                };
-            }
-
-            const provider = this.providerRegistry.get(providerName);
-
-            if (!provider) {
-                return {
-                    success: false,
-                    error: {
-                        type: 'validation_error' as any,
-                        message: `Provider ${providerName} not found`,
-                        code: 'PROVIDER_NOT_FOUND'
-                    }
-                };
-            }
-
-            // Unregister provider
-            authService.unregisterProvider(provider);
-
-            // Remove from registry
-            this.providerRegistry.delete(providerName);
-
-            return {
-                success: true,
-                data: undefined
-            };
-        } catch (error) {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as any,
-                    message: `Failed to unregister provider: ${error.message}`,
-                    code: 'PROVIDER_UNREGISTRATION_FAILED'
+                    type: 'validation_error' as any,
+                    message: `Provider ${providerName} not found`,
+                    code: 'PROVIDER_NOT_FOUND'
                 }
             };
         }
-    }
 
-    /**
-     * Switches active provider for a service
-     */
-    static async switchProvider(
-        serviceId: string,
-        newProviderName: string,
-        migrateSessions: boolean = true
-    ): Promise<AuthResult<void>> {
-        try {
-            const authService = this.activeServices.get(serviceId);
+        // Unregister provider
+        authService.unregisterProvider(provider);
 
-            if (!authService) {
-                return {
+        // Remove from registry
+        this.providerRegistry.delete(providerName);
                     success: false,
                     error: {
                         type: 'validation_error' as any,
@@ -522,12 +471,12 @@ export class AuthModuleFactory {
                 success: true,
                 data: undefined
             };
-        } catch (error) {
+        } catch (error: unknown) {
             return {
                 success: false,
                 error: {
                     type: 'server_error' as any,
-                    message: `Failed to switch provider: ${error.message}`,
+                    message: `Failed to switch provider: ${error instanceof Error ? error.message : String(error)}`,
                     code: 'PROVIDER_SWITCH_FAILED'
                 }
             };

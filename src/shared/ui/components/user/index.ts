@@ -4,6 +4,9 @@
  * User profile and avatar components
  */
 
+export { default as AuthenticatedActions } from './AuthenticatedActions';
+export { default as AuthStatus } from './AuthStatus';
+export { default as SecurityStatus } from './SecurityStatus';
 export { default as UserAvatar } from './UserAvatar';
 export { default as UserAvatarPhoto } from './UserAvatarPhoto';
 export { default as UserCard } from './UserCard';

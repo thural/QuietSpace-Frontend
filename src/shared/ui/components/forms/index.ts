@@ -14,3 +14,4 @@ export { default as PassInput } from './PassInput';
 export { default as SwitchStyled } from './SwitchStyled';
 export { default as TextAreaStyled } from './TextAreaStyled';
 export { default as TextInputStyled } from './TextInputStyled';
+export { default as TwoFactorAuth } from './TwoFactorAuth';

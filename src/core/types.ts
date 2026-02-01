@@ -50,19 +50,19 @@ export interface IThemeService {
 }
 
 export interface ILoggerService {
-    debug(message: string, ...args: any[]): void;
-    info(message: string, ...args: any[]): void;
-    warn(message: string, ...args: any[]): void;
-    error(message: string, error?: Error, ...args: any[]): void;
+    debug(message: string, ...args: unknown[]): void;
+    info(message: string, ...args: unknown[]): void;
+    warn(message: string, ...args: unknown[]): void;
+    error(message: string, error?: Error, ...args: unknown[]): void;
     setLevel(level: LogLevel): void;
     getLevel(): LogLevel;
 }
 
 export interface INetworkService {
-    get<T>(url: string, config?: any): Promise<ApiResponse<T>>;
-    post<T>(url: string, data?: any, config?: any): Promise<ApiResponse<T>>;
-    put<T>(url: string, data?: any, config?: any): Promise<ApiResponse<T>>;
-    delete<T>(url: string, config?: any): Promise<ApiResponse<T>>;
+    get<T>(url: string, config?: unknown): Promise<ApiResponse<T>>;
+    post<T>(url: string, data?: unknown, config?: unknown): Promise<ApiResponse<T>>;
+    put<T>(url: string, data?: unknown, config?: unknown): Promise<ApiResponse<T>>;
+    delete<T>(url: string, config?: unknown): Promise<ApiResponse<T>>;
     setAuth(token: string): void;
     clearAuth(): void;
 }
@@ -86,7 +86,7 @@ export interface ICoreServices {
 }
 
 // Data Types
-export interface CacheEntry<T = any> {
+export interface CacheEntry<T = unknown> {
     key: string;
     value: T;
     timestamp: number;
@@ -111,7 +111,7 @@ export interface CacheConfig {
 
 export interface WebSocketMessage {
     type: string;
-    data: any;
+    data: unknown;
     timestamp: number;
     id?: string;
 }
@@ -164,28 +164,28 @@ export interface AuthSession {
     isActive: boolean;
 }
 
-export interface AuthResult<T = any> {
+export interface AuthResult<T = unknown> {
     success: boolean;
     data?: T;
     error?: {
         type: string;
         message: string;
         code?: string;
-        details?: Record<string, any>;
+        details?: Record<string, unknown>;
     };
 }
 
 export interface ThemeConfig {
     name: string;
     colors?: Record<string, string>;
-    typography?: Record<string, any>;
+    typography?: Record<string, unknown>;
     spacing?: Record<string, string>;
     shadows?: Record<string, string>;
 }
 
 export interface ThemeTokens {
     colors: Record<string, string>;
-    typography: Record<string, any>;
+    typography: Record<string, unknown>;
     spacing: Record<string, string>;
     shadows: Record<string, string>;
     breakpoints: Record<string, string>;
@@ -195,10 +195,10 @@ export interface ThemeTokens {
 export interface EnhancedTheme extends ThemeTokens {
     getSpacing: (key: string) => string;
     getColor: (path: string) => string;
-    getTypography: (key: string) => any;
+    getTypography: (key: string) => unknown;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
     data?: T;
     success: boolean;
     message?: string;
@@ -211,7 +211,7 @@ export interface ApiError {
     message: string;
     status?: number;
     code?: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
 }
 
 export enum LogLevel {
@@ -229,9 +229,9 @@ export interface IServiceConfig {
 }
 
 // DI Types
-export type ServiceIdentifier = string | symbol | (new (...args: any[]) => any);
-export type ServiceFactory<T> = (...args: any[]) => T;
-export type ServiceDescriptor<T = any> = {
+export type ServiceIdentifier = string | symbol | (new (...args: unknown[]) => unknown);
+export type ServiceFactory<T> = (...args: unknown[]) => T;
+export type ServiceDescriptor<T = unknown> = {
     identifier: ServiceIdentifier;
     factory: ServiceFactory<T>;
     singleton?: boolean;
@@ -243,14 +243,14 @@ export interface CoreConfig {
     cache?: CacheConfig;
     websocket?: WebSocketConfig;
     theme?: ThemeConfig;
-    network?: any;
+    network?: unknown;
     services?: IServiceConfig;
 }
 
 // Core System Events
 export interface CoreSystemEvent {
     type: string;
-    payload: any;
+    payload: unknown;
     timestamp: Date;
 }
 

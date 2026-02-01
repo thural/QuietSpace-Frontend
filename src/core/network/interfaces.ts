@@ -8,9 +8,9 @@
 export interface IApiClient {
     // HTTP Methods
     get<T>(url: string, config?: ApiConfig): Promise<ApiResponse<T>>;
-    post<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>>;
-    put<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>>;
-    patch<T>(url: string, data?: any, config?: ApiConfig): Promise<ApiResponse<T>>;
+    post<T>(url: string, data?: unknown, config?: ApiConfig): Promise<ApiResponse<T>>;
+    put<T>(url: string, data?: unknown, config?: ApiConfig): Promise<ApiResponse<T>>;
+    patch<T>(url: string, data?: unknown, config?: ApiConfig): Promise<ApiResponse<T>>;
     delete<T>(url: string, config?: ApiConfig): Promise<ApiResponse<T>>;
 
     // Authentication Management
@@ -50,7 +50,7 @@ export interface ApiResponse<T> {
 export interface ApiError {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
     timestamp: number;
     stack?: string;
 }
@@ -85,7 +85,7 @@ export interface InterceptorConfig {
 
 export type RequestInterceptor = (config: ApiConfig) => ApiConfig;
 
-export type ResponseInterceptor = (response: ApiResponse<any>) => ApiResponse<any>;
+export type ResponseInterceptor = (response: ApiResponse<unknown>) => ApiResponse<unknown>;
 
 export type ErrorInterceptor = (error: ApiError) => ApiError | Promise<ApiError>;
 
@@ -93,8 +93,8 @@ export interface ApiConfig {
     url?: string;
     method?: string;
     headers?: Record<string, string>;
-    params?: Record<string, any>;
-    data?: any;
+    params?: Record<string, unknown>;
+    data?: unknown;
     timeout?: number;
     signal?: AbortSignal;
 }
