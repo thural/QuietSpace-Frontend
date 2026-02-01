@@ -243,3 +243,6 @@ export function validateCoreConfig(config: unknown): string[] {
 
                 return mergedConfig;
             }
+        }
+    }
+}
