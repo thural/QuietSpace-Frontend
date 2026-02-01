@@ -8,7 +8,7 @@
 /**
  * Service identifier for type-safe dependency resolution
  */
-export type ServiceIdentifier<T = any> = string | symbol | (new (...args: any[]) => T);
+export type ServiceIdentifier<T = unknown> = string | symbol | (new (...args: unknown[]) => T);
 
 /**
  * Service lifetime options
@@ -32,7 +32,7 @@ export interface ServiceDescriptor {
 /**
  * Service factory function type
  */
-export type ServiceFactory<T = any> = (container: any) => T;
+export type ServiceFactory<T = unknown> = (container: unknown) => T;
 
 /**
  * Service registry interface

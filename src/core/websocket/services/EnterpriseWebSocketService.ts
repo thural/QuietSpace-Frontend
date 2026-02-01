@@ -15,9 +15,9 @@ export interface WebSocketMessage {
   id: string;
   type: string;
   feature: string;
-  payload: any;
+  payload: unknown;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface WebSocketConfig {
@@ -78,7 +78,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
   constructor(
     private readonly cache: FeatureCacheService,
-    private readonly authService: any,
+    private readonly authService: unknown,
     private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
@@ -346,16 +346,29 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
     }
   }
 
-  private notifyListeners(event: keyof WebSocketEventListener, data?: any): void {
+  private notifyListeners(event: keyof WebSocketEventListener, data?: CloseEvent | WebSocketMessage | Event | number): void {
     this.listeners.forEach(listeners => {
       listeners.forEach(listener => {
-        const handler = listener[event];
-        if (handler) {
-          try {
-            handler(data);
-          } catch (error) {
-            this.logger.error(`[WebSocket] Error in ${event} handler:`, error);
+        try {
+          switch (event) {
+            case 'onConnect':
+              if (listener.onConnect) listener.onConnect();
+              break;
+            case 'onDisconnect':
+              if (listener.onDisconnect && data instanceof CloseEvent) listener.onDisconnect(data);
+              break;
+            case 'onMessage':
+              if (listener.onMessage && data && typeof data === 'object' && 'id' in data) listener.onMessage(data as WebSocketMessage);
+              break;
+            case 'onError':
+              if (listener.onError && data instanceof Event) listener.onError(data);
+              break;
+            case 'onReconnect':
+              if (listener.onReconnect && typeof data === 'number') listener.onReconnect(data);
+              break;
           }
+        } catch (error) {
+          this.logger.error(`[WebSocket] Error in ${event} handler:`, error);
         }
       });
     });

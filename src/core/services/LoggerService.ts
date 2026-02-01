@@ -1,4 +1,4 @@
-import { LogLevel, type ILoggerService } from './interfaces';
+import { LogLevel, type ILoggerService, type ILoggerConfig, type ILoggerMetrics, type ILoggerHealthStatus } from './interfaces';
 
 /**
  * Legacy Logger Service Implementation
@@ -12,80 +12,93 @@ export class LoggerService implements ILoggerService {
     /**
      * Logs informational messages
      */
-    info(message: string, ...args: any[]): void {
+    info(message: string, ...args: unknown[]): void {
         console.info(`${this._prefix} ${message}`, ...args);
     }
 
     /**
      * Logs debug messages
      */
-    debug(message: string, ...args: any[]): void {
+    debug(message: string, ...args: unknown[]): void {
         console.debug(`${this._prefix} ${message}`, ...args);
     }
 
     /**
      * Logs error messages
      */
-    error(message: string, ...args: any[]): void {
-        console.error(`${this._prefix} ${message}`, ...args);
+    error(message: string, error?: Error, ...args: unknown[]): void {
+        console.error(`${this._prefix} ${message}`, error, ...args);
     }
 
     /**
      * Logs warning messages
      */
-    warn(message: string, ...args: any[]): void {
+    warn(message: string, ...args: unknown[]): void {
         console.warn(`${this._prefix} ${message}`, ...args);
     }
 
     /**
      * Logs fatal error messages
      */
-    fatal(message: string, ...args: any[]): void {
-        console.error(`${this._prefix} FATAL: ${message}`, ...args);
+    fatal(message: string, error?: Error, ...args: unknown[]): void {
+        console.error(`${this._prefix} FATAL: ${message}`, error, ...args);
     }
 
     /**
      * Logs message with custom level
      */
-    log(level: LogLevel, message: string, ...args: any[]): void {
+    log(level: LogLevel, message: string, ...args: unknown[]): void {
         console.log(`${this._prefix} [${level}] ${message}`, ...args);
     }
 
     /**
      * Update logger configuration
      */
-    updateConfig(config: any): void {
+    updateConfig(config: Partial<ILoggerConfig>): void {
         // Legacy implementation - no-op
     }
 
     /**
      * Get current configuration
      */
-    getConfig(): any {
+    getConfig(): ILoggerConfig {
         return { prefix: this._prefix };
     }
 
     /**
      * Add logging target
      */
-    addTarget(target: any): void {
+    addTarget(_target: unknown): void {
+        // Legacy implementation - no-op
+    }
+
+    /**
+     * Add logging target
+     */
+    setTarget(target: unknown): void {
         // Legacy implementation - no-op
     }
 
     /**
      * Remove logging target
      */
-    removeTarget(name: string): void {
+    removeTarget(_name: string): void {
         // Legacy implementation - no-op
     }
 
     /**
      * Get logger metrics
      */
-    getMetrics(): any {
+    getMetrics(): ILoggerMetrics {
         return {
             totalLogs: 0,
-            logsByLevel: {},
+            logsByLevel: {
+                [LogLevel.DEBUG]: 0,
+                [LogLevel.INFO]: 0,
+                [LogLevel.WARN]: 0,
+                [LogLevel.ERROR]: 0,
+                [LogLevel.FATAL]: 0
+            },
             logsPerMinute: 0,
             errorCount: 0
         };
@@ -94,7 +107,7 @@ export class LoggerService implements ILoggerService {
     /**
      * Get logger health status
      */
-    getHealth(): any {
+    getHealth(): ILoggerHealthStatus {
         return {
             status: 'healthy',
             lastCheck: new Date(),
@@ -107,23 +120,23 @@ export class LoggerService implements ILoggerService {
     /**
      * Create child logger with custom prefix
      */
-    createChild(prefix: string, config?: any): ILoggerService {
+    createChild(prefix: string, _config?: Partial<ILoggerConfig>): ILoggerService {
         const child = new LoggerService();
-        (child as any)._prefix = `${this._prefix} ${prefix}`;
+        (child as any)._prefix = `${this._prefix}`;
         return child;
     }
 
     /**
      * Check if a log level is enabled
      */
-    isLevelEnabled(level: LogLevel): boolean {
+    isLevelEnabled(_level: LogLevel): boolean {
         return true; // Legacy implementation - always enabled
     }
 
     /**
      * Set log level
      */
-    setLevel(level: LogLevel): void {
+    setLevel(_level: LogLevel): void {
         // Legacy implementation - no-op
     }
 

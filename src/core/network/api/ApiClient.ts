@@ -38,7 +38,7 @@ export class ApiClient implements IApiClient {
     private config: IApiClientConfig;
     private readonly interceptors: {
         request: ((config: ApiConfig) => ApiConfig)[];
-        response: ((response: ApiResponse<any>) => ApiResponse<any>)[];
+        response: ((response: ApiResponse<unknown>) => ApiResponse<unknown>)[];
         error: ((error: ApiError) => ApiError | Promise<ApiError>)[];
     };
 

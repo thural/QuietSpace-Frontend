@@ -1,4 +1,3 @@
-import { Injectable } from '../di';
 
 export interface CacheEntry<T> {
   data: T;
@@ -26,15 +25,14 @@ export interface CacheStats {
 }
 
 export interface CacheEvents {
-  onHit?: (key: string, data: any) => void;
+  onHit?: (key: string, data: unknown) => void;
   onMiss?: (key: string) => void;
-  onEvict?: (key: string, data: any) => void;
+  onEvict?: (key: string, data: unknown) => void;
   onError?: (error: Error, operation: string, key?: string) => void;
 }
 
-@Injectable()
 export class CacheProvider {
-  private readonly cache = new Map<string, CacheEntry<any>>();
+  private readonly cache = new Map<string, CacheEntry<unknown>>();
   private hits = 0;
   private misses = 0;
   private evictions = 0;

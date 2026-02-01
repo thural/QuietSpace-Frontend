@@ -1,15 +1,14 @@
-import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/base/BaseClassComponent";
 import { Container } from "@/shared/ui/components/layout/Container";
 import { Text } from "@/shared/ui/components/typography/Text";
 import { Title } from "@/shared/ui/components/typography/Title";
-import { AuthContainer as StyledAuthContainer, FormContainer } from "@auth/presentation/styles/AuthStyles";
-import { useLocation } from "react-router-dom";
+import { AuthContainer as StyledAuthContainer } from "@auth/presentation/styles/AuthStyles";
+import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import { ReactNode } from "react";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
 import { SecurityMonitor } from "./SecurityMonitor";
-import { ReactNode } from "react";
-import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/base/BaseClassComponent";
+import SignupForm from "./SignupForm";
 
 /**
  * Props for AuthContainer component

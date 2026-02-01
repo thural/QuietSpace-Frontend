@@ -9,7 +9,7 @@ export interface FeatureCacheService {
   getCache(featureName: string): CacheProvider;
   invalidateFeature(featureName: string): void;
   invalidatePattern(pattern: string): number;
-  getGlobalStats(): Record<string, any>;
+  getGlobalStats(): Record<string, unknown>;
   dispose(): void;
 }
 
@@ -29,9 +29,9 @@ export class CacheServiceManager implements FeatureCacheService {
       };
 
       const events: CacheEvents = {
-        onHit: (key, data) => console.debug(`[${featureName}] Cache hit: ${key}`),
+        onHit: (key) => console.debug(`[${featureName}] Cache hit: ${key}`),
         onMiss: (key) => console.debug(`[${featureName}] Cache miss: ${key}`),
-        onEvict: (key, data) => console.debug(`[${featureName}] Cache evict: ${key}`),
+        onEvict: (key) => console.debug(`[${featureName}] Cache evict: ${key}`),
         onError: (error, operation, key) => console.error(`[${featureName}] Cache error: ${operation}`, error, key)
       };
 
@@ -57,14 +57,14 @@ export class CacheServiceManager implements FeatureCacheService {
     return totalInvalidated;
   }
 
-  getGlobalStats(): Record<string, any> {
-    const stats: Record<string, any> = {
+  getGlobalStats(): Record<string, unknown> {
+    const stats: Record<string, unknown> = {
       totalCaches: this.caches.size,
       features: {}
     };
 
     for (const [featureName, cache] of this.caches) {
-      stats.features[featureName] = cache.getStats();
+      (stats.features as Record<string, unknown>)[featureName] = cache.getStats();
     }
 
     return stats;
