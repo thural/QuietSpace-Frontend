@@ -6,14 +6,14 @@
  */
 
 // Mock React Query hooks for testing
-const mockUseQuery = (options: any) => ({
+const mockUseQuery = (options: unknown) => ({
     data: [],
     isLoading: false,
     error: null,
     refetch: jest.fn()
 });
 
-const mockUseMutation = (options: any) => ({
+const mockUseMutation = (options: unknown) => ({
     mutate: jest.fn(),
     isLoading: false,
     error: null,
@@ -101,7 +101,7 @@ export const useSendMessage = () => {
 
             return newMessage;
         },
-        onSuccess: (data: any, variables: any) => {
+        onSuccess: (data: unknown, variables: unknown) => {
             // Invalidate and refetch
             queryClient.invalidateQueries({ queryKey: ['chatMessages', variables.roomId] });
         }

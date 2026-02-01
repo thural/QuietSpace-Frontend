@@ -30,7 +30,7 @@ export function useWebSocketCacheUpdater(
   const cache = container.getByToken<ICacheProvider>(TYPES.CACHE_SERVICE);
   const webSocket = container.getByToken<IWebSocketService>(TYPES.WEBSOCKET_SERVICE);
 
-  const updateCache = useCallback((message: any) => {
+  const updateCache = useCallback((message: unknown) => {
     const { queryKey, updateStrategy, messageProperty, mergeKey } = config;
 
     // Extract data from message if property specified
@@ -44,7 +44,7 @@ export function useWebSocketCacheUpdater(
     const currentEntry = cache.getEntry(queryKey);
     const currentData = currentEntry?.data;
 
-    let updatedData: any;
+    let updatedData: unknown;
 
     switch (updateStrategy) {
       case 'replace':
@@ -54,9 +54,11 @@ export function useWebSocketCacheUpdater(
       case 'merge':
         if (Array.isArray(currentData) && mergeKey) {
           // Merge array items by key
-          updatedData = currentData.map((item: any) =>
-            item[mergeKey] === newData[mergeKey] ? { ...item, ...newData } : item
-          );
+          updatedData = currentData.map((item: unknown) => {
+            const typedItem = item as Record<string, unknown>;
+            const typedNewData = newData as Record<string, unknown>;
+            return typedItem[mergeKey] === typedNewData[mergeKey] ? { ...typedItem, ...typedNewData } : item;
+          });
         } else if (typeof currentData === 'object' && typeof newData === 'object') {
           // Merge objects
           updatedData = { ...currentData, ...newData };
@@ -117,8 +119,13 @@ export function useWebSocketCacheUpdater(
 /**
  * Helper function to get nested property from object
  */
-function getNestedProperty(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
+function getNestedProperty(obj: unknown, path: string): unknown {
+  return path.split('.').reduce((current: unknown, key: string) => {
+    if (current && typeof current === 'object') {
+      return (current as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, obj);
 }
 
 /**

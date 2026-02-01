@@ -48,7 +48,7 @@ export const CACHE_TIME_MAPPINGS = {
 /**
  * React Query key to custom cache key converter
  */
-export function convertQueryKeyToCacheKey(queryKey: any[]): string {
+export function convertQueryKeyToCacheKey(queryKey: unknown[]): string {
   return queryKey.join(':');
 }
 
@@ -173,14 +173,14 @@ export function useCacheInvalidation(): CacheInvalidationHelper {
 /**
  * React Query to Custom Query options converter
  */
-export function convertReactQueryOptions<T = any>(
-  reactQueryOptions: any
+export function convertReactQueryOptions<T = unknown>(
+  reactQueryOptions: unknown
 ): {
   query?: import('./useCustomQuery').QueryOptions<T>;
   mutation?: import('./useCustomMutation').MutationOptions<T>;
   infiniteQuery?: import('./useCustomInfiniteQuery').InfiniteQueryOptions<T>;
 } {
-  const converted: any = {};
+  const converted: Record<string, unknown> = {};
 
   // Common options
   if (reactQueryOptions.enabled !== undefined) {
