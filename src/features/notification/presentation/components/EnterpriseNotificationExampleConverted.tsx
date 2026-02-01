@@ -81,7 +81,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
   private notificationTimer: number | null = null;
 
   protected override getInitialState(): Partial<IEnterpriseNotificationExampleState> {
-    const { 
+    const {
       realTimeLevel = 'enhanced',
       pushNotificationLevel = 'basic'
     } = this.props;
@@ -152,7 +152,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
     const { enableMigrationMode = false } = this.props;
 
     // Use either migration hook or direct enterprise hook
-    const notificationData = enableMigrationMode 
+    const notificationData = enableMigrationMode
       ? this.useNotificationMigrationClass()
       : this.useEnterpriseNotificationsClass();
 
@@ -274,8 +274,8 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
         errorRate: Math.random() * 0.05 // 0-5%
       };
 
-      this.safeSetState({ 
-        notifications, 
+      this.safeSetState({
+        notifications,
         isLoading: false,
         metrics,
         lastUpdate: new Date()
@@ -318,9 +318,9 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
       const updatedNotifications = prev.notifications.map(notification =>
         notification.id === id ? { ...notification, read: true } : notification
       );
-      
+
       const unreadCount = updatedNotifications.filter(n => !n.read).length;
-      
+
       return {
         notifications: updatedNotifications,
         metrics: prev.metrics ? {
@@ -353,17 +353,17 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
     this.safeSetState(prev => {
       const updatedNotifications = prev.notifications.filter(n => n.id !== id);
       const deletedNotification = prev.notifications.find(n => n.id === id);
-      
+
       return {
         notifications: updatedNotifications,
         metrics: prev.metrics ? {
           ...prev.metrics,
           totalNotifications: updatedNotifications.length,
-          unreadCount: deletedNotification && !deletedNotification.read 
-            ? prev.metrics.unreadCount - 1 
+          unreadCount: deletedNotification && !deletedNotification.read
+            ? prev.metrics.unreadCount - 1
             : prev.metrics.unreadCount,
-          readCount: deletedNotification && deletedNotification.read 
-            ? prev.metrics.readCount - 1 
+          readCount: deletedNotification && deletedNotification.read
+            ? prev.metrics.readCount - 1
             : prev.metrics.readCount
         } : null
       };
@@ -399,7 +399,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
    */
   private handleRealTimeLevelChange = (level: 'basic' | 'enhanced' | 'maximum'): void => {
     this.safeSetState({ realTimeLevel: level });
-    
+
     // Restart timer with new interval
     this.cleanupNotifications();
     this.startRealTimeUpdates();
@@ -418,7 +418,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
   private toggleRealTimeUpdates = (): void => {
     const newEnabled = !this.state.isRealTimeEnabled;
     this.safeSetState({ isRealTimeEnabled: newEnabled });
-    
+
     if (newEnabled) {
       this.startRealTimeUpdates();
     } else {
@@ -462,6 +462,27 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
       error: '❌'
     };
 
+    // Map NotificationType enum values to icon types
+    const getNotificationIcon = (type: NotificationType): string => {
+      switch (type) {
+        case 'FOLLOW_REQUEST':
+          return typeIcons.info;
+        case 'POST_REACTION':
+          return typeIcons.success;
+        case 'MENTION':
+          return typeIcons.info;
+        case 'COMMENT':
+        case 'COMMENT_REPLY':
+          return typeIcons.info;
+        case 'COMMENT_REACTION':
+          return typeIcons.success;
+        case 'REPOST':
+          return typeIcons.success;
+        default:
+          return typeIcons.info;
+      }
+    };
+
     return (
       <div
         key={notification.id}
@@ -470,7 +491,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-1">
-              <span className="text-lg">{typeIcons[notification.type]}</span>
+              <span className="text-lg">{getNotificationIcon(notification.type)}</span>
               <h4 className="font-medium">{notification.title}</h4>
               {!notification.read && (
                 <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded">New</span>
@@ -516,7 +537,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
     return (
       <div className="bg-white p-6 rounded-lg shadow mb-6">
         <h3 className="text-lg font-medium mb-4">Notification Controls</h3>
-        
+
         <div className="space-y-4">
           {/* Real-time Level */}
           <div>
@@ -533,7 +554,7 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
               <option value="maximum">Maximum - 5 seconds</option>
             </select>
           </div>
-          
+
           {/* Push Notifications */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -549,32 +570,31 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
               <option value="enhanced">Enhanced - Desktop + Mobile</option>
             </select>
           </div>
-          
+
           {/* Toggle Buttons */}
           <div className="flex space-x-4">
             <button
               onClick={this.toggleRealTimeUpdates}
-              className={`px-4 py-2 rounded-md ${
-                isRealTimeEnabled ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'
-              }`}
+              className={`px-4 py-2 rounded-md ${isRealTimeEnabled ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'
+                }`}
             >
               {isRealTimeEnabled ? 'Real-time ON' : 'Real-time OFF'}
             </button>
-            
+
             <button
               onClick={this.refreshNotifications}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
               Refresh
             </button>
-            
+
             <button
               onClick={this.markAllAsRead}
               className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
             >
               Mark All Read
             </button>
-            
+
             <button
               onClick={this.clearAllNotifications}
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
@@ -681,11 +701,10 @@ export class EnterpriseNotificationExample extends BaseClassComponent<IEnterpris
                 <button
                   key={filter}
                   onClick={() => this.handleFilterChange(filter)}
-                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                    selectedFilter === filter
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${selectedFilter === filter
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
                 >
                   {filter.charAt(0).toUpperCase() + filter.slice(1).replace('-', ' ')}
                 </button>
