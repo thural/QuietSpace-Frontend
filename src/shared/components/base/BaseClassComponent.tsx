@@ -152,11 +152,7 @@ export abstract class BaseClassComponent<
     // Cleanup timers
     this.timers.forEach(timer => {
       try {
-        if (typeof timer === 'number') {
-          clearTimeout(timer);
-        } else {
-          clearTimeout(timer as number);
-        }
+        clearTimeout(timer);
       } catch (error) {
         console.error('Error cleaning up timer:', error);
       }
@@ -257,7 +253,7 @@ export abstract class QueryClassComponent<
   protected queryCache: any;
   protected performanceMonitor: any;
 
-  protected getInitialState(): Partial<S> {
+  protected override getInitialState(): Partial<S> {
     return {
       ...super.getInitialState(),
       queryState: {
@@ -269,7 +265,7 @@ export abstract class QueryClassComponent<
     } as Partial<S>;
   }
 
-  protected onMount(): void {
+  protected override onMount(): void {
     super.onMount();
     this.initializeQuerySystem();
   }
@@ -321,7 +317,7 @@ export abstract class QueryClassComponent<
   /**
    * Subscribe to query changes
    */
-  protected subscribeToQuery(queryKey: string | string[], callback: (data: any) => void): () => void | null {
+  protected subscribeToQuery(queryKey: string | string[], callback: (data: any) => void): (() => void) | null {
     if (!this.queryCache) return null;
 
     const key = Array.isArray(queryKey) ? queryKey.join(':') : queryKey;
@@ -351,7 +347,7 @@ export abstract class QueryClassComponent<
           error: null,
           data: null
         }
-      } as unknown as Partial<S>);
+      } as unknown as Pick<S, keyof S>);
 
       // Check cache first
       if (options?.cache !== false) {
@@ -364,7 +360,7 @@ export abstract class QueryClassComponent<
               error: null,
               data: cached
             }
-          } as unknown as Partial<S>);
+          } as unknown as Pick<S, keyof S>);
 
           this.performanceMonitor.endQuery(trackingId, true, undefined, 'cache_hit');
           return cached;
@@ -389,7 +385,7 @@ export abstract class QueryClassComponent<
           error: null,
           data: result
         }
-      } as unknown as Partial<S>);
+      } as unknown as Pick<S, keyof S>);
 
       this.performanceMonitor.endQuery(trackingId, true);
       return result;
@@ -404,7 +400,7 @@ export abstract class QueryClassComponent<
           error: errorObj,
           data: null
         }
-      } as unknown as Partial<S>);
+      } as unknown as Pick<S, keyof S>);
 
       this.performanceMonitor.endQuery(trackingId, false, errorObj);
       throw errorObj;
