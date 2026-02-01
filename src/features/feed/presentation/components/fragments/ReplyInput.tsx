@@ -3,7 +3,7 @@ import Conditional from "@/shared/Conditional";
 import EmojiInput from "@/shared/EmojiInput";
 import FlexStyled from "@/shared/FlexStyled";
 import FormStyled from "@/shared/FormStyled";
-import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
+import { UserProfileAvatarWithData } from "@/shared/ui/components/user";
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { RefObject } from "react";
@@ -60,7 +60,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
     return (
         <FlexStyled onClick={(e: Event) => e.stopPropagation()} style={{ alignItems: 'center' }}>
             <Conditional isEnabled={isWithAvatar}>
-                <UserAvatarPhoto size="2rem" userId={userId} />
+                <UserProfileAvatarWithData size="sm" userId={userId} />
             </Conditional>
             <FormStyled style={{ width: "100%" }}>
                 <EmojiInput
