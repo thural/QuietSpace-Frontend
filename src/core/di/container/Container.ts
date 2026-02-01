@@ -6,11 +6,7 @@
  */
 
 import { getConstructorDependencies, getInjectableMetadata } from '../decorators/Injectable';
-
-// Import ServiceLifetime as value, not type
 import { ServiceLifetime } from '../registry/ServiceRegistry';
-
-
 import { ServiceContainer } from './ServiceContainer';
 
 import type { ServiceIdentifier } from '../registry/ServiceRegistry';
@@ -21,7 +17,7 @@ import type { TypeKeys } from '../types';
  */
 export class Container {
   private readonly container = new ServiceContainer();
-  private readonly autoRegistered = new Set<any>();
+  private readonly autoRegistered = new Set<new (...args: unknown[]) => unknown>();
 
   /**
    * Create new container instance
@@ -33,7 +29,7 @@ export class Container {
   /**
    * Create factory function for service instantiation
    */
-  private createFactory<T>(serviceClass: new (...args: any[]) => T) {
+  private createFactory<T>(serviceClass: new (...args: unknown[]) => T) {
     // Get injectable metadata
     const metadata = getInjectableMetadata(serviceClass);
 
@@ -41,18 +37,18 @@ export class Container {
     const dependencies = getConstructorDependencies(serviceClass);
 
     // Create factory function
-    const factory = (container: any) => {
+    const factory = (container: ServiceContainer) => {
       // Resolve dependencies
       const resolvedDependencies = dependencies.map(dep => {
         if (typeof dep === 'string' || typeof dep === 'symbol') {
-          return container.get(dep);
+          return container.get(dep as ServiceIdentifier);
         }
         // For constructor dependencies, resolve from container
-        return container.get(dep);
+        return container.get(dep as ServiceIdentifier);
       });
 
       // Create instance with dependencies
-      return new serviceClass(...(resolvedDependencies));
+      return new serviceClass(...resolvedDependencies);
     };
 
     return { factory, dependencies, metadata };
@@ -61,12 +57,12 @@ export class Container {
   /**
    * Register a service class with automatic dependency resolution
    */
-  register<T>(serviceClass: new (...args: any[]) => T, options?: { lifetime?: ServiceLifetime }): void {
+  register<T>(serviceClass: new (...args: unknown[]) => T, options?: { lifetime?: ServiceLifetime }): void {
     const { factory, dependencies, metadata } = this.createFactory(serviceClass);
 
     // Register with container
     this.container.register(serviceClass, factory, {
-      lifetime: options?.lifetime || metadata.lifetime || ServiceLifetime.Transient,
+      lifetime: options?.lifetime || (metadata?.lifetime) || ServiceLifetime.Transient,
       dependencies
     });
 
@@ -76,14 +72,14 @@ export class Container {
   /**
    * Register a singleton service
    */
-  registerSingleton<T>(serviceClass: new (...args: any[]) => T): void {
+  registerSingleton<T>(serviceClass: new (...args: unknown[]) => T): void {
     this.register(serviceClass, { lifetime: ServiceLifetime.Singleton });
   }
 
   /**
    * Register a scoped service
    */
-  registerScoped<T>(serviceClass: new (...args: any[]) => T): void {
+  registerScoped<T>(serviceClass: new (...args: unknown[]) => T): void {
     this.register(serviceClass, { lifetime: ServiceLifetime.Scoped });
   }
 
@@ -97,7 +93,7 @@ export class Container {
   /**
    * Register a singleton service by string token with type safety
    */
-  registerSingletonByToken<T>(token: TypeKeys, serviceClass: new (...args: any[]) => T): void {
+  registerSingletonByToken<T>(token: TypeKeys, serviceClass: new (...args: unknown[]) => T): void {
     const { factory, dependencies, metadata } = this.createFactory(serviceClass);
 
     // Register with container as singleton using token
@@ -107,7 +103,7 @@ export class Container {
     });
 
     // Log warning if metadata suggests different lifetime than singleton
-    if (metadata.lifetime && metadata.lifetime !== 'singleton') {
+    if (metadata?.lifetime && metadata.lifetime !== 'singleton') {
       console.warn(`Service ${serviceClass.name} has metadata lifetime '${metadata.lifetime}' but is being registered as singleton via registerSingletonByToken`);
     }
   }
@@ -115,7 +111,7 @@ export class Container {
   /**
    * Register a transient service by string token with type safety
    */
-  registerTransientByToken<T>(token: TypeKeys, serviceClass: new (...args: any[]) => T): void {
+  registerTransientByToken<T>(token: TypeKeys, serviceClass: new (...args: unknown[]) => T): void {
     const { factory, dependencies, metadata } = this.createFactory(serviceClass);
 
     // Register with container as transient using token
@@ -125,7 +121,7 @@ export class Container {
     });
 
     // Log warning if metadata suggests different lifetime than transient
-    if (metadata.lifetime && metadata.lifetime !== 'transient') {
+    if (metadata?.lifetime && metadata.lifetime !== 'transient') {
       console.warn(`Service ${serviceClass.name} has metadata lifetime '${metadata.lifetime}' but is being registered as transient via registerTransientByToken`);
     }
   }
@@ -193,10 +189,10 @@ export class Container {
     // Copy parent's singletons to child
     const dependencyGraph = scopedContainer.getStats().dependencyGraph || {};
     for (const [identifier, descriptor] of Object.entries(dependencyGraph)) {
-      if ((descriptor as any).lifetime === ServiceLifetime.Singleton) {
-        const instance = this.container.tryGet(identifier as any);
+      if ((descriptor as { lifetime?: ServiceLifetime }).lifetime === ServiceLifetime.Singleton) {
+        const instance = this.container.tryGet(identifier as ServiceIdentifier);
         if (instance) {
-          childContainer.registerInstance(identifier as any, instance);
+          childContainer.registerInstance(identifier as ServiceIdentifier, instance);
         }
       }
     }
@@ -213,9 +209,9 @@ export class Container {
   /**
    * Get dependency tree for debugging
    */
-  getDependencyTree(): Record<string, any> {
+  getDependencyTree(): Record<string, unknown> {
     const stats = this.container.getStats();
-    return (stats.dependencyGraph as any) || {};
+    return (stats.dependencyGraph as Record<string, unknown>) || {};
   }
 
   /**
@@ -239,7 +235,7 @@ export class Container {
   /**
    * Scan and auto-register services from a module
    */
-  scan(module: any): void {
+  scan(module: Record<string, unknown>): void {
     if (!module) {
       console.warn('No module provided for scanning.');
       return;
@@ -250,13 +246,13 @@ export class Container {
       const service = module[key];
 
       // Check if it's a class constructor (service)
-      if (typeof service === 'function' && service.prototype) {
+      if (typeof service === 'function' && (service as { prototype?: unknown }).prototype) {
         // Check if it has Injectable decorator or follows naming convention
-        const serviceName = service.name;
+        const serviceName = (service as { name: string }).name;
         if (serviceName.endsWith('Service') || serviceName.endsWith('Repository')) {
           try {
-            this.register(serviceName, service);
-            this.autoRegistered.add(serviceName);
+            this.register(service as new (...args: unknown[]) => unknown);
+            this.autoRegistered.add(service);
             console.log(`Auto-registered service: ${serviceName}`);
           } catch (error) {
             console.warn(`Failed to auto-register ${serviceName}:`, error);
