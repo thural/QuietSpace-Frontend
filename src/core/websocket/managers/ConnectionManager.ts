@@ -6,8 +6,6 @@
  */
 
 import { ICacheServiceManager } from '../../cache';
-import { Inject, Injectable } from '../../di';
-import { TYPES } from '../../di/types';
 import { LoggerService } from '../../services/LoggerService';
 import { IEnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
 
@@ -56,7 +54,6 @@ export interface IConnectionManager {
 /**
  * Connection Manager Implementation
  */
-@Injectable()
 export class ConnectionManager implements IConnectionManager {
   private readonly connections: Map<string, ConnectionPool> = new Map();
   private readonly healthStatus: Map<string, ConnectionHealth> = new Map();
@@ -65,7 +62,7 @@ export class ConnectionManager implements IConnectionManager {
   private roundRobinIndex = 0;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private readonly cache: ICacheServiceManager,
+    private readonly cache: ICacheServiceManager,
     private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();

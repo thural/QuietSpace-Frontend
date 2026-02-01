@@ -31,34 +31,37 @@ export function createWebSocketContainer(
 
   const webSocketContainer = parentContainer.createChild();
 
-  // Register WebSocket services as singletons for shared state
-  webSocketContainer.registerSingleton<IEnterpriseWebSocketService>(
-    EnterpriseWebSocketService
+  // Register WebSocket services using factory functions - Manual Registration + Factory Functions
+  // Dependencies are resolved from parent container and injected manually
+
+  // Get required dependencies from parent container
+  const cacheService = parentContainer.get<ICacheServiceManager>(TYPES.CACHE_SERVICE);
+  const loggerService = parentContainer.get<LoggerService>(TYPES.LOGGER_SERVICE);
+
+  // Create WebSocket services with injected dependencies
+  const enterpriseWebSocketService = new EnterpriseWebSocketService(
+    cacheService as any, // Type cast for FeatureCacheService compatibility
+    null, // authService - will be injected later if needed
+    loggerService
   );
 
-  webSocketContainer.registerSingletonByToken(
+  const connectionManager = new ConnectionManager(cacheService, loggerService);
+  const messageRouter = new MessageRouter(cacheService, loggerService);
+
+  // Register service instances
+  webSocketContainer.registerInstanceByToken(
     TYPES.ENTERPRISE_WEBSOCKET_SERVICE,
-    EnterpriseWebSocketService
+    enterpriseWebSocketService
   );
 
-  // Register Connection Manager
-  webSocketContainer.registerSingleton<IConnectionManager>(
-    ConnectionManager
-  );
-
-  webSocketContainer.registerSingletonByToken(
+  webSocketContainer.registerInstanceByToken(
     TYPES.CONNECTION_MANAGER,
-    ConnectionManager
+    connectionManager
   );
 
-  // Register Message Router
-  webSocketContainer.registerSingleton<IMessageRouter>(
-    MessageRouter
-  );
-
-  webSocketContainer.registerSingletonByToken(
+  webSocketContainer.registerInstanceByToken(
     TYPES.MESSAGE_ROUTER,
-    MessageRouter
+    messageRouter
   );
 
   console.log('✅ WebSocket DI container created');
@@ -88,19 +91,20 @@ export function registerWebSocketServices(
   );
 
   // Register WebSocket services directly with app container for easy access
-  appContainer.registerSingletonByToken(
+  // Use the same instances created in the WebSocket container
+  appContainer.registerInstanceByToken(
     TYPES.ENTERPRISE_WEBSOCKET_SERVICE,
-    EnterpriseWebSocketService
+    webSocketContainer.get(TYPES.ENTERPRISE_WEBSOCKET_SERVICE)
   );
 
-  appContainer.registerSingletonByToken(
+  appContainer.registerInstanceByToken(
     TYPES.CONNECTION_MANAGER,
-    ConnectionManager
+    webSocketContainer.get(TYPES.CONNECTION_MANAGER)
   );
 
-  appContainer.registerSingletonByToken(
+  appContainer.registerInstanceByToken(
     TYPES.MESSAGE_ROUTER,
-    MessageRouter
+    webSocketContainer.get(TYPES.MESSAGE_ROUTER)
   );
 
   console.log('✅ WebSocket services registered with app container');

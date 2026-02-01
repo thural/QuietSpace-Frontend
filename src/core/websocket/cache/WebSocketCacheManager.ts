@@ -6,8 +6,6 @@
  */
 
 import { type FeatureCacheService } from '../../cache';
-import { Inject, Injectable } from '../../di';
-import { TYPES } from '../../di/types';
 import { LoggerService } from '../../services/LoggerService';
 import { WebSocketMessage } from '../services/EnterpriseWebSocketService';
 
@@ -68,14 +66,13 @@ export interface IWebSocketCacheManager {
 /**
  * WebSocket Cache Manager Implementation
  */
-@Injectable()
 export class WebSocketCacheManager implements IWebSocketCacheManager {
   private readonly invalidationStrategies: Map<string, CacheInvalidationStrategy[]> = new Map();
   private metrics: CacheMetrics;
   private readonly config: CacheInvalidationConfig;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private readonly cacheManager: FeatureCacheService,
+    private readonly cacheManager: FeatureCacheService,
     private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();

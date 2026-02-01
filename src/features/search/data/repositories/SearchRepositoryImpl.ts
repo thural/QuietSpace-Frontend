@@ -5,16 +5,14 @@
  * Provides raw data access with advanced search capabilities
  */
 
-import { Injectable, Inject } from '@/core/di';
-import { TYPES } from '@/core/di/types';
 import { AxiosInstance } from 'axios';
-import { 
-  ISearchRepositoryEnhanced, 
-  EnhancedSearchQuery, 
-  EnhancedSearchResult, 
-  SearchSuggestion, 
-  SearchAnalytics, 
-  SearchPerformanceMetrics, 
+import {
+  ISearchRepositoryEnhanced,
+  EnhancedSearchQuery,
+  EnhancedSearchResult,
+  SearchSuggestion,
+  SearchAnalytics,
+  SearchPerformanceMetrics,
   SearchConfiguration,
   RepositoryCapabilitiesEnhanced,
   SearchQuery,
@@ -32,12 +30,11 @@ import { IAuthService } from '@/core/auth/interfaces/authInterfaces';
  * Enterprise-grade repository for search data access
  * Implements advanced search features with caching, analytics, and performance monitoring
  */
-@Injectable()
 export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
   constructor(
-    @Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance,
-    @Inject(TYPES.AUTH_SERVICE) private authService: IAuthService
-  ) {}
+    private apiClient: AxiosInstance,
+    private authService: IAuthService
+  ) { }
 
   /**
    * Helper method to get auth token from centralized service
@@ -844,7 +841,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
       supportsHistory: true,
       supportsSuggestions: true,
       supportsAdvancedFilters: true,
-      
+
       // Enhanced capabilities
       supportsSemanticSearch: true,
       supportsFuzzySearch: true,
@@ -858,37 +855,37 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
       supportsAccessibility: true,
       supportsMachineLearning: true,
       supportsABTesting: true,
-      
+
       // Performance capabilities
       maxResults: 1000,
       maxPageSize: 100,
       supportedAlgorithms: ['fulltext', 'fuzzy', 'semantic', 'hybrid'],
       supportsCaching: true,
       supportsRateLimiting: true,
-      
+
       // Index capabilities
       supportsRealTimeIndexing: true,
       supportsIndexOptimization: true,
       supportsIndexRebuilding: true,
       indexShards: 3,
       indexReplicas: 1,
-      
+
       // API capabilities
       supportedFormats: ['json', 'csv', 'xml'],
       supportedLanguages: ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'],
       supportedAccessibilityFeatures: ['screen-reader', 'keyboard-navigation', 'high-contrast'],
-      
+
       // Integration capabilities
       supportsWebhooks: true,
       supportsIntegrations: ['elasticsearch', 'algolia', 'meilisearch', 'typesense'],
       supportsCollaboration: true,
-      
+
       // Monitoring capabilities
       supportsHealthMonitoring: true,
       supportsPerformanceMonitoring: true,
       supportsAnalytics: true,
       supportsDebugging: true,
-      
+
       // Security capabilities
       supportsAccessControl: true,
       supportsDataSanitization: true,
@@ -914,7 +911,7 @@ export class SearchRepositoryImpl implements ISearchRepositoryEnhanced {
   subscribeToRealTimeSearch(callback: (results: EnhancedSearchResult) => void): () => void {
     // Placeholder implementation
     console.warn('Real-time search not implemented');
-    return () => {};
+    return () => { };
   }
 
   // Legacy methods for backward compatibility

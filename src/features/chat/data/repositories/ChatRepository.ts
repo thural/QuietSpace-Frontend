@@ -1,17 +1,14 @@
-import type {AxiosInstance} from 'axios';
-import {Inject, Injectable} from '@/core/di';
-import {TYPES} from '@/core/di/types';
-import {CHAT_PATH, CHAT_PATH_BY_MEMBER} from "@/core/shared/apiPath";
-import {ChatList, ChatResponse, CreateChatRequest, PagedMessage} from "../models/chat";
-import {JwtToken, ResId} from "@/shared/api/models/common";
-import type {IChatRepository} from "@chat/domain/entities/IChatRepository";
+import type { AxiosInstance } from 'axios';
+import { CHAT_PATH, CHAT_PATH_BY_MEMBER } from "@/core/shared/apiPath";
+import { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "../models/chat";
+import { JwtToken, ResId } from "@/shared/api/models/common";
+import type { IChatRepository } from "@chat/domain/entities/IChatRepository";
 
 /**
  * Chat Repository - Handles chat-related API operations
  */
-@Injectable()
 export class ChatRepository implements IChatRepository {
-    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
+    constructor(private apiClient: AxiosInstance) { }
 
     async getChats(userId: string, token: JwtToken): Promise<ChatList> {
         const { data } = await this.apiClient.get(CHAT_PATH_BY_MEMBER + `/${userId}`, {

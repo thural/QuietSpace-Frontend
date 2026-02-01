@@ -5,8 +5,6 @@
  * This service follows enterprise patterns and integrates with the DI container.
  */
 
-import { Injectable, Inject } from '../../di';
-import { TYPES } from '../../di/types';
 import { createAutoAuthApiClient } from '../authenticatedFactory';
 import { SimpleTokenProvider } from '../authenticatedFactory';
 import { type ITokenProvider } from '../authenticatedFactory';
@@ -21,12 +19,11 @@ interface ITokenService {
     subscribe(callback: (token: string | null) => void): () => void;
 }
 
-@Injectable({ lifetime: 'singleton' })
 export class AuthenticatedApiService {
     private readonly apiClient: IApiClient;
     private readonly tokenProvider: ITokenProvider;
 
-    constructor(@Inject(TYPES.TOKEN_SERVICE) private readonly tokenService?: unknown) {
+    constructor(private readonly tokenService?: unknown) {
         // Create token provider
         this.tokenProvider = new SimpleTokenProvider();
 

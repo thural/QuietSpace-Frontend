@@ -1,6 +1,4 @@
 import type { AxiosInstance } from 'axios';
-import { Inject, Injectable } from '@/core/di';
-import { TYPES } from '@/core/di/types';
 import { NOTIFICATION_PATH } from "@/core/shared/apiPath";
 import { ResId, JwtToken } from "@/shared/api/models/common";
 import { NotificationPage, NotificationResponse, NotificationType } from "@/features/notification/data/models/notification";
@@ -24,11 +22,10 @@ import { IAuthService } from '@/core/auth/interfaces/authInterfaces';
  * Notification Repository - Handles notification-related API operations
  * Enhanced with enterprise-grade features for push notifications and real-time updates
  */
-@Injectable()
 export class NotificationRepository implements INotificationRepository {
     constructor(
-        @Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance,
-        @Inject(TYPES.AUTH_SERVICE) private authService: IAuthService
+        private apiClient: AxiosInstance,
+        private authService: IAuthService
     ) { }
 
     /**

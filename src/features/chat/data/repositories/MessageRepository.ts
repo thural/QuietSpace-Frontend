@@ -1,16 +1,13 @@
-import type {AxiosInstance} from 'axios';
-import {Inject, Injectable} from '@/core/di';
-import {TYPES} from '@/core/di/types';
-import {MESSAGE_PATH} from "@/core/shared/apiPath";
-import {ResId} from "@/shared/api/models/common";
-import {MessageRequest, MessageResponse, PagedMessage} from "@/features/chat/data/models/chat";
+import type { AxiosInstance } from 'axios';
+import { MESSAGE_PATH } from "@/core/shared/apiPath";
+import { ResId } from "@/shared/api/models/common";
+import { MessageRequest, MessageResponse, PagedMessage } from "@/features/chat/data/models/chat";
 
 /**
  * Message Repository - Handles message-related API operations
  */
-@Injectable()
 export class MessageRepository {
-    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
+    constructor(private apiClient: AxiosInstance) { }
 
     async getMessages(chatId: ResId, pageParams?: string): Promise<PagedMessage> {
         const { data } = await this.apiClient.get(MESSAGE_PATH + `/chat/${chatId}` + (pageParams || ""));

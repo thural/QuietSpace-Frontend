@@ -5,8 +5,6 @@
  * Provides clean service creation with dependency injection support.
  */
 
-import { Injectable } from '../di';
-
 import { LogLevel, DEFAULT_LOGGER_CONFIG } from './interfaces';
 
 import type { ILoggerService, ILoggerConfig, ILoggerFactoryConfig } from './interfaces';
@@ -17,7 +15,6 @@ import type { ILoggerService, ILoggerConfig, ILoggerFactoryConfig } from './inte
  * Provides enterprise-grade logging with multiple targets,
  * structured logging, and performance monitoring.
  */
-@Injectable({ lifetime: 'singleton' })
 export class LoggerService implements ILoggerService {
     private config: ILoggerConfig;
     private readonly metrics: {

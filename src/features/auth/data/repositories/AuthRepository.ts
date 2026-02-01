@@ -1,6 +1,4 @@
-import type {AxiosInstance} from 'axios';
-import {Inject, Injectable} from '@/core/di';
-import {TYPES} from '@/core/di/types';
+import type { AxiosInstance } from 'axios';
 import {
     ACTIVATE_ACCOUNT,
     LOGIN_URL,
@@ -9,18 +7,17 @@ import {
     RESEND_CODE,
     SIGNUP_URL
 } from "@/core/shared/apiPath";
-import {AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest} from "@auth/data/models/auth";
-import {AuthResponseSchema, RefreshTokenResponseSchema} from "@features/auth/data/models/authZod";
-import {getRefreshToken} from "@/shared/utils/authStoreUtils";
+import { AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest } from "@auth/data/models/auth";
+import { AuthResponseSchema, RefreshTokenResponseSchema } from "@features/auth/data/models/authZod";
+import { getRefreshToken } from "@/shared/utils/authStoreUtils";
 import { IAuthRepository, UserSession, LoginAttempt, SecurityEvent, UserProfile, UserDevice, DeviceInfo, TwoFactorStatus, TwoFactorSetup, RateLimitResult, AuditEntry, ActivityEntry } from "@features/auth/domain/entities/IAuthRepository";
 
 /**
  * Auth Repository - Handles authentication-related API operations
  * Implements enterprise-grade data access patterns with comprehensive security features
  */
-@Injectable()
 export class AuthRepository implements IAuthRepository {
-    constructor(@Inject(TYPES.API_CLIENT) private apiClient: AxiosInstance) {}
+    constructor(private apiClient: AxiosInstance) { }
 
     // Core authentication operations
     async signup(body: RegisterRequest): Promise<Response> {

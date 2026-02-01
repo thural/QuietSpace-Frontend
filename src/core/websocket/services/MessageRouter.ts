@@ -6,8 +6,6 @@
  */
 
 import { ICacheServiceManager } from '../../cache';
-import { Injectable, Inject } from '../../di';
-import { TYPES } from '../../di/types';
 import { LoggerService } from '../../services/LoggerService';
 
 import { WebSocketMessage } from './EnterpriseWebSocketService';
@@ -70,7 +68,6 @@ export interface IMessageRouter {
 /**
  * Message Router Implementation
  */
-@Injectable()
 export class MessageRouter implements IMessageRouter {
   private readonly routes: Map<string, MessageRoute[]> = new Map();
   private metrics: RoutingMetrics;
@@ -78,7 +75,7 @@ export class MessageRouter implements IMessageRouter {
   private deadLetterQueue: WebSocketMessage[] = [];
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private readonly cache: ICacheServiceManager,
+    private readonly cache: ICacheServiceManager,
     private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();

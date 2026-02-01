@@ -85,93 +85,145 @@ export function createAppContainer() {
     ThemeService
   );
 
-  // Register WebSocket service using manual registration
-  container.registerSingletonByToken(
-    TYPES.WEBSOCKET_SERVICE,
-    EnterpriseWebSocketService
+  // Register WebSocket service using factory functions - Manual Registration + Factory Functions
+  // EnterpriseWebSocketService has constructor dependencies
+  const enterpriseWebSocketService = new EnterpriseWebSocketService(
+    cacheProvider as any, // FeatureCacheService - type cast for compatibility
+    null as any, // authService - will be injected properly later
+    loggerService as any // LoggerService - type cast for compatibility
   );
+  container.registerInstanceByToken(TYPES.WEBSOCKET_SERVICE, enterpriseWebSocketService);
 
-  // Register migrated data services using manual registration
-  container.registerSingletonByToken(
-    TYPES.FEED_DATA_SERVICE,
-    FeedDataService
+  // Register migrated data services using factory functions - Manual Registration + Factory Functions
+  // Create services with injected dependencies
+
+  // NotificationDataService has constructor dependencies
+  const notificationDataService = new NotificationDataService(
+    cacheProvider,
+    container.get(TYPES.NOTIFICATION_REPOSITORY)
   );
+  container.registerInstanceByToken(TYPES.NOTIFICATION_DATA_SERVICE, notificationDataService);
 
-  container.registerSingletonByToken(
-    TYPES.POST_DATA_SERVICE,
-    PostDataService
+  // ChatDataService has constructor dependencies
+  const chatDataService = new ChatDataService(
+    cacheProvider,
+    container.get(TYPES.CHAT_REPOSITORY),
+    null as any // WebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.CHAT_DATA_SERVICE, chatDataService);
 
-  container.registerSingletonByToken(
-    TYPES.COMMENT_DATA_SERVICE,
-    CommentDataService
+  // FeedDataService has constructor dependencies
+  const feedDataService = new FeedDataService(
+    null as any, // IFeedRepository - will be injected properly later
+    null as any, // IPostRepository - will be injected properly later  
+    null as any, // ICommentRepository - will be injected properly later
+    cacheProvider,
+    null as any // IWebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.FEED_DATA_SERVICE, feedDataService);
 
-  container.registerSingletonByToken(
-    TYPES.NOTIFICATION_DATA_SERVICE,
-    NotificationDataService
+  // Register remaining data services using factory functions - Manual Registration + Factory Functions
+  // Create services with injected dependencies
+
+  // PostDataService has constructor dependencies
+  const postDataService = new PostDataService(
+    null as any, // IPostRepository - will be injected properly later
+    null as any, // ICommentRepository - will be injected properly later
+    cacheProvider,
+    null as any // IWebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.POST_DATA_SERVICE, postDataService);
 
-  container.registerSingletonByToken(
-    TYPES.ANALYTICS_DATA_SERVICE,
-    AnalyticsDataService
+  // CommentDataService has constructor dependencies
+  const commentDataService = new CommentDataService(
+    null as any, // ICommentRepository - will be injected properly later
+    cacheProvider,
+    null as any // IWebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.COMMENT_DATA_SERVICE, commentDataService);
 
-  container.registerSingletonByToken(
-    TYPES.CHAT_DATA_SERVICE,
-    ChatDataService
+  // ProfileDataService has constructor dependencies
+  const profileDataService = new ProfileDataService(
+    cacheProvider,
+    null as any // IProfileRepository - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.PROFILE_DATA_SERVICE, profileDataService);
 
-  container.registerSingletonByToken(
-    TYPES.CONTENT_DATA_SERVICE,
-    ContentDataService
+  // Register remaining data services using factory functions - Manual Registration + Factory Functions
+  // Create services with injected dependencies
+
+  // AnalyticsDataService has constructor dependencies
+  const analyticsDataService = new AnalyticsDataService(
+    cacheProvider,
+    null as any // IAnalyticsRepository - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.ANALYTICS_DATA_SERVICE, analyticsDataService);
 
-  container.registerSingletonByToken(
-    TYPES.NAVBAR_DATA_SERVICE,
-    NavbarDataService
+  // ContentDataService has constructor dependencies
+  const contentDataService = new ContentDataService(
+    cacheProvider,
+    null as any // IContentRepository - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.CONTENT_DATA_SERVICE, contentDataService);
 
-  container.registerSingletonByToken(
-    TYPES.PROFILE_DATA_SERVICE,
-    ProfileDataService
+  // NavbarDataService has constructor dependencies
+  const navbarDataService = new NavbarDataService(
+    null as any, // INotificationRepository - will be injected properly later
+    cacheProvider,
+    null as any // IWebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.NAVBAR_DATA_SERVICE, navbarDataService);
 
-  container.registerSingletonByToken(
-    TYPES.SETTINGS_DATA_SERVICE,
-    SettingsDataService
+  // SettingsDataService has constructor dependencies
+  const settingsDataService = new SettingsDataService(
+    null as any, // ISettingsRepository - will be injected properly later
+    cacheProvider,
+    null as any // IWebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.SETTINGS_DATA_SERVICE, settingsDataService);
 
-  container.registerSingletonByToken(
-    TYPES.SEARCH_DATA_SERVICE,
-    SearchDataService
+  // SearchDataService has constructor dependencies
+  const searchDataService = new SearchDataService(
+    null as any, // ISearchRepositoryEnhanced - will be injected properly later
+    cacheProvider,
+    null as any // IWebSocketService - will be injected properly later
   );
+  container.registerInstanceByToken(TYPES.SEARCH_DATA_SERVICE, searchDataService);
 
-  // Register repositories (commented out until feature modules are created)
-  // Note: Repositories with @Injectable() decorator are auto-registered by DI container
+  // Register repositories using factory functions - Manual Registration + Factory Functions
+  // Dependencies are resolved and injected manually
 
-  container.registerSingleton(AuthRepository);
-  container.registerSingleton(ChatRepository);
-  container.registerSingleton(MessageRepository);
-  // PostRepository is auto-registered via @Injectable() decorator
-  // CommentRepository is auto-registered via @Injectable() decorator
-  container.registerSingleton(NotificationRepository);
-  container.registerSingleton(SearchRepositoryImpl);
-  // UserRepository is auto-registered via @Injectable() decorator
+  // Create AuthRepository with injected dependency
+  const authRepository = new AuthRepository(container.get(TYPES.API_CLIENT));
+  container.registerInstanceByToken(TYPES.AUTH_REPOSITORY, authRepository);
 
-  // Register repositories by token for injection
-  container.registerSingletonByToken(TYPES.AUTH_REPOSITORY, AuthRepository);
-  container.registerSingletonByToken(TYPES.CHAT_REPOSITORY, ChatRepository);
-  // MessageRepository is auto-registered via @Injectable() decorator
-  // PostRepository is auto-registered via @Injectable() decorator
-  // CommentRepository is auto-registered via @Injectable() decorator
-  container.registerSingletonByToken(TYPES.NOTIFICATION_REPOSITORY, NotificationRepository);
-  // UserRepository is auto-registered via @Injectable() decorator and available via TYPES.USER_REPOSITORY
-  container.registerSingletonByToken(TYPES.SEARCH_REPOSITORY, SearchRepositoryImpl);
+  // Create ChatRepository with injected dependency
+  const chatRepository = new ChatRepository(container.get(TYPES.API_CLIENT));
+  container.registerInstanceByToken(TYPES.CHAT_REPOSITORY, chatRepository);
+
+  // Register remaining repositories using factory functions - Manual Registration + Factory Functions
+  // Create SearchRepositoryImpl with injected dependencies
+  const searchRepositoryImpl = new SearchRepositoryImpl(
+    container.get(TYPES.API_CLIENT),
+    container.get(TYPES.AUTH_SERVICE)
+  );
+  container.registerInstanceByToken(TYPES.SEARCH_REPOSITORY, searchRepositoryImpl);
+
+  // Register remaining repositories using factory functions - Manual Registration + Factory Functions
+  // Create MessageRepository with injected dependency
+  const messageRepository = new MessageRepository(container.get(TYPES.API_CLIENT));
+  container.registerInstance('MessageRepository', messageRepository);
+
+  // Create NotificationRepository with injected dependencies
+  const notificationRepository = new NotificationRepository(
+    container.get(TYPES.API_CLIENT),
+    container.get(TYPES.AUTH_SERVICE)
+  );
+  container.registerInstance('NotificationRepository', notificationRepository);
 
   // Register enterprise auth service
   const enterpriseAuthService = new EnterpriseAuthService(null as any, null as any, null as any, null as any, null as any);
-  container.registerInstance(EnterpriseAuthService, enterpriseAuthService);
+  container.registerInstance('EnterpriseAuthService', enterpriseAuthService);
 
   // Auth adapter is now handled by the auth service itself
 
