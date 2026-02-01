@@ -1,6 +1,6 @@
 /**
  * Theme System Interfaces.
- * 
+ *
  * Centralized exports for all theme system interfaces.
  * Provides focused, segregated interfaces for better modularity.
  */

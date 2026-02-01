@@ -1,6 +1,6 @@
 /**
  * Query Executor Interface
- * 
+ *
  * Single responsibility: Query execution and coordination
  */
 

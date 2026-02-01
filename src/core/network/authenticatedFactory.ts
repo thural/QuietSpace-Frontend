@@ -1,17 +1,18 @@
 /**
  * Authenticated API Client Factory
- * 
+ *
  * Provides pre-configured API clients with authentication already set up.
  * This follows the Black Box pattern and eliminates manual auth management.
  */
 
-import type { IApiClient, IApiClientConfig, ApiError } from './interfaces';
 import { createApiClient } from './factory';
 import { createApiError, ERROR_CODES } from './utils';
 
+import type { IApiClient, IApiClientConfig, ApiError } from './interfaces';
+
 /**
  * Creates an authenticated API client with token already configured
- * 
+ *
  * @param token - Authentication token
  * @param config - Optional additional configuration
  * @returns Pre-configured authenticated API client
@@ -35,7 +36,7 @@ export function createAuthenticatedApiClient(
 
 /**
  * Creates an authenticated API client using DI container
- * 
+ *
  * @param container - DI container instance
  * @param token - Authentication token
  * @param config - Optional additional configuration
@@ -65,7 +66,7 @@ export function createAuthenticatedApiClientFromDI(
 
 /**
  * Creates a token provider for automatic authentication management
- * 
+ *
  * @param container - DI container instance
  * @returns Token provider interface
  */
@@ -94,7 +95,7 @@ export interface ITokenProvider {
  */
 export class SimpleTokenProvider implements ITokenProvider {
     private token: string | null = null;
-    private subscribers: Set<(token: string | null) => void> = new Set();
+    private readonly subscribers: Set<(token: string | null) => void> = new Set();
 
     getToken(): string | null {
         return this.token;
@@ -130,7 +131,7 @@ export class SimpleTokenProvider implements ITokenProvider {
 
 /**
  * Creates an auto-authenticating API client
- * 
+ *
  * @param tokenProvider - Token provider for automatic auth management
  * @param config - Optional additional configuration
  * @returns Auto-authenticating API client

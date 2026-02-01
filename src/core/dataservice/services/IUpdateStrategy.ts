@@ -1,6 +1,6 @@
 /**
  * Update Strategy Interface
- * 
+ *
  * Single responsibility: Data update strategies for WebSocket messages
  */
 
@@ -11,7 +11,7 @@ export interface IUpdateStrategy {
    * Apply update strategy to current data
    */
   apply(currentData: any, newData: any, strategy: UpdateStrategyType): any;
-  
+
   /**
    * Check if strategy is supported
    */

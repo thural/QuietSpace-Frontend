@@ -1,15 +1,18 @@
 /**
  * Enterprise Token Refresh Manager
- * 
+ *
  * Provides centralized token refresh management using the enterprise auth module.
  * Replaces legacy jwtAuthUtils token refresh functionality with enterprise-grade
  * token lifecycle management, multi-tab synchronization, and security monitoring.
  */
 
-import { EnterpriseAuthService } from '../enterprise/AuthService';
 import { AuthModuleFactory } from '../AuthModule';
-import type { IAuthLogger, IAuthMetrics } from '../interfaces/authInterfaces';
+
 import { AdvancedTokenRotationManager, createAdvancedTokenRotationManager } from './AdvancedTokenRotationManager';
+
+import type { EnterpriseAuthService } from '../enterprise/AuthService';
+import type { IAuthLogger, IAuthMetrics } from '../interfaces/authInterfaces';
+
 
 export interface TokenRefreshOptions {
     refreshInterval?: number;
@@ -42,7 +45,7 @@ export interface TokenRefreshMetrics {
 
 /**
  * Enterprise Token Refresh Manager
- * 
+ *
  * Provides advanced token refresh capabilities with:
  * - Enterprise-grade security monitoring
  * - Multi-tab synchronization
@@ -51,14 +54,14 @@ export interface TokenRefreshMetrics {
  * - Circuit breaker pattern for reliability
  */
 export class EnterpriseTokenRefreshManager {
-    private authService: EnterpriseAuthService;
+    private readonly authService: EnterpriseAuthService;
     private refreshIntervalId: number | null = null;
     private isActive: boolean = false;
-    private metrics: TokenRefreshMetrics;
+    private readonly metrics: TokenRefreshMetrics;
     private retryCount: number = 0;
-    private maxRetries: number = 3;
+    private readonly maxRetries: number = 3;
     private circuitBreakerOpen: boolean = false;
-    private circuitBreakerResetTime: number = 60000; // 1 minute
+    private readonly circuitBreakerResetTime: number = 60000; // 1 minute
     private advancedRotationManager: AdvancedTokenRotationManager | null = null;
 
     constructor() {
@@ -219,7 +222,7 @@ export class EnterpriseTokenRefreshManager {
         try {
             // Get current session
             const currentSession = await this.authService.getCurrentSession();
-            
+
             if (!currentSession) {
                 throw new Error('No active authentication session found');
             }
@@ -257,7 +260,7 @@ export class EnterpriseTokenRefreshManager {
 
         } catch (error) {
             const err = error instanceof Error ? error : new Error(String(error));
-            
+
             // Update metrics
             this.metrics.failedRefreshes++;
             this.retryCount++;
@@ -285,7 +288,7 @@ export class EnterpriseTokenRefreshManager {
         const now = new Date();
         const expiresAt = new Date(session.expiresAt);
         const timeUntilExpiration = expiresAt.getTime() - now.getTime();
-        
+
         // Refresh if token expires within 5 minutes
         return timeUntilExpiration <= 300000; // 5 minutes in milliseconds
     }
@@ -296,14 +299,14 @@ export class EnterpriseTokenRefreshManager {
     private async refreshTokenThroughEnterprise(session: any): Promise<any> {
         // This would integrate with the enterprise auth service's token refresh mechanism
         // For now, we'll simulate the refresh process
-        
+
         try {
             // In a real implementation, this would call the enterprise auth service
             // to refresh the token using the provider's refresh mechanism
-            
+
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 100));
-            
+
             return {
                 success: true,
                 data: {
@@ -327,8 +330,8 @@ export class EnterpriseTokenRefreshManager {
         const handleStorageChange = (event: StorageEvent) => {
             if (event.key === 'auth_token_refresh') {
                 const data = event.newValue ? JSON.parse(event.newValue) : null;
-                
-                if (data && data.type === 'token_refreshed') {
+
+                if (data?.type === 'token_refreshed') {
                     // Token was refreshed in another tab, update local state
                     this.logEvent('multi_tab_token_sync', {
                         sourceTab: data.sourceTab,
@@ -377,7 +380,7 @@ export class EnterpriseTokenRefreshManager {
         if (totalRefreshes === 1) {
             this.metrics.averageRefreshTime = refreshTime;
         } else {
-            this.metrics.averageRefreshTime = 
+            this.metrics.averageRefreshTime =
                 (this.metrics.averageRefreshTime * (totalRefreshes - 1) + refreshTime) / totalRefreshes;
         }
     }
@@ -387,7 +390,7 @@ export class EnterpriseTokenRefreshManager {
      */
     getMetrics(): TokenRefreshMetrics {
         const baseMetrics = { ...this.metrics };
-        
+
         // Include rotation metrics if advanced rotation is active
         if (this.advancedRotationManager) {
             const rotationMetrics = this.advancedRotationManager.getMetrics();
@@ -398,7 +401,7 @@ export class EnterpriseTokenRefreshManager {
             baseMetrics.refreshTokensRotated = rotationMetrics.refreshTokensRotated;
             baseMetrics.fallbackActivations = rotationMetrics.fallbackActivations;
         }
-        
+
         return baseMetrics;
     }
 
@@ -436,11 +439,11 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Storage event handler (kept as class property for cleanup)
      */
-    private handleStorageChange = (event: StorageEvent) => {
+    private readonly handleStorageChange = (event: StorageEvent) => {
         if (event.key === 'auth_token_refresh') {
             const data = event.newValue ? JSON.parse(event.newValue) : null;
-            
-            if (data && data.type === 'token_refreshed') {
+
+            if (data?.type === 'token_refreshed') {
                 this.logEvent('multi_tab_token_sync', {
                     sourceTab: data.sourceTab,
                     timestamp: data.timestamp
@@ -452,7 +455,7 @@ export class EnterpriseTokenRefreshManager {
 
 /**
  * Factory function for creating enterprise token refresh manager
- * 
+ *
  * This replaces the legacy createTokenRefreshManager from jwtAuthUtils
  * with enterprise-grade functionality.
  */
@@ -469,18 +472,18 @@ export function createAdvancedTokenRefreshManager(options?: TokenRotationOptions
 
 /**
  * Legacy compatibility exports
- * 
+ *
  * These provide backward compatibility with existing jwtAuthUtils exports
  * while redirecting to the enterprise implementation.
  */
 export const legacyTokenRefreshUtils = {
     createTokenRefreshManager,
-    
+
     // Legacy function wrappers for backward compatibility
     startTokenAutoRefresh: (manager: EnterpriseTokenRefreshManager, options: TokenRefreshOptions) => {
         manager.startTokenAutoRefresh(options);
     },
-    
+
     stopTokenAutoRefresh: (manager: EnterpriseTokenRefreshManager) => {
         manager.stopTokenAutoRefresh();
     }

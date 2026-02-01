@@ -1,6 +1,6 @@
 /**
  * Network Module Interfaces
- * 
+ *
  * Defines public interfaces for the network system following Black Box pattern.
  * Internal implementation details are hidden from consumers.
  */
@@ -83,17 +83,11 @@ export interface InterceptorConfig {
     error?: ErrorInterceptor[];
 }
 
-export interface RequestInterceptor {
-    (config: ApiConfig): ApiConfig;
-}
+export type RequestInterceptor = (config: ApiConfig) => ApiConfig;
 
-export interface ResponseInterceptor {
-    (response: ApiResponse<any>): ApiResponse<any>;
-}
+export type ResponseInterceptor = (response: ApiResponse<any>) => ApiResponse<any>;
 
-export interface ErrorInterceptor {
-    (error: ApiError): ApiError | Promise<ApiError>;
-}
+export type ErrorInterceptor = (error: ApiError) => ApiError | Promise<ApiError>;
 
 export interface ApiConfig {
     url?: string;

@@ -1,12 +1,28 @@
 /**
  * WebSocket Module Index.
- * 
+ *
  * Main entry point for the WebSocket enterprise module.
  * Exports only public interfaces and types (Black Box Pattern).
  * Internal implementation is completely encapsulated.
  */
 
 // Import types for factory function signatures
+import { TYPES } from '../di/types';
+
+import { WebSocketServiceFactory } from './di/WebSocketContainer';
+
+import type { Container } from '../di';
+import type {
+  IWebSocketCacheManager,
+  CacheInvalidationStrategy,
+  CacheInvalidationConfig
+} from './cache/WebSocketCacheManager';
+import type {
+  IConnectionManager,
+  ConnectionPool,
+  ConnectionHealth,
+  ConnectionPoolConfig
+} from './managers/ConnectionManager';
 import type {
   IEnterpriseWebSocketService,
   WebSocketMessage,
@@ -14,7 +30,6 @@ import type {
   WebSocketEventListener,
   ConnectionMetrics
 } from './services/EnterpriseWebSocketService';
-
 import type {
   IMessageRouter,
   MessageRoute,
@@ -26,22 +41,10 @@ import type {
   MessageRouterConfig
 } from './services/MessageRouter';
 
-import type {
-  IConnectionManager,
-  ConnectionPool,
-  ConnectionHealth,
-  ConnectionPoolConfig
-} from './managers/ConnectionManager';
 
-import type {
-  IWebSocketCacheManager,
-  CacheInvalidationStrategy,
-  CacheInvalidationConfig
-} from './cache/WebSocketCacheManager';
 
-import { WebSocketServiceFactory } from './di/WebSocketContainer';
-import { Container } from '../di';
-import { TYPES } from '../di/types';
+
+
 
 // Services - Public API Only (Black Box Pattern)
 export type {

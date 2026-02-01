@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+
 import { DIProvider, useService, useDIContainer } from '../providers';
+
 import { createContainer, LoggerService, AppService } from './IntegrationTest';
 
 // Test component using DI

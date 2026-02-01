@@ -1,15 +1,17 @@
 /**
  * Enhanced Theme Provider.
- * 
+ *
  * Composable theme provider with variant support and performance optimizations.
  * Supports theme inheritance, composition, and runtime theme switching.
  */
 
 import React, { createContext, useContext, useMemo, memo, useState } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
-import { ThemeTokens } from './tokens';
-import { getTheme, getThemeVariants } from './variants';
+
 import { enhanceTheme } from './enhancers/themeEnhancers';
+import { getTheme, getThemeVariants } from './variants';
+
+import type { ThemeTokens } from './tokens';
 
 export interface EnhancedTheme extends ThemeTokens {
   // Add any computed theme values here
@@ -58,7 +60,7 @@ export const EnhancedThemeProvider = memo<EnhancedThemeProviderProps>(({
     theme: memoizedTheme,
     currentVariant,
     setVariant,
-    availableVariants: getThemeVariants(),
+    availableVariants: getThemeVariants()
   }), [memoizedTheme, currentVariant]);
 
   return (

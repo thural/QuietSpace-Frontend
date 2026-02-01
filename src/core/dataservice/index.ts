@@ -1,6 +1,6 @@
 /**
  * Data Service Module - Public API
- * 
+ *
  * Clean Black Box Module pattern with clean public API exports.
  * Only interfaces, factory functions, and types are exported.
  * Implementation classes are hidden to maintain Black Box principles.
@@ -19,7 +19,7 @@ export type {
   IDataServiceStats,
   IDataState,
   IDataStateWithMetadata,
-  IDataStateManager,
+  IDataStateManager
 } from './interfaces';
 
 // Factory functions
@@ -31,7 +31,7 @@ export {
   createDataServiceWithFullConfig,
   createDataServices,
   createDataServicesWithIndividualConfig,
-  createDataServiceForEnvironment,
+  createDataServiceForEnvironment
 } from './factory';
 
 // Re-export types from dependencies for convenience
@@ -83,7 +83,7 @@ export const DATA_SERVICE_INFO = {
     'Dependency injection support',
     'TypeScript support',
     'Single Responsibility Principle',
-    'Black Box architecture',
+    'Black Box architecture'
   ],
-  architecture: '7-layer: Component → Hook → DI → Service → Data → Cache/Repository/WebSocket',
+  architecture: '7-layer: Component → Hook → DI → Service → Data → Cache/Repository/WebSocket'
 } as const;

@@ -1,11 +1,11 @@
 /**
  * In-memory authentication metrics collector
- * 
+ *
  * Implements performance monitoring for authentication operations
  * with in-memory storage and comprehensive metrics.
  */
 
-import { IAuthMetrics } from '../interfaces/authInterfaces';
+import type { IAuthMetrics } from '../interfaces/authInterfaces';
 
 /**
  * In-memory authentication metrics implementation

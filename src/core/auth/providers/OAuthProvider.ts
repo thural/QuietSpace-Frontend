@@ -1,11 +1,11 @@
 /**
  * OAuth Authentication Provider
- * 
+ *
  * Implements OAuth 2.0 authentication for multiple providers:
  * - Google OAuth 2.0
- * - GitHub OAuth 2.0  
+ * - GitHub OAuth 2.0
  * - Microsoft OAuth 2.0
- * 
+ *
  * Features:
  * - PKCE implementation for security
  * - Token management and refresh logic
@@ -13,8 +13,10 @@
  * - State management for CSRF protection
  */
 
-import { AuthCredentials, AuthErrorType, AuthProviderType, AuthResult, AuthSession } from '../types/auth.domain.types';
-import { IAuthProvider } from '../interfaces/authInterfaces';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
  * Supported OAuth providers
@@ -78,7 +80,7 @@ export class OAuthAuthProvider implements IAuthProvider {
         codeVerifierLength: 128
     };
 
-    private providerConfigs: Map<string, OAuthProviderConfig> = new Map();
+    private readonly providerConfigs: Map<string, OAuthProviderConfig> = new Map();
     private currentProvider?: string;
     private pkceVerifier?: string;
 
@@ -270,7 +272,7 @@ export class OAuthAuthProvider implements IAuthProvider {
             Object.entries(config.providers).forEach(([provider, providerConfig]) => {
                 if (Object.values(OAuthProviders).includes(provider as OAuthProvider)) {
                     this.providerConfigs.set(
-                        provider as string,
+                        provider,
                         providerConfig as OAuthProviderConfig
                     );
                 }

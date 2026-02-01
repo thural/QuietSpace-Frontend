@@ -1,16 +1,20 @@
 /**
  * Main DI Container.
- * 
+ *
  * Central dependency injection container with auto-registration.
  * Provides enterprise-grade DI with reflection support.
  */
 
-import { ServiceContainer } from './ServiceContainer';
 import { getConstructorDependencies, getInjectableMetadata } from '../decorators/Injectable';
-import type { ServiceIdentifier } from '../registry/ServiceRegistry';
+
 // Import ServiceLifetime as value, not type
 import { ServiceLifetime } from '../registry/ServiceRegistry';
-import { TypeKeys } from '../types';
+
+
+import { ServiceContainer } from './ServiceContainer';
+
+import type { ServiceIdentifier } from '../registry/ServiceRegistry';
+import type { TypeKeys } from '../types';
 
 /**
  * Main DI container with automatic service registration
@@ -48,7 +52,7 @@ export class Container {
       });
 
       // Create instance with dependencies
-      return new serviceClass(...(resolvedDependencies as any[]));
+      return new serviceClass(...(resolvedDependencies));
     };
 
     return { factory, dependencies, metadata };
@@ -209,7 +213,7 @@ export class Container {
   /**
    * Get dependency tree for debugging
    */
-  getDependencyTree(): { [key: string]: any } {
+  getDependencyTree(): Record<string, any> {
     const stats = this.container.getStats();
     return (stats.dependencyGraph as any) || {};
   }

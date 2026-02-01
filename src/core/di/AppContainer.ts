@@ -1,27 +1,29 @@
-import { createContainer } from '../di';
-import { createLogger } from '../services';
-import { createTheme } from '../theme';
-import { EnterpriseAuthService } from '../auth';
-import { createCacheProvider, createCacheServiceManager, type ICacheProvider, type ICacheServiceManager } from '../cache';
-import { TYPES } from './types';
-import { apiClient } from '../network/rest/apiClient';
-import { UserService, UserRepository } from '../services/UserService';
-import { LoggerService } from '../services/LoggerService';
-import { ThemeService } from '../services/ThemeService';
-import { EnterpriseWebSocketService } from '../websocket/services/EnterpriseWebSocketService';
 
 // Import migrated data services
-import { FeedDataService } from '../../../features/feed/data/services/FeedDataService';
-import { PostDataService } from '../../../features/post/data/services/PostDataService';
-import { CommentDataService } from '../../../features/comment/data/services/CommentDataService';
-import { NotificationDataService } from '../../../features/notification/data/services/NotificationDataService';
 import { AnalyticsDataService } from '../../../features/analytics/data/services/AnalyticsDataService';
 import { ChatDataService } from '../../../features/chat/data/services/ChatDataService';
+import { CommentDataService } from '../../../features/comment/data/services/CommentDataService';
 import { ContentDataService } from '../../../features/content/data/services/ContentDataService';
+import { FeedDataService } from '../../../features/feed/data/services/FeedDataService';
 import { NavbarDataService } from '../../../features/navbar/data/services/NavbarDataService';
+import { NotificationDataService } from '../../../features/notification/data/services/NotificationDataService';
+import { PostDataService } from '../../../features/post/data/services/PostDataService';
 import { ProfileDataService } from '../../../features/profile/data/services/ProfileDataService';
-import { SettingsDataService } from '../../../features/settings/data/services/SettingsDataService';
 import { SearchDataService } from '../../../features/search/data/services/SearchDataService';
+import { SettingsDataService } from '../../../features/settings/data/services/SettingsDataService';
+import { EnterpriseAuthService } from '../auth';
+import { createCacheProvider, createCacheServiceManager, type ICacheProvider, type ICacheServiceManager } from '../cache';
+import { createContainer } from '../di';
+import { apiClient } from '../network/rest/apiClient';
+import { createLogger } from '../services';
+import { LoggerService } from '../services/LoggerService';
+import { ThemeService } from '../services/ThemeService';
+import { UserService, UserRepository } from '../services/UserService';
+import { createTheme } from '../theme';
+import { EnterpriseWebSocketService } from '../websocket/services/EnterpriseWebSocketService';
+
+import { TYPES } from './types';
+
 // import { registerFeedContainer } from '../../../features/feed/di/container';
 // import { registerChatContainer } from '../../../features/chat/di/container';
 // import { createSearchContainer } from '../../../features/search/di/container';
@@ -40,7 +42,7 @@ import type { AxiosInstance } from 'axios';
 
 /**
  * Application DI Container Setup.
- * 
+ *
  * Configures and initializes the dependency injection container
  * with all application services.
  */
@@ -208,7 +210,7 @@ export async function initializeApp() {
   const container = createAppContainer();
 
   // Initialize services
-  const themeService = container.get('ThemeService') as any;
+  const themeService = container.get('ThemeService');
   if (themeService && typeof themeService.setTheme === 'function') {
     themeService.setTheme('light');
   }

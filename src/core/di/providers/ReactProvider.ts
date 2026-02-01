@@ -1,12 +1,13 @@
 /**
  * React DI Provider.
- * 
+ *
  * React context provider for dependency injection.
  * Integrates DI container with React component tree.
  */
 
 import * as React from 'react';
 import { createContext, useContext, useCallback, useMemo } from 'react';
+
 import { Container } from '../container/Container';
 
 // Define local types to avoid import issues
@@ -64,7 +65,7 @@ const DIProvider: React.FC<{
     provider: {
       get: getService,
       tryGet: tryGetService,
-      has: hasService,
+      has: hasService
     },
     scope: undefined
   }), [diContainer, getService, tryGetService, hasService]);
@@ -83,7 +84,7 @@ export { DIProvider };
  */
 export const useDIContainer = (): Container => {
   const context = useContext(ReactDIContext);
-  if (!context || !context.container) {
+  if (!context?.container) {
     throw new Error('useDIContainer must be used within a DIProvider');
   }
   return context.container;

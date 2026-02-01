@@ -1,11 +1,13 @@
 /**
  * Logger Module Types and Constants
- * 
+ *
  * Defines types, enums, and constants for the logger system.
  * Provides standardized values for logging operations.
  */
 
-import { LogLevel, ILoggerConfig, ILogEntry, ILoggerTarget } from './interfaces';
+import { LogLevel } from './interfaces';
+
+import type { ILoggerConfig, ILogEntry, ILoggerTarget } from './interfaces';
 
 /**
  * Default logger configuration

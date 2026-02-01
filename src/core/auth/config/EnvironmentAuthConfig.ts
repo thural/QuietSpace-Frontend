@@ -1,14 +1,15 @@
 /**
  * Environment-based Authentication Configuration
- * 
+ *
  * Provides configuration values from environment variables with
  * type safety, validation, and sensible defaults.
- * 
+ *
  * Supports both Node.js (process.env) and browser (import.meta.env) environments.
  */
 
-import { IAuthConfig } from '../interfaces/authInterfaces';
 import { AuthProviderType } from '../types/auth.domain.types';
+
+import type { IAuthConfig } from '../interfaces/authInterfaces';
 
 /**
  * Environment variable names for authentication configuration
@@ -56,7 +57,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     readonly name = 'EnvironmentAuthConfig';
 
     private config: Record<string, any>;
-    private watchers: Map<string, ((value: any) => void)[]> = new Map();
+    private readonly watchers: Map<string, ((value: any) => void)[]> = new Map();
 
     constructor(customEnv?: Record<string, string | undefined>) {
         this.config = this.loadConfiguration(customEnv);

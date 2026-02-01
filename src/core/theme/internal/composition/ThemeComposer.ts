@@ -1,12 +1,12 @@
 /**
  * Internal Theme Composer.
- * 
+ *
  * Handles theme composition and inheritance logic.
  * Separated from factory and enhancement concerns.
  */
 
-import { ThemeTokens } from '../tokens';
-import { ThemeConfig, ComposedTheme } from '../types';
+import type { ThemeTokens } from '../tokens';
+import type { ThemeConfig, ComposedTheme } from '../types';
 
 /**
  * Theme Composer interface
@@ -21,8 +21,8 @@ export interface IThemeComposer {
  * Theme Composer implementation
  */
 export class ThemeComposer implements IThemeComposer {
-    private themes = new Map<string, ThemeConfig>();
-    private composedThemes = new Map<string, ComposedTheme>();
+    private readonly themes = new Map<string, ThemeConfig>();
+    private readonly composedThemes = new Map<string, ComposedTheme>();
 
     /**
      * Register a theme configuration
@@ -31,7 +31,7 @@ export class ThemeComposer implements IThemeComposer {
         const themeConfig: ThemeConfig = {
             name,
             version: '1.0.0',
-            tokens: config,
+            tokens: config
         };
         this.themes.set(name, themeConfig);
     }
@@ -61,7 +61,7 @@ export class ThemeComposer implements IThemeComposer {
             metadata: {
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                extends: config.extends || [],
+                extends: config.extends || []
             }
         };
 
@@ -118,7 +118,7 @@ export class ThemeComposer implements IThemeComposer {
             shadows: { ...defaults.shadows, ...base.shadows, ...override.shadows },
             breakpoints: { ...defaults.breakpoints, ...base.breakpoints, ...override.breakpoints },
             radius: { ...defaults.radius, ...base.radius, ...override.radius },
-            animation: { ...defaults.animation, ...base.animation, ...override.animation },
+            animation: { ...defaults.animation, ...base.animation, ...override.animation }
         };
     }
 
@@ -135,7 +135,7 @@ export class ThemeComposer implements IThemeComposer {
             shadows: { ...defaults.shadows, ...tokens.shadows },
             breakpoints: { ...defaults.breakpoints, ...tokens.breakpoints },
             radius: { ...defaults.radius, ...tokens.radius },
-            animation: { ...defaults.animation, ...tokens.animation },
+            animation: { ...defaults.animation, ...tokens.animation }
         };
     }
 
@@ -161,7 +161,7 @@ export class ThemeComposer implements IThemeComposer {
             shadows: baseShadows,
             breakpoints: baseBreakpoints,
             radius: baseRadius,
-            animation: baseAnimation,
+            animation: baseAnimation
         };
     }
 }

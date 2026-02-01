@@ -1,22 +1,19 @@
 /**
  * UI Components.
- * 
+ *
  * Pre-built UI components using styled components.
  * Provides clean separation of UI component logic.
  */
 
 import { css } from 'styled-components';
+
 import { createStyledComponent } from '../factories/styledFactory';
 
 // Extend DefaultTheme to include our enhanced theme
 declare module 'styled-components' {
     export interface DefaultTheme {
-        primary: {
-            [key: string]: string;
-        };
-        secondary: {
-            [key: string]: string;
-        };
+        primary: Record<string, string>;
+        secondary: Record<string, string>;
     }
 }
 

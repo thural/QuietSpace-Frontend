@@ -1,11 +1,12 @@
 /**
  * Layout Components.
- * 
+ *
  * Pre-built layout components using styled components.
  * Provides clean separation of layout component logic.
  */
 
 import { css } from 'styled-components';
+
 import { createStyledComponent } from '../factories/styledFactory';
 import { media } from '../utils/mediaQueries';
 

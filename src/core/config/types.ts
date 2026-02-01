@@ -1,6 +1,6 @@
 /**
  * Multiplatform Configuration Types
- * 
+ *
  * Defines platform-specific configuration interfaces for build-time
  * configuration and maximum tree-shaking optimization.
  */

@@ -31,7 +31,7 @@ export class LoggerService implements ILogger {
 
 @Injectable({ lifetime: 'singleton' })
 export class CacheService implements ICacheService {
-  private cache = new Map<string, any>();
+  private readonly cache = new Map<string, any>();
 
   get<T>(key: string): T | null {
     return this.cache.get(key) || null;
@@ -48,7 +48,7 @@ export class CacheService implements ICacheService {
 
 @Injectable({ lifetime: 'transient' })
 export class ConfigService implements IConfigService {
-  constructor(@Inject(CacheService) private cache: ICacheService) { }
+  constructor(@Inject(CacheService) private readonly cache: ICacheService) { }
 
   get(key: string): string | undefined {
     return this.cache.get<string>(`config:${key}`);
@@ -63,9 +63,9 @@ export class ConfigService implements IConfigService {
 @Injectable({ lifetime: 'scoped' })
 export class AppService {
   constructor(
-    @Inject(LoggerService) private logger: ILogger,
-    @Inject(CacheService) private cache: ICacheService,
-    @Inject(ConfigService) private config: IConfigService
+    @Inject(LoggerService) private readonly logger: ILogger,
+    @Inject(CacheService) private readonly cache: ICacheService,
+    @Inject(ConfigService) private readonly config: IConfigService
   ) { }
 
   initialize(): void {

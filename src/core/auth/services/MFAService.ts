@@ -1,6 +1,6 @@
 /**
  * Enterprise Multi-Factor Authentication (MFA) Service
- * 
+ *
  * Provides comprehensive MFA support with:
  * - TOTP (Time-based One-Time Password) authentication
  * - SMS verification for phone number-based authentication
@@ -210,10 +210,10 @@ export interface MFAChallenge {
 }
 
 export class MFAService {
-  private config: MFAConfig;
-  private enrollments: Map<string, MFAEnrollment[]> = new Map();
-  private verifications: Map<string, MFAVerification> = new Map();
-  private challenges: Map<string, MFAChallenge> = new Map();
+  private readonly config: MFAConfig;
+  private readonly enrollments: Map<string, MFAEnrollment[]> = new Map();
+  private readonly verifications: Map<string, MFAVerification> = new Map();
+  private readonly challenges: Map<string, MFAChallenge> = new Map();
 
   constructor(config: Partial<MFAConfig> = {}) {
     this.config = {
@@ -341,13 +341,13 @@ export class MFAService {
 
     // Generate secret key
     const secret = this.generateTOTPSecret();
-    
+
     // Generate QR code data
     const qrData = this.generateTOTPQRCode(userId, secret);
-    
+
     // Generate manual entry key
     const manualKey = this.formatManualKey(secret);
-    
+
     // Generate backup codes for setup verification
     const backupCodes = this.generateBackupCodes(3);
 
@@ -394,7 +394,7 @@ export class MFAService {
     }
 
     const isValid = this.verifyTOTPCode(enrollment.methodData.totp!.secret, code);
-    
+
     if (isValid) {
       enrollment.status = 'active';
       enrollment.metadata.verifiedAt = Date.now();
@@ -475,7 +475,7 @@ export class MFAService {
     const pendingVerification = Array.from(this.verifications.values())
       .find(v => v.userId === userId && v.method.type === 'sms' && v.status === 'pending');
 
-    if (!pendingVerification || pendingVerification.code !== code) {
+    if (pendingVerification?.code !== code) {
       return false;
     }
 
@@ -484,9 +484,9 @@ export class MFAService {
     enrollment.methodData.sms!.lastVerified = Date.now();
     enrollment.status = 'active';
     enrollment.metadata.verifiedAt = Date.now();
-    
+
     this.enrollments.set(userId, userEnrollments);
-    
+
     // Mark verification as successful
     pendingVerification.status = 'success';
     this.verifications.set(pendingVerification.id, pendingVerification);
@@ -546,13 +546,13 @@ export class MFAService {
     }
 
     const backupData = backupEnrollment.methodData.backupCodes!;
-    
+
     // Check if code is valid and not used
     if (backupData.codes.includes(code) && !backupData.usedCodes.includes(code)) {
       backupData.usedCodes.push(code);
       backupEnrollment.metadata.usageCount++;
       backupEnrollment.metadata.lastUsed = Date.now();
-      
+
       this.enrollments.set(userId, userEnrollments);
       return true;
     }
@@ -685,10 +685,10 @@ export class MFAService {
 
   private generateTOTPQRCode(userId: string, secret: string): string {
     const otpauth = `otpauth://totp/${this.config.totpConfig.issuer}:${userId}?secret=${secret}&issuer=${this.config.totpConfig.issuer}&period=${this.config.totpConfig.period}&digits=${this.config.totpConfig.digits}&algorithm=${this.config.totpConfig.algorithm}`;
-    
+
     // In a real implementation, this would generate an actual QR code image
     // For now, return the data URI that can be used to generate the QR code
-    return `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==`;
+    return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
   }
 
   private formatManualKey(secret: string): string {
@@ -699,7 +699,7 @@ export class MFAService {
   private generateBackupCodes(count: number): string[] {
     const codes: string[] = [];
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    
+
     for (let i = 0; i < count; i++) {
       let code = '';
       for (let j = 0; j < 8; j++) {
@@ -707,7 +707,7 @@ export class MFAService {
       }
       codes.push(code);
     }
-    
+
     return codes;
   }
 
@@ -747,7 +747,7 @@ export class MFAService {
     const pendingVerification = Array.from(this.verifications.values())
       .find(v => v.userId === userId && v.method.type === 'sms' && v.status === 'pending');
 
-    if (!pendingVerification || pendingVerification.code !== code) {
+    if (pendingVerification?.code !== code) {
       return false;
     }
 
@@ -817,7 +817,7 @@ export class MFAService {
       for (const enrollment of enrollments) {
         if (enrollment.status === 'active') {
           stats.activeEnrollments++;
-          stats.enrollmentsByMethod[enrollment.method.type] = 
+          stats.enrollmentsByMethod[enrollment.method.type] =
             (stats.enrollmentsByMethod[enrollment.method.type] || 0) + 1;
         }
       }
@@ -830,8 +830,8 @@ export class MFAService {
       }
     }
 
-    stats.verificationSuccessRate = totalVerifications > 0 
-      ? (successfulVerifications / totalVerifications) * 100 
+    stats.verificationSuccessRate = totalVerifications > 0
+      ? (successfulVerifications / totalVerifications) * 100
       : 0;
 
     return stats;

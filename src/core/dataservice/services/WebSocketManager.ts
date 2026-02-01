@@ -1,20 +1,20 @@
 /**
  * WebSocket Manager Implementation
- * 
+ *
  * Handles WebSocket connections and real-time data updates
  */
 
-import type { IWebSocketService } from '@/core/websocket/types';
-import type { IUpdateStrategy } from './IUpdateStrategy';
 import type { ICacheManager } from './ICacheManager';
+import type { IUpdateStrategy } from './IUpdateStrategy';
 import type { IWebSocketManager } from './IWebSocketManager';
+import type { IWebSocketService } from '@/core/websocket/types';
 
 export class WebSocketManager implements IWebSocketManager {
-  private unsubscribeFunctions = new Map<string, Map<string, () => void>>();
+  private readonly unsubscribeFunctions = new Map<string, Map<string, () => void>>();
 
   constructor(
-    private webSocket: IWebSocketService,
-    private updateStrategy: IUpdateStrategy
+    private readonly webSocket: IWebSocketService,
+    private readonly updateStrategy: IUpdateStrategy
   ) {}
 
   setupListeners(
@@ -73,11 +73,11 @@ export class WebSocketManager implements IWebSocketManager {
 
   storeUnsubscribeFunction(cacheKey: string, topic: string, unsubscribe: () => void): void {
     const unsubscribeKey = `${cacheKey}:${topic}`;
-    
+
     if (!this.unsubscribeFunctions.has(cacheKey)) {
       this.unsubscribeFunctions.set(cacheKey, new Map());
     }
-    
+
     this.unsubscribeFunctions.get(cacheKey)!.set(topic, unsubscribe);
   }
 

@@ -1,19 +1,10 @@
 /**
  * API Client Implementation
- * 
+ *
  * Internal implementation of the IApiClient interface.
  * This file is part of the internal implementation and should not be exported.
  */
 
-import type {
-    IApiClient,
-    IApiClientConfig,
-    ApiResponse,
-    ApiConfig,
-    ApiError,
-    ApiHealthStatus,
-    ApiMetrics
-} from '../interfaces';
 import {
     HTTP_STATUS,
     ERROR_CODES,
@@ -30,15 +21,25 @@ import {
     parseJsonResponse
 } from '../utils';
 
+import type {
+    IApiClient,
+    IApiClientConfig,
+    ApiResponse,
+    ApiConfig,
+    ApiError,
+    ApiHealthStatus,
+    ApiMetrics
+} from '../interfaces';
+
 /**
  * Internal API Client implementation
  */
 export class ApiClient implements IApiClient {
     private config: IApiClientConfig;
-    private interceptors: {
-        request: Array<(config: ApiConfig) => ApiConfig>;
-        response: Array<(response: ApiResponse<any>) => ApiResponse<any>>;
-        error: Array<(error: ApiError) => ApiError | Promise<ApiError>>;
+    private readonly interceptors: {
+        request: ((config: ApiConfig) => ApiConfig)[];
+        response: ((response: ApiResponse<any>) => ApiResponse<any>)[];
+        error: ((error: ApiError) => ApiError | Promise<ApiError>)[];
     };
 
     constructor(config: IApiClientConfig) {
@@ -137,7 +138,7 @@ export class ApiClient implements IApiClient {
 
         try {
             // Apply request interceptors
-            let finalConfig = await this.applyRequestInterceptors(config);
+            const finalConfig = await this.applyRequestInterceptors(config);
 
             // Build final request
             const request = this.buildRequest(finalConfig);
@@ -219,7 +220,7 @@ export class ApiClient implements IApiClient {
     }
 
     private buildHeaders(config: ApiConfig): Record<string, string> {
-        let headers = mergeHeaders(
+        const headers = mergeHeaders(
             this.config.headers || {},
             config.headers || {}
         );

@@ -1,15 +1,18 @@
 /**
  * Theme System Factory with Dependency Injection.
- * 
+ *
  * Factory for creating theme services with proper dependency injection.
  * Enables loose coupling and easier testing.
  */
 
 import { themeContainer, THEME_TOKENS } from './ThemeContainer';
-import { ThemeTokens } from '../internal/tokens';
-import { EnhancedTheme } from '../internal/types';
-import { IThemeComposer } from '../internal/composition/ThemeComposer';
-import { IThemeEnhancer } from '../internal/enhancement/ThemeEnhancer';
+
+import type { IThemeComposer } from '../internal/composition/ThemeComposer';
+import type { IThemeEnhancer } from '../internal/enhancement/ThemeEnhancer';
+import type { ThemeTokens } from '../internal/tokens';
+import type { EnhancedTheme } from '../internal/types';
+
+
 
 /**
  * Theme factory interface

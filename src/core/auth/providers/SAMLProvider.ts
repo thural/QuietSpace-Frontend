@@ -1,8 +1,8 @@
 /**
  * SAML Authentication Provider
- * 
+ *
  * Implements SAML 2.0 Web SSO profile authentication for enterprise SSO
- * 
+ *
  * Features:
  * - SAML 2.0 Web SSO profile support
  * - Metadata exchange and validation
@@ -11,8 +11,10 @@
  * - Multiple identity provider support
  */
 
-import { AuthCredentials, AuthErrorType, AuthProviderType, AuthResult, AuthSession } from '../types/auth.domain.types';
-import { IAuthProvider } from '../interfaces/authInterfaces';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
  * Supported SAML providers
@@ -86,9 +88,9 @@ export class SAMLAuthProvider implements IAuthProvider {
         requestTimeout: 30000 // 30 seconds
     };
 
-    private providerConfigs: Map<string, SAMLProviderConfig> = new Map();
+    private readonly providerConfigs: Map<string, SAMLProviderConfig> = new Map();
     private currentProvider?: string;
-    private pendingRequests: Map<string, SAMLAuthRequest> = new Map();
+    private readonly pendingRequests: Map<string, SAMLAuthRequest> = new Map();
 
     constructor() {
         this.initializeProviderConfigs();
@@ -269,7 +271,7 @@ export class SAMLAuthProvider implements IAuthProvider {
             Object.entries(config.providers).forEach(([provider, providerConfig]) => {
                 if (Object.values(SAMLProviders).includes(provider as SAMLProvider)) {
                     this.providerConfigs.set(
-                        provider as string,
+                        provider,
                         providerConfig as SAMLProviderConfig
                     );
                 }

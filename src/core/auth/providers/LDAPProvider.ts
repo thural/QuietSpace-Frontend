@@ -1,8 +1,8 @@
 /**
  * LDAP Authentication Provider
- * 
+ *
  * Implements LDAP v3 protocol authentication for enterprise directory services
- * 
+ *
  * Features:
  * - Active Directory integration
  * - LDAP v3 protocol support
@@ -13,8 +13,10 @@
  * - Directory service integration
  */
 
-import { AuthCredentials, AuthErrorType, AuthProviderType, AuthResult, AuthSession } from '../types/auth.domain.types';
-import { IAuthProvider } from '../interfaces/authInterfaces';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
  * Supported LDAP providers
@@ -96,9 +98,9 @@ export class LDAPAuthProvider implements IAuthProvider {
         retryDelay: 1000
     };
 
-    private providerConfigs: Map<string, LDAPProviderConfig> = new Map();
+    private readonly providerConfigs: Map<string, LDAPProviderConfig> = new Map();
     private currentProvider?: string;
-    private connectionPool: Map<string, any> = new Map();
+    private readonly connectionPool: Map<string, any> = new Map();
 
     constructor() {
         this.initializeProviderConfigs();
@@ -151,8 +153,8 @@ export class LDAPAuthProvider implements IAuthProvider {
             // Perform LDAP authentication
             const authResult = await this.authenticateWithLDAP(
                 providerConfig,
-                credentials.username!,
-                credentials.password!
+                credentials.username,
+                credentials.password
             );
 
             if (!authResult.success) {
@@ -298,7 +300,7 @@ export class LDAPAuthProvider implements IAuthProvider {
             Object.entries(config.providers).forEach(([provider, providerConfig]) => {
                 if (Object.values(LDAPProviders).includes(provider as LDAPProvider)) {
                     this.providerConfigs.set(
-                        provider as string,
+                        provider,
                         providerConfig as LDAPProviderConfig
                     );
                 }

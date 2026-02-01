@@ -1,10 +1,11 @@
-import {AuthResponse} from '@features/auth/data/models/auth';
-import {ActiveChatId, ChatClientMethods, ChatStoreProps} from '@shared/types/chatStoreTypes';
-import {NotificationStoreProps} from '@shared/types/notificationStore';
-import {StompStore} from '@shared/types/stompStoreTypes';
-import {ViewState, ViewStoreProps} from '@shared/types/viewStoreTypes';
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+import type { AuthResponse } from '@features/auth/data/models/auth';
+import type { ActiveChatId, ChatClientMethods, ChatStoreProps } from '@shared/types/chatStoreTypes';
+import type { NotificationStoreProps } from '@shared/types/notificationStore';
+import type { StompStore } from '@shared/types/stompStoreTypes';
+import type { ViewState, ViewStoreProps } from '@shared/types/viewStoreTypes';
 
 // User interface for authentication
 export interface User {
@@ -70,7 +71,7 @@ export interface AuthActions {
 
 /**
  * Consolidated Authentication Store
- * 
+ *
  * This store combines user session management, form state management,
  * and maintains backward compatibility with existing code.
  */
@@ -110,7 +111,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             formData: {}
           });
         }
-        
+
         set({
           user,
           token,
@@ -202,17 +203,17 @@ export const viewStore = create<ViewStoreProps>(set => ({
     createPost: false,
     editPost: false,
     followings: false,
-    followers: false,
+    followers: false
   },
   setViewData: (viewData: Partial<ViewState>) => set(state => ({
     data: { ...state.data, ...viewData }
-  })),
+  }))
 }));
 
 
-export const useThemeStore = create<{ data: boolean, setThemeStore: (checked: boolean) => void }>(set => ({
+export const useThemeStore = create<{ data: boolean; setThemeStore: (checked: boolean) => void }>(set => ({
   data: false,
-  setThemeStore: (checked: boolean) => set({ data: checked }),
+  setThemeStore: (checked: boolean) => set({ data: checked })
 }));
 
 
@@ -220,9 +221,9 @@ export const useThemeStore = create<{ data: boolean, setThemeStore: (checked: bo
 export const useChatStore = create<ChatStoreProps>(set => ({
   data: { activeChatId: null, messageInput: {} },
   clientMethods: {
-    sendChatMessage: () => console.error("client method is not ready"),
-    deleteChatMessage: () => console.error("client method is not ready"),
-    setMessageSeen: () => console.error("client method is not ready"),
+    sendChatMessage: () => console.error('client method is not ready'),
+    deleteChatMessage: () => console.error('client method is not ready'),
+    setMessageSeen: () => console.error('client method is not ready'),
     isClientConnected: false
   },
   isLoading: false,

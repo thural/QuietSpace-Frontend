@@ -1,6 +1,6 @@
 /**
  * Network Module Constants
- * 
+ *
  * Defines constants for the network system.
  * Provides standardized values for HTTP methods, status codes, and error codes.
  */

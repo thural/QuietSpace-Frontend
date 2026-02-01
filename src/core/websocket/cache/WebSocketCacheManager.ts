@@ -1,6 +1,6 @@
 /**
  * WebSocket Cache Manager.
- * 
+ *
  * Integrates WebSocket communications with the enterprise cache system
  * for real-time cache invalidation and message persistence.
  */
@@ -57,13 +57,13 @@ export interface IWebSocketCacheManager {
  */
 @Injectable()
 export class WebSocketCacheManager implements IWebSocketCacheManager {
-  private invalidationStrategies: Map<string, CacheInvalidationStrategy[]> = new Map();
+  private readonly invalidationStrategies: Map<string, CacheInvalidationStrategy[]> = new Map();
   private metrics: CacheMetrics;
-  private config: CacheInvalidationConfig;
+  private readonly config: CacheInvalidationConfig;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cacheManager: FeatureCacheService,
-    private logger: LoggerService
+    @Inject(TYPES.CACHE_SERVICE) private readonly cacheManager: FeatureCacheService,
+    private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();
@@ -100,7 +100,7 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
 
     try {
       const strategies = this.invalidationStrategies.get(message.feature) || [];
-      let invalidatedPatterns: string[] = [];
+      const invalidatedPatterns: string[] = [];
 
       for (const strategy of strategies) {
         // Check conditions if specified

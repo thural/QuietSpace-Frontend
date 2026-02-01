@@ -11,7 +11,7 @@ jest.mock('../public', () => ({
     currentTheme: 'light',
     themes: ['light', 'dark'],
     switchTheme: jest.fn(),
-    getTheme: jest.fn(() => ({ colors: { primary: '#000' } })),
+    getTheme: jest.fn(() => ({ colors: { primary: '#000' } }))
   },
   ThemeSystem: jest.fn(),
   ThemeProvider: jest.fn(),
@@ -22,7 +22,7 @@ jest.mock('../public', () => ({
   useTheme: jest.fn(() => ({ colors: { primary: '#000' } })),
   createStyledComponent: jest.fn(),
   media: jest.fn(),
-  animations: jest.fn(),
+  animations: jest.fn()
 }));
 
 jest.mock('../tokens', () => ({
@@ -32,7 +32,7 @@ jest.mock('../tokens', () => ({
   ShadowTokens: {},
   BreakpointTokens: {},
   RadiusTokens: {},
-  AnimationTokens: {},
+  AnimationTokens: {}
 }));
 
 jest.mock('../interfaces', () => ({
@@ -54,36 +54,36 @@ jest.mock('../interfaces', () => ({
   Breakpoint: {},
   Radius: {},
   LayoutSystem: {},
-  LayoutUtilities: {},
+  LayoutUtilities: {}
 }));
 
 jest.mock('../factory', () => ({
   createTheme: jest.fn(),
   createThemeWithVariant: jest.fn(),
   createDefaultTheme: jest.fn(),
-  createCustomTheme: jest.fn(),
+  createCustomTheme: jest.fn()
 }));
 
 jest.mock('../composer', () => ({
   ThemeComposer: jest.fn(),
-  themeComposer: jest.fn(),
+  themeComposer: jest.fn()
 }));
 
 jest.mock('../variants', () => ({
   getTheme: jest.fn(),
   getThemeVariants: jest.fn(),
-  defaultTheme: { colors: { primary: '#000' } },
+  defaultTheme: { colors: { primary: '#000' } }
 }));
 
 jest.mock('../enhancers/themeEnhancers', () => ({
-  enhanceTheme: jest.fn(),
+  enhanceTheme: jest.fn()
 }));
 
 jest.mock('../styledUtils', () => ({
   Container: jest.fn(),
   FlexContainer: jest.fn(),
   GridContainer: jest.fn(),
-  StyledButton: jest.fn(),
+  StyledButton: jest.fn()
 }));
 
 // Now import the module

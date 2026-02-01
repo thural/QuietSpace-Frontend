@@ -1,6 +1,6 @@
 /**
  * WebSocket System Types
- * 
+ *
  * Centralized type definitions for the WebSocket system.
  * Provides clean type exports following Black Box pattern.
  */
@@ -108,12 +108,16 @@ export interface WebSocketConnectionInfo {
     status: WebSocketStatus;
     connectedAt?: number;
     lastActivity?: number;
+    reconnectCount?: number;
+    error?: Error | null;
+}
+
+export interface WebSocketConnectionState {
+    isConnected: boolean;
+    isConnecting: boolean;
+    error: Error | null;
+    lastConnected?: Date;
     reconnectAttempts: number;
-    messageCount: number;
-    bytesReceived: number;
-    bytesSent: number;
-    latency?: number;
-    error?: string;
 }
 
 // WebSocket event interfaces
@@ -125,9 +129,7 @@ export interface WebSocketEvent {
     metadata?: Record<string, any>;
 }
 
-export interface WebSocketEventHandler {
-    (event: WebSocketEvent): void;
-}
+export type WebSocketEventHandler = (event: WebSocketEvent) => void;
 
 // WebSocket metrics interfaces
 export interface WebSocketMetrics {

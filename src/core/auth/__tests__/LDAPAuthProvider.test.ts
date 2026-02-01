@@ -1,6 +1,6 @@
 /**
  * LDAP Auth Provider Tests
- * 
+ *
  * Tests for LDAP authentication provider including:
  * - Provider initialization
  * - LDAP authentication flows
@@ -10,7 +10,9 @@
  */
 
 import { LDAPAuthProvider, LDAPProviders } from '../providers/LDAPProvider';
-import { AuthCredentials, AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { AuthCredentials } from '../types/auth.domain.types';
 
 describe('LDAPAuthProvider', () => {
     let provider: LDAPAuthProvider;

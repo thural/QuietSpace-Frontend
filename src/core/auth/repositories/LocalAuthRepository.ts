@@ -1,12 +1,12 @@
 /**
  * Local authentication repository implementation
- * 
+ *
  * Implements data access layer for authentication
  * using localStorage for token and session storage.
  */
 
-import {IAuthRepository} from '../interfaces/authInterfaces';
-import {AuthSession} from '../types/auth.domain.types';
+import type { IAuthRepository } from '../interfaces/authInterfaces';
+import type { AuthSession } from '../types/auth.domain.types';
 
 /**
  * Local authentication repository

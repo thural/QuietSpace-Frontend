@@ -1,18 +1,19 @@
 /**
  * Theme System Factory Functions
- * 
+ *
  * Factory functions for creating themes following Black Box pattern.
  * Provides clean service creation with dependency injection support.
  */
 
-import type { ThemeTokens } from './tokens';
-import type { EnhancedTheme } from './public';
 import { ThemeSystem } from './ThemeSystem';
+
 import type { ThemeConfig } from './composer';
+import type { EnhancedTheme } from './public';
+import type { ThemeTokens } from './tokens';
 
 /**
  * Creates a theme with default configuration
- * 
+ *
  * @returns Enhanced theme instance
  */
 export function createDefaultTheme(): EnhancedTheme {
@@ -22,7 +23,7 @@ export function createDefaultTheme(): EnhancedTheme {
 
 /**
  * Creates a theme with specified variant
- * 
+ *
  * @param variant - Theme variant name
  * @param overrides - Optional theme token overrides
  * @returns Enhanced theme instance
@@ -43,7 +44,7 @@ export function createThemeWithVariant(
 
 /**
  * Creates a custom theme with full configuration
- * 
+ *
  * @param config - Theme configuration
  * @returns Enhanced theme instance
  */
@@ -61,7 +62,7 @@ export function createCustomTheme(config: ThemeConfig): EnhancedTheme {
 
 /**
  * Creates a theme with simple overrides
- * 
+ *
  * @param overrides - Theme token overrides
  * @returns Enhanced theme instance
  */
@@ -78,7 +79,7 @@ export function createTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme {
 
 /**
  * Creates a dark theme
- * 
+ *
  * @param overrides - Optional theme token overrides
  * @returns Enhanced theme instance
  */
@@ -95,7 +96,7 @@ export function createDarkTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme
 
 /**
  * Creates a light theme
- * 
+ *
  * @param overrides - Optional theme token overrides
  * @returns Enhanced theme instance
  */
@@ -112,7 +113,7 @@ export function createLightTheme(overrides?: Partial<ThemeTokens>): EnhancedThem
 
 /**
  * Creates a high contrast theme
- * 
+ *
  * @param overrides - Optional theme token overrides
  * @returns Enhanced theme instance
  */
@@ -129,7 +130,7 @@ export function createHighContrastTheme(overrides?: Partial<ThemeTokens>): Enhan
 
 /**
  * Creates a compact theme
- * 
+ *
  * @param overrides - Optional theme token overrides
  * @returns Enhanced theme instance
  */
@@ -146,7 +147,7 @@ export function createCompactTheme(overrides?: Partial<ThemeTokens>): EnhancedTh
 
 /**
  * Creates a theme for a specific component
- * 
+ *
  * @param component - Component name
  * @param overrides - Optional theme token overrides
  * @returns Enhanced theme instance
@@ -197,7 +198,7 @@ export const themeFactoryRegistry = {
 
 /**
  * Creates a mock theme for testing
- * 
+ *
  * @param overrides - Optional theme token overrides
  * @returns Mock theme instance
  */
@@ -368,7 +369,7 @@ export function createMockTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme
 
 /**
  * Creates a theme factory for DI container
- * 
+ *
  * @param container - DI container instance
  * @returns Theme factory function
  */
@@ -395,7 +396,7 @@ export function createThemeFactory(container: any): (overrides?: Partial<ThemeTo
 
 /**
  * Creates a singleton theme service
- * 
+ *
  * @param config - Theme configuration
  * @returns Singleton theme service
  */
@@ -407,7 +408,7 @@ export function createSingletonTheme(config?: ThemeConfig): EnhancedTheme {
 
 /**
  * Creates a theme with runtime configuration switching
- * 
+ *
  * @param initialConfig - Initial theme configuration
  * @returns Theme with runtime switching capability
  */

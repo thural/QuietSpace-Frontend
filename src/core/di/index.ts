@@ -1,6 +1,6 @@
 /**
  * Dependency Injection System - Main Index.
- * 
+ *
  * Enterprise-grade dependency injection system inspired by Flutter patterns.
  * Provides IoC container, service registry, decorators, and providers.
  */
@@ -74,4 +74,6 @@ export {
   Container as _Container
 } from './container';
 
+// Main exports for new code
+export { Container } from './container';
 export { ServiceRegistry as _ServiceRegistry } from './registry';

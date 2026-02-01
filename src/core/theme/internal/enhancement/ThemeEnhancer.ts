@@ -1,12 +1,12 @@
 /**
  * Internal Theme Enhancer.
- * 
+ *
  * Handles theme enhancement and computed value logic.
  * Separated from composition and factory concerns.
  */
 
-import { ThemeTokens } from '../tokens';
-import { EnhancedTheme, ComposedTheme } from '../types';
+import type { ThemeTokens } from '../tokens';
+import type { EnhancedTheme, ComposedTheme } from '../types';
 
 /**
  * Theme Enhancer interface
@@ -37,7 +37,7 @@ export class ThemeEnhancer implements IThemeEnhancer {
             success: theme.tokens.colors.semantic?.success || '#10b981',
             warning: theme.tokens.colors.semantic?.warning || '#f59e0b',
             error: theme.tokens.colors.semantic?.error || '#ef4444',
-            info: theme.tokens.colors.semantic?.info || '#3b82f6',
+            info: theme.tokens.colors.semantic?.info || '#3b82f6'
         };
 
         // Add additional utilities
@@ -55,7 +55,7 @@ export class ThemeEnhancer implements IThemeEnhancer {
             // Additional utility methods can be added here
             getContrastColor: (backgroundColor: string) => this.getContrastColor(backgroundColor),
             getLightColor: (color: string, amount: number) => this.lightenColor(color, amount),
-            getDarkColor: (color: string, amount: number) => this.darkenColor(color, amount),
+            getDarkColor: (color: string, amount: number) => this.darkenColor(color, amount)
         } as EnhancedTheme;
     }
 

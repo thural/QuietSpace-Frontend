@@ -1,6 +1,6 @@
 /**
  * Media Query Utilities.
- * 
+ *
  * Responsive design utilities for media queries.
  * Provides clean separation of media query logic.
  */
@@ -20,5 +20,5 @@ export const media = {
     @media (min-width: 769px) {
       ${styles}
     }
-  `,
+  `
 };

@@ -1,6 +1,6 @@
 /**
  * SAML Auth Provider Tests
- * 
+ *
  * Tests for SAML authentication provider including:
  * - Provider initialization
  * - SAML 2.0 Web SSO implementation
@@ -10,9 +10,12 @@
  * - Error scenarios
  */
 
-import { SAMLAuthProvider, SAMLProviders } from '../providers/SAMLProvider';
-import { AuthCredentials, AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 import { jest } from '@jest/globals';
+
+import { SAMLAuthProvider, SAMLProviders } from '../providers/SAMLProvider';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { AuthCredentials } from '../types/auth.domain.types';
 
 // Mock XML handling for SAML
 const mockXMLParser = {

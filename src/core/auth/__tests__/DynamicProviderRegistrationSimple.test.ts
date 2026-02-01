@@ -1,6 +1,6 @@
 /**
  * Simple Dynamic Provider Registration Tests
- * 
+ *
  * Tests for runtime provider registration without importing problematic modules
  */
 

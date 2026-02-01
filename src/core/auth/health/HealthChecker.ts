@@ -1,8 +1,8 @@
 /**
  * Health Check System
- * 
+ *
  * Provides provider health monitoring, automatic fallback, and circuit breaker patterns
- * 
+ *
  * Features:
  * - Provider health monitoring
  * - Circuit breaker pattern
@@ -12,8 +12,8 @@
  * - Provider recovery detection
  */
 
-import { IAuthProvider } from '../interfaces/authInterfaces';
-import { AuthResult } from '../types/auth.domain.types';
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthResult } from '../types/auth.domain.types';
 
 /**
  * Health check result
@@ -79,7 +79,7 @@ export class CircuitBreaker {
     private failures = 0;
     private lastFailureTime?: Date;
     private nextAttempt?: Date;
-    private config: CircuitBreakerConfig;
+    private readonly config: CircuitBreakerConfig;
 
     constructor(config: CircuitBreakerConfig) {
         this.config = config;
@@ -187,8 +187,8 @@ export class CircuitBreaker {
  * Provider Health Monitor
  */
 export class ProviderHealthMonitor {
-    private config: ProviderHealthConfig;
-    private circuitBreaker: CircuitBreaker;
+    private readonly config: ProviderHealthConfig;
+    private readonly circuitBreaker: CircuitBreaker;
     private metrics: HealthMetrics;
     private healthHistory: HealthCheckResult[] = [];
     private checkTimer?: NodeJS.Timeout;
@@ -394,14 +394,14 @@ export class ProviderHealthMonitor {
 
 /**
  * Health Check Manager
- * 
+ *
  * Manages health checks for multiple providers with automatic fallback
  */
 export class HealthCheckManager {
-    private monitors: Map<string, ProviderHealthMonitor> = new Map();
-    private providers: Map<string, IAuthProvider> = new Map();
-    private fallbackChains: Map<string, string[]> = new Map();
-    private healthCheckCallbacks: Array<(result: HealthCheckResult) => void> = [];
+    private readonly monitors: Map<string, ProviderHealthMonitor> = new Map();
+    private readonly providers: Map<string, IAuthProvider> = new Map();
+    private readonly fallbackChains: Map<string, string[]> = new Map();
+    private readonly healthCheckCallbacks: ((result: HealthCheckResult) => void)[] = [];
 
     /**
      * Registers a provider for health monitoring

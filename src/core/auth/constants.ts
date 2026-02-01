@@ -1,6 +1,6 @@
 /**
  * Authentication System Constants
- * 
+ *
  * Constants and enums for the authentication system.
  */
 

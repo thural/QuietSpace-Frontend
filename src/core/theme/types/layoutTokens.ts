@@ -1,6 +1,6 @@
 /**
  * Layout Token Types.
- * 
+ *
  * Type definitions for layout-related theme tokens.
  * Provides clean separation of layout type definitions.
  */

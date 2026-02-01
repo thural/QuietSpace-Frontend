@@ -1,12 +1,13 @@
 /**
  * Security Plugin for Authentication
- * 
+ *
  * Integrates with the existing EnterpriseSecurityService to enhance security.
  * Bridges the auth plugin system with the comprehensive security infrastructure.
  */
 
-import {AuthEvent, IAuthPlugin, IAuthService} from '../interfaces/authInterfaces';
-import {EnterpriseSecurityService} from '../security/EnterpriseSecurityService';
+import { EnterpriseSecurityService } from '../security/EnterpriseSecurityService';
+
+import type { AuthEvent, IAuthPlugin, IAuthService } from '../interfaces/authInterfaces';
 
 export class SecurityPlugin implements IAuthPlugin {
     readonly name = 'security';
@@ -15,7 +16,7 @@ export class SecurityPlugin implements IAuthPlugin {
 
         private authService: IAuthService | null = null;
     private enterpriseSecurityService: EnterpriseSecurityService | null = null;
-    private pluginFailedAttempts = new Map<string, number>();
+    private readonly pluginFailedAttempts = new Map<string, number>();
     private readonly PLUGIN_MAX_FAILED_ATTEMPTS = 3; // Separate from enterprise service
 
     /**
@@ -23,13 +24,13 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     async initialize(authService: IAuthService): Promise<void> {
         this.authService = authService;
-        
+
         try {
             // Use the existing EnterpriseSecurityService
             this.enterpriseSecurityService = new EnterpriseSecurityService();
-            console.log(`[SecurityPlugin] Initialized with existing EnterpriseSecurityService`);
+            console.log('[SecurityPlugin] Initialized with existing EnterpriseSecurityService');
         } catch (error) {
-            console.warn(`[SecurityPlugin] Could not initialize EnterpriseSecurityService:`, error);
+            console.warn('[SecurityPlugin] Could not initialize EnterpriseSecurityService:', error);
             this.enterpriseSecurityService = null;
         }
     }
@@ -64,7 +65,7 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     private preAuthenticateCheck(providerName: string, credentials: any): { allowed: boolean; reason?: string } {
         const userId = credentials.email || credentials.username || 'anonymous';
-        
+
         // Check plugin-level blocking first
         const pluginAttempts = this.pluginFailedAttempts.get(userId) || 0;
         if (pluginAttempts >= this.PLUGIN_MAX_FAILED_ATTEMPTS) {
@@ -89,7 +90,7 @@ export class SecurityPlugin implements IAuthPlugin {
                     });
                 }
             } catch (error) {
-                console.warn(`[SecurityPlugin] Failed to check current session:`, error);
+                console.warn('[SecurityPlugin] Failed to check current session:', error);
             }
         }
 
@@ -125,7 +126,7 @@ export class SecurityPlugin implements IAuthPlugin {
                     };
                 }
             } catch (error) {
-                console.warn(`[SecurityPlugin] Enterprise security check failed:`, error);
+                console.warn('[SecurityPlugin] Enterprise security check failed:', error);
                 // Fall back to plugin-level checks only
             }
         }
@@ -138,7 +139,7 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     private handleAuthFailure(providerName: string, credentials: any, error: any): void {
         const userId = credentials.email || credentials.username || 'anonymous';
-        
+
         // Track plugin-level failures
         const currentAttempts = (this.pluginFailedAttempts.get(userId) || 0) + 1;
         this.pluginFailedAttempts.set(userId, currentAttempts);
@@ -151,10 +152,10 @@ export class SecurityPlugin implements IAuthPlugin {
                 this.authService.globalSignout().then(() => {
                     console.log(`[SecurityPlugin] Global signout triggered for ${userId} due to multiple failed attempts`);
                 }).catch(signoutError => {
-                    console.warn(`[SecurityPlugin] Failed to trigger global signout:`, signoutError);
+                    console.warn('[SecurityPlugin] Failed to trigger global signout:', signoutError);
                 });
             } catch (error) {
-                console.warn(`[SecurityPlugin] Error triggering global signout:`, error);
+                console.warn('[SecurityPlugin] Error triggering global signout:', error);
             }
         }
 
@@ -178,7 +179,7 @@ export class SecurityPlugin implements IAuthPlugin {
                 // Let enterprise service handle the security event
                 this.enterpriseSecurityService.detectSuspiciousActivity([securityEvent]);
             } catch (error) {
-                console.warn(`[SecurityPlugin] Failed to report to enterprise security:`, error);
+                console.warn('[SecurityPlugin] Failed to report to enterprise security:', error);
             }
         }
     }
@@ -188,12 +189,12 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     private handleAuthSuccess(providerName: string, session: any): void {
         const userId = session.user?.id || session.email || 'anonymous';
-        
+
         // Reset plugin-level counters
         this.pluginFailedAttempts.delete(userId);
-        
+
         console.log(`[SecurityPlugin] Auth success for ${userId} via ${providerName} - reset failure count`);
-        
+
         // Notify enterprise service of successful auth for risk scoring
         if (this.enterpriseSecurityService) {
             try {
@@ -207,10 +208,10 @@ export class SecurityPlugin implements IAuthPlugin {
                         userAgent: navigator.userAgent
                     }
                 };
-                
+
                 this.enterpriseSecurityService.detectSuspiciousActivity([successEvent]);
             } catch (error) {
-                console.warn(`[SecurityPlugin] Failed to report auth success to enterprise security:`, error);
+                console.warn('[SecurityPlugin] Failed to report auth success to enterprise security:', error);
             }
         }
     }
@@ -219,17 +220,17 @@ export class SecurityPlugin implements IAuthPlugin {
      * Handles suspicious activity detection
      */
     private async handleSuspiciousActivity(event: AuthEvent): Promise<void> {
-        console.error(`[SecurityPlugin] Suspicious activity detected:`, event);
-        
+        console.error('[SecurityPlugin] Suspicious activity detected:', event);
+
         // Forward to enterprise security service if available
         if (this.enterpriseSecurityService) {
             try {
                 this.enterpriseSecurityService.detectSuspiciousActivity([event]);
             } catch (error) {
-                console.error(`[SecurityPlugin] Failed to report suspicious activity:`, error);
+                console.error('[SecurityPlugin] Failed to report suspicious activity:', error);
             }
         }
-        
+
         // Additional plugin-specific handling could go here
         // For example: sending alerts, blocking IPs, etc.
     }
@@ -273,7 +274,7 @@ export class SecurityPlugin implements IAuthPlugin {
                 enterpriseStats = this.enterpriseSecurityService.getSecurityMonitoringData();
                 integrationStatus = 'full';
             } catch (error) {
-                console.warn(`[SecurityPlugin] Could not get enterprise stats:`, error);
+                console.warn('[SecurityPlugin] Could not get enterprise stats:', error);
                 integrationStatus = 'partial';
             }
         }
@@ -283,7 +284,7 @@ export class SecurityPlugin implements IAuthPlugin {
             try {
                 authServiceCapabilities = this.authService.getCapabilities();
             } catch (error) {
-                console.warn(`[SecurityPlugin] Could not get auth service capabilities:`, error);
+                console.warn('[SecurityPlugin] Could not get auth service capabilities:', error);
             }
         }
 
@@ -302,7 +303,7 @@ export class SecurityPlugin implements IAuthPlugin {
         this.pluginFailedAttempts.clear();
         this.enterpriseSecurityService = null;
         this.authService = null;
-        console.log(`[SecurityPlugin] Cleaned up security plugin`);
+        console.log('[SecurityPlugin] Cleaned up security plugin');
     }
 
     /**
@@ -310,7 +311,7 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     getMetadata(): Record<string, any> {
         const stats = this.getSecurityStats();
-        
+
         return {
             name: this.name,
             version: this.version,

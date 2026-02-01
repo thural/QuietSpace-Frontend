@@ -1,11 +1,11 @@
 /**
  * Enterprise authentication interfaces
- * 
+ *
  * Defines contracts for modular authentication components
  * following dependency inversion and clean architecture principles.
  */
 
-import {
+import type {
     AuthCredentials,
     AuthResult,
     AuthSession,
@@ -19,7 +19,7 @@ export type { AuthEvent, AuthErrorType, AuthProviderType, AuthCredentials, AuthR
 
 /**
  * Authentication provider interface
- * 
+ *
  * Defines contract for all authentication providers
  * enabling easy swapping and testing of different auth mechanisms.
  */
@@ -76,7 +76,7 @@ export interface IAuthProvider {
 
 /**
  * Authentication repository interface
- * 
+ *
  * Defines contract for data access layer
  * enabling different storage mechanisms and caching strategies.
  */
@@ -114,7 +114,7 @@ export interface IAuthRepository {
 
 /**
  * Authentication validator interface
- * 
+ *
  * Defines contract for validation strategies
  * enabling different validation rules and security policies.
  */
@@ -150,7 +150,7 @@ export interface IAuthValidator {
 
 /**
  * Authentication logger interface
- * 
+ *
  * Defines contract for logging strategies
  * enabling different logging destinations and formats.
  */
@@ -191,7 +191,7 @@ export interface IAuthLogger {
 
 /**
  * Authentication metrics interface
- * 
+ *
  * Defines contract for metrics collection
  * enabling performance monitoring and security analytics.
  */
@@ -232,7 +232,7 @@ export interface IAuthMetrics {
 
 /**
  * Authentication security service interface
- * 
+ *
  * Defines contract for security-related operations
  * enabling different security strategies and threat detection.
  */
@@ -272,7 +272,7 @@ export interface IAuthSecurityService {
 
 /**
  * Authentication configuration interface
- * 
+ *
  * Defines contract for configuration management
  * enabling environment-specific and feature-specific settings.
  */
@@ -310,7 +310,7 @@ export interface IAuthConfig {
 
 /**
  * Main authentication service interface
- * 
+ *
  * Defines the contract for the primary authentication service
  * that orchestrates all authentication operations.
  */
@@ -353,7 +353,7 @@ export interface IAuthService {
 
 /**
  * Authentication plugin interface
- * 
+ *
  * Defines contract for extensible authentication plugins
  * enabling runtime addition of new features.
  */

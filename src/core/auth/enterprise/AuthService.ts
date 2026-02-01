@@ -1,12 +1,11 @@
 /**
  * Enterprise authentication service
- * 
+ *
  * Implements modular authentication with dependency injection
  * using the existing Inversify container for consistency.
  */
 
-import { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
-
+import type { IAuthProvider, IAuthValidator } from '../interfaces/authInterfaces';
 import type {
     IAuthConfig,
     IAuthLogger,
@@ -16,11 +15,12 @@ import type {
     IAuthSecurityService,
     IAuthService
 } from '../interfaces/authInterfaces';
-import { IAuthProvider, IAuthValidator } from '../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
+
 
 /**
  * Enterprise authentication service implementation
- * 
+ *
  * Provides comprehensive authentication with:
  * - Enterprise security features
  * - Comprehensive logging and metrics

@@ -1,11 +1,12 @@
 /**
  * Utility Hooks.
- * 
+ *
  * Custom hooks for theme utilities and responsive styles.
  * Provides clean separation of utility hook logic.
  */
 
 import { useMemo } from 'react';
+
 import { useTheme } from './themeHooks';
 
 /**
@@ -21,6 +22,6 @@ export const useResponsiveStyles = () => {
             return keys.reduce((obj: any, key) => obj?.[key], theme.colors);
         },
         getTypography: (key: keyof typeof theme.typography) => theme.typography[key],
-        getBreakpoint: (key: keyof typeof theme.breakpoints) => theme.breakpoints[key],
+        getBreakpoint: (key: keyof typeof theme.breakpoints) => theme.breakpoints[key]
     }), [theme]);
 };

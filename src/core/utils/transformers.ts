@@ -1,6 +1,6 @@
 /**
  * Data Transformation Utilities.
- * 
+ *
  * Helper functions for transforming data between different layers.
  * Ensures consistent data mapping and validation.
  */
@@ -33,7 +33,7 @@ export const transformError = (error: any): Error => {
     // API error
     const statusCode = error.response.status;
     const message = error.response.data?.message || error.message;
-    
+
     switch (statusCode) {
       case 400:
         return new ValidationError(message);
@@ -64,7 +64,7 @@ export const transformError = (error: any): Error => {
  */
 export const sanitizeInput = (input: string): string => {
   if (!input) return '';
-  
+
   return input
     .trim()
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^>]*>)*>/gi, '')
@@ -85,10 +85,10 @@ export const isValidEmail = (email: string): boolean => {
  */
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };

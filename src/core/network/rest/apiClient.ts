@@ -1,14 +1,16 @@
 /**
  * API Client Configuration.
- * 
+ *
  * Centralized Axios wrapper for all HTTP requests.
  * Includes interceptors for authentication and logging.
- * 
+ *
  * DEPRECATED: This file uses direct store access and should be replaced
  * with DI-based authentication. Use createDIAuthenticatedApiClient instead.
  */
 
-import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
+
+import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 // Extend axios config to include metadata
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -26,8 +28,8 @@ export const apiClient: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 /**
@@ -84,7 +86,7 @@ apiClient.interceptors.response.use(
         // TODO: Replace with DI-based token refresh
         // This is a temporary implementation for backward compatibility
         const { data } = await apiClient.post('/auth/refresh-token');
-        const newToken = (data as any)?.accessToken;
+        const newToken = (data)?.accessToken;
 
         if (newToken) {
           // Update token in store

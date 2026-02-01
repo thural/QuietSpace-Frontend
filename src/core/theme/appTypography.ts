@@ -1,6 +1,6 @@
 /**
  * Application Typography System.
- * 
+ *
  * Defines font sizes, weights, and line heights for consistent typography.
  * Follows design system guidelines for readability and hierarchy.
  */
@@ -39,7 +39,7 @@ export const typography = {
             'Inter',
             'system-ui',
             'sans-serif'
-        ],
+        ]
     },
 
     // Font Sizes
@@ -56,7 +56,7 @@ export const typography = {
         '6xl': '3.75rem', // 60px
         '7xl': '4.5rem',  // 72px
         '8xl': '6rem',    // 96px
-        '9xl': '8rem',    // 128px
+        '9xl': '8rem'    // 128px
     },
 
     // Font Weights
@@ -69,7 +69,7 @@ export const typography = {
         semibold: '600',
         bold: '700',
         extrabold: '800',
-        black: '900',
+        black: '900'
     },
 
     // Line Heights
@@ -78,7 +78,7 @@ export const typography = {
         snug: '1.375',
         normal: '1.5',
         relaxed: '1.625',
-        loose: '2',
+        loose: '2'
     },
 
     // Letter Spacing
@@ -88,7 +88,7 @@ export const typography = {
         normal: '0em',
         wide: '0.025em',
         wider: '0.05em',
-        widest: '0.1em',
+        widest: '0.1em'
     },
 
     // Typography Scale for Components
@@ -98,7 +98,7 @@ export const typography = {
             fontSize: '4.5rem',
             fontWeight: '800',
             lineHeight: '1.1',
-            letterSpacing: '-0.02em',
+            letterSpacing: '-0.02em'
         },
 
         // Heading typography
@@ -106,37 +106,37 @@ export const typography = {
             fontSize: '3rem',
             fontWeight: '700',
             lineHeight: '1.2',
-            letterSpacing: '-0.025em',
+            letterSpacing: '-0.025em'
         },
         h2: {
             fontSize: '2.25rem',
             fontWeight: '600',
             lineHeight: '1.3',
-            letterSpacing: '-0.025em',
+            letterSpacing: '-0.025em'
         },
         h3: {
             fontSize: '1.875rem',
             fontWeight: '600',
             lineHeight: '1.4',
-            letterSpacing: '-0.025em',
+            letterSpacing: '-0.025em'
         },
         h4: {
             fontSize: '1.5rem',
             fontWeight: '600',
             lineHeight: '1.4',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
         h5: {
             fontSize: '1.25rem',
             fontWeight: '600',
             lineHeight: '1.5',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
         h6: {
             fontSize: '1.125rem',
             fontWeight: '600',
             lineHeight: '1.5',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
 
         // Body typography
@@ -144,19 +144,19 @@ export const typography = {
             fontSize: '1rem',
             fontWeight: '400',
             lineHeight: '1.6',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
         body2: {
             fontSize: '0.875rem',
             fontWeight: '400',
             lineHeight: '1.6',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
         body3: {
             fontSize: '0.75rem',
             fontWeight: '400',
             lineHeight: '1.5',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
 
         // UI typography
@@ -164,20 +164,20 @@ export const typography = {
             fontSize: '0.75rem',
             fontWeight: '500',
             lineHeight: '1.4',
-            letterSpacing: '0.025em',
+            letterSpacing: '0.025em'
         },
         overline: {
             fontSize: '0.75rem',
             fontWeight: '600',
             lineHeight: '1.4',
             letterSpacing: '0.1em',
-            textTransform: 'uppercase' as const,
+            textTransform: 'uppercase' as const
         },
         label: {
             fontSize: '0.875rem',
             fontWeight: '500',
             lineHeight: '1.4',
-            letterSpacing: '0em',
+            letterSpacing: '0em'
         },
 
         // Special typography
@@ -185,15 +185,15 @@ export const typography = {
             fontSize: '0.875rem',
             fontWeight: '400',
             lineHeight: '1.5',
-            fontFamily: 'JetBrains Mono, monospace',
+            fontFamily: 'JetBrains Mono, monospace'
         },
         blockquote: {
             fontSize: '1.125rem',
             fontWeight: '400',
             lineHeight: '1.7',
-            fontStyle: 'italic',
-        },
-    },
+            fontStyle: 'italic'
+        }
+    }
 };
 
 export default typography;

@@ -1,14 +1,15 @@
 /**
  * WebSocket Message Router Service.
- * 
+ *
  * Handles feature-based message routing, validation, and transformation
  * for enterprise WebSocket communications.
  */
 
+import { CacheService } from '../../cache';
 import { Injectable, Inject } from '../../di';
 import { TYPES } from '../../di/types';
 import { LoggerService } from '../../services/ThemeService';
-import { CacheService } from '../../cache';
+
 import { WebSocketMessage } from './EnterpriseWebSocketService';
 
 export interface MessageRoute {
@@ -21,17 +22,11 @@ export interface MessageRoute {
   enabled: boolean;
 }
 
-export interface MessageHandler {
-  (message: WebSocketMessage): Promise<void> | void;
-}
+export type MessageHandler = (message: WebSocketMessage) => Promise<void> | void;
 
-export interface MessageValidator {
-  (message: WebSocketMessage): boolean | Promise<boolean>;
-}
+export type MessageValidator = (message: WebSocketMessage) => boolean | Promise<boolean>;
 
-export interface MessageTransformer {
-  (message: WebSocketMessage): WebSocketMessage | Promise<WebSocketMessage>;
-}
+export type MessageTransformer = (message: WebSocketMessage) => WebSocketMessage | Promise<WebSocketMessage>;
 
 export interface RoutingMetrics {
   totalMessages: number;
@@ -77,14 +72,14 @@ export interface IMessageRouter {
  */
 @Injectable()
 export class MessageRouter implements IMessageRouter {
-  private routes: Map<string, MessageRoute[]> = new Map();
+  private readonly routes: Map<string, MessageRoute[]> = new Map();
   private metrics: RoutingMetrics;
-  private config: MessageRouterConfig;
+  private readonly config: MessageRouterConfig;
   private deadLetterQueue: WebSocketMessage[] = [];
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
-    private logger: LoggerService
+    @Inject(TYPES.CACHE_SERVICE) private readonly cache: CacheService,
+    private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();
@@ -93,14 +88,14 @@ export class MessageRouter implements IMessageRouter {
 
   registerRoute(route: MessageRoute): void {
     const key = this.getRouteKey(route.feature, route.messageType);
-    
+
     if (!this.routes.has(key)) {
       this.routes.set(key, []);
     }
 
     const routeList = this.routes.get(key)!;
     routeList.push(route);
-    
+
     // Sort by priority (higher priority first)
     routeList.sort((a, b) => b.priority - a.priority);
 
@@ -110,13 +105,13 @@ export class MessageRouter implements IMessageRouter {
   unregisterRoute(feature: string, messageType: string): void {
     const key = this.getRouteKey(feature, messageType);
     this.routes.delete(key);
-    
+
     this.logger.info(`[MessageRouter] Unregistered route: ${key}`);
   }
 
   async routeMessage(message: WebSocketMessage): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       this.metrics.totalMessages++;
 
@@ -145,7 +140,7 @@ export class MessageRouter implements IMessageRouter {
 
       // Process message through the route
       await this.processMessage(message, enabledRoute);
-      
+
       // Update metrics
       this.updateMetrics(message.feature, Date.now() - startTime, true);
       this.metrics.messagesRouted++;
@@ -153,23 +148,23 @@ export class MessageRouter implements IMessageRouter {
       this.logger.debug(`[MessageRouter] Routed message: ${key}`);
 
     } catch (error) {
-      this.logger.error(`[MessageRouter] Failed to route message:`, error);
-      
+      this.logger.error('[MessageRouter] Failed to route message:', error);
+
       // Update error metrics
       this.updateMetrics(message.feature, Date.now() - startTime, false);
-      
+
       // Add to dead letter queue if enabled
       if (this.config.deadLetterQueue) {
         this.deadLetterQueue.push(message);
       }
-      
+
       throw error;
     }
   }
 
   getRoutes(): MessageRoute[] {
     const allRoutes: MessageRoute[] = [];
-    
+
     this.routes.forEach(routeList => {
       allRoutes.push(...routeList);
     });
@@ -193,12 +188,12 @@ export class MessageRouter implements IMessageRouter {
   enableRoute(feature: string, messageType: string, enabled: boolean): void {
     const key = this.getRouteKey(feature, messageType);
     const routes = this.routes.get(key);
-    
+
     if (routes) {
       routes.forEach(route => {
         route.enabled = enabled;
       });
-      
+
       this.logger.info(`[MessageRouter] ${enabled ? 'Enabled' : 'Disabled'} routes for: ${key}`);
     }
   }
@@ -301,7 +296,7 @@ export class MessageRouter implements IMessageRouter {
     }
 
     // Update overall average processing time
-    this.metrics.averageProcessingTime = 
+    this.metrics.averageProcessingTime =
       (this.metrics.averageProcessingTime * (this.metrics.totalMessages - 1) + processingTime) / this.metrics.totalMessages;
   }
 
@@ -350,7 +345,7 @@ export class MessageRouter implements IMessageRouter {
 
   private async handleHeartbeat(message: WebSocketMessage): Promise<void> {
     this.logger.debug('[MessageRouter] Heartbeat received from:', message.metadata?.source);
-    
+
     // Update connection health in cache
     await this.cache.set(`ws:heartbeat:${message.metadata?.source || 'unknown'}`, {
       lastHeartbeat: new Date(),
@@ -362,7 +357,7 @@ export class MessageRouter implements IMessageRouter {
 
   private async handlePing(message: WebSocketMessage): Promise<void> {
     this.logger.debug('[MessageRouter] Ping received, sending pong');
-    
+
     // In a real implementation, you would send a pong response
     // For now, just log and cache
     await this.cache.set(`ws:ping:${message.id}`, {
@@ -375,7 +370,7 @@ export class MessageRouter implements IMessageRouter {
 
   private async handlePong(message: WebSocketMessage): Promise<void> {
     this.logger.debug('[MessageRouter] Pong received');
-    
+
     // Update latency measurement
     if (message.metadata?.sentAt) {
       const latency = Date.now() - new Date(message.metadata.sentAt).getTime();
@@ -390,7 +385,7 @@ export class MessageRouter implements IMessageRouter {
 
   private async handleError(message: WebSocketMessage): Promise<void> {
     this.logger.error('[MessageRouter] Error message received:', message.payload);
-    
+
     // Cache error for analysis
     await this.cache.set(`ws:error:${message.id}`, {
       error: message.payload,

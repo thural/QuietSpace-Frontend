@@ -1,21 +1,26 @@
 /**
  * WebSocket DI Container.
- * 
+ *
  * Dependency injection container for WebSocket services following
  * enterprise architecture patterns.
  */
 
-import { Container } from '../../di';
+import { ICacheServiceManager } from '../../cache';
 import { TYPES } from '../../di/types';
-import { EnterpriseWebSocketService, IEnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
-import { ConnectionManager, IConnectionManager } from '../managers/ConnectionManager';
-import { MessageRouter, IMessageRouter } from '../services/MessageRouter';
-import { CacheServiceManager } from '../../cache';
 import { LoggerService } from '../../services/LoggerService';
+import { ConnectionManager } from '../managers/ConnectionManager';
+import { EnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
+import { MessageRouter } from '../services/MessageRouter';
+
+import type { Container } from '../../di';
+import type { IConnectionManager } from '../managers/ConnectionManager';
+import type { IEnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
+import type { IMessageRouter } from '../services/MessageRouter';
+
 
 /**
  * Create WebSocket Container
- * 
+ *
  * Creates and configures the WebSocket dependency injection container
  * with all WebSocket-related services.
  */
@@ -64,7 +69,7 @@ export function createWebSocketContainer(
 
 /**
  * Register WebSocket Services
- * 
+ *
  * Registers WebSocket services with the main application container.
  * This function should be called during application initialization.
  */
@@ -105,7 +110,7 @@ export function registerWebSocketServices(
 
 /**
  * Initialize WebSocket Services
- * 
+ *
  * Initializes WebSocket services and performs startup configuration.
  * This function should be called after DI container setup.
  */
@@ -128,8 +133,8 @@ export async function initializeWebSocketServices(
       TYPES.MESSAGE_ROUTER
     );
 
-    const cacheService = container.get<CacheServiceManager>(CacheServiceManager);
-    const loggerService = container.get<LoggerService>(LoggerService);
+    const cacheService = container.get<ICacheServiceManager>(TYPES.CACHE_SERVICE);
+    const loggerService = container.get<LoggerService>(TYPES.LOGGER_SERVICE);
 
     // Initialize message router with default routes
     console.log('📡 Setting up message routing...');
@@ -146,8 +151,7 @@ export async function initializeWebSocketServices(
       },
       validator: (message) => {
         return !!(
-          message.payload &&
-          message.payload.chatId &&
+          message.payload?.chatId &&
           message.payload.content &&
           message.payload.senderId
         );
@@ -202,7 +206,7 @@ export async function initializeWebSocketServices(
 
 /**
  * Get WebSocket Service
- * 
+ *
  * Convenience function to get the WebSocket service from the container.
  */
 export function getWebSocketService(
@@ -215,7 +219,7 @@ export function getWebSocketService(
 
 /**
  * Get Connection Manager
- * 
+ *
  * Convenience function to get the connection manager from the container.
  */
 export function getConnectionManager(
@@ -228,7 +232,7 @@ export function getConnectionManager(
 
 /**
  * Get Message Router
- * 
+ *
  * Convenience function to get the message router from the container.
  */
 export function getMessageRouter(
@@ -241,11 +245,11 @@ export function getMessageRouter(
 
 /**
  * WebSocket Service Factory
- * 
+ *
  * Factory for creating WebSocket services with specific configurations.
  */
 export class WebSocketServiceFactory {
-  constructor(private container: Container) { }
+  constructor(private readonly container: Container) { }
 
   /**
    * Create a WebSocket service for a specific feature
@@ -286,7 +290,7 @@ export class WebSocketServiceFactory {
 
 /**
  * WebSocket Health Check
- * 
+ *
  * Performs health checks on all WebSocket services.
  */
 export async function performWebSocketHealthCheck(

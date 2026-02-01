@@ -186,7 +186,7 @@ export const useGlobalLoading = () => {
  */
 export const useQuerySubscription = (key: string) => {
   const queryState = useQueryStateStore(state => state.queries[key]);
-  
+
   return {
     isLoading: queryState?.isLoading ?? false,
     isFetching: queryState?.isFetching ?? false,
@@ -200,7 +200,7 @@ export const useQuerySubscription = (key: string) => {
  */
 export const useMutationSubscription = (key: string) => {
   const mutationState = useQueryStateStore(state => state.mutations[key]);
-  
+
   return {
     isLoading: mutationState?.isLoading ?? false,
     isIdle: mutationState?.isIdle ?? true

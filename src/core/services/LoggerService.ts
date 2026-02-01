@@ -2,12 +2,12 @@ import { LogLevel, type ILoggerService } from './interfaces';
 
 /**
  * Legacy Logger Service Implementation
- * 
+ *
  * @deprecated Use createLogger() factory function instead
  * This class is maintained for backward compatibility only.
  */
 export class LoggerService implements ILoggerService {
-    private _prefix = '[LoggerService]';
+    private readonly _prefix = '[LoggerService]';
 
     /**
      * Logs informational messages
@@ -137,7 +137,7 @@ export class LoggerService implements ILoggerService {
 
 /**
  * Factory function to create logger service
- * 
+ *
  * @deprecated Use createLogger() from the new logger module instead
  */
 export function createLoggerService(): ILoggerService {

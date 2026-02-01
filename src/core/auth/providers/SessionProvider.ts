@@ -1,8 +1,8 @@
 /**
  * Session-Based Authentication Provider
- * 
+ *
  * Implements cookie-based session management with server-side validation
- * 
+ *
  * Features:
  * - Cookie-based session management
  * - Server-side session validation
@@ -13,8 +13,10 @@
  * - Secure cookie management
  */
 
-import { AuthCredentials, AuthErrorType, AuthProviderType, AuthResult, AuthSession } from '../types/auth.domain.types';
-import { IAuthProvider } from '../interfaces/authInterfaces';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
  * Session configuration
@@ -71,7 +73,7 @@ export class SessionAuthProvider implements IAuthProvider {
 
     private currentSession?: SessionData;
     private refreshTimer?: NodeJS.Timeout;
-    private storageKey = 'auth_session_data';
+    private readonly storageKey = 'auth_session_data';
     private syncChannel?: BroadcastChannel;
 
     constructor() {

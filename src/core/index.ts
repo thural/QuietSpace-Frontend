@@ -1,6 +1,6 @@
 /**
  * Core System Black Box Index
- * 
+ *
  * Provides clean public API for all core modules following Black Box pattern.
  * Only interfaces, factory functions, and essential utilities are exported.
  * Implementation details and internal modules are properly hidden.

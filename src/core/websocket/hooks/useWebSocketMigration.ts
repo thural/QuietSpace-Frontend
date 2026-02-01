@@ -1,16 +1,17 @@
 /**
  * WebSocket Migration Hook
- * 
+ *
  * Utility hook to help migrate from legacy WebSocket implementations
  * to the new standardized enterprise WebSocket hooks.
  * Provides backward compatibility and gradual migration capabilities.
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useFeatureWebSocket } from './useFeatureWebSocket';
+
 import { useChatWebSocket } from './useChatWebSocketHook';
-import { useNotificationWebSocket } from './useNotificationWebSocketHook';
+import { useFeatureWebSocket } from './useFeatureWebSocket';
 import { useFeedWebSocket } from './useFeedWebSocketHook';
+import { useNotificationWebSocket } from './useNotificationWebSocketHook';
 
 // Migration configuration
 export interface WebSocketMigrationConfig {
@@ -59,23 +60,23 @@ export interface LegacyWebSocket {
 export interface UseWebSocketMigrationReturn {
   // Current state
   state: WebSocketMigrationState;
-  
+
   // WebSocket operations (unified interface)
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   sendMessage: (message: any) => Promise<void>;
   subscribe: (callback: (message: any) => void) => () => void;
-  
+
   // State getters
   isConnected: boolean;
   isConnecting: boolean;
   error: string | null;
-  
+
   // Migration controls
   switchToLegacy: () => void;
   switchToEnterprise: () => void;
   switchToHybrid: () => void;
-  
+
   // Utilities
   addMigrationEvent: (type: MigrationEvent['type'], data: any, message: string) => void;
   clearMigrationEvents: () => void;
@@ -187,7 +188,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
       isUsingLegacy: true,
       isUsingEnterprise: false
     }));
-    
+
     addMigrationEvent('mode_switch', { newMode: 'legacy' }, 'Switched to legacy implementation');
   }, [addMigrationEvent]);
 
@@ -199,7 +200,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
       isUsingLegacy: false,
       isUsingEnterprise: true
     }));
-    
+
     addMigrationEvent('mode_switch', { newMode: 'enterprise' }, 'Switched to enterprise implementation');
   }, [addMigrationEvent]);
 
@@ -211,7 +212,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
       isUsingLegacy: useLegacyImplementation,
       isUsingEnterprise: !useLegacyImplementation
     }));
-    
+
     addMigrationEvent('mode_switch', { newMode: 'hybrid' }, 'Switched to hybrid mode');
   }, [useLegacyImplementation, addMigrationEvent]);
 
@@ -237,7 +238,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
       if (state.isUsingEnterprise) {
         enterpriseStartTimeRef.current = Date.now();
         await enterpriseHook.connect();
-        
+
         const latency = Date.now() - enterpriseStartTimeRef.current;
         setState(prev => ({
           ...prev,
@@ -247,15 +248,15 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
           }
         }));
 
-        addMigrationEvent('performance_comparison', { 
-          type: 'enterprise_connect', 
-          latency 
+        addMigrationEvent('performance_comparison', {
+          type: 'enterprise_connect',
+          latency
         }, `Enterprise connect took ${latency}ms`);
 
       } else if (state.isUsingLegacy) {
         legacyStartTimeRef.current = Date.now();
         await legacyImpl.connect();
-        
+
         const latency = Date.now() - legacyStartTimeRef.current;
         setState(prev => ({
           ...prev,
@@ -265,9 +266,9 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
           }
         }));
 
-        addMigrationEvent('performance_comparison', { 
-          type: 'legacy_connect', 
-          latency 
+        addMigrationEvent('performance_comparison', {
+          type: 'legacy_connect',
+          latency
         }, `Legacy connect took ${latency}ms`);
 
       } else {
@@ -275,9 +276,9 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
         try {
           enterpriseStartTimeRef.current = Date.now();
           await enterpriseHook.connect();
-          
+
           const enterpriseLatency = Date.now() - enterpriseStartTimeRef.current;
-          
+
           // Set fallback timeout
           if (enableFallback) {
             fallbackTimeoutRef.current = setTimeout(() => {
@@ -386,7 +387,7 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
   const getMigrationReport = useCallback((): MigrationReport => {
     const fallbackCount = state.migrationEvents.filter(e => e.type === 'fallback_triggered').length;
     const performanceEvents = state.migrationEvents.filter(e => e.type === 'performance_comparison');
-    
+
     let recommendedMode: 'legacy' | 'hybrid' | 'enterprise' = 'enterprise';
     const issues: string[] = [];
 
@@ -443,8 +444,8 @@ export function useWebSocketMigration(config: WebSocketMigrationConfig): UseWebS
 /**
  * Hook for managing multiple feature migrations
  */
-export function useMultiFeatureMigration(features: Array<'chat' | 'notification' | 'feed'>) {
-  const migrations = features.map(feature => 
+export function useMultiFeatureMigration(features: ('chat' | 'notification' | 'feed')[]) {
+  const migrations = features.map(feature =>
     useWebSocketMigration({ feature })
   );
 

@@ -1,6 +1,6 @@
 /**
  * Enterprise security service implementation
- * 
+ *
  * Implements security operations with:
  * - IP detection
  * - Rate limiting
@@ -8,7 +8,7 @@
  * - Security headers validation
  */
 
-import { IAuthSecurityService } from '../interfaces/authInterfaces';
+import type { IAuthSecurityService } from '../interfaces/authInterfaces';
 
 /**
  * Enterprise security service implementation
@@ -16,8 +16,8 @@ import { IAuthSecurityService } from '../interfaces/authInterfaces';
 export class EnterpriseSecurityService implements IAuthSecurityService {
     readonly name = 'EnterpriseSecurityService';
 
-    private rateLimitStore = new Map<string, { attempts: number; windowStart: number }>();
-    private blockedIPs = new Set<string>();
+    private readonly rateLimitStore = new Map<string, { attempts: number; windowStart: number }>();
+    private readonly blockedIPs = new Set<string>();
 
     /**
      * Detects suspicious activity patterns
@@ -28,7 +28,7 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
         // Analyze patterns
         for (const event of events) {
             const ipAddress = event.details?.ipAddress;
-            
+
             if (ipAddress) {
                 // Multiple failed attempts from same IP
                 const ipEvents = events.filter(e => e.details?.ipAddress === ipAddress);
@@ -37,7 +37,7 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
                         type: 'multiple_failures' as any,
                         details: { ip: ipAddress, count: ipEvents.length }
                     });
-                    
+
                     // Auto-block IP after multiple failures
                     this.blockIP(ipAddress, 24 * 60 * 60 * 1000); // 24 hours
                 }
@@ -97,7 +97,7 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
 
         const timeSinceLastAttempt = Date.now() - userLimit.windowStart;
         const isWithinWindow = timeSinceLastAttempt < 15 * 60 * 1000;
-        
+
         return !isWithinWindow; // Allow only if window has expired
     }
 
@@ -149,7 +149,7 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
      */
     blockIP(ipAddress: string, durationMs: number = 60 * 60 * 1000): void {
         this.blockedIPs.add(ipAddress);
-        
+
         // Auto-unblock after duration
         setTimeout(() => {
             this.unblockIP(ipAddress);
@@ -185,11 +185,11 @@ export class EnterpriseSecurityService implements IAuthSecurityService {
         };
     }
 
-    
+
     /**
      * Gets time windows for analysis
      */
-    private getTimeWindows(events: any[]): Array<{ start: Date; end: Date }> {
+    private getTimeWindows(events: any[]): { start: Date; end: Date }[] {
         const windows = [];
         const sortedEvents = events.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 

@@ -1,12 +1,12 @@
 /**
  * Theme Enhancement Utilities.
- * 
+ *
  * Functions to enhance composed themes with computed values and backward compatibility.
  * Provides clean separation of theme enhancement logic from provider logic.
  */
 
-import { ComposedTheme } from '../composer';
-import { EnhancedTheme } from '../types/ProviderTypes';
+import type { ComposedTheme } from '../composer';
+import type { EnhancedTheme } from '../types/ProviderTypes';
 
 /**
  * Enhances a composed theme with computed values and backward compatibility
@@ -28,6 +28,6 @@ export const enhanceTheme = (composedTheme: ComposedTheme): EnhancedTheme => {
         success: composedTheme.tokens.colors.semantic.success,
         warning: composedTheme.tokens.colors.semantic.warning,
         error: composedTheme.tokens.colors.semantic.error,
-        info: composedTheme.tokens.colors.semantic.info,
+        info: composedTheme.tokens.colors.semantic.info
     } as EnhancedTheme;
 };

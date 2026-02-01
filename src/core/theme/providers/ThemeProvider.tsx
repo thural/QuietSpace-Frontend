@@ -1,15 +1,21 @@
 /**
  * Pure Theme Provider.
- * 
+ *
  * Clean React provider implementation separated from theme enhancement logic.
  * Focuses solely on React context and provider responsibilities.
  */
 
 import React, { memo, useState } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
-import { ThemeContext } from './ThemeContext';
-import { ThemeProviderProps, EnhancedTheme } from '../types/ProviderTypes';
+
 import { useThemeEnhancement } from '../enhancers/useThemeEnhancement';
+import { EnhancedTheme } from '../types/ProviderTypes';
+
+import { ThemeContext } from './ThemeContext';
+
+import type { ThemeProviderProps } from '../types/ProviderTypes';
+
+
 
 /**
  * Pure Theme Provider component
@@ -29,7 +35,7 @@ export const ThemeProvider = memo<ThemeProviderProps>(({
         theme,
         currentVariant,
         setVariant,
-        availableVariants: ['light', 'dark', 'high-contrast', 'mobile-first', 'accessibility', 'brand'],
+        availableVariants: ['light', 'dark', 'high-contrast', 'mobile-first', 'accessibility', 'brand']
     };
 
     return (

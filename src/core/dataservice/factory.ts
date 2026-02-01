@@ -1,20 +1,22 @@
 /**
  * Data Service Module - Factory Functions
- * 
+ *
  * Following Black Box Module pattern with clean factory functions
  * for creating data services with proper dependency injection.
  */
 
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import type { BaseDataService } from './BaseDataService';
+import type { IDataServiceFactoryOptions, ICacheConfig } from './interfaces';
 import type { ICacheProvider } from '@/core/cache';
 import type { IWebSocketService } from '@/core/websocket/types';
-import type { IDataServiceFactoryOptions, ICacheConfig } from './interfaces';
-import { BaseDataService } from './BaseDataService';
+
+import { useDIContainer } from '@/core/di';
+import { TYPES } from '@/core/di/types';
+
 
 /**
  * Factory function to create a data service instance with custom configuration
- * 
+ *
  * @param options Configuration options for the data service
  * @returns Configured data service instance
  */
@@ -41,7 +43,7 @@ export function createDataService<T extends BaseDataService>(
   if (options.customCacheConfig) {
     (dataService as any).CACHE_CONFIG = {
       ...(dataService as any).CACHE_CONFIG,
-      ...options.customCacheConfig,
+      ...options.customCacheConfig
     };
   }
 
@@ -50,7 +52,7 @@ export function createDataService<T extends BaseDataService>(
 
 /**
  * Factory function to create a data service with default configuration
- * 
+ *
  * @param DataServiceClass The data service class to instantiate
  * @returns Data service instance with default DI services
  */
@@ -62,7 +64,7 @@ export function createDefaultDataService<T extends BaseDataService>(
 
 /**
  * Factory function to create a data service with custom cache configuration
- * 
+ *
  * @param DataServiceClass The data service class to instantiate
  * @param customCacheConfig Custom cache configuration to merge with defaults
  * @returns Data service instance with custom cache settings
@@ -72,13 +74,13 @@ export function createDataServiceWithCache<T extends BaseDataService>(
   customCacheConfig: Partial<ICacheConfig>
 ): T {
   return createDataService(DataServiceClass, {
-    customCacheConfig,
+    customCacheConfig
   });
 }
 
 /**
  * Factory function to create a data service with custom services
- * 
+ *
  * @param DataServiceClass The data service class to instantiate
  * @param cache Custom cache provider
  * @param webSocket Custom WebSocket service
@@ -91,13 +93,13 @@ export function createDataServiceWithServices<T extends BaseDataService>(
 ): T {
   return createDataService(DataServiceClass, {
     cache,
-    webSocket,
+    webSocket
   });
 }
 
 /**
  * Factory function to create a data service with full custom configuration
- * 
+ *
  * @param DataServiceClass The data service class to instantiate
  * @param options Complete configuration options
  * @returns Fully configured data service instance
@@ -111,13 +113,13 @@ export function createDataServiceWithFullConfig<T extends BaseDataService>(
 
 /**
  * Utility function to create multiple data services with shared configuration
- * 
+ *
  * @param dataServiceClasses Array of data service classes to create
  * @param sharedOptions Shared configuration for all data services
  * @returns Array of configured data service instances
  */
 export function createDataServices<T extends BaseDataService>(
-  dataServiceClasses: Array<new () => T>,
+  dataServiceClasses: (new () => T)[],
   sharedOptions: IDataServiceFactoryOptions = {}
 ): T[] {
   return dataServiceClasses.map(DataServiceClass =>
@@ -127,12 +129,12 @@ export function createDataServices<T extends BaseDataService>(
 
 /**
  * Utility function to create data services with individual configurations
- * 
+ *
  * @param dataServiceConfig Array of tuples containing class and its specific options
  * @returns Array of configured data service instances
  */
 export function createDataServicesWithIndividualConfig<T extends BaseDataService>(
-  dataServiceConfig: Array<[new () => T, IDataServiceFactoryOptions]>
+  dataServiceConfig: [new () => T, IDataServiceFactoryOptions][]
 ): T[] {
   return dataServiceConfig.map(([DataServiceClass, options]) =>
     createDataService(DataServiceClass, options)
@@ -141,7 +143,7 @@ export function createDataServicesWithIndividualConfig<T extends BaseDataService
 
 /**
  * Factory function for creating data services with environment-specific configuration
- * 
+ *
  * @param DataServiceClass The data service class to instantiate
  * @param environment Environment name ('development', 'production', 'test')
  * @returns Data service instance configured for the specified environment
@@ -156,43 +158,43 @@ export function createDataServiceForEnvironment<T extends BaseDataService>(
         REALTIME: {
           staleTime: 5 * 1000,  // 5 seconds - faster refresh for development
           cacheTime: 30 * 1000, // 30 seconds - shorter cache for development
-          refetchInterval: 10 * 1000, // 10 seconds
+          refetchInterval: 10 * 1000 // 10 seconds
         },
         USER_CONTENT: {
           staleTime: 30 * 1000, // 30 seconds
           cacheTime: 2 * 60 * 1000, // 2 minutes
-          refetchInterval: 60 * 1000, // 1 minute
-        },
-      },
+          refetchInterval: 60 * 1000 // 1 minute
+        }
+      }
     },
     production: {
       customCacheConfig: {
         REALTIME: {
           staleTime: 30 * 1000, // 30 seconds
           cacheTime: 5 * 60 * 1000, // 5 minutes
-          refetchInterval: 60 * 1000, // 1 minute
+          refetchInterval: 60 * 1000 // 1 minute
         },
         USER_CONTENT: {
           staleTime: 2 * 60 * 1000, // 2 minutes
           cacheTime: 15 * 60 * 1000, // 15 minutes
-          refetchInterval: 5 * 60 * 1000, // 5 minutes
-        },
-      },
+          refetchInterval: 5 * 60 * 1000 // 5 minutes
+        }
+      }
     },
     test: {
       customCacheConfig: {
         REALTIME: {
           staleTime: 0, // No caching for tests
           cacheTime: 0,
-          refetchInterval: undefined,
+          refetchInterval: undefined
         },
         USER_CONTENT: {
           staleTime: 0, // No caching for tests
           cacheTime: 0,
-          refetchInterval: undefined,
-        },
-      },
-    },
+          refetchInterval: undefined
+        }
+      }
+    }
   };
 
   return createDataService(DataServiceClass, environmentConfigs[environment]);

@@ -1,6 +1,6 @@
 /**
  * Theme Providers Module.
- * 
+ *
  * Centralized exports for all provider-related functionality.
  * Provides clean separation between provider concerns.
  */

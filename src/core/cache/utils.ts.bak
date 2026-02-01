@@ -1,28 +1,27 @@
 /**
  * Cache System Utilities
- * 
+ *
  * Utility functions for cache operations following Black Box pattern.
  * Provides clean utility functions for validation, initialization, and management.
  */
 
-import type {
-    ICacheProvider,
-    ICacheServiceManager,
-    CacheConfig,
-    CacheEntry,
-    CacheStats
-} from '../shared';
-
 import {
     CORE_CONSTANTS,
     CORE_VALIDATION_RULES,
-    CORE_ERROR_CODES,
-    CORE_ERROR_MESSAGES
+    CORE_ERROR_CODES
 } from '../shared';
+
+import type {
+    CacheConfig,
+    CacheEntry,
+    CacheStats,
+    CacheStrategy
+} from './interfaces';
+
 
 /**
  * Validates cache configuration
- * 
+ *
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
@@ -60,15 +59,15 @@ export function validateCacheConfig(config: any): string[] {
 
 /**
  * Creates a default cache configuration
- * 
+ *
  * @param overrides - Optional configuration overrides
  * @returns Default cache configuration
  */
 export function createDefaultCacheConfig(overrides?: Partial<CacheConfig>): CacheConfig {
     return {
         maxSize: CORE_CONSTANTS.DEFAULT_CACHE_SIZE,
-        defaultTtl: CORE_CONSTANTS.DEFAULT_CACHE_TTL,
-        strategy: CORE_CONSTANTS.DEFAULT_CACHE_STRATEGY as any,
+        defaultTTL: CORE_CONSTANTS.DEFAULT_CACHE_TTL,
+        strategy: CORE_CONSTANTS.DEFAULT_CACHE_STRATEGY as CacheStrategy,
         enableMetrics: true,
         ...overrides
     };
@@ -76,7 +75,7 @@ export function createDefaultCacheConfig(overrides?: Partial<CacheConfig>): Cach
 
 /**
  * Creates a cache entry with metadata
- * 
+ *
  * @param key - Cache key
  * @param value - Cache value
  * @param ttl - Time to live in milliseconds
@@ -102,7 +101,7 @@ export function createCacheEntry<T>(
 
 /**
  * Checks if a cache entry is expired
- * 
+ *
  * @param entry - Cache entry to check
  * @returns True if entry is expired
  */
@@ -116,7 +115,7 @@ export function isEntryExpired<T>(entry: CacheEntry<T>): boolean {
 
 /**
  * Calculates the size of a cache entry
- * 
+ *
  * @param value - Value to calculate size for
  * @returns Estimated size in bytes
  */
@@ -154,7 +153,7 @@ export function calculateEntrySize(value: any): number {
 
 /**
  * Merges cache statistics
- * 
+ *
  * @param stats1 - First statistics object
  * @param stats2 - Second statistics object
  * @returns Merged statistics
@@ -177,7 +176,7 @@ export function mergeCacheStats(stats1: CacheStats, stats2: CacheStats): CacheSt
 
 /**
  * Calculates cache hit rate
- * 
+ *
  * @param hits - Number of hits
  * @param misses - Number of misses
  * @returns Hit rate as percentage (0-1)
@@ -189,7 +188,7 @@ export function calculateHitRate(hits: number, misses: number): number {
 
 /**
  * Formats cache statistics for display
- * 
+ *
  * @param stats - Cache statistics
  * @returns Formatted statistics string
  */
@@ -208,7 +207,7 @@ export function formatCacheStats(stats: CacheStats): string {
 
 /**
  * Formats bytes to human readable format
- * 
+ *
  * @param bytes - Number of bytes
  * @returns Formatted string
  */
@@ -224,7 +223,7 @@ export function formatBytes(bytes: number): string {
 
 /**
  * Generates a cache key from parameters
- * 
+ *
  * @param params - Parameters to generate key from
  * @returns Generated cache key
  */
@@ -244,7 +243,7 @@ export function generateCacheKey(...params: any[]): string {
 
 /**
  * Parses a cache key into components
- * 
+ *
  * @param key - Cache key to parse
  * @returns Array of key components
  */
@@ -254,7 +253,7 @@ export function parseCacheKey(key: string): string[] {
 
 /**
  * Creates a cache error with proper error code
- * 
+ *
  * @param message - Error message
  * @param code - Error code
  * @param details - Additional error details
@@ -274,7 +273,7 @@ export function createCacheError(
 
 /**
  * Checks if a key is valid for cache storage
- * 
+ *
  * @param key - Key to validate
  * @returns True if key is valid
  */
@@ -295,7 +294,7 @@ export function isValidCacheKey(key: string): boolean {
 
 /**
  * Sanitizes a cache key
- * 
+ *
  * @param key - Key to sanitize
  * @returns Sanitized key
  */
@@ -308,7 +307,7 @@ export function sanitizeCacheKey(key: string): string {
 
 /**
  * Creates a cache TTL from time units
- * 
+ *
  * @param seconds - Number of seconds
  * @returns TTL in milliseconds
  */
@@ -318,7 +317,7 @@ export function createTTL(seconds: number): number {
 
 /**
  * Creates a cache TTL from minutes
- * 
+ *
  * @param minutes - Number of minutes
  * @returns TTL in milliseconds
  */
@@ -328,7 +327,7 @@ export function createTTLFromMinutes(minutes: number): number {
 
 /**
  * Creates a cache TTL from hours
- * 
+ *
  * @param hours - Number of hours
  * @returns TTL in milliseconds
  */
@@ -338,7 +337,7 @@ export function createTTLFromHours(hours: number): number {
 
 /**
  * Creates a cache TTL from days
- * 
+ *
  * @param days - Number of days
  * @returns TTL in milliseconds
  */
@@ -348,7 +347,7 @@ export function createTTLFromDays(days: number): number {
 
 /**
  * Gets remaining TTL for a cache entry
- * 
+ *
  * @param entry - Cache entry
  * @returns Remaining TTL in milliseconds, or null if no TTL
  */
@@ -363,7 +362,7 @@ export function getRemainingTTL<T>(entry: CacheEntry<T>): number | null {
 
 /**
  * Extends the TTL of a cache entry
- * 
+ *
  * @param entry - Cache entry to extend
  * @param additionalTTL - Additional TTL in milliseconds
  * @returns Updated cache entry

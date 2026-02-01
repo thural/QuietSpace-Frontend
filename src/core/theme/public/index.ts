@@ -1,6 +1,6 @@
 /**
  * Public Theme System API.
- * 
+ *
  * Clean public interface for theme system consumers.
  * Internal implementation details are hidden.
  */

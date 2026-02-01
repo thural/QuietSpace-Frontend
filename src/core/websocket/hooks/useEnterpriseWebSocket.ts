@@ -1,14 +1,15 @@
 /**
  * Enterprise WebSocket React Hooks.
- * 
+ *
  * React hooks for integrating with the enterprise WebSocket system.
  * Provides type-safe WebSocket functionality for React components.
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
 import { useDIContainer } from '@core/di';
 import { TYPES } from '@core/di/types';
-import {
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+import type {
   IEnterpriseWebSocketService,
   IConnectionManager,
   IMessageRouter,
@@ -52,7 +53,7 @@ export interface WebSocketMetrics {
 
 /**
  * Enterprise WebSocket Hook
- * 
+ *
  * Main hook for accessing the enterprise WebSocket service.
  */
 export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = {}) {
@@ -243,7 +244,7 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
 
 /**
  * Feature WebSocket Hook
- * 
+ *
  * Hook for feature-specific WebSocket functionality.
  */
 export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
@@ -337,7 +338,7 @@ export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
 
 /**
  * WebSocket Connection Hook
- * 
+ *
  * Hook focused on connection management and monitoring.
  */
 export function useWebSocketConnection() {
@@ -406,7 +407,7 @@ export function useWebSocketConnection() {
 
 /**
  * WebSocket Metrics Hook
- * 
+ *
  * Hook for WebSocket performance metrics and monitoring.
  */
 export function useWebSocketMetrics() {

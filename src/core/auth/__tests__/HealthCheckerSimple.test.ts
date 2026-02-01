@@ -1,6 +1,6 @@
 /**
  * Health Check System Tests (Simple)
- * 
+ *
  * Tests for provider health monitoring, circuit breaker, and automatic fallback
  */
 
@@ -9,11 +9,15 @@ import {
     ProviderHealthMonitor,
     CircuitBreaker,
     CircuitBreakerState,
-    HealthCheckResult,
+    HealthCheckResult
+} from '../health/HealthChecker';
+import { AuthResult } from '../types/auth.domain.types';
+
+import type {
     ProviderHealthConfig
 } from '../health/HealthChecker';
-import { IAuthProvider } from '../interfaces/authInterfaces';
-import { AuthResult } from '../types/auth.domain.types';
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+
 
 describe('CircuitBreaker', () => {
     let circuitBreaker: CircuitBreaker;

@@ -1,19 +1,20 @@
 /**
  * DI-based API Client Factory
- * 
+ *
  * Creates API clients with DI-based authentication instead of direct store access.
  * This follows the Black Box pattern and maintains proper separation of concerns.
  */
 
-import type { IApiClient, IApiClientConfig, ITokenProvider } from '../interfaces';
-import { createApiClient } from '../factory';
-import { TokenProvider } from '../providers/TokenProvider';
 import { createContainer, type Container } from '../../di/factory';
 import { TYPES } from '../../di/types';
+import { createApiClient } from '../factory';
+import { TokenProvider } from '../providers/TokenProvider';
+
+import type { IApiClient, IApiClientConfig, ITokenProvider } from '../interfaces';
 
 /**
  * Creates an API client with DI-based authentication
- * 
+ *
  * @param container - DI container instance
  * @param config - Optional API client configuration
  * @returns API client with DI-based authentication
@@ -71,7 +72,7 @@ export function createDIAuthenticatedApiClient(
 
 /**
  * Creates an API client with automatic DI-based token injection
- * 
+ *
  * @param container - DI container instance
  * @param config - Optional API client configuration
  * @returns API client with automatic token management
@@ -106,7 +107,7 @@ export function createAutoAuthApiClient(
 
 /**
  * Creates a token provider from DI container
- * 
+ *
  * @param container - DI container instance
  * @returns Token provider instance
  */
@@ -116,7 +117,7 @@ export function createTokenProvider(container: Container): ITokenProvider {
 
 /**
  * Creates an API client factory function that uses DI
- * 
+ *
  * @param container - DI container instance
  * @returns Factory function for creating authenticated API clients
  */

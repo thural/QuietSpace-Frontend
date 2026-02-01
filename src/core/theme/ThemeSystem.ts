@@ -1,27 +1,28 @@
 /**
  * Theme System Facade.
- * 
+ *
  * Single entry point for all theme system functionality.
  * Provides clean API while maintaining internal modularity.
  */
 
-import { ThemeTokens } from './internal/tokens';
-import { EnhancedTheme } from './internal/types';
-import { ThemeFactory } from './internal/factories/ThemeFactory';
 import { ThemeComposer } from './internal/composition/ThemeComposer';
 import { ThemeEnhancer } from './internal/enhancement/ThemeEnhancer';
+import { ThemeFactory } from './internal/factories/ThemeFactory';
+
+import type { ThemeTokens } from './internal/tokens';
+import type { EnhancedTheme } from './internal/types';
 
 /**
  * Theme System Facade
- * 
+ *
  * Provides a unified interface for all theme operations while
  * keeping internal modules properly separated and modular.
  */
 export class ThemeSystem {
     private static instance: ThemeSystem;
-    private themeFactory: ThemeFactory;
-    private themeComposer: ThemeComposer;
-    private themeEnhancer: ThemeEnhancer;
+    private readonly themeFactory: ThemeFactory;
+    private readonly themeComposer: ThemeComposer;
+    private readonly themeEnhancer: ThemeEnhancer;
 
     private constructor() {
         this.themeFactory = new ThemeFactory();

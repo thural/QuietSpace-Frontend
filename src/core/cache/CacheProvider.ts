@@ -34,13 +34,13 @@ export interface CacheEvents {
 
 @Injectable()
 export class CacheProvider {
-  private cache = new Map<string, CacheEntry<any>>();
+  private readonly cache = new Map<string, CacheEntry<any>>();
   private hits = 0;
   private misses = 0;
   private evictions = 0;
   private cleanupTimer?: NodeJS.Timeout;
   private config: CacheConfig;
-  private events?: CacheEvents;
+  private readonly events?: CacheEvents;
 
   constructor(config: Partial<CacheConfig> = {}, events?: CacheEvents) {
     this.config = {

@@ -1,6 +1,6 @@
 /**
  * Dependency Injection Container.
- * 
+ *
  * Master registry for all application services and repositories.
  * Uses custom DI container for IoC management.
  */
@@ -9,7 +9,7 @@ import { Container } from './container';
 
 /**
  * Main DI Container
- * 
+ *
  * Singleton container that manages all application dependencies.
  * Provides both real and mock implementations based on configuration.
  */

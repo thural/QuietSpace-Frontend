@@ -1,12 +1,13 @@
 /**
  * Theme Context Definitions.
- * 
+ *
  * Pure context definitions separated from provider logic.
  * Provides clean interface segregation for theme context.
  */
 
 import { createContext } from 'react';
-import { EnhancedTheme } from '../types/ProviderTypes';
+
+import type { EnhancedTheme } from '../types/ProviderTypes';
 
 /**
  * Theme context interface

@@ -1,6 +1,6 @@
 /**
  * Core System Configuration Types
- * 
+ *
  * Configuration interfaces and types for the core system.
  * Provides clean type exports following Black Box pattern.
  */

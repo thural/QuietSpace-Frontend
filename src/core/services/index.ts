@@ -1,6 +1,6 @@
 /**
  * Logger Module Black Box Index
- * 
+ *
  * Provides clean public API for the logger system following Black Box pattern.
  * Only interfaces and factory functions are exported - implementation details are hidden.
  */

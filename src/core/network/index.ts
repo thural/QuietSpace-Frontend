@@ -1,6 +1,6 @@
 /**
  * Network Module Index - Black Box Pattern
- * 
+ *
  * Exports only public interfaces and factory functions.
  * Internal implementation classes are completely hidden.
  */

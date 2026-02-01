@@ -1,6 +1,6 @@
 /**
  * Cache Module Interfaces
- * 
+ *
  * Defines public interfaces for the cache system following Black Box pattern.
  * Internal implementation details are hidden from consumers.
  */

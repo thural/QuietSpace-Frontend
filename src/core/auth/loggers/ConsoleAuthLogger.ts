@@ -1,12 +1,14 @@
 /**
  * Console authentication logger
- * 
+ *
  * Implements logging interface for authentication events
  * with structured console output and filtering capabilities.
  */
 
-import { IAuthLogger } from '../interfaces/authInterfaces';
-import { AuthEvent, AuthErrorType } from '../types/auth.domain.types';
+import { AuthErrorType } from '../types/auth.domain.types';
+
+import type { IAuthLogger } from '../interfaces/authInterfaces';
+import type { AuthEvent } from '../types/auth.domain.types';
 
 /**
  * Console authentication logger implementation

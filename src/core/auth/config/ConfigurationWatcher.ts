@@ -1,8 +1,8 @@
 /**
  * Configuration Watcher
- * 
+ *
  * Provides file watching capabilities for configuration hot reload
- * 
+ *
  * Features:
  * - File system monitoring for configuration changes
  * - Runtime configuration updates
@@ -11,8 +11,8 @@
  * - Multiple file format support
  */
 
-import { IAuthConfig } from '../interfaces/authInterfaces';
-import { AuthResult } from '../types/auth.domain.types';
+import type { IAuthConfig } from '../interfaces/authInterfaces';
+import type { AuthResult } from '../types/auth.domain.types';
 
 /**
  * Configuration change event
@@ -43,9 +43,9 @@ export type ConfigurationChangeListener = (event: ConfigurationChangeEvent) => v
  * Configuration Watcher Implementation
  */
 export class ConfigurationWatcher {
-    private watchers: Map<string, any> = new Map();
-    private listeners: Map<string, ConfigurationChangeListener[]> = new Map();
-    private options: ConfigurationWatcherOptions;
+    private readonly watchers: Map<string, any> = new Map();
+    private readonly listeners: Map<string, ConfigurationChangeListener[]> = new Map();
+    private readonly options: ConfigurationWatcherOptions;
     private isWatching = false;
 
     constructor(options: ConfigurationWatcherOptions = {}) {
@@ -395,13 +395,13 @@ export class ConfigurationWatcher {
 
 /**
  * Configuration Hot Reload Manager
- * 
+ *
  * Manages configuration hot reload with provider updates
  */
 export class ConfigurationHotReloadManager {
-    private watcher: ConfigurationWatcher;
-    private config: IAuthConfig;
-    private reloadHandlers: Map<string, (newConfig: any) => void> = new Map();
+    private readonly watcher: ConfigurationWatcher;
+    private readonly config: IAuthConfig;
+    private readonly reloadHandlers: Map<string, (newConfig: any) => void> = new Map();
 
     constructor(config: IAuthConfig, options?: ConfigurationWatcherOptions) {
         this.config = config;

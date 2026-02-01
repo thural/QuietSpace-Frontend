@@ -1,6 +1,6 @@
 /**
  * Service Registry Implementation.
- * 
+ *
  * Central registry for managing service descriptors.
  * Provides service registration, lookup, and lifecycle management.
  */
@@ -16,7 +16,7 @@ export type ServiceIdentifier<T = any> = string | symbol | (new (...args: any[])
 export enum ServiceLifetime {
   Transient = 'transient',   // New instance every time
   Singleton = 'singleton',   // Single instance for container
-  Scoped = 'scoped',        // Single instance per scope
+  Scoped = 'scoped'        // Single instance per scope
 }
 
 /**
@@ -105,7 +105,7 @@ export class ServiceRegistry implements IServiceRegistry {
    * Get service descriptors with dependencies
    */
   getWithDependencies(): ServiceDescriptor[] {
-    return this.getAll().filter(descriptor => 
+    return this.getAll().filter(descriptor =>
       descriptor.dependencies && descriptor.dependencies.length > 0
     );
   }
@@ -136,7 +136,7 @@ export class ServiceRegistry implements IServiceRegistry {
    */
   getDependencyGraph(): Record<string, string[]> {
     const graph: Record<string, string[]> = {};
-    
+
     for (const descriptor of this.getAll()) {
       const key = String(descriptor.identifier);
       graph[key] = (descriptor.dependencies || []).map(dep => String(dep));

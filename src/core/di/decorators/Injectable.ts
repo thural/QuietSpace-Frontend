@@ -1,6 +1,6 @@
 /**
  * Injectable Decorator.
- * 
+ *
  * Marks a class as injectable for dependency injection.
  * Provides metadata for automatic service registration.
  */
@@ -21,40 +21,40 @@ export interface InjectableOptions {
 
 /**
  * Injectable decorator
- * 
+ *
  * Marks a class as injectable and stores metadata for DI container.
  */
 export function Injectable(options: InjectableOptions = {}): ClassDecorator {
   return function<T extends Function>(target: T): T {
     // Get existing metadata
     const existingMetadata = Reflect.getMetadata(INJECTABLE_METADATA_KEY, target) || {};
-    
+
     // Add new metadata
     const metadata = {
       lifetime: options.lifetime || 'transient',
       dependencies: options.dependencies || [],
       ...existingMetadata
     };
-    
+
     // Store metadata
     Reflect.defineMetadata(INJECTABLE_METADATA_KEY, metadata, target);
-    
+
     return target;
   };
 }
 
 /**
  * Inject decorator
- * 
+ *
  * Marks a constructor parameter as injectable dependency.
  */
 export function Inject(token?: any): ParameterDecorator {
   return function(target: any, propertyKey: string | symbol | undefined, parameterIndex: number): any {
     const existingTokens = Reflect.getMetadata(INJECT_METADATA_KEY, target) || [];
-    
+
     // Add injection token
     existingTokens[parameterIndex] = token || propertyKey;
-    
+
     // Store injection metadata
     Reflect.defineMetadata(INJECT_METADATA_KEY, existingTokens, target);
   };
@@ -87,7 +87,7 @@ export function isInjectable(target: any): boolean {
 export function getConstructorDependencies(target: any): any[] {
   const paramTypes = Reflect.getMetadata('design:paramtypes', target) || [];
   const injectionTokens = getInjectionMetadata(target) || [];
-  
+
   return paramTypes.map((type: any, index: number) => {
     return injectionTokens[index] || type;
   });

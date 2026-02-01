@@ -1,19 +1,20 @@
 /**
  * DI Module Factory Functions - Black Box Pattern
- * 
+ *
  * Provides clean factory functions for creating DI containers and services.
  * Implementation classes are hidden behind these factory functions.
  */
 
+
+import { Container } from './container/Container';
+
+import type { TypeKeys } from './types';
 import type {
   ServiceIdentifier,
   ServiceLifetime,
   Constructor,
   InjectionToken
 } from './types/index';
-
-import { Container } from './container/Container';
-import { TypeKeys } from './types';
 
 // Export Container type for external use
 export type { Container };
@@ -42,11 +43,11 @@ export function createAutoContainer(): Container {
  * @param services - Services to register
  * @returns Configured DI container with services
  */
-export function createContainerWithServices(services: Array<{
+export function createContainerWithServices(services: {
   identifier: ServiceIdentifier<any>;
   factory: () => any;
   lifetime?: ServiceLifetime;
-}>): Container {
+}[]): Container {
   const container = createContainer();
 
   services.forEach(({ identifier, factory, lifetime }) => {

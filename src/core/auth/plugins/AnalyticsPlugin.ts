@@ -1,12 +1,14 @@
 /**
  * Analytics Plugin for Authentication
- * 
+ *
  * Integrates with the existing AnalyticsService to track authentication events.
  * Bridges the auth plugin system with the comprehensive analytics infrastructure.
  */
 
-import { IAuthPlugin, IAuthService } from '../interfaces/authInterfaces';
-import { AnalyticsEventType, AnalyticsService } from '@analytics';
+import { AnalyticsService } from '@analytics';
+
+import type { IAuthPlugin, IAuthService } from '../interfaces/authInterfaces';
+import type { AnalyticsEventType } from '@analytics';
 
 export class AnalyticsPlugin implements IAuthPlugin {
     readonly name = 'analytics';
@@ -27,9 +29,9 @@ export class AnalyticsPlugin implements IAuthPlugin {
             // In a real implementation, this would use the DI container
             // For now, we'll create a simple instance
             this.analyticsService = new AnalyticsService({} as any);
-            console.log(`[AnalyticsPlugin] Initialized with existing AnalyticsService`);
+            console.log('[AnalyticsPlugin] Initialized with existing AnalyticsService');
         } catch (error) {
-            console.warn(`[AnalyticsPlugin] Could not initialize AnalyticsService:`, error);
+            console.warn('[AnalyticsPlugin] Could not initialize AnalyticsService:', error);
             // Fallback to basic logging if AnalyticsService is unavailable
             this.analyticsService = null;
         }
@@ -83,7 +85,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
         if (this.analyticsService) {
             try {
                 // Enhance analytics data with current session information
-                let enhancedData = { ...data };
+                const enhancedData = { ...data };
                 if (this.authService) {
                     try {
                         const currentSession = await this.authService.getCurrentSession();
@@ -93,7 +95,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
                             enhancedData.sessionExpiresAt = currentSession.expiresAt;
                         }
                     } catch (sessionError) {
-                        console.warn(`[AnalyticsPlugin] Could not get current session:`, sessionError);
+                        console.warn('[AnalyticsPlugin] Could not get current session:', sessionError);
                     }
                 }
 
@@ -128,7 +130,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
 
                 console.log(`[AnalyticsPlugin] Tracked ${eventType} via AnalyticsService`);
             } catch (error) {
-                console.error(`[AnalyticsPlugin] Failed to track event:`, error);
+                console.error('[AnalyticsPlugin] Failed to track event:', error);
                 // Fallback to basic logging
                 this.fallbackLog(eventType, data);
             }
@@ -174,7 +176,7 @@ export class AnalyticsPlugin implements IAuthPlugin {
     async cleanup(): Promise<void> {
         this.analyticsService = null;
         this.authService = null;
-        console.log(`[AnalyticsPlugin] Cleaned up analytics plugin`);
+        console.log('[AnalyticsPlugin] Cleaned up analytics plugin');
     }
 
     /**

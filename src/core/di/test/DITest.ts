@@ -1,12 +1,12 @@
 /**
  * DI System Integration Test.
- * 
+ *
  * Example services and usage to test the DI system.
  */
 
 import 'reflect-metadata';
-import { Injectable, Inject } from '../index';
 import { Container } from '../container/Container';
+import { Injectable, Inject } from '../index';
 
 // Example service interfaces
 interface ILogger {
@@ -27,7 +27,7 @@ class LoggerService implements ILogger {
 
 @Injectable({ lifetime: 'transient' })
 class DataService implements IDataService {
-  constructor(@Inject(LoggerService) private logger: ILogger) { }
+  constructor(@Inject(LoggerService) private readonly logger: ILogger) { }
 
   async getData(): Promise<string[]> {
     this.logger.log('Fetching data...');
@@ -39,8 +39,8 @@ class DataService implements IDataService {
 @Injectable({ lifetime: 'scoped' })
 class BusinessService {
   constructor(
-    @Inject(LoggerService) private logger: ILogger,
-    @Inject(DataService) private dataService: IDataService
+    @Inject(LoggerService) private readonly logger: ILogger,
+    @Inject(DataService) private readonly dataService: IDataService
   ) { }
 
   async processData(): Promise<string[]> {

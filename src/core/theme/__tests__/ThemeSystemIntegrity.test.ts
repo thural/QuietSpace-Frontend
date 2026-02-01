@@ -1,6 +1,6 @@
 /**
  * Theme System Integrity Test.
- * 
+ *
  * Comprehensive test to verify the theme system's modular architecture
  * and complete isolation of concerns.
  */
@@ -8,12 +8,15 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
 // Test core imports
-import { themeSystem, ThemeSystem } from '../ThemeSystem';
 import { themeContainer, THEME_TOKENS } from '../di/ThemeContainer';
-import { ThemeTokens } from '../internal/tokens';
-import { EnhancedTheme } from '../internal/types';
+
 
 // Test interface imports
+
+// Test provider imports
+import { ThemeContext } from '../providers/ThemeContext';
+import { themeSystem, ThemeSystem } from '../ThemeSystem';
+
 import type {
     ColorSystem,
     TypographySystem,
@@ -22,9 +25,8 @@ import type {
     TypographyUtilities,
     LayoutUtilities
 } from '../interfaces';
-
-// Test provider imports
-import { ThemeContext } from '../providers/ThemeContext';
+import type { ThemeTokens } from '../internal/tokens';
+import type { EnhancedTheme } from '../internal/types';
 import type { ThemeContextValue } from '../providers/ThemeContext';
 
 // Test type imports

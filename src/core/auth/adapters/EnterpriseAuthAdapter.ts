@@ -1,10 +1,11 @@
-import { EnterpriseAuthService } from '../enterprise/AuthService';
-import { AuthResponse } from '@features/auth/data/models/auth';
-import { LoginBody, SignupBody } from '@shared/types/auth.dto';
+import type { EnterpriseAuthService } from '../enterprise/AuthService';
+import type { AuthResponse } from '@features/auth/data/models/auth';
+import type { LoginBody, SignupBody } from '@shared/types/auth.dto';
+
 
 /**
  * Adapter to bridge enterprise auth service with existing auth interfaces
- * 
+ *
  * This adapter makes the enterprise auth service compatible with the current
  * authentication system while providing enterprise-grade features.
  */
@@ -17,12 +18,12 @@ export class EnterpriseAuthAdapter {
     async authenticate(credentials: LoginBody): Promise<AuthResponse> {
         const authCredentials = {
             email: credentials.email,
-            password: credentials.password,
+            password: credentials.password
             // Add any additional fields needed by enterprise auth
         };
 
         const result = await this.enterpriseAuth.authenticate('jwt', authCredentials);
-        
+
         if (!result.success) {
             throw new Error(result.error?.message || 'Authentication failed');
         }
@@ -52,7 +53,7 @@ export class EnterpriseAuthAdapter {
 
         // Use enterprise auth service for registration
         const result = await this.enterpriseAuth.authenticate('jwt', authCredentials);
-        
+
         if (!result.success) {
             throw new Error(result.error?.message || 'Registration failed');
         }
@@ -90,9 +91,9 @@ export class EnterpriseAuthAdapter {
             const session = await this.enterpriseAuth.getCurrentSession();
             return { success: !!session };
         } catch (error) {
-            return { 
-                success: false, 
-                error: error instanceof Error ? error.message : 'Session validation failed' 
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Session validation failed'
             };
         }
     }

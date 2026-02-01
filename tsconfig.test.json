@@ -38,7 +38,9 @@
         "src/**/*.spec.*",
         "test/**/*",
         "src/types/**/*.d.ts",
-        "jest.setup.cjs"
+        "jest.setup.cjs",
+        "**/*.config.ts",
+        "scripts/**/*.ts"
     ],
     "exclude": [
         "node_modules",

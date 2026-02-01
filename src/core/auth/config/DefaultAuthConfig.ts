@@ -1,11 +1,11 @@
 /**
  * Default authentication configuration
- * 
+ *
  * Provides default configuration values for authentication
  * with environment-specific overrides.
  */
 
-import { IAuthConfig } from '../interfaces/authInterfaces';
+import type { IAuthConfig } from '../interfaces/authInterfaces';
 
 /**
  * Default authentication configuration
@@ -49,7 +49,7 @@ export class DefaultAuthConfig implements IAuthConfig {
         debugMode: true
     };
 
-    private watchers: Map<string, ((value: any) => void)[]> = new Map();
+    private readonly watchers: Map<string, ((value: any) => void)[]> = new Map();
 
     /**
      * Gets configuration value

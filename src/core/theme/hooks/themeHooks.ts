@@ -1,13 +1,16 @@
 /**
  * Theme System Hooks.
- * 
+ *
  * Custom hooks for theme management, switching, and token access.
  * Provides clean separation of theme-related hook functionality.
  */
 
 import { useContext } from 'react';
-import { ThemeContext, ThemeContextValue } from '../providers/ThemeContext';
-import { EnhancedTheme } from '../types/ProviderTypes';
+
+import { ThemeContext } from '../providers/ThemeContext';
+
+import type { ThemeContextValue } from '../providers/ThemeContext';
+import type { EnhancedTheme } from '../types/ProviderTypes';
 
 /**
  * Hook for using enhanced theme context
@@ -31,7 +34,7 @@ export const useThemeSwitch = () => {
         availableVariants,
         switchTheme: setVariant,
         isDark: currentVariant === 'dark',
-        isLight: currentVariant === 'light',
+        isLight: currentVariant === 'light'
     };
 };
 

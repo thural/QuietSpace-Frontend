@@ -1,6 +1,6 @@
 /**
  * Update Strategy Implementation
- * 
+ *
  * Implements different strategies for updating data from WebSocket messages
  */
 
@@ -11,16 +11,16 @@ export class UpdateStrategy implements IUpdateStrategy {
     switch (strategy) {
       case 'replace':
         return this.replace(currentData, newData);
-      
+
       case 'merge':
         return this.merge(currentData, newData);
-      
+
       case 'append':
         return this.append(currentData, newData);
-      
+
       case 'prepend':
         return this.prepend(currentData, newData);
-      
+
       default:
         return newData;
     }

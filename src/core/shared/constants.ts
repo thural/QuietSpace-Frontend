@@ -1,6 +1,6 @@
 /**
  * Core System Shared Constants
- * 
+ *
  * Centralized constants and enums for the core system.
  * Provides clean constant exports following Black Box pattern.
  */

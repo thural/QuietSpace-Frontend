@@ -1,6 +1,6 @@
 /**
  * Advanced Token Rotation Manager
- * 
+ *
  * Provides enterprise-grade token rotation and refresh strategies with:
  * - Proactive token rotation before expiration
  * - Multiple refresh strategies (eager, lazy, adaptive)
@@ -9,8 +9,9 @@
  * - Graceful degradation and fallback mechanisms
  */
 
-import { EnterpriseAuthService } from '../enterprise/AuthService';
 import { AuthModuleFactory } from '../AuthModule';
+
+import type { EnterpriseAuthService } from '../enterprise/AuthService';
 import type { IAuthLogger, IAuthMetrics } from '../interfaces/authInterfaces';
 
 export interface TokenRotationStrategy {
@@ -52,16 +53,16 @@ export interface TokenRotationMetrics {
 
 /**
  * Advanced Token Rotation Manager
- * 
+ *
  * Implements sophisticated token rotation strategies with enterprise-grade
  * security monitoring and performance optimization.
  */
 export class AdvancedTokenRotationManager {
-  private authService: EnterpriseAuthService;
+  private readonly authService: EnterpriseAuthService;
   private rotationIntervalId: number | null = null;
   private isActive: boolean = false;
-  private metrics: TokenRotationMetrics;
-  private options: Required<TokenRotationOptions>;
+  private readonly metrics: TokenRotationMetrics;
+  private readonly options: Required<TokenRotationOptions>;
   private rotationCount: number = 0;
   private lastRotationAttempt: Date | null = null;
 
@@ -74,7 +75,7 @@ export class AdvancedTokenRotationManager {
       enableRefreshTokenRotation: options.enableRefreshTokenRotation !== false,
       enableTokenValidation: options.enableTokenValidation !== false,
       maxRefreshAttempts: options.maxRefreshAttempts || 3,
-      rotationDelay: options.rotationDelay || 1000, // 1 second
+      rotationDelay: options.rotationDelay || 1000 // 1 second
     };
 
     this.metrics = {
@@ -86,7 +87,7 @@ export class AdvancedTokenRotationManager {
       rotationStrategy: this.options.strategy,
       refreshTokensRotated: 0,
       validationFailures: 0,
-      fallbackActivations: 0,
+      fallbackActivations: 0
     };
   }
 
@@ -115,7 +116,7 @@ export class AdvancedTokenRotationManager {
 
       this.isActive = true;
       this.scheduleNextRotation(tokenInfo);
-      
+
       console.log(`Token rotation started with strategy: ${this.options.strategy}`);
     } catch (error) {
       console.error('Failed to start token rotation:', error);
@@ -154,7 +155,7 @@ export class AdvancedTokenRotationManager {
       }
 
       const success = await this.performTokenRotation(tokenInfo);
-      
+
       if (success) {
         this.metrics.successfulRotations++;
         this.metrics.lastRotationTime = new Date();
@@ -196,7 +197,7 @@ export class AdvancedTokenRotationManager {
       isActive: this.isActive,
       strategy: this.options.strategy,
       lastRotation: this.metrics.lastRotationTime,
-      nextRotation,
+      nextRotation
     };
   }
 
@@ -224,7 +225,7 @@ export class AdvancedTokenRotationManager {
   private async getCurrentTokenInfo(): Promise<TokenInfo | null> {
     try {
       const authData = await this.authService.getCurrentAuthData();
-      if (!authData || !authData.token) {
+      if (!authData?.token) {
         return null;
       }
 
@@ -240,7 +241,7 @@ export class AdvancedTokenRotationManager {
       // Synchronous version for status checks
       const token = this.authService.getAccessToken();
       const refreshToken = this.authService.getRefreshToken();
-      
+
       if (!token) {
         return null;
       }
@@ -254,14 +255,14 @@ export class AdvancedTokenRotationManager {
   private parseTokenInfo(accessToken: string, refreshToken?: string): TokenInfo {
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
-      
+
       return {
         accessToken,
         refreshToken: refreshToken || '',
         expiresAt: new Date(payload.exp * 1000),
         issuedAt: new Date(payload.iat * 1000),
         tokenType: payload.typ || 'Bearer',
-        scope: payload.scope,
+        scope: payload.scope
       };
     } catch (error) {
       throw new Error('Failed to parse token information');
@@ -276,7 +277,7 @@ export class AdvancedTokenRotationManager {
       }
 
       // Check token format
-      if (!tokenInfo.accessToken || tokenInfo.accessToken.split('.').length !== 3) {
+      if (tokenInfo.accessToken?.split('.').length !== 3) {
         return false;
       }
 
@@ -306,10 +307,10 @@ export class AdvancedTokenRotationManager {
 
   private async performScheduledRotation(tokenInfo: TokenInfo): Promise<void> {
     const shouldRotate = this.getRotationStrategy().shouldRotate(tokenInfo);
-    
+
     if (shouldRotate) {
       const success = await this.performTokenRotation(tokenInfo);
-      
+
       if (success) {
         // Get updated token info and schedule next rotation
         const newTokenInfo = await this.getCurrentTokenInfo();
@@ -333,7 +334,7 @@ export class AdvancedTokenRotationManager {
     try {
       // Attempt token refresh
       const refreshResult = await this.authService.refreshToken();
-      
+
       if (refreshResult) {
         // Rotate refresh token if enabled
         if (this.options.enableRefreshTokenRotation && refreshResult.refreshToken) {
@@ -368,7 +369,7 @@ export class AdvancedTokenRotationManager {
 
     // Implement fallback strategy
     const timeUntilExpiration = tokenInfo.expiresAt.getTime() - Date.now();
-    
+
     if (timeUntilExpiration < 60000) { // Less than 1 minute
       // Critical: Token will expire soon, force logout
       console.warn('Token expiration imminent, forcing logout');
@@ -379,9 +380,9 @@ export class AdvancedTokenRotationManager {
         this.options.rotationDelay * Math.pow(2, this.rotationCount),
         30000 // Max 30 seconds
       );
-      
+
       this.rotationCount++;
-      
+
       setTimeout(() => {
         if (this.isActive) {
           this.performScheduledRotation(tokenInfo);
@@ -415,7 +416,7 @@ export class AdvancedTokenRotationManager {
       getRotationDelay: (tokenInfo) => {
         const timeUntilExpiration = tokenInfo.expiresAt.getTime() - Date.now();
         return Math.max(0, timeUntilExpiration - (this.options.rotationBuffer * 2));
-      },
+      }
     };
   }
 
@@ -429,7 +430,7 @@ export class AdvancedTokenRotationManager {
       getRotationDelay: (tokenInfo) => {
         const timeUntilExpiration = tokenInfo.expiresAt.getTime() - Date.now();
         return Math.max(0, timeUntilExpiration - (this.options.rotationBuffer / 2));
-      },
+      }
     };
   }
 
@@ -438,24 +439,24 @@ export class AdvancedTokenRotationManager {
       name: 'adaptive',
       shouldRotate: (tokenInfo) => {
         const timeUntilExpiration = tokenInfo.expiresAt.getTime() - Date.now();
-        
+
         // Adaptive logic based on usage patterns and failure rate
         const failureRate = this.metrics.failedRotations / Math.max(1, this.metrics.totalRotations);
-        const adaptiveBuffer = failureRate > 0.1 
+        const adaptiveBuffer = failureRate > 0.1
           ? this.options.rotationBuffer * 1.5 // More buffer if failures
           : this.options.rotationBuffer;
-        
+
         return timeUntilExpiration <= adaptiveBuffer;
       },
       getRotationDelay: (tokenInfo) => {
         const timeUntilExpiration = tokenInfo.expiresAt.getTime() - Date.now();
         const failureRate = this.metrics.failedRotations / Math.max(1, this.metrics.totalRotations);
-        const adaptiveBuffer = failureRate > 0.1 
+        const adaptiveBuffer = failureRate > 0.1
           ? this.options.rotationBuffer * 1.5
           : this.options.rotationBuffer;
-        
+
         return Math.max(0, timeUntilExpiration - adaptiveBuffer);
-      },
+      }
     };
   }
 
@@ -474,7 +475,7 @@ export class AdvancedTokenRotationManager {
     if (totalRotations === 1) {
       this.metrics.averageRotationTime = rotationTime;
     } else {
-      this.metrics.averageRotationTime = 
+      this.metrics.averageRotationTime =
         (this.metrics.averageRotationTime * (totalRotations - 1) + rotationTime) / totalRotations;
     }
   }

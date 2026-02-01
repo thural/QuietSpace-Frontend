@@ -1,10 +1,11 @@
+import type { ICacheProvider } from '@/core/cache';
+
 import { useDIContainer } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Migration utilities for React Query to Custom Query Hooks
- * 
+ *
  * This module provides helper functions to ease the migration from React Query
  * to our custom query implementation while maintaining backward compatibility.
  */
@@ -55,7 +56,7 @@ export function convertQueryKeyToCacheKey(queryKey: any[]): string {
  * Cache invalidation helper
  */
 export class CacheInvalidationHelper {
-  private cache: ICacheProvider;
+  private readonly cache: ICacheProvider;
 
   constructor() {
     const container = useDIContainer();
@@ -269,7 +270,7 @@ export function convertReactQueryOptions<T = any>(
  */
 export class QueryPerformanceMonitor {
   private static instance: QueryPerformanceMonitor;
-  private metrics: Map<string, {
+  private readonly metrics: Map<string, {
     fetchCount: number;
     cacheHits: number;
     cacheMisses: number;
@@ -331,8 +332,8 @@ export function useQueryPerformanceMonitor(): QueryPerformanceMonitor {
  */
 export class MigrationTracker {
   private static instance: MigrationTracker;
-  private migratedHooks: Set<string> = new Set();
-  private pendingHooks: Set<string> = new Set();
+  private readonly migratedHooks: Set<string> = new Set();
+  private readonly pendingHooks: Set<string> = new Set();
 
   static getInstance(): MigrationTracker {
     if (!MigrationTracker.instance) {

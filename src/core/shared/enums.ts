@@ -1,6 +1,6 @@
 /**
  * Core System Shared Enums
- * 
+ *
  * Centralized enum definitions for all core system interfaces.
  * Provides clean enum exports following Black Box pattern.
  */

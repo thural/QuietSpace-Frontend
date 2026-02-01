@@ -1,6 +1,6 @@
 /**
  * Core System Types
- * 
+ *
  * Centralized type definitions for all core system interfaces.
  * Provides clean type exports following Black Box pattern.
  */

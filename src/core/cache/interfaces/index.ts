@@ -1,6 +1,6 @@
 /**
  * Cache System Interfaces
- * 
+ *
  * Centralized interface definitions for the cache system.
  * Provides clean type exports following Black Box pattern.
  */
@@ -40,7 +40,7 @@ export interface ICacheStrategy {
 // Cache configuration interfaces
 export interface CacheConfig {
     maxSize?: number;
-    defaultTtl?: number;
+    defaultTTL?: number;
     strategy?: CacheStrategy;
     enableMetrics?: boolean;
     enableCompression?: boolean;
@@ -107,9 +107,7 @@ export interface CacheEvent {
     metadata?: Record<string, any>;
 }
 
-export interface CacheEventHandler {
-    (event: CacheEvent): void;
-}
+export type CacheEventHandler = (event: CacheEvent) => void;
 
 // Cache strategy interfaces
 export interface ILRUCacheStrategy extends ICacheStrategy {
@@ -280,7 +278,7 @@ export interface CacheNode {
 // Cache configuration presets
 export const DEFAULT_CACHE_CONFIG: CacheConfig = {
     maxSize: 1000,
-    defaultTtl: 3600000, // 1 hour
+    defaultTTL: 3600000, // 1 hour
     strategy: 'lru',
     enableMetrics: true,
     enableCompression: false,

@@ -1,6 +1,6 @@
 /**
  * Core System Shared Index
- * 
+ *
  * Centralized exports for all core system shared resources.
  * Provides clean exports following Black Box pattern.
  */

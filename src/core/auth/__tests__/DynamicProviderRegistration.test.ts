@@ -1,16 +1,17 @@
 /**
  * Dynamic Provider Registration Tests
- * 
+ *
  * Tests for runtime provider registration, unregistration, and switching
  */
 
 import { AuthModuleFactory } from '../AuthModule';
 import { JwtAuthProvider } from '../providers/JwtAuthProvider';
+import { LDAPAuthProvider } from '../providers/LDAPProvider';
 import { OAuthAuthProvider } from '../providers/OAuthProvider';
 import { SAMLAuthProvider } from '../providers/SAMLProvider';
 import { SessionAuthProvider } from '../providers/SessionProvider';
-import { LDAPAuthProvider } from '../providers/LDAPProvider';
-import { AuthCredentials } from '../types/auth.domain.types';
+
+import type { AuthCredentials } from '../types/auth.domain.types';
 
 describe('Dynamic Provider Registration', () => {
     beforeEach(() => {

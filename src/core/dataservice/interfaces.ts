@@ -1,15 +1,15 @@
 /**
  * Data Service Module - Public Interfaces
- * 
+ *
  * Following Black Box Module pattern with clean public API
  * and hidden implementation details.
  */
 
 import type { ICacheProvider } from '@/core/cache';
-import type { IWebSocketService } from '@/core/websocket/types';
-import type { QueryOptions } from '@/core/hooks/useCustomQuery';
-import type { MutationOptions } from '@/core/hooks/useCustomMutation';
 import type { InfiniteQueryOptions } from '@/core/hooks/useCustomInfiniteQuery';
+import type { MutationOptions } from '@/core/hooks/useCustomMutation';
+import type { QueryOptions } from '@/core/hooks/useCustomQuery';
+import type { IWebSocketService } from '@/core/websocket/types';
 
 /**
  * Data state interface for tracking operation status

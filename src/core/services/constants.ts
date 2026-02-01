@@ -1,6 +1,6 @@
 /**
  * Services Module Constants
- * 
+ *
  * Centralized constants for core services including logger, theme service,
  * user service, and other shared service configurations.
  */
@@ -15,7 +15,7 @@ export const LOGGER_CONSTANTS = {
         WARN: 3,
         ERROR: 4,
         FATAL: 5,
-        OFF: 6,
+        OFF: 6
     },
 
     // Log level names
@@ -26,7 +26,7 @@ export const LOGGER_CONSTANTS = {
         3: 'WARN',
         4: 'ERROR',
         5: 'FATAL',
-        6: 'OFF',
+        6: 'OFF'
     },
 
     // Log level colors for console output
@@ -36,7 +36,7 @@ export const LOGGER_CONSTANTS = {
         INFO: '#34D399',
         WARN: '#FBBF24',
         ERROR: '#F87171',
-        FATAL: '#DC2626',
+        FATAL: '#DC2626'
     },
 
     // Console methods for each log level
@@ -46,7 +46,7 @@ export const LOGGER_CONSTANTS = {
         2: 'info',
         3: 'warn',
         4: 'error',
-        5: 'error',
+        5: 'error'
     },
 
     // Default logger configuration
@@ -63,7 +63,7 @@ export const LOGGER_CONSTANTS = {
         flushInterval: 5000,
         dateFormat: 'ISO',
         messageFormat: '{timestamp} [{level}] {message}',
-        structuredFormat: false,
+        structuredFormat: false
     },
 
     // Logger performance thresholds
@@ -71,7 +71,7 @@ export const LOGGER_CONSTANTS = {
         MAX_LOG_ENTRY_SIZE: 10000, // 10KB
         MAX_BUFFER_SIZE: 1000,
         MAX_FLUSH_INTERVAL: 30000, // 30 seconds
-        MIN_FLUSH_INTERVAL: 1000, // 1 second
+        MIN_FLUSH_INTERVAL: 1000 // 1 second
     },
 
     // Logger error codes
@@ -81,8 +81,8 @@ export const LOGGER_CONSTANTS = {
         TARGET_CREATION_FAILED: 'LOGGER_TARGET_CREATION_FAILED',
         BUFFER_OVERFLOW: 'LOGGER_BUFFER_OVERFLOW',
         FLUSH_FAILED: 'LOGGER_FLUSH_FAILED',
-        SERIALIZATION_FAILED: 'LOGGER_SERIALIZATION_FAILED',
-    },
+        SERIALIZATION_FAILED: 'LOGGER_SERIALIZATION_FAILED'
+    }
 } as const;
 
 // Theme service constants
@@ -92,7 +92,7 @@ export const THEME_SERVICE_CONSTANTS = {
         THEME: 'quietSpace_theme',
         THEME_VARIANT: 'quietSpace_themeVariant',
         CUSTOM_THEME: 'quietSpace_customTheme',
-        THEME_PREFERENCES: 'quietSpace_themePreferences',
+        THEME_PREFERENCES: 'quietSpace_themePreferences'
     },
 
     // Default theme configuration
@@ -105,7 +105,7 @@ export const THEME_SERVICE_CONSTANTS = {
         enableTransitions: true,
         storageType: 'localStorage',
         syncAcrossTabs: true,
-        persistPreferences: true,
+        persistPreferences: true
     },
 
     // Theme variants
@@ -113,7 +113,7 @@ export const THEME_SERVICE_CONSTANTS = {
         LIGHT: 'light',
         DARK: 'dark',
         AUTO: 'auto',
-        CUSTOM: 'custom',
+        CUSTOM: 'custom'
     },
 
     // Theme events
@@ -123,7 +123,7 @@ export const THEME_SERVICE_CONSTANTS = {
         CUSTOM_THEME_CREATED: 'theme:customCreated',
         CUSTOM_THEME_UPDATED: 'theme:customUpdated',
         CUSTOM_THEME_DELETED: 'theme:customDeleted',
-        PREFERENCES_UPDATED: 'theme:preferencesUpdated',
+        PREFERENCES_UPDATED: 'theme:preferencesUpdated'
     },
 
     // Theme validation
@@ -131,8 +131,8 @@ export const THEME_SERVICE_CONSTANTS = {
         MAX_CUSTOM_THEMES: 10,
         MAX_THEME_NAME_LENGTH: 50,
         MIN_THEME_NAME_LENGTH: 1,
-        VALID_THEME_NAME_PATTERN: /^[a-zA-Z0-9_-]+$/,
-    },
+        VALID_THEME_NAME_PATTERN: /^[a-zA-Z0-9_-]+$/
+    }
 } as const;
 
 // User service constants
@@ -143,7 +143,7 @@ export const USER_SERVICE_CONSTANTS = {
         USER_PREFERENCES: 'quietSpace_userPreferences',
         USER_SETTINGS: 'quietSpace_userSettings',
         USER_SESSION: 'quietSpace_userSession',
-        USER_CACHE: 'quietSpace_userCache',
+        USER_CACHE: 'quietSpace_userCache'
     },
 
     // Default user configuration
@@ -155,7 +155,7 @@ export const USER_SERVICE_CONSTANTS = {
         sessionTimeout: 3600000, // 1 hour
         enableAutoRefresh: true,
         refreshInterval: 60000, // 1 minute
-        enableOfflineMode: true,
+        enableOfflineMode: true
     },
 
     // User events
@@ -165,7 +165,7 @@ export const USER_SERVICE_CONSTANTS = {
         SETTINGS_UPDATED: 'user:settingsUpdated',
         SESSION_EXPIRED: 'user:sessionExpired',
         OFFLINE_MODE_CHANGED: 'user:offlineModeChanged',
-        CACHE_INVALIDATED: 'user:cacheInvalidated',
+        CACHE_INVALIDATED: 'user:cacheInvalidated'
     },
 
     // User status
@@ -174,7 +174,7 @@ export const USER_SERVICE_CONSTANTS = {
         INACTIVE: 'inactive',
         OFFLINE: 'offline',
         AWAY: 'away',
-        BUSY: 'busy',
+        BUSY: 'busy'
     },
 
     // User roles
@@ -183,7 +183,7 @@ export const USER_SERVICE_CONSTANTS = {
         USER: 'user',
         MODERATOR: 'moderator',
         ADMIN: 'admin',
-        SUPER_ADMIN: 'super_admin',
+        SUPER_ADMIN: 'super_admin'
     },
 
     // User validation
@@ -193,8 +193,8 @@ export const USER_SERVICE_CONSTANTS = {
         MIN_DISPLAY_NAME_LENGTH: 1,
         MAX_DISPLAY_NAME_LENGTH: 50,
         MAX_BIO_LENGTH: 500,
-        VALID_USERNAME_PATTERN: /^[a-zA-Z0-9_-]+$/,
-    },
+        VALID_USERNAME_PATTERN: /^[a-zA-Z0-9_-]+$/
+    }
 } as const;
 
 // Service factory constants
@@ -204,7 +204,7 @@ export const SERVICE_FACTORY_CONSTANTS = {
         INITIALIZING: 'initializing',
         READY: 'ready',
         ERROR: 'error',
-        DISPOSED: 'disposed',
+        DISPOSED: 'disposed'
     },
 
     // Service dependency injection tokens
@@ -215,7 +215,7 @@ export const SERVICE_FACTORY_CONSTANTS = {
         CACHE_SERVICE: 'CacheService',
         WEBSOCKET_SERVICE: 'WebSocketService',
         AUTH_SERVICE: 'AuthService',
-        NETWORK_SERVICE: 'NetworkService',
+        NETWORK_SERVICE: 'NetworkService'
     },
 
     // Service configuration defaults
@@ -228,7 +228,7 @@ export const SERVICE_FACTORY_CONSTANTS = {
         enableErrorHandling: true,
         enableRetry: true,
         maxRetries: 3,
-        retryDelay: 1000,
+        retryDelay: 1000
     },
 
     // Service health check intervals
@@ -236,8 +236,8 @@ export const SERVICE_FACTORY_CONSTANTS = {
         FAST: 10000,    // 10 seconds
         NORMAL: 30000,  // 30 seconds
         SLOW: 60000,    // 1 minute
-        CRITICAL: 5000, // 5 seconds
-    },
+        CRITICAL: 5000 // 5 seconds
+    }
 } as const;
 
 // Service error codes
@@ -261,7 +261,7 @@ export const SERVICE_ERROR_CODES = {
     // State errors
     INVALID_STATE: 'INVALID_STATE',
     OPERATION_NOT_SUPPORTED: 'OPERATION_NOT_SUPPORTED',
-    PERMISSION_DENIED: 'PERMISSION_DENIED',
+    PERMISSION_DENIED: 'PERMISSION_DENIED'
 } as const;
 
 // Service performance constants
@@ -272,7 +272,7 @@ export const SERVICE_PERFORMANCE_CONSTANTS = {
         RESPONSE_TIME: 1000,             // 1 second
         MEMORY_USAGE: 50 * 1024 * 1024, // 50MB
         CPU_USAGE: 0.8,                 // 80%
-        ERROR_RATE: 0.05,                // 5%
+        ERROR_RATE: 0.05                // 5%
     },
 
     // Metrics collection intervals
@@ -280,7 +280,7 @@ export const SERVICE_PERFORMANCE_CONSTANTS = {
         REAL_TIME: 1000,      // 1 second
         FREQUENT: 5000,        // 5 seconds
         NORMAL: 30000,         // 30 seconds
-        INFREQUENT: 300000,    // 5 minutes
+        INFREQUENT: 300000    // 5 minutes
     },
 
     // Performance optimization settings
@@ -290,8 +290,8 @@ export const SERVICE_PERFORMANCE_CONSTANTS = {
         ENABLE_BATCHING: true,
         ENABLE_COMPRESSION: true,
         MAX_BATCH_SIZE: 100,
-        CACHE_TTL: 300000, // 5 minutes
-    },
+        CACHE_TTL: 300000 // 5 minutes
+    }
 } as const;
 
 // Service storage constants
@@ -302,7 +302,7 @@ export const SERVICE_STORAGE_CONSTANTS = {
         SESSION_STORAGE: 'sessionStorage',
         MEMORY: 'memory',
         INDEXED_DB: 'indexedDB',
-        CUSTOM: 'custom',
+        CUSTOM: 'custom'
     },
 
     // Storage keys prefixes
@@ -311,7 +311,7 @@ export const SERVICE_STORAGE_CONSTANTS = {
         CACHE: 'qs_cache_',
         CONFIG: 'qs_config_',
         METRICS: 'qs_metrics_',
-        TEMP: 'qs_temp_',
+        TEMP: 'qs_temp_'
     },
 
     // Storage limits
@@ -320,15 +320,15 @@ export const SERVICE_STORAGE_CONSTANTS = {
         SESSION_STORAGE_QUOTA: 5 * 1024 * 1024,  // 5MB
         INDEXED_DB_QUOTA: 50 * 1024 * 1024,      // 50MB
         MAX_KEY_LENGTH: 255,
-        MAX_VALUE_SIZE: 1024 * 1024,             // 1MB
+        MAX_VALUE_SIZE: 1024 * 1024             // 1MB
     },
 
     // Storage cleanup intervals
     CLEANUP_INTERVALS: {
         FREQUENT: 60000,      // 1 minute
         NORMAL: 300000,       // 5 minutes
-        INFREQUENT: 1800000,  // 30 minutes
-    },
+        INFREQUENT: 1800000  // 30 minutes
+    }
 } as const;
 
 // Service communication constants
@@ -339,7 +339,7 @@ export const SERVICE_COMMUNICATION_CONSTANTS = {
         RESPONSE: 'response',
         EVENT: 'event',
         ERROR: 'error',
-        HEARTBEAT: 'heartbeat',
+        HEARTBEAT: 'heartbeat'
     },
 
     // Communication channels
@@ -347,7 +347,7 @@ export const SERVICE_COMMUNICATION_CONSTANTS = {
         SERVICE_BUS: 'serviceBus',
         EVENT_BUS: 'eventBus',
         COMMAND_BUS: 'commandBus',
-        QUERY_BUS: 'queryBus',
+        QUERY_BUS: 'queryBus'
     },
 
     // Message priorities
@@ -355,7 +355,7 @@ export const SERVICE_COMMUNICATION_CONSTANTS = {
         CRITICAL: 10,
         HIGH: 5,
         NORMAL: 1,
-        LOW: 0,
+        LOW: 0
     },
 
     // Timeouts
@@ -363,6 +363,6 @@ export const SERVICE_COMMUNICATION_CONSTANTS = {
         REQUEST_TIMEOUT: 10000,      // 10 seconds
         RESPONSE_TIMEOUT: 15000,      // 15 seconds
         HEARTBEAT_INTERVAL: 30000,     // 30 seconds
-        CONNECTION_TIMEOUT: 5000,      // 5 seconds
-    },
+        CONNECTION_TIMEOUT: 5000      // 5 seconds
+    }
 } as const;

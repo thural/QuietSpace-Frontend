@@ -1,6 +1,6 @@
 /**
  * Layout-related interfaces.
- * 
+ *
  * Focused interfaces for layout system functionality.
  * Segregated from larger theme interfaces for better modularity.
  */

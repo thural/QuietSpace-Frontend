@@ -1,6 +1,6 @@
 /**
  * Date Formatting Utilities.
- * 
+ *
  * Helper functions for consistent date formatting across the application.
  * Provides relative time formatting and date manipulation.
  */
@@ -11,42 +11,42 @@
 export const formatRelativeTime = (date: Date): string => {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-  
+
   // Less than a minute
   if (diff < 60000) {
     return 'just now';
   }
-  
+
   // Less than an hour
   if (diff < 3600000) {
     const minutes = Math.floor(diff / 60000);
     return `${minutes}m ago`;
   }
-  
+
   // Less than a day
   if (diff < 86400000) {
     const hours = Math.floor(diff / 3600000);
     return `${hours}h ago`;
   }
-  
+
   // Less than a week
   if (diff < 604800000) {
     const days = Math.floor(diff / 86400000);
     return `${days}d ago`;
   }
-  
+
   // Less than a month
   if (diff < 2628000000) {
     const weeks = Math.floor(diff / 604800000);
     return `${weeks}w ago`;
   }
-  
+
   // Less than a year
   if (diff < 31536000000) {
     const months = Math.floor(diff / 2628000000);
     return `${months}mo ago`;
   }
-  
+
   // More than a year
   const years = Math.floor(diff / 31536000000);
   return `${years}y ago`;

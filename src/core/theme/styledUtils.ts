@@ -1,12 +1,12 @@
 /**
  * Styled Components Performance Utilities.
- * 
+ *
  * Legacy file maintained for backward compatibility.
  * All functionality has been moved to dedicated modules.
- * 
+ *
  * @deprecated Import from specific modules instead:
  * - factories/styledFactory
- * - utils/mediaQueries  
+ * - utils/mediaQueries
  * - animations/animations
  * - components/layoutComponents
  * - components/uiComponents

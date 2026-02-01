@@ -2,8 +2,10 @@
  * Tests for AuthConfigLoader
  */
 
-import { AuthConfigLoader, FileBasedAuthConfig, createAuthConfigLoader, loadAuthConfiguration } from '../config/AuthConfigLoader';
+import { FileBasedAuthConfig, createAuthConfigLoader, loadAuthConfiguration } from '../config/AuthConfigLoader';
 import { AuthProviderType } from '../types/auth.domain.types';
+
+import type { AuthConfigLoader } from '../config/AuthConfigLoader';
 
 describe('AuthConfigLoader', () => {
     let loader: AuthConfigLoader;

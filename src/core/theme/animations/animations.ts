@@ -1,6 +1,6 @@
 /**
  * Animation Definitions.
- * 
+ *
  * Predefined animations for styled components.
  * Provides clean separation of animation logic.
  */
@@ -22,5 +22,5 @@ export const animations = {
     scaleIn: keyframes`
     from { transform: scale(0.9); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
-  `,
+  `
 };

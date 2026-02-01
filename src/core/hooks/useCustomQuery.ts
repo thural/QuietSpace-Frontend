@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+
+import type { ICacheProvider } from '@/core/cache';
+
 import { useDIContainer } from '@/core/di';
 import { TYPES } from '@/core/di/types';
-import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Enterprise-grade query options interface
@@ -49,7 +51,7 @@ export interface CustomQueryResult<T = any> extends QueryState<T> {
 
 /**
  * Enterprise-grade custom query hook
- * 
+ *
  * Replaces React Query's useQuery with custom implementation
  * that integrates with our ICacheProvider and DI container
  */
@@ -119,7 +121,7 @@ export function useCustomQuery<T>(
           const data = select ? select(cachedEntry.data) : cachedEntry.data as T;
           setState(prev => ({
             ...prev,
-            data: data as T,
+            data: data,
             isLoading: false,
             isFetching: false,
             isSuccess: true,

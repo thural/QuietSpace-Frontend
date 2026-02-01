@@ -1,6 +1,6 @@
 /**
  * Theme System Constants
- * 
+ *
  * Centralized constants for the theme system including color values,
  * typography scales, spacing systems, breakpoints, and animation timings.
  */
@@ -18,7 +18,7 @@ export const COLOR_PALETTE = {
         600: '#0284c7',
         700: '#0369a1',
         800: '#075985',
-        900: '#0c4a6e',
+        900: '#0c4a6e'
     },
 
     // Secondary brand colors
@@ -32,7 +32,7 @@ export const COLOR_PALETTE = {
         600: '#475569',
         700: '#334155',
         800: '#1e293b',
-        900: '#0f172a',
+        900: '#0f172a'
     },
 
     // Success colors
@@ -46,7 +46,7 @@ export const COLOR_PALETTE = {
         600: '#16a34a',
         700: '#15803d',
         800: '#166534',
-        900: '#14532d',
+        900: '#14532d'
     },
 
     // Warning colors
@@ -60,7 +60,7 @@ export const COLOR_PALETTE = {
         600: '#d97706',
         700: '#b45309',
         800: '#92400e',
-        900: '#78350f',
+        900: '#78350f'
     },
 
     // Error colors
@@ -74,7 +74,7 @@ export const COLOR_PALETTE = {
         600: '#dc2626',
         700: '#b91c1c',
         800: '#991b1b',
-        900: '#7f1d1d',
+        900: '#7f1d1d'
     },
 
     // Info colors
@@ -88,8 +88,8 @@ export const COLOR_PALETTE = {
         600: '#2563eb',
         700: '#1d4ed8',
         800: '#1e40af',
-        900: '#1e3a8a',
-    },
+        900: '#1e3a8a'
+    }
 } as const;
 
 // Semantic color constants
@@ -102,7 +102,7 @@ export const SEMANTIC_COLORS = {
         INVERSE: '#1e293b',
         OVERLAY: 'rgba(0, 0, 0, 0.5)',
         MUTED: '#f8fafc',
-        ACCENT: '#f0f9ff',
+        ACCENT: '#f0f9ff'
     },
 
     // Text colors
@@ -117,7 +117,7 @@ export const SEMANTIC_COLORS = {
         LINK: '#0ea5e9',
         SUCCESS: '#16a34a',
         WARNING: '#d97706',
-        ERROR: '#dc2626',
+        ERROR: '#dc2626'
     },
 
     // Border colors
@@ -131,8 +131,8 @@ export const SEMANTIC_COLORS = {
         FOCUS: '#3b82f6',
         ERROR: '#ef4444',
         SUCCESS: '#22c55e',
-        WARNING: '#f59e0b',
-    },
+        WARNING: '#f59e0b'
+    }
 } as const;
 
 // Typography constants
@@ -142,7 +142,7 @@ export const TYPOGRAPHY = {
         SANS: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
         SERIF: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
         MONO: ['JetBrains Mono', 'Fira Code', 'Monaco', 'Cascadia Code', 'SF Mono', 'Consolas', 'monospace'],
-        DISPLAY: ['Inter Display', 'Inter', 'system-ui', 'sans-serif'],
+        DISPLAY: ['Inter Display', 'Inter', 'system-ui', 'sans-serif']
     },
 
     // Font sizes (in rem)
@@ -159,7 +159,7 @@ export const TYPOGRAPHY = {
         '6XL': '3.75rem', // 60px
         '7XL': '4.5rem',  // 72px
         '8XL': '6rem',    // 96px
-        '9XL': '8rem',    // 128px
+        '9XL': '8rem'    // 128px
     },
 
     // Font weights
@@ -172,7 +172,7 @@ export const TYPOGRAPHY = {
         SEMIBOLD: 600,
         BOLD: 700,
         EXTRA_BOLD: 800,
-        BLACK: 900,
+        BLACK: 900
     },
 
     // Line heights
@@ -182,7 +182,7 @@ export const TYPOGRAPHY = {
         SNUG: 1.375,
         NORMAL: 1.5,
         RELAXED: 1.625,
-        LOOSE: 2,
+        LOOSE: 2
     },
 
     // Letter spacing
@@ -192,8 +192,8 @@ export const TYPOGRAPHY = {
         NORMAL: '0em',
         WIDE: '0.025em',
         WIDER: '0.05em',
-        WIDEST: '0.1em',
-    },
+        WIDEST: '0.1em'
+    }
 } as const;
 
 // Spacing constants
@@ -234,7 +234,7 @@ export const SPACING = {
         64: '16rem',      // 256px
         72: '18rem',      // 288px
         80: '20rem',      // 320px
-        96: '24rem',      // 384px
+        96: '24rem'      // 384px
     },
 
     // Common spacing values
@@ -245,8 +245,8 @@ export const SPACING = {
         LG: '2rem',        // 32px
         XL: '3rem',        // 48px
         '2XL': '4rem',     // 64px
-        '3XL': '6rem',     // 96px
-    },
+        '3XL': '6rem'     // 96px
+    }
 } as const;
 
 // Breakpoint constants
@@ -258,7 +258,7 @@ export const BREAKPOINTS = {
         MD: 768,
         LG: 992,
         XL: 1200,
-        '2XL': 1400,
+        '2XL': 1400
     },
 
     // Media query strings
@@ -268,7 +268,7 @@ export const BREAKPOINTS = {
         MD: '(min-width: 768px)',
         LG: '(min-width: 992px)',
         XL: '(min-width: 1200px)',
-        '2XL': '(min-width: 1400px)',
+        '2XL': '(min-width: 1400px)'
     },
 
     // Container max widths
@@ -277,8 +277,8 @@ export const BREAKPOINTS = {
         MD: '720px',
         LG: '960px',
         XL: '1140px',
-        '2XL': '1320px',
-    },
+        '2XL': '1320px'
+    }
 } as const;
 
 // Border radius constants
@@ -292,7 +292,7 @@ export const BORDER_RADIUS = {
         XL: '0.75rem',    // 12px
         '2XL': '1rem',    // 16px
         '3XL': '1.5rem',  // 24px
-        FULL: '9999px',
+        FULL: '9999px'
     },
 
     // Common radius values
@@ -302,8 +302,8 @@ export const BORDER_RADIUS = {
         MD: '0.5rem',      // 8px
         LG: '0.75rem',     // 12px
         XL: '1rem',        // 16px
-        FULL: '9999px',
-    },
+        FULL: '9999px'
+    }
 } as const;
 
 // Shadow constants
@@ -317,7 +317,7 @@ export const SHADOWS = {
         LG: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         XL: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
         '2XL': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        INNER: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+        INNER: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
     },
 
     // Colored shadows
@@ -325,8 +325,8 @@ export const SHADOWS = {
         PRIMARY: '0 4px 14px 0 rgba(14, 165, 233, 0.39)',
         SUCCESS: '0 4px 14px 0 rgba(34, 197, 94, 0.39)',
         WARNING: '0 4px 14px 0 rgba(245, 158, 11, 0.39)',
-        ERROR: '0 4px 14px 0 rgba(239, 68, 68, 0.39)',
-    },
+        ERROR: '0 4px 14px 0 rgba(239, 68, 68, 0.39)'
+    }
 } as const;
 
 // Animation constants
@@ -336,7 +336,7 @@ export const ANIMATION = {
         FAST: 150,
         NORMAL: 300,
         SLOW: 500,
-        EXTRA_SLOW: 1000,
+        EXTRA_SLOW: 1000
     },
 
     // Easing functions
@@ -351,58 +351,58 @@ export const ANIMATION = {
         EASE_OUT_CUBIC: 'cubic-bezier(0.215, 0.61, 0.355, 1)',
         EASE_IN_OUT_CUBIC: 'cubic-bezier(0.645, 0.045, 0.355, 1)',
         EASE_OUT_QUART: 'cubic-bezier(0.165, 0.84, 0.44, 1)',
-        EASE_IN_OUT_QUART: 'cubic-bezier(0.77, 0, 0.175, 1)',
+        EASE_IN_OUT_QUART: 'cubic-bezier(0.77, 0, 0.175, 1)'
     },
 
     // Common animations
     KEYFRAMES: {
         FADE_IN: {
             from: { opacity: 0 },
-            to: { opacity: 1 },
+            to: { opacity: 1 }
         },
         FADE_OUT: {
             from: { opacity: 1 },
-            to: { opacity: 0 },
+            to: { opacity: 0 }
         },
         SLIDE_UP: {
             from: { transform: 'translateY(100%)' },
-            to: { transform: 'translateY(0)' },
+            to: { transform: 'translateY(0)' }
         },
         SLIDE_DOWN: {
             from: { transform: 'translateY(-100%)' },
-            to: { transform: 'translateY(0)' },
+            to: { transform: 'translateY(0)' }
         },
         SLIDE_LEFT: {
             from: { transform: 'translateX(100%)' },
-            to: { transform: 'translateX(0)' },
+            to: { transform: 'translateX(0)' }
         },
         SLIDE_RIGHT: {
             from: { transform: 'translateX(-100%)' },
-            to: { transform: 'translateX(0)' },
+            to: { transform: 'translateX(0)' }
         },
         SCALE_IN: {
             from: { transform: 'scale(0.9)', opacity: 0 },
-            to: { transform: 'scale(1)', opacity: 1 },
+            to: { transform: 'scale(1)', opacity: 1 }
         },
         SCALE_OUT: {
             from: { transform: 'scale(1)', opacity: 1 },
-            to: { transform: 'scale(0.9)', opacity: 0 },
+            to: { transform: 'scale(0.9)', opacity: 0 }
         },
         PULSE: {
             '0%, 100%': { opacity: 1 },
-            '50%': { opacity: 0.5 },
+            '50%': { opacity: 0.5 }
         },
         SPIN: {
             from: { transform: 'rotate(0deg)' },
-            to: { transform: 'rotate(360deg)' },
+            to: { transform: 'rotate(360deg)' }
         },
         BOUNCE: {
             '0%, 20%, 53%, 80%, 100%': { transform: 'translate3d(0, 0, 0)' },
             '40%, 43%': { transform: 'translate3d(0, -30px, 0)' },
             '70%': { transform: 'translate3d(0, -15px, 0)' },
-            '90%': { transform: 'translate3d(0, -4px, 0)' },
-        },
-    },
+            '90%': { transform: 'translate3d(0, -4px, 0)' }
+        }
+    }
 } as const;
 
 // Z-index constants
@@ -415,7 +415,7 @@ export const Z_INDEX = {
     POPOVER: 1060,
     TOOLTIP: 1070,
     TOAST: 1080,
-    LOADING: 9999,
+    LOADING: 9999
 } as const;
 
 // Layout constants
@@ -425,7 +425,7 @@ export const LAYOUT = {
         SM: '1rem',
         MD: '1.5rem',
         LG: '2rem',
-        XL: '3rem',
+        XL: '3rem'
     },
 
     // Grid system
@@ -433,7 +433,7 @@ export const LAYOUT = {
         COLUMNS: 12,
         GUTTER_WIDTH: '1.5rem',
         GUTTER_WIDTH_COMPACT: '1rem',
-        GUTTER_WIDTH_WIDE: '2rem',
+        GUTTER_WIDTH_WIDE: '2rem'
     },
 
     // Header/footer heights
@@ -444,8 +444,8 @@ export const LAYOUT = {
         SIDEBAR: '16rem',
         SIDEBAR_COMPACT: '4rem',
         FOOTER: '4rem',
-        TAB_BAR: '3rem',
-    },
+        TAB_BAR: '3rem'
+    }
 } as const;
 
 // Theme variant constants
@@ -453,7 +453,7 @@ export const THEME_VARIANTS = {
     LIGHT: 'light',
     DARK: 'dark',
     AUTO: 'auto',
-    CUSTOM: 'custom',
+    CUSTOM: 'custom'
 } as const;
 
 // CSS variable prefixes
@@ -464,5 +464,5 @@ export const CSS_VARIABLE_PREFIXES = {
     BORDER_RADIUS: '--radius',
     SHADOW: '--shadow',
     ANIMATION: '--animation',
-    BREAKPOINT: '--breakpoint',
+    BREAKPOINT: '--breakpoint'
 } as const;

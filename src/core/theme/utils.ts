@@ -1,16 +1,9 @@
 /**
  * Theme System Utilities
- * 
+ *
  * Utility functions for theme operations following Black Box pattern.
  * Provides clean utility functions for validation, initialization, and management.
  */
-
-import type {
-    IThemeService,
-    ThemeConfig,
-    ThemeTokens,
-    EnhancedTheme
-} from '../shared';
 
 import {
     CORE_CONSTANTS,
@@ -19,9 +12,17 @@ import {
     CORE_ERROR_MESSAGES
 } from '../shared';
 
+import type {
+    IThemeService,
+    ThemeConfig,
+    ThemeTokens,
+    EnhancedTheme
+} from '../shared';
+
+
 /**
  * Validates theme configuration
- * 
+ *
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
@@ -65,7 +66,7 @@ export function validateThemeConfig(config: any): string[] {
 
 /**
  * Creates a default theme configuration
- * 
+ *
  * @param overrides - Optional configuration overrides
  * @returns Default theme configuration
  */
@@ -82,7 +83,7 @@ export function createDefaultThemeConfig(overrides?: Partial<ThemeConfig>): Them
 
 /**
  * Creates default color palette
- * 
+ *
  * @returns Default color palette
  */
 export function createDefaultColors(): Record<string, string> {
@@ -151,7 +152,7 @@ export function createDefaultColors(): Record<string, string> {
 
 /**
  * Creates default typography scale
- * 
+ *
  * @returns Default typography scale
  */
 export function createDefaultTypography(): Record<string, any> {
@@ -174,7 +175,7 @@ export function createDefaultTypography(): Record<string, any> {
             '3xl': '1.875rem', // 30px
             '4xl': '2.25rem', // 36px
             '5xl': '3rem',    // 48px
-            '6xl': '3.75rem', // 60px
+            '6xl': '3.75rem' // 60px
         },
 
         // Font weights
@@ -212,7 +213,7 @@ export function createDefaultTypography(): Record<string, any> {
 
 /**
  * Creates default spacing scale
- * 
+ *
  * @returns Default spacing scale
  */
 export function createDefaultSpacing(): Record<string, string> {
@@ -240,7 +241,7 @@ export function createDefaultSpacing(): Record<string, string> {
 
 /**
  * Creates default shadow definitions
- * 
+ *
  * @returns Default shadow definitions
  */
 export function createDefaultShadows(): Record<string, string> {
@@ -258,7 +259,7 @@ export function createDefaultShadows(): Record<string, string> {
 
 /**
  * Creates default border radius scale
- * 
+ *
  * @returns Default border radius scale
  */
 export function createDefaultRadius(): Record<string, string> {
@@ -277,7 +278,7 @@ export function createDefaultRadius(): Record<string, string> {
 
 /**
  * Creates default breakpoints
- * 
+ *
  * @returns Default breakpoints
  */
 export function createDefaultBreakpoints(): Record<string, string> {
@@ -293,7 +294,7 @@ export function createDefaultBreakpoints(): Record<string, string> {
 
 /**
  * Creates a theme error with proper error code
- * 
+ *
  * @param message - Error message
  * @param code - Error code
  * @param details - Additional error details
@@ -313,7 +314,7 @@ export function createThemeError(
 
 /**
  * Gets a color value from theme tokens
- * 
+ *
  * @param tokens - Theme tokens
  * @param path - Color path (e.g., 'primary' or 'text.primary')
  * @returns Color value or fallback
@@ -331,7 +332,7 @@ export function getColor(tokens: ThemeTokens, path: string): string {
 
 /**
  * Gets a spacing value from theme tokens
- * 
+ *
  * @param tokens - Theme tokens
  * @param key - Spacing key
  * @returns Spacing value or fallback
@@ -342,7 +343,7 @@ export function getSpacing(tokens: ThemeTokens, key: string): string {
 
 /**
  * Gets a typography value from theme tokens
- * 
+ *
  * @param tokens - Theme tokens
  * @param path - Typography path (e.g., 'fontSize.base' or 'fontWeight.bold')
  * @returns Typography value or fallback
@@ -360,7 +361,7 @@ export function getTypography(tokens: ThemeTokens, path: string): any {
 
 /**
  * Merges theme tokens with overrides
- * 
+ *
  * @param baseTokens - Base theme tokens
  * @param overrides - Override tokens
  * @returns Merged theme tokens
@@ -381,7 +382,7 @@ export function mergeThemeTokens(
 
 /**
  * Creates a dark theme variant from a light theme
- * 
+ *
  * @param lightTheme - Light theme tokens
  * @returns Dark theme tokens
  */
@@ -411,7 +412,7 @@ export function createDarkTheme(lightTheme: ThemeTokens): ThemeTokens {
 
 /**
  * Validates theme tokens
- * 
+ *
  * @param tokens - Theme tokens to validate
  * @returns Array of validation errors
  */
@@ -439,7 +440,7 @@ export function validateThemeTokens(tokens: ThemeTokens): string[] {
 
 /**
  * Formats theme tokens for debugging
- * 
+ *
  * @param tokens - Theme tokens to format
  * @returns Formatted theme tokens string
  */
@@ -454,7 +455,7 @@ export function formatThemeTokens(tokens: ThemeTokens): string {
 
 /**
  * Generates a CSS custom property name
- * 
+ *
  * @param category - Property category (color, spacing, etc.)
  * @param name - Property name
  * @returns CSS custom property name
@@ -465,7 +466,7 @@ export function generateCSSVariable(category: string, name: string): string {
 
 /**
  * Creates CSS custom properties from theme tokens
- * 
+ *
  * @param tokens - Theme tokens
  * @returns CSS custom properties object
  */
@@ -499,7 +500,7 @@ export function createCSSVariables(tokens: ThemeTokens): Record<string, string> 
 
 /**
  * Applies theme tokens to an element
- * 
+ *
  * @param element - DOM element
  * @param tokens - Theme tokens
  * @returns CSS string with applied theme

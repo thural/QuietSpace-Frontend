@@ -1,14 +1,14 @@
 /**
  * Cache Manager Implementation
- * 
+ *
  * Implements cache operations with intelligent key management
  */
 
-import type { ICacheProvider } from '@/core/cache';
 import type { ICacheManager } from './ICacheManager';
+import type { ICacheProvider } from '@/core/cache';
 
 export class CacheManager implements ICacheManager {
-  constructor(private cache: ICacheProvider) {}
+  constructor(private readonly cache: ICacheProvider) {}
 
   get<T>(key: string): T | undefined {
     return this.cache.get<T>(key);

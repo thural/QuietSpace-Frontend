@@ -1,6 +1,6 @@
 /**
  * Data Service Module - React Hooks
- * 
+ *
  * Provides React hooks for data fetching with automatic state management,
  * caching, error handling, and optimistic updates.
  */
@@ -15,42 +15,42 @@ export interface UseQueryOptions<TData, TError> {
    * Whether to automatically refetch on window focus
    */
   refetchOnWindowFocus?: boolean;
-  
+
   /**
    * Whether to automatically refetch on network reconnect
    */
   refetchOnReconnect?: boolean;
-  
+
   /**
    * Whether to automatically refetch at intervals
    */
   refetchInterval?: number | false;
-  
+
   /**
    * Number of retry attempts on failure
    */
   retry?: number | false;
-  
+
   /**
    * Retry delay in milliseconds
    */
   retryDelay?: number;
-  
+
   /**
    * Whether to enable request cancellation
    */
   enableRequestCancellation?: boolean;
-  
+
   /**
    * Initial data to use before first fetch
    */
   initialData?: TData;
-  
+
   /**
    * Stale time in milliseconds
    */
   staleTime?: number;
-  
+
   /**
    * Cache time in milliseconds
    */
@@ -65,47 +65,47 @@ export interface UseQueryResult<TData, TError> {
    * Whether data is currently being loaded
    */
   isLoading: boolean;
-  
+
   /**
    * Whether data is currently being fetched
    */
   isFetching: boolean;
-  
+
   /**
    * Whether there was an error
    */
   isError: boolean;
-  
+
   /**
    * Whether data was successfully loaded
    */
   isSuccess: boolean;
-  
+
   /**
    * Error information
    */
   error: TError | null;
-  
+
   /**
    * Timestamp of the last data update
    */
   lastUpdated: number | null;
-  
+
   /**
    * Number of times the data has been refetched
    */
   refetchCount: number;
-  
+
   /**
    * The fetched data
    */
   data: TData | null;
-  
+
   /**
    * Function to manually refetch data
    */
   refetch: () => Promise<TData>;
-  
+
   /**
    * Function to invalidate cache
    */
@@ -120,22 +120,22 @@ export interface UseMutationOptions<TData, TVariables, TError> {
    * Function called when mutation is successful
    */
   onSuccess?: (data: TData, variables: TVariables) => void;
-  
+
   /**
    * Function called when mutation fails
    */
   onError?: (error: TError, variables: TVariables) => void;
-  
+
   /**
    * Function called when mutation settles (success or error)
    */
   onSettled?: (data: TData | undefined, error: TError | null, variables: TVariables) => void;
-  
+
   /**
    * Whether to retry on failure
    */
   retry?: number | false;
-  
+
   /**
    * Retry delay in milliseconds
    */
@@ -150,47 +150,47 @@ export interface UseMutationResult<TData, TVariables, TError> {
    * Whether mutation is currently being loaded
    */
   isLoading: boolean;
-  
+
   /**
    * Whether mutation is currently being executed
    */
   isFetching: boolean;
-  
+
   /**
    * Whether there was an error
    */
   isError: boolean;
-  
+
   /**
    * Whether mutation was successful
    */
   isSuccess: boolean;
-  
+
   /**
    * Error information
    */
   error: TError | null;
-  
+
   /**
    * Timestamp of the last mutation
    */
   lastUpdated: number | null;
-  
+
   /**
    * Number of times the mutation was attempted
    */
   refetchCount: number;
-  
+
   /**
    * The mutation result data
    */
   data: TData | null;
-  
+
   /**
    * Function to trigger the mutation
    */
   mutate: (variables: TVariables) => Promise<TData>;
-  
+
   /**
    * Function to reset the mutation state
    */
@@ -205,57 +205,57 @@ export interface UseInfiniteQueryResult<TData, TError> {
    * Whether data is currently being loaded
    */
   isLoading: boolean;
-  
+
   /**
    * Whether data is currently being fetched
    */
   isFetching: boolean;
-  
+
   /**
    * Whether there was an error
    */
   isError: boolean;
-  
+
   /**
    * Whether data was successfully loaded
    */
   isSuccess: boolean;
-  
+
   /**
    * Error information
    */
   error: TError | null;
-  
+
   /**
    * Timestamp of the last data update
    */
   lastUpdated: number | null;
-  
+
   /**
    * Number of times the data has been refetched
    */
   refetchCount: number;
-  
+
   /**
    * The fetched data array
    */
   data: TData[];
-  
+
   /**
    * Whether there's more data to fetch
    */
   hasNextPage: boolean;
-  
+
   /**
    * Whether currently fetching next page
    */
   isFetchingNextPage: boolean;
-  
+
   /**
    * Function to fetch next page
    */
   fetchNextPage: () => Promise<void>;
-  
+
   /**
    * Function to refetch all pages
    */
@@ -347,7 +347,7 @@ export function useQuery<TData, TError = Error>(
     const attemptFetch = async (): Promise<TData> => {
       try {
         const startTime = Date.now();
-        
+
         const response = await fetcher();
         const duration = Date.now() - startTime;
 
@@ -372,22 +372,22 @@ export function useQuery<TData, TError = Error>(
         return response;
       } catch (error) {
         retryCount++;
-        
+
         if (retryCount <= maxRetries) {
           setState(prev => ({
             ...prev,
             metadata: { ...prev.metadata, retryCount }
           }));
-          
+
           // Schedule retry
           await new Promise(resolve => {
             retryTimeoutRef.current = setTimeout(resolve, retryDelay * retryCount);
           });
-          
+
           return attemptFetch();
         } else {
           const errorObj = error as TError;
-          
+
           setState(prev => ({
             ...prev,
             isLoading: false,
@@ -402,7 +402,7 @@ export function useQuery<TData, TError = Error>(
               retryCount
             }
           }));
-          
+
           throw errorObj;
         }
       }
@@ -556,21 +556,21 @@ export function useMutation<TData, TVariables = void, TError = Error>(
         return result;
       } catch (error) {
         retryCount++;
-        
+
         if (retryCount <= maxRetries) {
           setState(prev => ({
             ...prev,
             metadata: { ...prev.metadata, retryCount }
           }));
-          
+
           await new Promise(resolve => {
             setTimeout(resolve, retryDelay * retryCount);
           });
-          
+
           return attemptMutation();
         } else {
           const errorObj = error as TError;
-          
+
           setState(prev => ({
             ...prev,
             isLoading: false,
@@ -683,7 +683,7 @@ export function useInfiniteQuery<TData, TError = Error>(
 
       const newData = result.data || [];
       const updatedData = isRefetch ? newData : [...state.data, ...newData];
-      
+
       setState(prev => ({
         ...prev,
         isLoading: false,
@@ -709,7 +709,7 @@ export function useInfiniteQuery<TData, TError = Error>(
 
     } catch (error) {
       const errorObj = error as TError;
-      
+
       setState(prev => ({
         ...prev,
         isLoading: false,

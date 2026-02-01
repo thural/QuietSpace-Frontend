@@ -1,6 +1,6 @@
 /**
  * OAuth Auth Provider Tests
- * 
+ *
  * Tests for OAuth authentication provider including:
  * - Provider initialization
  * - OAuth 2.0 flow implementation
@@ -31,7 +31,9 @@ Object.defineProperty(global, 'crypto', {
 });
 
 import { OAuthAuthProvider, OAuthProviders } from '../providers/OAuthProvider';
-import { AuthCredentials, AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { AuthCredentials } from '../types/auth.domain.types';
 
 describe('OAuthAuthProvider', () => {
     let provider: OAuthAuthProvider;

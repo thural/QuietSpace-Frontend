@@ -1,6 +1,6 @@
 /**
  * Core System Legacy Exports
- * 
+ *
  * Legacy exports for backward compatibility.
  * These exports are deprecated and will be removed in a future major version.
  */

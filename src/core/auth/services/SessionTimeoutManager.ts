@@ -1,6 +1,6 @@
 /**
  * Enterprise Session Timeout Manager
- * 
+ *
  * Provides intelligent session timeout management with:
  * - Proactive timeout detection and warnings
  * - User-friendly countdown timers
@@ -81,10 +81,10 @@ export interface SessionTimeoutMetrics {
 
 export class SessionTimeoutManager {
   private config: SessionTimeoutConfig;
-  private events: SessionTimeoutEvents;
+  private readonly events: SessionTimeoutEvents;
   private state: SessionTimeoutState;
-  private timers: Map<string, NodeJS.Timeout> = new Map();
-  private metrics: SessionTimeoutMetrics;
+  private readonly timers: Map<string, NodeJS.Timeout> = new Map();
+  private readonly metrics: SessionTimeoutMetrics;
   private isDestroyed = false;
   private activityListeners: (() => void)[] = [];
 
@@ -103,7 +103,7 @@ export class SessionTimeoutManager {
     };
 
     this.events = events;
-    
+
     this.state = {
       status: 'active',
       timeRemaining: this.config.sessionDuration,
@@ -203,7 +203,7 @@ export class SessionTimeoutManager {
     }
 
     this.state.lastActivity = now;
-    
+
     // Reset inactivity timer
     this.resetInactivityTimer();
 
@@ -232,7 +232,7 @@ export class SessionTimeoutManager {
 
   private getTabId(): string {
     if (typeof sessionStorage === 'undefined') return 'unknown';
-    
+
     let tabId = sessionStorage.getItem('tab-id');
     if (!tabId) {
       tabId = `tab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -377,7 +377,7 @@ export class SessionTimeoutManager {
 
     const now = Date.now();
     const sessionDuration = now - this.state.sessionStart;
-    
+
     this.metrics.totalSessionTime = sessionDuration;
     this.metrics.extensionCount = this.state.extensionsGranted;
 
@@ -406,7 +406,7 @@ export class SessionTimeoutManager {
 
     const extensionDuration = extensionTime || this.config.sessionDuration;
     const now = Date.now();
-    
+
     // Update state
     this.state.status = 'extended';
     this.state.extensionsGranted++;
@@ -484,7 +484,7 @@ export class SessionTimeoutManager {
    * Check if session can be extended
    */
   public canExtend(): boolean {
-    return this.state.status !== 'expired' && 
+    return this.state.status !== 'expired' &&
            this.state.extensionsGranted < this.state.maxExtensions;
   }
 

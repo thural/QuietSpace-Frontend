@@ -1,11 +1,12 @@
 /**
  * Core System Hooks
- * 
+ *
  * React hooks for accessing core system services following Black Box pattern.
  * Provides clean access to all core services with proper error handling.
  */
 
 import React, { useContext, useCallback, useMemo } from 'react';
+
 import type {
     ICoreServices,
     ICacheService,
@@ -23,7 +24,7 @@ const CoreServicesContext = React.createContext<ICoreServices | null>(null);
 
 /**
  * Hook for accessing all core services
- * 
+ *
  * @returns Core services instance
  */
 export function useCoreServices(): ICoreServices {
@@ -38,7 +39,7 @@ export function useCoreServices(): ICoreServices {
 
 /**
  * Hook for accessing cache service
- * 
+ *
  * @returns Cache service instance
  */
 export function useCacheService(): ICacheServiceManager {
@@ -48,7 +49,7 @@ export function useCacheService(): ICacheServiceManager {
 
 /**
  * Hook for accessing WebSocket service
- * 
+ *
  * @returns WebSocket service instance
  */
 export function useWebSocketService(): IWebSocketService {
@@ -58,7 +59,7 @@ export function useWebSocketService(): IWebSocketService {
 
 /**
  * Hook for accessing authentication service
- * 
+ *
  * @returns Authentication service instance
  */
 export function useAuthService(): IAuthService {
@@ -68,7 +69,7 @@ export function useAuthService(): IAuthService {
 
 /**
  * Hook for accessing theme service
- * 
+ *
  * @returns Theme service instance
  */
 export function useThemeService(): IThemeService {
@@ -78,7 +79,7 @@ export function useThemeService(): IThemeService {
 
 /**
  * Hook for accessing logger service
- * 
+ *
  * @returns Logger service instance
  */
 export function useLoggerService(): ILoggerService {
@@ -88,7 +89,7 @@ export function useLoggerService(): ILoggerService {
 
 /**
  * Hook for accessing network service
- * 
+ *
  * @returns Network service instance
  */
 export function useNetworkService(): INetworkService {
@@ -98,7 +99,7 @@ export function useNetworkService(): INetworkService {
 
 /**
  * Hook for accessing service container
- * 
+ *
  * @returns Service container instance
  */
 export function useServiceContainer(): IServiceContainer {
@@ -108,7 +109,7 @@ export function useServiceContainer(): IServiceContainer {
 
 /**
  * Hook for creating core services with configuration
- * 
+ *
  * @param config - Core configuration
  * @returns Configured core services
  */
@@ -121,7 +122,7 @@ export function useCreateCoreServices(config?: CoreConfig): ICoreServices {
 
 /**
  * Hook for checking if core services are initialized
- * 
+ *
  * @returns Initialization status
  */
 export function useCoreServicesInitialized(): boolean {
@@ -131,7 +132,7 @@ export function useCoreServicesInitialized(): boolean {
 
 /**
  * Hook for getting core services status
- * 
+ *
  * @returns Core services status
  */
 export function useCoreServicesStatus(): {

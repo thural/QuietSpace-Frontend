@@ -1,6 +1,6 @@
 /**
  * API Path Constants
- * 
+ *
  * Centralized API endpoint paths for the application.
  * Following the core architecture pattern for shared constants.
  */

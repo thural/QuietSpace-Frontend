@@ -1,17 +1,18 @@
 /**
  * Feature Authentication Hook
- * 
+ *
  * React hook for accessing authentication state in features using DI.
  * This eliminates direct store access and follows Black Box pattern.
  */
 
 import { useCallback } from 'react';
+
 import { useDIContainer } from '../../di';
 import { createFeatureAuthService } from '../factory/featureAuthFactory';
 
 /**
  * Hook for accessing authentication state in features
- * 
+ *
  * @returns Authentication state and methods
  */
 export const useFeatureAuth = () => {
@@ -87,7 +88,7 @@ export const useFeatureAuth = () => {
 
 /**
  * Hook for accessing authentication state with reactive updates
- * 
+ *
  * @returns Authentication state with reactivity
  */
 export const useReactiveFeatureAuth = () => {

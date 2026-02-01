@@ -2,7 +2,7 @@
 export const FEATURE_FLAGS = {
   // Enable new DI-based architecture
   USE_NEW_ARCHITECTURE: process.env.REACT_APP_USE_NEW_ARCHITECTURE === 'true',
-  
+
   // Enable DI-enabled components
   USE_DI_FEED: process.env.REACT_APP_USE_DI_FEED === 'true',
   USE_DI_CHAT: process.env.REACT_APP_USE_DI_CHAT === 'true',
@@ -12,16 +12,16 @@ export const FEATURE_FLAGS = {
   USE_DI_NOTIFICATIONS: process.env.REACT_APP_USE_DI_NOTIFICATIONS === 'true',
   USE_DI_CONTENT: process.env.REACT_APP_USE_DI_CONTENT === 'true',
   USE_DI_ANALYTICS: process.env.REACT_APP_USE_DI_ANALYTICS === 'true',
-  
+
   // Enable mobile/wide optimization
   USE_RESPONSIVE_DESIGN: process.env.REACT_APP_USE_RESPONSIVE === 'true',
   USE_MOBILE_OPTIMIZATION: process.env.REACT_APP_USE_MOBILE === 'true',
   USE_WIDE_OPTIMIZATION: process.env.REACT_APP_USE_WIDE === 'true',
-  
+
   // Enable advanced features
   USE_REAL_TIME_COLLABORATION: process.env.REACT_APP_REAL_TIME === 'true',
   USE_ADVANCED_SEARCH: process.env.REACT_APP_ADVANCED_SEARCH === 'true',
-  USE_ANALYTICS_MONITORING: process.env.REACT_APP_ANALYTICS === 'true',
+  USE_ANALYTICS_MONITORING: process.env.REACT_APP_ANALYTICS === 'true'
 };
 
 // Feature flag utilities

@@ -1,12 +1,14 @@
 /**
  * JWT Authentication Provider
- * 
+ *
  * Implements JWT-based authentication with enterprise features
  * including token validation, refresh, and security.
  */
 
-import {AuthCredentials, AuthErrorType, AuthProviderType, AuthResult, AuthSession} from '../types/auth.domain.types';
-import {IAuthProvider} from '../interfaces/authInterfaces';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
  * JWT Authentication Provider Implementation

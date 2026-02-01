@@ -1,6 +1,6 @@
 /**
  * Authentication Configuration Loader
- * 
+ *
  * Loads and merges authentication configuration from multiple sources:
  * 1. Base configuration file
  * 2. Environment-specific configuration file
@@ -8,9 +8,11 @@
  * 4. Runtime overrides
  */
 
-import { IAuthConfig } from '../interfaces/authInterfaces';
 import { AuthProviderType } from '../types/auth.domain.types';
+
 import { EnvironmentAuthConfig, AUTH_ENV_VARS } from './EnvironmentAuthConfig';
+
+import type { IAuthConfig } from '../interfaces/authInterfaces';
 
 /**
  * Configuration file structure
@@ -77,7 +79,7 @@ export interface ConfigLoaderOptions {
 
 /**
  * File-based Authentication Configuration
- * 
+ *
  * Implements IAuthConfig interface for file-loaded configuration
  * with support for watching and dynamic updates.
  */
@@ -85,7 +87,7 @@ export class FileBasedAuthConfig implements IAuthConfig {
     readonly name = 'FileBasedAuthConfig';
 
     private config: AuthConfigFile;
-    private watchers: Map<string, ((value: any) => void)[]> = new Map();
+    private readonly watchers: Map<string, ((value: any) => void)[]> = new Map();
 
     constructor(config: AuthConfigFile) {
         this.config = { ...config };
@@ -151,11 +153,11 @@ export class FileBasedAuthConfig implements IAuthConfig {
  * Authentication configuration loader
  */
 export class AuthConfigLoader {
-    private configDir: string;
-    private environment: string;
-    private customEnv?: Record<string, string | undefined>;
-    private enableEnvOverrides: boolean;
-    private cachedConfigs: Map<string, AuthConfigFile> = new Map();
+    private readonly configDir: string;
+    private readonly environment: string;
+    private readonly customEnv?: Record<string, string | undefined>;
+    private readonly enableEnvOverrides: boolean;
+    private readonly cachedConfigs: Map<string, AuthConfigFile> = new Map();
 
     constructor(options: ConfigLoaderOptions = {}) {
         this.configDir = options.configDir || '/config/auth';

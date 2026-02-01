@@ -1,17 +1,17 @@
 /**
  * WebSocket System Factory Functions
- * 
+ *
  * Factory functions for creating WebSocket services following Black Box pattern.
  * Provides clean service creation with dependency injection support.
  */
 
+import type { Container } from '../di';
 import type {
     IWebSocketService,
     WebSocketConfig,
     WebSocketMessage
 } from '../types';
 
-import { Container } from '../di';
 
 // Local WebSocket state enum
 enum WebSocketState {
@@ -24,7 +24,7 @@ enum WebSocketState {
 
 /**
  * Creates a WebSocket service with default configuration
- * 
+ *
  * @returns WebSocket service instance
  */
 export function createDefaultWebSocketService(): IWebSocketService {
@@ -40,7 +40,7 @@ export function createDefaultWebSocketService(): IWebSocketService {
 
 /**
  * Creates a WebSocket service with custom configuration
- * 
+ *
  * @param config - WebSocket configuration
  * @returns WebSocket service instance
  */
@@ -50,7 +50,7 @@ export function createWebSocketService(config: WebSocketConfig): IWebSocketServi
 
 /**
  * Creates a WebSocket service with dependency injection
- * 
+ *
  * @param container - DI container
  * @param config - WebSocket configuration
  * @returns WebSocket service instance
@@ -62,7 +62,7 @@ export function createWebSocketServiceFromDI(container: Container, config?: WebS
 
 /**
  * Creates a mock WebSocket service for testing
- * 
+ *
  * @param config - Optional mock configuration
  * @returns Mock WebSocket service instance
  */
@@ -72,7 +72,7 @@ export function createMockWebSocketService(config?: Partial<WebSocketConfig>): I
 
 /**
  * Creates a WebSocket service for specific environment
- * 
+ *
  * @param environment - Environment name
  * @returns WebSocket service instance
  */
@@ -103,7 +103,7 @@ export function createWebSocketServiceForEnvironment(environment: 'development' 
 
 /**
  * Creates an authenticated WebSocket service
- * 
+ *
  * @param token - Authentication token
  * @param config - WebSocket configuration
  * @returns Authenticated WebSocket service instance
@@ -115,7 +115,7 @@ export function createAuthenticatedWebSocketService(token: string, config?: WebS
 
 /**
  * Creates a WebSocket service with custom message handlers
- * 
+ *
  * @param handlers - Custom message handlers
  * @param config - WebSocket configuration
  * @returns WebSocket service instance
@@ -136,7 +136,7 @@ export function createWebSocketServiceWithHandlers(
 
 /**
  * Gets default WebSocket configuration
- * 
+ *
  * @returns Default WebSocket configuration
  */
 export function getDefaultWebSocketConfig(): WebSocketConfig {
@@ -151,10 +151,10 @@ export function getDefaultWebSocketConfig(): WebSocketConfig {
 
 // Implementation classes
 class WebSocketServiceImplementation implements IWebSocketService {
-    private config: WebSocketConfig;
+    private readonly config: WebSocketConfig;
     private ws: WebSocket | null = null;
     private state: WebSocketState = WebSocketState.DISCONNECTED;
-    private subscribers: Map<string, Set<(message: WebSocketMessage) => void>> = new Map();
+    private readonly subscribers: Map<string, Set<(message: WebSocketMessage) => void>> = new Map();
     private reconnectAttempts = 0;
     private reconnectTimer: NodeJS.Timeout | null = null;
 
@@ -288,14 +288,14 @@ class WebSocketServiceImplementation implements IWebSocketService {
 
         this.reconnectTimer = setTimeout(() => {
             this.connect();
-        }, this.config.reconnectInterval!);
+        }, this.config.reconnectInterval);
     }
 }
 
 class MockWebSocketService implements IWebSocketService {
-    private config: Partial<WebSocketConfig>;
+    private readonly config: Partial<WebSocketConfig>;
     private state: WebSocketState = WebSocketState.DISCONNECTED;
-    private subscribers: Map<string, Set<(message: WebSocketMessage) => void>> = new Map();
+    private readonly subscribers: Map<string, Set<(message: WebSocketMessage) => void>> = new Map();
     private connected = false;
 
     constructor(config?: Partial<WebSocketConfig>) {
@@ -369,8 +369,8 @@ class MockWebSocketService implements IWebSocketService {
 }
 
 class AuthenticatedWebSocketService extends WebSocketServiceImplementation {
-    private token: string;
-    private authConfig: WebSocketConfig;
+    private readonly token: string;
+    private readonly authConfig: WebSocketConfig;
 
     constructor(token: string, config: WebSocketConfig) {
         super(config);

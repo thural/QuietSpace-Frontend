@@ -1,29 +1,29 @@
 /**
  * Authentication System Factory Functions
- * 
+ *
  * Factory functions for creating authentication services following Black Box pattern.
  * Provides clean service creation with dependency injection support.
  */
 
+import { DefaultAuthConfig } from './config/DefaultAuthConfig';
 import { EnterpriseAuthService } from './enterprise/AuthService';
+import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
+import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { JwtAuthProvider } from './providers/JwtAuthProvider';
+import { LDAPAuthProvider } from './providers/LDAPProvider';
 import { OAuthAuthProvider } from './providers/OAuthProvider';
 import { SAMLAuthProvider } from './providers/SAMLProvider';
 import { SessionAuthProvider } from './providers/SessionProvider';
-import { LDAPAuthProvider } from './providers/LDAPProvider';
 import { LocalAuthRepository } from './repositories/LocalAuthRepository';
-import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
-import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { EnterpriseSecurityService } from './security/EnterpriseSecurityService';
-import { DefaultAuthConfig } from './config/DefaultAuthConfig';
+import { AuthProviderType } from './types/auth.domain.types';
 
 import type { IAuthProvider, IAuthRepository, IAuthValidator, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig } from './interfaces/authInterfaces';
 import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession } from './types/auth.domain.types';
-import { AuthProviderType } from './types/auth.domain.types';
 
 /**
  * Creates a default authentication service
- * 
+ *
  * @param config - Optional authentication configuration
  * @returns Configured authentication service
  */
@@ -57,7 +57,7 @@ export function createDefaultAuthService(config?: Partial<IAuthConfig>): Enterpr
 
 /**
  * Creates a custom authentication service with specific configuration
- * 
+ *
  * @param config - Authentication configuration
  * @returns Configured authentication service
  */
@@ -89,7 +89,7 @@ export function createCustomAuthService(config: IAuthConfig): EnterpriseAuthServ
 
 /**
  * Creates an authentication service with all providers
- * 
+ *
  * @param config - Optional authentication configuration
  * @returns Authentication service with all providers
  */
@@ -124,7 +124,7 @@ export function createAuthService(config?: Partial<IAuthConfig>): EnterpriseAuth
 
 /**
  * Creates a JWT authentication provider
- * 
+ *
  * @param config - Provider configuration
  * @returns JWT authentication provider
  */
@@ -149,7 +149,7 @@ export function createAuthProvider(type: AuthProviderType, config?: Partial<IAut
 
 /**
  * Creates an authentication repository
- * 
+ *
  * @param type - Repository type
  * @param config - Repository configuration
  * @returns Authentication repository
@@ -168,14 +168,14 @@ export function createAuthRepository(type: 'local' | 'remote' = 'local', config?
 
 /**
  * Creates an authentication validator
- * 
+ *
  * @param config - Validator configuration
  * @returns Authentication validator
  */
 // TODO: Fix interface mismatches in auth factory
 // The following functions have interface issues and need to be refactored:
 // - createAuthValidator
-// - createAuthLogger  
+// - createAuthLogger
 // - createAuthMetrics
 // - createAuthSecurity
 // - createMockAuthService
@@ -186,7 +186,7 @@ export function createAuthRepository(type: 'local' | 'remote' = 'local', config?
 
 /**
  * Creates an authentication logger
- * 
+ *
  * @param type - Logger type
  * @param config - Logger configuration
  * @returns Authentication logger
@@ -208,7 +208,7 @@ export function createAuthLogger(type: 'console' | 'file' | 'remote' = 'console'
 
 /**
  * Creates authentication metrics
- * 
+ *
  * @param type - Metrics type
  * @param config - Metrics configuration
  * @returns Authentication metrics
@@ -230,7 +230,7 @@ export function createAuthMetrics(type: 'memory' | 'database' | 'remote' = 'memo
 
 /**
  * Creates an authentication security service
- * 
+ *
  * @param config - Security configuration
  * @returns Authentication security service
  */
@@ -254,7 +254,7 @@ export function createMockAuthService(): EnterpriseAuthService {
 
 /**
  * Creates an authentication plugin
- * 
+ *
  * @param name - Plugin name
  * @param plugin - Plugin implementation
  * @returns Authentication plugin
@@ -268,7 +268,7 @@ export function createAuthPlugin(name: string, plugin: any): any {
 
 /**
  * Registers an authentication plugin
- * 
+ *
  * @param plugin - Plugin to register
  */
 export function registerAuthPlugin(plugin: any): void {
@@ -278,7 +278,7 @@ export function registerAuthPlugin(plugin: any): void {
 
 /**
  * Gets an authentication plugin by name
- * 
+ *
  * @param name - Plugin name
  * @returns Authentication plugin or undefined
  */

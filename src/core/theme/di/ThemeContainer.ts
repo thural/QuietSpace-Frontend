@@ -1,6 +1,6 @@
 /**
  * Theme System Dependency Injection Container.
- * 
+ *
  * Manages dependencies and provides inversion of control for theme system.
  * Enables loose coupling and easier testing.
  */
@@ -24,8 +24,8 @@ export enum THEME_TOKENS {
  */
 export class ThemeContainer {
     private static instance: ThemeContainer;
-    private services = new Map<THEME_TOKENS, any>();
-    private factories = new Map<THEME_TOKENS, () => any>();
+    private readonly services = new Map<THEME_TOKENS, any>();
+    private readonly factories = new Map<THEME_TOKENS, () => any>();
 
     private constructor() {
         this.registerDefaultServices();

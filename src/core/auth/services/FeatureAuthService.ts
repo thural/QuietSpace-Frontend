@@ -1,22 +1,23 @@
 /**
  * Feature Authentication Service
- * 
+ *
  * Provides DI-based authentication services for feature modules.
  * This eliminates direct store access and maintains proper separation of concerns.
  */
 
-import type { ITokenProvider } from '../../network/interfaces';
 import { TokenProvider } from '../../network/providers/TokenProvider';
-import { Container } from '../../di/factory';
+
+import type { Container } from '../../di/factory';
+import type { ITokenProvider } from '../../network/interfaces';
 
 /**
  * Authentication service for feature modules
- * 
+ *
  * Provides clean access to authentication state without direct store access.
  * Follows Black Box pattern and DI principles.
  */
 export class FeatureAuthService {
-    private tokenProvider: ITokenProvider;
+    private readonly tokenProvider: ITokenProvider;
 
     constructor(container: Container) {
         this.tokenProvider = new TokenProvider(container);
@@ -46,7 +47,7 @@ export class FeatureAuthService {
                 accessToken: token,
                 user: {
                     id: payload.sub || payload.userId,
-                    email: payload.email,
+                    email: payload.email
                     // Add other user fields as needed
                 }
             };

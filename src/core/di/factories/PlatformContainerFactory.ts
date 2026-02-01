@@ -1,14 +1,16 @@
 /**
  * Platform-Specific DI Container Factory
- * 
+ *
  * Implements the Manual Registration + Factory Functions pattern
  * with build-time configuration for maximum tree-shaking.
  */
 
-import { Container } from '../container/Container';
-import { TYPES, TypeKeys } from '../types';
-import type { BuildConfig, Platform, ServiceRegistration } from '../../config/types';
 import { PLATFORM_CONFIG } from '../../config/platform-configs';
+import { Container } from '../container/Container';
+import { TYPES } from '../types';
+
+import type { BuildConfig, Platform, ServiceRegistration } from '../../config/types';
+import type { TypeKeys } from '../types';
 
 /**
  * Platform-Specific Service Registration
@@ -298,10 +300,10 @@ function registerFeatureServices(container: Container, config: BuildConfig): voi
 
 /**
  * Create Platform-Specific DI Container
- * 
+ *
  * This is the main factory function that creates a container with
  * platform-specific services registered according to the build configuration.
- * 
+ *
  * @param config - Platform-specific build configuration
  * @returns Configured DI container with platform-appropriate services
  */

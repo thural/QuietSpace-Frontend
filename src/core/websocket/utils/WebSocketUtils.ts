@@ -1,10 +1,10 @@
 /**
  * WebSocket Utilities.
- * 
+ *
  * Utility functions and helpers for WebSocket operations.
  */
 
-import { WebSocketMessage } from '../services/EnterpriseWebSocketService';
+import type { WebSocketMessage } from '../services/EnterpriseWebSocketService';
 
 export interface MessageBuilderOptions {
   feature: string;
@@ -33,11 +33,11 @@ export interface ConnectionMonitorConfig {
 
 /**
  * WebSocket Message Builder
- * 
+ *
  * Utility class for building WebSocket messages with validation.
  */
 export class WebSocketMessageBuilder {
-  private message: Partial<WebSocketMessage> = {};
+  private readonly message: Partial<WebSocketMessage> = {};
 
   constructor(options: MessageBuilderOptions) {
     this.message = {
@@ -93,7 +93,7 @@ export class WebSocketMessageBuilder {
     if (!this.message.id) {
       this.message.id = this.generateId();
     }
-    
+
     if (!this.message.timestamp) {
       this.message.timestamp = new Date();
     }
@@ -108,11 +108,11 @@ export class WebSocketMessageBuilder {
 
 /**
  * WebSocket Message Validator
- * 
+ *
  * Utility class for validating WebSocket messages.
  */
 export class WebSocketMessageValidator {
-  private rules: Map<string, ValidationRule[]> = new Map();
+  private readonly rules: Map<string, ValidationRule[]> = new Map();
 
   addRule(feature: string, messageType: string, rules: ValidationRule[]): void {
     const key = `${feature}:${messageType}`;
@@ -122,7 +122,7 @@ export class WebSocketMessageValidator {
   validate(message: WebSocketMessage): { isValid: boolean; errors: string[] } {
     const key = `${message.feature}:${message.type}`;
     const rules = this.rules.get(key) || [];
-    
+
     const errors: string[] = [];
 
     for (const rule of rules) {
@@ -214,11 +214,11 @@ export class WebSocketMessageValidator {
 
 /**
  * WebSocket Connection Monitor
- * 
+ *
  * Utility class for monitoring WebSocket connection health.
  */
 export class WebSocketConnectionMonitor {
-  private config: ConnectionMonitorConfig;
+  private readonly config: ConnectionMonitorConfig;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private missedHeartbeats = 0;
   private lastHeartbeatTime = 0;
@@ -246,11 +246,11 @@ export class WebSocketConnectionMonitor {
     this.heartbeatTimer = setInterval(async () => {
       try {
         const now = Date.now();
-        
+
         // Check if we've received a heartbeat within the threshold
         if (this.lastHeartbeatTime && (now - this.lastHeartbeatTime) > this.config.timeoutThreshold) {
           this.missedHeartbeats++;
-          
+
           if (this.missedHeartbeats >= this.config.maxMissedHeartbeats) {
             this.handleConnectionLost();
           }
@@ -266,7 +266,7 @@ export class WebSocketConnectionMonitor {
       } catch (error) {
         console.error('[WebSocketMonitor] Heartbeat failed:', error);
         this.missedHeartbeats++;
-        
+
         if (this.missedHeartbeats >= this.config.maxMissedHeartbeats) {
           this.handleConnectionLost();
         }
@@ -283,7 +283,7 @@ export class WebSocketConnectionMonitor {
 
   onHeartbeatReceived(): void {
     this.lastHeartbeatTime = Date.now();
-    
+
     // Reset missed heartbeats if we were having issues
     if (this.missedHeartbeats > 0) {
       this.missedHeartbeats = 0;
@@ -309,7 +309,7 @@ export class WebSocketConnectionMonitor {
   } {
     const now = Date.now();
     const timeSinceLastHeartbeat = this.lastHeartbeatTime ? now - this.lastHeartbeatTime : Infinity;
-    
+
     return {
       isMonitoring: this.heartbeatTimer !== null,
       missedHeartbeats: this.missedHeartbeats,
@@ -440,10 +440,10 @@ export function calculateMessageStats(messages: WebSocketMessage[]): {
   messages.forEach(message => {
     // Count by feature
     stats.byFeature[message.feature] = (stats.byFeature[message.feature] || 0) + 1;
-    
+
     // Count by type
     stats.byType[message.type] = (stats.byType[message.type] || 0) + 1;
-    
+
     // Track oldest/newest
     if (!stats.oldestMessage || message.timestamp < stats.oldestMessage) {
       stats.oldestMessage = message.timestamp;

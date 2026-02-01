@@ -1,6 +1,6 @@
 /**
  * Dependency Injection Types.
- * 
+ *
  * Core types for the dependency injection system.
  * Provides type safety for service registration and injection.
  */
@@ -8,15 +8,15 @@
 /**
  * Service identifier for type-safe dependency resolution
  */
-export type ServiceIdentifier<T = any> = string | symbol | (new (...args: any[]) => T);
+export type ServiceIdentifier<T = unknown> = string | symbol | (new (...args: unknown[]) => T);
 
 /**
  * Service lifetime options
  */
 export enum ServiceLifetime {
-  Transient = 'transient',   // New instance every time
-  Singleton = 'singleton',   // Single instance for container
-  Scoped = 'scoped',        // Single instance per scope
+  TRANSIENT = 'transient',   // New instance every time
+  SINGLETON = 'singleton',   // Single instance for container
+  SCOPED = 'scoped'        // Single instance per scope
 }
 
 /**
@@ -32,12 +32,12 @@ export interface ServiceDescriptor {
 /**
  * Service factory function type
  */
-export type ServiceFactory<T = any> = (container: ServiceContainer) => T;
+export type ServiceFactory<T = unknown> = (container: ServiceContainer) => T;
 
 /**
  * Constructor type for dependency injection
  */
-export type Constructor<T = any> = new (...args: any[]) => T;
+export type Constructor<T = unknown> = new (...args: unknown[]) => T;
 
 /**
  * Service configuration options
@@ -51,15 +51,23 @@ export interface ServiceOptions {
 /**
  * Injection token for type-safe service identification
  */
-export class InjectionToken<T = any> {
-  constructor(public readonly description: string) {}
+export class InjectionToken {
+  /**
+   * Creates an injection token with description
+   * @param description - The token description
+   */
+  public constructor(public readonly description: string) { }
 }
 
 /**
  * Service container interface
  */
 export interface ServiceContainer {
-  register<T>(identifier: ServiceIdentifier<T>, factory: ServiceFactory<T>, options?: ServiceOptions): void;
+  register<T>(
+    identifier: ServiceIdentifier<T>,
+    factory: ServiceFactory<T>,
+    options?: ServiceOptions
+  ): void;
   registerInstance<T>(identifier: ServiceIdentifier<T>, instance: T): void;
   get<T>(identifier: ServiceIdentifier<T>): T;
   tryGet<T>(identifier: ServiceIdentifier<T>): T | null;
@@ -87,7 +95,7 @@ export interface ServiceRegistry {
 export interface ServiceProvider {
   get<T>(identifier: ServiceIdentifier<T>): T;
   tryGet<T>(identifier: ServiceIdentifier<T>): T | null;
-  has<T>(identifier: ServiceIdentifier): boolean;
+  has(identifier: ServiceIdentifier): boolean;
 }
 
 /**

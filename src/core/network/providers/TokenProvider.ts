@@ -1,6 +1,6 @@
 /**
  * Token Provider for DI-based Authentication
- * 
+ *
  * Provides authentication tokens through dependency injection
  * instead of direct store access, following Black Box pattern.
  */
@@ -9,13 +9,13 @@ import type { ITokenProvider } from '../interfaces';
 
 /**
  * DI-based Token Provider Implementation
- * 
+ *
  * This provider gets tokens from the DI container instead of
  * directly accessing the auth store, maintaining proper separation.
  */
 export class TokenProvider implements ITokenProvider {
-  private authService: any;
-  private container: any;
+  private readonly authService: any;
+  private readonly container: any;
 
   constructor(container: any) {
     this.container = container;

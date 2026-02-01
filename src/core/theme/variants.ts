@@ -1,12 +1,10 @@
 /**
  * Theme Variants System.
- * 
+ *
  * Pre-defined theme variants for common use cases.
  * Supports light, dark, and custom themes with composition.
  */
 
-import { themeComposer } from './composer';
-import { ThemeTokens } from './tokens';
 import { colors } from './appColors';
 import { typography } from './appTypography';
 import {
@@ -16,6 +14,9 @@ import {
   baseRadius,
   baseAnimation
 } from './baseTokens';
+import { themeComposer } from './composer';
+
+import type { ThemeTokens } from './tokens';
 
 /**
  * Light theme variant
@@ -30,8 +31,8 @@ themeComposer.registerTheme({
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
-    animation: baseAnimation,
-  },
+    animation: baseAnimation
+  }
 });
 
 /**
@@ -54,7 +55,7 @@ themeComposer.registerTheme({
         700: '#bae6fd',
         800: '#e0f2fe',
         900: '#f0f9ff',
-        950: '#f0f9ff',
+        950: '#f0f9ff'
       },
       neutral: {
         50: '#030712',
@@ -67,26 +68,26 @@ themeComposer.registerTheme({
         700: '#d1d5db',
         800: '#e5e7eb',
         900: '#f3f4f6',
-        950: '#f9fafb',
+        950: '#f9fafb'
       },
       background: {
         primary: '#111827',
         secondary: '#1f2937',
         tertiary: '#374151',
         overlay: 'rgba(0, 0, 0, 0.85)',
-        transparent: 'transparent',
+        transparent: 'transparent'
       },
       text: {
         primary: '#f9fafb',
         secondary: '#d1d5db',
         tertiary: '#9ca3af',
-        inverse: '#111827',
+        inverse: '#111827'
       },
       border: {
         light: '#374151',
         medium: '#4b5563',
-        dark: '#6b7280',
-      },
+        dark: '#6b7280'
+      }
     },
     typography: typography,
     spacing: baseSpacing,
@@ -96,12 +97,12 @@ themeComposer.registerTheme({
       lg: '0 10px 15px -3px rgba(0, 0, 0, 0.4)',
       xl: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
       '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
-      inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)',
+      inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)'
     },
     breakpoints: baseBreakpoints,
     radius: baseRadius,
-    animation: baseAnimation,
-  },
+    animation: baseAnimation
+  }
 });
 
 /**
@@ -125,13 +126,13 @@ themeComposer.registerTheme({
         700: '#000000',
         800: '#000000',
         900: '#000000',
-        950: '#000000',
+        950: '#000000'
       },
       semantic: {
         success: '#000000',
         warning: '#000000',
         error: '#000000',
-        info: '#000000',
+        info: '#000000'
       },
       neutral: {
         50: '#ffffff',
@@ -144,34 +145,34 @@ themeComposer.registerTheme({
         700: '#ffffff',
         800: '#ffffff',
         900: '#ffffff',
-        950: '#ffffff',
+        950: '#ffffff'
       },
       background: {
         primary: '#ffffff',
         secondary: '#ffffff',
         tertiary: '#ffffff',
         overlay: 'rgba(0, 0, 0, 0.9)',
-        transparent: 'transparent',
+        transparent: 'transparent'
       },
       text: {
         primary: '#000000',
         secondary: '#000000',
         tertiary: '#000000',
-        inverse: '#ffffff',
+        inverse: '#ffffff'
       },
       border: {
         light: '#000000',
         medium: '#000000',
-        dark: '#000000',
-      },
+        dark: '#000000'
+      }
     },
     typography: typography,
     spacing: baseSpacing,
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
-    animation: baseAnimation,
-  },
+    animation: baseAnimation
+  }
 });
 
 /**
@@ -195,8 +196,8 @@ themeComposer.registerTheme({
         '3xl': '1.5rem',
         '4xl': '1.875rem',
         '5xl': '2.25rem',
-        '6xl': '3rem',
-      },
+        '6xl': '3rem'
+      }
     },
     spacing: {
       xs: '2px',
@@ -208,13 +209,13 @@ themeComposer.registerTheme({
       '3xl': '48px',
       '4xl': '64px',
       '5xl': '96px',
-      '6xl': '128px',
+      '6xl': '128px'
     },
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
-    animation: baseAnimation,
-  },
+    animation: baseAnimation
+  }
 });
 
 /**
@@ -238,7 +239,7 @@ themeComposer.registerTheme({
         '3xl': '2.25rem',
         '4xl': '3rem',
         '5xl': '3.75rem',
-        '6xl': '4.5rem',
+        '6xl': '4.5rem'
       },
       fontWeight: {
         thin: '100',
@@ -249,8 +250,8 @@ themeComposer.registerTheme({
         semibold: '700',
         bold: '800',
         extrabold: '900',
-        black: '900',
-      },
+        black: '900'
+      }
     },
     spacing: {
       xs: '6px',
@@ -262,13 +263,13 @@ themeComposer.registerTheme({
       '3xl': '96px',
       '4xl': '144px',
       '5xl': '192px',
-      '6xl': '288px',
+      '6xl': '288px'
     },
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
-    animation: baseAnimation,
-  },
+    animation: baseAnimation
+  }
 });
 
 /**
@@ -285,8 +286,8 @@ themeComposer.registerTheme({
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
-    animation: baseAnimation,
-  },
+    animation: baseAnimation
+  }
 });
 
 /**

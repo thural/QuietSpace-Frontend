@@ -1,11 +1,12 @@
 /**
  * Network Module Utilities
- * 
+ *
  * Utility functions for the network system.
  * Provides helpers for error handling, validation, and common operations.
  */
 
 import { ERROR_CODES, HTTP_STATUS } from './types';
+
 import type { ApiError, ApiResponse } from './interfaces';
 
 // Re-export ERROR_CODES for factory use
@@ -227,7 +228,9 @@ export function parseQueryString(queryString: string): Record<string, string> {
 
     const searchParams = new URLSearchParams(queryString);
 
-    for (const [key, value] of searchParams.entries()) {
+    // Convert URLSearchParams to array first for compatibility
+    const entries = Array.from(searchParams.entries());
+    for (const [key, value] of entries) {
         params[key] = value;
     }
 

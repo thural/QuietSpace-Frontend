@@ -1,15 +1,9 @@
 /**
  * Core System Utilities
- * 
+ *
  * Utility functions for core system operations following Black Box pattern.
  * Provides clean utility functions for validation, initialization, and management.
  */
-
-import type {
-    CoreConfig,
-    CoreSystemStatus,
-    CoreSystemEvent
-} from './types';
 
 import {
     CORE_STATUS,
@@ -18,9 +12,16 @@ import {
     CORE_VALIDATION_RULES
 } from './constants';
 
+import type {
+    CoreConfig,
+    CoreSystemStatus,
+    CoreSystemEvent
+} from './types';
+
+
 /**
  * Validates core system configuration
- * 
+ *
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
@@ -107,7 +108,7 @@ export function validateCoreConfig(config: any): string[] {
 
 /**
  * Checks the health of the core system
- * 
+ *
  * @param status - Core system status
  * @returns Health status string
  */
@@ -136,7 +137,7 @@ export function checkCoreSystemHealth(status: CoreSystemStatus): string {
 
 /**
  * Gets core system metrics
- * 
+ *
  * @param status - Core system status
  * @returns System metrics object
  */
@@ -160,7 +161,7 @@ export function getCoreSystemMetrics(status: CoreSystemStatus) {
 
 /**
  * Formats core system status for display
- * 
+ *
  * @param status - Core system status
  * @returns Formatted status string
  */
@@ -177,7 +178,7 @@ export function formatCoreSystemStatus(status: CoreSystemStatus): string {
 
 /**
  * Creates a default core configuration
- * 
+ *
  * @param overrides - Configuration overrides
  * @returns Default core configuration
  */

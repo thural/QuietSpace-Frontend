@@ -1,6 +1,6 @@
 /**
  * Services System Interfaces
- * 
+ *
  * Centralized interface definitions for the services system.
  * Provides clean type exports following Black Box pattern.
  */
@@ -155,9 +155,7 @@ export interface ServiceDescriptor<T = any> {
     metadata?: ServiceMetadata;
 }
 
-export interface ServiceFactory<T = any> {
-    (...args: any[]): T;
-}
+export type ServiceFactory<T = any> = (...args: any[]) => T;
 
 export interface ServiceLifecycle<T = any> {
     onCreate?(instance: T): void;

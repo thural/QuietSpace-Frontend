@@ -1,13 +1,14 @@
 /**
  * Enterprise WebSocket Service.
- * 
+ *
  * Centralized WebSocket management following enterprise architecture patterns.
  * Replaces scattered WebSocket implementations across features.
  */
 
-import { TYPES } from '../../di/types';
 import { ICacheServiceManager, type FeatureCacheService } from '../../cache';
-import { LoggerService } from '../../services/LoggerService';
+import { TYPES } from '../../di/types';
+
+import type { LoggerService } from '../../services/LoggerService';
 
 // WebSocket Message Types
 export interface WebSocketMessage {
@@ -67,8 +68,8 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private ws: WebSocket | null = null;
   private config: WebSocketConfig;
   private connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting' | 'error' = 'disconnected';
-  private metrics: ConnectionMetrics;
-  private listeners: Map<string, WebSocketEventListener[]> = new Map();
+  private readonly metrics: ConnectionMetrics;
+  private readonly listeners: Map<string, WebSocketEventListener[]> = new Map();
   private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private latencyTimer: NodeJS.Timeout | null = null;
@@ -76,9 +77,9 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private token: string | null = null;
 
   constructor(
-    private cache: FeatureCacheService,
-    private authService: any,
-    private logger: LoggerService
+    private readonly cache: FeatureCacheService,
+    private readonly authService: any,
+    private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();

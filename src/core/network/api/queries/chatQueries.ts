@@ -1,6 +1,6 @@
 /**
  * Chat Queries - Mock Implementation
- * 
+ *
  * This is a temporary mock implementation to fix test imports.
  * In a real implementation, these would be actual React Query hooks.
  */

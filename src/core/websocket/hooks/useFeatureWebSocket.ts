@@ -1,21 +1,23 @@
 /**
  * Enterprise WebSocket Hook.
- * 
+ *
  * Provides generic WebSocket functionality using the enterprise WebSocket infrastructure.
  * Feature-specific functionality should be implemented in respective feature modules.
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
-import {
-  WebSocketConnectionState
-} from '@/core/websocket/types/WebSocketTypes';
-import {
+
+import type {
   IEnterpriseWebSocketService,
   WebSocketMessage,
   WebSocketEventListener
 } from '@/core/websocket';
+import type {
+  WebSocketConnectionState
+} from '@/core/websocket/types/WebSocketTypes';
+
+import { Container } from '@/core/di/container/Container';
+import { TYPES } from '@/core/di/types';
 
 export interface UseEnterpriseWebSocketOptions {
   autoConnect?: boolean;
@@ -40,7 +42,7 @@ export const useEnterpriseWebSocket = (
 ): EnterpriseWebSocketState & {
   sendMessage: (message: any) => Promise<void>;
   disconnect: () => Promise<void>;
-  reconnect: () => Promise<void>
+  reconnect: () => Promise<void>;
 } => {
   const {
     autoConnect = true,

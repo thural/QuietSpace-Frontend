@@ -1,6 +1,6 @@
 /**
  * WebSocket Hooks Index.
- * 
+ *
  * Exports enterprise WebSocket hooks for React components.
  * Feature-specific hooks have been moved to their respective features.
  */
@@ -45,7 +45,7 @@ export type {
 
 // Feature adapter types moved to respective features
 // Chat: @features/chat/adapters
-// Feed: @features/feed/adapters  
+// Feed: @features/feed/adapters
 // Notification: @features/notification/adapters
 
 // Utility functions

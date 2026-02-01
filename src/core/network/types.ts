@@ -1,6 +1,6 @@
 /**
  * Network Module Types
- * 
+ *
  * Defines types and enums for the network system.
  * Complements the interfaces with additional type definitions.
  */

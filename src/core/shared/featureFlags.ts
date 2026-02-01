@@ -1,6 +1,6 @@
 /**
  * Core System Shared Feature Flags
- * 
+ *
  * Centralized feature flags for the core system.
  * Provides clean feature flag exports following Black Box pattern.
  */

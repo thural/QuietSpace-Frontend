@@ -1,6 +1,6 @@
 /**
  * Data Service Module - Data State Manager Implementation
- * 
+ *
  * Provides state management capabilities for data services
  * with loading, error, and success state tracking.
  */
@@ -9,14 +9,14 @@ import type { IDataState, IDataStateWithMetadata, IDataStateManager } from '../i
 
 /**
  * Data State Manager Implementation
- * 
+ *
  * Manages data service state with subscription support
  * and metadata tracking for operations.
  */
 export class DataStateManager implements IDataStateManager {
   private state: IDataState;
   private dataState: IDataStateWithMetadata;
-  private subscribers: Set<(state: IDataState) => void> = new Set();
+  private readonly subscribers: Set<(state: IDataState) => void> = new Set();
 
   constructor(initialState: Partial<IDataState> = {}) {
     this.state = {
@@ -82,7 +82,7 @@ export class DataStateManager implements IDataStateManager {
    */
   setSuccess<T>(data: T, metadata?: Partial<IDataStateWithMetadata<T>['metadata']>): void {
     const now = Date.now();
-    
+
     this.state = {
       ...this.state,
       isLoading: false,
@@ -166,10 +166,10 @@ export class DataStateManager implements IDataStateManager {
    */
   subscribe(callback: (state: IDataState) => void): () => void {
     this.subscribers.add(callback);
-    
+
     // Immediately call with current state
     callback(this.getState());
-    
+
     // Return unsubscribe function
     return () => {
       this.subscribers.delete(callback);
@@ -198,37 +198,37 @@ export class DataStateManager implements IDataStateManager {
        * Check if data is loading (initial load)
        */
       isLoading: () => this.state.isLoading,
-      
+
       /**
        * Check if data is being fetched (refresh)
        */
       isFetching: () => this.state.isFetching,
-      
+
       /**
        * Check if there's an error
        */
       isError: () => this.state.isError,
-      
+
       /**
        * Check if data was successfully loaded
        */
       isSuccess: () => this.state.isSuccess,
-      
+
       /**
        * Get error message
        */
       getError: () => this.state.error?.message || null,
-      
+
       /**
        * Get last updated timestamp
        */
       getLastUpdated: () => this.state.lastUpdated,
-      
+
       /**
        * Get refetch count
        */
       getRefetchCount: () => this.state.refetchCount,
-      
+
       /**
        * Check if data is stale (older than specified milliseconds)
        */

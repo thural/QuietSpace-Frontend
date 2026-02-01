@@ -1,16 +1,17 @@
 /**
  * Logger Module Utilities
- * 
+ *
  * Utility functions for the logger system.
  * Provides helpers for log entry creation, formatting, and validation.
  */
 
 import { LogLevel, DEFAULT_LOGGER_CONFIG, LOG_LEVEL_NAMES, LOG_LEVEL_COLORS, CONSOLE_METHODS, DEFAULT_LOG_ENTRY } from './interfaces';
+
 import type { ILogEntry, ILoggerConfig, ILoggerTarget, ILoggerService } from './interfaces';
 
 /**
  * Creates a standardized log entry
- * 
+ *
  * @param level - Log level
  * @param message - Log message
  * @param metadata - Additional metadata
@@ -72,7 +73,7 @@ export function createFatalEntry(message: string, error?: Error, metadata?: Reco
 
 /**
  * Formats log entry for console output
- * 
+ *
  * @param entry - Log entry to format
  * @param config - Logger configuration
  * @returns Formatted string
@@ -102,7 +103,7 @@ export function formatLogEntry(entry: ILogEntry, config: ILoggerConfig = DEFAULT
 
 /**
  * Formats log entry with colors for console output
- * 
+ *
  * @param entry - Log entry to format
  * @param config - Logger configuration
  * @returns Formatted string with colors
@@ -133,7 +134,7 @@ export function formatLogEntryWithColors(entry: ILogEntry, config: ILoggerConfig
 
 /**
  * Gets console method for log level
- * 
+ *
  * @param level - Log level
  * @returns Console method name
  */
@@ -144,7 +145,7 @@ export function getConsoleMethod(level: LogLevel): 'debug' | 'info' | 'warn' | '
 
 /**
  * Converts log level to string
- * 
+ *
  * @param level - Log level
  * @returns Log level string
  */
@@ -154,7 +155,7 @@ export function logLevelToString(level: LogLevel): string {
 
 /**
  * Converts string to log level
- * 
+ *
  * @param level - Log level string
  * @returns Log level enum value
  */
@@ -166,7 +167,7 @@ export function stringToLogLevel(level: string): LogLevel {
 
 /**
  * Checks if a log level should be processed
- * 
+ *
  * @param currentLevel - Current logger level
  * @param targetLevel - Target log level
  * @returns Whether to process the log
@@ -177,7 +178,7 @@ export function shouldLog(currentLevel: LogLevel, targetLevel: LogLevel): boolea
 
 /**
  * Checks if a value is a valid LogLevel
- * 
+ *
  * @param value - Value to check
  * @returns Whether the value is a LogLevel
  */
@@ -190,7 +191,7 @@ export function isLogLevel(value: any): value is LogLevel {
 
 /**
  * Checks if a value is a valid LogEntry
- * 
+ *
  * @param value - Value to check
  * @returns Whether the value is a LogEntry
  */
@@ -204,7 +205,7 @@ export function isLogEntry(value: any): value is ILogEntry {
 
 /**
  * Checks if a value is a valid LoggerTarget
- * 
+ *
  * @param value - Value to check
  * @returns Whether the value is a LoggerTarget
  */
@@ -219,7 +220,7 @@ export function isLoggerTarget(value: any): value is ILoggerTarget {
 
 /**
  * Merges logger configurations
- * 
+ *
  * @param base - Base configuration
  * @param configs - Additional configurations to merge
  * @returns Merged configuration
@@ -239,7 +240,7 @@ export function mergeLoggerConfig(
 
 /**
  * Validates logger configuration
- * 
+ *
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
@@ -265,7 +266,7 @@ export function validateLoggerConfig(config: ILoggerConfig): string[] {
 
 /**
  * Creates a console logger target
- * 
+ *
  * @param name - Target name
  * @param level - Minimum log level
  * @returns Console logger target
@@ -284,7 +285,7 @@ export function createConsoleTarget(name: string, level: LogLevel = LogLevel.DEB
 
 /**
  * Creates a file logger target
- * 
+ *
  * @param name - Target name
  * @param filePath - File path
  * @param level - Minimum log level
@@ -318,7 +319,7 @@ export function createFileTarget(name: string, filePath: string, level: LogLevel
 
 /**
  * Creates a remote logger target
- * 
+ *
  * @param name - Target name
  * @param endpoint - Remote endpoint
  * @param level - Minimum log level
@@ -351,7 +352,7 @@ export function createRemoteTarget(name: string, endpoint: string, level: LogLev
 
 /**
  * Creates a custom logger target
- * 
+ *
  * @param name - Target name
  * @param writeFunction - Custom write function
  * @param level - Minimum log level
@@ -371,7 +372,7 @@ export function createCustomTarget(
 
 /**
  * Extracts error information from an Error object
- * 
+ *
  * @param error - Error object
  * @returns Error information object
  */
@@ -390,7 +391,7 @@ export function extractErrorInfo(error: Error): Record<string, any> {
 
 /**
  * Sanitizes log message for security
- * 
+ *
  * @param message - Original message
  * @returns Sanitized message
  */
@@ -406,7 +407,7 @@ export function sanitizeMessage(message: string): string {
 
 /**
  * Formats duration for logging
- * 
+ *
  * @param startTime - Start timestamp
  * @param endTime - End timestamp
  * @returns Formatted duration string
@@ -425,7 +426,7 @@ export function formatDuration(startTime: Date, endTime: Date): string {
 
 /**
  * Creates a performance timer
- * 
+ *
  * @param message - Timer message
  * @returns Timer function
  */
@@ -441,7 +442,7 @@ export function createTimer(message: string): () => void {
 
 /**
  * Creates a performance timer with logging
- * 
+ *
  * @param logger - Logger instance
  * @param message - Timer message
  * @param metadata - Additional metadata

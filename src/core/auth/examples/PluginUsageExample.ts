@@ -1,14 +1,14 @@
 /**
  * Example usage of AuthModule with integrated plugins
- * 
+ *
  * Demonstrates how to use the createWithPlugins method
  * to create an enhanced authentication service with plugins that integrate
  * with existing analytics and security services.
  */
 
-import {AuthModuleFactory} from '../AuthModule';
-import {AnalyticsPlugin} from '../plugins/AnalyticsPlugin';
-import {SecurityPlugin} from '../plugins/SecurityPlugin';
+import { AuthModuleFactory } from '../AuthModule';
+import { AnalyticsPlugin } from '../plugins/AnalyticsPlugin';
+import { SecurityPlugin } from '../plugins/SecurityPlugin';
 
 /**
  * Example: Creating authentication service with integrated plugins
@@ -34,7 +34,7 @@ export function createAuthWithIntegratedPlugins() {
  */
 export function getPluginIntegrationInformation(authService: any) {
     const plugins = authService['plugins'];
-    
+
     if (!plugins) {
         console.log('No plugins registered');
         return;

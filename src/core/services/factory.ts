@@ -1,24 +1,26 @@
 /**
  * Logger Module Factory Functions
- * 
+ *
  * Factory functions for creating logger services following Black Box pattern.
  * Provides clean service creation with dependency injection support.
  */
 
 import { Injectable } from '../di';
+
 import { LogLevel, DEFAULT_LOGGER_CONFIG } from './interfaces';
+
 import type { ILoggerService, ILoggerConfig, ILoggerFactoryConfig } from './interfaces';
 
 /**
  * Enhanced Logger Service Implementation
- * 
+ *
  * Provides enterprise-grade logging with multiple targets,
  * structured logging, and performance monitoring.
  */
 @Injectable({ lifetime: 'singleton' })
 export class LoggerService implements ILoggerService {
     private config: ILoggerConfig;
-    private metrics: {
+    private readonly metrics: {
         totalLogs: number;
         logsByLevel: Record<LogLevel, number>;
         startTime: Date;
@@ -227,7 +229,7 @@ export class LoggerService implements ILoggerService {
 
 /**
  * Creates a logger service instance
- * 
+ *
  * @param config - Logger configuration
  * @returns Logger service instance
  */
@@ -237,7 +239,7 @@ export function createLogger(config?: ILoggerConfig): ILoggerService {
 
 /**
  * Creates a logger service with default configuration
- * 
+ *
  * @returns Logger service instance with default config
  */
 export function createDefaultLogger(): ILoggerService {
@@ -246,7 +248,7 @@ export function createDefaultLogger(): ILoggerService {
 
 /**
  * Creates a logger service for a specific component
- * 
+ *
  * @param component - Component name
  * @param config - Additional configuration
  * @returns Logger service instance
@@ -260,7 +262,7 @@ export function createComponentLogger(component: string, config?: Partial<ILogge
 
 /**
  * Creates a logger service with custom level
- * 
+ *
  * @param level - Minimum log level
  * @param config - Additional configuration
  * @returns Logger service instance
@@ -274,7 +276,7 @@ export function createLoggerWithLevel(level: LogLevel, config?: Partial<ILoggerC
 
 /**
  * Creates a logger service with structured logging enabled
- * 
+ *
  * @param config - Logger configuration
  * @returns Logger service instance with structured logging
  */
@@ -288,7 +290,7 @@ export function createStructuredLogger(config?: Partial<ILoggerConfig>): ILogger
 
 /**
  * Creates a logger service from DI container
- * 
+ *
  * @param container - DI container instance
  * @param config - Logger configuration
  * @returns Logger service instance from DI
@@ -313,7 +315,7 @@ export function createLoggerFromDI(container: any, config?: ILoggerConfig): ILog
 
 /**
  * Creates a singleton logger service
- * 
+ *
  * @param config - Logger configuration
  * @returns Singleton logger service instance
  */
@@ -355,12 +357,12 @@ export const loggerFactoryRegistry = {
 
 /**
  * Creates a mock logger service for testing
- * 
+ *
  * @param config - Logger configuration
  * @returns Mock logger service instance
  */
 export function createMockLogger(config?: ILoggerConfig): ILoggerService {
-    const logs: Array<{ level: LogLevel; message: string; timestamp: Date }> = [];
+    const logs: { level: LogLevel; message: string; timestamp: Date }[] = [];
 
     return {
         debug: (message: string, ...args: any[]) => {

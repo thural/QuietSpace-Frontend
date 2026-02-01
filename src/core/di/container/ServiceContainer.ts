@@ -1,6 +1,6 @@
 /**
  * Service Container Implementation.
- * 
+ *
  * Main IoC container for dependency injection.
  * Provides service registration, resolution, and lifecycle management.
  */
@@ -18,7 +18,7 @@ type ServiceIdentifier<T = any> = string | symbol | (new (...args: any[]) => T);
 enum ServiceLifetime {
   Transient = 'transient',   // New instance every time
   Singleton = 'singleton',   // Single instance for container
-  Scoped = 'scoped',        // Single instance per scope
+  Scoped = 'scoped'        // Single instance per scope
 }
 
 /**
@@ -57,7 +57,7 @@ export class ServiceContainer implements IServiceContainer {
   private readonly registry = new ServiceRegistry();
   private readonly instances = new Map<ServiceIdentifier, any>();
   private readonly scopes = new Set<ServiceContainer>();
-  private parent?: ServiceContainer;
+  private readonly parent?: ServiceContainer;
 
   constructor(parent?: ServiceContainer) {
     this.parent = parent;
@@ -67,8 +67,8 @@ export class ServiceContainer implements IServiceContainer {
    * Register a service with factory
    */
   register<T>(
-    identifier: ServiceIdentifier<T>, 
-    factory: ServiceFactory<T>, 
+    identifier: ServiceIdentifier<T>,
+    factory: ServiceFactory<T>,
     options: any = {}
   ): void {
     this.registry.register({
@@ -103,7 +103,7 @@ export class ServiceContainer implements IServiceContainer {
 
     // Create instance based on lifetime
     const instance = this.createInstance(descriptor, identifier);
-    
+
     // Store singleton instances
     if (descriptor.lifetime === ServiceLifetime.Singleton) {
       this.instances.set(identifier, instance);
@@ -159,7 +159,7 @@ export class ServiceContainer implements IServiceContainer {
    */
   validate(): string[] {
     const errors: string[] = [];
-    
+
     for (const descriptor of this.registry.getAll()) {
       const validationErrors = this.registry.validateDependencies(descriptor.identifier);
       errors.push(...validationErrors);
@@ -173,7 +173,7 @@ export class ServiceContainer implements IServiceContainer {
    */
   getDependencyTree(): Record<string, any> {
     const tree: Record<string, any> = {};
-    
+
     for (const descriptor of this.registry.getAll()) {
       const key = String(descriptor.identifier);
       tree[key] = {

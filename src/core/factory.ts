@@ -1,9 +1,17 @@
 /**
  * Core System Factory Functions
- * 
+ *
  * Factory functions for creating core system services following Black Box pattern.
  * Provides clean service creation with dependency injection support.
  */
+
+
+import { createDefaultAuthService } from './auth';
+import { createCacheServiceManager } from './cache';
+import { Container } from './di';
+import { createApiClient } from './network';
+import { createLogger } from './services';
+import { createTheme } from './theme';
 
 import type {
     ICoreServices,
@@ -22,16 +30,9 @@ import type {
     IServiceConfig
 } from './types';
 
-import { createCacheServiceManager } from './cache';
-import { createDefaultAuthService } from './auth';
-import { createTheme } from './theme';
-import { createLogger } from './services';
-import { createApiClient } from './network';
-import { Container } from './di';
-
 /**
  * Creates a complete core services instance
- * 
+ *
  * @param config - Optional core configuration
  * @returns Configured core services
  */
@@ -61,7 +62,7 @@ export function createCoreServices(config?: CoreConfig): ICoreServices {
 
 /**
  * Creates a cache service with optional configuration
- * 
+ *
  * @param config - Cache configuration
  * @returns Cache service instance
  */
@@ -71,7 +72,7 @@ export function createCacheService(config?: CacheConfig): ICacheServiceManager {
 
 /**
  * Creates a WebSocket service with optional configuration
- * 
+ *
  * @param config - WebSocket configuration
  * @returns WebSocket service instance
  */
@@ -89,7 +90,7 @@ export function createWebSocketService(config?: WebSocketConfig): IWebSocketServ
 
 /**
  * Creates an authentication service with optional configuration
- * 
+ *
  * @param config - Authentication configuration
  * @returns Authentication service instance
  */
@@ -99,7 +100,7 @@ export function createAuthService(config?: any): IAuthService {
 
 /**
  * Creates a theme service with optional configuration
- * 
+ *
  * @param config - Theme configuration
  * @returns Theme service instance
  */
@@ -117,7 +118,7 @@ export function createThemeService(config?: ThemeConfig): IThemeService {
 
 /**
  * Creates a network service with optional configuration
- * 
+ *
  * @param config - Network configuration
  * @returns Network service instance
  */
@@ -127,7 +128,7 @@ export function createNetworkService(config?: any): INetworkService {
 
 /**
  * Creates a service container for dependency injection
- * 
+ *
  * @returns Service container instance
  */
 export function createServiceContainer(): IServiceContainer {
@@ -136,7 +137,7 @@ export function createServiceContainer(): IServiceContainer {
 
 /**
  * Creates a logger service with optional configuration
- * 
+ *
  * @param config - Service configuration
  * @returns Logger service instance
  */
@@ -146,7 +147,7 @@ export function createLoggerService(config?: IServiceConfig): ILoggerService {
 
 /**
  * Creates a mock core services instance for testing
- * 
+ *
  * @param config - Optional configuration
  * @returns Mock core services
  */

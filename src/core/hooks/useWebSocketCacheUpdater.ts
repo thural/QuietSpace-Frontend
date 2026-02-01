@@ -1,8 +1,10 @@
 import { useEffect, useCallback } from 'react';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+
 import type { ICacheProvider } from '@/core/cache';
 import type { IWebSocketService } from '@/core/websocket/types';
+
+import { useDIContainer } from '@/core/di';
+import { TYPES } from '@/core/di/types';
 
 /**
  * WebSocket cache update configuration
@@ -16,7 +18,7 @@ export interface WebSocketCacheConfig {
 
 /**
  * Hook for integrating WebSocket updates with query cache
- * 
+ *
  * @param topic WebSocket topic to subscribe to
  * @param config Cache update configuration
  */
@@ -124,7 +126,7 @@ function getNestedProperty(obj: any, path: string): any {
  */
 export function useLikeCountUpdater(postId: string) {
   return useWebSocketCacheUpdater(`post.${postId}.likes`, {
-    queryKey: `posts`,
+    queryKey: 'posts',
     updateStrategy: 'merge',
     messageProperty: 'data', // Assuming WebSocket message structure: { data: { postId, likes } }
     mergeKey: 'id'

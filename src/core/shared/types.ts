@@ -1,11 +1,11 @@
 /**
  * Core System Shared Types
- * 
+ *
  * Centralized type definitions for all core system interfaces.
  * Provides clean type exports following Black Box pattern.
  */
 
-import { WebSocketState, LogLevel } from './enums';
+import type { WebSocketState, LogLevel } from './enums';
 
 // Basic Core Interfaces
 export interface ICacheService {

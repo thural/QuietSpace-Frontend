@@ -1,11 +1,12 @@
 /**
  * WebSocket Hooks Example Component
- * 
+ *
  * Comprehensive example demonstrating the usage of standardized WebSocket hooks
  * across all features with migration support and monitoring.
  */
 
 import React, { useState, useEffect } from 'react';
+
 import {
   useChatWebSocket,
   useNotificationWebSocket,
@@ -21,7 +22,7 @@ import {
 } from './index';
 
 interface WebSocketHooksExampleProps {
-  features?: Array<'chat' | 'notification' | 'feed'>;
+  features?: ('chat' | 'notification' | 'feed')[];
   enableMigration?: boolean;
   enableMonitoring?: boolean;
 }
@@ -76,13 +77,13 @@ export const WebSocketHooksExample: React.FC<WebSocketHooksExampleProps> = ({
     try {
       // Send a test message
       await chatHook.sendMessage('test_chat', 'Hello from WebSocket hooks example!');
-      
+
       // Send typing indicator
       await chatHook.sendTypingIndicator('test_chat', true);
-      
+
       // Mark messages as read
       await chatHook.markMessagesAsRead('test_chat');
-      
+
       console.log('Chat operations completed successfully');
     } catch (error) {
       console.error('Chat operations failed:', error);
@@ -93,14 +94,14 @@ export const WebSocketHooksExample: React.FC<WebSocketHooksExampleProps> = ({
     try {
       // Mark all notifications as read
       await notificationHook.markAllAsRead();
-      
+
       // Update preferences
       await notificationHook.updatePreferences({
         enablePush: true,
         enableEmail: false,
         enableInApp: true
       });
-      
+
       console.log('Notification operations completed successfully');
     } catch (error) {
       console.error('Notification operations failed:', error);
@@ -111,16 +112,16 @@ export const WebSocketHooksExample: React.FC<WebSocketHooksExampleProps> = ({
     try {
       // Create a test post
       await feedHook.createPost('Test post from WebSocket hooks example!');
-      
+
       // Add a reaction
       await feedHook.addReaction('test_post', 'like');
-      
+
       // Add a comment
       await feedHook.addComment('test_post', 'Great post!');
-      
+
       // Refresh feed
       await feedHook.refreshFeed();
-      
+
       console.log('Feed operations completed successfully');
     } catch (error) {
       console.error('Feed operations failed:', error);
@@ -135,19 +136,19 @@ export const WebSocketHooksExample: React.FC<WebSocketHooksExampleProps> = ({
       console.log('Testing legacy mode...');
       chatMigration.switchToLegacy();
       await chatMigration.connect();
-      
+
       console.log('Testing enterprise mode...');
       chatMigration.switchToEnterprise();
       await chatMigration.connect();
-      
+
       console.log('Testing hybrid mode...');
       chatMigration.switchToHybrid();
       await chatMigration.connect();
-      
+
       // Get migration report
       const report = chatMigration.getMigrationReport();
       console.log('Migration report:', report);
-      
+
     } catch (error) {
       console.error('Migration test failed:', error);
     }
@@ -157,18 +158,18 @@ export const WebSocketHooksExample: React.FC<WebSocketHooksExampleProps> = ({
     try {
       // Connect all features
       await multiMigration.connectAll();
-      
+
       // Send messages to all features
       await Promise.all([
         chatHook.sendMessage('multi_test', 'Multi-feature test message'),
         notificationHook.markAllAsRead(),
         feedHook.createPost('Multi-feature test post!')
       ]);
-      
+
       // Get all reports
       const reports = multiMigration.getAllReports();
       console.log('Multi-feature reports:', reports);
-      
+
     } catch (error) {
       console.error('Multi-feature test failed:', error);
     }

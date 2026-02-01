@@ -1,15 +1,32 @@
 /**
  * Enterprise Authentication Module
- * 
+ *
  * Provides a complete, modular authentication system with:
  * - Dependency injection
- * - Plugin architecture  
+ * - Plugin architecture
  * - Enterprise security features
  * - Comprehensive logging and metrics
  * - Multiple provider support
  */
 
-import {
+import { createAuthConfigLoader, loadAuthConfiguration } from './config/AuthConfigLoader';
+import { DefaultAuthConfig } from './config/DefaultAuthConfig';
+import { EnvironmentAuthConfig, createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
+import { EnterpriseAuthService } from './enterprise/AuthService';
+import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
+import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
+import { AnalyticsPlugin } from './plugins/AnalyticsPlugin';
+import { SecurityPlugin } from './plugins/SecurityPlugin';
+import { JwtAuthProvider } from './providers/JwtAuthProvider';
+import { LDAPAuthProvider } from './providers/LDAPProvider';
+import { OAuthAuthProvider } from './providers/OAuthProvider';
+import { SAMLAuthProvider } from './providers/SAMLProvider';
+import { SessionAuthProvider } from './providers/SessionProvider';
+import { LocalAuthRepository } from './repositories/LocalAuthRepository';
+import { EnterpriseSecurityService } from './security/EnterpriseSecurityService';
+
+import type { AuthConfigLoader } from './config/AuthConfigLoader';
+import type {
     IAuthProvider,
     IAuthRepository,
     IAuthValidator,
@@ -19,40 +36,24 @@ import {
     IAuthConfig,
     IAuthPlugin
 } from './interfaces/authInterfaces';
+import type { AuthResult } from './types/auth.domain.types';
 
-import { AuthResult } from './types/auth.domain.types';
-
-import { EnterpriseAuthService } from './enterprise/AuthService';
-import { JwtAuthProvider } from './providers/JwtAuthProvider';
-import { OAuthAuthProvider } from './providers/OAuthProvider';
-import { SAMLAuthProvider } from './providers/SAMLProvider';
-import { SessionAuthProvider } from './providers/SessionProvider';
-import { LDAPAuthProvider } from './providers/LDAPProvider';
-import { LocalAuthRepository } from './repositories/LocalAuthRepository';
-import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
-import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
-import { EnterpriseSecurityService } from './security/EnterpriseSecurityService';
-import { DefaultAuthConfig } from './config/DefaultAuthConfig';
-import { AnalyticsPlugin } from './plugins/AnalyticsPlugin';
-import { SecurityPlugin } from './plugins/SecurityPlugin';
-import { AuthConfigLoader, createAuthConfigLoader, loadAuthConfiguration } from './config/AuthConfigLoader';
-import { EnvironmentAuthConfig, createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
 
 /**
  * Factory for creating authentication services
- * 
+ *
  * Implements factory pattern for creating configured
  * authentication services with proper dependency injection.
  */
 export class AuthModuleFactory {
-    private static activeServices = new Map<string, EnterpriseAuthService>();
-    private static providerRegistry = new Map<string, IAuthProvider>();
+    private static readonly activeServices = new Map<string, EnterpriseAuthService>();
+    private static readonly providerRegistry = new Map<string, IAuthProvider>();
 
     /**
      * Registers providers based on configuration
      */
     private static async registerProvidersFromConfig(authService: EnterpriseAuthService, config: IAuthConfig): Promise<void> {
-        const allowedProviders = (config.get('allowedProviders') as string[]) || ['jwt'];
+        const allowedProviders = (config.get('allowedProviders')) || ['jwt'];
 
         // Always register JWT provider as fallback
         if (allowedProviders.includes('jwt')) {
@@ -92,7 +93,7 @@ export class AuthModuleFactory {
      * Registers providers based on configuration (synchronous version)
      */
     private static registerProvidersFromConfigSync(authService: EnterpriseAuthService, config: IAuthConfig): void {
-        const allowedProviders = (config.get('allowedProviders') as string[]) || ['jwt'];
+        const allowedProviders = (config.get('allowedProviders')) || ['jwt'];
 
         // Always register JWT provider as fallback
         if (allowedProviders.includes('jwt')) {
@@ -152,7 +153,7 @@ export class AuthModuleFactory {
 
     /**
      * Creates enterprise authentication service for specific environment
-     * 
+     *
      * Loads configuration from files and environment variables,
      * then creates appropriately configured authentication service.
      */

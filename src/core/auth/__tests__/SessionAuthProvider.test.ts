@@ -1,6 +1,6 @@
 /**
  * Session Auth Provider Tests
- * 
+ *
  * Tests for Session authentication provider including:
  * - Provider initialization
  * - Session creation and management
@@ -17,9 +17,15 @@ const localStorageMock = (() => {
     let store: Record<string, string> = {};
     return {
         getItem: (key: string) => store[key] || null,
-        setItem: (key: string, value: string) => { store[key] = value; },
-        removeItem: (key: string) => { delete store[key]; },
-        clear: () => { store = {}; }
+        setItem: (key: string, value: string) => {
+ store[key] = value;
+},
+        removeItem: (key: string) => {
+ delete store[key];
+},
+        clear: () => {
+ store = {};
+}
     };
 })();
 
@@ -60,7 +66,9 @@ Object.defineProperty(window, 'localStorage', {
 });
 
 import { SessionAuthProvider } from '../providers/SessionProvider';
-import { AuthCredentials, AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+
+import type { AuthCredentials } from '../types/auth.domain.types';
 
 describe('SessionAuthProvider', () => {
     let provider: SessionAuthProvider;

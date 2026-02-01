@@ -14,8 +14,8 @@ export interface FeatureCacheService {
 }
 
 export class CacheServiceManager implements FeatureCacheService {
-  private caches = new Map<string, CacheProvider>();
-  private globalConfig: CacheServiceConfig;
+  private readonly caches = new Map<string, CacheProvider>();
+  private readonly globalConfig: CacheServiceConfig;
 
   constructor(config: CacheServiceConfig = {}) {
     this.globalConfig = config;

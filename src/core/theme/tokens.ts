@@ -1,9 +1,9 @@
 /**
  * Theme Tokens System.
- * 
+ *
  * Atomic design tokens for maximum composability and maintainability.
  * Provides a foundation for theme composition and inheritance.
- * 
+ *
  * Type definitions have been separated into domain-specific files for better organization.
  */
 
@@ -19,15 +19,15 @@ export type {
 export type { AnimationTokens } from './types/animationTokens';
 
 // Import types for use in interface
+import type { AnimationTokens } from './types/animationTokens';
 import type { ColorTokens } from './types/colorTokens';
-import type { TypographyTokens } from './types/typographyTokens';
 import type {
   SpacingTokens,
   ShadowTokens,
   BreakpointTokens,
   RadiusTokens
 } from './types/layoutTokens';
-import type { AnimationTokens } from './types/animationTokens';
+import type { TypographyTokens } from './types/typographyTokens';
 
 // Combined theme tokens interface
 export interface ThemeTokens {

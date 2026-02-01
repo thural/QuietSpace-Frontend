@@ -1,6 +1,6 @@
 /**
  * Enterprise Infinite Query Types
- * 
+ *
  * These types replace React Query's InfiniteData with our enterprise implementation
  */
 

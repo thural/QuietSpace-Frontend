@@ -1,6 +1,6 @@
 /**
  * Typography-related interfaces.
- * 
+ *
  * Focused interfaces for typography system functionality.
  * Segregated from larger theme interfaces for better modularity.
  */

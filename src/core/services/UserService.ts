@@ -1,4 +1,4 @@
-import { UserProfileEntity } from '@/features/profile/domain/entities';
+import type { UserProfileEntity } from '@/features/profile/domain/entities';
 
 // User service interface
 interface IUserService {
@@ -18,7 +18,7 @@ interface IUserRepository {
 
 // Mock repository implementation
 export class UserRepository implements IUserRepository {
-  private users = new Map<string, UserProfileEntity>();
+  private readonly users = new Map<string, UserProfileEntity>();
 
   async findById(id: string): Promise<UserProfileEntity | null> {
     return this.users.get(id) || null;
@@ -73,7 +73,7 @@ export class UserRepository implements IUserRepository {
 export class UserService implements IUserService {
   private currentUser: UserProfileEntity | null = null;
 
-  constructor(private userRepository: IUserRepository) { }
+  constructor(private readonly userRepository: IUserRepository) { }
 
   getCurrentUser(): UserProfileEntity | null {
     return this.currentUser;

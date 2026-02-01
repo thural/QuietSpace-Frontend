@@ -1,6 +1,6 @@
 /**
  * Health Checker Tests
- * 
+ *
  * Tests for the health checker system including:
  * - Circuit breaker pattern
  * - Provider health monitoring
@@ -19,11 +19,14 @@ import {
     ProviderHealthMonitor,
     CircuitBreaker,
     CircuitBreakerState,
-    HealthCheckResult,
+    HealthCheckResult
+} from '../health/HealthChecker';
+
+import type {
     ProviderHealthConfig
 } from '../health/HealthChecker';
-import { IAuthProvider } from '../interfaces/authInterfaces';
-import { AuthResult } from '../types/auth.domain.types';
+import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { AuthResult } from '../types/auth.domain.types';
 
 describe('CircuitBreaker', () => {
     let circuitBreaker: CircuitBreaker;

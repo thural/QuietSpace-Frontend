@@ -1,16 +1,17 @@
 /**
  * Feature Authentication Factory
- * 
+ *
  * Provides factory functions for creating feature authentication services.
  * This follows Black Box pattern and eliminates direct store access.
  */
 
 import { FeatureAuthService } from '../services/FeatureAuthService';
-import { Container } from '../../di/factory';
+
+import type { Container } from '../../di/factory';
 
 /**
  * Create a feature authentication service
- * 
+ *
  * @param container - DI container instance
  * @returns Feature authentication service instance
  */
@@ -20,7 +21,7 @@ export function createFeatureAuthService(container: Container): FeatureAuthServi
 
 /**
  * Create a feature authentication service from DI container
- * 
+ *
  * @param container - DI container instance
  * @returns Feature authentication service instance or null if not available
  */
@@ -36,7 +37,7 @@ export function createFeatureAuthServiceFromDI(container: Container): FeatureAut
 
 /**
  * Create a singleton feature authentication service
- * 
+ *
  * @param container - DI container instance
  * @returns Singleton feature authentication service
  */

@@ -1,6 +1,6 @@
 /**
  * Animation Token Types.
- * 
+ *
  * Type definitions for animation-related theme tokens.
  * Provides clean separation of animation type definitions.
  */

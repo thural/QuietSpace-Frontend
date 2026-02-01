@@ -1,23 +1,26 @@
 /**
  * Network Module Factory Functions
- * 
+ *
  * Provides factory functions for creating API clients following Black Box pattern.
  * Internal implementation classes are completely hidden from consumers.
  */
 
-import type { IApiClient, IApiClientConfig } from './interfaces';
+import { TYPES } from '../di/types';
+
+import { ApiClient } from './api/ApiClient';
 import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
+import { RestClient } from './rest/RestClient';
 import { createApiError, ERROR_CODES } from './utils';
 
 // Import implementations (internal)
-import { ApiClient } from './api/ApiClient';
-import { RestClient } from './rest/RestClient';
-import { Container } from '../di/container/Container';
-import { TYPES } from '../di/types';
+
+import type { IApiClient, IApiClientConfig } from './interfaces';
+import type { Container } from '../di/container/Container';
+
 
 /**
  * Creates an API client with the specified configuration.
- * 
+ *
  * @param config - Optional configuration for the API client
  * @returns Configured API client instance
  */
@@ -54,7 +57,7 @@ export function createApiClient(config?: Partial<IApiClientConfig>): IApiClient 
 
 /**
  * Creates an API client using dependency injection container.
- * 
+ *
  * @param container - DI container instance
  * @param config - Optional configuration for the API client
  * @returns API client from DI container or fallback
@@ -75,7 +78,7 @@ export function createApiClientFromDI(
 
 /**
  * Creates a REST client with the specified configuration.
- * 
+ *
  * @param config - Optional configuration for the REST client
  * @returns Configured REST client instance
  */
@@ -104,7 +107,7 @@ export function createRestClient(config?: Partial<IApiClientConfig>): IApiClient
 
 /**
  * Creates a REST client using dependency injection container.
- * 
+ *
  * @param container - DI container instance
  * @param config - Optional configuration for the REST client
  * @returns REST client from DI container or fallback
@@ -125,7 +128,7 @@ export function createRestClientFromDI(
 
 /**
  * Creates an API client for a specific environment.
- * 
+ *
  * @param environment - Target environment (development, staging, production)
  * @param config - Optional additional configuration
  * @returns Environment-specific API client
@@ -163,7 +166,7 @@ export function createApiClientForEnvironment(
 
 /**
  * Creates an authenticated API client.
- * 
+ *
  * @param token - Authentication token
  * @param config - Optional additional configuration
  * @returns Authenticated API client
@@ -185,7 +188,7 @@ export function createAuthenticatedApiClient(
 
 /**
  * Creates an authenticated API client using dependency injection.
- * 
+ *
  * @param container - DI container instance
  * @param token - Authentication token
  * @param config - Optional additional configuration
@@ -209,7 +212,7 @@ export function createAuthenticatedApiClientFromDI(
 
 /**
  * Creates a mock API client for testing.
- * 
+ *
  * @param config - Optional configuration for the mock client
  * @returns Mock API client instance
  */
@@ -237,7 +240,7 @@ export const defaultApiClient = createApiClient();
  * Allows registration of custom factory functions.
  */
 class ApiClientFactoryRegistry {
-    private factories = new Map<string, (config?: Partial<IApiClientConfig>) => IApiClient>();
+    private readonly factories = new Map<string, (config?: Partial<IApiClientConfig>) => IApiClient>();
 
     /**
      * Registers a custom factory function.
@@ -279,7 +282,7 @@ apiClientFactoryRegistry.register('mock', createMockApiClient);
 
 /**
  * Creates an API client using a registered factory.
- * 
+ *
  * @param factoryName - Name of the registered factory
  * @param config - Optional configuration
  * @returns API client from the specified factory

@@ -1,14 +1,14 @@
 /**
  * WebSocket Connection Manager.
- * 
+ *
  * Manages connection pooling, health monitoring, and automatic failover
  * for enterprise WebSocket connections.
  */
 
+import { CacheService } from '../../cache';
 import { Injectable, Inject } from '../../di';
 import { TYPES } from '../../di/types';
 import { LoggerService } from '../../services/ThemeService';
-import { CacheService } from '../../cache';
 import { IEnterpriseWebSocketService, WebSocketMessage, ConnectionMetrics } from '../services/EnterpriseWebSocketService';
 
 export interface ConnectionPool {
@@ -58,15 +58,15 @@ export interface IConnectionManager {
  */
 @Injectable()
 export class ConnectionManager implements IConnectionManager {
-  private connections: Map<string, ConnectionPool> = new Map();
-  private healthStatus: Map<string, ConnectionHealth> = new Map();
+  private readonly connections: Map<string, ConnectionPool> = new Map();
+  private readonly healthStatus: Map<string, ConnectionHealth> = new Map();
   private healthCheckTimer: NodeJS.Timeout | null = null;
-  private config: ConnectionPoolConfig;
+  private readonly config: ConnectionPoolConfig;
   private roundRobinIndex = 0;
 
   constructor(
-    @Inject(TYPES.CACHE_SERVICE) private cache: CacheService,
-    private logger: LoggerService
+    @Inject(TYPES.CACHE_SERVICE) private readonly cache: CacheService,
+    private readonly logger: LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.startHealthChecks();
@@ -74,11 +74,11 @@ export class ConnectionManager implements IConnectionManager {
 
   async createConnection(feature: string, priority: number = 1): Promise<string> {
     const connectionId = this.generateConnectionId(feature);
-    
+
     // Check if we've reached max connections
     if (this.connections.size >= this.config.maxConnections) {
       await this.cleanupIdleConnections();
-      
+
       if (this.connections.size >= this.config.maxConnections) {
         throw new Error(`Maximum connections (${this.config.maxConnections}) reached`);
       }
@@ -96,7 +96,7 @@ export class ConnectionManager implements IConnectionManager {
     };
 
     this.connections.set(connectionId, connectionPool);
-    
+
     // Initialize health status
     this.healthStatus.set(connectionId, {
       connectionId,
@@ -109,7 +109,7 @@ export class ConnectionManager implements IConnectionManager {
     });
 
     this.logger.info(`[ConnectionManager] Created connection for feature: ${feature}, ID: ${connectionId}`);
-    
+
     return connectionId;
   }
 
@@ -127,7 +127,7 @@ export class ConnectionManager implements IConnectionManager {
     selectedConnection.lastUsed = new Date();
 
     this.logger.debug(`[ConnectionManager] Selected connection: ${selectedConnection.id} for feature: ${feature}`);
-    
+
     return selectedConnection.service;
   }
 
@@ -157,7 +157,7 @@ export class ConnectionManager implements IConnectionManager {
 
       this.connections.delete(connectionId);
       this.healthStatus.delete(connectionId);
-      
+
       this.logger.info(`[ConnectionManager] Removed connection: ${connectionId}`);
     }
   }
@@ -171,7 +171,7 @@ export class ConnectionManager implements IConnectionManager {
           connection.healthScore = this.calculateHealthScore(health);
         } catch (error) {
           this.logger.error(`[ConnectionManager] Health check failed for ${connectionId}:`, error);
-          
+
           // Mark as unhealthy
           const health: ConnectionHealth = {
             connectionId,
@@ -182,7 +182,7 @@ export class ConnectionManager implements IConnectionManager {
             lastError: new Date(),
             lastHealthCheck: new Date()
           };
-          
+
           this.healthStatus.set(connectionId, health);
           connection.healthScore = 0;
         }
@@ -190,7 +190,7 @@ export class ConnectionManager implements IConnectionManager {
     );
 
     await Promise.all(healthPromises);
-    
+
     // Clean up unhealthy connections if failover is enabled
     if (this.config.enableFailover) {
       await this.cleanupUnhealthyConnections();
@@ -217,10 +217,10 @@ export class ConnectionManager implements IConnectionManager {
       // Check if connected
       const isConnected = connection.service.isConnected();
       const metrics = connection.service.getConnectionMetrics();
-      
+
       // Calculate latency (ping test)
       const latency = await this.measureLatency(connection.service);
-      
+
       // Update health status
       const health: ConnectionHealth = {
         ...currentHealth,
@@ -245,7 +245,7 @@ export class ConnectionManager implements IConnectionManager {
 
   private async measureLatency(service: IEnterpriseWebSocketService): Promise<number> {
     const startTime = Date.now();
-    
+
     try {
       // Send a ping message
       await service.sendMessage({
@@ -253,7 +253,7 @@ export class ConnectionManager implements IConnectionManager {
         feature: 'health-check',
         payload: { timestamp: startTime }
       });
-      
+
       // For now, return a simulated latency
       // In a real implementation, you'd wait for a pong response
       return Date.now() - startTime;
@@ -266,29 +266,29 @@ export class ConnectionManager implements IConnectionManager {
     if (!isConnected || errorCount > 5) {
       return 'unhealthy';
     }
-    
+
     if (latency > 1000 || errorCount > 2) {
       return 'degraded';
     }
-    
+
     return 'healthy';
   }
 
   private calculateHealthScore(health: ConnectionHealth): number {
     let score = 100;
-    
+
     // Deduct points for poor status
     if (health.status === 'unhealthy') score -= 80;
     else if (health.status === 'degraded') score -= 40;
-    
+
     // Deduct points for high latency
     if (health.latency > 2000) score -= 30;
     else if (health.latency > 1000) score -= 15;
     else if (health.latency > 500) score -= 5;
-    
+
     // Deduct points for errors
     score -= Math.min(health.errorCount * 10, 50);
-    
+
     return Math.max(0, score);
   }
 
@@ -315,15 +315,15 @@ export class ConnectionManager implements IConnectionManager {
     return connections.reduce((best, current) => {
       const bestHealth = this.healthStatus.get(best.id);
       const currentHealth = this.healthStatus.get(current.id);
-      
+
       if (!bestHealth || !currentHealth) return best;
-      
+
       return bestHealth.errorCount < currentHealth.errorCount ? best : current;
     });
   }
 
   private selectByPriority(connections: ConnectionPool[]): ConnectionPool {
-    return connections.reduce((best, current) => 
+    return connections.reduce((best, current) =>
       current.priority > best.priority ? current : best
     );
   }
@@ -332,17 +332,17 @@ export class ConnectionManager implements IConnectionManager {
     // Sort by health score first, then by priority
     const healthScoreDiff = b.healthScore - a.healthScore;
     if (healthScoreDiff !== 0) return healthScoreDiff;
-    
+
     return b.priority - a.priority;
   }
 
   private async cleanupIdleConnections(): Promise<void> {
     const now = new Date();
     const idleThreshold = 5 * 60 * 1000; // 5 minutes
-    
+
     const idleConnections = Array.from(this.connections.entries()).filter(
-      ([_, connection]) => 
-        !connection.isActive && 
+      ([_, connection]) =>
+        !connection.isActive &&
         (now.getTime() - connection.lastUsed.getTime()) > idleThreshold
     );
 
@@ -409,7 +409,7 @@ export class ConnectionManager implements IConnectionManager {
     );
 
     await Promise.all(disconnectPromises);
-    
+
     this.logger.info('[ConnectionManager] Cleanup completed');
   }
 }

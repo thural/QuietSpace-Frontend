@@ -1,15 +1,16 @@
 /**
  * Authentication System Utilities
- * 
+ *
  * Utility functions for the authentication system.
  */
 
-import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession } from './types/auth.domain.types';
 import { AuthErrorType } from './types/auth.domain.types';
+
+import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession } from './types/auth.domain.types';
 
 /**
  * Validates authentication configuration
- * 
+ *
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
@@ -39,7 +40,7 @@ export function validateAuthConfig(config: any): string[] {
 
 /**
  * Sanitizes authentication data
- * 
+ *
  * @param data - Data to sanitize
  * @returns Sanitized data
  */
@@ -64,7 +65,7 @@ export function sanitizeAuthData(data: any): any {
 
 /**
  * Extracts error information from authentication result
- * 
+ *
  * @param result - Authentication result
  * @returns Error information or null
  */
@@ -82,7 +83,7 @@ export function extractAuthError(result: AuthResult<any>): { type: AuthErrorType
 
 /**
  * Formats authentication result for display
- * 
+ *
  * @param result - Authentication result
  * @returns Formatted result
  */
@@ -105,7 +106,7 @@ export function formatAuthResult(result: AuthResult<any>): { success: boolean; m
 
 /**
  * Type guard for authentication result
- * 
+ *
  * @param result - Result to check
  * @returns True if result is a valid AuthResult
  */
@@ -115,7 +116,7 @@ export function isAuthResult(result: any): result is AuthResult<any> {
 
 /**
  * Type guard for authentication error
- * 
+ *
  * @param error - Error to check
  * @returns True if error is a valid AuthError
  */
@@ -125,7 +126,7 @@ export function isAuthError(error: any): error is { type: AuthErrorType; message
 
 /**
  * Type guard for authentication token
- * 
+ *
  * @param token - Token to check
  * @returns True if token is a valid AuthToken
  */
@@ -139,7 +140,7 @@ export function isAuthToken(token: any): token is AuthToken {
 
 /**
  * Type guard for authentication session
- * 
+ *
  * @param session - Session to check
  * @returns True if session is a valid AuthSession
  */
@@ -153,7 +154,7 @@ export function isAuthSession(session: any): session is AuthSession {
 
 /**
  * Type guard for authentication user
- * 
+ *
  * @param user - User to check
  * @returns True if user is a valid AuthUser
  */
@@ -166,7 +167,7 @@ export function isAuthUser(user: any): user is AuthUser {
 
 /**
  * Checks if a token is expired
- * 
+ *
  * @param token - Token to check
  * @returns True if token is expired
  */
@@ -176,7 +177,7 @@ export function isTokenExpired(token: AuthToken): boolean {
 
 /**
  * Checks if a session is expired
- * 
+ *
  * @param session - Session to check
  * @returns True if session is expired
  */
@@ -186,7 +187,7 @@ export function isSessionExpired(session: AuthSession): boolean {
 
 /**
  * Gets time until token expiry
- * 
+ *
  * @param token - Token to check
  * @returns Time until expiry in milliseconds
  */
@@ -196,7 +197,7 @@ export function getTokenTimeToExpiry(token: AuthToken): number {
 
 /**
  * Gets time until session expiry
- * 
+ *
  * @param session - Session to check
  * @returns Time until expiry in milliseconds
  */
@@ -206,7 +207,7 @@ export function getSessionTimeToExpiry(session: AuthSession): number {
 
 /**
  * Formats token for display
- * 
+ *
  * @param token - Token to format
  * @returns Formatted token string
  */
@@ -216,7 +217,7 @@ export function formatToken(token: AuthToken): string {
 
 /**
  * Creates a mock authentication result
- * 
+ *
  * @param success - Whether the result should be successful
  * @param data - Optional data to include
  * @param error - Optional error to include
@@ -239,7 +240,7 @@ export function createMockAuthResult<T>(
 
 /**
  * Creates a mock authentication user
- * 
+ *
  * @param overrides - Optional user overrides
  * @returns Mock authentication user
  */
@@ -256,7 +257,7 @@ export function createMockAuthUser(overrides?: Partial<AuthUser>): AuthUser {
 
 /**
  * Creates a mock authentication token
- * 
+ *
  * @param overrides - Optional token overrides
  * @returns Mock authentication token
  */
@@ -272,7 +273,7 @@ export function createMockAuthToken(overrides?: Partial<AuthToken>): AuthToken {
 
 /**
  * Creates a mock authentication session
- * 
+ *
  * @param overrides - Optional session overrides
  * @returns Mock authentication session
  */

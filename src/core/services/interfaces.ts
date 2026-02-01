@@ -1,6 +1,6 @@
 /**
  * Logger Module Interfaces
- * 
+ *
  * Defines interfaces for the logger system following Black Box pattern.
  * Provides clean public API for logging operations.
  */

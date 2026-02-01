@@ -1,6 +1,6 @@
 /**
  * Custom Query Hooks - Enterprise Edition
- * 
+ *
  * This module provides a comprehensive replacement for React Query
  * with enterprise-grade features including:
  * - Custom caching with ICacheProvider integration

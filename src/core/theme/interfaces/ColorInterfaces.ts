@@ -1,6 +1,6 @@
 /**
  * Color-related interfaces.
- * 
+ *
  * Focused interfaces for color system functionality.
  * Segregated from larger theme interfaces for better modularity.
  */

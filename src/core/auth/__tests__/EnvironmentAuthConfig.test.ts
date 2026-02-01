@@ -1,6 +1,6 @@
 /**
  * Environment Auth Configuration Tests
- * 
+ *
  * Tests for environment-based authentication configuration including:
  * - Environment variable loading and parsing
  * - Configuration validation and defaults
@@ -9,8 +9,10 @@
  * - Type safety and runtime validation
  */
 
-import { EnvironmentAuthConfig, AUTH_ENV_VARS, createEnvironmentAuthConfig, getCurrentEnvironment } from '../config/EnvironmentAuthConfig';
+import { AUTH_ENV_VARS, createEnvironmentAuthConfig, getCurrentEnvironment } from '../config/EnvironmentAuthConfig';
 import { AuthProviderType } from '../types/auth.domain.types';
+
+import type { EnvironmentAuthConfig } from '../config/EnvironmentAuthConfig';
 
 // Mock environment variables for testing
 const mockEnv = {

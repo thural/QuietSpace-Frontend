@@ -1,19 +1,20 @@
 /**
  * Data Service Module - Base Data Service Implementation
- * 
+ *
  * Clean implementation following Single Responsibility Principle.
  * Features extend this base class to implement feature-specific data services
  * with intelligent caching, real-time updates, and optimistic updates.
  */
 
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
-import { Container } from '@/core/di/container/Container';
-import type { ICacheProvider } from '@/core/cache';
-import type { IWebSocketService } from '@/core/websocket/types';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCustomInfiniteQuery } from '@/core/hooks/useCustomInfiniteQuery';
+import { DataServiceConfig } from './config/DataServiceConfig';
+import {
+  CacheManager,
+  UpdateStrategy,
+  WebSocketManager,
+  QueryExecutor,
+  DataStateManager
+} from './services';
+
 import type {
   IBaseDataService as IBaseDataService,
   ICacheConfig,
@@ -25,31 +26,36 @@ import type {
   IDataState,
   IDataStateManager
 } from './interfaces';
-import { DataServiceConfig } from './config/DataServiceConfig';
 import type {
   ICacheManager,
   IUpdateStrategy,
   IWebSocketManager,
   IQueryExecutor
 } from './services';
-import {
-  CacheManager,
-  UpdateStrategy,
-  WebSocketManager,
-  QueryExecutor,
-  DataStateManager
-} from './services';
+import type { ICacheProvider } from '@/core/cache';
+import type { Container } from '@/core/di/container/Container';
+import type { IWebSocketService } from '@/core/websocket/types';
+
+import { useDIContainer } from '@/core/di';
+import { TYPES } from '@/core/di/types';
+import { useCustomInfiniteQuery } from '@/core/hooks/useCustomInfiniteQuery';
+import { useCustomMutation } from '@/core/hooks/useCustomMutation';
+import { useCustomQuery } from '@/core/hooks/useCustomQuery';
+
+
+
+
 
 /**
  * Base Data Service
- * 
+ *
  * Clean implementation following Single Responsibility Principle.
  * Provides composed services for data coordination:
  * - CacheManager: Handles cache operations
  * - UpdateStrategy: Manages data update strategies
  * - WebSocketManager: Handles WebSocket connections and messages
  * - QueryExecutor: Coordinates query execution
- * 
+ *
  * Features extend this class and use the protected services
  * to implement their specific data logic.
  */
@@ -84,7 +90,7 @@ export abstract class BaseDataService implements IBaseDataService {
 
   /**
    * Execute a query with intelligent caching and WebSocket integration
-   * 
+   *
    * @param key Cache key for the query
    * @param fetcher Function to fetch data
    * @param options Query options including cache strategy and WebSocket topics
@@ -110,13 +116,13 @@ export abstract class BaseDataService implements IBaseDataService {
     // Execute query with optimal cache configuration
     return useCustomQuery<T>(key, fetcher, {
       ...cacheConfig,
-      ...queryOptions,
+      ...queryOptions
     });
   }
 
   /**
    * Execute a mutation with optimistic updates and cache coordination
-   * 
+   *
    * @param fetcher Function to perform the mutation
    * @param options Mutation options including invalidation and WebSocket events
    * @returns Mutation result
@@ -144,13 +150,13 @@ export abstract class BaseDataService implements IBaseDataService {
       onSuccess: (data, variables) => {
         this.emitWebSocketEvents(websocketEvents, data, variables);
         mutationOptions.onSuccess?.(data, variables);
-      },
+      }
     });
   }
 
   /**
    * Execute infinite query with page-based caching
-   * 
+   *
    * @param key Cache key for the infinite query
    * @param fetcher Function to fetch page data
    * @param options Infinite query options
@@ -174,7 +180,7 @@ export abstract class BaseDataService implements IBaseDataService {
 
     return useCustomInfiniteQuery<T>(key, fetcher, {
       ...cacheConfig,
-      ...infiniteOptions,
+      ...infiniteOptions
     });
   }
 
@@ -242,7 +248,7 @@ export abstract class BaseDataService implements IBaseDataService {
       this.webSocket.send({
         type: event,
         data: { ...data, variables },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
   }

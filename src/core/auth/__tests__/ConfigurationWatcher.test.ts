@@ -1,6 +1,6 @@
 /**
  * Configuration Watcher Tests
- * 
+ *
  * Tests for the configuration file watcher including:
  * - File system monitoring
  * - Configuration change detection
@@ -11,8 +11,10 @@
 
 import { jest } from '@jest/globals';
 
-import { ConfigurationWatcher, ConfigurationHotReloadManager, ConfigurationChangeEvent } from '../config/ConfigurationWatcher';
-import { IAuthConfig } from '../interfaces/authInterfaces';
+import { ConfigurationWatcher, ConfigurationHotReloadManager } from '../config/ConfigurationWatcher';
+
+import type { ConfigurationChangeEvent } from '../config/ConfigurationWatcher';
+import type { IAuthConfig } from '../interfaces/authInterfaces';
 
 // Mock fs module
 jest.mock('fs', () => ({

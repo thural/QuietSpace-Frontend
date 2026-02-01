@@ -1,13 +1,21 @@
 /**
  * WebSocket Types.
- * 
+ *
  * TypeScript type definitions for WebSocket operations.
  */
 
-import { WebSocketMessage, WebSocketConfig, ConnectionMetrics } from '../services/EnterpriseWebSocketService';
-import { ConnectionPool, ConnectionHealth, ConnectionPoolConfig } from '../managers/ConnectionManager';
-import { MessageRoute, RoutingMetrics, MessageRouterConfig } from '../services/MessageRouter';
-import { CacheInvalidationStrategy, CacheInvalidationConfig } from '../cache/WebSocketCacheManager';
+import { CacheInvalidationConfig } from '../cache/WebSocketCacheManager';
+import { ConnectionPoolConfig } from '../managers/ConnectionManager';
+import { WebSocketConfig } from '../services/EnterpriseWebSocketService';
+import { RoutingMetrics, MessageRouterConfig } from '../services/MessageRouter';
+
+import type { CacheInvalidationStrategy } from '../cache/WebSocketCacheManager';
+import type { ConnectionPool, ConnectionHealth } from '../managers/ConnectionManager';
+import type { WebSocketMessage, ConnectionMetrics } from '../services/EnterpriseWebSocketService';
+import type { MessageRoute } from '../services/MessageRouter';
+
+
+
 
 // Feature Configuration Types
 export interface WebSocketFeatureConfig {
@@ -304,7 +312,7 @@ export function isWebSocketError(error: any): error is WebSocketError {
 export function isConnectionError(error: WebSocketError): error is WebSocketConnectionError {
   return [
     'CONNECTION_FAILED',
-    'CONNECTION_TIMEOUT', 
+    'CONNECTION_TIMEOUT',
     'CONNECTION_REFUSED',
     'CONNECTION_LOST'
   ].includes(error.code);

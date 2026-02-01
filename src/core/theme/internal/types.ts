@@ -1,11 +1,11 @@
 /**
  * Internal Type Definitions.
- * 
+ *
  * Internal types for theme system modules.
  * Separated from public API types for better modularity.
  */
 
-import { ThemeTokens } from './tokens';
+import type { ThemeTokens } from './tokens';
 
 /**
  * Internal enhanced theme interface

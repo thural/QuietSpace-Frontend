@@ -1,12 +1,17 @@
 /**
  * Cache Module Factory Functions
- * 
+ *
  * Provides factory functions for creating cache services following Black Box pattern.
  * Consumers use these factories to get configured cache instances.
  */
 
-import { Container } from '../di/container/Container';
 import { TYPES } from '../di/types';
+
+
+// Import implementations (internal)
+import { CacheProvider } from './CacheProvider';
+import { CacheServiceManager } from './CacheServiceManager';
+
 import type {
     ICacheProvider,
     ICacheServiceManager,
@@ -14,14 +19,11 @@ import type {
     CacheServiceConfig,
     CacheEvents
 } from './interfaces';
-
-// Import implementations (internal)
-import { CacheProvider } from './CacheProvider';
-import { CacheServiceManager } from './CacheServiceManager';
+import type { Container } from '../di/container/Container';
 
 /**
  * Creates a cache provider with the specified configuration.
- * 
+ *
  * @param config - Cache configuration options
  * @param events - Optional cache event handlers
  * @returns Configured cache provider instance
@@ -35,7 +37,7 @@ export function createCacheProvider(
 
 /**
  * Creates a cache service manager with the specified configuration.
- * 
+ *
  * @param config - Cache service configuration
  * @returns Configured cache service manager instance
  */
@@ -47,7 +49,7 @@ export function createCacheServiceManager(
 
 /**
  * Creates a cache provider using dependency injection container.
- * 
+ *
  * @param container - DI container instance
  * @param config - Optional cache configuration
  * @param events - Optional cache event handlers
@@ -70,7 +72,7 @@ export function createCacheProviderFromDI(
 
 /**
  * Creates a cache service manager using dependency injection container.
- * 
+ *
  * @param container - DI container instance
  * @param config - Optional cache service configuration
  * @returns Cache service manager from DI container
@@ -102,7 +104,7 @@ export const DEFAULT_CACHE_CONFIG: CacheConfig = {
 
 /**
  * Creates a cache provider with default configuration.
- * 
+ *
  * @param events - Optional cache event handlers
  * @returns Cache provider with default configuration
  */
@@ -112,7 +114,7 @@ export function createDefaultCacheProvider(events?: CacheEvents): ICacheProvider
 
 /**
  * Creates a cache service manager with default configuration.
- * 
+ *
  * @returns Cache service manager with default configuration
  */
 export function createDefaultCacheServiceManager(): ICacheServiceManager {

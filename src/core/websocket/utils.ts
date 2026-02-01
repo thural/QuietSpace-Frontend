@@ -1,15 +1,9 @@
 /**
  * WebSocket System Utilities
- * 
+ *
  * Utility functions for WebSocket operations following Black Box pattern.
  * Provides clean utility functions for validation, initialization, and management.
  */
-
-import type {
-    IWebSocketService,
-    WebSocketConfig,
-    WebSocketMessage
-} from '../shared';
 
 import {
     WebSocketState,
@@ -19,9 +13,16 @@ import {
     CORE_ERROR_MESSAGES
 } from '../shared';
 
+import type {
+    IWebSocketService,
+    WebSocketConfig,
+    WebSocketMessage
+} from '../shared';
+
+
 /**
  * Validates WebSocket configuration
- * 
+ *
  * @param config - Configuration to validate
  * @returns Array of validation errors
  */
@@ -71,7 +72,7 @@ export function validateWebSocketConfig(config: any): string[] {
 
 /**
  * Creates a default WebSocket configuration
- * 
+ *
  * @param overrides - Optional configuration overrides
  * @returns Default WebSocket configuration
  */
@@ -88,7 +89,7 @@ export function createDefaultWebSocketConfig(overrides?: Partial<WebSocketConfig
 
 /**
  * Creates a WebSocket message with metadata
- * 
+ *
  * @param type - Message type
  * @param data - Message data
  * @param id - Optional message ID
@@ -109,7 +110,7 @@ export function createWebSocketMessage(
 
 /**
  * Creates a WebSocket request message
- * 
+ *
  * @param requestId - Request ID
  * @param method - Request method
  * @param params - Request parameters
@@ -129,7 +130,7 @@ export function createWebSocketRequest(
 
 /**
  * Creates a WebSocket response message
- * 
+ *
  * @param requestId - Request ID
  * @param success - Whether the request was successful
  * @param data - Response data
@@ -152,7 +153,7 @@ export function createWebSocketResponse(
 
 /**
  * Generates a unique message ID
- * 
+ *
  * @returns Unique message ID
  */
 export function generateMessageId(): string {
@@ -161,7 +162,7 @@ export function generateMessageId(): string {
 
 /**
  * Validates a WebSocket message
- * 
+ *
  * @param message - Message to validate
  * @returns True if message is valid
  */
@@ -179,7 +180,7 @@ export function isValidWebSocketMessage(message: any): message is WebSocketMessa
 
 /**
  * Checks if a WebSocket message is expired
- * 
+ *
  * @param message - Message to check
  * @param maxAge - Maximum age in milliseconds
  * @returns True if message is expired
@@ -190,7 +191,7 @@ export function isMessageExpired(message: WebSocketMessage, maxAge: number = 600
 
 /**
  * Formats WebSocket state for display
- * 
+ *
  * @param state - WebSocket state
  * @returns Formatted state string
  */
@@ -208,7 +209,7 @@ export function formatWebSocketState(state: WebSocketState): string {
 
 /**
  * Gets WebSocket connection info as a formatted string
- * 
+ *
  * @param url - WebSocket URL
  * @param state - WebSocket state
  * @param reconnectAttempts - Number of reconnect attempts
@@ -228,7 +229,7 @@ export function formatConnectionInfo(
 
 /**
  * Creates a WebSocket error with proper error code
- * 
+ *
  * @param message - Error message
  * @param code - Error code
  * @param details - Additional error details
@@ -248,7 +249,7 @@ export function createWebSocketError(
 
 /**
  * Checks if a WebSocket URL is secure
- * 
+ *
  * @param url - WebSocket URL
  * @returns True if URL is secure (wss://)
  */
@@ -258,7 +259,7 @@ export function isSecureWebSocketUrl(url: string): boolean {
 
 /**
  * Converts HTTP URL to WebSocket URL
- * 
+ *
  * @param httpUrl - HTTP URL
  * @param secure - Whether to use secure WebSocket
  * @returns WebSocket URL
@@ -270,7 +271,7 @@ export function httpToWebSocketUrl(httpUrl: string, secure: boolean = true): str
 
 /**
  * Gets the protocol from WebSocket URL
- * 
+ *
  * @param url - WebSocket URL
  * @returns Protocol (ws or wss)
  */
@@ -280,7 +281,7 @@ export function getWebSocketProtocol(url: string): 'ws' | 'wss' {
 
 /**
  * Creates a heartbeat message
- * 
+ *
  * @returns Heartbeat message
  */
 export function createHeartbeatMessage(): WebSocketMessage {
@@ -289,7 +290,7 @@ export function createHeartbeatMessage(): WebSocketMessage {
 
 /**
  * Creates a ping message
- * 
+ *
  * @returns Ping message
  */
 export function createPingMessage(): WebSocketMessage {
@@ -298,7 +299,7 @@ export function createPingMessage(): WebSocketMessage {
 
 /**
  * Creates a pong message
- * 
+ *
  * @param pingTimestamp - Timestamp from ping message
  * @returns Pong message
  */
@@ -311,7 +312,7 @@ export function createPongMessage(pingTimestamp?: number): WebSocketMessage {
 
 /**
  * Calculates round-trip time from ping/pong messages
- * 
+ *
  * @param pingMessage - Ping message
  * @param pongMessage - Pong message
  * @returns Round-trip time in milliseconds
@@ -325,7 +326,7 @@ export function calculateRoundTripTime(
 
 /**
  * Checks if a message is a heartbeat message
- * 
+ *
  * @param message - Message to check
  * @returns True if message is a heartbeat
  */
@@ -335,7 +336,7 @@ export function isHeartbeatMessage(message: WebSocketMessage): boolean {
 
 /**
  * Checks if a message is a ping message
- * 
+ *
  * @param message - Message to check
  * @returns True if message is a ping
  */
@@ -345,7 +346,7 @@ export function isPingMessage(message: WebSocketMessage): boolean {
 
 /**
  * Checks if a message is a pong message
- * 
+ *
  * @param message - Message to check
  * @returns True if message is a pong
  */
@@ -355,7 +356,7 @@ export function isPongMessage(message: WebSocketMessage): boolean {
 
 /**
  * Serializes a WebSocket message to JSON string
- * 
+ *
  * @param message - Message to serialize
  * @returns JSON string
  */
@@ -365,7 +366,7 @@ export function serializeMessage(message: WebSocketMessage): string {
 
 /**
  * Deserializes a JSON string to WebSocket message
- * 
+ *
  * @param data - JSON string to deserialize
  * @returns WebSocket message
  */
@@ -383,7 +384,7 @@ export function deserializeMessage(data: string): WebSocketMessage {
 
 /**
  * Creates a subscription filter function
- * 
+ *
  * @param eventType - Event type to filter for
  * @returns Filter function
  */
@@ -395,7 +396,7 @@ export function createEventFilter(eventType: string) {
 
 /**
  * Creates a subscription filter for multiple event types
- * 
+ *
  * @param eventTypes - Event types to filter for
  * @returns Filter function
  */
@@ -407,7 +408,7 @@ export function createMultiEventFilter(eventTypes: string[]) {
 
 /**
  * Creates a subscription filter with custom predicate
- * 
+ *
  * @param predicate - Custom filter predicate
  * @returns Filter function
  */
@@ -417,7 +418,7 @@ export function createCustomFilter(predicate: (message: WebSocketMessage) => boo
 
 /**
  * Debounces WebSocket messages
- * 
+ *
  * @param delay - Delay in milliseconds
  * @returns Debounced message handler
  */
@@ -442,7 +443,7 @@ export function debounceMessageHandler(
 
 /**
  * Throttles WebSocket messages
- * 
+ *
  * @param limit - Minimum time between messages in milliseconds
  * @returns Throttled message handler
  */

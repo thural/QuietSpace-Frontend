@@ -1,11 +1,11 @@
 /**
  * Provider-Specific Type Definitions.
- * 
+ *
  * Types specifically for theme provider and context functionality.
  * Separated from core theme tokens for better modularity.
  */
 
-import { ThemeTokens } from '../tokens';
+import type { ThemeTokens } from '../tokens';
 
 /**
  * Enhanced theme interface with computed values

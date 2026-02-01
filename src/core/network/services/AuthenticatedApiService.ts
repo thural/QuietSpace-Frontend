@@ -1,23 +1,24 @@
 /**
  * Authenticated API Service
- * 
+ *
  * Provides a singleton API client with automatic authentication management.
  * This service follows enterprise patterns and integrates with the DI container.
  */
 
 import { Injectable, Inject } from '../../di';
+import { TYPES } from '../../di/types';
 import { createAutoAuthApiClient } from '../authenticatedFactory';
 import { SimpleTokenProvider } from '../authenticatedFactory';
-import type { IApiClient } from '../interfaces';
 import { type ITokenProvider } from '../authenticatedFactory';
-import { TYPES } from '../../di/types';
+
+import type { IApiClient } from '../interfaces';
 
 @Injectable({ lifetime: 'singleton' })
 export class AuthenticatedApiService {
-    private apiClient: IApiClient;
-    private tokenProvider: ITokenProvider;
+    private readonly apiClient: IApiClient;
+    private readonly tokenProvider: ITokenProvider;
 
-    constructor(@Inject(TYPES.TOKEN_SERVICE) private tokenService?: any) {
+    constructor(@Inject(TYPES.TOKEN_SERVICE) private readonly tokenService?: any) {
         // Create token provider
         this.tokenProvider = new SimpleTokenProvider();
 

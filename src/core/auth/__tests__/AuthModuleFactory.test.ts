@@ -3,8 +3,8 @@
  */
 
 import { AuthModuleFactory } from '../AuthModule';
-import { EnterpriseAuthService } from '../enterprise/AuthService';
 import { createAuthConfigLoader } from '../config/AuthConfigLoader';
+import { EnterpriseAuthService } from '../enterprise/AuthService';
 import { JwtAuthProvider } from '../providers/JwtAuthProvider';
 import { OAuthAuthProvider } from '../providers/OAuthProvider';
 

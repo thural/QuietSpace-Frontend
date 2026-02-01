@@ -1,6 +1,6 @@
 /**
  * Enterprise authentication types and interfaces
- * 
+ *
  * Provides comprehensive type definitions for authentication
  * with proper separation of concerns and enterprise features.
  */

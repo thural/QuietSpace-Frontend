@@ -1,6 +1,6 @@
 /**
  * Color Token Types.
- * 
+ *
  * Type definitions for color-related theme tokens.
  * Provides clean separation of color type definitions.
  */

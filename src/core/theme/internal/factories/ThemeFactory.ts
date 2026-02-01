@@ -1,12 +1,12 @@
 /**
  * Internal Theme Factory.
- * 
+ *
  * Factory for creating theme instances with proper encapsulation.
  * Handles theme creation logic separated from composition.
  */
 
-import { ThemeTokens } from '../tokens';
-import { EnhancedTheme, ThemeConfig } from '../types';
+import type { ThemeTokens } from '../tokens';
+import type { EnhancedTheme, ThemeConfig } from '../types';
 
 /**
  * Theme Factory interface
@@ -60,7 +60,7 @@ export class ThemeFactory implements IThemeFactory {
             shadows: baseShadows,
             breakpoints: baseBreakpoints,
             radius: baseRadius,
-            animation: baseAnimation,
+            animation: baseAnimation
         };
     }
 
@@ -77,7 +77,7 @@ export class ThemeFactory implements IThemeFactory {
             shadows: { ...base.shadows, ...override.shadows },
             breakpoints: { ...base.breakpoints, ...override.breakpoints },
             radius: { ...base.radius, ...override.radius },
-            animation: { ...base.animation, ...override.animation },
+            animation: { ...base.animation, ...override.animation }
         };
     }
 
@@ -98,7 +98,7 @@ export class ThemeFactory implements IThemeFactory {
             success: tokens.colors.semantic?.success || '#10b981',
             warning: tokens.colors.semantic?.warning || '#f59e0b',
             error: tokens.colors.semantic?.error || '#ef4444',
-            info: tokens.colors.semantic?.info || '#3b82f6',
+            info: tokens.colors.semantic?.info || '#3b82f6'
         };
     }
 

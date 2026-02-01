@@ -52,14 +52,14 @@ describe('AuthModule with Integrated Plugins', () => {
         const metadata = analyticsPlugin.getMetadata();
         expect(metadata.name).toBe('analytics');
         expect(metadata.capabilities).toContain('event_tracking');
-        
+
         // Should have fallback capability when AnalyticsService is not available
         expect(metadata.analyticsServiceAvailable).toBeDefined();
     });
 
     test('security plugin should integrate with enterprise service', () => {
         const securityPlugin = new SecurityPlugin();
-        
+
         // Simulate failed authentication attempts
         securityPlugin.execute('auth_failure', 'jwt', { email: 'test@example.com' }, { message: 'Invalid password' });
         securityPlugin.execute('auth_failure', 'jwt', { email: 'test@example.com' }, { message: 'Invalid password' });
@@ -72,14 +72,14 @@ describe('AuthModule with Integrated Plugins', () => {
 
     test('analytics plugin should handle events with integration', async () => {
         const analyticsPlugin = new AnalyticsPlugin();
-        
+
         // Simulate authentication success
         await analyticsPlugin.execute('auth_success', 'jwt', { id: 'user123', email: 'test@example.com', sessionId: 'session123' });
 
         const metadata = analyticsPlugin.getMetadata();
         expect(metadata.name).toBe('analytics');
         expect(metadata.capabilities).toContain('analytics_integration');
-        
+
         // Should handle gracefully even when AnalyticsService is not available
         expect(metadata.analyticsServiceAvailable).toBeDefined();
     });
@@ -97,16 +97,16 @@ describe('AuthModule with Integrated Plugins', () => {
 
     test('security plugin pre-auth check should work', async () => {
         const securityPlugin = new SecurityPlugin();
-        
+
         const result = await securityPlugin.execute('pre_authenticate', 'jwt', { email: 'test@example.com' });
-        
+
         // Should allow authentication by default
         expect(result).toEqual({ allowed: true });
     });
 
     test('analytics plugin should handle different event types', async () => {
         const analyticsPlugin = new AnalyticsPlugin();
-        
+
         // Test different event types
         await analyticsPlugin.execute('auth_success', 'jwt', { id: 'user123', sessionId: 'session123' });
         await analyticsPlugin.execute('auth_failure', 'jwt', { email: 'test@example.com' }, { message: 'Invalid password' });

@@ -1,10 +1,11 @@
-import { AuthResponse } from '@auth';
 import { fetchAccessToken } from '@auth/data/authRequests';
 import { getRefreshToken } from '@shared/utils/authStoreUtils';
 
+import type { AuthResponse } from '@auth';
+
 /**
  * Token refresh management service
- * 
+ *
  * Handles automatic token refresh without business logic or state management
  */
 class TokenRefreshManager {
@@ -12,7 +13,7 @@ class TokenRefreshManager {
 
     /**
      * Starts automatic token refresh
-     * 
+     *
      * @param options - Refresh configuration
      */
     static async startRefresh(options: {
@@ -46,7 +47,7 @@ class TokenRefreshManager {
 
     /**
      * Manually refreshes the access token
-     * 
+     *
      * @param onSuccess - Success callback
      * @param onError - Error callback
      */

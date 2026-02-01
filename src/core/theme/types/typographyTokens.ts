@@ -1,6 +1,6 @@
 /**
  * Typography Token Types.
- * 
+ *
  * Type definitions for typography-related theme tokens.
  * Provides clean separation of typography type definitions.
  */

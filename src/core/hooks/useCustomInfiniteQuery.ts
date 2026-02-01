@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+
+import type { ICacheProvider } from '@/core/cache';
+
+import { useDIContainer } from '@/core/di';
 import { Container } from '@/core/di/container/Container';
 import { TYPES } from '@/core/di/types';
-import { useDIContainer } from '@/core/di';
-import type { ICacheProvider } from '@/core/cache';
 
 /**
  * Infinite query page interface
@@ -72,7 +74,7 @@ export interface CustomInfiniteQueryResult<T = any> extends InfiniteQueryState<T
 
 /**
  * Enterprise-grade custom infinite query hook
- * 
+ *
  * Replaces React Query's useInfiniteQuery with custom implementation
  * that integrates with our ICacheProvider and DI container
  */

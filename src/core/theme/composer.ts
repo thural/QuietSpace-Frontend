@@ -1,11 +1,10 @@
 /**
  * Theme Composition System.
- * 
+ *
  * Composable theme system with inheritance, merging, and validation.
  * Supports theme variants, overrides, and composition patterns.
  */
 
-import { ThemeTokens } from './tokens';
 import { colors } from './appColors';
 import { typography } from './appTypography';
 import {
@@ -15,6 +14,8 @@ import {
   baseRadius,
   baseAnimation
 } from './baseTokens';
+
+import type { ThemeTokens } from './tokens';
 
 export interface ThemeConfig {
   name: string;
@@ -39,8 +40,8 @@ export interface ComposedTheme {
  * Theme Composer for creating composable themes
  */
 export class ThemeComposer {
-  private themes = new Map<string, ThemeConfig>();
-  private composedThemes = new Map<string, ComposedTheme>();
+  private readonly themes = new Map<string, ThemeConfig>();
+  private readonly composedThemes = new Map<string, ComposedTheme>();
 
   /**
    * Register a theme configuration
@@ -122,7 +123,7 @@ export class ThemeComposer {
       shadows: { ...this.getDefaultTokens().shadows, ...base.shadows, ...override.shadows },
       breakpoints: { ...this.getDefaultTokens().breakpoints, ...base.breakpoints, ...override.breakpoints },
       radius: { ...this.getDefaultTokens().radius, ...base.radius, ...override.radius },
-      animation: { ...this.getDefaultTokens().animation, ...base.animation, ...override.animation },
+      animation: { ...this.getDefaultTokens().animation, ...base.animation, ...override.animation }
     };
   }
 
@@ -140,7 +141,7 @@ export class ThemeComposer {
       shadows: { ...defaults.shadows, ...tokens.shadows },
       breakpoints: { ...defaults.breakpoints, ...tokens.breakpoints },
       radius: { ...defaults.radius, ...tokens.radius },
-      animation: { ...defaults.animation, ...tokens.animation },
+      animation: { ...defaults.animation, ...tokens.animation }
     };
   }
 
@@ -155,7 +156,7 @@ export class ThemeComposer {
       shadows: baseShadows,
       breakpoints: baseBreakpoints,
       radius: baseRadius,
-      animation: baseAnimation,
+      animation: baseAnimation
     };
   }
 

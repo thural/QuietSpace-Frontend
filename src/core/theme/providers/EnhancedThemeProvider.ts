@@ -1,6 +1,6 @@
 /**
  * Enhanced Theme Provider.
- * 
+ *
  * Backward compatibility provider that combines pure provider with additional features.
  * Maintains existing API while using new modular architecture internally.
  */

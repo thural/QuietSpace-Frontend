@@ -1,15 +1,16 @@
 /**
  * Query Executor Implementation
- * 
+ *
  * Coordinates query execution with cache and WebSocket services
  */
 
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCustomInfiniteQuery } from '@/core/hooks/useCustomInfiniteQuery';
 import type { ICacheManager } from './ICacheManager';
-import type { IWebSocketManager } from './IWebSocketManager';
 import type { IQueryExecutor } from './IQueryExecutor';
+import type { IWebSocketManager } from './IWebSocketManager';
+
+import { useCustomInfiniteQuery } from '@/core/hooks/useCustomInfiniteQuery';
+import { useCustomMutation } from '@/core/hooks/useCustomMutation';
+import { useCustomQuery } from '@/core/hooks/useCustomQuery';
 
 export class QueryExecutor implements IQueryExecutor {
   async executeQuery<T>(
@@ -35,7 +36,7 @@ export class QueryExecutor implements IQueryExecutor {
     // Execute query with optimal cache configuration
     const result = useCustomQuery<T>(key, fetcher, {
       ...cacheConfig,
-      ...queryOptions,
+      ...queryOptions
     });
 
     return result.data || Promise.resolve(undefined as T);
@@ -73,7 +74,7 @@ export class QueryExecutor implements IQueryExecutor {
         onError: (error, variables) => {
           mutationOptions.onError?.(error, variables);
           reject(error);
-        },
+        }
       });
 
       // Execute mutation with dummy variables (this would need proper variables)
@@ -102,7 +103,7 @@ export class QueryExecutor implements IQueryExecutor {
 
     const result = useCustomInfiniteQuery<T>(key, fetcher, {
       ...cacheConfig,
-      ...infiniteOptions,
+      ...infiniteOptions
     });
 
     // Handle the infinite query result
@@ -119,23 +120,23 @@ export class QueryExecutor implements IQueryExecutor {
       REALTIME: {
         staleTime: 30 * 1000,
         cacheTime: 5 * 60 * 1000,
-        refetchInterval: 60 * 1000,
+        refetchInterval: 60 * 1000
       },
       USER_CONTENT: {
         staleTime: 2 * 60 * 1000,
         cacheTime: 15 * 60 * 1000,
-        refetchInterval: 5 * 60 * 1000,
+        refetchInterval: 5 * 60 * 1000
       },
       STATIC: {
         staleTime: 30 * 60 * 1000,
         cacheTime: 2 * 60 * 60 * 1000,
-        refetchInterval: undefined,
+        refetchInterval: undefined
       },
       CRITICAL: {
         staleTime: 10 * 1000,
         cacheTime: 60 * 1000,
-        refetchInterval: 30 * 1000,
-      },
+        refetchInterval: 30 * 1000
+      }
     };
 
     return configs[strategy as keyof typeof configs] || configs.USER_CONTENT;
