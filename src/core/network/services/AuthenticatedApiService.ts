@@ -13,12 +13,20 @@ import { type ITokenProvider } from '../authenticatedFactory';
 
 import type { IApiClient } from '../interfaces';
 
+// Token service interface for type safety
+interface ITokenService {
+    setToken(token: string): void;
+    clearToken(): void;
+    getToken(): string | undefined;
+    subscribe(callback: (token: string | null) => void): () => void;
+}
+
 @Injectable({ lifetime: 'singleton' })
 export class AuthenticatedApiService {
     private readonly apiClient: IApiClient;
     private readonly tokenProvider: ITokenProvider;
 
-    constructor(@Inject(TYPES.TOKEN_SERVICE) private readonly tokenService?: any) {
+    constructor(@Inject(TYPES.TOKEN_SERVICE) private readonly tokenService?: unknown) {
         // Create token provider
         this.tokenProvider = new SimpleTokenProvider();
 
@@ -51,7 +59,7 @@ export class AuthenticatedApiService {
 
         // Update token service if available
         if (this.tokenService) {
-            this.tokenService.setToken(token);
+            (this.tokenService as ITokenService).setToken(token);
         }
     }
 
@@ -63,7 +71,7 @@ export class AuthenticatedApiService {
 
         // Update token service if available
         if (this.tokenService) {
-            this.tokenService.clearToken();
+            (this.tokenService as ITokenService).clearToken();
         }
     }
 
@@ -86,21 +94,19 @@ export class AuthenticatedApiService {
      */
     private initializeFromTokenService(): void {
         if (this.tokenService) {
-            const existingToken = this.tokenService.getToken();
+            const existingToken = (this.tokenService as ITokenService).getToken();
             if (existingToken) {
                 this.setToken(existingToken);
             }
 
             // Subscribe to token service changes
-            if (this.tokenService.subscribe) {
-                this.tokenService.subscribe((token: string | null) => {
-                    if (token) {
-                        this.tokenProvider.setToken(token);
-                    } else {
-                        this.tokenProvider.clearToken();
-                    }
-                });
-            }
+            const _unsubscribe = (this.tokenService as ITokenService).subscribe((token: string | null) => {
+                if (token) {
+                    this.tokenProvider.setToken(token);
+                } else {
+                    this.tokenProvider.clearToken();
+                }
+            });
         }
     }
 }

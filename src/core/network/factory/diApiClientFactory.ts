@@ -5,12 +5,30 @@
  * This follows the Black Box pattern and maintains proper separation of concerns.
  */
 
-import { createContainer, type Container } from '../../di/factory';
-import { TYPES } from '../../di/types';
+import { type Container } from '../../di/factory';
 import { createApiClient } from '../factory';
 import { TokenProvider } from '../providers/TokenProvider';
 
 import type { IApiClient, IApiClientConfig, ITokenProvider } from '../interfaces';
+
+// Interceptor interfaces for type safety
+interface IInterceptors {
+    request?: {
+        use: (onFulfilled: (config: unknown) => unknown, onRejected: (error: unknown) => unknown) => void;
+    };
+    response?: {
+        use: (onFulfilled: (response: unknown) => unknown, onRejected: (error: unknown) => unknown) => void;
+    };
+}
+
+interface IApiClientWithInterceptors extends IApiClient {
+    interceptors?: IInterceptors;
+}
+
+interface IErrorWithConfig {
+    response?: { status: number };
+    config: { _retry?: boolean; headers?: Record<string, string> } & (() => unknown);
+}
 
 /**
  * Creates an API client with DI-based authentication
@@ -36,15 +54,15 @@ export function createDIAuthenticatedApiClient(
     }
 
     // Set up token refresh interceptor
-    const originalRequest = client as any;
+    const originalRequest = client as IApiClientWithInterceptors;
     if (originalRequest.interceptors) {
-        originalRequest.interceptors.response.use(
-            (response: any) => response,
-            async (error: any) => {
-                const originalRequest = error.config;
+        originalRequest.interceptors.response?.use(
+            (response: unknown) => response,
+            async (error: unknown) => {
+                const originalRequest = (error as IErrorWithConfig).config;
 
                 // Handle 401 Unauthorized - Token expired
-                if (error.response?.status === 401 && !originalRequest._retry) {
+                if ((error as IErrorWithConfig).response?.status === 401 && !originalRequest._retry) {
                     originalRequest._retry = true;
 
                     try {
@@ -53,8 +71,10 @@ export function createDIAuthenticatedApiClient(
 
                         if (newToken) {
                             // Retry the original request with new token
-                            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                            return originalRequest(originalRequest);
+                            if (originalRequest.headers) {
+                                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                            }
+                            return originalRequest();
                         }
                     } catch (refreshError) {
                         console.error('Token refresh failed:', refreshError);
@@ -88,17 +108,18 @@ export function createAutoAuthApiClient(
     const client = createApiClient(config);
 
     // Set up request interceptor for automatic token injection
-    const originalRequest = client as any;
+    const originalRequest = client as IApiClientWithInterceptors;
     if (originalRequest.interceptors) {
-        originalRequest.interceptors.request.use(
-            (requestConfig: any) => {
+        originalRequest.interceptors.request?.use(
+            (requestConfig: unknown) => {
+                const config = requestConfig as { headers: Record<string, string> };
                 const token = tokenProvider.getToken();
-                if (token) {
-                    requestConfig.headers.Authorization = `Bearer ${token}`;
+                if (token && config.headers) {
+                    config.headers.Authorization = `Bearer ${token}`;
                 }
                 return requestConfig;
             },
-            (error: any) => Promise.reject(error)
+            (error: unknown) => Promise.reject(error)
         );
     }
 
