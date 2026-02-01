@@ -18,11 +18,11 @@ import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { AnalyticsPlugin } from './plugins/AnalyticsPlugin';
 import { SecurityPlugin } from './plugins/SecurityPlugin';
 import { JwtAuthProvider } from './providers/JwtAuthProvider';
-import { AuthErrorType } from './types/auth.domain.types';
 import { LDAPAuthProvider } from './providers/LDAPProvider';
 import { OAuthAuthProvider } from './providers/OAuthProvider';
 import { SAMLAuthProvider } from './providers/SAMLProvider';
 import { SessionAuthProvider } from './providers/SessionProvider';
+import { AuthErrorType } from './types/auth.domain.types';
 import { LocalAuthRepository } from './repositories/LocalAuthRepository';
 import { EnterpriseSecurityService } from './security/EnterpriseSecurityService';
 

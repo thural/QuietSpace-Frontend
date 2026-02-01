@@ -10,10 +10,7 @@ import { describe, it, expect, beforeEach } from '@jest/globals';
 // Test core imports
 import { themeContainer, THEME_TOKENS } from '../di/ThemeContainer';
 
-
 // Test interface imports
-
-// Test provider imports
 import { ThemeContext } from '../providers/ThemeContext';
 import { themeSystem, ThemeSystem } from '../ThemeSystem';
 
@@ -28,8 +25,6 @@ import type {
 import type { ThemeTokens } from '../internal/tokens';
 import type { EnhancedTheme } from '../internal/types';
 import type { ThemeContextValue } from '../providers/ThemeContext';
-
-// Test type imports
 import type { ThemeProviderProps } from '../types/ProviderTypes';
 
 describe('Theme System Integrity', () => {

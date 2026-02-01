@@ -8,7 +8,7 @@
  * 4. Runtime overrides
  */
 
-import { AuthProviderType } from '../types/auth.domain.types';
+import { AuthProviderType, AuthResult } from '../types/auth.domain.types';
 
 import { EnvironmentAuthConfig, AUTH_ENV_VARS } from './EnvironmentAuthConfig';
 
@@ -106,7 +106,7 @@ export class FileBasedAuthConfig implements IAuthConfig {
         return { ...this.config };
     }
 
-    validate(): { success: boolean; data?: boolean; error?: unknown } {
+    validate(): AuthResult<boolean> {
         return { success: true, data: true };
     }
 

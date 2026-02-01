@@ -9,8 +9,9 @@
  */
 
 import type { IAuthSecurityService } from '../interfaces/authInterfaces';
-import type { AuthEvent } from '../types/auth.domain.types';
+
 import { AuthEventType } from '../types/auth.domain.types';
+import type { AuthEvent } from '../types/auth.domain.types';
 
 /**
  * Enterprise security service implementation
