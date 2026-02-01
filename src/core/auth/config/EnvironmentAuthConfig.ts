@@ -7,9 +7,9 @@
  * Supports both Node.js (process.env) and browser (import.meta.env) environments.
  */
 
-import { AuthProviderType } from '../types/auth.domain.types';
-import type { IAuthConfig } from '../interfaces/authInterfaces';
-import type { AuthResult, AuthErrorType } from '../types/auth.domain.types';
+import { AuthProviderType, AuthErrorType } from '../types/auth.domain.types';
+
+import type { IAuthConfig, AuthResult } from '../interfaces/authInterfaces';
 
 /**
  * Environment variable names for authentication configuration
@@ -53,10 +53,18 @@ export const AUTH_ENV_VARS = {
 /**
  * Environment-based authentication configuration
  */
+// Internal configuration interface for type safety
+interface EnvironmentConfig {
+    provider: string;
+    allowedProviders: string[];
+    tokenRefreshInterval: number;
+    [key: string]: unknown;
+}
+
 export class EnvironmentAuthConfig implements IAuthConfig {
     readonly name = 'EnvironmentAuthConfig';
 
-    private config: Record<string, any>;
+    private config: EnvironmentConfig;
     private readonly watchers: Map<string, ((value: unknown) => void)[]> = new Map();
 
     constructor(customEnv?: Record<string, string | undefined>) {
@@ -124,7 +132,7 @@ export class EnvironmentAuthConfig implements IAuthConfig {
     /**
      * Loads configuration from environment variables
      */
-    private loadConfiguration(customEnv?: Record<string, string | undefined>): Record<string, unknown> {
+    private loadConfiguration(customEnv?: Record<string, string | undefined>): EnvironmentConfig {
         const env = customEnv || this.getEnvironmentVariables();
 
         return {
@@ -175,8 +183,8 @@ export class EnvironmentAuthConfig implements IAuthConfig {
         }
 
         // Check if we're in browser environment with Vite
-        if (typeof import.meta !== 'undefined' && (import.meta as any).env) {
-            return (import.meta as any).env as Record<string, string | undefined>;
+        if (typeof import.meta !== 'undefined' && (import.meta as unknown as Record<string, unknown>).env) {
+            return (import.meta as unknown as Record<string, unknown>).env as Record<string, string | undefined>;
         }
 
         // Fallback to empty object
@@ -257,10 +265,22 @@ export class EnvironmentAuthConfig implements IAuthConfig {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error' as AuthErrorType,
+                    type: AuthErrorType.VALIDATION_ERROR,
                     message: `Missing required configuration: ${missingKeys.join(', ')}`,
-                    details: { missingKeys }
-                }
+                    details: { missingKeys: missingKeys as unknown }
+                } as const
+            };
+        }
+
+        // Validate provider is in allowed providers
+        if (!this.config.allowedProviders || !Array.isArray(this.config.allowedProviders)) {
+            return {
+                success: false,
+                error: {
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'allowedProviders must be an array',
+                    details: { allowedProviders: this.config.allowedProviders as unknown }
+                } as const
             };
         }
 
@@ -269,25 +289,25 @@ export class EnvironmentAuthConfig implements IAuthConfig {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error' as AuthErrorType,
+                    type: AuthErrorType.VALIDATION_ERROR,
                     message: `Provider ${this.config.provider} is not in allowed providers: ${this.config.allowedProviders.join(', ')}`,
                     details: {
-                        provider: this.config.provider,
-                        allowedProviders: this.config.allowedProviders
+                        provider: this.config.provider as unknown,
+                        allowedProviders: this.config.allowedProviders as unknown
                     }
-                }
+                } as const
             };
         }
 
         // Validate numeric ranges
-        if (this.config.tokenRefreshInterval <= 0) {
+        if (this.config.tokenRefreshInterval && this.config.tokenRefreshInterval <= 0) {
             return {
                 success: false,
                 error: {
-                    type: 'validation_error' as AuthErrorType,
+                    type: AuthErrorType.VALIDATION_ERROR,
                     message: 'tokenRefreshInterval must be greater than 0',
-                    details: { tokenRefreshInterval: this.config.tokenRefreshInterval }
-                }
+                    details: { tokenRefreshInterval: this.config.tokenRefreshInterval as unknown }
+                } as const
             };
         }
 
@@ -322,14 +342,25 @@ export function createEnvironmentAuthConfig(customEnv?: Record<string, string | 
 }
 
 /**
+ * Safely access import.meta.env properties
+ */
+function getImportMetaEnvProperty(property: string): string | undefined {
+    if (typeof import.meta !== 'undefined' && (import.meta as unknown as Record<string, unknown>).env) {
+        const env = (import.meta as unknown as Record<string, unknown>).env;
+        if (env && typeof env === 'object' && env !== null && property in env) {
+            return String((env as Record<string, unknown>)[property]);
+        }
+    }
+    return undefined;
+}
+
+/**
  * Utility function to get current environment
  */
 export function getCurrentEnvironment(): string {
     const env = typeof process !== 'undefined' && process.env
         ? process.env.NODE_ENV
-        : (typeof import.meta !== 'undefined' && (import.meta as any).env
-            ? (import.meta as any).env.MODE
-            : 'development');
+        : getImportMetaEnvProperty('MODE') || 'development';
 
     return env || 'development';
 }

@@ -9,8 +9,8 @@ import type { WebSocketMessage } from '../services/EnterpriseWebSocketService';
 export interface MessageBuilderOptions {
   feature: string;
   type: string;
-  payload: any;
-  metadata?: Record<string, any>;
+  payload: unknown;
+  metadata?: Record<string, unknown>;
   priority?: number;
 }
 
@@ -21,7 +21,7 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  custom?: (value: any) => boolean;
+  custom?: (value: unknown) => boolean;
 }
 
 export interface ConnectionMonitorConfig {
@@ -57,7 +57,7 @@ export class WebSocketMessageBuilder {
     return new WebSocketMessageBuilder(options);
   }
 
-  withMetadata(metadata: Record<string, any>): WebSocketMessageBuilder {
+  withMetadata(metadata: Record<string, unknown>): WebSocketMessageBuilder {
     this.message.metadata = {
       ...this.message.metadata,
       ...metadata
@@ -143,7 +143,7 @@ export class WebSocketMessageValidator {
     };
   }
 
-  private validateField(field: string, value: any, rule: ValidationRule): string[] {
+  private validateField(field: string, value: unknown, rule: ValidationRule): string[] {
     const errors: string[] = [];
 
     // Required validation
@@ -186,8 +186,13 @@ export class WebSocketMessageValidator {
     return errors;
   }
 
-  private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+  private getNestedValue(obj: unknown, path: string): unknown {
+    return path.split('.').reduce((current: unknown, key: string) => {
+      if (current && typeof current === 'object' && current !== null) {
+        return (current as Record<string, unknown>)[key];
+      }
+      return undefined;
+    }, obj);
   }
 
   // Predefined validation rules
@@ -236,12 +241,12 @@ export class WebSocketConnectionMonitor {
   }
 
   startMonitoring(
-    sendMessage: (message: any) => Promise<void>,
+    sendMessage: (message: unknown) => Promise<void>,
     onConnectionLost?: () => void,
     onConnectionRestored?: () => void
   ): void {
-    this.onConnectionLost = onConnectionLost;
-    this.onConnectionRestored = onConnectionRestored;
+    this.onConnectionLost = onConnectionLost || (() => { });
+    this.onConnectionRestored = onConnectionRestored || (() => { });
 
     this.heartbeatTimer = setInterval(async () => {
       try {
@@ -329,29 +334,35 @@ export class WebSocketConnectionMonitor {
 export function createWebSocketMessage(
   feature: string,
   type: string,
-  payload: any,
-  metadata?: Record<string, any>
+  payload: unknown,
+  metadata?: Record<string, unknown>
 ): WebSocketMessage {
   return WebSocketMessageBuilder.create({
     feature,
     type,
     payload,
-    metadata
+    ...(metadata && { metadata })
   }).build();
 }
 
 /**
  * Validate WebSocket message format
  */
-export function isValidWebSocketMessage(message: any): message is WebSocketMessage {
-  return (
+export function isValidWebSocketMessage(message: unknown): message is WebSocketMessage {
+  return Boolean(
     message &&
     typeof message === 'object' &&
-    typeof message.id === 'string' &&
-    typeof message.type === 'string' &&
-    typeof message.feature === 'string' &&
-    message.payload !== undefined &&
-    message.timestamp instanceof Date
+    message !== null &&
+    'id' in message &&
+    'type' in message &&
+    'feature' in message &&
+    'payload' in message &&
+    'timestamp' in message &&
+    typeof (message as WebSocketMessage).id === 'string' &&
+    typeof (message as WebSocketMessage).type === 'string' &&
+    typeof (message as WebSocketMessage).feature === 'string' &&
+    (message as WebSocketMessage).payload !== undefined &&
+    (message as WebSocketMessage).timestamp instanceof Date
   );
 }
 

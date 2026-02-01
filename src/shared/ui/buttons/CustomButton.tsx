@@ -1,11 +1,11 @@
+import { EnhancedTheme } from '@/core/theme';
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
 
 interface ICustomButtonProps extends GenericWrapperWithRef {
-    label?: ReactNode;
+  label?: ReactNode;
 }
 
 // Enterprise styled-components for custom button styling
@@ -53,15 +53,15 @@ const CustomButtonContainer = styled.button<{ theme: EnhancedTheme }>`
 `;
 
 class CustomButton extends PureComponent<ICustomButtonProps> {
-    render(): ReactNode {
-        const { forwardedRef, label, ...props } = this.props;
+  override render(): ReactNode {
+    const { forwardedRef, label, ...props } = this.props;
 
-        return (
-            <CustomButtonContainer ref={forwardedRef}>
-                {label}
-            </CustomButtonContainer>
-        );
-    }
+    return (
+      <CustomButtonContainer ref={forwardedRef}>
+        {label}
+      </CustomButtonContainer>
+    );
+  }
 }
 
 export default withForwardedRefAndErrBoundary(CustomButton);

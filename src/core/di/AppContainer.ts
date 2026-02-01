@@ -1,22 +1,21 @@
 
 // Import migrated data services
-import { AnalyticsDataService } from '../../../features/analytics/data/services/AnalyticsDataService';
-import { ChatDataService } from '../../../features/chat/data/services/ChatDataService';
-import { CommentDataService } from '../../../features/comment/data/services/CommentDataService';
-import { ContentDataService } from '../../../features/content/data/services/ContentDataService';
-import { FeedDataService } from '../../../features/feed/data/services/FeedDataService';
-import { NavbarDataService } from '../../../features/navbar/data/services/NavbarDataService';
-import { NotificationDataService } from '../../../features/notification/data/services/NotificationDataService';
-import { PostDataService } from '../../../features/post/data/services/PostDataService';
-import { ProfileDataService } from '../../../features/profile/data/services/ProfileDataService';
-import { SearchDataService } from '../../../features/search/data/services/SearchDataService';
-import { SettingsDataService } from '../../../features/settings/data/services/SettingsDataService';
+import { AnalyticsDataService } from '../../features/analytics/data/services/AnalyticsDataService';
+import { ChatDataService } from '../../features/chat/data/services/ChatDataService';
+import { CommentDataService } from '../../features/comment/data/services/CommentDataService';
+import { ContentDataService } from '../../features/content/data/services/ContentDataService';
+import { FeedDataService } from '../../features/feed/data/services/FeedDataService';
+import { NavbarDataService } from '../../features/navbar/data/services/NavbarDataService';
+import { NotificationDataService } from '../../features/notification/data/services/NotificationDataService';
+import { PostDataService } from '../../features/post/data/services/PostDataService';
+import { ProfileDataService } from '../../features/profile/data/services/ProfileDataService';
+import { SearchDataService } from '../../features/search/data/services/SearchDataService';
+import { SettingsDataService } from '../../features/settings/data/services/SettingsDataService';
 import { EnterpriseAuthService } from '../auth';
-import { createCacheProvider, createCacheServiceManager, type ICacheProvider, type ICacheServiceManager } from '../cache';
+import { createCacheProvider, createCacheServiceManager } from '../cache';
 import { createContainer } from '../di';
-import { apiClient } from '../network/rest/apiClient';
+import { createDIAuthenticatedApiClient } from '../network';
 import { createLogger } from '../services';
-import { LoggerService } from '../services/LoggerService';
 import { ThemeService } from '../services/ThemeService';
 import { UserService, UserRepository } from '../services/UserService';
 import { createTheme } from '../theme';
@@ -24,21 +23,14 @@ import { EnterpriseWebSocketService } from '../websocket/services/EnterpriseWebS
 
 import { TYPES } from './types';
 
-// import { registerFeedContainer } from '../../../features/feed/di/container';
-// import { registerChatContainer } from '../../../features/chat/di/container';
-// import { createSearchContainer } from '../../../features/search/di/container';
-// import { registerWebSocketServices, initializeWebSocketServices } from '../websocket/di/WebSocketContainer';
 import type { AxiosInstance } from 'axios';
 
-// Import repositories (commented out until feature modules are created)
-// import { AuthRepository } from '../../../features/auth/data/repositories/AuthRepository';
-// import { ChatRepository } from '../../../features/chat/data/repositories/ChatRepository';
-// import { MessageRepository } from '../../../features/chat/data/repositories/MessageRepository';
-// import { PostRepository } from '../../../features/feed/data/repositories/PostRepository';
-// import { CommentRepository } from '../../../features/feed/data/repositories/CommentRepository';
-// import { NotificationRepository } from '../../../features/notification/data/repositories/NotificationRepository';
-// import { UserRepository } from '../../../features/search/data/repositories/UserRepository';
-// import { SearchRepositoryImpl } from '../../../features/search/data/repositories/SearchRepositoryImpl';
+// Import repositories
+import { AuthRepository } from '../../features/auth/data/repositories/AuthRepository';
+import { ChatRepository } from '../../features/chat/data/repositories/ChatRepository';
+import { MessageRepository } from '../../features/chat/data/repositories/MessageRepository';
+import { NotificationRepository } from '../../features/notification/data/repositories/NotificationRepository';
+import { SearchRepositoryImpl } from '../../features/search/data/repositories/SearchRepositoryImpl';
 
 /**
  * Application DI Container Setup.
@@ -66,23 +58,25 @@ export function createAppContainer() {
   container.registerInstanceByToken(TYPES.CACHE_SERVICE, cacheServiceManager);
 
   // Register API client and repositories
+  const apiClient = createDIAuthenticatedApiClient(container);
   container.registerInstanceByToken(TYPES.API_CLIENT, apiClient);
 
-  // Register User services using manual registration + factory functions
+  // Register User services using factory functions - Manual Registration + Factory Functions
+  // UserRepository is registered first, then UserService with dependency injection
+
   container.registerSingletonByToken(
     TYPES.USER_REPOSITORY,
     UserRepository
   );
 
-  container.registerSingletonByToken(
-    TYPES.USER_SERVICE,
-    UserService
-  );
+  // Create UserService instance with injected dependency
+  const userService = new UserService(container.get(TYPES.USER_REPOSITORY));
+  container.registerInstanceByToken(TYPES.USER_SERVICE, userService);
 
-  // Register Logger service using manual registration
-  container.registerSingletonByToken(
+  // Register Logger service using factory function
+  container.registerInstanceByToken(
     TYPES.LOGGER_SERVICE,
-    LoggerService
+    loggerService
   );
 
   // Register Theme service using manual registration
@@ -154,26 +148,26 @@ export function createAppContainer() {
   );
 
   // Register repositories (commented out until feature modules are created)
-  /*
+  // Note: Repositories with @Injectable() decorator are auto-registered by DI container
+
   container.registerSingleton(AuthRepository);
   container.registerSingleton(ChatRepository);
   container.registerSingleton(MessageRepository);
-  container.registerSingleton(PostRepository);
-  container.registerSingleton(CommentRepository);
+  // PostRepository is auto-registered via @Injectable() decorator
+  // CommentRepository is auto-registered via @Injectable() decorator
   container.registerSingleton(NotificationRepository);
-  container.registerSingleton(UserRepository);
   container.registerSingleton(SearchRepositoryImpl);
+  // UserRepository is auto-registered via @Injectable() decorator
 
   // Register repositories by token for injection
   container.registerSingletonByToken(TYPES.AUTH_REPOSITORY, AuthRepository);
   container.registerSingletonByToken(TYPES.CHAT_REPOSITORY, ChatRepository);
-  container.registerSingletonByToken(TYPES.MESSAGE_REPOSITORY, MessageRepository);
-  container.registerSingletonByToken(TYPES.POST_REPOSITORY, PostRepository);
-  container.registerSingletonByToken(TYPES.COMMENT_REPOSITORY, CommentRepository);
+  // MessageRepository is auto-registered via @Injectable() decorator
+  // PostRepository is auto-registered via @Injectable() decorator
+  // CommentRepository is auto-registered via @Injectable() decorator
   container.registerSingletonByToken(TYPES.NOTIFICATION_REPOSITORY, NotificationRepository);
-  container.registerSingletonByToken(TYPES.USER_REPOSITORY, UserRepository);
+  // UserRepository is auto-registered via @Injectable() decorator and available via TYPES.USER_REPOSITORY
   container.registerSingletonByToken(TYPES.SEARCH_REPOSITORY, SearchRepositoryImpl);
-  */
 
   // Register enterprise auth service
   const enterpriseAuthService = new EnterpriseAuthService(null as any, null as any, null as any, null as any, null as any);
@@ -227,7 +221,7 @@ export async function initializeApp() {
   }
 
   // Example: Demonstrate API client usage
-  console.log('🔗 API client configured with baseURL:', apiClient.defaults.baseURL);
+  console.log('🔗 API client configured with baseURL:', apiClientInstance.defaults.baseURL);
   // console.log('📄 Post repository initialized with DI');
 
   // Example: Demonstrate feed feature service usage

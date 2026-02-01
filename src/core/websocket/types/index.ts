@@ -56,32 +56,32 @@ export interface WebSocketManagerConfig extends WebSocketConfig {
 // WebSocket message interfaces
 export interface WebSocketMessage {
     type: string;
-    data: any;
+    data: unknown;
     timestamp: number;
     id?: string;
     correlationId?: string;
     source?: string;
     target?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 export interface WebSocketRequest extends WebSocketMessage {
     requestId: string;
     method?: string;
-    params?: Record<string, any>;
+    params?: Record<string, unknown>;
 }
 
 export interface WebSocketResponse extends WebSocketMessage {
     requestId: string;
     success: boolean;
-    data?: any;
+    data?: unknown;
     error?: WebSocketError;
 }
 
 export interface WebSocketError {
     code: string;
     message: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
     stack?: string;
 }
 
@@ -125,8 +125,8 @@ export interface WebSocketEvent {
     type: WebSocketEventType;
     connectionId?: string;
     timestamp: number;
-    data?: any;
-    metadata?: Record<string, any>;
+    data?: unknown;
+    metadata?: Record<string, unknown>;
 }
 
 export type WebSocketEventHandler = (event: WebSocketEvent) => void;
@@ -220,14 +220,14 @@ export interface RateLimitConfig {
 export interface IWebSocketMiddleware {
     name: string;
     priority: number;
-    execute(context: WebSocketContext, next: () => Promise<any>): Promise<any>;
+    execute(context: WebSocketContext, next: () => Promise<unknown>): Promise<unknown>;
 }
 
 export interface WebSocketContext {
     connection: IWebSocketService;
     message: WebSocketMessage;
     config: WebSocketConfig;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 // WebSocket factory interfaces
@@ -361,7 +361,7 @@ export interface WebSocketError extends Error {
     code?: number;
     connectionId?: string;
     timestamp: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 // WebSocket validation rules

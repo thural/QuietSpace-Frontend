@@ -57,7 +57,7 @@ export class EnterpriseAuthService implements IAuthService {
     registerProvider(provider: IAuthProvider): void {
         this.providers.set(provider.name, provider);
         this.logger.log({
-            type: 'register_provider' as any,
+            type: 'register_provider' as const,
             timestamp: new Date(),
             providerType: provider.type,
             details: { providerName: provider.name }
@@ -70,7 +70,7 @@ export class EnterpriseAuthService implements IAuthService {
     registerPlugin(plugin: IAuthPlugin): void {
         this.plugins.set(plugin.name, plugin);
         this.logger.log({
-            type: 'register_plugin' as any,
+            type: 'register_plugin' as const,
             timestamp: new Date(),
             details: { pluginName: plugin.name, version: plugin.version }
         });
@@ -85,7 +85,7 @@ export class EnterpriseAuthService implements IAuthService {
         try {
             // Log authentication attempt
             this.logger.log({
-                type: 'login_attempt' as any,
+                type: 'login_attempt' as const,
                 timestamp: new Date(),
                 providerType: providerName as any,
                 details: {
@@ -97,7 +97,7 @@ export class EnterpriseAuthService implements IAuthService {
             // Validate credentials
             const validationResult = await this.validateCredentials(credentials);
             if (!validationResult.success) {
-                this.metrics.recordFailure('login_attempt', validationResult.error?.type || 'validation_error' as any, Date.now() - startTime);
+                this.metrics.recordFailure('login_attempt', validationResult.error?.type || 'validation_error' as const, Date.now() - startTime);
                 return {
                     success: false,
                     error: validationResult.error,
@@ -112,11 +112,11 @@ export class EnterpriseAuthService implements IAuthService {
             // Check rate limiting
             const userId = credentials.email || credentials.username;
             if (this.security.checkRateLimit(userId, 1)) {
-                this.metrics.recordFailure('login_attempt', 'rate_limited' as any, Date.now() - startTime);
+                this.metrics.recordFailure('login_attempt', 'rate_limited' as const, Date.now() - startTime);
                 return {
                     success: false,
                     error: {
-                        type: 'rate_limited' as any,
+                        type: 'rate_limited' as const,
                         message: 'Too many authentication attempts. Please try again later.',
                         code: 'AUTH_RATE_LIMITED'
                     },
@@ -131,11 +131,11 @@ export class EnterpriseAuthService implements IAuthService {
             // Get provider
             const provider = this.providers.get(providerName);
             if (!provider) {
-                this.metrics.recordFailure('login_attempt', 'provider_not_found' as any, Date.now() - startTime);
+                this.metrics.recordFailure('login_attempt', 'provider_not_found' as const, Date.now() - startTime);
                 return {
                     success: false,
                     error: {
-                        type: 'provider_not_found' as any,
+                        type: 'provider_not_found' as const,
                         message: `Authentication provider '${providerName}' not found`,
                         code: 'AUTH_PROVIDER_NOT_FOUND'
                     },
@@ -156,9 +156,9 @@ export class EnterpriseAuthService implements IAuthService {
 
                 // Log success
                 this.logger.log({
-                    type: 'login_success' as any,
+                    type: 'login_success' as const,
                     timestamp: new Date(),
-                    providerType: providerName as any,
+                    providerType: providerName as string,
                     details: {
                         userId: authResult.data?.user.id,
                         sessionId: authResult.data?.token.accessToken.substring(0, 10) + '...'
@@ -180,15 +180,15 @@ export class EnterpriseAuthService implements IAuthService {
             } else {
                 // Log failure
                 this.logger.log({
-                    type: 'login_failure' as any,
+                    type: 'login_failure' as const,
                     timestamp: new Date(),
-                    providerType: providerName as any,
+                    providerType: providerName as string,
                     error: authResult.error?.type,
                     details: authResult.error?.details
                 });
 
                 // Record metrics
-                this.metrics.recordFailure('login_attempt', authResult.error?.type || 'unknown_error' as any, Date.now() - startTime);
+                this.metrics.recordFailure('login_attempt', authResult.error?.type || 'unknown_error' as const, Date.now() - startTime);
 
                 return {
                     success: false,
@@ -208,12 +208,12 @@ export class EnterpriseAuthService implements IAuthService {
             });
 
             // Record metrics
-            this.metrics.recordFailure('login_attempt', 'unknown_error' as any, Date.now() - startTime);
+            this.metrics.recordFailure('login_attempt', 'unknown_error' as const, Date.now() - startTime);
 
             return {
                 success: false,
                 error: {
-                    type: 'unknown_error' as any,
+                    type: 'unknown_error' as const,
                     message: 'An unexpected error occurred during authentication',
                     details: { originalError: error.message }
                 },

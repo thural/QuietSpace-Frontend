@@ -295,7 +295,7 @@ export class WebSocketServiceFactory {
  */
 export async function performWebSocketHealthCheck(
   container: Container
-): Promise<{ healthy: boolean; services: any }> {
+): Promise<{ healthy: boolean; services: Record<string, unknown> }> {
   const healthStatus = {
     healthy: true,
     services: {

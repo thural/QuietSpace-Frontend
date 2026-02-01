@@ -113,7 +113,7 @@ export function createCacheManager(container: Container, config?: CacheInvalidat
   // Note: Cache manager is handled differently - it uses CacheServiceManager directly
   // This is a placeholder for the cache management functionality
   // In practice, cache invalidation is handled through the CacheServiceManager
-  return null as any; // TODO: Implement proper cache manager factory
+  return null as unknown; // TODO: Implement proper cache manager factory
 }
 
 // Cache Integration - Public API Only (Black Box Pattern)
