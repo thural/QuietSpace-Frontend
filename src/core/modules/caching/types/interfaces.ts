@@ -200,11 +200,3 @@ export interface CacheServiceConfig {
     /** Feature-specific cache configurations */
     featureCaches?: Record<string, Partial<CacheConfig>>;
 }
-
-/**
- * Feature cache service interface extending base service manager.
- * Provides backward compatibility alias.
- */
-export interface FeatureCacheService extends ICacheServiceManager {
-    // Alias for backward compatibility
-}

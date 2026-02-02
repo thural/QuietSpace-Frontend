@@ -13,8 +13,7 @@ export type {
     CacheConfig,
     CacheStats,
     CacheEvents,
-    CacheServiceConfig,
-    FeatureCacheService
+    CacheServiceConfig
 } from './types/interfaces';
 
 // Factory functions - Clean service creation
@@ -38,15 +37,3 @@ export {
     CACHE_EVENTS,
     FEATURE_CACHE_CONFIGS
 } from './types/constants';
-
-// Legacy exports for backward compatibility (deprecated)
-// These will be removed in a future major version
-export { CacheProvider as _CacheProvider } from './providers/CacheProvider';
-export { CacheServiceManager as _CacheServiceManager } from './providers/CacheServiceManager';
-
-// Backward compatibility layer for migration
-export {
-    LegacyCacheAdapter,
-    LegacyCacheServiceManagerAdapter,
-    CacheMigrationHelper
-} from './utils/compatibility';

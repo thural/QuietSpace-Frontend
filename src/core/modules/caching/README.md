@@ -111,7 +111,6 @@ class UserService {
 
 ### Utility Layer (`utils/`)
 - **CacheErrorHandler**: Centralized error handling
-- **Compatibility**: Migration support for legacy code
 
 ## 📊 Features
 
@@ -171,31 +170,6 @@ interface CacheEvents {
 - **Memory Usage**: Configurable limits with intelligent cleanup
 - **Response Time**: Sub-millisecond cache operations
 - **Scalability**: Handles thousands of operations per second
-
-## 🔄 Migration
-
-### From Legacy Cache
-
-```typescript
-import { CacheMigrationHelper } from '@/core/cache';
-
-// Convert legacy sync cache to async
-const modernCache = CacheMigrationHelper.toAsyncProvider(legacyCache);
-
-// Get migration plan
-const plan = CacheMigrationHelper.createMigrationPlan(files);
-console.log(`Estimated effort: ${plan.estimatedEffort}`);
-```
-
-### Compatibility Layer
-
-```typescript
-import { LegacyCacheAdapter } from '@/core/cache';
-
-// Use legacy sync methods during migration
-const legacyAdapter = new LegacyCacheAdapter(modernCache);
-const data = legacyAdapter.getSync('key'); // Backward compatible
-```
 
 ## 🧪 Testing
 

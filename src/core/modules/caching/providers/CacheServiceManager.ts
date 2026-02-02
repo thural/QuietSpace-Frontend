@@ -23,26 +23,10 @@ export interface CacheServiceConfig {
 }
 
 /**
- * Interface for feature cache service operations.
- */
-export interface FeatureCacheService {
-  /** Gets or creates a cache instance for a specific feature */
-  getCache(featureName: string): CacheProvider;
-  /** Invalidates all cache entries for a specific feature */
-  invalidateFeature(featureName: string): void;
-  /** Invalidates cache entries across all features matching pattern */
-  invalidatePattern(pattern: string): Promise<number>;
-  /** Gets aggregated statistics across all cache instances */
-  getGlobalStats(): Record<string, unknown>;
-  /** Disposes all cache instances managed by this service manager */
-  dispose(): void;
-}
-
-/**
  * Cache service manager implementation.
  * Provides centralized management of feature-specific caches.
  */
-export class CacheServiceManager implements FeatureCacheService {
+export class CacheServiceManager {
   private readonly caches = new Map<string, CacheProvider>();
   private readonly globalConfig: CacheServiceConfig;
 
