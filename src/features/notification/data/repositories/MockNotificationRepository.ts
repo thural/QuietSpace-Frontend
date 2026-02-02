@@ -8,7 +8,7 @@
 import type { NotificationPage, NotificationResponse, NotificationType } from '@/features/notification/data/models/notification';
 import type { ResId, JwtToken } from '@/shared/api/models/common';
 import type { INotificationRepository, NotificationQuery, NotificationFilters } from "../../domain/entities/INotificationRepository";
-import type { ReactionType } from '@/features/shared/types';
+import type { ReactionType } from '@/shared';
 
 /**
  * Mock Notification Repository implementation.

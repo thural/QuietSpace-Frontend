@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { usePerformanceMonitor } from '@/features/shared/utils/performance';
+import { usePerformanceMonitor } from '@/shared';
 import { useChatServices } from '../application/hooks/useChatServices';
 import { useCacheInvalidation } from '@/core/hooks/migrationUtils';
 

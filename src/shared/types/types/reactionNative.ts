@@ -1,5 +1,5 @@
-import {ContentType} from "./reaction"
-import {BaseSchema} from "@/shared/api/models/commonNative"
+import { ContentType } from "@/shared/api/models/commonNative"
+import { BaseSchema } from "@/shared/api/models/commonNative"
 
 export enum ReactionType {
     LIKE = "LIKE",

@@ -37,9 +37,6 @@
       "@/*": [
         "src/*"
       ],
-      "@shared": [
-        "src/shared"
-      ],
       "@shared/*": [
         "src/shared/*"
       ],
@@ -81,6 +78,18 @@
       ],
       "@navbar/*": [
         "src/features/navbar/*"
+      ],
+      "@chat/*": [
+        "src/features/chat/*"
+      ],
+      "@comment/*": [
+        "src/features/comment/*"
+      ],
+      "@notification/*": [
+        "src/features/notification/*"
+      ],
+      "@post/*": [
+        "src/features/post/*"
       ],
       "@core/*": [
         "src/core/*"

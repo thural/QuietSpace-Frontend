@@ -2,7 +2,7 @@ import type { AxiosInstance } from 'axios';
 import { NOTIFICATION_PATH } from "@/core/shared/apiPath";
 import { ResId, JwtToken } from "@/shared/api/models/common";
 import { NotificationPage, NotificationResponse, NotificationType } from "@/features/notification/data/models/notification";
-import { ReactionType } from "@/features/shared/types";
+import { ReactionType } from "@/shared";
 import {
     INotificationRepository,
     NotificationQuery,

@@ -8,8 +8,17 @@
 // Domain
 export { User } from './domain/entities/User';
 
-// Application
-export { useAuthStore, initializeAuthStore } from './application/auth/authStore';
+// Types - Reaction types (from features/shared consolidation)
+export { ReactionType } from './types/reaction';
 
-// Presentation
-export { UserAvatar } from './presentation/widgets/UserAvatar';
+export type {
+    ReactionRequest,
+    ReactionResponse,
+    ReactionUnified
+} from './types/reaction';
+
+export type {
+    ReactionType as ReactionTypeNative,
+    UserReaction,
+    UserReactionResponse
+} from './types/types/reactionNative';
