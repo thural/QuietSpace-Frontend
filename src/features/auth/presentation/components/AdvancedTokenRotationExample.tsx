@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { createAdvancedTokenRotationManager } from '@/core/modules/authentication/services/AdvancedTokenRotationManager';
 import { useTokenRefresh } from '@/shared/hooks/useTokenRefresh';
-import { createAdvancedTokenRotationManager } from '@/core/auth/services/AdvancedTokenRotationManager';
+import React, { useEffect, useState } from 'react';
 
 /**
  * Advanced Token Rotation Example Component
@@ -50,7 +50,7 @@ const AdvancedTokenRotationExample: React.FC = () => {
       maxRefreshAttempts: 3,
       rotationDelay: 1000
     });
-    
+
     setAdvancedManager(manager);
 
     return () => {
@@ -86,27 +86,28 @@ const AdvancedTokenRotationExample: React.FC = () => {
     if (advancedManager) {
       const rotationMetrics = advancedManager.getMetrics();
       const rotationStatus = advancedManager.getStatus();
-      
+
       console.log('Advanced Rotation Metrics:', rotationMetrics);
       console.log('Advanced Rotation Status:', rotationStatus);
-      
+
       // Update local state
       setMetrics({
         ...metrics,
         ...rotationMetrics,
         ...rotationStatus
       });
+      setStatus(rotationStatus);
     }
   };
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h2>Advanced Token Rotation Example</h2>
-      
+
       {/* Control Panel */}
       <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '5px' }}>
         <h3>Control Panel</h3>
-        
+
         <div style={{ marginBottom: '10px' }}>
           <label>
             <input
@@ -165,7 +166,7 @@ const AdvancedTokenRotationExample: React.FC = () => {
         <p><strong>Hook Active:</strong> {tokenRefresh.isActive ? 'Yes' : 'No'}</p>
         <p><strong>Advanced Mode:</strong> {isAdvancedMode ? 'Yes' : 'No'}</p>
         <p><strong>Current Strategy:</strong> {rotationStrategy}</p>
-        
+
         {status && (
           <div>
             <h4>Advanced Manager Status:</h4>
@@ -181,7 +182,7 @@ const AdvancedTokenRotationExample: React.FC = () => {
       {metrics && (
         <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '5px' }}>
           <h3>Metrics</h3>
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             {/* Standard Refresh Metrics */}
             <div>
@@ -219,7 +220,7 @@ const AdvancedTokenRotationExample: React.FC = () => {
             <p><strong>Pros:</strong> Maximum security</p>
             <p><strong>Cons:</strong> More frequent refreshes</p>
           </div>
-          
+
           <div>
             <h4>Lazy Strategy</h4>
             <p>Rotates tokens late (0.5x buffer time)</p>
@@ -227,7 +228,7 @@ const AdvancedTokenRotationExample: React.FC = () => {
             <p><strong>Pros:</strong> Fewer refreshes</p>
             <p><strong>Cons:</strong> Higher risk of expiration</p>
           </div>
-          
+
           <div>
             <h4>Adaptive Strategy</h4>
             <p>Intelligently adjusts based on failure rate</p>
@@ -242,7 +243,7 @@ const AdvancedTokenRotationExample: React.FC = () => {
       <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '5px' }}>
         <h3>Usage Examples</h3>
         <pre style={{ background: '#f5f5f5', padding: '10px', overflow: 'auto' }}>
-{`// Basic usage with advanced rotation
+          {`// Basic usage with advanced rotation
 const tokenRefresh = useTokenRefresh({
   enableAdvancedRotation: true,
   rotationStrategy: 'adaptive',

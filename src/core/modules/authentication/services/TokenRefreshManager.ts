@@ -11,12 +11,11 @@ import { AuthModuleFactory } from '../AuthModule';
 import { AdvancedTokenRotationManager, createAdvancedTokenRotationManager } from './AdvancedTokenRotationManager';
 
 import type { EnterpriseAuthService } from '../enterprise/AuthService';
-import type { IAuthLogger, IAuthMetrics } from '../interfaces/authInterfaces';
 
 
-export interface TokenRefreshOptions {
+export interface TokenRefreshOptions<T = unknown> {
     refreshInterval?: number;
-    onSuccessFn?: (data: unknown) => void;
+    onSuccessFn?: (data: T) => void;
     onErrorFn?: (error: Error) => void;
     enableMultiTabSync?: boolean;
     enableSecurityMonitoring?: boolean;
@@ -86,7 +85,7 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Starts automatic token refresh with enterprise features
      */
-    startTokenAutoRefresh(options: TokenRefreshOptions = {}): void {
+    startTokenAutoRefresh<T = unknown>(options: TokenRefreshOptions<T> = {}): void {
         if (this.isActive) {
             return;
         }
@@ -126,7 +125,7 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Starts standard token refresh (fallback method)
      */
-    private startStandardRefresh(options: TokenRefreshOptions): void {
+    private startStandardRefresh<T>(options: TokenRefreshOptions<T>): void {
         const {
             refreshInterval = 540000, // 9 minutes default
             onSuccessFn,
@@ -150,11 +149,11 @@ export class EnterpriseTokenRefreshManager {
             }
 
             // Initial token refresh
-            this.performTokenRefresh(onSuccessFn, onErrorFn);
+            this.performTokenRefresh<T>(onSuccessFn, onErrorFn);
 
             // Set up periodic refresh
             this.refreshIntervalId = window.setInterval(() => {
-                this.performTokenRefresh(onSuccessFn, onErrorFn);
+                this.performTokenRefresh<T>(onSuccessFn, onErrorFn);
             }, refreshInterval);
 
             // Log start event
@@ -201,8 +200,8 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Performs a single token refresh with enterprise features
      */
-    private async performTokenRefresh(
-        onSuccessFn?: (data: unknown) => void,
+    private async performTokenRefresh<T>(
+        onSuccessFn?: (data: T) => void,
         onErrorFn?: (error: Error) => void
     ): Promise<void> {
         // Check circuit breaker

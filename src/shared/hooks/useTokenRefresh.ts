@@ -1,10 +1,11 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { createTokenRefreshManager, EnterpriseTokenRefreshManager } from '@/core/auth/services/TokenRefreshManager';
+import { createTokenRefreshManager, EnterpriseTokenRefreshManager } from '@/core/modules/authentication/services/TokenRefreshManager';
+import type { AuthToken } from '@/core/modules/authentication/types/auth.domain.types';
 
 interface UseTokenRefreshOptions {
   autoStart?: boolean;
   refreshInterval?: number;
-  onSuccess?: (data: unknown) => void;
+  onSuccess?: (data: AuthToken) => void;
   onError?: (error: Error) => void;
   // Enterprise features
   enableMultiTabSync?: boolean;
@@ -53,14 +54,14 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
     try {
       // Create enterprise manager instance
       managerRef.current = createTokenRefreshManager();
-      
+
       // Start automatic refresh with enterprise and advanced features
-      managerRef.current.startTokenAutoRefresh({
+      managerRef.current.startTokenAutoRefresh<AuthToken>({
         refreshInterval,
-        onSuccessFn: (data) => {
+        onSuccessFn: (data: AuthToken) => {
           onSuccess?.(data);
         },
-        onErrorFn: (error) => {
+        onErrorFn: (error: Error) => {
           onError?.(error);
           // Enterprise manager handles circuit breaker automatically
         },
@@ -72,7 +73,7 @@ export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
         rotationBuffer,
         enableRefreshTokenRotation
       });
-      
+
       isActiveRef.current = true;
 
       // Start metrics monitoring if callback provided
