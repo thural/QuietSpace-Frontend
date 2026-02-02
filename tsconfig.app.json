@@ -1,93 +1,14 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "module": "ESNext",
-    "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
     /* Linting */
     "strict": false,
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "downlevelIteration": true,
-    /* Path aliases */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@shared/*": [
-        "src/shared/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@services/*": [
-        "src/services/*"
-      ],
-      "@api/*": [
-        "src/api/*"
-      ],
-      "@features/*": [
-        "src/features/*"
-      ],
-      "@chat/*": [
-        "src/features/chat/*"
-      ],
-      "@notification/*": [
-        "src/features/notification/*"
-      ],
-      "@analytics/*": [
-        "src/features/analytics/*"
-      ],
-      "@content/*": [
-        "src/features/content/*"
-      ],
-      "@feed/*": [
-        "src/features/feed/*"
-      ],
-      "@profile/*": [
-        "src/features/profile/*"
-      ],
-      "@search/*": [
-        "src/features/search/*"
-      ],
-      "@settings/*": [
-        "src/features/settings/*"
-      ],
-      "@core/*": [
-        "src/core/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@constants/*": [
-        "src/constants/*"
-      ],
-      "@shared-types/*": [
-        "src/types/*"
-      ]
-    }
+    "noUnusedParameters": false
   },
   "include": [
     "src"
