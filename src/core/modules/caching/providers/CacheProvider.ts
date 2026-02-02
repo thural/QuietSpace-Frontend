@@ -1,4 +1,12 @@
 
+/**
+ * Cache Provider - Main cache implementation.
+ * 
+ * Orchestrates cache operations using injected components for storage,
+ * statistics, eviction strategies, and cleanup management.
+ * Follows dependency injection pattern for testability and flexibility.
+ */
+
 import type {
   CacheEntry,
   CacheConfig,
@@ -10,6 +18,10 @@ import type { ICacheStatistics } from '../storage/CacheStatistics';
 import type { IEvictionStrategy } from '../strategies/CacheEvictionStrategy';
 import type { ICleanupManager } from '../strategies/CacheCleanupManager';
 
+/**
+ * Main cache provider implementation.
+ * Coordinates storage, statistics, eviction, and cleanup components.
+ */
 export class CacheProvider {
   private readonly storage: ICacheStorage;
   private readonly statistics: ICacheStatistics;
@@ -18,6 +30,15 @@ export class CacheProvider {
   private config: CacheConfig;
   private readonly events: CacheEvents | undefined;
 
+  /**
+   * Creates a new cache provider instance.
+   * @param storage - Storage component for cache entries
+   * @param statistics - Statistics tracking component
+   * @param evictionStrategy - Eviction strategy component
+   * @param cleanupManager - Cleanup management component
+   * @param config - Optional cache configuration
+   * @param events - Optional event handlers
+   */
   constructor(
     storage: ICacheStorage,
     statistics: ICacheStatistics,
@@ -45,6 +66,11 @@ export class CacheProvider {
     this.cleanupManager.startCleanup(this.config.cleanupInterval, () => this.cleanupExpired());
   }
 
+  /**
+   * Retrieves cached data by key.
+   * @param key - The cache key to retrieve
+   * @returns Promise resolving to cached data or null if not found/expired
+   */
   async get<T>(key: string): Promise<T | null> {
     try {
       const entry = this.storage.get<T>(key);
@@ -77,6 +103,11 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Retrieves the full cache entry including metadata.
+   * @param key - The cache key to retrieve
+   * @returns Promise resolving to cache entry or null if not found/expired
+   */
   async getEntry<T>(key: string): Promise<CacheEntry<T> | null> {
     try {
       const entry = this.storage.get<T>(key);
@@ -103,6 +134,12 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Stores data in cache with optional TTL.
+   * @param key - The cache key to store under
+   * @param data - The data to cache
+   * @param ttl - Optional time-to-live in milliseconds (uses default if not provided)
+   */
   async set<T>(key: string, data: T, ttl?: number): Promise<void> {
     try {
       if (this.storage.size() >= this.config.maxSize) {
@@ -124,6 +161,11 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Removes a specific entry from cache.
+   * @param key - The cache key to invalidate
+   * @returns Promise resolving to true if entry was removed, false if not found
+   */
   async invalidate(key: string): Promise<boolean> {
     try {
       const entry = this.storage.get(key);
@@ -140,11 +182,21 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Alias for invalidate for backward compatibility.
+   * @param key - The cache key to delete
+   * @returns Promise resolving to true if entry was removed, false if not found
+   */
   async delete(key: string): Promise<boolean> {
     // Alias for invalidate for backward compatibility
     return this.invalidate(key);
   }
 
+  /**
+   * Removes all cache entries matching the given pattern.
+   * @param pattern - String pattern or RegExp to match keys against
+   * @returns Promise resolving to number of entries invalidated
+   */
   async invalidatePattern(pattern: string | RegExp): Promise<number> {
     try {
       let count = 0;
@@ -164,6 +216,9 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Clears all entries from the cache.
+   */
   async clear(): Promise<void> {
     try {
       if (this.events?.onEvict) {
@@ -179,6 +234,11 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Checks if a key exists in cache and is not expired.
+   * @param key - The cache key to check
+   * @returns Promise resolving to true if key exists and is valid
+   */
   async has(key: string): Promise<boolean> {
     try {
       const entry = this.storage.get(key);
@@ -196,6 +256,10 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Gets current cache statistics.
+   * @returns Current cache statistics including hit rate, size, etc.
+   */
   getStats(): CacheStats {
     const stats = this.statistics.getStats();
     return {
@@ -204,10 +268,18 @@ export class CacheProvider {
     };
   }
 
+  /**
+   * Gets current cache configuration.
+   * @returns Current cache configuration settings
+   */
   getConfig(): CacheConfig {
     return { ...this.config };
   }
 
+  /**
+   * Updates cache configuration with new settings.
+   * @param newConfig - Partial configuration to merge with current config
+   */
   async updateConfig(newConfig: Partial<CacheConfig>): Promise<void> {
     this.config = { ...this.config, ...newConfig };
 
@@ -217,11 +289,17 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Disposes the cache provider and cleans up resources.
+   */
   async dispose(): Promise<void> {
     this.cleanupManager.stopCleanup();
     await this.clear();
   }
 
+  /**
+   * Evicts the least recently used entry from cache.
+   */
   private async evictLRU(): Promise<void> {
     if (!this.config.enableLRU) {
       const keys = this.storage.keys();
@@ -243,6 +321,9 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Cleans up expired cache entries.
+   */
   private async cleanupExpired(): Promise<void> {
     const now = Date.now();
     const expiredKeys: string[] = [];
@@ -258,6 +339,11 @@ export class CacheProvider {
     }
   }
 
+  /**
+   * Checks if a cache entry has expired.
+   * @param entry - Cache entry to check
+   * @returns True if entry has expired
+   */
   private isExpired(entry: CacheEntry<any>): boolean {
     return Date.now() - entry.timestamp > entry.ttl;
   }
