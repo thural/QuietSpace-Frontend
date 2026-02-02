@@ -1,8 +1,8 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/core/store/zustand';
+import { useAuthStore } from '@/core/modules/state-management/zustand';
 import LoadingFallback from '@/app/LoadingFallback';
-import ErrorFallback from '@/shared/ErrorFallback';
+import ErrorFallback from '@/shared/ui/components/feedback/ErrorFallback';
 
 interface AuthGuardProps {
   children: React.ReactNode;

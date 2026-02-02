@@ -2,8 +2,8 @@ import { BaseClassComponent, IBaseComponentProps } from "@/shared/components/bas
 import { Container } from "@/shared/ui/components/layout/Container";
 import { Text } from "@/shared/ui/components/typography/Text";
 import { Title } from "@/shared/ui/components/typography/Title";
-import { AuthContainer as StyledAuthContainer } from "@auth/presentation/styles/AuthStyles";
-import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import { AuthContainer as StyledAuthContainer } from "../styles/AuthStyles";
+import withErrorBoundary from "@/shared/hooks/withErrorBoundary";
 import { ReactNode } from "react";
 import ActivationForm from "./ActivationForm";
 import LoginForm from "./LoginForm";

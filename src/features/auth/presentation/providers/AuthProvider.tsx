@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from "react";
-import { useAuthStore } from "@/core/store/zustand";
+import { useAuthStore } from "@/core/modules/state-management/zustand";
 import { getRolePermissions } from "../../domain/permissions";
 
 interface AuthProviderProps {

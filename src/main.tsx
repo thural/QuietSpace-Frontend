@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import RouteSwitch from "./app/RouteSwitch";
-import { createPlatformContainer } from "./core/di";
+import { createPlatformContainer } from "./core/modules/dependency-injection";
 
 // Initialize platform-specific DI container with build-time configuration
 const container = createPlatformContainer();

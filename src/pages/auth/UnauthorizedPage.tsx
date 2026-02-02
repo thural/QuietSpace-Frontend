@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Container } from '@/shared/ui/components/layout/Container';
 import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
-import Typography from "@/shared/Typography";
-import OutlineButton from "@/shared/buttons/OutlineButton";
+import Typography from "@/shared/ui/components/typography/Text";
+import OutlineButton from "@/shared/ui/buttons/OutlineButton";
 
 /**
  * Unauthorized page for users without proper permissions.

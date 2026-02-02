@@ -3,20 +3,20 @@ import { lazy } from "react";
 import { ProtectedRoute } from "@/features/auth/presentation/components/guards/ProtectedRoute";
 import { PERMISSIONS } from "@/features/auth/domain/permissions";
 
-const FeedContainer = lazy(() => import("./features/feed/presentation/components/FeedContainer"));
-const FeedPage = lazy(() => import("./pages/feed/FeedPage"));
-const PostContainer = lazy(() => import("./features/feed/presentation/components/PostContainer"));
-const SearchPage = lazy(() => import("./pages/search/SearchPage"));
-const ChatPage = lazy(() => import("./pages/chat/ChatPage"));
-const ChatPanel = lazy(() => import("./features/chat/presentation/components/messages/ChatPanel"));
-const ChatPlaceholder = lazy(() => import("./features/chat/presentation/components/messages/ChatPlaceholder"));
-const ProfilePage = lazy(() => import("./pages/profile/ProfilePage"));
-const UserProfileContainer = lazy(() => import("./features/profile/UserProfileContainer"));
-const ProfileContainer = lazy(() => import("./features/profile/ProfileContainer"));
-const NotificationPage = lazy(() => import("./pages/notification/NotifiactionPage"));
-const NotificationList = lazy(() => import("./features/notification/presentation/components/NotificationList"));
-const SettingsPage = lazy(() => import("./pages/settings/SettingsPage"));
-const ErrorComponent = lazy(() => import("./shared/errors/ErrorComponent"));
+const FeedContainer = lazy(() => import("@/features/feed/presentation/components/FeedContainer"));
+const FeedPage = lazy(() => import("@/pages/feed/FeedPage"));
+const PostContainer = lazy(() => import("@/features/feed/presentation/components/PostContainer"));
+const SearchPage = lazy(() => import("@/pages/search/SearchPage"));
+const ChatPage = lazy(() => import("@/pages/chat/ChatPage"));
+const ChatPanel = lazy(() => import("@/features/chat/presentation/components/messages/ChatPanel"));
+const ChatPlaceholder = lazy(() => import("@/features/chat/presentation/components/messages/ChatPlaceholder"));
+const ProfilePage = lazy(() => import("@/pages/profile/ProfilePage"));
+const UserProfileContainer = lazy(() => import("@/features/profile/UserProfileContainer"));
+const ProfileContainer = lazy(() => import("@/features/profile/ProfileContainer"));
+const NotificationPage = lazy(() => import("@/pages/notification/NotifiactionPage"));
+const NotificationList = lazy(() => import("@/features/notification/presentation/components/NotificationList"));
+const SettingsPage = lazy(() => import("@/pages/settings/SettingsPage"));
+const ErrorComponent = lazy(() => import("@/shared/errors/ErrorComponent"));
 
 const RoutesConfig = () => (
     <Routes>

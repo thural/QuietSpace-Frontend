@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAuthStore } from '@/core/store/zustand';
+import { useAuthStore } from '@/core/modules/state-management/zustand';
 import { useSessionTimeout } from '../../application/hooks/useSessionTimeout';
 import { useSecurityMonitor } from '../../application/hooks/useSecurityMonitor';
 

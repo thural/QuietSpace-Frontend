@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
+// import { useCacheInvalidation } from '@/core/modules/hooks/useCacheInvalidation';
 import { useAuthServices } from './useAuthServices';
 import { LoginBody, SignupBody } from '@shared/types/auth.dto';
-import { useAuthStore } from '@core/store/zustand';
+import { useAuthStore } from '@/core/modules/state-management/zustand';
 import { AUTH_CACHE_TTL } from '@features/auth/data/cache/AuthCacheKeys';
 
 /**
@@ -31,7 +31,7 @@ export const useJwtAuth = () => {
     } = useAuthStore();
 
     const { enterpriseAuthService } = useAuthServices();
-    const invalidateCache = useCacheInvalidation();
+    // const invalidateCache = useCacheInvalidation();
 
     /**
      * Current authentication status query

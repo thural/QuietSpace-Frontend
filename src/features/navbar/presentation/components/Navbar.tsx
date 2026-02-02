@@ -1,16 +1,16 @@
-import ComponentList from "@/shared/ComponentList";
+import ComponentList from "@/shared/ui/components/utility/ComponentList";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import withErrorBoundary from "@shared/hooks/withErrorBoundary";
+import withErrorBoundary from "@/shared/hooks/withErrorBoundary";
 import { Navbar as StyledNavbar } from "../styles/NavbarStyles";
 import { Badge } from "@/shared/ui/components";
-import Conditional from "@shared/Conditional";
+import Conditional from "@/shared/ui/components/utility/Conditional";
 import NavStyled from "../../shared/NavStyled";
-import Typography from "@shared/Typography";
+import Typography from "@/shared/ui/components/typography/Text";
 import { useLocation } from "react-router-dom";
 import NavItem, { NavItemProps } from "./NavItem";
 import NavMenu from "./NavMenu";
 import { useNavbar } from "../../application";
-import { NAVBAR_ICONS } from "@shared/navbar/constants";
+// import { NAVBAR_ICONS } from "@shared/navbar/constants";
 
 /**
  * NavBar component.

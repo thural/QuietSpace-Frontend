@@ -8,7 +8,7 @@ import { PiSignOut } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { Container } from "@/shared/ui/components/layout/Container";
 import LoaderStyled from "@/shared/LoaderStyled";
-import UserConnections from "./components/connections/UserConnections";
+// import UserConnections from "./components/connections/UserConnections";
 import FollowsSection from "./components/follow-section/FollowSection";
 import ProfileControls from "./components/profile-controls/ProfileControls";
 import UserProfileTabs from "./components/tabs/UserProfileTabs";
@@ -63,11 +63,11 @@ const UserProfileContainer = () => {
             </FollowsSection>
             {/* Overlay for displaying followings */}
             <Overlay isOpen={viewFollowings && !!followingsCount} onClose={toggleFollowings}>
-                <UserConnections userFetch={followings} title="followings" toggleView={toggleFollowings} />
+                {/* <UserConnections userFetch={followings} title="followings" toggleView={toggleFollowings} /> */}
             </Overlay>
             {/* Overlay for displaying followers */}
             <Overlay isOpen={viewFollowers && !!followersCount} onClose={toggleFollowers}>
-                <UserConnections userFetch={followers} title="followers" toggleView={toggleFollowers} />
+                {/* <UserConnections userFetch={followers} title="followers" toggleView={toggleFollowers} /> */}
             </Overlay>
             <ProfileControls>
                 <Link style={{ width: "100%", textDecoration: "none" }} to="/settings">

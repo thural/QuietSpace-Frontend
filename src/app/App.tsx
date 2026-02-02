@@ -2,16 +2,16 @@ import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { Frame } from "stompjs";
 
-import './styles/App.css';
+import '@/app/App.css';
 
 import UnauthorizedPage from "@/pages/auth/UnauthorizedPage";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
-import { useGetNotifications } from "@/features/notification/data/useNotificationData";
+// import { useGetNotifications } from "@/features/notification/data/useNotificationData";
 import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
-import { useChatWebSocket } from "@/core/websocket/hooks";
-import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
-import { useAuthStore } from "../core/store/zustand";
+// import { useChatWebSocket } from "@/core/websocket/hooks";
+// import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
+import { useAuthStore } from "../core/modules/state-management/zustand";
 import { AdvancedSecurityProvider } from "@/features/auth/presentation/providers/AdvancedSecurityProvider";
 import { AuthProvider } from "@/features/auth/presentation/providers/AuthProvider";
 import { useAuditLogger } from "../shared/auth/auditLogger";

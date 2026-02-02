@@ -5,11 +5,11 @@
  * with build-time configuration for maximum tree-shaking.
  */
 
-import { PLATFORM_CONFIG } from '../../config/platform-configs';
+import { PLATFORM_CONFIG } from '../../../configuration/platform-configs';
 import { Container } from '../container/Container';
 import { TYPES } from '../types';
 
-import type { BuildConfig, Platform, ServiceRegistration } from '../../config/types';
+import type { BuildConfig, Platform, ServiceRegistration } from '../../../configuration/types';
 import type { TypeKeys } from '../types';
 
 /**

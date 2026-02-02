@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/core/store/zustand';
+import { useAuthStore } from '@/core/modules/state-management/zustand';
 
 // Audit log event types
 export enum AuditEventType {
@@ -8,28 +8,28 @@ export enum AuditEventType {
   LOGOUT = 'LOGOUT',
   TOKEN_REFRESH = 'TOKEN_REFRESH',
   TOKEN_REFRESH_FAILED = 'TOKEN_REFRESH_FAILED',
-  
+
   // Authorization events
   ACCESS_GRANTED = 'ACCESS_GRANTED',
   ACCESS_DENIED = 'ACCESS_DENIED',
   PERMISSION_CHECK = 'PERMISSION_CHECK',
-  
+
   // Session events
   SESSION_TIMEOUT = 'SESSION_TIMEOUT',
   SESSION_EXTENDED = 'SESSION_EXTENDED',
   MULTIPLE_TAB_LOGIN = 'MULTIPLE_TAB_LOGIN',
-  
+
   // Security events
   SUSPICIOUS_ACTIVITY = 'SUSPICIOUS_ACTIVITY',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
   INVALID_TOKEN = 'INVALID_TOKEN',
   BRUTE_FORCE_ATTEMPT = 'BRUTE_FORCE_ATTEMPT',
-  
+
   // Data events
   DATA_ACCESS = 'DATA_ACCESS',
   DATA_MODIFICATION = 'DATA_MODIFICATION',
   DATA_EXPORT = 'DATA_EXPORT',
-  
+
   // System events
   SYSTEM_ERROR = 'SYSTEM_ERROR',
   CONFIGURATION_CHANGE = 'CONFIGURATION_CHANGE'
@@ -95,7 +95,7 @@ export class AuditLogger {
       localStorageLog: options.localStorageLog || false,
       remoteEndpoint: options.remoteEndpoint
     };
-    
+
     this.sessionId = this.generateSessionId();
     this.loadStoredLogs();
   }
@@ -218,13 +218,13 @@ export class AuditLogger {
     try {
       const existingLogs = this.getStoredLogs();
       existingLogs.push(entry);
-      
+
       // Keep only recent logs in localStorage
       const maxStorageLogs = 100;
       if (existingLogs.length > maxStorageLogs) {
         existingLogs.splice(0, existingLogs.length - maxStorageLogs);
       }
-      
+
       localStorage.setItem('audit_logs', JSON.stringify(existingLogs));
     } catch (error) {
       console.error('Failed to store audit log in localStorage:', error);
@@ -330,7 +330,7 @@ export class AuditLogger {
   logTokenRefresh(success: boolean, details?: any) {
     const eventType = success ? AuditEventType.TOKEN_REFRESH : AuditEventType.TOKEN_REFRESH_FAILED;
     const severity = success ? AuditSeverity.LOW : AuditSeverity.MEDIUM;
-    
+
     const entry = this.createLogEntry(
       eventType,
       severity,
