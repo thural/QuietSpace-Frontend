@@ -1016,6 +1016,55 @@ describe('Profile Performance', () => {
 4. **Use DevTools**: Use React DevTools and browser dev tools for debugging
 5. **Contact Team**: Reach out to the development team for assistance
 
+## Testing
+
+### Test Infrastructure
+
+The Profile feature includes comprehensive testing infrastructure:
+
+#### Test Directory Structure
+```
+__tests__/
+├── utils/                    # Test utilities and helper functions
+├── fixtures/                 # Test data fixtures
+├── helpers/                  # Test helpers and setup functions
+├── mocks/                    # API and service mocks
+├── integration/              # Integration tests
+├── performance/             # Performance tests
+├── di/                      # Dependency injection tests
+└── Profile.test.tsx          # Main feature tests
+```
+
+#### Key Testing Components
+
+**MockDataFactory**
+- Creates mock entities for testing
+- Supports user profiles, stats, and connections
+
+**PerformanceUtils**
+- Performance testing utilities
+- Execution time measurement and benchmarks
+
+**StateUtils**
+- State testing utilities
+- Mock store creation and state update testing
+
+#### Running Tests
+```bash
+# Run all profile tests
+npm test src/features/profile/__tests__
+
+# Run with coverage
+npm test -- --coverage src/features/profile
+```
+
+#### Coverage Requirements
+Target coverage thresholds:
+- **Statements**: 80%
+- **Branches**: 80%
+- **Functions**: 80%
+- **Lines**: 80%
+
 ---
 
 ## Conclusion
