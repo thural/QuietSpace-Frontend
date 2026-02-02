@@ -6,24 +6,24 @@
  */
 
 export interface ICacheProvider {
-    get<T>(key: string): T | null;
-    getEntry<T>(key: string): CacheEntry<T> | null;
-    set<T>(key: string, data: T, ttl?: number): void;
-    invalidate(key: string): boolean;
-    delete(key: string): boolean; // Alias for invalidate for backward compatibility
-    invalidatePattern(pattern: string | RegExp): number;
-    clear(): void;
-    has(key: string): boolean;
+    get<T>(key: string): Promise<T | null>;
+    getEntry<T>(key: string): Promise<CacheEntry<T> | null>;
+    set<T>(key: string, data: T, ttl?: number): Promise<void>;
+    invalidate(key: string): Promise<boolean>;
+    delete(key: string): Promise<boolean>; // Alias for invalidate for backward compatibility
+    invalidatePattern(pattern: string | RegExp): Promise<number>;
+    clear(): Promise<void>;
+    has(key: string): Promise<boolean>;
     getStats(): CacheStats;
     getConfig(): CacheConfig;
-    updateConfig(newConfig: Partial<CacheConfig>): void;
-    dispose(): void;
+    updateConfig(newConfig: Partial<CacheConfig>): Promise<void>;
+    dispose(): Promise<void>;
 }
 
 export interface ICacheServiceManager {
     getCache(featureName: string): ICacheProvider;
     invalidateFeature(featureName: string): void;
-    invalidatePattern(pattern: string): number;
+    invalidatePattern(pattern: string): Promise<number>;
     getGlobalStats(): Record<string, unknown>;
     dispose(): void;
 }

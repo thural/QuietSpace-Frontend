@@ -5,12 +5,16 @@
  * Consumers use these factories to get configured cache instances.
  */
 
-import { TYPES } from '../di/types';
+import { TYPES } from '../dependency-injection/types';
 
 
 // Import implementations (internal)
-import { CacheProvider } from './CacheProvider';
-import { CacheServiceManager } from './CacheServiceManager';
+import { CacheProvider } from './providers/CacheProvider';
+import { CacheServiceManager } from './providers/CacheServiceManager';
+import { CacheStorage } from './storage/CacheStorage';
+import { CacheStatistics } from './storage/CacheStatistics';
+import { LRUEvictionStrategy } from './strategies/CacheEvictionStrategy';
+import { CacheCleanupManager } from './strategies/CacheCleanupManager';
 
 import type {
     ICacheProvider,
@@ -18,8 +22,8 @@ import type {
     CacheConfig,
     CacheServiceConfig,
     CacheEvents
-} from './interfaces';
-import type { Container } from '../di/container/Container';
+} from './types/interfaces';
+import type { Container } from '../dependency-injection/container/Container';
 
 /**
  * Creates a cache provider with the specified configuration.
@@ -32,7 +36,20 @@ export function createCacheProvider(
     config?: Partial<CacheConfig>,
     events?: CacheEvents
 ): ICacheProvider {
-    return new CacheProvider(config, events);
+    // Create components using dependency injection pattern
+    const storage = new CacheStorage();
+    const statistics = new CacheStatistics();
+    const evictionStrategy = new LRUEvictionStrategy();
+    const cleanupManager = new CacheCleanupManager();
+
+    return new CacheProvider(
+        storage,
+        statistics,
+        evictionStrategy,
+        cleanupManager,
+        config,
+        events
+    );
 }
 
 /**

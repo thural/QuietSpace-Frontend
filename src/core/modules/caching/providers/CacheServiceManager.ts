@@ -1,4 +1,9 @@
-import { CacheProvider, type CacheConfig, type CacheEvents } from './CacheProvider';
+import { CacheProvider } from './CacheProvider';
+import { CacheStorage } from '../storage/CacheStorage';
+import { CacheStatistics } from '../storage/CacheStatistics';
+import { LRUEvictionStrategy } from '../strategies/CacheEvictionStrategy';
+import { CacheCleanupManager } from '../strategies/CacheCleanupManager';
+import type { CacheConfig, CacheEvents } from '../types/interfaces';
 
 export interface CacheServiceConfig {
   defaultCache?: Partial<CacheConfig>;
@@ -8,7 +13,7 @@ export interface CacheServiceConfig {
 export interface FeatureCacheService {
   getCache(featureName: string): CacheProvider;
   invalidateFeature(featureName: string): void;
-  invalidatePattern(pattern: string): number;
+  invalidatePattern(pattern: string): Promise<number>;
   getGlobalStats(): Record<string, unknown>;
   dispose(): void;
 }
@@ -35,7 +40,14 @@ export class CacheServiceManager implements FeatureCacheService {
         onError: (error, operation, key) => console.error(`[${featureName}] Cache error: ${operation}`, error, key)
       };
 
-      const cache = new CacheProvider(config, events);
+      const cache = new CacheProvider(
+        new CacheStorage(),
+        new CacheStatistics(),
+        new LRUEvictionStrategy(),
+        new CacheCleanupManager(),
+        config,
+        events
+      );
       this.caches.set(featureName, cache);
     }
 
@@ -49,10 +61,10 @@ export class CacheServiceManager implements FeatureCacheService {
     }
   }
 
-  invalidatePattern(pattern: string): number {
+  async invalidatePattern(pattern: string): Promise<number> {
     let totalInvalidated = 0;
     for (const cache of this.caches.values()) {
-      totalInvalidated += cache.invalidatePattern(pattern);
+      totalInvalidated += await cache.invalidatePattern(pattern);
     }
     return totalInvalidated;
   }
