@@ -6,6 +6,8 @@
  */
 
 import { ThemeSystem } from './ThemeSystem';
+import { Container } from '../dependency-injection/container/Container';
+import { TYPES } from '../dependency-injection/types';
 
 import type { ThemeConfig } from './composer';
 import type { EnhancedTheme } from './public';
@@ -358,11 +360,11 @@ export function createMockTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme
         ...overrides
     } as unknown as EnhancedTheme;
 
-    // Mock methods
-    (mockTheme as Record<string, unknown>).getSpacing = (key: string) => '16px';
-    (mockTheme as Record<string, unknown>).getColor = (path: string) => '#1976d2';
-    (mockTheme as Record<string, unknown>).getTypography = (key: string) => '16px';
-    (mockTheme as Record<string, unknown>).getBreakpoint = (key: string) => '1024px';
+    // Mock methods - properly typed
+    mockTheme.getSpacing = (key: keyof ThemeTokens['spacing']) => '16px';
+    mockTheme.getColor = (path: string) => '#1976d2';
+    mockTheme.getTypography = (key: keyof ThemeTokens['typography']) => '16px';
+    mockTheme.getBreakpoint = (key: keyof ThemeTokens['breakpoints']) => '1024px';
 
     return mockTheme;
 }
@@ -373,14 +375,14 @@ export function createMockTheme(overrides?: Partial<ThemeTokens>): EnhancedTheme
  * @param container - DI container instance
  * @returns Theme factory function
  */
-export function createThemeFactory(container: unknown): (overrides?: Partial<ThemeTokens>) => EnhancedTheme {
+export function createThemeFactory(container: Container): (overrides?: Partial<ThemeTokens>) => EnhancedTheme {
     return (overrides?: Partial<ThemeTokens>) => {
         try {
             // Try to get theme service from DI container
-            const themeService = container.getByToken('THEME_SERVICE');
+            const themeService = container.getByToken(TYPES.THEME_SERVICE);
 
-            if (themeService && typeof themeService.createTheme === 'function') {
-                return themeService.createTheme('default', overrides);
+            if (themeService && typeof (themeService as any).createTheme === 'function') {
+                return (themeService as any).createTheme('default', overrides);
             }
 
             // Fallback to direct creation

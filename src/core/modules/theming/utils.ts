@@ -7,17 +7,24 @@
 
 import {
     CORE_CONSTANTS,
-    CORE_VALIDATION_RULES,
-    CORE_ERROR_CODES,
-    CORE_ERROR_MESSAGES
-} from '../shared';
+    CORE_ERROR_CODES
+} from './constants';
+
 
 import type {
-    IThemeService,
-    ThemeConfig,
-    ThemeTokens,
-    EnhancedTheme
-} from '../shared';
+    ThemeTokens
+} from './tokens';
+
+// Define ThemeConfig interface since it's not exported elsewhere
+interface ThemeConfig {
+    name: string;
+    colors?: Record<string, string>;
+    typography?: Record<string, unknown>;
+    spacing?: Record<string, string>;
+    shadows?: Record<string, string>;
+    breakpoints?: Record<string, string>;
+    radius?: Record<string, string>;
+}
 
 
 /**
@@ -34,30 +41,32 @@ export function validateThemeConfig(config: unknown): string[] {
         return errors;
     }
 
+    const configObj = config as Record<string, unknown>;
+
     // Validate name
-    if (!config.name || typeof config.name !== 'string') {
+    if (!configObj.name || typeof configObj.name !== 'string') {
         errors.push('Theme name is required and must be a string');
-    } else if (config.name.length === 0 || config.name.length > 100) {
+    } else if (configObj.name.length === 0 || configObj.name.length > 100) {
         errors.push('Theme name must be between 1 and 100 characters');
     }
 
     // Validate colors
-    if (config.colors && typeof config.colors !== 'object') {
+    if (configObj.colors && typeof configObj.colors !== 'object') {
         errors.push('Theme colors must be an object');
     }
 
     // Validate typography
-    if (config.typography && typeof config.typography !== 'object') {
+    if (configObj.typography && typeof configObj.typography !== 'object') {
         errors.push('Theme typography must be an object');
     }
 
     // Validate spacing
-    if (config.spacing && typeof config.spacing !== 'object') {
+    if (configObj.spacing && typeof configObj.spacing !== 'object') {
         errors.push('Theme spacing must be an object');
     }
 
     // Validate shadows
-    if (config.shadows && typeof config.shadows !== 'object') {
+    if (configObj.shadows && typeof configObj.shadows !== 'object') {
         errors.push('Theme shadows must be an object');
     }
 
@@ -305,10 +314,11 @@ export function createThemeError(
     code: string = CORE_ERROR_CODES.THEME_ERROR,
     details?: unknown
 ): Error {
-    const error = new Error(message) as Record<string, unknown>;
-    error.code = code;
-    error.details = details;
-    error.timestamp = Date.now();
+    const error = new Error(message);
+    const errorRecord = error as unknown as Record<string, unknown>;
+    errorRecord.code = code;
+    errorRecord.details = details;
+    errorRecord.timestamp = Date.now();
     return error;
 }
 
@@ -327,7 +337,7 @@ export function getColor(tokens: ThemeTokens, path: string): string {
         value = value?.[key];
     }
 
-    return value || tokens.colors.textPrimary;
+    return (typeof value === 'string' ? value : tokens.colors.text.primary) || '#000000';
 }
 
 /**
@@ -376,7 +386,8 @@ export function mergeThemeTokens(
         spacing: { ...baseTokens.spacing, ...overrides.spacing },
         shadows: { ...baseTokens.shadows, ...overrides.shadows },
         breakpoints: { ...baseTokens.breakpoints, ...overrides.breakpoints },
-        radius: { ...baseTokens.radius, ...overrides.radius }
+        radius: { ...baseTokens.radius, ...overrides.radius },
+        animation: { ...baseTokens.animation, ...overrides.animation }
     };
 }
 
@@ -392,20 +403,28 @@ export function createDarkTheme(lightTheme: ThemeTokens): ThemeTokens {
         colors: {
             ...lightTheme.colors,
             // Invert text colors
-            textPrimary: lightTheme.colors.textLight,
-            textSecondary: lightTheme.colors.textMuted,
-            textLight: lightTheme.colors.textPrimary,
-            textMuted: lightTheme.colors.textSecondary,
+            text: {
+                primary: lightTheme.colors.text.tertiary,
+                secondary: lightTheme.colors.text.tertiary,
+                tertiary: lightTheme.colors.text.primary,
+                inverse: lightTheme.colors.text.secondary
+            },
 
             // Invert background colors
-            background: lightTheme.colors.gray900,
-            backgroundSecondary: lightTheme.colors.gray800,
-            backgroundMuted: lightTheme.colors.gray700,
+            background: {
+                primary: lightTheme.colors.neutral[900],
+                secondary: lightTheme.colors.neutral[800],
+                tertiary: lightTheme.colors.neutral[700],
+                overlay: lightTheme.colors.neutral[900],
+                transparent: lightTheme.colors.background.transparent
+            },
 
             // Adjust other colors for dark mode
-            border: lightTheme.colors.gray700,
-            borderLight: lightTheme.colors.gray800,
-            borderDark: lightTheme.colors.gray600
+            border: {
+                light: lightTheme.colors.neutral[700],
+                medium: lightTheme.colors.neutral[600],
+                dark: lightTheme.colors.neutral[500]
+            }
         }
     };
 }

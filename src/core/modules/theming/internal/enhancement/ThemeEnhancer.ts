@@ -63,7 +63,18 @@ export class ThemeEnhancer implements IThemeEnhancer {
      * Get nested value from object path
      */
     private getNestedValue(obj: unknown, path: string): string {
-        return path.split('.').reduce((current, key) => current?.[key], obj) || '';
+        try {
+            const result = path.split('.').reduce((current: unknown, key: string) => {
+                if (current && typeof current === 'object' && key in current) {
+                    return (current as Record<string, unknown>)[key];
+                }
+                return undefined;
+            }, obj);
+
+            return typeof result === 'string' ? result : String(result || '');
+        } catch {
+            return '';
+        }
     }
 
     /**

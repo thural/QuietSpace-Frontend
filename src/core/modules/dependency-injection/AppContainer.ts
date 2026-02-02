@@ -11,14 +11,14 @@ import { PostDataService } from '../../features/post/data/services/PostDataServi
 import { ProfileDataService } from '../../features/profile/data/services/ProfileDataService';
 import { SearchDataService } from '../../features/search/data/services/SearchDataService';
 import { SettingsDataService } from '../../features/settings/data/services/SettingsDataService';
-import { EnterpriseAuthService } from '../auth';
-import { createCacheProvider, createCacheServiceManager } from '../cache';
-import { createContainer } from '../di';
+import { EnterpriseAuthService } from '../authentication';
+import { createCacheProvider, createCacheServiceManager } from '../caching';
+import { createContainer } from './factory';
 import { createDIAuthenticatedApiClient } from '../network';
-import { createLogger } from '../services';
-import { ThemeService } from '../services/ThemeService';
-import { UserService, UserRepository } from '../services/UserService';
-import { createTheme } from '../theme';
+import { createLogger } from '../../services';
+import { ThemeService } from '../../services/ThemeService';
+import { UserService, UserRepository } from '../../services/UserService';
+import { createTheme } from '../theming';
 import { EnterpriseWebSocketService } from '../websocket/services/EnterpriseWebSocketService';
 
 import { TYPES } from './types';

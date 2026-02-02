@@ -5,9 +5,9 @@
  * Provides clean service creation with dependency injection support.
  */
 
-import { LogLevel, DEFAULT_LOGGER_CONFIG } from './interfaces';
+import { DEFAULT_LOGGER_CONFIG, LogLevel } from './interfaces';
 
-import type { ILoggerService, ILoggerConfig, ILoggerFactoryConfig } from './interfaces';
+import type { ILoggerConfig, ILoggerService } from './interfaces';
 
 /**
  * Enhanced Logger Service Implementation

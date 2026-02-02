@@ -466,3 +466,39 @@ export const CSS_VARIABLE_PREFIXES = {
     ANIMATION: '--animation',
     BREAKPOINT: '--breakpoint'
 } as const;
+
+// Core constants for backward compatibility
+export const CORE_CONSTANTS = {
+    DEFAULT_THEME_NAME: 'default',
+    THEME_VARIANTS,
+    CSS_VARIABLE_PREFIXES
+} as const;
+
+// Core validation rules
+export const CORE_VALIDATION_RULES = {
+    THEME_NAME_MIN_LENGTH: 1,
+    THEME_NAME_MAX_LENGTH: 100,
+    COLOR_HEX_REGEX: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+    FONT_SIZE_MIN: 8,
+    FONT_SIZE_MAX: 200
+} as const;
+
+// Core error codes
+export const CORE_ERROR_CODES = {
+    THEME_ERROR: 'THEME_ERROR',
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
+    CONFIG_ERROR: 'CONFIG_ERROR'
+} as const;
+
+// Core error messages
+export const CORE_ERROR_MESSAGES = {
+    THEME_ERROR: 'Theme system error occurred',
+    VALIDATION_ERROR: 'Theme validation failed',
+    CONFIG_ERROR: 'Theme configuration error',
+    INVALID_THEME_NAME: 'Theme name must be between 1 and 100 characters',
+    CONFIG_REQUIRED: 'Configuration must be an object',
+    COLORS_REQUIRED: 'Theme colors must be an object',
+    TYPOGRAPHY_REQUIRED: 'Theme typography must be an object',
+    SPACING_REQUIRED: 'Theme spacing must be an object',
+    SHADOWS_REQUIRED: 'Theme shadows must be an object'
+} as const;

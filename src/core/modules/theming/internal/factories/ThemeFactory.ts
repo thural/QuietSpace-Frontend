@@ -107,6 +107,11 @@ export class ThemeFactory implements IThemeFactory {
      * Get nested value from object path
      */
     private getNestedValue(obj: unknown, path: string): string {
-        return path.split('.').reduce((current, key) => current?.[key], obj) || '';
+        return path.split('.').reduce((current: unknown, key: string) => {
+            if (current && typeof current === 'object' && key in current) {
+                return (current as Record<string, unknown>)[key];
+            }
+            return undefined;
+        }, obj) as string || '';
     }
 }

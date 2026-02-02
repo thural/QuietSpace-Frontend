@@ -5,7 +5,7 @@
  * Supports theme inheritance, composition, and runtime theme switching.
  */
 
-import React, { createContext, useContext, useMemo, memo, useState } from 'react';
+import { ReactNode, createContext, memo, useMemo, useState } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
 import { enhanceTheme } from './enhancers/themeEnhancers';
@@ -36,7 +36,7 @@ export const ThemeContext = createContext<{
 } | null>(null);
 
 interface EnhancedThemeProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
   defaultVariant?: string;
   overrides?: Partial<ThemeTokens>;
 }

@@ -5,11 +5,10 @@
  * Focuses solely on React context and provider responsibilities.
  */
 
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
 import { useThemeEnhancement } from '../enhancers/useThemeEnhancement';
-import { EnhancedTheme } from '../types/ProviderTypes';
 
 import { ThemeContext } from './ThemeContext';
 

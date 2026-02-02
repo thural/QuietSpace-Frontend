@@ -38,7 +38,7 @@ export type {
   ServiceDescriptor,
   CoreConfig,
   CoreSystemEvent
-} from './shared';
+} from './configuration/shared';
 
 // Import all shared enums
 export {
@@ -50,7 +50,7 @@ export {
   ServiceStatus,
   NetworkStatus,
   CoreSystemStatus
-} from './shared';
+} from './configuration/shared';
 
 // Import all shared constants
 export {
@@ -66,7 +66,7 @@ export {
   CORE_PERFORMANCE_METRICS,
   CORE_ENVIRONMENT_VARIABLES,
   HEALTH_CHECK_STATUS
-} from './shared';
+} from './configuration/shared';
 
 // Import all shared feature flags
 export {
@@ -76,10 +76,10 @@ export {
   getAllFeatureFlags,
   enableFeature,
   disableFeature
-} from './shared';
+} from './configuration/shared';
 
 // Export types for feature flags
-export type { FeatureFlag, Environment } from './shared';
+export type { FeatureFlag, Environment } from './configuration/shared';
 
 // Essential re-exports from compliant modules
 export {
@@ -87,11 +87,9 @@ export {
   initializeContainer,
   getContainer,
   createMockContainer
-} from './di/injection';
+} from './modules/dependency-injection/injection';
 
-export { TYPES } from './di/types';
+export { TYPES } from './modules/dependency-injection/types';
 
 // Legacy exports for backward compatibility (with underscore prefix)
-export {
-  _LegacyExports
-} from './legacy';
+// TODO: Create legacy exports if needed for backward compatibility
