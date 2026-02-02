@@ -1,15 +1,14 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { createFileUploadService, IUploadState } from "../services/FileUploadService";
 
 export type UploadStatus = "idle" | "uploading" | "error" | "success";
 export type FetchCallback = (formData: FormData) => Promise<any>;
 
 /**
- * Custom hook for handling file uploads.
- *
- * This hook manages the state of a file upload process including 
- * the selected file, upload status, and response from the upload 
- * callback function. It provides methods to handle file selection 
- * and initiate the upload.
+ * Enterprise useFileUploader hook
+ * 
+ * Now uses the FileUploadService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise patterns.
  *
  * @param {FetchCallback} fetchCallback - A callback function that accepts a FormData object and returns a Promise.
  * @returns {{
@@ -21,9 +20,26 @@ export type FetchCallback = (formData: FormData) => Promise<any>;
  * }} - An object containing the file upload state and handler functions.
  */
 export const useFileUploader = (fetchCallback: FetchCallback) => {
-    const [file, setFile] = useState<File | null>(null);
-    const [status, setStatus] = useState<UploadStatus>("idle");
-    const [response, setResponse] = useState<any>(null);
+    const [state, setState] = useState<IUploadState>({
+        file: null,
+        status: 'idle',
+        response: null
+    });
+
+    useEffect(() => {
+        // Create the enterprise service
+        const service = createFileUploadService(fetchCallback);
+
+        // Subscribe to state changes
+        const unsubscribe = service.subscribe((newState) => {
+            setState(newState);
+        });
+
+        return () => {
+            unsubscribe();
+            service.destroy();
+        };
+    }, [fetchCallback]);
 
     /**
      * Handles changes in the file input.
@@ -35,8 +51,8 @@ export const useFileUploader = (fetchCallback: FetchCallback) => {
      */
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
-        setFile(e.target.files[0]);
-    }
+        // The service will handle the state update through subscription
+    };
 
     /**
      * Initiates the file upload process.
@@ -48,25 +64,19 @@ export const useFileUploader = (fetchCallback: FetchCallback) => {
      * @returns {Promise<void>} - A promise that resolves when the upload process completes.
      */
     const handleFileUpload = async () => {
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append("file", file);
-
         try {
-            const result = await fetchCallback(formData);
-            setResponse(result);
-            setStatus('success');
-        } catch (e: unknown) {
-            setStatus('error');
-            alert(`Error uploading file: ${(e as Error).message}`);
+            const service = createFileUploadService(fetchCallback);
+            await service.uploadFile();
+        } catch (error: unknown) {
+            // Handle error display
+            alert(`Error uploading file: ${(error as Error).message}`);
         }
-    }
+    };
 
     return {
-        file,
-        status,
-        response,
+        file: state.file,
+        status: state.status,
+        response: state.response,
         handleFileChange,
         handleFileUpload
     };

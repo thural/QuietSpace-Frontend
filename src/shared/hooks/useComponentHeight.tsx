@@ -1,31 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { getComponentHeightService } from '../services/ComponentHeightService';
 
 /**
- * Custom hook to calculate the height of a given component.
+ * Enterprise useComponentHeight hook
+ * 
+ * Now uses the ComponentHeightService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise patterns.
  *
  * @param {React.RefObject<HTMLElement>} ref - The ref of the component whose height needs to be calculated.
  * @returns {number} - The height of the component.
  */
 const useComponentHeight = (ref: React.RefObject<HTMLElement>) => {
     const [height, setHeight] = useState<number>(0);
+    const unsubscribeRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
-        if (ref.current) {
-            const updateHeight = () => {
-                setHeight(ref.current!.clientHeight);
-            };
+        // Get the enterprise service
+        const service = getComponentHeightService();
 
-            // Initial height calculation
-            updateHeight();
+        // Subscribe to height changes
+        unsubscribeRef.current = service.subscribe(ref, (newHeight) => {
+            setHeight(newHeight);
+        });
 
-            // Add resize event listener
-            window.addEventListener('resize', updateHeight);
-
-            // Cleanup event listener
-            return () => {
-                window.removeEventListener('resize', updateHeight);
-            };
-        }
+        // Cleanup subscription
+        return () => {
+            if (unsubscribeRef.current) {
+                unsubscribeRef.current();
+                unsubscribeRef.current = null;
+            }
+        };
     }, [ref]);
 
     return height;
