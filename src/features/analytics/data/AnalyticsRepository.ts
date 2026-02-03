@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import { Injectable } from '@core/di';
 import type {
   AnalyticsEntity,
   AnalyticsMetrics,
@@ -13,7 +12,6 @@ import type {
   AnalyticsEventType
 } from '../domain';
 
-@Injectable({ lifetime: 'singleton' })
 export class AnalyticsRepository {
   private events = new Map<string, AnalyticsEntity>();
   private dashboards = new Map<string, AnalyticsDashboard>();
