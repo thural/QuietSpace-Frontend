@@ -9,6 +9,7 @@
  * - Performance and scalability scenarios
  */
 
+import { jest } from '@jest/globals';
 import { ProviderManager } from '../../enterprise/ProviderManager';
 import type { IProviderManager } from '../../interfaces/IProviderManager';
 import type { IAuthenticator } from '../../interfaces/IAuthenticator';
