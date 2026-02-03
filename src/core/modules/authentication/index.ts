@@ -22,6 +22,30 @@ export {
     AuthValidator
 } from './enterprise/AuthValidator';
 
+// NEW: MFA services (refactored from MFAService)
+export {
+    MFAOrchestrator,
+    TOTPService,
+    SMSService,
+    BackupCodeService
+} from './mfa';
+export type {
+    IMFAService,
+    ITOTPService,
+    ISMSService,
+    IBackupCodeService,
+    MFAMethod,
+    MFAEnrollment,
+    MFAChallenge
+} from './mfa';
+
+// MFA Factory functions
+export {
+    createDefaultMFAOrchestrator,
+    createCustomMFAOrchestrator,
+    createTestMFAOrchestrator
+} from './mfa';
+
 // Type exports for public API
 export type {
     IAuthProvider,
