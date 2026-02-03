@@ -6,7 +6,8 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
 import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useProfileServices } from './useProfileServices';
 import { useFeatureAuth } from '@/core/modules/authentication';
@@ -83,7 +84,7 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
     const [error, setError] = useState<Error | null>(null);
 
     // Get current user ID and token
-    const currentUserId = selectedUserId || userId || 'current-user';
+    const currentUserId = String(selectedUserId || userId || 'current-user');
     const getAuthToken = useCallback((): string => {
         return token || '';
     }, [token]);

@@ -6,7 +6,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
+import { useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomInfiniteQuery';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
 import { useFeatureAuth } from '@/core/modules/authentication';
 import type { ResId, JwtToken } from "@/shared/api/models/common";

@@ -1,5 +1,16 @@
-import { UserProfileEntity, UserProfileStatsEntity, UserConnectionEntity, ProfileAccessEntity } from '../entities';
 import { JwtToken } from '@/shared/api/models/common';
+import {
+  UserProfileEntity,
+  UserProfileStatsEntity,
+  UserConnectionEntity
+} from '../entities';
+
+// Re-export entities for convenience
+export {
+  UserProfileEntity,
+  UserProfileStatsEntity,
+  UserConnectionEntity
+};
 
 /**
  * Interface for Profile Repository
@@ -13,11 +24,11 @@ export interface IProfileRepository {
   getCurrentUserProfile(): Promise<UserProfileEntity>;
   updateUserProfile(userId: string | number, updates: Partial<UserProfileEntity>): Promise<UserProfileEntity>;
   deleteUserProfile(userId: string | number): Promise<void>;
-  
+
   // User statistics operations
   getUserStats(userId: string | number): Promise<UserProfileStatsEntity>;
   updateUserStats(userId: string | number, stats: Partial<UserProfileStatsEntity>): Promise<UserProfileStatsEntity>;
-  
+
   // User connections operations
   getUserFollowers(userId: string | number, options?: {
     limit?: number;
@@ -31,7 +42,7 @@ export interface IProfileRepository {
   }): Promise<UserConnectionEntity[]>;
   followUser(userId: string | number, targetUserId: string | number): Promise<UserConnectionEntity>;
   unfollowUser(userId: string | number, targetUserId: string | number): Promise<void>;
-  
+
   // User search and discovery
   searchUsers(query: string, options?: {
     limit?: number;
@@ -42,15 +53,15 @@ export interface IProfileRepository {
     limit?: number;
     type?: 'mutual' | 'popular' | 'new';
   }): Promise<UserProfileEntity[]>;
-  
+
   // User settings operations
   getUserSettings(userId: string | number): Promise<any>;
   updateUserSettings(userId: string | number, settings: any): Promise<any>;
-  
+
   // User privacy operations
   getUserPrivacy(userId: string | number): Promise<any>;
   updateUserPrivacy(userId: string | number, privacy: any): Promise<any>;
-  
+
   // User activity operations
   getUserActivity(userId: string | number, options?: {
     limit?: number;
@@ -58,32 +69,32 @@ export interface IProfileRepository {
     period?: string;
     type?: string;
   }): Promise<any[]>;
-  
+
   // User achievements and badges
   getUserAchievements(userId: string | number, options?: {
     limit?: number;
     offset?: number;
   }): Promise<any[]>;
   getUserBadges(userId: string | number): Promise<any[]>;
-  
+
   // User reputation operations
   getUserReputation(userId: string | number): Promise<any>;
   updateUserReputation(userId: string | number, reputation: any): Promise<any>;
-  
+
   // User engagement operations
   getUserEngagement(userId: string | number, period?: string): Promise<any>;
-  
+
   // User online status operations
   getUserOnlineStatus(userId: string | number): Promise<any>;
   updateUserOnlineStatus(userId: string | number, status: any): Promise<any>;
-  
+
   // User profile views operations
   getProfileViews(userId: string | number, period?: string): Promise<any>;
   incrementProfileView(userId: string | number, viewerId?: string | number): Promise<void>;
-  
+
   // User mutual connections operations
   getMutualConnections(userId1: string | number, userId2: string | number): Promise<UserConnectionEntity[]>;
-  
+
   // User blocked and muted operations
   getBlockedUsers(userId: string | number, options?: {
     limit?: number;
@@ -97,34 +108,34 @@ export interface IProfileRepository {
   unblockUser(userId: string | number, targetUserId: string | number): Promise<void>;
   muteUser(userId: string | number, targetUserId: string | number): Promise<void>;
   unmuteUser(userId: string | number, targetUserId: string | number): Promise<void>;
-  
+
   // User profile completion operations
   getProfileCompletion(userId: string | number): Promise<any>;
   updateProfileCompletion(userId: string | number, completion: any): Promise<any>;
-  
+
   // User verification operations
   getUserVerification(userId: string | number): Promise<any>;
   requestUserVerification(userId: string | number, verificationData: any): Promise<any>;
-  
+
   // User profile analytics operations
   getProfileAnalytics(userId: string | number, period?: string): Promise<any>;
-  
+
   // User social links operations
   getUserSocialLinks(userId: string | number): Promise<any>;
   updateUserSocialLinks(userId: string | number, links: any): Promise<any>;
-  
+
   // User interests and skills operations
   getUserInterests(userId: string | number): Promise<any>;
   updateUserInterests(userId: string | number, interests: any): Promise<any>;
   getUserSkills(userId: string | number): Promise<any>;
   updateUserSkills(userId: string | number, skills: any): Promise<any>;
-  
+
   // User education and work experience operations
   getUserEducation(userId: string | number): Promise<any>;
   updateUserEducation(userId: string | number, education: any): Promise<any>;
   getUserWorkExperience(userId: string | number): Promise<any>;
   updateUserWorkExperience(userId: string | number, workExperience: any): Promise<any>;
-  
+
   // User portfolio operations
   getUserPortfolio(userId: string | number, options?: {
     limit?: number;
@@ -133,7 +144,7 @@ export interface IProfileRepository {
   addPortfolioItem(userId: string | number, item: any): Promise<any>;
   updatePortfolioItem(userId: string | number, itemId: string, item: any): Promise<any>;
   deletePortfolioItem(userId: string | number, itemId: string): Promise<void>;
-  
+
   // User testimonials and recommendations operations
   getUserTestimonials(userId: string | number, options?: {
     limit?: number;
@@ -145,18 +156,35 @@ export interface IProfileRepository {
     offset?: number;
   }): Promise<any[]>;
   addRecommendation(userId: string | number, recommendation: any): Promise<any>;
-  
+
   // Batch operations
   batchUpdateProfiles(updates: Array<{ userId: string | number; updates: Partial<UserProfileEntity> }>): Promise<UserProfileEntity[]>;
   batchGetProfiles(userIds: Array<string | number>): Promise<UserProfileEntity[]>;
-  
+
   // Data cleanup and maintenance
   cleanupOldActivity(olderThan: Date): Promise<number>;
   refreshUserStats(userId: string | number): Promise<UserProfileStatsEntity>;
-  
+
   // Additional utility methods for testing
   getAllProfiles(): Promise<UserProfileEntity[]>;
   clearAllProfiles(): Promise<void>;
+
+  // Missing methods for Phase 6 implementation
+  uploadAvatar(userId: string | number, file: File): Promise<string>;
+  uploadCoverPhoto(userId: string | number, file: File): Promise<string>;
+  trackUserActivity(userId: string | number, activity: any): Promise<void>;
+  updateUserActivityStatus(userId: string | number, status: string): Promise<void>;
+  setUserOnlineStatus(userId: string | number, isOnline: boolean): Promise<void>;
+  getUserOnlineStatus(userId: string | number): Promise<boolean>;
+  getUserActivity(userId: string | number, options?: {
+    limit?: number;
+    offset?: number;
+    type?: string;
+  }): Promise<UserActivityData[]>;
+  addUserExperience(userId: string | number, experience: Partial<UserWorkExperienceData>): Promise<UserWorkExperienceData>;
+  updateUserExperience(userId: string | number, experienceId: string, updates: Partial<UserWorkExperienceData>): Promise<UserWorkExperienceData>;
+  removeUserExperience(userId: string | number, experienceId: string): Promise<void>;
+  getUserRecentActivity(userId: string | number, limit?: number): Promise<UserActivityData[]>;
 }
 
 // Supporting types for enhanced profile management

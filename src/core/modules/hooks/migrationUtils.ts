@@ -161,6 +161,80 @@ export class CacheInvalidationHelper {
   clearAll(): void {
     this.cache.clear();
   }
+
+  // Missing cache invalidation methods for Phase 6
+  invalidateDashboard(): void {
+    const patterns = [
+      'analytics:*',
+      'dashboard:*',
+      'metrics:*',
+      'reports:*'
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  invalidateConnections(): void {
+    const patterns = [
+      'profile:*:connections',
+      'profile:*:followers',
+      'profile:*:following',
+      'connections:*'
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  invalidateUserSettings(): void {
+    const patterns = [
+      'settings:*',
+      'profile:*:settings',
+      'notification:*:settings'
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  invalidateContentCache(): void {
+    const patterns = [
+      'content:*',
+      'media:*',
+      'templates:*'
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  invalidateSearchCache(): void {
+    const patterns = [
+      'search:*',
+      'search-results:*'
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
+
+  invalidateAuthorCache(): void {
+    const patterns = [
+      'author:*',
+      'content:*:author',
+      'profile:*:content'
+    ];
+
+    patterns.forEach(pattern => {
+      this.cache.invalidatePattern(pattern);
+    });
+  }
 }
 
 /**

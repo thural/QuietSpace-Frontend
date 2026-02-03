@@ -742,4 +742,322 @@ export class AnalyticsDataService {
       throw error;
     }
   }
+
+  // Missing analytics service methods for Phase 6 implementation
+  async getMetrics(userId: string, dateRange: DateRange, filters: Record<string, any>, token: JwtToken): Promise<AnalyticsMetrics> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.METRICS(userId, dateRange, filters);
+      let data = this.cache.get<AnalyticsMetrics>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getMetrics(userId, dateRange, filters);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.METRICS);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting analytics metrics:', error);
+      throw error;
+    }
+  }
+
+  async getDashboards(userId: string, token: JwtToken): Promise<AnalyticsDashboard[]> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.USER_DASHBOARDS(userId);
+      let data = this.cache.get<AnalyticsDashboard[]>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getDashboards(userId);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.USER_DASHBOARDS);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting dashboards:', error);
+      throw error;
+    }
+  }
+
+  async getDashboardsByUser(userId: string, token: JwtToken): Promise<AnalyticsDashboard[]> {
+    return this.getDashboards(userId, token);
+  }
+
+  async getDashboardById(dashboardId: string, token: JwtToken): Promise<AnalyticsDashboard> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.DASHBOARD(dashboardId);
+      let data = this.cache.get<AnalyticsDashboard>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getDashboardById(dashboardId);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.DASHBOARD);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting dashboard by ID:', error);
+      throw error;
+    }
+  }
+
+  async createDashboard(dashboard: Omit<AnalyticsDashboard, 'id' | 'createdAt'>, token: JwtToken): Promise<AnalyticsDashboard> {
+    try {
+      const result = await this.repository.createDashboard(dashboard);
+
+      // Invalidate dashboard caches
+      this.invalidateDashboardCaches();
+
+      return result;
+    } catch (error) {
+      console.error('Error creating dashboard:', error);
+      throw error;
+    }
+  }
+
+  async updateDashboard(dashboardId: string, updates: Partial<AnalyticsDashboard>, token: JwtToken): Promise<AnalyticsDashboard> {
+    try {
+      const result = await this.repository.updateDashboard(dashboardId, updates);
+
+      // Invalidate dashboard cache
+      this.cache.delete(ANALYTICS_CACHE_KEYS.DASHBOARD(dashboardId));
+
+      return result;
+    } catch (error) {
+      console.error('Error updating dashboard:', error);
+      throw error;
+    }
+  }
+
+  async deleteDashboard(dashboardId: string, token: JwtToken): Promise<void> {
+    try {
+      await this.repository.deleteDashboard(dashboardId);
+
+      // Invalidate dashboard cache
+      this.cache.delete(ANALYTICS_CACHE_KEYS.DASHBOARD(dashboardId));
+    } catch (error) {
+      console.error('Error deleting dashboard:', error);
+      throw error;
+    }
+  }
+
+  async getReports(userId: string, token: JwtToken): Promise<AnalyticsReport[]> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.USER_REPORTS(userId);
+      let data = this.cache.get<AnalyticsReport[]>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getReports(userId);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.USER_REPORTS);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting reports:', error);
+      throw error;
+    }
+  }
+
+  async getReportsByUser(userId: string, token: JwtToken): Promise<AnalyticsReport[]> {
+    return this.getReports(userId, token);
+  }
+
+  async getReportById(reportId: string, token: JwtToken): Promise<AnalyticsReport> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.REPORT(reportId);
+      let data = this.cache.get<AnalyticsReport>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getReportById(reportId);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.REPORT);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting report by ID:', error);
+      throw error;
+    }
+  }
+
+  async getInsights(dateRange: DateRange, filters: Record<string, any>, token: JwtToken): Promise<AnalyticsInsight[]> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.INSIGHTS(dateRange, filters);
+      let data = this.cache.get<AnalyticsInsight[]>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getInsights(dateRange, filters);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.INSIGHTS);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting insights:', error);
+      throw error;
+    }
+  }
+
+  async getAggregatedData(type: string, dateRange: DateRange, filters: Record<string, any>, token: JwtToken): Promise<any> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.AGGREGATED_DATA(type, dateRange, filters);
+      let data = this.cache.get<any>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getAggregatedData(type, dateRange, filters);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.AGGREGATED_DATA);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting aggregated data:', error);
+      throw error;
+    }
+  }
+
+  async trackPageView(userId: string, pageData: any, token: JwtToken): Promise<void> {
+    try {
+      await this.repository.trackPageView(userId, pageData);
+
+      // Invalidate relevant caches
+      this.invalidateMetricsCaches();
+    } catch (error) {
+      console.error('Error tracking page view:', error);
+      throw error;
+    }
+  }
+
+  async addWidgetToDashboard(dashboardId: string, widget: Omit<DashboardWidget, 'id'>, token: JwtToken): Promise<DashboardWidget> {
+    try {
+      const result = await this.repository.addWidgetToDashboard(dashboardId, widget);
+
+      // Invalidate dashboard cache
+      this.cache.delete(ANALYTICS_CACHE_KEYS.DASHBOARD(dashboardId));
+
+      return result;
+    } catch (error) {
+      console.error('Error adding widget to dashboard:', error);
+      throw error;
+    }
+  }
+
+  async updateWidgetInDashboard(dashboardId: string, widgetId: string, updates: Partial<DashboardWidget>, token: JwtToken): Promise<DashboardWidget> {
+    try {
+      const result = await this.repository.updateWidgetInDashboard(dashboardId, widgetId, updates);
+
+      // Invalidate dashboard cache
+      this.cache.delete(ANALYTICS_CACHE_KEYS.DASHBOARD(dashboardId));
+
+      return result;
+    } catch (error) {
+      console.error('Error updating widget in dashboard:', error);
+      throw error;
+    }
+  }
+
+  async removeWidgetFromDashboard(dashboardId: string, widgetId: string, token: JwtToken): Promise<void> {
+    try {
+      await this.repository.removeWidgetFromDashboard(dashboardId, widgetId);
+
+      // Invalidate dashboard cache
+      this.cache.delete(ANALYTICS_CACHE_KEYS.DASHBOARD(dashboardId));
+    } catch (error) {
+      console.error('Error removing widget from dashboard:', error);
+      throw error;
+    }
+  }
+
+  async getWidgetData(widget: DashboardWidget, dateRange: DateRange): Promise<any> {
+    try {
+      const cacheKey = ANALYTICS_CACHE_KEYS.WIDGET_DATA(widget.id, dateRange);
+      let data = this.cache.get<any>(cacheKey);
+      if (data) return data;
+
+      data = await this.repository.getWidgetData(widget, dateRange);
+
+      if (data) {
+        this.cache.set(cacheKey, data, ANALYTICS_CACHE_TTL.WIDGET_DATA);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting widget data:', error);
+      throw error;
+    }
+  }
+
+  async generateReport(reportConfig: any, token: JwtToken): Promise<AnalyticsReport> {
+    try {
+      const result = await this.repository.generateReport(reportConfig);
+
+      // Invalidate report caches
+      this.invalidateReportCaches();
+
+      return result;
+    } catch (error) {
+      console.error('Error generating report:', error);
+      throw error;
+    }
+  }
+
+  async enableRealTimeAnalytics(userId: string, config: any, token: JwtToken): Promise<void> {
+    try {
+      await this.repository.enableRealTimeAnalytics(userId, config);
+
+      // Invalidate metrics caches
+      this.invalidateMetricsCaches();
+    } catch (error) {
+      console.error('Error enabling real-time analytics:', error);
+      throw error;
+    }
+  }
+
+  async processData(dataType: string, data: any, token: JwtToken): Promise<any> {
+    try {
+      const result = await this.repository.processData(dataType, data);
+
+      // Invalidate relevant caches
+      this.invalidateMetricsCaches();
+
+      return result;
+    } catch (error) {
+      console.error('Error processing data:', error);
+      throw error;
+    }
+  }
+
+  // Cache invalidation helper methods
+  private invalidateDashboardCaches(): void {
+    const patterns = ANALYTICS_CACHE_INVALIDATION.invalidateDashboards();
+    patterns.forEach(pattern => this.cache.invalidatePattern(pattern));
+  }
+
+  private invalidateReportCaches(): void {
+    const patterns = ANALYTICS_CACHE_INVALIDATION.invalidateReports();
+    patterns.forEach(pattern => this.cache.invalidatePattern(pattern));
+  }
+
+  private invalidateMetricsCaches(): void {
+    const patterns = ANALYTICS_CACHE_INVALIDATION.invalidateMetrics();
+    patterns.forEach(pattern => this.cache.invalidatePattern(pattern));
+  }
+
+  private invalidateEventCaches(userId?: string): void {
+    if (userId) {
+      this.cache.delete(ANALYTICS_CACHE_KEYS.USER_EVENTS(userId));
+    } else {
+      const patterns = ANALYTICS_CACHE_INVALIDATION.invalidateEvents();
+      patterns.forEach(pattern => this.cache.invalidatePattern(pattern));
+    }
+  }
 }

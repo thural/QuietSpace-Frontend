@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
 import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useNotificationServices } from './useNotificationServices';
 import { useFeatureAuth } from '@/core/modules/authentication';
