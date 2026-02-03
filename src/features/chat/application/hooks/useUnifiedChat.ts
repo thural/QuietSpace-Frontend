@@ -6,9 +6,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/hooks';
+import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomQuery';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
-import { useAuthStore } from "@core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication';
 import type { ResId, JwtToken } from "@/shared/api/models/common";
 import { useChatServices } from './useChatServices';
 import { useCacheInvalidation } from '@/core/hooks/migrationUtils';
@@ -46,16 +46,16 @@ export interface UnifiedChatState {
     prefetchChats?: (userId: string) => Promise<void>;
     prefetchMessages?: (chatId: ResId) => Promise<void>;
     invalidateCache?: () => void;
-    
+
     // Error handling methods
     retryFailedQueries?: () => Promise<void>;
     getErrorSummary?: () => Array<{ type: string; error: string }>;
-    
+
     // Performance monitoring methods
     getMetrics?: () => ChatMetrics;
     getPerformanceSummary?: () => { overall: 'excellent' | 'good' | 'fair' | 'poor'; issues: string[]; recommendations: string[] };
     resetMetrics?: () => void;
-    
+
     // Presence methods
     getUserPresence?: (userId: string) => any;
     getTypingUsers?: (chatId: string) => string[];
@@ -63,7 +63,7 @@ export interface UnifiedChatState {
     startTyping?: (chatId: string) => void;
     stopTyping?: (chatId: string) => void;
     updatePresence?: (status: 'online' | 'offline' | 'away' | 'busy') => Promise<void>;
-    
+
     // Analytics methods
     getAnalytics?: (filter?: any) => Promise<any>;
     getUserAnalytics?: (userId: string, filter?: any) => Promise<any>;
@@ -122,7 +122,7 @@ export const useUnifiedChat = (
 
     // Merge options with defaults
     const config = { ...DEFAULT_OPTIONS, ...options };
-    
+
     // Override refetch intervals if not using real-time
     if (!config.enableRealTime) {
         config.refetchInterval = {
@@ -134,16 +134,15 @@ export const useUnifiedChat = (
     }
 
     useEffect(() => {
-        const authStore = useAuthStore.getState();
-        const currentToken = authStore.data.accessToken || null;
-        setToken(currentToken);
+        const { token } = useFeatureAuth();
+        setToken(token || null);
     }, []);
 
     // Initialize presence service
     useEffect(() => {
         if (config.enableRealTime && userId) {
             chatPresenceService.initialize(userId);
-            
+
             return () => {
                 chatPresenceService.cleanup();
             };
@@ -158,11 +157,11 @@ export const useUnifiedChat = (
             try {
                 // Connect to WebSocket (URL would come from environment/config)
                 await webSocketService.connect('ws://localhost:8080/ws');
-                
+
                 // Subscribe to chat messages
                 const unsubscribe = webSocketService.subscribe(`chat:${chatId}`, (message) => {
                     console.log('UnifiedChat: Received real-time message:', message);
-                    
+
                     // Invalidate cache to trigger refetch
                     if (message.type === 'new_message') {
                         invalidateCache.invalidateChatData(chatId);
@@ -204,10 +203,10 @@ export const useUnifiedChat = (
                 unread: 0.2       // 1 minute for unread count
             }
         };
-        
-        const strategy = config.cacheStrategy === 'aggressive' ? 'aggressive' : 
-                        config.cacheStrategy === 'conservative' ? 'conservative' : 'moderate';
-        
+
+        const strategy = config.cacheStrategy === 'aggressive' ? 'aggressive' :
+            config.cacheStrategy === 'conservative' ? 'conservative' : 'moderate';
+
         return baseTime * multipliers[strategy][dataType];
     };
 
@@ -223,7 +222,7 @@ export const useUnifiedChat = (
             };
             return CACHE_TIME_MAPPINGS.REALTIME_STALE_TIME * realtimeMultipliers[dataType];
         }
-        
+
         // For non-real-time, use standard stale times
         return CACHE_TIME_MAPPINGS.CHAT_STALE_TIME;
     };
@@ -251,8 +250,8 @@ export const useUnifiedChat = (
             enabled: !!userId && !!token,
             refetchInterval: config.refetchInterval.chats,
             onSuccess: (data) => {
-                console.log('UnifiedChat: Chats loaded:', { 
-                    userId, 
+                console.log('UnifiedChat: Chats loaded:', {
+                    userId,
                     count: data.content?.length || 0,
                     strategy: config.cacheStrategy,
                     realTime: config.enableRealTime
@@ -286,7 +285,7 @@ export const useUnifiedChat = (
             refetchInterval: config.refetchInterval.messages,
             onSuccess: (data, allPages) => {
                 if (chatId) {
-                    console.log('UnifiedChat: Messages loaded:', { 
+                    console.log('UnifiedChat: Messages loaded:', {
                         chatId,
                         totalPages: allPages.length,
                         strategy: config.cacheStrategy,
@@ -316,7 +315,7 @@ export const useUnifiedChat = (
             refetchInterval: config.refetchInterval.participants,
             onSuccess: (data) => {
                 if (chatId) {
-                    console.log('UnifiedChat: Participants loaded:', { 
+                    console.log('UnifiedChat: Participants loaded:', {
                         chatId,
                         count: data.length,
                         strategy: config.cacheStrategy,
@@ -345,8 +344,8 @@ export const useUnifiedChat = (
             enabled: !!userId && !!token,
             refetchInterval: config.refetchInterval.unreadCount,
             onSuccess: (data) => {
-                console.log('UnifiedChat: Unread count loaded:', { 
-                    userId, 
+                console.log('UnifiedChat: Unread count loaded:', {
+                    userId,
                     count: data,
                     strategy: config.cacheStrategy,
                     realTime: config.enableRealTime
@@ -365,7 +364,7 @@ export const useUnifiedChat = (
     // Enhanced error recovery
     const retryFailedQueries = useCallback(async () => {
         const promises = [];
-        
+
         if (chats.error && chats.refetch) {
             promises.push(chats.refetch());
         }
@@ -378,7 +377,7 @@ export const useUnifiedChat = (
         if (unreadCount.error && unreadCount.refetch) {
             promises.push(unreadCount.refetch());
         }
-        
+
         try {
             await Promise.all(promises);
             console.log('UnifiedChat: All failed queries retried successfully');
@@ -390,12 +389,12 @@ export const useUnifiedChat = (
     // Get error summary for debugging
     const getErrorSummary = useCallback(() => {
         const errors = [];
-        
+
         if (chats.error) errors.push({ type: 'chats', error: chats.error.message });
         if (messages.error) errors.push({ type: 'messages', error: messages.error.message });
         if (participants.error) errors.push({ type: 'participants', error: participants.error.message });
         if (unreadCount.error) errors.push({ type: 'unreadCount', error: unreadCount.error.message });
-        
+
         return errors;
     }, [chats.error, messages.error, participants.error, unreadCount.error]);
 
@@ -449,14 +448,14 @@ export const useUnifiedChat = (
                         isSeen: false
                     } : undefined
                 };
-                
+
                 const cacheKey = CHAT_CACHE_KEYS.USER_CHATS(userId);
                 const existingChats = cache.get<any>(cacheKey) || { content: [] };
                 cache.set(cacheKey, {
                     ...existingChats,
                     content: [optimisticChat, ...existingChats.content]
                 });
-                
+
                 return () => {
                     const updatedChats = cache.get<any>(cacheKey) || { content: [] };
                     const filtered = updatedChats.content.filter((chat: any) => chat.id !== optimisticChat.id);
@@ -494,13 +493,13 @@ export const useUnifiedChat = (
                 const deletedChat = existingChats.content.find((chat: any) => chat.id === variables.chatId);
                 const filteredChats = existingChats.content.filter((chat: any) => chat.id !== variables.chatId);
                 cache.set(cacheKey, { ...existingChats, content: filteredChats });
-                
+
                 return () => {
                     if (deletedChat) {
                         const restoredChats = cache.get<any>(cacheKey) || { content: [] };
-                        cache.set(cacheKey, { 
-                            ...restoredChats, 
-                            content: [deletedChat, ...restoredChats.content] 
+                        cache.set(cacheKey, {
+                            ...restoredChats,
+                            content: [deletedChat, ...restoredChats.content]
                         });
                     }
                 };
@@ -520,7 +519,7 @@ export const useUnifiedChat = (
                 console.log('UnifiedChat: Message sent successfully:', data.id);
                 // Track user interaction
                 chatMetricsService.recordInteraction('message', { chatId, messageId: data.id });
-                
+
                 if (chatId) {
                     invalidateCache.invalidateChatData(chatId);
                 }
@@ -549,7 +548,7 @@ export const useUnifiedChat = (
                     isSeen: false,
                     version: 1
                 };
-                
+
                 // Add to first page of messages
                 if (variables.chatId) {
                     const cacheKey = CHAT_CACHE_KEYS.MESSAGES(variables.chatId, 0);
@@ -561,7 +560,7 @@ export const useUnifiedChat = (
                         });
                     }
                 }
-                
+
                 return () => {
                     if (variables.chatId) {
                         const updatedMessages = cache.get<any>(CHAT_CACHE_KEYS.MESSAGES(variables.chatId, 0));
@@ -605,9 +604,9 @@ export const useUnifiedChat = (
         },
         {
             onSuccess: (data, variables) => {
-                console.log('UnifiedChat: Search completed:', { 
-                    query: variables.query, 
-                    results: data.content?.length || 0 
+                console.log('UnifiedChat: Search completed:', {
+                    query: variables.query,
+                    results: data.content?.length || 0
                 });
             },
             onError: (error) => {
@@ -636,7 +635,7 @@ export const useUnifiedChat = (
                 const existingParticipants = cache.get<any>(cacheKey) || [];
                 const optimisticParticipant = { id: variables.participantId, name: 'New User' };
                 cache.set(cacheKey, [...existingParticipants, optimisticParticipant]);
-                
+
                 return () => {
                     const updatedParticipants = cache.get<any>(cacheKey) || [];
                     const filtered = updatedParticipants.filter((p: any) => p.id !== variables.participantId);
@@ -667,7 +666,7 @@ export const useUnifiedChat = (
                 const removedParticipant = existingParticipants.find((p: any) => p.id === variables.participantId);
                 const filtered = existingParticipants.filter((p: any) => p.id !== variables.participantId);
                 cache.set(cacheKey, filtered);
-                
+
                 return () => {
                     if (removedParticipant) {
                         const restoredParticipants = cache.get<any>(cacheKey) || [];
@@ -738,12 +737,12 @@ export const useUnifiedChat = (
         // Error handling
         retryFailedQueries,
         getErrorSummary,
-        
+
         // Performance monitoring
         getMetrics: chatMetricsService.getMetrics.bind(chatMetricsService),
         getPerformanceSummary: chatMetricsService.getPerformanceSummary.bind(chatMetricsService),
         resetMetrics: chatMetricsService.resetMetrics.bind(chatMetricsService),
-        
+
         // Presence features
         getUserPresence: chatPresenceService.getUserPresence.bind(chatPresenceService),
         getTypingUsers: chatPresenceService.getTypingUsers.bind(chatPresenceService),
@@ -751,7 +750,7 @@ export const useUnifiedChat = (
         startTyping: (chatId: string) => chatPresenceService.startTyping(userId, chatId),
         stopTyping: (chatId: string) => chatPresenceService.stopTyping(userId, chatId),
         updatePresence: (status: 'online' | 'offline' | 'away' | 'busy') => chatPresenceService.updatePresence(userId, status),
-        
+
         // Analytics features
         getAnalytics: chatAnalyticsService.getAnalytics.bind(chatAnalyticsService),
         getUserAnalytics: chatAnalyticsService.getUserAnalytics.bind(chatAnalyticsService),

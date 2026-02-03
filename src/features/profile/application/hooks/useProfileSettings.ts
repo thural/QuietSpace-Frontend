@@ -6,11 +6,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useProfileServices } from './useProfileServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { JwtToken } from '@/shared/api/models/common';
 import { PROFILE_CACHE_TTL } from '../data/cache/ProfileCacheKeys';
 
@@ -34,15 +33,15 @@ export interface ProfileSettingsActions {
     getSettings: (userId: string | number) => Promise<void>;
     updateSettings: (userId: string | number, settings: any) => Promise<any>;
     resetSettings: (userId: string | number) => Promise<void>;
-    
+
     // Privacy operations
     getPrivacy: (userId: string | number) => Promise<void>;
     updatePrivacy: (userId: string | number, privacy: any) => Promise<any>;
     resetPrivacy: (userId: string | number) => Promise<void>;
-    
+
     // Batch operations
     updateAllSettings: (userId: string | number, settings: any, privacy: any) => Promise<{ settings: any; privacy: any }>;
-    
+
     // State management
     setSelectedUserId: (userId: string | number | null) => void;
     clearError: () => void;
@@ -60,25 +59,19 @@ export interface ProfileSettingsActions {
 export const useProfileSettings = (config?: { userId?: string | number }): ProfileSettingsState & ProfileSettingsActions => {
     const { profileDataService } = useProfileServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
-    const [selectedUserId, setSelectedUserId] = useState<string | number | null>(config?.userId || authData?.userId || null);
+    const [selectedUserId, setSelectedUserId] = useState<string | number | null>(config?.userId || userId || null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [originalSettings, setOriginalSettings] = useState<{ settings: any; privacy: any } | null>(null);
     const [error, setError] = useState<Error | null>(null);
 
     // Get current user ID and token
-    const currentUserId = selectedUserId || authData?.userId || 'current-user';
+    const currentUserId = selectedUserId || userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useProfileSettings: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for user settings
     const settingsQuery = useCustomQuery(
@@ -89,12 +82,12 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
             cacheTime: PROFILE_CACHE_TTL.USER_SETTINGS,
             refetchInterval: PROFILE_CACHE_TTL.USER_SETTINGS / 2,
             onSuccess: (data) => {
-                console.log('Settings loaded:', { 
+                console.log('Settings loaded:', {
                     userId: currentUserId,
                     theme: data?.theme,
-                    language: data?.language 
+                    language: data?.language
                 });
-                
+
                 // Set original settings for change detection
                 if (!originalSettings) {
                     setOriginalSettings({ settings: data, privacy: null });
@@ -122,16 +115,16 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
             cacheTime: PROFILE_CACHE_TTL.USER_PRIVACY,
             refetchInterval: PROFILE_CACHE_TTL.USER_PRIVACY / 2,
             onSuccess: (data) => {
-                console.log('Privacy settings loaded:', { 
+                console.log('Privacy settings loaded:', {
                     userId: currentUserId,
-                    profileVisibility: data?.profileVisibility 
+                    profileVisibility: data?.profileVisibility
                 });
-                
+
                 // Update original settings for change detection
                 if (originalSettings) {
-                    setOriginalSettings(prev => ({ 
-                        settings: prev.settings, 
-                        privacy: data 
+                    setOriginalSettings(prev => ({
+                        settings: prev.settings,
+                        privacy: data
                     }));
                 }
             },
@@ -149,28 +142,28 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
 
     // Custom mutation for updating settings
     const updateSettingsMutation = useCustomMutation(
-        ({ userId, settings }: { userId: string | number; settings: any }) => 
+        ({ userId, settings }: { userId: string | number; settings: any }) =>
             profileDataService.updateSettings(userId, settings, getAuthToken()),
         {
             onSuccess: (result, variables) => {
-                console.log('Settings updated:', { 
+                console.log('Settings updated:', {
                     userId: variables.userId,
                     updatedFields: Object.keys(variables.settings)
                 });
-                
+
                 // Invalidate settings cache
                 invalidateCache.invalidateSettings(variables.userId);
-                
+
                 // Update original settings
                 if (originalSettings) {
-                    setOriginalSettings(prev => ({ 
-                        settings: result, 
-                        privacy: prev.privacy 
+                    setOriginalSettings(prev => ({
+                        settings: result,
+                        privacy: prev.privacy
                     }));
                 }
-                
+
                 setHasUnsavedChanges(false);
-                
+
                 // Refetch settings if it's the current user
                 if (variables.userId === currentUserId) {
                     settingsQuery.refetch();
@@ -186,28 +179,28 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
 
     // Custom mutation for updating privacy
     const updatePrivacyMutation = useCustomMutation(
-        ({ userId, privacy }: { userId: string | number; privacy: any }) => 
+        ({ userId, privacy }: { userId: string | number; privacy: any }) =>
             profileDataService.updatePrivacy(userId, privacy, getAuthToken()),
         {
             onSuccess: (result, variables) => {
-                console.log('Privacy settings updated:', { 
+                console.log('Privacy settings updated:', {
                     userId: variables.userId,
                     updatedFields: Object.keys(variables.privacy)
                 });
-                
+
                 // Invalidate privacy cache
                 invalidateCache.invalidateSettings(variables.userId);
-                
+
                 // Update original settings
                 if (originalSettings) {
-                    setOriginalSettings(prev => ({ 
-                        settings: prev.settings, 
-                        privacy: result 
+                    setOriginalSettings(prev => ({
+                        settings: prev.settings,
+                        privacy: result
                     }));
                 }
-                
+
                 setHasUnsavedChanges(false);
-                
+
                 // Refetch privacy if it's the current user
                 if (variables.userId === currentUserId) {
                     privacyQuery.refetch();
@@ -223,26 +216,26 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
 
     // Custom mutation for batch update
     const updateAllSettingsMutation = useCustomMutation(
-        ({ userId, settings, privacy }: { userId: string | number; settings: any; privacy: any }) => 
+        ({ userId, settings, privacy }: { userId: string | number; settings: any; privacy: any }) =>
             Promise.all([
                 profileDataService.updateSettings(userId, settings, getAuthToken()),
                 profileDataService.updatePrivacy(userId, privacy, getAuthToken())
             ]),
         {
             onSuccess: (result, variables) => {
-                console.log('All settings updated:', { 
+                console.log('All settings updated:', {
                     userId: variables.userId,
                     settingsUpdated: !!result[0],
                     privacyUpdated: !!result[1]
                 });
-                
+
                 // Invalidate caches
                 invalidateCache.invalidateSettings(variables.userId);
-                
+
                 // Update original settings
                 setOriginalSettings({ settings: result[0], privacy: result[1] });
                 setHasUnsavedChanges(false);
-                
+
                 // Refetch if it's the current user
                 if (variables.userId === currentUserId) {
                     settingsQuery.refetch();
@@ -259,7 +252,7 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
 
     // Custom mutation for resetting settings
     const resetSettingsMutation = useCustomMutation(
-        ({ userId }: { userId: string | number }) => 
+        ({ userId }: { userId: string | number }) =>
             profileDataService.updateSettings(userId, {
                 theme: 'light',
                 language: 'en',
@@ -279,20 +272,20 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
         {
             onSuccess: (result, variables) => {
                 console.log('Settings reset:', { userId: variables.userId });
-                
+
                 // Invalidate settings cache
                 invalidateCache.invalidateSettings(variables.userId);
-                
+
                 // Update original settings
                 if (originalSettings) {
-                    setOriginalSettings(prev => ({ 
-                        settings: result, 
-                        privacy: prev.privacy 
+                    setOriginalSettings(prev => ({
+                        settings: result,
+                        privacy: prev.privacy
                     }));
                 }
-                
+
                 setHasUnsavedChanges(false);
-                
+
                 // Refetch settings if it's the current user
                 if (variables.userId === currentUserId) {
                     settingsQuery.refetch();
@@ -308,7 +301,7 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
 
     // Custom mutation for resetting privacy
     const resetPrivacyMutation = useCustomMutation(
-        ({ userId }: { userId: string | number }) => 
+        ({ userId }: { userId: string | number }) =>
             profileDataService.updatePrivacy(userId, {
                 profileVisibility: 'public',
                 showEmail: false,
@@ -324,20 +317,20 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
         {
             onSuccess: (result, variables) => {
                 console.log('Privacy settings reset:', { userId: variables.userId });
-                
+
                 // Invalidate privacy cache
                 invalidateCache.invalidateSettings(variables.userId);
-                
+
                 // Update original settings
                 if (originalSettings) {
-                    setOriginalSettings(prev => ({ 
-                        settings: prev.settings, 
-                        privacy: result 
+                    setOriginalSettings(prev => ({
+                        settings: prev.settings,
+                        privacy: result
                     }));
                 }
-                
+
                 setHasUnsavedChanges(false);
-                
+
                 // Refetch privacy if it's the current user
                 if (variables.userId === currentUserId) {
                     privacyQuery.refetch();
@@ -366,13 +359,13 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
         try {
             setError(null);
             const result = await updateSettingsMutation.mutateAsync({ userId, settings });
-            
+
             // Check for unsaved changes
             if (originalSettings) {
                 const hasChanges = JSON.stringify(originalSettings.settings) !== JSON.stringify(result);
                 setHasUnsavedChanges(hasChanges);
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -399,13 +392,13 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
         try {
             setError(null);
             const result = await updatePrivacyMutation.mutateAsync({ userId, privacy });
-            
+
             // Check for unsaved changes
             if (originalSettings) {
                 const hasChanges = JSON.stringify(originalSettings.privacy) !== JSON.stringify(result);
                 setHasUnsavedChanges(hasChanges);
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -422,11 +415,11 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
         try {
             setError(null);
             const result = await updateAllSettingsMutation.mutateAsync({ userId, settings, privacy });
-            
+
             // Update original settings
             setOriginalSettings({ settings: result[0], privacy: result[1] });
             setHasUnsavedChanges(false);
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -437,36 +430,36 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
 
     const checkUnsavedChanges = useCallback((): boolean => {
         if (!originalSettings) return false;
-        
+
         const currentSettings = settingsQuery.data;
         const currentPrivacy = privacyQuery.data;
-        
+
         if (!currentSettings || !currentPrivacy) return false;
-        
+
         const settingsChanged = JSON.stringify(originalSettings.settings) !== JSON.stringify(currentSettings);
         const privacyChanged = JSON.stringify(originalSettings.privacy) !== JSON.stringify(currentPrivacy);
-        
+
         return settingsChanged || privacyChanged;
     }, [originalSettings, settingsQuery.data, privacyQuery.data]);
 
     const discardChanges = useCallback(() => {
         if (originalSettings) {
             // Reset to original settings
-            updateSettingsMutation.mutateAsync({ 
-                userId: currentUserId, 
-                settings: originalSettings.settings 
+            updateSettingsMutation.mutateAsync({
+                userId: currentUserId,
+                settings: originalSettings.settings
             }).catch(err => {
                 console.error('Error discarding settings changes:', err);
             });
-            
-            updatePrivacyMutation.mutateAsync({ 
-                userId: currentUserId, 
-                privacy: originalSettings.privacy 
+
+            updatePrivacyMutation.mutateAsync({
+                userId: currentUserId,
+                privacy: originalSettings.privacy
             }).catch(err => {
                 console.error('Error discarding privacy changes:', err);
             });
         }
-        
+
         setHasUnsavedChanges(false);
     }, [originalSettings, currentUserId, updateSettingsMutation, updatePrivacyMutation]);
 
@@ -484,7 +477,7 @@ export const useProfileSettings = (config?: { userId?: string | number }): Profi
         if (settingsQuery.data && privacyQuery.data && originalSettings) {
             const settingsChanged = JSON.stringify(originalSettings.settings) !== JSON.stringify(settingsQuery.data);
             const privacyChanged = JSON.stringify(originalSettings.privacy) !== JSON.stringify(privacyQuery.data);
-            
+
             setHasUnsavedChanges(settingsChanged || privacyChanged);
         }
     }, [settingsQuery.data, privacyQuery.data, originalSettings]);

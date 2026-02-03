@@ -11,7 +11,6 @@ import RoutesConfig from "./RoutesConfig";
 import { useEnterpriseAuth } from "@/core/modules/authentication";
 // import { useChatWebSocket } from "@/core/websocket/hooks";
 // import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
-import { useAuthStore } from "../core/modules/state-management/zustand";
 import { AdvancedSecurityProvider } from "@/features/auth/presentation/providers/AdvancedSecurityProvider";
 import { AuthProvider } from "@/features/auth/presentation/providers/AuthProvider";
 import { useAuditLogger } from "../shared/auth/auditLogger";
@@ -51,7 +50,7 @@ const AuthPage = lazy(() => import("../pages/auth/AuthPage"));
  */
 const App = () => {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuthStore();
+    const { isAuthenticated } = useEnterpriseAuth();
 
     // Security audit logging (optional - for additional tracking)
     const auditLog = useAuditLogger();

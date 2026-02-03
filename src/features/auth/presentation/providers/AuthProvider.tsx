@@ -16,7 +16,7 @@ interface AuthProviderProps {
  * @param {ReactNode} props.children - Child components
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const { user, isAuthenticated, setFormData } = useAuthStore();
+    const { user, isAuthenticated } = useAuthStore();
 
     useEffect(() => {
         // Auto-populate user permissions based on role
@@ -35,9 +35,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         // Reset form data when user logs out
         if (!isAuthenticated) {
-            setFormData({});
+            useAuthStore.setState({ formData: {} });
         }
-    }, [isAuthenticated, setFormData]);
+    }, [isAuthenticated]);
 
     return <>{children}</>;
 };

@@ -6,13 +6,13 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery, useCustomMutation } from '@/core/hooks/useCustomQuery';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
 import { useSettingsServices } from '../di/useSettingsDI';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
-import { useAuthStore } from '@services/store/zustand';
-import type { 
-  ProfileSettings, 
-  PrivacySettings, 
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
+import { useFeatureAuth } from '@/core/modules/authentication';
+import type {
+  ProfileSettings,
+  PrivacySettings,
   NotificationSettings,
   SharingSettings,
   MentionsSettings,
@@ -32,46 +32,46 @@ export interface EnterpriseSettingsState {
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Privacy settings
   privacy: {
     data: PrivacySettings | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Notification settings
   notifications: {
     data: NotificationSettings | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Additional settings categories
   sharing: {
     data: SharingSettings | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   mentions: {
     data: MentionsSettings | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   replies: {
     data: RepliesSettings | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   blocking: {
     data: BlockingSettings | null;
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   // Combined state
   isLoading: boolean;
   error: Error | null;
@@ -86,21 +86,21 @@ export interface EnterpriseSettingsActions {
   updateProfileSettings: (settings: ProfileSettingsRequest) => Promise<{ success: boolean; data?: UserProfileResponse; errors?: string[] }>;
   uploadProfilePhoto: (file: File) => Promise<{ success: boolean; data?: UserProfileResponse; errors?: string[] }>;
   removeProfilePhoto: () => Promise<{ success: boolean; data?: UserProfileResponse; errors?: string[] }>;
-  
+
   // Privacy actions
   updatePrivacySettings: (settings: PrivacySettings) => Promise<{ success: boolean; data?: PrivacySettings; errors?: string[] }>;
-  
+
   // Notification actions
   updateNotificationSettings: (settings: NotificationSettings) => Promise<{ success: boolean; data?: NotificationSettings; errors?: string[] }>;
-  
+
   // Batch actions
   loadAllSettings: () => Promise<void>;
   saveAllSettings: () => Promise<{ success: boolean; errors?: string[] }>;
-  
+
   // Cache management
   invalidateSettingsCache: () => void;
   prefetchSettings: () => Promise<void>;
-  
+
   // State management
   resetChanges: () => void;
   markAsChanged: () => void;
@@ -117,21 +117,13 @@ export interface EnterpriseSettingsActions {
  * - Error handling and recovery
  */
 export const useEnterpriseSettings = (
-  userId: string
+  userId?: string
 ): EnterpriseSettingsState & EnterpriseSettingsActions => {
-  const [token, setToken] = useState<JwtToken | null>(null);
+  const { token } = useFeatureAuth();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  
   // Get services
   const { settingsDataService, settingsFeatureService } = useSettingsServices();
   const invalidateCache = useCacheInvalidation();
-  
-  // Initialize token
-  useEffect(() => {
-    const authStore = useAuthStore.getState();
-    const currentToken = authStore.data.accessToken || null;
-    setToken(currentToken);
-  }, []);
 
   // Profile settings query
   const profileQuery = useCustomQuery(
@@ -176,9 +168,9 @@ export const useEnterpriseSettings = (
       cacheTime: 20 * 60 * 1000, // 20 minutes
       enabled: !!userId && !!token,
       onSuccess: (data) => {
-        console.log('Enterprise Settings: Notification settings loaded', { 
+        console.log('Enterprise Settings: Notification settings loaded', {
           pushEnabled: data.pushNotifications,
-          emailEnabled: data.emailNotifications 
+          emailEnabled: data.emailNotifications
         });
       },
       onError: (error) => {
@@ -229,13 +221,13 @@ export const useEnterpriseSettings = (
   );
 
   // Combined loading state
-  const isLoading = profileQuery.isLoading || 
-                   privacyQuery.isLoading || 
-                   notificationsQuery.isLoading;
-  
-  const error = profileQuery.error || 
-                privacyQuery.error || 
-                notificationsQuery.error;
+  const isLoading = profileQuery.isLoading ||
+    privacyQuery.isLoading ||
+    notificationsQuery.isLoading;
+
+  const error = profileQuery.error ||
+    privacyQuery.error ||
+    notificationsQuery.error;
 
   // Mutations with optimistic updates
   const updateProfileMutation = useCustomMutation(
@@ -346,7 +338,7 @@ export const useEnterpriseSettings = (
 
   const loadAllSettings = useCallback(async () => {
     if (!token) return;
-    
+
     try {
       await settingsDataService.getAllSettings(userId, token);
       console.log('Enterprise Settings: All settings loaded');
@@ -368,7 +360,7 @@ export const useEnterpriseSettings = (
 
   const prefetchSettings = useCallback(async () => {
     if (!token) return;
-    
+
     try {
       await settingsDataService.prefetchUserSettings(userId, token);
       console.log('Enterprise Settings: Settings prefetched');

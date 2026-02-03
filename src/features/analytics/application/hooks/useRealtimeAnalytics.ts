@@ -6,9 +6,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
 import { useAnalyticsServices } from './useAnalyticsServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { ANALYTICS_CACHE_TTL } from '../data/cache/AnalyticsCacheKeys';
 
 /**
@@ -40,7 +40,7 @@ export interface RealtimeAnalyticsActions {
  */
 export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval?: number }): RealtimeAnalyticsState & RealtimeAnalyticsActions => {
     const { analyticsDataService } = useAnalyticsServices();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
     const [metrics, setMetrics] = useState<any | null>(null);
@@ -51,17 +51,11 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
     const [subscribers, setSubscribers] = useState<Array<(data: any) => void>>([]);
 
     // Get current user ID and token
-    const currentUserId = config?.userId || authData?.userId || 'global';
+    const currentUserId = config?.userId || userId || 'current-user';
     const refreshInterval = config?.refreshInterval || 30000; // 30 seconds default
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useRealtimeAnalytics: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for real-time metrics
     const realtimeMetricsQuery = useCustomQuery(
@@ -74,7 +68,7 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
             onSuccess: (data) => {
                 setMetrics(data);
                 setLastUpdated(new Date());
-                
+
                 // Notify subscribers
                 subscribers.forEach(callback => {
                     try {
@@ -83,12 +77,12 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
                         console.error('Error notifying subscriber:', err);
                     }
                 });
-                
-                console.log('Real-time metrics updated:', { 
+
+                console.log('Real-time metrics updated:', {
                     activeUsers: data.activeUsers,
                     currentSessions: data.currentSessions,
                     eventsPerSecond: data.eventsPerSecond,
-                    userId: currentUserId 
+                    userId: currentUserId
                 });
             },
             onError: (error) => {
@@ -114,7 +108,7 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
             refetchInterval: ANALYTICS_CACHE_TTL.SYSTEM_HEALTH / 2, // Refresh at 1/2 TTL
             onSuccess: (data) => {
                 setSystemHealth(data);
-                
+
                 // Notify subscribers
                 subscribers.forEach(callback => {
                     try {
@@ -123,11 +117,11 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
                         console.error('Error notifying subscriber:', err);
                     }
                 });
-                
-                console.log('System health updated:', { 
+
+                console.log('System health updated:', {
                     status: data.status,
                     uptime: data.uptime,
-                    responseTime: data.responseTime 
+                    responseTime: data.responseTime
                 });
             },
             onError: (error) => {
@@ -152,7 +146,7 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
             refetchInterval: ANALYTICS_CACHE_TTL.PROCESSING_QUEUE / 2, // Refresh at 1/2 TTL
             onSuccess: (data) => {
                 setQueueStatus(data);
-                
+
                 // Notify subscribers
                 subscribers.forEach(callback => {
                     try {
@@ -161,11 +155,11 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
                         console.error('Error notifying subscriber:', err);
                     }
                 });
-                
-                console.log('Queue status updated:', { 
+
+                console.log('Queue status updated:', {
                     queueSize: data.queueSize,
                     processingRate: data.processingRate,
-                    failedJobs: data.failedJobs 
+                    failedJobs: data.failedJobs
                 });
             },
             onError: (error) => {
@@ -183,7 +177,7 @@ export const useRealtimeAnalytics = (config?: { userId?: string, refreshInterval
     // Subscribe to updates
     const subscribeToUpdates = useCallback((callback: (data: any) => void) => {
         setSubscribers(prev => [...prev, callback]);
-        
+
         // Return unsubscribe function
         return () => {
             setSubscribers(prev => prev.filter(sub => sub !== callback));

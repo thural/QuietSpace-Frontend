@@ -8,7 +8,7 @@
 import type { ProfileSettingsRequest, UserProfileResponse } from "@/features/profile/data/models/user";
 import type { JwtToken } from "@/shared/api/models/common";
 import type { ISettingsRepository } from "../../domain/entities/SettingsRepository";
-import { useAuthStore } from "@services/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication';
 import type {
     ProfileSettings,
     PrivacySettings,
@@ -266,10 +266,10 @@ export class SettingsService implements ISettingsService {
     }
 
     /**
-     * Get authentication token from store.
+     * Get authentication token from centralized auth.
      */
     private getToken(): JwtToken {
-        const authStore = useAuthStore.getState();
-        return authStore.data.accessToken || '';
+        const { token } = useFeatureAuth();
+        return token || '';
     }
 }

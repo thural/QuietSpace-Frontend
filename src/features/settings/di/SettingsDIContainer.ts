@@ -9,7 +9,7 @@ import type { ISettingsRepository } from "../domain/entities/SettingsRepository"
 import { SettingsRepository } from "../data/repositories/SettingsRepository";
 import { MockSettingsRepository } from "../data/repositories/MockSettingsRepository";
 import { SettingsService, type ISettingsService } from "../application/services/SettingsService";
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 
 /**
  * DI Container configuration options.
@@ -37,7 +37,7 @@ export class SettingsDIContainer {
             useReactQuery: false,
             ...config
         };
-        
+
         this.initializeDependencies();
     }
 
@@ -47,7 +47,7 @@ export class SettingsDIContainer {
     private initializeDependencies(): void {
         this.registerRepositories();
         this.registerServices();
-        
+
         if (this.config.enableLogging) {
             console.log('SettingsDIContainer: Dependencies initialized', {
                 useMockRepositories: this.config.useMockRepositories,
@@ -62,16 +62,16 @@ export class SettingsDIContainer {
      */
     private registerRepositories(): void {
         const token = this.getAuthToken();
-        
+
         if (this.config.useMockRepositories) {
             this.repositories.set('settings', new MockSettingsRepository(token));
-            
+
             if (this.config.enableLogging) {
                 console.log('SettingsDIContainer: Registered MockSettingsRepository');
             }
         } else {
             this.repositories.set('settings', new SettingsRepository(token));
-            
+
             if (this.config.enableLogging) {
                 console.log('SettingsDIContainer: Registered SettingsRepository');
             }
@@ -83,13 +83,13 @@ export class SettingsDIContainer {
      */
     private registerServices(): void {
         const settingsRepository = this.repositories.get('settings');
-        
+
         if (!settingsRepository) {
             throw new Error('Settings repository not found. Make sure repositories are registered first.');
         }
 
         this.services.set('settingsService', new SettingsService(settingsRepository));
-        
+
         if (this.config.enableLogging) {
             console.log('SettingsDIContainer: Registered SettingsService');
         }
@@ -143,7 +143,7 @@ export class SettingsDIContainer {
      */
     updateConfig(newConfig: Partial<DIContainerConfig>): void {
         this.config = { ...this.config, ...newConfig };
-        
+
         if (this.config.enableLogging) {
             console.log('SettingsDIContainer: Configuration updated', this.config);
         }
@@ -154,8 +154,8 @@ export class SettingsDIContainer {
      */
     private getAuthToken(): string | null {
         try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || null;
+            const { token } = useFeatureAuth();
+            return token || null;
         } catch (error) {
             if (this.config.enableLogging) {
                 console.error('SettingsDIContainer: Error getting auth token', error);
@@ -170,7 +170,7 @@ export class SettingsDIContainer {
     clear(): void {
         this.repositories.clear();
         this.services.clear();
-        
+
         if (this.config.enableLogging) {
             console.log('SettingsDIContainer: All dependencies cleared');
         }
@@ -181,11 +181,11 @@ export class SettingsDIContainer {
      */
     reinitialize(newConfig?: Partial<DIContainerConfig>): void {
         this.clear();
-        
+
         if (newConfig) {
             this.config = { ...this.config, ...newConfig };
         }
-        
+
         this.initializeDependencies();
     }
 }

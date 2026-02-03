@@ -6,11 +6,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useAnalyticsServices } from './useAnalyticsServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { AnalyticsDashboard, DashboardWidget, DateRange } from '@features/analytics/domain/entities/IAnalyticsRepository';
 import { JwtToken } from '@/shared/api/models/common';
 import { ANALYTICS_CACHE_TTL } from '../data/cache/AnalyticsCacheKeys';
@@ -39,19 +38,19 @@ export interface AnalyticsDashboardActions {
     updateDashboard: (dashboardId: string, updates: Partial<AnalyticsDashboard>) => Promise<AnalyticsDashboard>;
     deleteDashboard: (dashboardId: string) => Promise<void>;
     getDashboard: (dashboardId: string) => Promise<AnalyticsDashboard | null>;
-    
+
     // Widget operations
     addWidget: (dashboardId: string, widget: Omit<DashboardWidget, 'id'>) => Promise<DashboardWidget>;
     updateWidget: (dashboardId: string, widgetId: string, updates: Partial<DashboardWidget>) => Promise<DashboardWidget>;
     removeWidget: (dashboardId: string, widgetId: string) => Promise<void>;
     getWidgetData: (widget: DashboardWidget, dateRange: DateRange) => Promise<any>;
-    
+
     // State management
     setSelectedDashboard: (dashboard: AnalyticsDashboard | null) => void;
     clearWidgetData: (widgetId?: string) => void;
     clearError: () => void;
     refresh: () => void;
-    
+
     // Batch operations
     refreshWidgetData: (dashboardId: string, widgets: DashboardWidget[], dateRange: DateRange) => Promise<Record<string, any>>;
 }
@@ -65,7 +64,7 @@ export interface AnalyticsDashboardActions {
 export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: boolean }): AnalyticsDashboardState & AnalyticsDashboardActions => {
     const { analyticsDataService } = useAnalyticsServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
     const [selectedDashboard, setSelectedDashboard] = useState<AnalyticsDashboard | null>(null);
@@ -81,16 +80,10 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
     });
 
     // Get current user ID and token
-    const currentUserId = config?.userId || authData?.userId || 'current-user';
+    const currentUserId = config?.userId || userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useAnalyticsDashboard: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Auto-refresh configuration
     const autoRefresh = config?.autoRefresh !== false;
@@ -152,10 +145,10 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
         {
             onSuccess: (result) => {
                 console.log('Dashboard created:', { dashboardId: result.id, name: result.name });
-                
+
                 // Invalidate dashboards cache
                 dashboardsQuery.refetch();
-                
+
                 // Set as selected dashboard
                 setSelectedDashboard(result);
                 setIsCreating(false);
@@ -173,21 +166,21 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
 
     // Custom mutation for updating dashboards
     const updateDashboardMutation = useCustomMutation(
-        ({ dashboardId, updates }: { dashboardId: string; updates: Partial<AnalyticsDashboard> }) => 
+        ({ dashboardId, updates }: { dashboardId: string; updates: Partial<AnalyticsDashboard> }) =>
             analyticsDataService.updateDashboard(dashboardId, updates, getAuthToken()),
         {
             onSuccess: (result) => {
                 console.log('Dashboard updated:', { dashboardId: result.id, name: result.name });
-                
+
                 // Invalidate caches
                 invalidateCache.invalidateDashboard(dashboardId);
                 dashboardsQuery.refetch();
-                
+
                 // Update selected dashboard if it's the one being updated
                 if (selectedDashboard && selectedDashboard.id === dashboardId) {
                     setSelectedDashboard(result);
                 }
-                
+
                 setIsUpdating(prev => ({ ...prev, [dashboardId]: false }));
             },
             onError: (error) => {
@@ -207,17 +200,17 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
         {
             onSuccess: (_, dashboardId) => {
                 console.log('Dashboard deleted:', { dashboardId });
-                
+
                 // Invalidate caches
                 invalidateCache.invalidateDashboard(dashboardId);
                 dashboardsQuery.refetch();
-                
+
                 // Clear selected dashboard if it was the one being deleted
                 if (selectedDashboard && selectedDashboard.id === dashboardId) {
                     setSelectedDashboard(null);
                     clearWidgetData();
                 }
-                
+
                 setIsDeleting(prev => ({ ...prev, [dashboardId]: false }));
             },
             onError: (error) => {
@@ -271,14 +264,14 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
         try {
             setError(null);
             const result = await analyticsDataService.addWidgetToDashboard(dashboardId, widget, getAuthToken());
-            
+
             // Invalidate dashboard cache
             invalidateCache.invalidateDashboard(dashboardId);
             if (selectedDashboard && selectedDashboard.id === dashboardId) {
                 // Refresh the selected dashboard
                 getDashboard(dashboardId);
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -291,14 +284,14 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
         try {
             setError(null);
             const result = await analyticsDataService.updateWidgetInDashboard(dashboardId, widgetId, updates, getAuthToken());
-            
+
             // Invalidate dashboard cache
             invalidateCache.invalidateDashboard(dashboardId);
             if (selectedDashboard && selectedDashboard.id === dashboardId) {
                 // Refresh the selected dashboard
                 getDashboard(dashboardId);
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -311,14 +304,14 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
         try {
             setError(null);
             await analyticsDataService.removeWidgetFromDashboard(dashboardId, widgetId, getAuthToken());
-            
+
             // Invalidate dashboard cache
             invalidateCache.invalidateDashboard(dashboardId);
             if (selectedDashboard && selectedDashboard.id === dashboardId) {
                 // Refresh the selected dashboard
                 getDashboard(dashboardId);
             }
-            
+
             // Clear widget data for the removed widget
             if (widgetData && widgetData[widgetId]) {
                 setWidgetData(prev => {
@@ -338,7 +331,7 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
         try {
             setError(null);
             const data = await analyticsDataService.getWidgetData(widget, widgetDateRange);
-            
+
             // Cache widget data
             if (widgetData) {
                 setWidgetData(prev => ({
@@ -346,7 +339,7 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
                     [widget.id]: data
                 }));
             }
-            
+
             return data;
         } catch (err) {
             setError(err as Error);
@@ -358,20 +351,20 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
     const refreshWidgetData = useCallback(async (dashboardId: string, widgets: DashboardWidget[], dateRange: DateRange) => {
         try {
             setError(null);
-            
+
             // Clear existing widget data
             setWidgetData({});
-            
+
             // Fetch data for all widgets in parallel
-            const widgetDataPromises = widgets.map(widget => 
+            const widgetDataPromises = widgets.map(widget =>
                 getWidgetData(widget, dateRange).catch(err => {
                     console.error(`Error fetching data for widget ${widget.id}:`, err);
                     return null;
                 })
             );
-            
+
             const widgetDataResults = await Promise.all(widgetDataPromises);
-            
+
             // Cache widget data
             const newWidgetData: Record<string, any> = {};
             widgets.forEach((widget, index) => {
@@ -379,9 +372,9 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
                     newWidgetData[widget.id] = widgetDataResults[index];
                 }
             });
-            
+
             setWidgetData(newWidgetData);
-            
+
             return newWidgetData;
         } catch (err) {
             setError(err as Error);
@@ -419,7 +412,7 @@ export const useAnalyticsDashboard = (config?: { userId?: string, autoRefresh?: 
             const interval = setInterval(() => {
                 refreshWidgetData(selectedDashboard.id, selectedDashboard.widgets, dateRange);
             }, 60000); // Refresh every minute
-            
+
             return () => clearInterval(interval);
         }
     }, [selectedDashboard, autoRefresh, refreshWidgetData, dateRange]);

@@ -6,11 +6,11 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useNotificationServices } from './useNotificationServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import type { NotificationPage, NotificationResponse, NotificationType } from '@/features/notification/data/models/notification';
 import type { ResId } from '@/shared/api/models/common';
 import type { NotificationQuery, NotificationFilters } from '../../domain/entities/INotificationRepository';
@@ -64,7 +64,7 @@ export interface NotificationActions {
 export const useNotifications = (config?: { userId?: string }): NotificationState & NotificationActions => {
     const { notificationFeatureService, notificationDataService } = useNotificationServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
     const [selectedNotification, setSelectedNotification] = useState<NotificationResponse | null>(null);
@@ -74,18 +74,12 @@ export const useNotifications = (config?: { userId?: string }): NotificationStat
     const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
     // Get current user ID
-    const currentUserId = config?.userId || authData?.userId || 'current-user';
+    const currentUserId = config?.userId || userId || 'current-user';
 
     // Get authentication token
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useNotifications: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for notifications with enterprise caching
     const notificationsQuery = useCustomQuery(
@@ -141,14 +135,14 @@ export const useNotifications = (config?: { userId?: string }): NotificationStat
         {
             onSuccess: (result, notificationId) => {
                 console.log('Notification marked as read:', { notificationId, userId: currentUserId });
-                
+
                 // Invalidate relevant caches
                 invalidateCache.invalidateUserNotifications(currentUserId);
-                
+
                 // Update queries
                 notificationsQuery.refetch();
                 unreadCountQuery.refetch();
-                
+
                 // Update selected notification if it's the one being marked as read
                 if (selectedNotification && selectedNotification.id === notificationId) {
                     setSelectedNotification({ ...selectedNotification, isSeen: true });
@@ -165,7 +159,7 @@ export const useNotifications = (config?: { userId?: string }): NotificationStat
                 if (cached) {
                     cache.set(cacheKey, { ...cached, isSeen: true }, NOTIFICATION_CACHE_TTL.NOTIFICATION);
                 }
-                
+
                 return () => {
                     // Rollback on error
                     const cached = cache.get(cacheKey);
@@ -183,10 +177,10 @@ export const useNotifications = (config?: { userId?: string }): NotificationStat
         {
             onSuccess: (results, notificationIds) => {
                 console.log('Multiple notifications marked as read:', { count: notificationIds.length, userId: currentUserId });
-                
+
                 // Invalidate relevant caches
                 invalidateCache.invalidateUserNotifications(currentUserId);
-                
+
                 // Update queries
                 notificationsQuery.refetch();
                 unreadCountQuery.refetch();
@@ -204,7 +198,7 @@ export const useNotifications = (config?: { userId?: string }): NotificationStat
                         cache.set(cacheKey, { ...cached, isSeen: true }, NOTIFICATION_CACHE_TTL.NOTIFICATION);
                     }
                 });
-                
+
                 return () => {
                     // Rollback on error
                     notificationIds.forEach(id => {
@@ -225,14 +219,14 @@ export const useNotifications = (config?: { userId?: string }): NotificationStat
         {
             onSuccess: (_, notificationId) => {
                 console.log('Notification deleted:', { notificationId, userId: currentUserId });
-                
+
                 // Invalidate relevant caches
                 invalidateCache.invalidateUserNotifications(currentUserId);
-                
+
                 // Update queries
                 notificationsQuery.refetch();
                 unreadCountQuery.refetch();
-                
+
                 // Clear selected notification if it was the one being deleted
                 if (selectedNotification && selectedNotification.id === notificationId) {
                     setSelectedNotification(null);

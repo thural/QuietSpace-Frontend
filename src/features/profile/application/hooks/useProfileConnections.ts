@@ -6,11 +6,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useProfileServices } from './useProfileServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { UserConnectionEntity } from '@features/profile/domain/entities/IProfileRepository';
 import { JwtToken } from '@/shared/api/models/common';
 import { PROFILE_CACHE_TTL } from '../data/cache/ProfileCacheKeys';
@@ -40,7 +39,7 @@ export interface ProfileConnectionsActions {
     getFollowers: (userId: string | number, options?: { limit?: number; offset?: number; search?: string }) => Promise<void>;
     getFollowings: (userId: string | number, options?: { limit?: number; offset?: number; search?: string }) => Promise<void>;
     getMutualConnections: (userId1: string | number, userId2: string | number) => Promise<void>;
-    
+
     // Connection management
     followUser: (userId: string | number, targetUserId: string | number) => Promise<UserConnectionEntity>;
     unfollowUser: (userId: string | number, targetUserId: string | number) => Promise<void>;
@@ -48,11 +47,11 @@ export interface ProfileConnectionsActions {
     unblockUser: (userId: string | number, targetUserId: string | number) => Promise<void>;
     muteUser: (userId: string | number, targetUserId: string | number) => Promise<void>;
     unmuteUser: (userId: string | number, targetUserId: string | number) => Promise<void>;
-    
+
     // Blocked and muted users
     getBlockedUsers: (userId: string | number, options?: { limit?: number; offset?: number }) => Promise<void>;
     getMutedUsers: (userId: string | number, options?: { limit?: number; offset?: number }) => Promise<void>;
-    
+
     // State management
     setSelectedUserId: (userId: string | number | null) => void;
     checkConnectionStatus: (userId: string | number, targetUserId: string | number) => Promise<void>;
@@ -69,10 +68,10 @@ export interface ProfileConnectionsActions {
 export const useProfileConnections = (config?: { userId?: string | number, targetUserId?: string | number }): ProfileConnectionsState & ProfileConnectionsActions => {
     const { profileDataService } = useProfileServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
-    const [selectedUserId, setSelectedUserId] = useState<string | number | null>(config?.userId || authData?.userId || null);
+    const [selectedUserId, setSelectedUserId] = useState<string | number | null>(config?.userId || userId || null);
     const [targetUserId, setTargetUserId] = useState<string | number | null>(config?.targetUserId || null);
     const [isFollowing, setIsFollowing] = useState(false);
     const [isBlocked, setIsBlocked] = useState(false);
@@ -80,16 +79,10 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
     const [error, setError] = useState<Error | null>(null);
 
     // Get current user ID and token
-    const currentUserId = selectedUserId || authData?.userId || 'current-user';
+    const currentUserId = selectedUserId || userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useProfileConnections: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for followers
     const followersQuery = useCustomQuery(
@@ -100,11 +93,11 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
             cacheTime: PROFILE_CACHE_TTL.USER_FOLLOWERS,
             refetchInterval: PROFILE_CACHE_TTL.USER_FOLLOWERS / 2,
             onSuccess: (data) => {
-                console.log('Followers loaded:', { 
+                console.log('Followers loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
-                
+
                 // Check if target user is in followers
                 if (targetUserId && data) {
                     const isTargetFollowing = data.some(follower => follower.id === targetUserId);
@@ -133,11 +126,11 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
             cacheTime: PROFILE_CACHE_TTL.USER_FOLLOWINGS,
             refetchInterval: PROFILE_CACHE_TTL.USER_FOLLOWINGS / 2,
             onSuccess: (data) => {
-                console.log('Followings loaded:', { 
+                console.log('Followings loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
-                
+
                 // Check if target user is in followings
                 if (targetUserId && data) {
                     const isTargetFollowing = data.some(following => following.id === targetUserId);
@@ -166,10 +159,10 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
             cacheTime: PROFILE_CACHE_TTL.USER_MUTUAL_CONNECTIONS,
             enabled: !!targetUserId,
             onSuccess: (data) => {
-                console.log('Mutual connections loaded:', { 
+                console.log('Mutual connections loaded:', {
                     userId1: currentUserId,
                     userId2: targetUserId,
-                    count: data.length 
+                    count: data.length
                 });
             },
             onError: (error) => {
@@ -193,11 +186,11 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
             cacheTime: PROFILE_CACHE_TTL.USER_BLOCKED,
             refetchInterval: PROFILE_CACHE_TTL.USER_BLOCKED / 2,
             onSuccess: (data) => {
-                console.log('Blocked users loaded:', { 
+                console.log('Blocked users loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
-                
+
                 // Check if target user is blocked
                 if (targetUserId && data) {
                     const isTargetBlocked = data.some(blocked => blocked.id === targetUserId);
@@ -225,11 +218,11 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
             cacheTime: PROFILE_CACHE_TTL.USER_MUTED,
             refetchInterval: PROFILE_CACHE_TTL.USER_MUTED / 2,
             onSuccess: (data) => {
-                console.log('Muted users loaded:', { 
+                console.log('Muted users loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
-                
+
                 // Check if target user is muted
                 if (targetUserId && data) {
                     const isTargetMuted = data.some(muted => muted.id === targetUserId);
@@ -250,27 +243,27 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
 
     // Custom mutation for following user
     const followUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileDataService.followUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (result, variables) => {
-                console.log('User followed:', { 
+                console.log('User followed:', {
                     userId: variables.userId,
                     targetUserId: variables.targetUserId,
-                    connectionId: result.id 
+                    connectionId: result.id
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Update connection status
                 if (variables.userId === currentUserId) {
                     setIsFollowing(true);
                     followersQuery.refetch();
                     followingsQuery.refetch();
                 }
-                
+
                 // Update target user status if it's the target
                 if (variables.targetUserId === targetUserId) {
                     setIsFollowing(true);
@@ -286,26 +279,26 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
 
     // Custom mutation for unfollowing user
     const unfollowUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileDataService.unfollowUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (_, variables) => {
-                console.log('User unfollowed:', { 
+                console.log('User unfollowed:', {
                     userId: variables.userId,
-                    targetUserId: variables.targetUserId 
+                    targetUserId: variables.targetUserId
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Update connection status
                 if (variables.userId === currentUserId) {
                     setIsFollowing(false);
                     followersQuery.refetch();
                     followingsQuery.refetch();
                 }
-                
+
                 // Update target user status if it's the target
                 if (variables.targetUserId === targetUserId) {
                     setIsFollowing(false);
@@ -321,25 +314,25 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
 
     // Custom mutation for blocking user
     const blockUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileDataService.blockUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (_, variables) => {
-                console.log('User blocked:', { 
+                console.log('User blocked:', {
                     userId: variables.userId,
-                    targetUserId: variables.targetUserId 
+                    targetUserId: variables.targetUserId
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Update blocked status
                 if (variables.userId === currentUserId) {
                     setIsBlocked(true);
                     blockedUsersQuery.refetch();
                 }
-                
+
                 // Update target user status if it's the target
                 if (variables.targetUserId === targetUserId) {
                     setIsBlocked(true);
@@ -355,25 +348,25 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
 
     // Custom mutation for unblocking user
     const unblockUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileDataService.unblockUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (_, variables) => {
-                console.log('User unblocked:', { 
+                console.log('User unblocked:', {
                     userId: variables.userId,
-                    targetUserId: variables.targetUserId 
+                    targetUserId: variables.targetUserId
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Update blocked status
                 if (variables.userId === currentUserId) {
                     setIsBlocked(false);
                     blockedUsersQuery.refetch();
                 }
-                
+
                 // Update target user status if it's the target
                 if (variables.targetUserId === targetUserId) {
                     setIsBlocked(false);
@@ -389,25 +382,25 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
 
     // Custom mutation for muting user
     const muteUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileDataService.muteUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (_, variables) => {
-                console.log('User muted:', { 
+                console.log('User muted:', {
                     userId: variables.userId,
-                    targetUserId: variables.targetUserId 
+                    targetUserId: variables.targetUserId
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Update muted status
                 if (variables.userId === currentUserId) {
                     setIsMuted(true);
                     mutedUsersQuery.refetch();
                 }
-                
+
                 // Update target user status if it's the target
                 if (variables.targetUserId === targetUserId) {
                     setIsMuted(true);
@@ -423,25 +416,25 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
 
     // Custom mutation for unmuting user
     const unmuteUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileDataService.unmuteUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (_, variables) => {
-                console.log('User unmuted:', { 
+                console.log('User unmuted:', {
                     userId: variables.userId,
-                    targetUserId: variables.targetUserId 
+                    targetUserId: variables.targetUserId
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Update muted status
                 if (variables.userId === currentUserId) {
                     setIsMuted(false);
                     mutedUsersQuery.refetch();
                 }
-                
+
                 // Update target user status if it's the target
                 if (variables.targetUserId === targetUserId) {
                     setIsMuted(false);
@@ -536,17 +529,17 @@ export const useProfileConnections = (config?: { userId?: string | number, targe
             setError(null);
             setSelectedUserId(userId);
             setTargetUserId(targetUserId);
-            
+
             // Check if following
             const followings = followingsQuery.data || [];
             const isFollowing = followings.some(following => following.id === targetUserId);
             setIsFollowing(isFollowing);
-            
+
             // Check if blocked
             const blocked = blockedUsersQuery.data || [];
             const isBlocked = blocked.some(blocked => blocked.id === targetUserId);
             setIsBlocked(isBlocked);
-            
+
             // Check if muted
             const muted = mutedUsersQuery.data || [];
             const isMuted = muted.some(muted => muted.id === targetUserId);

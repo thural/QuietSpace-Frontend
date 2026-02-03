@@ -6,11 +6,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useProfileServices } from './useProfileServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { UserProfileEntity, UserProfileStatsEntity, UserConnectionEntity } from '@features/profile/domain/entities/IProfileRepository';
 import { JwtToken } from '@/shared/api/models/common';
 import { PROFILE_CACHE_TTL } from '../data/cache/ProfileCacheKeys';
@@ -41,27 +40,27 @@ export interface ProfileActions {
     getCurrentProfile: () => Promise<void>;
     updateProfile: (userId: string | number, updates: Partial<UserProfileEntity>) => Promise<UserProfileEntity>;
     deleteProfile: (userId: string | number) => Promise<void>;
-    
+
     // Profile statistics
     getStats: (userId: string | number) => Promise<void>;
     updateStats: (userId: string | number, stats: Partial<UserProfileStatsEntity>) => Promise<UserProfileStatsEntity>;
-    
+
     // Connection operations
     getFollowers: (userId: string | number, options?: { limit?: number; offset?: number; search?: string }) => Promise<void>;
     getFollowings: (userId: string | number, options?: { limit?: number; offset?: number; search?: string }) => Promise<void>;
     followUser: (userId: string | number, targetUserId: string | number) => Promise<UserConnectionEntity>;
     unfollowUser: (userId: string | number, targetUserId: string | number) => Promise<void>;
-    
+
     // Search and discovery
     searchUsers: (query: string, options?: { limit?: number; offset?: number; filters?: Record<string, any> }) => Promise<void>;
     getUserSuggestions: (userId: string | number, options?: { limit?: number; type?: 'mutual' | 'popular' | 'new' }) => Promise<void>;
-    
+
     // Settings and privacy
     getSettings: (userId: string | number) => Promise<void>;
     updateSettings: (userId: string | number, settings: any) => Promise<any>;
     getPrivacy: (userId: string | number) => Promise<void>;
     updatePrivacy: (userId: string | number, privacy: any) => Promise<any>;
-    
+
     // State management
     setSelectedUserId: (userId: string | number | null) => void;
     clearError: () => void;
@@ -77,23 +76,17 @@ export interface ProfileActions {
 export const useProfile = (config?: { userId?: string | number }): ProfileState & ProfileActions => {
     const { profileDataService, profileFeatureService } = useProfileServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
     const [selectedUserId, setSelectedUserId] = useState<string | number | null>(config?.userId || null);
     const [error, setError] = useState<Error | null>(null);
 
     // Get current user ID and token
-    const currentUserId = selectedUserId || authData?.userId || 'current-user';
+    const currentUserId = selectedUserId || userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useProfile: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for profile with enterprise caching
     const profileQuery = useCustomQuery(
@@ -104,10 +97,10 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             cacheTime: PROFILE_CACHE_TTL.USER_PROFILE,
             refetchInterval: PROFILE_CACHE_TTL.USER_PROFILE / 2, // Refresh at half TTL
             onSuccess: (data) => {
-                console.log('Profile loaded:', { 
-                    userId: data.id, 
+                console.log('Profile loaded:', {
+                    userId: data.id,
                     username: data.username,
-                    isVerified: data.isVerified 
+                    isVerified: data.isVerified
                 });
             },
             onError: (error) => {
@@ -132,9 +125,9 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             cacheTime: PROFILE_CACHE_TTL.CURRENT_USER_PROFILE,
             refetchInterval: PROFILE_CACHE_TTL.CURRENT_USER_PROFILE / 3, // Refresh more frequently for current user
             onSuccess: (data) => {
-                console.log('Current profile loaded:', { 
-                    userId: data.id, 
-                    username: data.username 
+                console.log('Current profile loaded:', {
+                    userId: data.id,
+                    username: data.username
                 });
             },
             onError: (error) => {
@@ -158,7 +151,7 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             cacheTime: PROFILE_CACHE_TTL.USER_STATS,
             refetchInterval: PROFILE_CACHE_TTL.USER_STATS / 2,
             onSuccess: (data) => {
-                console.log('Profile stats loaded:', { 
+                console.log('Profile stats loaded:', {
                     userId: currentUserId,
                     followersCount: data.followersCount,
                     followingsCount: data.followingsCount
@@ -184,9 +177,9 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             staleTime: PROFILE_CACHE_TTL.USER_FOLLOWERS,
             cacheTime: PROFILE_CACHE_TTL.USER_FOLLOWERS,
             onSuccess: (data) => {
-                console.log('Followers loaded:', { 
+                console.log('Followers loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
             },
             onError: (error) => {
@@ -209,9 +202,9 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             staleTime: PROFILE_CACHE_TTL.USER_FOLLOWINGS,
             cacheTime: PROFILE_CACHE_TTL.USER_FOLLOWINGS,
             onSuccess: (data) => {
-                console.log('Followings loaded:', { 
+                console.log('Followings loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
             },
             onError: (error) => {
@@ -257,9 +250,9 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             staleTime: PROFILE_CACHE_TTL.USER_SUGGESTIONS,
             cacheTime: PROFILE_CACHE_TTL.USER_SUGGESTIONS,
             onSuccess: (data) => {
-                console.log('Suggestions loaded:', { 
+                console.log('Suggestions loaded:', {
                     userId: currentUserId,
-                    count: data.length 
+                    count: data.length
                 });
             },
             onError: (error) => {
@@ -282,9 +275,9 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             staleTime: PROFILE_CACHE_TTL.USER_SETTINGS,
             cacheTime: PROFILE_CACHE_TTL.USER_SETTINGS,
             onSuccess: (data) => {
-                console.log('Settings loaded:', { 
+                console.log('Settings loaded:', {
                     userId: currentUserId,
-                    theme: data?.theme 
+                    theme: data?.theme
                 });
             },
             onError: (error) => {
@@ -307,9 +300,9 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
             staleTime: PROFILE_CACHE_TTL.USER_PRIVACY,
             cacheTime: PROFILE_CACHE_TTL.USER_PRIVACY,
             onSuccess: (data) => {
-                console.log('Privacy settings loaded:', { 
+                console.log('Privacy settings loaded:', {
                     userId: currentUserId,
-                    profileVisibility: data?.profileVisibility 
+                    profileVisibility: data?.profileVisibility
                 });
             },
             onError: (error) => {
@@ -326,18 +319,18 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
 
     // Custom mutation for updating profile
     const updateProfileMutation = useCustomMutation(
-        ({ userId, updates }: { userId: string | number; updates: Partial<UserProfileEntity> }) => 
+        ({ userId, updates }: { userId: string | number; updates: Partial<UserProfileEntity> }) =>
             profileFeatureService.updateProfile(userId, updates, getAuthToken()),
         {
             onSuccess: (result, variables) => {
-                console.log('Profile updated:', { 
+                console.log('Profile updated:', {
                     userId: variables.userId,
                     updatedFields: Object.keys(variables.updates)
                 });
-                
+
                 // Invalidate profile cache
                 invalidateCache.invalidateProfile(variables.userId);
-                
+
                 // Refetch profile if it's the current user
                 if (variables.userId === currentUserId) {
                     profileQuery.refetch();
@@ -353,20 +346,20 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
 
     // Custom mutation for following user
     const followUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileFeatureService.followUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (result, variables) => {
-                console.log('User followed:', { 
+                console.log('User followed:', {
                     userId: variables.userId,
                     targetUserId: variables.targetUserId,
                     connectionId: result.id
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Refetch connections if it's the current user
                 if (variables.userId === currentUserId) {
                     followersQuery.refetch();
@@ -383,19 +376,19 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
 
     // Custom mutation for unfollowing user
     const unfollowUserMutation = useCustomMutation(
-        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) => 
+        ({ userId, targetUserId }: { userId: string | number; targetUserId: string | number }) =>
             profileFeatureService.unfollowUser(userId, targetUserId, getAuthToken()),
         {
             onSuccess: (_, variables) => {
-                console.log('User unfollowed:', { 
+                console.log('User unfollowed:', {
                     userId: variables.userId,
                     targetUserId: variables.targetUserId
                 });
-                
+
                 // Invalidate connection caches for both users
                 invalidateCache.invalidateConnections(variables.userId);
                 invalidateCache.invalidateConnections(variables.targetUserId);
-                
+
                 // Refetch connections if it's the current user
                 if (variables.userId === currentUserId) {
                     followersQuery.refetch();
@@ -412,18 +405,18 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
 
     // Custom mutation for updating settings
     const updateSettingsMutation = useCustomMutation(
-        ({ userId, settings }: { userId: string | number; settings: any }) => 
+        ({ userId, settings }: { userId: string | number; settings: any }) =>
             profileFeatureService.updateSettings(userId, settings, getAuthToken()),
         {
             onSuccess: (result, variables) => {
-                console.log('Settings updated:', { 
+                console.log('Settings updated:', {
                     userId: variables.userId,
                     updatedFields: Object.keys(variables.settings)
                 });
-                
+
                 // Invalidate settings cache
                 invalidateCache.invalidateSettings(variables.userId);
-                
+
                 // Refetch settings if it's the current user
                 if (variables.userId === currentUserId) {
                     settingsQuery.refetch();
@@ -466,7 +459,7 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
         try {
             setError(null);
             await profileFeatureService.deleteProfile(userId, getAuthToken());
-            
+
             // Clear selected user if it was the deleted one
             if (selectedUserId === userId) {
                 setSelectedUserId(null);
@@ -491,12 +484,12 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
         try {
             setError(null);
             const result = await profileFeatureService.updateStats(userId, stats, getAuthToken());
-            
+
             // Refetch stats if it's the current user
             if (userId === currentUserId) {
                 statsQuery.refetch();
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -583,12 +576,12 @@ export const useProfile = (config?: { userId?: string | number }): ProfileState 
         try {
             setError(null);
             const result = await profileFeatureService.updatePrivacy(userId, privacy, getAuthToken());
-            
+
             // Refetch privacy if it's the current user
             if (userId === currentUserId) {
                 privacyQuery.refetch();
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);

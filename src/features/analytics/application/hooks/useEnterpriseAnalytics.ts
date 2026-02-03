@@ -9,10 +9,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAnalyticsServices } from './useAnalyticsServices';
 import { useDebounce } from './useDebounce';
-import { useAuthStore } from '@services/store/zustand';
-import type { 
-  AnalyticsEntity, 
-  AnalyticsMetrics, 
+import { useFeatureAuth } from '@/core/modules/authentication';
+import type {
+  AnalyticsEntity,
+  AnalyticsMetrics,
   AnalyticsDashboard,
   DashboardWidget,
   AnalyticsReport,
@@ -20,7 +20,7 @@ import type {
   AnalyticsFunnel,
   AnalyticsGoal,
   DateRange,
-  AnalyticsEventType 
+  AnalyticsEventType
 } from '@features/analytics/domain/entities/IAnalyticsRepository';
 import type { JwtToken } from '@/shared/api/models/common';
 
@@ -112,8 +112,8 @@ interface EnterpriseAnalyticsActions {
  */
 export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseAnalyticsActions => {
   const { analyticsDataService, analyticsFeatureService } = useAnalyticsServices();
-  const { user } = useAuthStore();
-  
+  const { userId, token } = useFeatureAuth();
+
   // State management
   const [state, setState] = useState<EnterpriseAnalyticsState>({
     metrics: null,
@@ -151,18 +151,18 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
 
   // Fetch metrics with intelligent caching
   const fetchMetrics = useCallback(async (dateRange?: DateRange, filters?: Record<string, any>) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const metrics = await analyticsDataService.getMetrics(
-        user.id,
+        userId,
         dateRange || state.dateRange,
         filters || state.filters,
-        user.token
+        token
       );
-      
+
       setState(prev => ({
         ...prev,
         metrics,
@@ -178,17 +178,17 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         dataFreshness: 'stale'
       }));
     }
-  }, [analyticsDataService, user, state.dateRange, state.filters]);
+  }, [analyticsDataService, userId, state.dateRange, state.filters]);
 
   // Fetch dashboards
   const fetchDashboards = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const dashboards = await analyticsDataService.getDashboards(user.id, user.token);
-      
+      const dashboards = await analyticsDataService.getDashboards(userId, token);
+
       setState(prev => ({
         ...prev,
         dashboards,
@@ -201,17 +201,17 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         isLoading: false
       }));
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Fetch reports
   const fetchReports = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const reports = await analyticsDataService.getReports(user.id, user.token);
-      
+      const reports = await analyticsDataService.getReports(userId, token);
+
       setState(prev => ({
         ...prev,
         reports,
@@ -224,19 +224,19 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         isLoading: false
       }));
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Fetch insights
   const fetchInsights = useCallback(async (dateRange?: DateRange) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
       const insights = await analyticsDataService.getInsights(
-        user.id,
+        userId,
         dateRange || state.dateRange,
-        user.token
+        token
       );
-      
+
       setState(prev => ({
         ...prev,
         insights
@@ -244,15 +244,15 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
     } catch (error) {
       console.error('Error fetching insights:', error);
     }
-  }, [analyticsDataService, user, state.dateRange]);
+  }, [analyticsDataService, userId, state.dateRange]);
 
   // Fetch funnels
   const fetchFunnels = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      const funnels = await analyticsDataService.getFunnels(user.id, user.token);
-      
+      const funnels = await analyticsDataService.getFunnels(userId, token);
+
       setState(prev => ({
         ...prev,
         funnels
@@ -260,15 +260,15 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
     } catch (error) {
       console.error('Error fetching funnels:', error);
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Fetch goals
   const fetchGoals = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      const goals = await analyticsDataService.getGoals(user.id, user.token);
-      
+      const goals = await analyticsDataService.getGoals(userId, token);
+
       setState(prev => ({
         ...prev,
         goals
@@ -276,7 +276,7 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
     } catch (error) {
       console.error('Error fetching goals:', error);
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Refresh all data
   const refreshAllData = useCallback(async () => {
@@ -292,17 +292,17 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
 
   // Track event
   const trackEvent = useCallback(async (event: Omit<AnalyticsEntity, 'id'>) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      const trackedEvent = await analyticsDataService.createEvent(event, user.token);
-      
+      const trackedEvent = await analyticsDataService.createEvent(event, token);
+
       // Update cache hit rate (simulate)
       setState(prev => ({
         ...prev,
         cacheHitRate: Math.min(100, prev.cacheHitRate + 1)
       }));
-      
+
       return trackedEvent;
     } catch (error) {
       setState(prev => ({
@@ -311,14 +311,14 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Track page view
   const trackPageView = useCallback(async (sessionId: string, metadata: any) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsDataService.trackPageView(user.id, sessionId, metadata, user.token);
+      return await analyticsDataService.trackPageView(userId, sessionId, metadata, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -326,14 +326,14 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Track content view
   const trackContentView = useCallback(async (contentId: string, sessionId: string, metadata: any) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsDataService.trackContentView(user.id, contentId, sessionId, metadata, user.token);
+      return await analyticsDataService.trackContentView(userId, contentId, sessionId, metadata, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -341,34 +341,34 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
-  // Track user action
+  // Track userId action
   const trackUserAction = useCallback(async (
-    action: AnalyticsEventType, 
-    properties: any, 
-    sessionId: string, 
+    action: AnalyticsEventType,
+    properties: any,
+    sessionId: string,
     metadata: any
   ) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsDataService.trackUserAction(user.id, action, properties, sessionId, metadata, user.token);
+      return await analyticsDataService.trackUserAction(userId, action, properties, sessionId, metadata, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Failed to track user action'
+        error: error instanceof Error ? error.message : 'Failed to track userId action'
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Track batch events
   const trackBatchEvents = useCallback(async (events: Array<Omit<AnalyticsEntity, 'id'>>) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsDataService.createBatchEvents(events, user.token);
+      return await analyticsDataService.createBatchEvents(events, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -376,20 +376,20 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Create dashboard
   const createDashboard = useCallback(async (dashboard: Omit<AnalyticsDashboard, 'id'>) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      const newDashboard = await analyticsDataService.createDashboard(dashboard, user.token);
-      
+      const newDashboard = await analyticsDataService.createDashboard(dashboard, token);
+
       setState(prev => ({
         ...prev,
         dashboards: prev.dashboards ? [...prev.dashboards, newDashboard] : [newDashboard]
       }));
-      
+
       return newDashboard;
     } catch (error) {
       setState(prev => ({
@@ -398,22 +398,22 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Update dashboard
   const updateDashboard = useCallback(async (id: string, updates: Partial<AnalyticsDashboard>) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      const updatedDashboard = await analyticsDataService.updateDashboard(id, updates, user.token);
-      
+      const updatedDashboard = await analyticsDataService.updateDashboard(id, updates, token);
+
       setState(prev => ({
         ...prev,
         dashboards: prev.dashboards?.map(dashboard =>
           dashboard.id === id ? updatedDashboard : dashboard
         ) || null
       }));
-      
+
       return updatedDashboard;
     } catch (error) {
       setState(prev => ({
@@ -422,15 +422,15 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Delete dashboard
   const deleteDashboard = useCallback(async (id: string) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsDataService.deleteDashboard(id, user.token);
-      
+      await analyticsDataService.deleteDashboard(id, token);
+
       setState(prev => ({
         ...prev,
         dashboards: prev.dashboards?.filter(dashboard => dashboard.id !== id) || null
@@ -441,20 +441,20 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         error: error instanceof Error ? error.message : 'Failed to delete dashboard'
       }));
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Duplicate dashboard
   const duplicateDashboard = useCallback(async (id: string, name: string) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      const duplicatedDashboard = await analyticsDataService.duplicateDashboard(id, name, user.token);
-      
+      const duplicatedDashboard = await analyticsDataService.duplicateDashboard(id, name, token);
+
       setState(prev => ({
         ...prev,
         dashboards: prev.dashboards ? [...prev.dashboards, duplicatedDashboard] : [duplicatedDashboard]
       }));
-      
+
       return duplicatedDashboard;
     } catch (error) {
       setState(prev => ({
@@ -463,14 +463,14 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Generate report
   const generateReport = useCallback(async (config: any) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsFeatureService.generateReport(user.id, config, user.token);
+      return await analyticsFeatureService.generateReport(userId, config, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -478,14 +478,14 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Export report
   const exportReport = useCallback(async (reportId: string, format: 'pdf' | 'excel' | 'csv') => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsDataService.exportReport(reportId, format, user.token);
+      return await analyticsDataService.exportReport(reportId, format, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -493,29 +493,29 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Schedule report
   const scheduleReport = useCallback(async (reportId: string, schedule: any) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsDataService.scheduleReport(reportId, schedule, user.token);
+      await analyticsDataService.scheduleReport(reportId, schedule, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Failed to schedule report'
       }));
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Enable real-time analytics
   const enableRealTimeAnalytics = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsFeatureService.enableRealTimeAnalytics(user.id);
-      
+      await analyticsFeatureService.enableRealTimeAnalytics(userId);
+
       setState(prev => ({
         ...prev,
         realTimeEnabled: true
@@ -526,15 +526,15 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         error: error instanceof Error ? error.message : 'Failed to enable real-time analytics'
       }));
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Disable real-time analytics
   const disableRealTimeAnalytics = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsFeatureService.disableRealTimeAnalytics(user.id);
-      
+      await analyticsFeatureService.disableRealTimeAnalytics(userId);
+
       setState(prev => ({
         ...prev,
         realTimeEnabled: false
@@ -545,45 +545,45 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         error: error instanceof Error ? error.message : 'Failed to disable real-time analytics'
       }));
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Subscribe to live updates
   const subscribeToLiveUpdates = useCallback(async (dashboardId: string) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsFeatureService.subscribeToLiveUpdates(user.id, dashboardId);
+      await analyticsFeatureService.subscribeToLiveUpdates(userId, dashboardId);
     } catch (error) {
       setState(prev => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Failed to subscribe to live updates'
       }));
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Unsubscribe from live updates
   const unsubscribeFromLiveUpdates = useCallback(async (dashboardId: string) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsFeatureService.unsubscribeFromLiveUpdates(user.id, dashboardId);
+      await analyticsFeatureService.unsubscribeFromLiveUpdates(userId, dashboardId);
     } catch (error) {
       setState(prev => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Failed to unsubscribe from live updates'
       }));
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Process data
   const processData = useCallback(async (config: any) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     setState(prev => ({ ...prev, processingStatus: 'processing' }));
 
     try {
-      await analyticsFeatureService.processData(user.id, config, user.token);
-      
+      await analyticsFeatureService.processData(userId, config, token);
+
       setState(prev => ({
         ...prev,
         processingStatus: 'completed'
@@ -595,14 +595,14 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
         error: error instanceof Error ? error.message : 'Failed to process data'
       }));
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Run analysis
   const runAnalysis = useCallback(async (type: string, parameters: any) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsFeatureService.runAnalysis(user.id, type, parameters, user.token);
+      return await analyticsFeatureService.runAnalysis(userId, type, parameters, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -610,14 +610,14 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Predict trends
   const predictTrends = useCallback(async (timeframe: DateRange) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      return await analyticsFeatureService.predictTrends(user.id, timeframe, user.token);
+      return await analyticsFeatureService.predictTrends(userId, timeframe, token);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -625,7 +625,7 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
       }));
       throw error;
     }
-  }, [analyticsFeatureService, user]);
+  }, [analyticsFeatureService, userId]);
 
   // Set selected dashboard
   const setSelectedDashboard = useCallback((dashboard: AnalyticsDashboard | null) => {
@@ -649,11 +649,11 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
 
   // Invalidate cache
   const invalidateCache = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
-      await analyticsDataService.invalidateUserCache(user.id);
-      
+      await analyticsDataService.invalidateUserCache(userId);
+
       setState(prev => ({
         ...prev,
         cacheHitRate: 0,
@@ -662,28 +662,28 @@ export const useEnterpriseAnalytics = (): EnterpriseAnalyticsState & EnterpriseA
     } catch (error) {
       console.error('Error invalidating cache:', error);
     }
-  }, [analyticsDataService, user]);
+  }, [analyticsDataService, userId]);
 
   // Debounced data refresh
   const debouncedRefresh = useDebounce(refreshAllData, 1000);
 
   // Initial data fetch
   useEffect(() => {
-    if (user?.id) {
+    if (userId) {
       refreshAllData();
     }
-  }, [user?.id, refreshAllData]);
+  }, [userId?.id, refreshAllData]);
 
   // Real-time updates
   useEffect(() => {
-    if (!state.realTimeEnabled || !user?.id) return;
+    if (!state.realTimeEnabled || !userId?.id) return;
 
     const interval = setInterval(() => {
       fetchMetrics();
     }, 30000); // Update every 30 seconds
 
     return () => clearInterval(interval);
-  }, [state.realTimeEnabled, user?.id, fetchMetrics]);
+  }, [state.realTimeEnabled, userId?.id, fetchMetrics]);
 
   // Data freshness monitoring
   useEffect(() => {

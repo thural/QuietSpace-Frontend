@@ -9,7 +9,7 @@
 
 import { useCallback } from "react";
 import { useNotifications } from "@/features/notification/application/hooks/useNotifications";
-import { useAuthStore } from "@core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication';
 
 /**
  * Interface for notification data state
@@ -36,8 +36,8 @@ export interface INotificationDataState {
  * @returns Notification data state
  */
 export const useNotificationDataRefactored = (): INotificationDataState => {
-  // Get current user from auth store
-  const user = useAuthStore(state => state.user);
+  // Get current user from centralized auth
+  const { userId } = useFeatureAuth();
 
   // Use centralized notification hook
   const {

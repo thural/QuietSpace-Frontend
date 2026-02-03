@@ -9,12 +9,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useProfileServices } from './useProfileServices';
 import { useDebounce } from './useDebounce';
-import { useAuthStore } from '@services/store/zustand';
-import type { 
-  UserProfileEntity, 
-  UserProfileStatsEntity, 
+import { useFeatureAuth } from '@/core/modules/authentication';
+import type {
+  UserProfileEntity,
+  UserProfileStatsEntity,
   UserConnectionEntity,
-  ProfileAccessEntity 
+  ProfileAccessEntity
 } from '@features/profile/domain/entities/IProfileRepository';
 import type { JwtToken } from '@/shared/api/models/common';
 
@@ -114,8 +114,8 @@ interface EnterpriseProfileActions {
  */
 export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfileActions => {
   const { profileDataService, profileFeatureService } = useProfileServices();
-  const { user } = useAuthStore();
-  
+  const { userId, token } = useFeatureAuth();
+
   // State management
   const [state, setState] = useState<EnterpriseProfileState>({
     profile: null,
@@ -155,7 +155,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
     try {
       const profile = await profileDataService.getUserProfile(userId, user?.token);
       const stats = await profileDataService.getUserStats(userId, user?.token);
-      
+
       setState(prev => ({
         ...prev,
         profile,
@@ -184,7 +184,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
       const stats = await profileDataService.getUserStats(user.id, user.token);
       const settings = await profileDataService.getUserSettings(user.id, user.token);
       const privacy = await profileDataService.getUserPrivacy(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile,
@@ -210,13 +210,13 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedProfile = await profileDataService.updateUserProfile(user.id, updates, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile: prev.profile ? { ...prev.profile, ...updatedProfile } : updatedProfile,
         lastUpdateTime: new Date()
       }));
-      
+
       return updatedProfile;
     } catch (error) {
       setState(prev => ({
@@ -231,7 +231,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
   const deleteProfile = useCallback(async (userId: string | number) => {
     try {
       await profileDataService.deleteUserProfile(userId, user?.token);
-      
+
       if (state.selectedUserId === userId) {
         setState(prev => ({
           ...prev,
@@ -261,7 +261,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
   const getStats = useCallback(async (userId: string | number) => {
     try {
       const stats = await profileDataService.getUserStats(userId, user?.token);
-      
+
       setState(prev => ({
         ...prev,
         stats
@@ -277,12 +277,12 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedStats = await profileDataService.updateUserStats(user.id, stats, user.token);
-      
+
       setState(prev => ({
         ...prev,
         stats: prev.stats ? { ...prev.stats, ...updatedStats } : updatedStats
       }));
-      
+
       return updatedStats;
     } catch (error) {
       setState(prev => ({
@@ -299,7 +299,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileFeatureService.trackUserActivity(user.id, activity, user.token);
-      
+
       // Update cache hit rate (simulate)
       setState(prev => ({
         ...prev,
@@ -316,7 +316,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const followers = await profileDataService.getUserFollowers(state.selectedUserId, options, user?.token);
-      
+
       setState(prev => ({
         ...prev,
         followers
@@ -332,7 +332,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const followings = await profileDataService.getUserFollowings(state.selectedUserId, options, user?.token);
-      
+
       setState(prev => ({
         ...prev,
         followings
@@ -348,7 +348,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.followUser(user.id, userId, user.token);
-      
+
       // Update connection status
       if (state.selectedUserId === userId) {
         setState(prev => ({
@@ -356,7 +356,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
           connectionStatus: 'following'
         }));
       }
-      
+
       // Refresh followers/followings
       await getFollowers();
       await getFollowings();
@@ -374,7 +374,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.unfollowUser(user.id, userId, user.token);
-      
+
       // Update connection status
       if (state.selectedUserId === userId) {
         setState(prev => ({
@@ -382,7 +382,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
           connectionStatus: 'none'
         }));
       }
-      
+
       // Refresh followers/followings
       await getFollowers();
       await getFollowings();
@@ -400,7 +400,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.blockUser(user.id, userId, user.token);
-      
+
       // Update connection status
       if (state.selectedUserId === userId) {
         setState(prev => ({
@@ -436,7 +436,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const connections = await profileDataService.getUserConnections(state.selectedUserId, type, options, user?.token);
-      
+
       if (type === 'followers') {
         setState(prev => ({ ...prev, followers: connections }));
       } else if (type === 'followings') {
@@ -455,7 +455,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const results = await profileDataService.searchProfiles(query, filters, user?.token);
-      
+
       setState(prev => ({
         ...prev,
         searchResults: results,
@@ -476,7 +476,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const suggestions = await profileDataService.getUserSuggestions(user.id, type, user?.token);
-      
+
       setState(prev => ({
         ...prev,
         suggestions
@@ -492,7 +492,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const recommendations = await profileFeatureService.getRecommendedConnections(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         suggestions: recommendations
@@ -508,7 +508,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const settings = await profileDataService.getUserSettings(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         settings
@@ -524,7 +524,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedSettings = await profileDataService.updateUserSettings(user.id, settings, user.token);
-      
+
       setState(prev => ({
         ...prev,
         settings: updatedSettings
@@ -543,7 +543,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const privacy = await profileDataService.getUserPrivacy(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         privacy
@@ -559,7 +559,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedPrivacy = await profileDataService.updateUserPrivacy(user.id, privacy, user.token);
-      
+
       setState(prev => ({
         ...prev,
         privacy: updatedPrivacy
@@ -578,7 +578,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.setProfileVisibility(user.id, visibility, user.token);
-      
+
       setState(prev => ({
         ...prev,
         privacy: prev.privacy ? { ...prev.privacy, visibility } : { visibility }
@@ -597,12 +597,12 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const avatarUrl = await profileDataService.uploadAvatar(user.id, file, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile: prev.profile ? { ...prev.profile, avatar: avatarUrl } : null
       }));
-      
+
       return avatarUrl;
     } catch (error) {
       setState(prev => ({
@@ -619,12 +619,12 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const coverPhotoUrl = await profileDataService.uploadCoverPhoto(user.id, file, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile: prev.profile ? { ...prev.profile, coverPhoto: coverPhotoUrl } : null
       }));
-      
+
       return coverPhotoUrl;
     } catch (error) {
       setState(prev => ({
@@ -656,7 +656,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedProfile = await profileDataService.addUserExperience(user.id, experience, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile: prev.profile ? { ...prev.profile, ...updatedProfile } : updatedProfile
@@ -675,7 +675,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedProfile = await profileDataService.updateUserExperience(user.id, id, experience, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile: prev.profile ? { ...prev.profile, ...updatedProfile } : updatedProfile
@@ -694,7 +694,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const updatedProfile = await profileDataService.removeUserExperience(user.id, id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profile: prev.profile ? { ...prev.profile, ...updatedProfile } : updatedProfile
@@ -711,12 +711,12 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
   const getRecentActivity = useCallback(async (userId: string | number) => {
     try {
       const activity = await profileDataService.getUserRecentActivity(userId, user?.token);
-      
+
       // Update activity status based on recent activity
       if (activity && activity.length > 0) {
         const lastActivity = new Date(activity[0].timestamp);
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        
+
         setState(prev => ({
           ...prev,
           activityStatus: lastActivity > oneHourAgo ? 'active' : 'inactive'
@@ -733,7 +733,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.updateUserActivityStatus(user.id, status, user.token);
-      
+
       setState(prev => ({
         ...prev,
         activityStatus: status
@@ -752,7 +752,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.setUserOnlineStatus(user.id, isOnline, user.token);
-      
+
       setState(prev => ({
         ...prev,
         isOnline
@@ -776,7 +776,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       await profileDataService.invalidateUserCache(user.id);
-      
+
       setState(prev => ({
         ...prev,
         cacheHitRate: 0
@@ -792,7 +792,7 @@ export const useEnterpriseProfile = (): EnterpriseProfileState & EnterpriseProfi
 
     try {
       const completeness = await profileFeatureService.calculateProfileCompleteness(user.id, user.token);
-      
+
       setState(prev => ({
         ...prev,
         profileCompleteness: completeness

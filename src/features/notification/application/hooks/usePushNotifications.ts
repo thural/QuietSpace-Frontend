@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
 import { useNotificationServices } from './useNotificationServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { PushSubscription, DeviceInfo, QuietHours } from '@features/notification/domain/entities/INotificationRepository';
 import { JwtToken } from '@/shared/api/models/common';
 
@@ -13,7 +13,7 @@ import { JwtToken } from '@/shared/api/models/common';
  */
 export const usePushNotifications = () => {
     const { pushNotificationService, notificationFeatureService } = useNotificationServices();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
     const [isSubscribed, setIsSubscribed] = useState(false);
@@ -24,16 +24,10 @@ export const usePushNotifications = () => {
     const [error, setError] = useState<Error | null>(null);
 
     // Get current user ID and token
-    const currentUserId = authData?.userId || 'current-user';
+    const currentUserId = userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('usePushNotifications: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Initialize push notification support
     useEffect(() => {
@@ -121,8 +115,8 @@ export const usePushNotifications = () => {
             };
 
             const pushSubscription = await pushNotificationService.subscribeToPushNotifications(
-                currentUserId, 
-                deviceInfoToUse, 
+                currentUserId,
+                deviceInfoToUse,
                 getAuthToken()
             );
 
@@ -172,7 +166,7 @@ export const usePushNotifications = () => {
             setError(null);
 
             const deviceToken = await pushNotificationService.registerDevice(currentUserId, deviceInfo, getAuthToken());
-            
+
             if (deviceToken) {
                 console.log('Device registered successfully:', deviceToken.id);
                 return true;
@@ -195,7 +189,7 @@ export const usePushNotifications = () => {
             setError(null);
 
             const success = await pushNotificationService.removeDevice(currentUserId, deviceId, getAuthToken());
-            
+
             if (success) {
                 console.log('Device removed successfully:', deviceId);
                 return true;
@@ -228,7 +222,7 @@ export const usePushNotifications = () => {
             setError(null);
 
             const result = await notificationFeatureService.updateQuietHours(currentUserId, quietHours, getAuthToken());
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -276,16 +270,16 @@ export const usePushNotifications = () => {
     useEffect(() => {
         const handlePushMessage = (event: CustomEvent) => {
             console.log('Push message received:', event.detail);
-            
+
             // Update unread count
             checkSubscriptionStatus();
-            
+
             // You can also trigger other actions here
             // like showing a toast notification or updating UI
         };
 
         window.addEventListener('pushMessage', handlePushMessage);
-        
+
         return () => {
             window.removeEventListener('pushMessage', handlePushMessage);
         };
@@ -295,13 +289,13 @@ export const usePushNotifications = () => {
     useEffect(() => {
         const handleMarkAsRead = (event: CustomEvent) => {
             console.log('Mark notification as read event:', event.detail);
-            
+
             // Update unread count
             checkSubscriptionStatus();
         };
 
         window.addEventListener('markNotificationAsRead', handleMarkAsRead);
-        
+
         return () => {
             window.removeEventListener('markNotificationAsRead', handleMarkAsRead);
         };

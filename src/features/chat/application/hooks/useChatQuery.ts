@@ -8,6 +8,7 @@
 
 import { useCustomQuery } from '@/core/hooks';
 import { useCustomMutation } from '@/core/hooks';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { ChatResponse, MessageResponse } from "@/features/chat/data/models/chat";
 import { UserResponse } from "@/features/profile/data/models/user";
 import { useChatServices } from './useChatServices';
@@ -26,8 +27,9 @@ import useNavigation from "@/shared/hooks/useNavigation";
  * @returns {Object} - An object containing the current state, functions for 
  *                     handling chat creation, user querying, and input events.
  */
-const useCustomChatQuery = () => {
+export const useCustomChatQuery = () => {
     const { chatDataService, chatFeatureService } = useChatServices();
+    const { token, userId, isAuthenticated } = useFeatureAuth();
     const invalidateCache = useCacheInvalidation();
     const { navigatePath } = useNavigation(); // Navigation utility
 
@@ -35,15 +37,10 @@ const useCustomChatQuery = () => {
     const { data: user, isLoading: userLoading, error: userError } = useCustomQuery(
         ['user', 'signed-in'],
         async () => {
-            // Get user from auth store
-            const authStore = useAuthStore.getState();
-            const authData = authStore.data;
-
-            if (!authData || !authData.user) {
+            if (!userId || !isAuthenticated) {
                 throw new Error('User not authenticated');
             }
-
-            return authData.user;
+            return { id: userId, /* other user properties */ };
         },
         {
             staleTime: CACHE_TIME_MAPPINGS.USER_STALE_TIME,
@@ -60,21 +57,18 @@ const useCustomChatQuery = () => {
 
     // Get chats with custom query
     const { data: chats, isLoading: chatsLoading, error: chatsError } = useCustomQuery(
-        ['chats', user?.id],
+        ['chats', userId],
         async () => {
-            if (!user) return { content: [] };
-            // Get token from auth store
-            const authStore = useAuthStore.getState();
-            const token = authStore.data.accessToken || '';
-            return await chatDataService.getChats(user.id, token);
+            if (!userId) return { content: [] };
+            return await chatDataService.getChats(userId, token || '');
         },
         {
-            enabled: !!user,
+            enabled: !!userId,
             staleTime: CACHE_TIME_MAPPINGS.CHAT_STALE_TIME,
             cacheTime: CACHE_TIME_MAPPINGS.CHAT_CACHE_TIME,
             onSuccess: (data) => {
                 console.log('CustomChatQuery: Chats loaded:', {
-                    userId: user.id,
+                    userId: userId,
                     count: data.content?.length || 0
                 });
             },
@@ -157,17 +151,14 @@ const useCustomChatQuery = () => {
             isGroupChat: false,
             recipientId: clickedUser.id,
             text: newMessage.text,
-            userIds: [user.id, clickedUser.id]
+            userIds: [userId, clickedUser.id]
         });
     };
 
     // Create chat mutation with optimistic updates
     const createChatMutation = useCustomMutation(
         async (chatData: any) => {
-            // Get token from auth store
-            const authStore = useAuthStore.getState();
-            const token = authStore.data.accessToken || '';
-            return await chatFeatureService.createChatWithValidation(chatData, token);
+            return await chatFeatureService.createChatWithValidation(chatData, token || '');
         },
         {
             onSuccess: (data) => {

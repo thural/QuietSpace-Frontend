@@ -6,10 +6,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery, useCustomMutation } from '@/core/hooks/useCustomQuery';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
 import { useContentServices } from '../di/useContentDI';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
-import { useAuthStore } from '@services/store/zustand';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import type {
   ContentEntity,
   ContentMetadata,
@@ -174,9 +174,8 @@ export const useEnterpriseContent = (
 
   // Initialize token
   useEffect(() => {
-    const authStore = useAuthStore.getState();
-    const currentToken = authStore.data.accessToken || null;
-    setToken(currentToken);
+    const { token } = useFeatureAuth();
+    setToken(token || null);
   }, []);
 
   // Content query

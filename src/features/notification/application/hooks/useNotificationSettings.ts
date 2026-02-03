@@ -1,9 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery, useCustomMutation } from '@/core/modules/hooks/useCustomQuery';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useNotificationServices } from './useNotificationServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { NotificationSettings, NotificationPreferences, QuietHours } from '@features/notification/domain/entities/INotificationRepository';
 import { NotificationType } from '@/features/notification/data/models/notification';
 import { NOTIFICATION_CACHE_TTL } from '../../data/cache/NotificationCacheKeys';
@@ -17,23 +16,17 @@ import { NOTIFICATION_CACHE_TTL } from '../../data/cache/NotificationCacheKeys';
 export const useNotificationSettings = () => {
     const { notificationFeatureService, notificationDataService } = useNotificationServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { token, userId } = useFeatureAuth();
 
     // State
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     // Get current user ID and token
-    const currentUserId = authData?.userId || 'current-user';
+    const currentUserId = userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useNotificationSettings: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for notification settings
     const settingsQuery = useCustomQuery(
@@ -104,15 +97,15 @@ export const useNotificationSettings = () => {
 
     // Custom mutation for updating settings
     const updateSettingsMutation = useCustomMutation(
-        (settings: Partial<NotificationSettings>) => 
+        (settings: Partial<NotificationSettings>) =>
             notificationFeatureService.updateNotificationSettings(currentUserId, settings, getAuthToken()),
         {
             onSuccess: (result) => {
                 console.log('Notification settings updated:', { userId: currentUserId, settings: result });
-                
+
                 // Invalidate settings cache
                 invalidateCache.invalidateUserSettings(currentUserId);
-                
+
                 // Update query
                 settingsQuery.refetch();
             },
@@ -133,10 +126,10 @@ export const useNotificationSettings = () => {
         {
             onSuccess: (result) => {
                 console.log('Notification preferences updated:', { userId: currentUserId, preferences: result });
-                
+
                 // Invalidate settings cache
                 invalidateCache.invalidateUserSettings(currentUserId);
-                
+
                 // Update query
                 preferencesQuery.refetch();
             },
@@ -149,15 +142,15 @@ export const useNotificationSettings = () => {
 
     // Custom mutation for updating quiet hours
     const updateQuietHoursMutation = useCustomMutation(
-        (quietHours: QuietHours) => 
+        (quietHours: QuietHours) =>
             notificationFeatureService.updateQuietHours(currentUserId, quietHours, getAuthToken()),
         {
             onSuccess: (result) => {
                 console.log('Quiet hours updated:', { userId: currentUserId, quietHours: result });
-                
+
                 // Invalidate settings cache
                 invalidateCache.invalidateUserSettings(currentUserId);
-                
+
                 // Update query
                 quietHoursQuery.refetch();
             },
@@ -235,7 +228,7 @@ export const useNotificationSettings = () => {
         if (!currentPreferences) return;
 
         const updatedPreferences: Partial<NotificationPreferences> = {};
-        
+
         // Set all notification types to enabled/disabled
         Object.keys(currentPreferences).forEach((type) => {
             const notificationType = type as NotificationType;
@@ -269,12 +262,12 @@ export const useNotificationSettings = () => {
     // Reset preferences to defaults
     const resetPreferencesToDefaults = useCallback(async () => {
         const defaultPreferences: Partial<NotificationPreferences> = {};
-        
+
         // Set all notification types to default preferences
         const allTypes: NotificationType[] = [
             'mention', 'like', 'comment', 'follow', 'message', 'post', 'share', 'system'
         ];
-        
+
         allTypes.forEach((type) => {
             defaultPreferences[type] = {
                 enabled: true,
@@ -319,14 +312,14 @@ export const useNotificationSettings = () => {
         settings: settingsQuery.data,
         preferences: preferencesQuery.data,
         quietHours: quietHoursQuery.data,
-        
+
         // Loading states
         isLoading: isLoading || settingsQuery.isLoading || preferencesQuery.isLoading || quietHoursQuery.isLoading,
         isUpdating: updateSettingsMutation.isLoading || updatePreferencesMutation.isLoading || updateQuietHoursMutation.isLoading,
-        
+
         // Error state
         error: error || settingsQuery.error || preferencesQuery.error || quietHoursQuery.error,
-        
+
         // Actions
         updateSettings,
         updatePreferences,
@@ -338,7 +331,7 @@ export const useNotificationSettings = () => {
         resetToDefaults,
         resetPreferencesToDefaults,
         toggleQuietHours,
-        
+
         // Utilities
         clearError,
         refresh
