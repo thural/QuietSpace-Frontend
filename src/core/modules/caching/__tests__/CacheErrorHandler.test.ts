@@ -5,456 +5,384 @@
  * handles and categorizes cache-related errors.
  */
 
+import { jest } from '@jest/globals';
 import { CacheErrorHandler } from '../utils/CacheErrorHandler';
+import type { CacheEvents } from '../types/interfaces';
 
 describe('CacheErrorHandler', () => {
-    let errorHandler: CacheErrorHandler;
+    let mockEvents: CacheEvents;
+    let onErrorSpy: jest.Mock;
 
     beforeEach(() => {
-        errorHandler = new CacheErrorHandler();
+        onErrorSpy = jest.fn();
+        mockEvents = {
+            onError: onErrorSpy,
+            onHit: jest.fn(),
+            onMiss: jest.fn(),
+            onEvict: jest.fn()
+        };
     });
 
-    describe('Error Classification', () => {
-        test('should classify storage errors correctly', () => {
-            const storageError = new Error('Storage quota exceeded');
-            const classification = errorHandler.classifyError(storageError);
+    describe('handleOperation', () => {
+        test('should handle successful async operations', async () => {
+            const operation = jest.fn().mockResolvedValue('success');
 
-            expect(classification.type).toBe('STORAGE_ERROR');
-            expect(classification.severity).toBe('HIGH');
-            expect(classification.recoverable).toBe(false);
-        });
-
-        test('should classify network errors correctly', () => {
-            const networkError = new Error('Network timeout');
-            const classification = errorHandler.classifyError(networkError);
-
-            expect(classification.type).toBe('NETWORK_ERROR');
-            expect(classification.severity).toBe('MEDIUM');
-            expect(classification.recoverable).toBe(true);
-        });
-
-        test('should classify serialization errors correctly', () => {
-            const serializationError = new Error('Failed to serialize data');
-            const classification = errorHandler.classifyError(serializationError);
-
-            expect(classification.type).toBe('SERIALIZATION_ERROR');
-            expect(classification.severity).toBe('MEDIUM');
-            expect(classification.recoverable).toBe(true);
-        });
-
-        test('should classify validation errors correctly', () => {
-            const validationError = new Error('Invalid cache key format');
-            const classification = errorHandler.classifyError(validationError);
-
-            expect(classification.type).toBe('VALIDATION_ERROR');
-            expect(classification.severity).toBe('LOW');
-            expect(classification.recoverable).toBe(true);
-        });
-
-        test('should classify unknown errors as generic', () => {
-            const unknownError = new Error('Some unknown error');
-            const classification = errorHandler.classifyError(unknownError);
-
-            expect(classification.type).toBe('UNKNOWN_ERROR');
-            expect(classification.severity).toBe('MEDIUM');
-            expect(classification.recoverable).toBe(true);
-        });
-
-        test('should handle null/undefined errors', () => {
-            const classification1 = errorHandler.classifyError(null as any);
-            const classification2 = errorHandler.classifyError(undefined as any);
-
-            expect(classification1.type).toBe('UNKNOWN_ERROR');
-            expect(classification1.severity).toBe('MEDIUM');
-            expect(classification2.type).toBe('UNKNOWN_ERROR');
-            expect(classification2.severity).toBe('MEDIUM');
-        });
-    });
-
-    describe('Error Handling Strategies', () => {
-        test('should provide recovery strategy for recoverable errors', () => {
-            const recoverableError = new Error('Network timeout');
-            const strategy = errorHandler.getRecoveryStrategy(recoverableError);
-
-            expect(strategy).toBeDefined();
-            expect(strategy.canRecover).toBe(true);
-            expect(strategy.retryDelay).toBeGreaterThan(0);
-            expect(strategy.maxRetries).toBeGreaterThan(0);
-        });
-
-        test('should not provide recovery strategy for non-recoverable errors', () => {
-            const nonRecoverableError = new Error('Storage quota exceeded');
-            const strategy = errorHandler.getRecoveryStrategy(nonRecoverableError);
-
-            expect(strategy).toBeDefined();
-            expect(strategy.canRecover).toBe(false);
-            expect(strategy.retryDelay).toBe(0);
-            expect(strategy.maxRetries).toBe(0);
-        });
-
-        test('should provide fallback strategy for all errors', () => {
-            const error = new Error('Any error');
-            const fallback = errorHandler.getFallbackStrategy(error);
-
-            expect(fallback).toBeDefined();
-            expect(typeof fallback.action).toBe('function');
-            expect(fallback.description).toBeDefined();
-        });
-
-        test('should handle error with custom message patterns', () => {
-            const customError = new Error('Custom cache operation failed');
-            const classification = errorHandler.classifyError(customError);
-
-            expect(classification.type).toBe('UNKNOWN_ERROR');
-            expect(classification.message).toBe(customError.message);
-        });
-    });
-
-    describe('Error Logging and Monitoring', () => {
-        test('should log errors with appropriate context', () => {
-            const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-            
-            const error = new Error('Test error');
-            const context = { operation: 'get', key: 'test-key' };
-
-            errorHandler.logError(error, context);
-
-            expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('Cache Error'),
-                expect.objectContaining({
-                    error: error.message,
-                    operation: 'get',
-                    key: 'test-key'
-                })
-            );
-
-            consoleSpy.mockRestore();
-        });
-
-        test('should track error statistics', () => {
-            const error1 = new Error('Network timeout');
-            const error2 = new Error('Storage quota exceeded');
-            const error3 = new Error('Network timeout');
-
-            errorHandler.recordError(error1);
-            errorHandler.recordError(error2);
-            errorHandler.recordError(error3);
-
-            const stats = errorHandler.getErrorStats();
-
-            expect(stats.totalErrors).toBe(3);
-            expect(stats.errorsByType.NETWORK_ERROR).toBe(2);
-            expect(stats.errorsByType.STORAGE_ERROR).toBe(1);
-            expect(stats.errorsBySeverity.HIGH).toBe(1);
-            expect(stats.errorsBySeverity.MEDIUM).toBe(2);
-        });
-
-        test('should reset error statistics', () => {
-            errorHandler.recordError(new Error('Test error'));
-            expect(errorHandler.getErrorStats().totalErrors).toBe(1);
-
-            errorHandler.resetStats();
-            expect(errorHandler.getErrorStats().totalErrors).toBe(0);
-        });
-
-        test('should provide error rate calculation', () => {
-            // Record some errors
-            for (let i = 0; i < 5; i++) {
-                errorHandler.recordError(new Error(`Error ${i}`));
-            }
-
-            const stats = errorHandler.getErrorStats();
-            expect(stats.errorRate).toBeGreaterThan(0);
-            expect(stats.errorRate).toBeLessThanOrEqual(1);
-        });
-    });
-
-    describe('Circuit Breaker Pattern', () => {
-        test('should detect high error rates and trigger circuit breaker', () => {
-            // Simulate high error rate
-            for (let i = 0; i < 100; i++) {
-                errorHandler.recordError(new Error(`Error ${i}`));
-            }
-
-            const circuitBreakerState = errorHandler.getCircuitBreakerState();
-            expect(circuitBreakerState.isOpen).toBe(true);
-        });
-
-        test('should close circuit breaker when error rate decreases', () => {
-            // Trigger circuit breaker
-            for (let i = 0; i < 100; i++) {
-                errorHandler.recordError(new Error(`Error ${i}`));
-            }
-
-            expect(errorHandler.getCircuitBreakerState().isOpen).toBe(true);
-
-            // Reset and simulate low error rate
-            errorHandler.resetStats();
-            errorHandler.recordError(new Error('Single error'));
-
-            expect(errorHandler.getCircuitBreakerState().isOpen).toBe(false);
-        });
-
-        test('should provide circuit breaker status', () => {
-            const status = errorHandler.getCircuitBreakerState();
-            
-            expect(status).toHaveProperty('isOpen');
-            expect(status).toHaveProperty('errorThreshold');
-            expect(status).toHaveProperty('currentErrorRate');
-            expect(status).toHaveProperty('lastErrorTime');
-        });
-    });
-
-    describe('Error Recovery Mechanisms', () => {
-        test('should implement retry logic for recoverable errors', async () => {
-            const retryableOperation = jest.fn()
-                .mockRejectedValueOnce(new Error('Network timeout'))
-                .mockRejectedValueOnce(new Error('Network timeout'))
-                .mockResolvedValue('success');
-
-            const result = await errorHandler.executeWithRetry(
-                retryableOperation,
-                { maxRetries: 3, retryDelay: 10 }
+            const result = await CacheErrorHandler.handleOperation(
+                operation,
+                mockEvents,
+                'test-operation',
+                'fallback'
             );
 
             expect(result).toBe('success');
-            expect(retryableOperation).toHaveBeenCalledTimes(3);
+            expect(operation).toHaveBeenCalled();
+            expect(onErrorSpy).not.toHaveBeenCalled();
         });
 
-        test('should fail after max retries exceeded', async () => {
-            const failingOperation = jest.fn().mockRejectedValue(new Error('Always fails'));
+        test('should handle failed async operations and return fallback', async () => {
+            const error = new Error('Operation failed');
+            const operation = jest.fn().mockRejectedValue(error);
 
-            await expect(
-                errorHandler.executeWithRetry(failingOperation, { maxRetries: 2, retryDelay: 10 })
-            ).rejects.toThrow('Always fails');
+            const result = await CacheErrorHandler.handleOperation(
+                operation,
+                mockEvents,
+                'test-operation',
+                'fallback'
+            );
 
-            expect(failingOperation).toHaveBeenCalledTimes(3); // Initial + 2 retries
+            expect(result).toBe('fallback');
+            expect(operation).toHaveBeenCalled();
+            expect(onErrorSpy).toHaveBeenCalledWith(error, 'test-operation', undefined);
         });
 
-        test('should not retry non-recoverable errors', async () => {
-            const nonRetryableOperation = jest.fn().mockRejectedValue(new Error('Storage quota exceeded'));
+        test('should handle failed async operations with key context', async () => {
+            const error = new Error('Operation failed');
+            const operation = jest.fn().mockRejectedValue(error);
 
-            await expect(
-                errorHandler.executeWithRetry(nonRetryableOperation, { maxRetries: 3, retryDelay: 10 })
-            ).rejects.toThrow('Storage quota exceeded');
+            const result = await CacheErrorHandler.handleOperation(
+                operation,
+                mockEvents,
+                'test-operation',
+                'fallback',
+                'test-key'
+            );
 
-            expect(nonRetryableOperation).toHaveBeenCalledTimes(1); // No retries
+            expect(result).toBe('fallback');
+            expect(onErrorSpy).toHaveBeenCalledWith(error, 'test-operation', 'test-key');
         });
 
-        test('should implement exponential backoff', async () => {
-            const startTime = Date.now();
-            const delays: number[] = [];
+        test('should handle synchronous operations that return promises', async () => {
+            const operation = jest.fn().mockReturnValue(Promise.resolve('sync-success'));
 
-            const retryableOperation = jest.fn()
-                .mockImplementation(() => {
-                    delays.push(Date.now() - startTime);
-                    return Promise.reject(new Error('Retry needed'));
-                });
+            const result = await CacheErrorHandler.handleOperation(
+                operation,
+                mockEvents,
+                'sync-operation',
+                'fallback'
+            );
 
-            try {
-                await errorHandler.executeWithRetry(retryableOperation, {
-                    maxRetries: 3,
-                    retryDelay: 50,
-                    useExponentialBackoff: true
-                });
-            } catch (error) {
-                // Expected to fail
-            }
-
-            // Verify exponential backoff (delays should increase)
-            expect(delays.length).toBe(4); // Initial + 3 retries
-            if (delays.length >= 3) {
-                expect(delays[2]).toBeGreaterThan(delays[1]);
-                expect(delays[1]).toBeGreaterThan(delays[0]);
-            }
-        });
-    });
-
-    describe('Error Context and Metadata', () => {
-        test('should enrich errors with context information', () => {
-            const originalError = new Error('Original error');
-            const context = {
-                operation: 'set',
-                key: 'test-key',
-                ttl: 5000,
-                cacheSize: 100
-            };
-
-            const enrichedError = errorHandler.enrichError(originalError, context);
-
-            expect(enrichedError).toBe(originalError);
-            expect((enrichedError as any).context).toEqual(context);
-            expect((enrichedError as any).timestamp).toBeDefined();
+            expect(result).toBe('sync-success');
+            expect(onErrorSpy).not.toHaveBeenCalled();
         });
 
-        test('should handle missing context gracefully', () => {
-            const error = new Error('No context error');
-            const enrichedError = errorHandler.enrichErrorError(error);
+        test('should handle operations without events', async () => {
+            const operation = jest.fn().mockResolvedValue('success');
 
-            expect(enrichedError).toBe(error);
-            expect((enrichedError as any).context).toBeDefined();
-        });
+            const result = await CacheErrorHandler.handleOperation(
+                operation,
+                undefined,
+                'test-operation',
+                'fallback'
+            );
 
-        test('should provide error correlation IDs', () => {
-            const error1 = new Error('Error 1');
-            const error2 = new Error('Error 2');
-
-            const enriched1 = errorHandler.enrichError(error1);
-            const enriched2 = errorHandler.enrichError(error2);
-
-            expect((enriched1 as any).correlationId).toBeDefined();
-            expect((enriched2 as any).correlationId).toBeDefined();
-            expect((enriched1 as any).correlationId).not.toBe((enriched2 as any).correlationId);
-        });
-    });
-
-    describe('Performance Monitoring', () => {
-        test('should track error handling performance', () => {
-            const startTime = performance.now();
-            
-            errorHandler.recordError(new Error('Performance test'));
-            
-            const endTime = performance.now();
-            const handlingTime = endTime - startTime;
-
-            expect(handlingTime).toBeLessThan(10); // Should be very fast
-        });
-
-        test('should provide performance metrics', () => {
-            // Record various errors
-            errorHandler.recordError(new Error('Error 1'));
-            errorHandler.recordError(new Error('Error 2'));
-            errorHandler.recordError(new Error('Error 3'));
-
-            const metrics = errorHandler.getPerformanceMetrics();
-
-            expect(metrics).toHaveProperty('totalErrorsHandled');
-            expect(metrics).toHaveProperty('averageHandlingTime');
-            expect(metrics).toHaveProperty('errorsPerSecond');
-            expect(metrics.totalErrorsHandled).toBe(3);
-        });
-
-        test('should handle high error volumes efficiently', () => {
-            const startTime = performance.now();
-            const errorCount = 10000;
-
-            for (let i = 0; i < errorCount; i++) {
-                errorHandler.recordError(new Error(`Error ${i}`));
-            }
-
-            const endTime = performance.now();
-            const duration = endTime - startTime;
-
-            expect(duration).toBeLessThan(1000); // Should handle 10k errors quickly
-            expect(errorHandler.getErrorStats().totalErrors).toBe(errorCount);
-        });
-    });
-
-    describe('Integration Scenarios', () => {
-        test('should handle complete error lifecycle', async () => {
-            const error = new Error('Network timeout during cache get');
-            const context = { operation: 'get', key: 'user-profile' };
-
-            // Classify error
-            const classification = errorHandler.classifyError(error);
-            expect(classification.type).toBe('NETWORK_ERROR');
-
-            // Log error
-            const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-            errorHandler.logError(error, context);
-            expect(consoleSpy).toHaveBeenCalled();
-            consoleSpy.mockRestore();
-
-            // Record error
-            errorHandler.recordError(error);
-            const stats = errorHandler.getErrorStats();
-            expect(stats.totalErrors).toBe(1);
-
-            // Get recovery strategy
-            const strategy = errorHandler.getRecoveryStrategy(error);
-            expect(strategy.canRecover).toBe(true);
-
-            // Execute with retry
-            const mockOperation = jest.fn().mockResolvedValue('success');
-            const result = await errorHandler.executeWithRetry(mockOperation, strategy);
             expect(result).toBe('success');
+            expect(operation).toHaveBeenCalled();
+        });
+    });
+
+    describe('handleSyncOperation', () => {
+        test('should handle successful sync operations', () => {
+            const operation = jest.fn().mockReturnValue('success');
+
+            const result = CacheErrorHandler.handleSyncOperation(
+                operation,
+                mockEvents,
+                'test-operation',
+                'fallback'
+            );
+
+            expect(result).toBe('success');
+            expect(operation).toHaveBeenCalled();
+            expect(onErrorSpy).not.toHaveBeenCalled();
         });
 
-        test('should handle cascading errors', () => {
-            const primaryError = new Error('Primary storage failure');
-            const secondaryError = new Error('Fallback storage failure');
+        test('should handle failed sync operations and return fallback', () => {
+            const error = new Error('Operation failed');
+            const operation = jest.fn().mockImplementation(() => {
+                throw error;
+            });
 
-            errorHandler.recordError(primaryError);
-            errorHandler.recordError(secondaryError);
+            const result = CacheErrorHandler.handleSyncOperation(
+                operation,
+                mockEvents,
+                'test-operation',
+                'fallback'
+            );
 
-            const stats = errorHandler.getErrorStats();
-            expect(stats.totalErrors).toBe(2);
-            expect(stats.cascadingFailures).toBeGreaterThan(0);
+            expect(result).toBe('fallback');
+            expect(operation).toHaveBeenCalled();
+            expect(onErrorSpy).toHaveBeenCalledWith(error, 'test-operation', undefined);
         });
 
-        test('should maintain error history', () => {
+        test('should handle failed sync operations with key context', () => {
+            const error = new Error('Operation failed');
+            const operation = jest.fn().mockImplementation(() => {
+                throw error;
+            });
+
+            const result = CacheErrorHandler.handleSyncOperation(
+                operation,
+                mockEvents,
+                'test-operation',
+                'fallback',
+                'test-key'
+            );
+
+            expect(result).toBe('fallback');
+            expect(onErrorSpy).toHaveBeenCalledWith(error, 'test-operation', 'test-key');
+        });
+
+        test('should handle operations without events', () => {
+            const operation = jest.fn().mockReturnValue('success');
+
+            const result = CacheErrorHandler.handleSyncOperation(
+                operation,
+                undefined,
+                'test-operation',
+                'fallback'
+            );
+
+            expect(result).toBe('success');
+            expect(operation).toHaveBeenCalled();
+        });
+    });
+
+    describe('wrapAsyncFunction', () => {
+        test('should wrap successful async functions', async () => {
+            const originalFn = jest.fn().mockResolvedValue('success');
+            const wrappedFn = CacheErrorHandler.wrapAsyncFunction(
+                originalFn,
+                mockEvents,
+                'wrapped-operation'
+            );
+
+            const result = await wrappedFn('arg1', 'arg2');
+
+            expect(result).toBe('success');
+            expect(originalFn).toHaveBeenCalledWith('arg1', 'arg2');
+            expect(onErrorSpy).not.toHaveBeenCalled();
+        });
+
+        test('should wrap failed async functions and re-throw', async () => {
+            const error = new Error('Async operation failed');
+            const originalFn = jest.fn().mockRejectedValue(error);
+            const wrappedFn = CacheErrorHandler.wrapAsyncFunction(
+                originalFn,
+                mockEvents,
+                'wrapped-operation'
+            );
+
+            await expect(wrappedFn('arg1')).rejects.toThrow('Async operation failed');
+            expect(originalFn).toHaveBeenCalledWith('arg1');
+            expect(onErrorSpy).toHaveBeenCalledWith(error, 'wrapped-operation');
+        });
+
+        test('should wrap functions without events', async () => {
+            const originalFn = jest.fn().mockResolvedValue('success');
+            const wrappedFn = CacheErrorHandler.wrapAsyncFunction(
+                originalFn,
+                undefined,
+                'wrapped-operation'
+            );
+
+            const result = await wrappedFn();
+
+            expect(result).toBe('success');
+            expect(originalFn).toHaveBeenCalled();
+        });
+    });
+
+    describe('wrapSyncFunction', () => {
+        test('should wrap successful sync functions', () => {
+            const originalFn = jest.fn().mockReturnValue('success');
+            const wrappedFn = CacheErrorHandler.wrapSyncFunction(
+                originalFn,
+                mockEvents,
+                'wrapped-operation',
+                'fallback'
+            );
+
+            const result = wrappedFn('arg1', 'arg2');
+
+            expect(result).toBe('success');
+            expect(originalFn).toHaveBeenCalledWith('arg1', 'arg2');
+            expect(onErrorSpy).not.toHaveBeenCalled();
+        });
+
+        test('should wrap failed sync functions and return fallback', () => {
+            const error = new Error('Sync operation failed');
+            const originalFn = jest.fn().mockImplementation(() => {
+                throw error;
+            });
+            const wrappedFn = CacheErrorHandler.wrapSyncFunction(
+                originalFn,
+                mockEvents,
+                'wrapped-operation',
+                'fallback'
+            );
+
+            const result = wrappedFn('arg1');
+
+            expect(result).toBe('fallback');
+            expect(originalFn).toHaveBeenCalledWith('arg1');
+            expect(onErrorSpy).toHaveBeenCalledWith(error, 'wrapped-operation');
+        });
+
+        test('should wrap functions without events', () => {
+            const originalFn = jest.fn().mockReturnValue('success');
+            const wrappedFn = CacheErrorHandler.wrapSyncFunction(
+                originalFn,
+                undefined,
+                'wrapped-operation',
+                'fallback'
+            );
+
+            const result = wrappedFn();
+
+            expect(result).toBe('success');
+            expect(originalFn).toHaveBeenCalled();
+        });
+    });
+
+    describe('Error Types', () => {
+        test('should handle different error types in async operations', async () => {
             const errors = [
-                new Error('Error 1'),
-                new Error('Error 2'),
-                new Error('Error 3')
+                new Error('Generic error'),
+                new TypeError('Type error'),
+                new ReferenceError('Reference error'),
+                new RangeError('Range error')
             ];
 
-            errors.forEach(error => errorHandler.recordError(error));
+            for (const error of errors) {
+                onErrorSpy.mockClear();
+                const operation = jest.fn().mockRejectedValue(error);
 
-            const history = errorHandler.getErrorHistory();
-            expect(history).toHaveLength(3);
-            expect(history[0].error.message).toBe('Error 1');
-            expect(history[1].error.message).toBe('Error 2');
-            expect(history[2].error.message).toBe('Error 3');
+                const result = await CacheErrorHandler.handleOperation(
+                    operation,
+                    mockEvents,
+                    'test-operation',
+                    'fallback'
+                );
+
+                expect(result).toBe('fallback');
+                expect(onErrorSpy).toHaveBeenCalledWith(error, 'test-operation', undefined);
+            }
         });
 
-        test('should limit error history size', () => {
-            // Create more errors than the history limit
-            for (let i = 0; i < 150; i++) {
-                errorHandler.recordError(new Error(`Error ${i}`));
-            }
+        test('should handle different error types in sync operations', () => {
+            const errors = [
+                new Error('Generic error'),
+                new TypeError('Type error'),
+                new ReferenceError('Reference error'),
+                new RangeError('Range error')
+            ];
 
-            const history = errorHandler.getErrorHistory();
-            expect(history.length).toBeLessThanOrEqual(100); // Assuming limit of 100
+            for (const error of errors) {
+                onErrorSpy.mockClear();
+                const operation = jest.fn().mockImplementation(() => {
+                    throw error;
+                });
+
+                const result = CacheErrorHandler.handleSyncOperation(
+                    operation,
+                    mockEvents,
+                    'test-operation',
+                    'fallback'
+                );
+
+                expect(result).toBe('fallback');
+                expect(onErrorSpy).toHaveBeenCalledWith(error, 'test-operation', undefined);
+            }
         });
     });
 
-    describe('Configuration and Customization', () => {
-        test('should allow custom error classification rules', () => {
-            const customRules = {
-                'CUSTOM_ERROR': {
-                    pattern: /custom/i,
-                    severity: 'HIGH' as const,
-                    recoverable: false
-                }
-            };
+    describe('Complex Scenarios', () => {
+        test('should handle nested error handlers', async () => {
+            const innerError = new Error('Inner operation failed');
 
-            const customHandler = new CacheErrorHandler(customRules);
-            const customError = new Error('Custom error occurred');
+            const innerOperation = jest.fn().mockRejectedValue(innerError);
+            const outerOperation = jest.fn().mockImplementation(async () => {
+                return await CacheErrorHandler.handleOperation(
+                    innerOperation,
+                    mockEvents,
+                    'inner-operation',
+                    'inner-fallback'
+                );
+            });
 
-            const classification = customHandler.classifyError(customError);
-            expect(classification.type).toBe('CUSTOM_ERROR');
-            expect(classification.severity).toBe('HIGH');
-            expect(classification.recoverable).toBe(false);
+            const result = await CacheErrorHandler.handleOperation(
+                outerOperation,
+                mockEvents,
+                'outer-operation',
+                'outer-fallback'
+            );
+
+            expect(result).toBe('inner-fallback');
+            expect(onErrorSpy).toHaveBeenCalledWith(innerError, 'inner-operation', undefined);
         });
 
-        test('should allow custom circuit breaker thresholds', () => {
-            const customConfig = {
-                circuitBreaker: {
-                    errorThreshold: 0.1, // 10% error rate
-                    recoveryTimeout: 30000
-                }
+        test('should handle operations that return null/undefined', async () => {
+            const nullOperation = jest.fn().mockResolvedValue(null);
+            const undefinedOperation = jest.fn().mockResolvedValue(undefined);
+
+            const nullResult = await CacheErrorHandler.handleOperation(
+                nullOperation,
+                mockEvents,
+                'null-operation',
+                'fallback'
+            );
+
+            const undefinedResult = await CacheErrorHandler.handleOperation(
+                undefinedOperation,
+                mockEvents,
+                'undefined-operation',
+                'fallback'
+            );
+
+            expect(nullResult).toBeNull();
+            expect(undefinedResult).toBeUndefined();
+            expect(onErrorSpy).not.toHaveBeenCalled();
+        });
+
+        test('should handle operations with complex return types', async () => {
+            const complexData = {
+                id: 1,
+                name: 'test',
+                nested: { value: 'complex' },
+                array: [1, 2, 3]
             };
 
-            const customHandler = new CacheErrorHandler({}, customConfig);
-            
-            // Should trigger at lower error rate
-            for (let i = 0; i < 20; i++) {
-                customHandler.recordError(new Error(`Error ${i}`));
-            }
+            const operation = jest.fn().mockResolvedValue(complexData);
 
-            const state = customHandler.getCircuitBreakerState();
-            expect(state.isOpen).toBe(true);
+            const result = await CacheErrorHandler.handleOperation(
+                operation,
+                mockEvents,
+                'complex-operation',
+                null as any
+            );
+
+            expect(result).toEqual(complexData);
+            expect(onErrorSpy).not.toHaveBeenCalled();
         });
     });
 });

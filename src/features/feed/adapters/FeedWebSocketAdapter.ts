@@ -5,7 +5,7 @@
  * Provides feed-specific functionality while leveraging enterprise patterns.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { 
   IEnterpriseWebSocketService, 
   IMessageRouter,

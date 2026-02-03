@@ -1,7 +1,7 @@
 import {UserRepository} from '@search/data/repositories/UserRepository';
 import {ProfileSettingsRequest, ProfileSettingsResponse, UserPage, UserResponse} from '../data/models/user';
 import {ResId} from '@/shared/api/models/common';
-import {Container} from '@/core/di';
+import {Container} from '@/core/modules/dependency-injection';
 
 /**
  * Enhanced User Service - Provides high-level user operations

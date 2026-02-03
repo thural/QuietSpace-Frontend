@@ -16,8 +16,8 @@ import type {
   WebSocketConnectionState
 } from '@/core/websocket/types/WebSocketTypes';
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 
 export interface UseEnterpriseWebSocketOptions {
   autoConnect?: boolean;

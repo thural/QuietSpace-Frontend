@@ -24,6 +24,9 @@ export enum AuthEventType {
     ACTIVATE_ATTEMPT = 'activate_attempt',
     ACTIVATE_SUCCESS = 'activate_success',
     ACTIVATE_FAILURE = 'activate_failure',
+    RESEND_ATTEMPT = 'resend_attempt',
+    RESEND_SUCCESS = 'resend_success',
+    RESEND_FAILURE = 'resend_failure',
     LOGOUT_ATTEMPT = 'logout_attempt',
     LOGOUT_SUCCESS = 'logout_success',
     LOGOUT_FAILURE = 'logout_failure',
@@ -43,6 +46,7 @@ export enum AuthErrorType {
     CREDENTIALS_INVALID = 'credentials_invalid',
     ACCOUNT_LOCKED = 'account_locked',
     RATE_LIMITED = 'rate_limited',
+    PROVIDER_NOT_FOUND = 'provider_not_found',
     UNKNOWN_ERROR = 'unknown_error'
 }
 

@@ -5,6 +5,7 @@
  * manages multiple cache instances and provides centralized cache management.
  */
 
+import { jest } from '@jest/globals';
 import { CacheServiceManager } from '../providers/CacheServiceManager';
 import type { ICacheProvider, CacheServiceConfig } from '../types/interfaces';
 
@@ -158,7 +159,7 @@ describe('CacheServiceManager', () => {
     describe('Cache Instance Management', () => {
         test('should create cache instance for feature', () => {
             const authCache = cacheManager.getCache('auth');
-            
+
             expect(authCache).toBeDefined();
             expect(typeof authCache.get).toBe('function');
             expect(typeof authCache.set).toBe('function');
@@ -168,14 +169,14 @@ describe('CacheServiceManager', () => {
         test('should return same cache instance for same feature', () => {
             const authCache1 = cacheManager.getCache('auth');
             const authCache2 = cacheManager.getCache('auth');
-            
+
             expect(authCache1).toBe(authCache2);
         });
 
         test('should create different cache instances for different features', () => {
             const authCache = cacheManager.getCache('auth');
             const userCache = cacheManager.getCache('user');
-            
+
             expect(authCache).not.toBe(userCache);
         });
 
@@ -204,7 +205,7 @@ describe('CacheServiceManager', () => {
         test('should use default configuration when no feature-specific config exists', () => {
             const unknownCache = cacheManager.getCache('unknown-feature');
             const config = unknownCache.getConfig();
-            
+
             expect(config.defaultTTL).toBe(5000);
             expect(config.maxSize).toBe(100);
             expect(config.cleanupInterval).toBe(1000);
@@ -216,7 +217,7 @@ describe('CacheServiceManager', () => {
     describe('Feature Invalidation', () => {
         test('should invalidate all entries for specific feature', async () => {
             const authCache = cacheManager.getCache('auth');
-            
+
             // Add some data to auth cache
             await authCache.set('token1', 'value1');
             await authCache.set('token2', 'value2');
@@ -239,7 +240,7 @@ describe('CacheServiceManager', () => {
         test('should not affect other features when invalidating specific feature', async () => {
             const authCache = cacheManager.getCache('auth');
             const userCache = cacheManager.getCache('user');
-            
+
             // Add data to both caches
             await authCache.set('token1', 'auth-value');
             await userCache.set('profile1', 'user-value');
@@ -249,7 +250,7 @@ describe('CacheServiceManager', () => {
 
             // Auth cache should be cleared
             expect(await authCache.get('token1')).toBeNull();
-            
+
             // User cache should be unaffected
             expect(await userCache.get('profile1')).toBe('user-value');
         });
@@ -260,7 +261,7 @@ describe('CacheServiceManager', () => {
             const authCache = cacheManager.getCache('auth');
             const userCache = cacheManager.getCache('user');
             const feedCache = cacheManager.getCache('feed');
-            
+
             // Add data with different patterns
             await authCache.set('user:123', 'auth-user-data');
             await authCache.set('token:abc', 'auth-token-data');
@@ -288,7 +289,7 @@ describe('CacheServiceManager', () => {
         test('should handle regex patterns across features', async () => {
             const authCache = cacheManager.getCache('auth');
             const userCache = cacheManager.getCache('user');
-            
+
             // Add data
             await authCache.set('session123', 'session-data');
             await authCache.set('token456', 'token-data');
@@ -323,7 +324,7 @@ describe('CacheServiceManager', () => {
         test('should return aggregated statistics across all features', async () => {
             const authCache = cacheManager.getCache('auth');
             const userCache = cacheManager.getCache('user');
-            
+
             // Add some data and perform operations
             await authCache.set('token1', 'value1');
             await authCache.get('token1'); // hit
@@ -334,16 +335,17 @@ describe('CacheServiceManager', () => {
 
             const globalStats = cacheManager.getGlobalStats();
 
-            expect(globalStats).toHaveProperty('auth');
-            expect(globalStats).toHaveProperty('user');
-            
-            const authStats = globalStats.auth as any;
-            const userStats = globalStats.user as any;
+            expect(globalStats).toHaveProperty('features');
+            expect(globalStats.features).toHaveProperty('auth');
+            expect(globalStats.features).toHaveProperty('user');
+
+            const authStats = globalStats.features.auth as any;
+            const userStats = globalStats.features.user as any;
 
             expect(authStats.hits).toBe(1);
             expect(authStats.misses).toBe(1);
             expect(authStats.totalRequests).toBe(2);
-            
+
             expect(userStats.hits).toBe(1);
             expect(userStats.misses).toBe(0);
             expect(userStats.totalRequests).toBe(1);
@@ -351,7 +353,7 @@ describe('CacheServiceManager', () => {
 
         test('should return empty stats for features with no activity', () => {
             const globalStats = cacheManager.getGlobalStats();
-            
+
             // Should have stats for created caches even if no activity
             expect(globalStats).toBeDefined();
             expect(typeof globalStats).toBe('object');
@@ -377,7 +379,7 @@ describe('CacheServiceManager', () => {
 
         test('should handle disposal of empty manager', () => {
             const emptyManager = new CacheServiceManager();
-            
+
             expect(() => {
                 emptyManager.dispose();
             }).not.toThrow();
@@ -388,9 +390,9 @@ describe('CacheServiceManager', () => {
         test('should work with no configuration provided', () => {
             const defaultManager = new CacheServiceManager();
             const cache = defaultManager.getCache('test');
-            
+
             expect(cache).toBeDefined();
-            
+
             const config = cache.getConfig();
             expect(config.defaultTTL).toBeGreaterThan(0);
             expect(config.maxSize).toBeGreaterThan(0);
@@ -399,7 +401,7 @@ describe('CacheServiceManager', () => {
         test('should work with empty configuration object', () => {
             const emptyConfigManager = new CacheServiceManager({});
             const cache = emptyConfigManager.getCache('test');
-            
+
             expect(cache).toBeDefined();
         });
 
@@ -410,10 +412,10 @@ describe('CacheServiceManager', () => {
                     // Other properties should use defaults
                 }
             });
-            
+
             const cache = partialConfigManager.getCache('test');
             const config = cache.getConfig();
-            
+
             expect(config.defaultTTL).toBe(20000);
             expect(config.maxSize).toBeGreaterThan(0); // Should use default
         });
@@ -422,25 +424,25 @@ describe('CacheServiceManager', () => {
     describe('Edge Cases', () => {
         test('should handle feature names with special characters', () => {
             const specialCache = cacheManager.getCache('feature-with-dashes_and_underscores123');
-            
+
             expect(specialCache).toBeDefined();
         });
 
         test('should handle empty feature name', () => {
             const emptyFeatureCache = cacheManager.getCache('');
-            
+
             expect(emptyFeatureCache).toBeDefined();
         });
 
         test('should handle large number of features', () => {
             const caches = [];
-            
+
             // Create 100 different feature caches
             for (let i = 0; i < 100; i++) {
                 const cache = cacheManager.getCache(`feature-${i}`);
                 caches.push(cache);
             }
-            
+
             // All should be valid cache instances
             caches.forEach(cache => {
                 expect(cache).toBeDefined();

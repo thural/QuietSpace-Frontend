@@ -34,14 +34,14 @@ export interface IAuthProvider {
     authenticate(credentials: AuthCredentials): Promise<AuthResult<AuthSession>>;
 
     /**
-     * Registers new user
+     * Registers new user and returns user data
      */
-    register(userData: AuthCredentials): Promise<AuthResult<void>>;
+    register(userData: AuthCredentials): Promise<AuthResult<unknown>>;
 
     /**
-     * Activates user account
+     * Activates user account and returns session
      */
-    activate(code: string): Promise<AuthResult<void>>;
+    activate(code: string): Promise<AuthResult<AuthSession>>;
 
     /**
      * Signs out user
@@ -51,7 +51,12 @@ export interface IAuthProvider {
     /**
      * Refreshes authentication token
      */
-    refreshToken(): Promise<AuthResult>;
+    refreshToken(): Promise<AuthResult<AuthSession>>;
+
+    /**
+     * Resends activation code to user
+     */
+    resendActivationCode(email: string): Promise<AuthResult<void>>;
 
     /**
      * Validates current session
@@ -110,6 +115,26 @@ export interface IAuthRepository {
      * Clears all authentication data
      */
     clear(): Promise<void>;
+
+    /**
+     * Creates new user account
+     */
+    createUser(userData: unknown): Promise<AuthResult<unknown>>;
+
+    /**
+     * Activates user account with code
+     */
+    activateUser(code: string): Promise<AuthResult<void>>;
+
+    /**
+     * Resends activation code to user
+     */
+    resendActivationCode(email: string): Promise<AuthResult<void>>;
+
+    /**
+     * Refreshes authentication token with user data
+     */
+    refreshToken(): Promise<AuthResult<AuthSession>>;
 }
 
 /**

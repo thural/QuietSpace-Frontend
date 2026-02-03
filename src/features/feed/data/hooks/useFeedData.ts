@@ -1,5 +1,5 @@
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { useCustomInfiniteQuery, useCustomMutation, useCustomQuery } from '@/core/hooks';
 import {
   CACHE_TIME_MAPPINGS

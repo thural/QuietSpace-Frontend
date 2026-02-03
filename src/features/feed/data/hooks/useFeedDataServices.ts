@@ -6,7 +6,7 @@
 
 import { useCallback } from 'react';
 import { useQuery, useMutation, useInfiniteQuery } from '@/core/dataservice';
-import { useDIContainer } from '@/core/di';
+import { useDIContainer } from '@/core/modules/dependency-injection';
 import {
   registerFeedDataServices,
   createFeedDataService,

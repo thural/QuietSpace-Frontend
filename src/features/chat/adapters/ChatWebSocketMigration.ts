@@ -6,7 +6,7 @@
  * Ensures backward compatibility during transition.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { WebSocketService } from '../data/services/WebSocketService';
 import { ChatWebSocketAdapter, type IChatWebSocketAdapter } from './index';
 import type { MessageResponse } from '../models/chat';

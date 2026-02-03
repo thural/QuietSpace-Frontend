@@ -6,7 +6,7 @@
  * WebSocket operations, and user interactions.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { CacheProvider } from '@/core/cache';
 
 export interface ChatMetrics {

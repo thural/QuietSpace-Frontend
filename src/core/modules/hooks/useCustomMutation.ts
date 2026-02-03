@@ -2,8 +2,8 @@ import { useState, useCallback, useRef } from 'react';
 
 import type { ICacheProvider } from '@/core/cache';
 
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 
 /**
  * Enterprise-grade mutation options interface

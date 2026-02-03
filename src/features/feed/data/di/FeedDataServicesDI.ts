@@ -4,8 +4,8 @@
  * Registers feed data services using the recommended hybrid approach
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { FeedDataService } from '../services/FeedDataService';
 import { PostDataService } from '../services/PostDataService';
 import { CommentDataService } from '../services/CommentDataService';

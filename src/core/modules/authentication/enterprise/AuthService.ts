@@ -473,6 +473,312 @@ export class EnterpriseAuthService implements IAuthService {
             }
         });
     }
+
+    /**
+     * Registers new user
+     */
+    async register(userData: AuthCredentials): Promise<AuthResult<unknown>> {
+        const startTime = Date.now();
+
+        try {
+            // Log registration attempt
+            this.logger.log({
+                type: 'register_attempt' as const,
+                timestamp: new Date(),
+                providerType: 'jwt' as any,
+                details: {
+                    email: userData.email,
+                    requestId: this.generateRequestId()
+                }
+            });
+
+            // Validate credentials
+            const validationResult = await this.validateCredentials(userData);
+            if (!validationResult.success) {
+                this.metrics.recordFailure('register_attempt', validationResult.error?.type || 'validation_error' as const, Date.now() - startTime);
+                return {
+                    success: false,
+                    error: validationResult.error
+                };
+            }
+
+            // Check rate limiting
+            const userId = userData.email || userData.username;
+            if (this.security.checkRateLimit(userId, 1)) {
+                this.metrics.recordFailure('register_attempt', 'rate_limited' as const, Date.now() - startTime);
+                return {
+                    success: false,
+                    error: {
+                        type: 'rate_limited' as const,
+                        message: 'Too many registration attempts. Please try again later.',
+                        details: { userId }
+                    }
+                };
+            }
+
+            // Get provider
+            const provider = this.providers.get('jwt');
+            if (!provider) {
+                this.metrics.recordFailure('register_attempt', 'provider_not_found' as const, Date.now() - startTime);
+                return {
+                    success: false,
+                    error: {
+                        type: 'provider_not_found' as const,
+                        message: 'JWT provider not found'
+                    }
+                };
+            }
+
+            // Register with provider
+            const registerResult = await provider.register(userData);
+
+            if (registerResult.success) {
+                // Log success
+                this.logger.log({
+                    type: 'register_success' as const,
+                    timestamp: new Date(),
+                    providerType: 'jwt' as string,
+                    details: {
+                        email: userData.email
+                    }
+                });
+
+                // Record metrics
+                this.metrics.recordSuccess('register_attempt', Date.now() - startTime);
+
+                return {
+                    success: true,
+                    data: registerResult.data
+                };
+            } else {
+                // Log failure
+                this.logger.log({
+                    type: 'register_failure' as const,
+                    timestamp: new Date(),
+                    providerType: 'jwt' as string,
+                    error: registerResult.error?.type,
+                    details: {
+                        email: userData.email
+                    }
+                });
+
+                // Record metrics
+                this.metrics.recordFailure('register_attempt', registerResult.error?.type || 'unknown_error' as const, Date.now() - startTime);
+
+                return {
+                    success: false,
+                    error: registerResult.error
+                };
+            }
+        } catch (error) {
+            // Log unexpected error
+            this.logger.logError(error as Error, {
+                provider: 'jwt',
+                operation: 'register'
+            });
+
+            // Record metrics
+            this.metrics.recordFailure('register_attempt', 'unknown_error' as const, Date.now() - startTime);
+
+            return {
+                success: false,
+                error: {
+                    type: 'unknown_error' as const,
+                    message: 'Registration failed due to an unexpected error',
+                    details: error
+                }
+            };
+        }
+    }
+
+    /**
+     * Activates user account
+     */
+    async activate(code: string): Promise<AuthResult<AuthSession>> {
+        const startTime = Date.now();
+
+        try {
+            // Log activation attempt
+            this.logger.log({
+                type: 'activate_attempt' as const,
+                timestamp: new Date(),
+                providerType: 'jwt' as any,
+                details: {
+                    code: code.substring(0, 4) + '***', // Partial code for logging
+                    requestId: this.generateRequestId()
+                }
+            });
+
+            // Get provider
+            const provider = this.providers.get('jwt');
+            if (!provider) {
+                this.metrics.recordFailure('activate_attempt', 'provider_not_found' as const, Date.now() - startTime);
+                return {
+                    success: false,
+                    error: {
+                        type: 'provider_not_found' as const,
+                        message: 'JWT provider not found'
+                    }
+                };
+            }
+
+            // Activate with provider
+            const activateResult = await provider.activate(code);
+
+            if (activateResult.success && activateResult.data) {
+                // Store session
+                await this.storeSession(activateResult.data);
+
+                // Log success
+                this.logger.log({
+                    type: 'activate_success' as const,
+                    timestamp: new Date(),
+                    providerType: 'jwt' as string,
+                    details: {
+                        userId: activateResult.data.user.id
+                    }
+                });
+
+                // Record metrics
+                this.metrics.recordSuccess('activate_attempt', Date.now() - startTime);
+
+                return {
+                    success: true,
+                    data: activateResult.data
+                };
+            } else {
+                // Log failure
+                this.logger.log({
+                    type: 'activate_failure' as const,
+                    timestamp: new Date(),
+                    providerType: 'jwt' as string,
+                    error: activateResult.error?.type,
+                    details: {
+                        code: code.substring(0, 4) + '***'
+                    }
+                });
+
+                // Record metrics
+                this.metrics.recordFailure('activate_attempt', activateResult.error?.type || 'unknown_error' as const, Date.now() - startTime);
+
+                return {
+                    success: false,
+                    error: activateResult.error
+                };
+            }
+        } catch (error) {
+            // Log unexpected error
+            this.logger.logError(error as Error, {
+                provider: 'jwt',
+                operation: 'activate'
+            });
+
+            // Record metrics
+            this.metrics.recordFailure('activate_attempt', 'unknown_error' as const, Date.now() - startTime);
+
+            return {
+                success: false,
+                error: {
+                    type: 'unknown_error' as const,
+                    message: 'Activation failed due to an unexpected error',
+                    details: error
+                }
+            };
+        }
+    }
+
+    /**
+     * Resends activation code
+     */
+    async resendActivationCode(email: string): Promise<AuthResult<void>> {
+        const startTime = Date.now();
+
+        try {
+            // Log resend attempt
+            this.logger.log({
+                type: 'resend_attempt' as const,
+                timestamp: new Date(),
+                providerType: 'jwt' as any,
+                details: {
+                    email,
+                    requestId: this.generateRequestId()
+                }
+            });
+
+            // Get provider
+            const provider = this.providers.get('jwt');
+            if (!provider) {
+                this.metrics.recordFailure('resend_attempt', 'provider_not_found' as const, Date.now() - startTime);
+                return {
+                    success: false,
+                    error: {
+                        type: 'provider_not_found' as const,
+                        message: 'JWT provider not found'
+                    }
+                };
+            }
+
+            // Resend activation code
+            const resendResult = await provider.resendActivationCode(email);
+
+            if (resendResult.success) {
+                // Log success
+                this.logger.log({
+                    type: 'resend_success' as const,
+                    timestamp: new Date(),
+                    providerType: 'jwt' as string,
+                    details: {
+                        email
+                    }
+                });
+
+                // Record metrics
+                this.metrics.recordSuccess('resend_attempt', Date.now() - startTime);
+
+                return {
+                    success: true,
+                    data: undefined
+                };
+            } else {
+                // Log failure
+                this.logger.log({
+                    type: 'resend_failure' as const,
+                    timestamp: new Date(),
+                    providerType: 'jwt' as string,
+                    error: resendResult.error?.type,
+                    details: {
+                        email
+                    }
+                });
+
+                // Record metrics
+                this.metrics.recordFailure('resend_attempt', resendResult.error?.type || 'unknown_error' as const, Date.now() - startTime);
+
+                return {
+                    success: false,
+                    error: resendResult.error
+                };
+            }
+        } catch (error) {
+            // Log unexpected error
+            this.logger.logError(error as Error, {
+                provider: 'jwt',
+                operation: 'resendActivationCode'
+            });
+
+            // Record metrics
+            this.metrics.recordFailure('resend_attempt', 'unknown_error' as const, Date.now() - startTime);
+
+            return {
+                success: false,
+                error: {
+                    type: 'unknown_error' as const,
+                    message: 'Failed to resend activation code due to an unexpected error',
+                    details: error
+                }
+            };
+        }
+    }
 }
 
 export default EnterpriseAuthService;

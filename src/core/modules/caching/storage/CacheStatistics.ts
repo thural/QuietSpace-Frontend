@@ -74,14 +74,15 @@ export class CacheStatistics implements ICacheStatistics {
      * @returns Current cache statistics including hit rate, counts, etc.
      */
     getStats(): CacheStats {
-        const total = this.hits + this.misses;
+        const totalRequests = this.hits + this.misses + this.evictions;
+        const totalForHitRate = this.hits + this.misses; // Hit rate only considers hits and misses
         return {
             size: 0, // Will be set by CacheProvider
             hits: this.hits,
             misses: this.misses,
-            hitRate: total > 0 ? this.hits / total : 0,
+            hitRate: totalForHitRate > 0 ? this.hits / totalForHitRate : 0,
             evictions: this.evictions,
-            totalRequests: total
+            totalRequests: totalRequests
         };
     }
 

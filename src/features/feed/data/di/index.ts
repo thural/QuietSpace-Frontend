@@ -4,8 +4,8 @@
  * Registers feed data services using the recommended hybrid approach
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { ICacheProvider } from '@/core/cache';
 import type { IWebSocketService } from '@/core/websocket/types';
 import type { IFeedRepository } from '../../domain/entities/IFeedRepository';

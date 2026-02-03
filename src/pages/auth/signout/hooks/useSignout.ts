@@ -1,4 +1,4 @@
-import { useJwtAuth } from "@/features/auth/application/hooks";
+import { useEnterpriseAuth } from "@/core/modules/authentication";
 import { useAuthStore } from "@/core/store/zustand";
 import { useCacheInvalidation } from "@/core/hooks/migrationUtils";
 import { useEffect, useState } from "react";
@@ -60,7 +60,7 @@ export const useSignout = () => {
     }
 
     // Calls the signout function from the authentication hook
-    const { signout } = useJwtAuth({ onSuccessFn, onErrorFn, onLoadFn });
+    const { signout } = useEnterpriseAuth();
 
     // Executes signout when the component is mounted
     useEffect(signout, []);

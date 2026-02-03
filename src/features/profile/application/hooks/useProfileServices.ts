@@ -4,8 +4,8 @@
  * Provides access to profile data and feature services through dependency injection
  * Follows the established pattern from auth, notification, and analytics features
  */
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { ProfileDataService } from '@features/profile/data/services/ProfileDataService';
 import { ProfileFeatureService } from '@features/profile/application/services/ProfileFeatureService';
 

@@ -6,7 +6,7 @@
  * Services should only access data through this layer, never directly.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import type { IChatRepository } from '@/features/chat/domain/entities/IChatRepository';
 import { CHAT_CACHE_KEYS, CHAT_INVALIDATION_PATTERNS } from '../cache/ChatCacheKeys';

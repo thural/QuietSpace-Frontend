@@ -1,5 +1,5 @@
-import { Injectable, Inject } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Injectable, Inject } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { AnalyticsDataService } from '../services/AnalyticsDataService';
 import { IAnalyticsRepository, AnalyticsEntity, AnalyticsMetrics, AnalyticsDashboard, DashboardWidget, AnalyticsReport, AnalyticsInsight, AnalyticsFunnel, AnalyticsGoal, DateRange, AnalyticsEventType } from '@features/analytics/domain/entities/IAnalyticsRepository';
 import { JwtToken } from '@/shared/api/models/common';

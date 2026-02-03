@@ -6,7 +6,7 @@
  * message routing, caching, and monitoring.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import type {
     IEnterpriseWebSocketService,
     IMessageRouter,

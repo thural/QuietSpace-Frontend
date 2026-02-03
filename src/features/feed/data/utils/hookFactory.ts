@@ -1,7 +1,7 @@
 import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/hooks';
 import { useAuthStore } from '@/core/store/zustand';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { FeedDataService } from '../FeedDataService';
 import { createInfiniteQueryConfig, createPostInfiniteQueryConfig, createCommentInfiniteQueryConfig } from './paginationUtils';
 import { createMutationConfig, createPostMutationConfig, createCommentMutationConfig, createInteractionMutationConfig } from './mutationUtils';

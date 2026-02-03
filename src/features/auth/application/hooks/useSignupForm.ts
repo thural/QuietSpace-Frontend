@@ -1,7 +1,7 @@
-import {AuthPages} from "@/features/auth/types/auth.ui.types";
-import useJwtAuth from "@features/auth/application/hooks/useJwtAuth";
-import {ChangeEvent, useEffect} from "react";
-import {useAuthStore} from "@/core/store/zustand";
+import { AuthPages } from "@/features/auth/types/auth.ui.types";
+import { useEnterpriseAuth } from "@/core/modules/authentication";
+import { ChangeEvent, useEffect } from "react";
+import { useAuthStore } from "@/core/store/zustand";
 
 /**
  * useSignupForm hook.
@@ -16,7 +16,7 @@ import {useAuthStore} from "@/core/store/zustand";
 export const useSignupForm = () => {
     const { setFormData, formData, setCurrentPage, isLoading, isError, error } = useAuthStore();
 
-    const { signup } = useJwtAuth();
+    const { signup } = useEnterpriseAuth();
 
     useEffect(() => {
         // Initialize signup form data if empty

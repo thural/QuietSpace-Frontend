@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
+import { useDIContainer } from '@/core/modules/dependency-injection';
 import type { INotificationWebSocketAdapter } from '@/features/notification/adapters';
 import type { 
   NotificationWebSocketMessage,

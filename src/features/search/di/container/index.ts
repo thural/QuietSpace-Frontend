@@ -5,8 +5,8 @@
  * Provides proper service registration and lifecycle management
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { CacheService } from '@/core/cache/CacheProvider';
 import { SearchRepositoryImpl } from '../../data/repositories/SearchRepositoryImpl';
 import { SearchDataService } from '../../data/services/SearchDataService';

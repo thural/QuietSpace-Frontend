@@ -5,8 +5,8 @@
  * Implements business logic, validation, and orchestration for search features
  */
 
-import { Injectable, Inject } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Injectable, Inject } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { SearchDataService } from '../services/SearchDataService';
 import { ISearchRepositoryEnhanced, EnhancedSearchQuery, EnhancedSearchResult, SearchSuggestion, SearchAnalytics, SearchPerformanceMetrics, SearchConfiguration } from '@search/domain/entities/ISearchRepositoryEnhanced';
 import { SearchQuery, SearchResult, SearchFilters } from '@search/domain/entities';

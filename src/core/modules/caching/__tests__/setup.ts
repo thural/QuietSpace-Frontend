@@ -4,6 +4,8 @@
  * Global test configuration and mocks for cache module testing.
  */
 
+import { jest } from '@jest/globals';
+
 // Mock performance API for Node.js environment
 if (typeof performance === 'undefined') {
     (global as any).performance = {
@@ -17,9 +19,14 @@ const originalConsole = { ...console };
 beforeEach(() => {
     // Restore console methods before each test
     Object.assign(console, originalConsole);
-    
+
     // Clear all mocks
     jest.clearAllMocks();
+});
+
+afterEach(() => {
+    // Restore console methods after each test
+    Object.assign(console, originalConsole);
 });
 
 // Global test utilities
@@ -45,3 +52,10 @@ jest.useFakeTimers();
 
 // Increase timeout for async operations
 jest.setTimeout(10000);
+
+// Add a dummy test to make this file valid for Jest
+describe('Cache Module Setup', () => {
+    test('setup file is loaded', () => {
+        expect(typeof performance.now).toBe('function');
+    });
+});

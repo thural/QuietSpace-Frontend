@@ -5,8 +5,8 @@
  * Follows enterprise patterns for service access
  */
 
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { ContentDataService } from '../services/ContentDataService';
 import type { ContentFeatureService } from '../services/ContentFeatureService';
 import type { IContentRepository } from '../domain/entities/ContentEntity';

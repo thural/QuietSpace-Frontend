@@ -1,6 +1,6 @@
 import { USER_URL, SEARCH_URL, USER_PROFILE_URL, USER_PATH, PHOTO_PATH } from "@/core/shared/apiPath";
-import { Inject, Injectable } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Inject, Injectable } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { IApiClient } from '@/core/network';
 import { UserPage, UserResponse, ProfileSettingsRequest, ProfileSettingsResponse } from '@/features/profile/data/models/user';
 import { JwtToken, ResId } from '@/shared/api/models/common';

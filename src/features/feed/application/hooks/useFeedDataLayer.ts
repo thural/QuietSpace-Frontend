@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { ICacheProvider } from '@/core/cache';
 import type { IWebSocketService } from '@/core/websocket/types';
 import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/hooks';

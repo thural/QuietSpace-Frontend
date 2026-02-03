@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import { Inject, Injectable } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Inject, Injectable } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { PHOTO_PATH, USER_PATH, USER_URL, SEARCH_URL } from "@/core/shared/apiPath";
 import { ResId } from "@/shared/api/models/common";
 import {

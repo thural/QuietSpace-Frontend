@@ -8,7 +8,7 @@
 import type { INotificationRepository } from "../domain/entities/INotificationRepository";
 import { NotificationRepository } from "../data/repositories/NotificationRepository";
 import { MockNotificationRepository } from "../data/repositories/MockNotificationRepository";
-import { TYPES } from '@/core/di/types';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { Container } from '@core/di/container';
 
 /**

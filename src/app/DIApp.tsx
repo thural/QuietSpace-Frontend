@@ -16,8 +16,7 @@ import RoutesConfig from "./RoutesConfig";
 import { useGetChats } from "@chat/data/useChatData.ts";
 import { useGetNotifications } from "@notification/data";
 import { useGetCurrentUser } from "@profile/data";
-import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
-import { useEnterpriseAuthHook } from "../features/auth/application/hooks/useEnterpriseAuthHook";
+import { useEnterpriseAuth } from "@/core/modules/authentication";
 import { useNotificationWebSocket } from "@/core/websocket/hooks";
 import { useChatWebSocket } from "@/core/websocket/hooks";
 import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
@@ -102,8 +101,8 @@ const DIApp = () => {
     useGetNotifications();
     useGetChats();
 
-    const { refreshToken } = useJwtAuth();
-    const { validateSession } = useEnterpriseAuthHook();
+    const { refreshToken } = useEnterpriseAuth();
+    const { validateSession } = useEnterpriseAuth();
 
     /**
      * Initializes authentication by setting up token refresh and validating session.

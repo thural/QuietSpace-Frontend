@@ -8,7 +8,7 @@ import UnauthorizedPage from "@/pages/auth/UnauthorizedPage";
 import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
 // import { useGetNotifications } from "@/features/notification/data/useNotificationData";
-import useJwtAuth from "../features/auth/application/hooks/useJwtAuth";
+import { useEnterpriseAuth } from "@/core/modules/authentication";
 // import { useChatWebSocket } from "@/core/websocket/hooks";
 // import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
 import { useAuthStore } from "../core/modules/state-management/zustand";
@@ -99,7 +99,7 @@ const App = () => {
         };
     }, [isAuthenticated, connectWebSocket, disconnectWebSocket, connectChat, disconnectChat]);
     useGetNotifications();
-    const { refreshToken } = useJwtAuth();
+    const { refreshToken } = useEnterpriseAuth();
 
     /**
      * Enhanced authentication initialization with improved error handling

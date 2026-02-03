@@ -78,7 +78,15 @@ export class CacheStorage implements ICacheStorage {
      */
     get<T>(key: string): CacheEntry<T> | null {
         const entry = this.cache.get(key);
-        return entry as CacheEntry<T> | null;
+        if (!entry) {
+            return null;
+        }
+
+        // Don't update access statistics here - let CacheProvider handle it
+        // to avoid double-counting
+
+        // Safe type assertion since we control the storage
+        return entry as CacheEntry<T>;
     }
 
     /**

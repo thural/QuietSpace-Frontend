@@ -33,11 +33,11 @@ import type {
   IQueryExecutor
 } from './services';
 import type { ICacheProvider } from '@/core/cache';
-import type { Container } from '@/core/di/container/Container';
+import type { Container } from '@/core/modules/dependency-injection/container/Container';
 import type { IWebSocketService } from '@/core/websocket/types';
 
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { useCustomInfiniteQuery } from '@/core/hooks/useCustomInfiniteQuery';
 import { useCustomMutation } from '@/core/hooks/useCustomMutation';
 import { useCustomQuery } from '@/core/hooks/useCustomQuery';

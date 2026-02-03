@@ -14,7 +14,7 @@ import type {
 } from "../../domain/entities/SettingsEntities";
 import { useSettingsService, useSettingsDI } from "../../di/useSettingsDI";
 import { useReactQuerySettings } from "./useReactQuerySettings";
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 
 /**
  * Settings State interface.
@@ -56,6 +56,7 @@ export const useSettings = (userId: string): SettingsState & SettingsActions => 
     const settingsService = useSettingsService();
     const diContainer = useSettingsDI();
     const config = diContainer.getConfig();
+    const { token } = useFeatureAuth();
 
     // Use React Query if enabled, otherwise use traditional approach
     const reactQuerySettings = config.useReactQuery
@@ -208,7 +209,7 @@ export const useSettings = (userId: string): SettingsState & SettingsActions => 
             : getProfileSettings,
         updateProfileSettings: config.useReactQuery
             ? (settings: ProfileSettingsRequest) => {
-                reactQuerySettings?.updateProfileSettings.mutate({ userId, settings, token: useAuthStore.getState().data.accessToken || '' });
+                reactQuerySettings?.updateProfileSettings.mutate({ userId, settings, token: token || '' });
                 return Promise.resolve();
             }
             : updateProfileSettings,
@@ -217,7 +218,7 @@ export const useSettings = (userId: string): SettingsState & SettingsActions => 
             : getPrivacySettings,
         updatePrivacySettings: config.useReactQuery
             ? (settings: PrivacySettings) => {
-                reactQuerySettings?.updatePrivacySettings.mutate({ userId, settings, token: useAuthStore.getState().data.accessToken || '' });
+                reactQuerySettings?.updatePrivacySettings.mutate({ userId, settings, token: token || '' });
                 return Promise.resolve();
             }
             : updatePrivacySettings,
@@ -226,19 +227,19 @@ export const useSettings = (userId: string): SettingsState & SettingsActions => 
             : getNotificationSettings,
         updateNotificationSettings: config.useReactQuery
             ? (settings: NotificationSettings) => {
-                reactQuerySettings?.updateNotificationSettings.mutate({ userId, settings, token: useAuthStore.getState().data.accessToken || '' });
+                reactQuerySettings?.updateNotificationSettings.mutate({ userId, settings, token: token || '' });
                 return Promise.resolve();
             }
             : updateNotificationSettings,
         uploadProfilePhoto: config.useReactQuery
             ? (file: File) => {
-                reactQuerySettings?.uploadProfilePhoto.mutate({ userId, file, token: useAuthStore.getState().data.accessToken || '' });
+                reactQuerySettings?.uploadProfilePhoto.mutate({ userId, file, token: token || '' });
                 return Promise.resolve();
             }
             : uploadProfilePhoto,
         removeProfilePhoto: config.useReactQuery
             ? () => {
-                reactQuerySettings?.removeProfilePhoto.mutate({ userId, token: useAuthStore.getState().data.accessToken || '' });
+                reactQuerySettings?.removeProfilePhoto.mutate({ userId, token: token || '' });
                 return Promise.resolve();
             }
             : removeProfilePhoto,

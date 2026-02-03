@@ -6,11 +6,11 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCacheInvalidation } from '@/core/hooks/useCacheInvalidation';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
+import { useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { useAnalyticsServices } from './useAnalyticsServices';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication';
 import { AnalyticsEntity, AnalyticsMetrics, AnalyticsDashboard, DashboardWidget, AnalyticsReport, AnalyticsInsight, AnalyticsFunnel, AnalyticsGoal, DateRange, AnalyticsEventType } from '@features/analytics/domain/entities/IAnalyticsRepository';
 import { JwtToken } from '@/shared/api/models/common';
 import { ANALYTICS_CACHE_TTL } from '../data/cache/AnalyticsCacheKeys';
@@ -40,31 +40,31 @@ export interface AnalyticsActions {
     fetchDashboards: (userId: string) => Promise<void>;
     fetchReports: (userId: string) => Promise<void>;
     fetchInsights: (dateRange?: DateRange) => Promise<void>;
-    
+
     // Event tracking
     trackEvent: (event: Omit<AnalyticsEntity, 'id'>) => Promise<AnalyticsEntity>;
     trackPageView: (userId: string, sessionId: string, metadata: any) => Promise<AnalyticsEntity>;
     trackContentView: (userId: string, contentId: string, sessionId: string, metadata: any) => Promise<AnalyticsEntity>;
     trackUserAction: (userId: string, action: AnalyticsEventType, properties: any, sessionId: string, metadata: any) => Promise<AnalyticsEntity>;
     trackBatchEvents: (events: Array<Omit<AnalyticsEntity, 'id'>>) => Promise<AnalyticsEntity[]>;
-    
+
     // Dashboard management
     createDashboard: (dashboard: Omit<AnalyticsDashboard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<AnalyticsDashboard>;
     updateDashboard: (dashboardId: string, updates: Partial<AnalyticsDashboard>) => Promise<AnalyticsDashboard>;
     deleteDashboard: (dashboardId: string) => Promise<void>;
     getDashboard: (dashboardId: string) => Promise<AnalyticsDashboard | null>;
-    
+
     // Widget management
     addWidget: (dashboardId: string, widget: Omit<DashboardWidget, 'id'>) => Promise<DashboardWidget>;
     updateWidget: (dashboardId: string, widgetId: string, updates: Partial<DashboardWidget>) => Promise<DashboardWidget>;
     removeWidget: (dashboardId: string, widgetId: string) => Promise<void>;
     getWidgetData: (widget: DashboardWidget, dateRange: DateRange) => Promise<any>;
-    
+
     // Report management
     createReport: (report: Omit<AnalyticsReport, 'id' | 'createdAt' | 'updatedAt'>) => Promise<AnalyticsReport>;
     generateReportData: (report: AnalyticsReport) => Promise<any>;
     getReport: (reportId: string) => Promise<AnalyticsReport | null>;
-    
+
     // State management
     setSelectedDashboard: (dashboard: AnalyticsDashboard | null) => void;
     setSelectedReport: (report: AnalyticsReport | null) => void;
@@ -83,7 +83,7 @@ export interface AnalyticsActions {
 export const useAnalytics = (config?: { userId?: string }): AnalyticsState & AnalyticsActions => {
     const { analyticsFeatureService, analyticsDataService } = useAnalyticsServices();
     const invalidateCache = useCacheInvalidation();
-    const { data: authData } = useAuthStore();
+    const { userId, token } = useFeatureAuth();
 
     // State
     const [selectedDashboard, setSelectedDashboard] = useState<AnalyticsDashboard | null>(null);
@@ -97,16 +97,10 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
     const [filters, setFilters] = useState<Record<string, any>>({});
 
     // Get current user ID and token
-    const currentUserId = config?.userId || authData?.userId || 'current-user';
+    const currentUserId = config?.userId || userId || 'current-user';
     const getAuthToken = useCallback((): string => {
-        try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
-        } catch (err) {
-            console.error('useAnalytics: Error getting auth token', err);
-            return '';
-        }
-    }, []);
+        return token || '';
+    }, [token]);
 
     // Custom query for metrics with enterprise caching
     const metricsQuery = useCustomQuery(
@@ -117,10 +111,10 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
             cacheTime: ANALYTICS_CACHE_TTL.METRICS,
             refetchInterval: ANALYTICS_CACHE_TTL.METRICS / 2, // Refresh at half TTL
             onSuccess: (data) => {
-                console.log('Analytics metrics loaded:', { 
-                    totalEvents: data.totalEvents, 
+                console.log('Analytics metrics loaded:', {
+                    totalEvents: data.totalEvents,
                     uniqueUsers: data.uniqueUsers,
-                    dateRange: `${dateRange.start.toISOString()} - ${dateRange.end.toISOString()}` 
+                    dateRange: `${dateRange.start.toISOString()} - ${dateRange.end.toISOString()}`
                 });
             },
             onError: (error) => {
@@ -209,20 +203,20 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         (event: Omit<AnalyticsEntity, 'id'>) => analyticsFeatureService.trackEvent(event, getAuthToken()),
         {
             onSuccess: (result) => {
-            console.log('Analytics event tracked:', { 
-                eventId: result.id, 
-                eventType: result.eventType, 
-                userId: result.userId 
-            });
-            
-            // Invalidate relevant caches
-            invalidateCache.invalidateEvents(result.userId);
-            invalidateCache.invalidateMetrics();
-        },
+                console.log('Analytics event tracked:', {
+                    eventId: result.id,
+                    eventType: result.eventType,
+                    userId: result.userId
+                });
+
+                // Invalidate relevant caches
+                invalidateCache.invalidateEvents(result.userId);
+                invalidateCache.invalidateMetrics();
+            },
             onError: (error) => {
-            setError(error);
-            console.error('Error tracking analytics event:', error);
-            throw error;
+                setError(error);
+                console.error('Error tracking analytics event:', error);
+                throw error;
             }
         }
     );
@@ -233,7 +227,7 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         {
             onSuccess: (results) => {
                 console.log('Batch analytics events tracked:', { count: results.length });
-                
+
                 // Invalidate relevant caches
                 const userIds = [...new Set(results.map(e => e.userId).filter(Boolean))];
                 userIds.forEach(userId => invalidateCache.invalidateEvents(userId));
@@ -252,12 +246,12 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         (dashboard: Omit<AnalyticsDashboard, 'id' | 'createdAt' | 'updatedAt'>) => analyticsFeatureService.createDashboard(dashboard, getAuthToken()),
         {
             onSuccess: (result) => {
-                console.log('Analytics dashboard created:', { 
-                    dashboardId: result.id, 
+                console.log('Analytics dashboard created:', {
+                    dashboardId: result.id,
                     name: result.name,
-                    userId: result.userId 
+                    userId: result.userId
                 });
-                
+
                 // Invalidate dashboards cache
                 if (currentUserId) {
                     dashboardsQuery.refetch();
@@ -273,21 +267,21 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
 
     // Custom mutation for updating dashboards
     const updateDashboardMutation = useCustomMutation(
-        ({ dashboardId, updates }: { dashboardId: string; updates: Partial<AnalyticsDashboard> }) => 
+        ({ dashboardId, updates }: { dashboardId: string; updates: Partial<AnalyticsDashboard> }) =>
             analyticsFeatureService.updateDashboard(dashboardId, updates, getAuthToken()),
         {
             onSuccess: (result) => {
-                console.log('Analytics dashboard updated:', { 
-                    dashboardId: result.id, 
-                    name: result.name 
+                console.log('Analytics dashboard updated:', {
+                    dashboardId: result.id,
+                    name: result.name
                 });
-                
+
                 // Invalidate caches
                 invalidateCache.invalidateDashboard(dashboardId);
                 if (currentUserId) {
                     dashboardsQuery.refetch();
                 }
-                
+
                 // Update selected dashboard if it's the one being updated
                 if (selectedDashboard && selectedDashboard.id === dashboardId) {
                     setSelectedDashboard(result);
@@ -307,13 +301,13 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         {
             onSuccess: (_, dashboardId) => {
                 console.log('Analytics dashboard deleted:', { dashboardId });
-                
+
                 // Invalidate caches
                 invalidateCache.invalidateDashboard(dashboardId);
                 if (currentUserId) {
                     dashboardsQuery.refetch();
                 }
-                
+
                 // Clear selected dashboard if it was the one being deleted
                 if (selectedDashboard && selectedDashboard.id === dashboardId) {
                     setSelectedDashboard(null);
@@ -332,12 +326,12 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         (report: Omit<AnalyticsReport, 'id' | 'createdAt' | 'updatedAt'>) => analyticsFeatureService.createReport(report, getAuthToken()),
         {
             onSuccess: (result) => {
-                console.log('Analytics report created:', { 
-                    reportId: result.id, 
+                console.log('Analytics report created:', {
+                    reportId: result.id,
                     name: result.name,
-                    userId: result.userId 
+                    userId: result.userId
                 });
-                
+
                 // Invalidate reports cache
                 if (currentUserId) {
                     reportsQuery.refetch();
@@ -355,14 +349,14 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
     const fetchMetrics = useCallback(async (dateRange?: DateRange, filters?: Record<string, any>) => {
         try {
             setError(null);
-            
+
             if (dateRange) {
                 setDateRange(dateRange);
             }
             if (filters) {
                 setFilters(filters);
             }
-            
+
             metricsQuery.refetch();
         } catch (err) {
             setError(err as Error);
@@ -393,11 +387,11 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
     const fetchInsights = useCallback(async (dateRange?: DateRange) => {
         try {
             setError(null);
-            
+
             if (dateRange) {
                 setDateRange(dateRange);
             }
-            
+
             insightsQuery.refetch();
         } catch (err) {
             setError(err as Error);
@@ -423,7 +417,7 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
             },
             source: 'web'
         };
-        
+
         await trackEvent(pageViewEvent);
     }, [trackEventMutation]);
 
@@ -441,7 +435,7 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
             },
             source: 'web'
         };
-        
+
         await trackEvent(contentViewEvent);
     }, [trackEventMutation]);
 
@@ -455,7 +449,7 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
             properties,
             source: 'web'
         };
-        
+
         await trackEvent(userActionEvent);
     }, [trackEventMutation]);
 
@@ -490,14 +484,14 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         try {
             setError(null);
             const result = await analyticsDataService.addWidgetToDashboard(dashboardId, widget, getAuthToken());
-            
+
             // Invalidate dashboard cache
             invalidateCache.invalidateDashboard(dashboardId);
             if (selectedDashboard && selectedDashboard.id === dashboardId) {
                 // Refresh the selected dashboard
                 getDashboard(dashboardId);
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -510,14 +504,14 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         try {
             setError(null);
             const result = await analyticsDataService.updateWidgetInDashboard(dashboardId, widgetId, updates, getAuthToken());
-            
+
             // Invalidate dashboard cache
             invalidateCache.invalidateDashboard(dashboardId);
             if (selectedDashboard && selectedDashboard.id === dashboardId) {
                 // Refresh the selected dashboard
                 getDashboard(dashboardId);
             }
-            
+
             return result;
         } catch (err) {
             setError(err as Error);
@@ -530,7 +524,7 @@ export const useAnalytics = (config?: { userId?: string }): AnalyticsState & Ana
         try {
             setError(null);
             await analyticsDataService.removeWidgetFromDashboard(dashboardId, widgetId, getAuthToken());
-            
+
             // Invalidate dashboard cache
             invalidateCache.invalidateDashboard(dashboardId);
             if (selectedDashboard && selectedDashboard.id === dashboardId) {

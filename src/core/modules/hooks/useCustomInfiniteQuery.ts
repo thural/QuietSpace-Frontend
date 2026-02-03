@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 import type { ICacheProvider } from '@/core/cache';
 
-import { useDIContainer } from '@/core/di';
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 
 /**
  * Infinite query page interface

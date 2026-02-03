@@ -8,8 +8,8 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useDIContainer } from "@/core/di";
-import { TYPES } from "@/core/di/types";
+import { useDIContainer } from "@/core/modules/dependency-injection";
+import { TYPES } from "@/core/modules/dependency-injection/types";
 import type { INotificationService } from "../services/NotificationService";
 import type { NotificationResponse, NotificationType } from "../../domain/types/api";
 import type { ResId } from "../../domain/types/api";

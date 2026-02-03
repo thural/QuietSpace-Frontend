@@ -5,7 +5,7 @@
  * Handles message validation, transformation, and business logic for chat operations.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { WebSocketMessage } from '@/core/websocket/types';
 import { MessageResponse, ChatEvent } from '../models/chat';
 import { ResId } from '@/shared/api/models/common';

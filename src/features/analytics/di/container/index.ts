@@ -1,5 +1,5 @@
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { AnalyticsRepository } from '../repositories/AnalyticsRepository';
 import { AnalyticsDataService } from '../services/AnalyticsDataService';

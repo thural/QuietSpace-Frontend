@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import { Inject, Injectable } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Inject, Injectable } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { POST_URL, COMMENT_PATH } from "@/core/shared/apiPath";
 import { CommentRequest, CommentResponse, PagedComment } from "../models/comment";
 import { ResId } from "@/shared/api/models/common";

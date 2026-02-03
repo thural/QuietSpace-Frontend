@@ -7,7 +7,7 @@
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useDIContainer } from '@/core/di';
+import { useDIContainer } from '@/core/modules/dependency-injection';
 import { 
   FeedWebSocketAdapter,
   type IFeedWebSocketAdapter,

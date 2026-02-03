@@ -14,7 +14,7 @@ import { useChatServices } from './useChatServices';
 import { useCacheInvalidation } from '@/core/hooks/migrationUtils';
 import { CHAT_CACHE_KEYS } from '@chat/data/cache/ChatCacheKeys';
 import { CACHE_TIME_MAPPINGS } from '@/core/hooks/migrationUtils';
-import { useAuthStore } from "@core/store/zustand";
+import { useEnterpriseAuth } from "@/core/modules/authentication";
 import React, { useRef, useState } from "react";
 import useNavigation from "@/shared/hooks/useNavigation";
 
@@ -38,11 +38,11 @@ const useCustomChatQuery = () => {
             // Get user from auth store
             const authStore = useAuthStore.getState();
             const authData = authStore.data;
-            
+
             if (!authData || !authData.user) {
                 throw new Error('User not authenticated');
             }
-            
+
             return authData.user;
         },
         {
@@ -73,9 +73,9 @@ const useCustomChatQuery = () => {
             staleTime: CACHE_TIME_MAPPINGS.CHAT_STALE_TIME,
             cacheTime: CACHE_TIME_MAPPINGS.CHAT_CACHE_TIME,
             onSuccess: (data) => {
-                console.log('CustomChatQuery: Chats loaded:', { 
-                    userId: user.id, 
-                    count: data.content?.length || 0 
+                console.log('CustomChatQuery: Chats loaded:', {
+                    userId: user.id,
+                    count: data.content?.length || 0
                 });
             },
             onError: (error) => {
@@ -201,14 +201,14 @@ const useCustomChatQuery = () => {
                     updateDate: new Date().toISOString(),
                     version: 1
                 };
-                
+
                 const cacheKey = CHAT_CACHE_KEYS.USER_CHATS(user?.id || '');
                 const existingChats = cache.get<any>(cacheKey) || { content: [] };
                 cache.set(cacheKey, {
                     ...existingChats,
                     content: [optimisticChat, ...existingChats.content]
                 });
-                
+
                 return () => {
                     const updatedChats = cache.get<any>(cacheKey) || { content: [] };
                     const filtered = updatedChats.content.filter((chat: any) => chat.id !== optimisticChat.id);
@@ -226,7 +226,7 @@ const useCustomChatQuery = () => {
             // Use a proper user search service or API call
             // For now, we'll throw an error to indicate this needs implementation
             throw new Error('User search service not implemented. Please integrate with user service or API.');
-            
+
             // Future implementation would look like:
             // return await userService.searchUsers(query);
         },

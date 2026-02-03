@@ -1,4 +1,4 @@
-import { TYPES } from '@/core/di/types';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { IAnalyticsRepository } from '../../domain/entities/IAnalyticsRepository';
 import { JwtToken } from '@/shared/api/models/common';

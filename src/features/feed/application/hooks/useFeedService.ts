@@ -1,18 +1,20 @@
-import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/hooks';
-import { useAuthStore } from '@/core/store/zustand';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
-import { 
-  CACHE_TIME_MAPPINGS, 
-  convertQueryKeyToCacheKey,
-  useCacheInvalidation 
-} from '@/core/hooks/migrationUtils';
-import type { 
-    PostQuery, 
-    PostResponse, 
-    PostRequest, 
-    RepostRequest, 
-    VoteBody 
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
+import { useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomInfiniteQuery';
+import { useFeatureAuth } from '@/core/modules/authentication';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
+import {
+    CACHE_TIME_MAPPINGS,
+    convertQueryKeyToCacheKey,
+    useCacheInvalidation
+} from '@/core/modules/hooks/migrationUtils';
+import type {
+    PostQuery,
+    PostResponse,
+    PostRequest,
+    RepostRequest,
+    VoteBody
 } from '@/features/feed/domain';
 import type { FeedPage, FeedItem } from '@/features/feed/data/services/FeedDataService';
 import type { ResId } from '@/shared/api/models/common';
@@ -23,7 +25,7 @@ import { ConsumerFn } from '@/shared/types/genericTypes';
  */
 export const useFeedServices = () => {
     const container = useDIContainer();
-    
+
     return {
         feedFeatureService: container.getByToken(TYPES.FEED_FEATURE_SERVICE),
         postFeatureService: container.getByToken(TYPES.POST_FEATURE_SERVICE),
@@ -37,7 +39,7 @@ export const useFeedServices = () => {
  * Custom hook for loading feed with business logic and caching
  */
 export const useFeed = (query: PostQuery = {}) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { token, isAuthenticated } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
@@ -45,7 +47,7 @@ export const useFeed = (query: PostQuery = {}) => {
         ['feed', query],
         async ({ pageParam = 0 }) => {
             const feedQuery = { ...query, page: pageParam };
-            return await feedFeatureService.loadFeed(feedQuery, authData.accessToken);
+            return await feedFeatureService.loadFeed(feedQuery, token || '');
         },
         {
             enabled: isAuthenticated,
@@ -59,10 +61,10 @@ export const useFeed = (query: PostQuery = {}) => {
                 return lastPage.pagination.hasNext ? allPages.length : undefined;
             },
             onSuccess: (data, allPages) => {
-                console.log('Feed loaded successfully:', { 
-                    totalItems: data.length, 
+                console.log('Feed loaded successfully:', {
+                    totalItems: data.length,
                     totalPages: allPages.length,
-                    query 
+                    query
                 });
             },
             onError: (error) => {
@@ -95,10 +97,10 @@ export const usePost = (postId: ResId) => {
             cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
             refetchInterval: 10 * 60 * 1000, // 10 minutes
             onSuccess: (data) => {
-                console.log('Post loaded successfully:', { 
-                    postId: data.post.id, 
+                console.log('Post loaded successfully:', {
+                    postId: data.post.id,
                     title: data.post.title,
-                    commentCount: data.comments.content.length 
+                    commentCount: data.comments.content.length
                 });
             },
             onError: (error) => {
@@ -126,10 +128,10 @@ export const useCreatePost = (toggleForm?: ConsumerFn) => {
             onSuccess: (data, variables) => {
                 console.log('Post created successfully:', data);
                 toggleForm?.();
-                
+
                 // Invalidate all feed-related caches
                 invalidateCache.invalidateFeed();
-                
+
                 // Also invalidate user-specific caches
                 if (authData?.user?.id) {
                     invalidateCache.invalidateUser(authData.user.id);
@@ -165,7 +167,7 @@ export const useCreatePost = (toggleForm?: ConsumerFn) => {
                 // Add to feed cache optimistically
                 const feedKey = convertQueryKeyToCacheKey(['feed', {}]);
                 const existingFeed = cache.get(feedKey);
-                
+
                 if (existingFeed) {
                     const updatedFeed = {
                         ...existingFeed,
@@ -203,7 +205,7 @@ export const useUpdatePost = (postId: ResId, toggleForm?: ConsumerFn) => {
             onSuccess: (data, variables) => {
                 console.log('Post updated successfully:', data);
                 toggleForm?.();
-                
+
                 // Invalidate post-specific caches
                 invalidateCache.invalidatePost(postId);
                 invalidateCache.invalidateFeed();
@@ -222,7 +224,7 @@ export const useUpdatePost = (postId: ResId, toggleForm?: ConsumerFn) => {
                 // Optimistically update post in all caches
                 const postKey = convertQueryKeyToCacheKey(['post', postId]);
                 const existingPost = cache.get(postKey);
-                
+
                 if (existingPost) {
                     const updatedPost = {
                         ...existingPost,
@@ -255,7 +257,7 @@ export const useDeletePost = () => {
         {
             onSuccess: (_, variables) => {
                 console.log('Post deleted successfully:', variables.postId);
-                
+
                 // Comprehensive cache invalidation
                 invalidateCache.invalidatePost(variables.postId);
                 invalidateCache.invalidateFeed();
@@ -276,10 +278,10 @@ export const useDeletePost = () => {
                 // Optimistically remove post from all caches
                 const postKey = convertQueryKeyToCacheKey(['posts', variables.postId]);
                 cache.delete(postKey);
-                
+
                 const feedKey = convertQueryKeyToCacheKey(['feed', {}]);
                 const existingFeed = cache.get(feedKey);
-                
+
                 if (existingFeed) {
                     const updatedFeed = {
                         ...existingFeed,
@@ -330,14 +332,14 @@ export const usePostInteraction = () => {
     const { feedFeatureService } = useFeedServices();
 
     return useMutation({
-        mutationFn: async ({ 
-            postId, 
-            userId, 
-            interaction 
-        }: { 
-            postId: ResId; 
-            userId: ResId; 
-            interaction: 'like' | 'dislike' | 'share' | 'save' 
+        mutationFn: async ({
+            postId,
+            userId,
+            interaction
+        }: {
+            postId: ResId;
+            userId: ResId;
+            interaction: 'like' | 'dislike' | 'share' | 'save'
         }) => {
             return await feedFeatureService.interactWithPost(postId, userId, interaction, authData.accessToken);
         },

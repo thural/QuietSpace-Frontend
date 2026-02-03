@@ -146,3 +146,8 @@ export {
     useFeatureAuth,
     useReactiveFeatureAuth
 } from './hooks/useFeatureAuth';
+
+// Enterprise authentication hooks - Full-featured auth with enterprise patterns
+export {
+    useEnterpriseAuth
+} from './hooks/useEnterpriseAuth';

@@ -1,5 +1,5 @@
-import { Container } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { ProfileRepository } from '../../data/ProfileRepository';
 import { ProfileDataService } from '../../data/services/ProfileDataService';
 import { ProfileFeatureService } from '../../application/services/ProfileFeatureService';

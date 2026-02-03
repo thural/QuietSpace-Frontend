@@ -149,7 +149,7 @@ export class CacheProvider {
       const entry: CacheEntry<T> = {
         data,
         timestamp: Date.now(),
-        ttl: ttl || this.config.defaultTTL,
+        ttl: ttl !== undefined ? ttl : this.config.defaultTTL,
         accessCount: 1,
         lastAccessed: Date.now()
       };
@@ -345,6 +345,10 @@ export class CacheProvider {
    * @returns True if entry has expired
    */
   private isExpired(entry: CacheEntry<any>): boolean {
+    // TTL of 0 means immediate expiration
+    if (entry.ttl <= 0) {
+      return true;
+    }
     return Date.now() - entry.timestamp > entry.ttl;
   }
 }

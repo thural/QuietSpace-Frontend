@@ -1,5 +1,5 @@
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { NotificationDataService } from '@features/notification/data/services/NotificationDataService';
 import { NotificationFeatureService } from '@features/notification/application/services/NotificationFeatureService';
 import { PushNotificationService } from '@features/notification/application/services/PushNotificationService';

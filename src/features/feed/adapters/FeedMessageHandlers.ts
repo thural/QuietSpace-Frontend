@@ -5,7 +5,7 @@
  * Handles message validation, transformation, and business logic for feed operations.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { WebSocketMessage } from '@/core/websocket/types';
 import { PostResponse, PollResponse } from '../data/models/post';
 import { ResId } from '@/shared/api/models/common';

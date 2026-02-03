@@ -5,8 +5,8 @@
  * Follows the established pattern from auth, notification, analytics, and profile features
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { SearchDataService } from '@features/search/data/services/SearchDataService';
 import { SearchFeatureService } from '@features/search/application/services/SearchFeatureService';
 

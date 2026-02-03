@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { useEnterpriseAuthWithSecurity } from './useEnterpriseAuthWithSecurity';
-import { useJwtAuth } from './useJwtAuth';
+import { useEnterpriseAuth } from '@/core/modules/authentication';
 import { useEnterpriseAuthHook } from './useEnterpriseAuthHook';
 
 /**
@@ -65,19 +65,19 @@ export const useAuthMigration = (config: AuthMigrationConfig = {
 
   // Enterprise hooks
   const enterpriseAuth = useEnterpriseAuthWithSecurity();
-  const legacyAuth = useJwtAuth();
+  const legacyAuth = useEnterpriseAuth();
   const basicEnterpriseAuth = useEnterpriseAuthHook();
 
   // Performance monitoring
   useEffect(() => {
     if (config.logMigrationEvents) {
       const startTime = performance.now();
-      
+
       // Simulate performance measurement
       setTimeout(() => {
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         setMigrationState(prev => ({
           ...prev,
           performanceMetrics: {
@@ -85,7 +85,7 @@ export const useAuthMigration = (config: AuthMigrationConfig = {
             enterpriseHookTime: duration
           }
         }));
-        
+
         console.log(`🔐 Enterprise auth hook performance: ${duration.toFixed(2)}ms`);
       }, 0);
     }
@@ -94,17 +94,17 @@ export const useAuthMigration = (config: AuthMigrationConfig = {
   // Error handling and fallback
   useEffect(() => {
     const errors: string[] = [];
-    
+
     if (enterpriseAuth.error) {
       errors.push(`Enterprise auth error: ${enterpriseAuth.error}`);
     }
-    
+
     if (errors.length > 0) {
       setMigrationState(prev => ({
         ...prev,
         migrationErrors: errors
       }));
-      
+
       if (config.logMigrationEvents) {
         console.warn('🔐 Auth migration errors:', errors);
       }
@@ -131,7 +131,7 @@ export const useAuthMigration = (config: AuthMigrationConfig = {
   ]);
 
   // Determine which hooks to use based on configuration and errors
-  const shouldUseEnterprise = config.useEnterpriseHooks && 
+  const shouldUseEnterprise = config.useEnterpriseHooks &&
     (migrationState.migrationErrors.length === 0 || !config.enableFallback);
 
   // Update migration state
@@ -198,16 +198,16 @@ export const useAuthMigration = (config: AuthMigrationConfig = {
         deviceTrusted: false,
 
         // Basic enterprise auth actions
-        login: basicEnterpriseAuth.authenticate || (async () => {}),
-        logout: async () => {},
-        signup: async () => {},
-        refreshToken: async () => {},
-        verifyTwoFactor: async () => {},
-        trustDevice: async () => {},
-        clearError: () => {},
-        retry: () => {},
-        checkSession: async () => {},
-        updateProfile: async () => {},
+        login: basicEnterpriseAuth.authenticate || (async () => { }),
+        logout: async () => { },
+        signup: async () => { },
+        refreshToken: async () => { },
+        verifyTwoFactor: async () => { },
+        trustDevice: async () => { },
+        clearError: () => { },
+        retry: () => { },
+        checkSession: async () => { },
+        updateProfile: async () => { },
 
         // Migration state
         migration: {
@@ -237,16 +237,16 @@ export const useAuthMigration = (config: AuthMigrationConfig = {
     deviceTrusted: false,
 
     // Legacy auth actions (minimal implementation)
-    login: legacyAuth.login || (async () => {}),
-    logout: legacyAuth.logout || (async () => {}),
-    signup: async () => {},
-    refreshToken: async () => {},
-    verifyTwoFactor: async () => {},
-    trustDevice: async () => {},
-    clearError: legacyAuth.setError || (() => {}),
-    retry: () => {},
-    checkSession: async () => {},
-    updateProfile: async () => {},
+    login: legacyAuth.login || (async () => { }),
+    logout: legacyAuth.logout || (async () => { }),
+    signup: async () => { },
+    refreshToken: async () => { },
+    verifyTwoFactor: async () => { },
+    trustDevice: async () => { },
+    clearError: legacyAuth.setError || (() => { }),
+    retry: () => { },
+    checkSession: async () => { },
+    updateProfile: async () => { },
 
     // Migration state
     migration: {
@@ -275,27 +275,27 @@ export const AuthMigrationUtils = {
    */
   getMigrationRecommendations: (migrationState: AuthMigrationState, config: AuthMigrationConfig) => {
     const recommendations: string[] = [];
-    
+
     if (!migrationState.isUsingEnterprise) {
       recommendations.push('Enable enterprise hooks for better security and performance');
     }
-    
+
     if (migrationState.migrationErrors.length > 0) {
       recommendations.push('Fix migration errors before completing migration');
     }
-    
+
     if (config.securityLevel !== 'maximum') {
       recommendations.push('Consider using maximum security level for enhanced protection');
     }
-    
+
     if (!migrationState.securityFeatures.twoFactorEnabled) {
       recommendations.push('Enable two-factor authentication for better security');
     }
-    
+
     if (migrationState.performanceMetrics.enterpriseHookTime > 100) {
       recommendations.push('Consider optimizing auth queries for better performance');
     }
-    
+
     return recommendations;
   },
 

@@ -1,5 +1,5 @@
 import { PureComponent, ReactNode, ErrorInfo } from 'react';
-import { Container } from '@/core/di';
+import { Container } from '@/core/modules/dependency-injection';
 
 /**
  * Base interface for all class component props

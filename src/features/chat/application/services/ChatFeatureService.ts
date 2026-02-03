@@ -5,7 +5,7 @@
  * Handles validation, business rules, and cross-service coordination.
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { ChatDataLayer } from '@/features/chat/data/ChatDataLayer';
 import type { ChatList, ChatResponse, CreateChatRequest, PagedMessage } from "@/features/chat/data/models/chat";
 import type { ResId, JwtToken } from "@/shared/api/models/common";

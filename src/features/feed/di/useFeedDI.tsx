@@ -9,8 +9,8 @@ import { useContext, useMemo, createContext } from 'react';
 import type { IPostRepository } from '../domain/entities/IPostRepository';
 import { FeedDIContainer } from './FeedDIContainer';
 import type { FeedDIConfig } from './FeedDIConfig';
-import { useService } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useService } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 
 /**
  * Feed DI context

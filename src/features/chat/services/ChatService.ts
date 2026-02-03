@@ -2,7 +2,7 @@ import {ChatRepository} from '@chat/data/repositories/ChatRepository';
 import {MessageRepository} from '@chat/data/repositories/MessageRepository';
 import {ChatList, ChatResponse, CreateChatRequest, MessageRequest, PagedMessage} from '../data/models/chat';
 import {ResId} from '@/shared/api/models/common';
-import { Container } from '@/core/di';
+import { Container } from '@/core/modules/dependency-injection';
 
 /**
  * Helper function to get DI container instance

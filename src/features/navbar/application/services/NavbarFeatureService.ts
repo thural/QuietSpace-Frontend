@@ -1,5 +1,5 @@
-import { Injectable, Inject } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Injectable, Inject } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { NavbarDataService } from '../services/NavbarDataService';
 import { 
   NavigationItemEntity, 

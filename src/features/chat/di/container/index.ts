@@ -5,8 +5,8 @@
  * Provides all necessary services with proper scoping.
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { ChatDataService } from '@/features/chat/data/services/ChatDataService';
 import { ChatFeatureService } from '@/features/chat/application/services/ChatFeatureService';
 import { WebSocketService } from '@/features/chat/data/services/WebSocketService';

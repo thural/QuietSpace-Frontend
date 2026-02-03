@@ -1,5 +1,5 @@
-import { Container } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { NotificationRepository } from '../repositories/NotificationRepository';
 import { NotificationDataService } from '../services/NotificationDataService';

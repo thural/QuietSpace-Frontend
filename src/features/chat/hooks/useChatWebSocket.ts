@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
+import { useDIContainer } from '@/core/modules/dependency-injection';
 import { useChatDI } from '@/features/chat/di';
 import { ChatWebSocketAdapter } from '@/features/chat/adapters';
 import type {

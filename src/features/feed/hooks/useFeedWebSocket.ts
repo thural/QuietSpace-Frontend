@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useDIContainer } from '@/core/di';
+import { useDIContainer } from '@/core/modules/dependency-injection';
 import type { PostResponse } from '../data/models/post';
 
 // Define types inline to avoid module resolution issues

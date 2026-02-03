@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@/core/store/zustand';
-import { useDIContainer } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { useDIContainer } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { CommentRequest, CommentResponse } from '@/features/feed/data/models/comment';
 import type { ResId } from '@/shared/api/models/common';
 import { ConsumerFn } from '@/shared/types/genericTypes';

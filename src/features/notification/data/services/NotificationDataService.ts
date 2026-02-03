@@ -1,4 +1,4 @@
-import { TYPES } from '@/core/di/types';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { INotificationRepository, NotificationQuery, NotificationFilters, NotificationSettings, NotificationPreferences, PushNotificationStatus, PushSubscription, DeviceToken, QuietHours } from '../../domain/entities/INotificationRepository';
 import { NotificationPage, NotificationResponse, NotificationType } from '../models/notification';

@@ -3,7 +3,7 @@ import { AuthPages } from "@/features/auth/types/auth.ui.types";
 import { useState } from "react";
 import { useAuthStore } from "@/core/store/zustand";
 import { useTimer } from "./useTimer";
-import useJwtAuth from "./useJwtAuth";
+import { useEnterpriseAuth } from "@/core/modules/authentication";
 
 export const useActivationForm = () => {
     const { formData, setCurrentPage } = useAuthStore();
@@ -22,7 +22,7 @@ export const useActivationForm = () => {
         console.log("error on account activation:", error.message);
     }
 
-    const { activate } = useJwtAuth();
+    const { activate } = useEnterpriseAuth();
 
     const handleActivate = async (code: string) => {
         try {

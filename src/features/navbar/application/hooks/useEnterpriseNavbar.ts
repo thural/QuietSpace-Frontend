@@ -6,11 +6,12 @@
  */
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { useCustomQuery, useCustomMutation } from '@/core/hooks/useCustomQuery';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
 import { useNavbarServices } from './useNavbarServices';
-import { useAuthStore } from '@services/store/zustand';
-import type { 
-  NavigationItemEntity, 
+import { useFeatureAuth } from '@/core/modules/authentication';
+import type {
+  NavigationItemEntity,
   NotificationStatusEntity,
   UserProfileSummaryEntity,
   UserPreferencesEntity,
@@ -37,40 +38,40 @@ export interface EnterpriseNavbarState {
     mobileState: MobileNavStateEntity;
     quickActions: QuickActionsEntity[];
   } | null;
-  
+
   // User status
   notificationStatus: NotificationStatusEntity | null;
   userProfile: UserProfileSummaryEntity | null;
   chatStatus: NotificationStatusEntity | null;
   quickActions: QuickActionsEntity[] | null;
-  
+
   // Preferences and configuration
   userPreferences: UserPreferencesEntity | null;
   themeConfig: ThemeConfigEntity | null;
   accessibilitySettings: AccessibilitySettingsEntity | null;
-  
+
   // Search functionality
   searchSuggestions: SearchSuggestionsEntity[] | null;
   searchQuery: string;
   isSearching: boolean;
-  
+
   // System status
   systemStatus: SystemStatusEntity | null;
   featureFlags: FeatureFlagsEntity | null;
-  
+
   // Loading states
   isLoading: boolean;
   isRefreshing: boolean;
   isSearchLoading: boolean;
-  
+
   // Error state
   error: Error | null;
-  
+
   // UI state
   isMobileMenuOpen: boolean;
   isSearchOpen: boolean;
   activeNavigationItem: string | null;
-  
+
   // Performance metrics
   cacheHitRate: number;
   lastUpdateTime: string | null;
@@ -84,26 +85,26 @@ export interface EnterpriseNavbarActions {
   refreshNavigation: () => Promise<void>;
   trackNavigation: (path: string, source?: string) => Promise<void>;
   setActiveNavigation: (path: string) => void;
-  
+
   // Search actions
   performSearch: (query: string) => Promise<void>;
   clearSearch: () => void;
   setSearchQuery: (query: string) => void;
-  
+
   // Preference actions
   updateUserPreferences: (preferences: Partial<UserPreferencesEntity>) => Promise<void>;
   updateTheme: (theme: Partial<ThemeConfigEntity>) => Promise<void>;
   updateAccessibilitySettings: (settings: Partial<AccessibilitySettingsEntity>) => Promise<void>;
-  
+
   // UI actions
   toggleMobileMenu: () => void;
   toggleSearch: () => void;
   closeAllMenus: () => void;
-  
+
   // Cache actions
   invalidateCache: () => Promise<void>;
   warmCache: () => Promise<void>;
-  
+
   // Health check
   performHealthCheck: () => Promise<any>;
 }
@@ -134,9 +135,10 @@ export const useEnterpriseNavbar = (options: {
     autoRefresh = true
   } = options;
 
-  // Get current user from auth store
-  const { user, token } = useAuthStore();
-  const userId = user?.id || 'anonymous';
+  // Get current user from centralized auth
+  const { userId, token } = useFeatureAuth();
+  const currentUserId = userId || 'anonymous';
+  const currentToken = token || '';
 
   // Enterprise services
   const { navbarDataService, navbarFeatureService } = useNavbarServices();

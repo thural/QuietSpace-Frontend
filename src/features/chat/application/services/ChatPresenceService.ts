@@ -8,7 +8,7 @@
  * - Last seen tracking
  */
 
-import { Injectable } from '@/core/di';
+import { Injectable } from '@/core/modules/dependency-injection';
 import { WebSocketService } from '@/features/chat/data/services/WebSocketService';
 import { CacheProvider } from '@/core/cache';
 import { ChatMetricsService } from '@/features/chat/application/services/ChatMetricsService';

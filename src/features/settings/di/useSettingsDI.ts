@@ -5,8 +5,8 @@
  * Follows enterprise patterns for service access
  */
 
-import { Container } from '@/core/di/container/Container';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection/container/Container';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { SettingsDataService } from '../services/SettingsDataService';
 import type { SettingsFeatureService } from '../services/SettingsFeatureService';
 import type { ISettingsRepository } from '../domain/entities/SettingsRepository';

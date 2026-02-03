@@ -6,7 +6,7 @@
  */
 
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
-import { TYPES } from '@/core/di/types';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { IEnterpriseWebSocketService } from "@/core/websocket";
 import { ChatWebSocketAdapter } from "@chat/adapters";
 import { ChatAnalyticsService } from "@chat/application/services/ChatAnalyticsService";

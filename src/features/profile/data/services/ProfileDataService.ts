@@ -1,4 +1,4 @@
-import { TYPES } from '@/core/di/types';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { createCacheProvider, type ICacheProvider } from '@/core/cache';
 import { IProfileRepository, UserProfileEntity, UserProfileStatsEntity, UserConnectionEntity, ProfileAccessEntity } from '@features/profile/domain/entities/IProfileRepository';
 import { JwtToken } from '@/shared/api/models/common';

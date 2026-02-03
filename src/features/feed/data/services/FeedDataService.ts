@@ -6,7 +6,7 @@
  */
 
 import { BaseDataService } from '@/core/dataservice/BaseDataService';
-import { TYPES } from '@/core/di/types';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { ICacheProvider } from '@/core/cache';
 import type { ICacheManager } from '@/core/dataservice/services';
 import type { IWebSocketService } from '@/core/websocket/types';

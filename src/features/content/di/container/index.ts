@@ -1,5 +1,5 @@
-import { Container } from '@/core/di';
-import { TYPES } from '@/core/di/types';
+import { Container } from '@/core/modules/dependency-injection';
+import { TYPES } from '@/core/modules/dependency-injection/types';
 import { CacheService } from '@/core/cache/CacheProvider';
 import { ContentRepository } from '../repositories/ContentRepository';
 import { ContentDataService } from '../services/ContentDataService';
