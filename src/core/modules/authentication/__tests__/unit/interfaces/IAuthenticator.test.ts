@@ -8,6 +8,7 @@
  * - Lifecycle management
  */
 
+import { jest } from '@jest/globals';
 import type {
     IAuthenticator,
     HealthCheckResult,
@@ -30,23 +31,23 @@ const createMockAuthenticator = (): IAuthenticator => ({
     config: {},
 
     // Core authentication methods
-    authenticate: jest.fn(),
-    validateSession: jest.fn(),
-    refreshToken: jest.fn(),
-    configure: jest.fn(),
-    getCapabilities: jest.fn(() => ['oauth', 'mfa']),
+    authenticate: jest.fn() as jest.MockedFunction<(credentials: AuthCredentials) => Promise<AuthResult<AuthSession>>>,
+    validateSession: jest.fn() as jest.MockedFunction<() => Promise<AuthResult<boolean>>>,
+    refreshToken: jest.fn() as jest.MockedFunction<() => Promise<AuthResult<AuthSession>>>,
+    configure: jest.fn() as jest.MockedFunction<(config: Record<string, unknown>) => void>,
+    getCapabilities: jest.fn() as jest.MockedFunction<() => string[]>,
 
     // Enhanced health checking
-    healthCheck: jest.fn(),
-    isHealthy: jest.fn(),
-    getPerformanceMetrics: jest.fn(),
-    resetPerformanceMetrics: jest.fn(),
+    healthCheck: jest.fn() as jest.MockedFunction<() => Promise<HealthCheckResult>>,
+    isHealthy: jest.fn() as jest.MockedFunction<() => Promise<boolean>>,
+    getPerformanceMetrics: jest.fn() as jest.MockedFunction<() => PerformanceMetrics>,
+    resetPerformanceMetrics: jest.fn() as jest.MockedFunction<() => void>,
 
     // Lifecycle management
-    initialize: jest.fn(),
-    isInitialized: jest.fn(),
-    getUptime: jest.fn(),
-    shutdown: jest.fn()
+    initialize: jest.fn() as jest.MockedFunction<(options?: InitializationOptions) => Promise<void>>,
+    isInitialized: jest.fn() as jest.MockedFunction<() => boolean>,
+    getUptime: jest.fn() as jest.MockedFunction<() => number>,
+    shutdown: jest.fn() as jest.MockedFunction<(timeout?: number) => Promise<void>>
 });
 
 const createMockAuthResult = (success: boolean, data?: AuthSession, error?: AuthErrorType): AuthResult<AuthSession> => ({

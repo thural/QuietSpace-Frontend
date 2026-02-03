@@ -8,6 +8,7 @@
  * - Enhanced statistics and metrics
  */
 
+import { jest } from '@jest/globals';
 import { ProviderManager } from '../../../enterprise/ProviderManager';
 import type { IAuthenticator } from '../../../interfaces/IAuthenticator';
 import type { IAuthLogger } from '../../../interfaces/authInterfaces';

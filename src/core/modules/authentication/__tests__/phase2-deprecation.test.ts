@@ -4,6 +4,7 @@
  * Tests the deprecation of EnterpriseAuthService and the compatibility adapter.
  */
 
+import { jest } from '@jest/globals';
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
 import { EnterpriseAuthService } from '../enterprise/AuthService';

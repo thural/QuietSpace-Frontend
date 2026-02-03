@@ -8,6 +8,7 @@
  * - Validation metrics and statistics
  */
 
+import { jest } from '@jest/globals';
 import type {
     IAuthValidator,
     ValidationRule,
@@ -138,7 +139,7 @@ describe('IAuthValidator Interface', () => {
 
             const result = await validator.validateTokenAsync('invalid-token', mockContext);
 
-            expect(validator.validateTokenAsync).toHaveBeenCalledWith('invalid-token', mockContext, undefined);
+            expect(validator.validateTokenAsync).toHaveBeenCalledWith('invalid-token', mockContext);
             expect(result.isValid).toBe(false);
             expect(result.errors).toHaveLength(1);
         });
@@ -150,7 +151,7 @@ describe('IAuthValidator Interface', () => {
 
             const result = await validator.validateUserAsync(userData, mockContext);
 
-            expect(validator.validateUserAsync).toHaveBeenCalledWith(userData, mockContext, undefined);
+            expect(validator.validateUserAsync).toHaveBeenCalledWith(userData, mockContext);
             expect(result.isValid).toBe(true);
         });
 
@@ -171,7 +172,7 @@ describe('IAuthValidator Interface', () => {
 
             const results = await validator.validateBatch(batchItems, mockContext);
 
-            expect(validator.validateBatch).toHaveBeenCalledWith(batchItems, mockContext, undefined);
+            expect(validator.validateBatch).toHaveBeenCalledWith(batchItems, mockContext);
             expect(results).toHaveLength(3);
             expect(results[2].isValid).toBe(false);
         });
@@ -179,11 +180,11 @@ describe('IAuthValidator Interface', () => {
         it('should handle async validation with timeout', async () => {
             const options: AsyncValidationOptions = { timeout: 100 };
             (validator.validateCredentialsAsync as jest.Mock).mockImplementation(
-                () => new Promise(resolve => setTimeout(resolve, 200))
+                () => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 200))
             );
 
             await expect(validator.validateCredentialsAsync(mockCredentials, mockContext, options))
-                .rejects.toThrow();
+                .rejects.toThrow('Timeout');
         });
     });
 
