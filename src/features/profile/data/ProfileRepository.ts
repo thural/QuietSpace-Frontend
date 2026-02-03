@@ -28,13 +28,13 @@ export class ProfileRepository implements IProfileRepository {
 
   private externalData:
     | {
-        userId: string | number;
-        user: any;
-        userPosts: any;
-        followers: any;
-        followings: any;
-        signedUser: any;
-      }
+      userId: string | number;
+      user: any;
+      userPosts: any;
+      followers: any;
+      followings: any;
+      signedUser: any;
+    }
     | null = null;
 
   /**
@@ -312,5 +312,243 @@ export class ProfileRepository implements IProfileRepository {
     signedUser: any;
   }): void {
     this.initializeWithReactData(hooks);
+  }
+
+  // Missing repository methods for Phase 6 implementation
+  private uploadedAvatars = new Map<string | number, string>();
+  private uploadedCoverPhotos = new Map<string | number, string>();
+  private userActivities = new Map<string | number, any[]>();
+  private userOnlineStatus = new Map<string | number, boolean>();
+  private userExperiences = new Map<string | number, any[]>();
+
+  async uploadAvatar(userId: string | number, file: File): Promise<string> {
+    try {
+      // Simulate file upload with mock URL generation
+      const fileExtension = file.name.split('.').pop() || 'jpg';
+      const mockUrl = `https://cdn.example.com/avatars/${userId}/${Date.now()}.${fileExtension}`;
+
+      this.uploadedAvatars.set(userId, mockUrl);
+
+      // Simulate upload delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      return mockUrl;
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      throw new Error('Failed to upload avatar');
+    }
+  }
+
+  async uploadCoverPhoto(userId: string | number, file: File): Promise<string> {
+    try {
+      // Simulate file upload with mock URL generation
+      const fileExtension = file.name.split('.').pop() || 'jpg';
+      const mockUrl = `https://cdn.example.com/covers/${userId}/${Date.now()}.${fileExtension}`;
+
+      this.uploadedCoverPhotos.set(userId, mockUrl);
+
+      // Simulate upload delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      return mockUrl;
+    } catch (error) {
+      console.error('Error uploading cover photo:', error);
+      throw new Error('Failed to upload cover photo');
+    }
+  }
+
+  async trackUserActivity(userId: string | number, activity: any): Promise<void> {
+    try {
+      const activities = this.userActivities.get(userId) || [];
+      const newActivity = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        userId,
+        type: activity.type || 'general',
+        content: activity.content || {},
+        metadata: activity.metadata || {},
+        timestamp: new Date().toISOString(),
+        isPublic: activity.isPublic !== false
+      };
+
+      activities.push(newActivity);
+
+      // Keep only last 100 activities per user
+      if (activities.length > 100) {
+        activities.splice(0, activities.length - 100);
+      }
+
+      this.userActivities.set(userId, activities);
+    } catch (error) {
+      console.error('Error tracking user activity:', error);
+      throw new Error('Failed to track user activity');
+    }
+  }
+
+  async updateUserActivityStatus(userId: string | number, status: string): Promise<void> {
+    try {
+      await this.trackUserActivity(userId, {
+        type: 'status_update',
+        content: { status },
+        metadata: { updatedAt: new Date().toISOString() }
+      });
+    } catch (error) {
+      console.error('Error updating user activity status:', error);
+      throw new Error('Failed to update user activity status');
+    }
+  }
+
+  async setUserOnlineStatus(userId: string | number, isOnline: boolean): Promise<void> {
+    try {
+      this.userOnlineStatus.set(userId, isOnline);
+
+      // Track online status change as activity
+      await this.trackUserActivity(userId, {
+        type: 'online_status_change',
+        content: { isOnline },
+        metadata: { timestamp: new Date().toISOString() }
+      });
+    } catch (error) {
+      console.error('Error setting user online status:', error);
+      throw new Error('Failed to set user online status');
+    }
+  }
+
+  async getUserOnlineStatus(userId: string | number): Promise<boolean> {
+    try {
+      return this.userOnlineStatus.get(userId) || false;
+    } catch (error) {
+      console.error('Error getting user online status:', error);
+      return false;
+    }
+  }
+
+  async getUserActivity(userId: string | number, options?: {
+    limit?: number;
+    offset?: number;
+    type?: string;
+  }): Promise<any[]> {
+    try {
+      const activities = this.userActivities.get(userId) || [];
+      let filteredActivities = activities;
+
+      // Filter by type if specified
+      if (options?.type) {
+        filteredActivities = activities.filter(activity => activity.type === options.type);
+      }
+
+      // Sort by timestamp (newest first)
+      filteredActivities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+      // Apply pagination
+      const offset = options?.offset || 0;
+      const limit = options?.limit || 50;
+
+      return filteredActivities.slice(offset, offset + limit);
+    } catch (error) {
+      console.error('Error getting user activity:', error);
+      return [];
+    }
+  }
+
+  async addUserExperience(userId: string | number, experience: Partial<any>): Promise<any> {
+    try {
+      const experiences = this.userExperiences.get(userId) || [];
+      const newExperience = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        userId,
+        company: experience.company || '',
+        position: experience.position || '',
+        department: experience.department || '',
+        startDate: experience.startDate || new Date(),
+        endDate: experience.endDate,
+        isCurrent: experience.isCurrent !== false,
+        description: experience.description || '',
+        achievements: experience.achievements || [],
+        isPublic: experience.isPublic !== false,
+        addedAt: new Date(),
+        lastUpdated: new Date()
+      };
+
+      experiences.push(newExperience);
+      this.userExperiences.set(userId, experiences);
+
+      // Track experience addition as activity
+      await this.trackUserActivity(userId, {
+        type: 'experience_added',
+        content: { experienceId: newExperience.id, company: newExperience.company },
+        isPublic: newExperience.isPublic
+      });
+
+      return newExperience;
+    } catch (error) {
+      console.error('Error adding user experience:', error);
+      throw new Error('Failed to add user experience');
+    }
+  }
+
+  async updateUserExperience(userId: string | number, experienceId: string, updates: Partial<any>): Promise<any> {
+    try {
+      const experiences = this.userExperiences.get(userId) || [];
+      const experienceIndex = experiences.findIndex(exp => exp.id === experienceId);
+
+      if (experienceIndex === -1) {
+        throw new Error('Experience not found');
+      }
+
+      const updatedExperience = {
+        ...experiences[experienceIndex],
+        ...updates,
+        lastUpdated: new Date()
+      };
+
+      experiences[experienceIndex] = updatedExperience;
+      this.userExperiences.set(userId, experiences);
+
+      // Track experience update as activity
+      await this.trackUserActivity(userId, {
+        type: 'experience_updated',
+        content: { experienceId, updates },
+        isPublic: updatedExperience.isPublic
+      });
+
+      return updatedExperience;
+    } catch (error) {
+      console.error('Error updating user experience:', error);
+      throw new Error('Failed to update user experience');
+    }
+  }
+
+  async removeUserExperience(userId: string | number, experienceId: string): Promise<void> {
+    try {
+      const experiences = this.userExperiences.get(userId) || [];
+      const experienceIndex = experiences.findIndex(exp => exp.id === experienceId);
+
+      if (experienceIndex === -1) {
+        throw new Error('Experience not found');
+      }
+
+      const removedExperience = experiences[experienceIndex];
+      experiences.splice(experienceIndex, 1);
+      this.userExperiences.set(userId, experiences);
+
+      // Track experience removal as activity
+      await this.trackUserActivity(userId, {
+        type: 'experience_removed',
+        content: { experienceId, company: removedExperience.company },
+        isPublic: false
+      });
+    } catch (error) {
+      console.error('Error removing user experience:', error);
+      throw new Error('Failed to remove user experience');
+    }
+  }
+
+  async getUserRecentActivity(userId: string | number, limit?: number): Promise<any[]> {
+    try {
+      return this.getUserActivity(userId, { limit: limit || 10 });
+    } catch (error) {
+      console.error('Error getting user recent activity:', error);
+      return [];
+    }
   }
 }
