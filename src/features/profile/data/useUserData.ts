@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 interface MockUser {
     id: string;
     name: string;
+    username: string;
     email: string;
     avatar?: string;
     isFollowing?: boolean;
@@ -28,8 +29,8 @@ export const useGetCurrentUser = () => {
             setUser({
                 id: 'mock-user-id',
                 name: 'Mock User',
-                email: 'mock@example.com',
-                avatar: undefined
+                username: 'mockuser',
+                email: 'mock@example.com'
             });
             setLoading(false);
         }, 100);
@@ -51,8 +52,8 @@ export const useGetUserById = (userId: string) => {
                 setUser({
                     id: userId,
                     name: `User ${userId}`,
-                    email: `user${userId}@example.com`,
-                    avatar: undefined
+                    username: `user${userId}`,
+                    email: `user${userId}@example.com`
                 });
             }
             setLoading(false);

@@ -1,8 +1,3 @@
-import 'reflect-metadata';
-import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
-import * as React from 'react';
-import { Injectable, Inject, useService } from '@core/di';
-
 // Settings service interfaces
 interface ISettingsService {
   getSettings(): Promise<UserSettings>;
@@ -99,7 +94,6 @@ const DEFAULT_SETTINGS: UserSettings = {
 };
 
 // Mock settings repository
-@Injectable({ lifetime: 'singleton' })
 export class SettingsRepository implements ISettingsRepository {
   private settings: UserSettings | null = null;
 
@@ -147,10 +141,9 @@ export class SettingsRepository implements ISettingsRepository {
 }
 
 // DI-enabled Settings Service
-@Injectable({ lifetime: 'singleton' })
 export class SettingsService implements ISettingsService {
   constructor(
-    @Inject(SettingsRepository) private settingsRepository: ISettingsRepository
+    private settingsRepository: ISettingsRepository
   ) { }
 
   async getSettings(): Promise<UserSettings> {
@@ -213,120 +206,3 @@ export class SettingsService implements ISettingsService {
     return await this.updateSettings(performance);
   }
 }
-
-// DI-enabled Settings Hook
-export const useSettingsDI = () => {
-  const settingsService = useService(SettingsService);
-  const [settings, setSettings] = React.useState<UserSettings | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-
-  const fetchSettings = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const settingsData = await settingsService.getSettings();
-      setSettings(settingsData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch settings');
-    } finally {
-      setLoading(false);
-    }
-  }, [settingsService]);
-
-  const updateSettings = React.useCallback(async (updates: Partial<UserSettings>) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const updatedSettings = await settingsService.updateSettings(updates);
-      setSettings(updatedSettings);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update settings');
-    } finally {
-      setLoading(false);
-    }
-  }, [settingsService]);
-
-  const resetToDefaults = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const defaultSettings = await settingsService.resetToDefaults();
-      setSettings(defaultSettings);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to reset settings');
-    } finally {
-      setLoading(false);
-    }
-  }, [settingsService]);
-
-  const exportSettings = React.useCallback(async (): Promise<string | null> => {
-    try {
-      return await settingsService.exportSettings();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to export settings');
-      return null;
-    }
-  }, [settingsService]);
-
-  const importSettings = React.useCallback(async (settingsJson: string): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const importedSettings = await settingsService.importSettings(settingsJson);
-      setSettings(importedSettings);
-      return true;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to import settings');
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [settingsService]);
-
-  // Convenience methods for specific categories
-  const updateThemeSettings = React.useCallback(async (theme: Partial<Pick<UserSettings, 'theme' | 'accentColor' | 'fontSize'>>) => {
-    return await updateSettings(theme);
-  }, [updateSettings]);
-
-  const updatePrivacySettings = React.useCallback(async (privacy: Partial<Pick<UserSettings, 'profileVisibility' | 'showOnlineStatus' | 'allowDirectMessages' | 'showEmail' | 'showPhone'>>) => {
-    return await updateSettings(privacy);
-  }, [updateSettings]);
-
-  const updateNotificationSettings = React.useCallback(async (notifications: Partial<Pick<UserSettings, 'emailNotifications' | 'pushNotifications' | 'inAppNotifications' | 'notificationSound'>>) => {
-    return await updateSettings(notifications);
-  }, [updateSettings]);
-
-  const updateAccessibilitySettings = React.useCallback(async (accessibility: Partial<Pick<UserSettings, 'reduceMotion' | 'highContrast' | 'screenReader'>>) => {
-    return await updateSettings(accessibility);
-  }, [updateSettings]);
-
-  const updatePerformanceSettings = React.useCallback(async (performance: Partial<Pick<UserSettings, 'dataSaver' | 'lowPowerMode'>>) => {
-    return await updateSettings(performance);
-  }, [updateSettings]);
-
-  // Auto-fetch settings on mount
-  React.useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
-
-  return {
-    settings,
-    loading,
-    error,
-    fetchSettings,
-    updateSettings,
-    resetToDefaults,
-    exportSettings,
-    importSettings,
-    updateThemeSettings,
-    updatePrivacySettings,
-    updateNotificationSettings,
-    updateAccessibilitySettings,
-    updatePerformanceSettings
-  };
-};

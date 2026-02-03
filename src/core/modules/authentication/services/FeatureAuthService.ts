@@ -7,7 +7,7 @@
 
 import { TokenProvider } from '../../network/providers/TokenProvider';
 
-import type { Container } from '../../di/factory';
+import type { Container } from '../../dependency-injection/factory';
 import type { ITokenProvider } from '../../network/interfaces';
 
 /**
@@ -35,19 +35,24 @@ export class FeatureAuthService {
      * Get current authentication data
      * @returns Authentication data object or null
      */
-    getAuthData(): { accessToken: string; user?: unknown } | null {
+    getAuthData(): { accessToken: string; user?: { id?: string; email?: string; permissions?: string[]; roles?: string[] } } | null {
         const token = this.getToken();
         if (!token) return null;
 
         // TODO: Parse user data from token or get from auth service
         // For now, return basic token info
         try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
+            const tokenParts = token.split('.');
+            if (tokenParts.length < 2) return { accessToken: token };
+
+            const payload = JSON.parse(atob(tokenParts[1]!));
             return {
                 accessToken: token,
                 user: {
                     id: payload.sub || payload.userId,
-                    email: payload.email
+                    email: payload.email,
+                    permissions: payload.permissions || [],
+                    roles: payload.roles || []
                     // Add other user fields as needed
                 }
             };
@@ -120,9 +125,9 @@ export class FeatureAuthService {
      * @returns True if user has permission
      */
     hasPermission(permission: string): boolean {
-        // TODO: Implement permission checking logic
-        // For now, return true if authenticated
-        return this.isAuthenticated();
+        const authData = this.getAuthData();
+        const userPermissions = authData?.user?.permissions || [];
+        return userPermissions.includes(permission);
     }
 
     /**
@@ -131,8 +136,8 @@ export class FeatureAuthService {
      * @returns True if user has any of the roles
      */
     hasAnyRole(roles: string[]): boolean {
-        // TODO: Implement role checking logic
-        // For now, return true if authenticated
-        return this.isAuthenticated();
+        const authData = this.getAuthData();
+        const userRoles = authData?.user?.roles || [];
+        return roles.some(role => userRoles.includes(role));
     }
 }

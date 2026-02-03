@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { getRolePermissions } from "./permissions";
 
@@ -17,7 +17,6 @@ interface AuthProviderProps {
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { isAuthenticated, authData } = useFeatureAuth();
-    const [formData, setFormData] = useState({});
 
     useEffect(() => {
         // Auto-populate user permissions based on role
@@ -25,20 +24,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // as useFeatureAuth doesn't provide direct user state modification
         if (isAuthenticated && authData?.user && typeof authData.user === 'object' && authData.user !== null) {
             const user = authData.user as any;
-            if (user.role && !user.permissions) {
+            if (user.role && typeof user.role === 'string' && !user.permissions) {
                 const rolePermissions = getRolePermissions(user.role);
                 console.log('User permissions would be set to:', rolePermissions);
                 // TODO: Implement permission setting through auth service
             }
         }
     }, [authData, isAuthenticated]);
-
-    useEffect(() => {
-        // Reset form data when user logs out
-        if (!isAuthenticated) {
-            setFormData({});
-        }
-    }, [isAuthenticated]);
 
     return <>{children}</>;
 };
@@ -51,11 +43,19 @@ export const useAuthUtils = () => {
     const user = authData?.user || null;
 
     const hasRole = (role: string): boolean => {
-        return user && typeof user === 'object' && 'role' in user ? user.role === role : false;
+        if (!user || typeof user !== 'object' || !('role' in user)) {
+            return false;
+        }
+        const userRole = user.role;
+        return typeof userRole === 'string' && userRole === role;
     };
 
     const hasAnyRole = (roles: string[]): boolean => {
-        return user && typeof user === 'object' && 'role' in user ? roles.includes(user.role) : false;
+        if (!user || typeof user !== 'object' || !('role' in user)) {
+            return false;
+        }
+        const userRole = user.role;
+        return typeof userRole === 'string' && roles.includes(userRole);
     };
 
     const isGuest = (): boolean => {

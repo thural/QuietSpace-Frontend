@@ -24,8 +24,6 @@ interface MultiTabSyncOptions {
 export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
   const { channelName = 'auth-sync', enabled = true } = options;
   const {
-    authData,
-    token,
     isAuthenticated,
     setToken,
     clearAuth
@@ -95,32 +93,36 @@ export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
     // Ignore events from current tab
     if (authEvent.tabId === window.tabId) return;
 
-    // Process auth events
+    // Process auth events with state validation
     switch (authEvent.type) {
       case 'login':
-        if (authEvent.data?.token) {
+        if (authEvent.data?.token && !isAuthenticated) {
           setToken(authEvent.data.token);
         }
         break;
 
       case 'logout':
-        clearAuth();
+        if (isAuthenticated) {
+          clearAuth();
+        }
         break;
 
       case 'token-refresh':
-        if (authEvent.data?.accessToken) {
+        if (authEvent.data?.accessToken && isAuthenticated) {
           setToken(authEvent.data.accessToken);
         }
         break;
 
       case 'session-timeout':
-        clearAuth();
+        if (isAuthenticated) {
+          clearAuth();
+        }
         break;
 
       default:
         console.log('Unknown auth event type:', authEvent.type);
     }
-  }, [enabled, channelName, setToken, clearAuth]);
+  }, [enabled, channelName, setToken, clearAuth, isAuthenticated]);
 
   /** Setup sync mechanisms */
   useEffect(() => {
@@ -165,29 +167,35 @@ export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
 
   /** Sync login action */
   const syncLogin = useCallback((userData: any, userToken: string) => {
-    setToken(userToken);
-    broadcastAuthEvent('login', { user: userData, token: userToken });
-  }, [setToken, broadcastAuthEvent]);
+    if (!isAuthenticated) {
+      setToken(userToken);
+      broadcastAuthEvent('login', { user: userData, token: userToken });
+    }
+  }, [isAuthenticated, setToken, broadcastAuthEvent]);
 
   /** Sync logout action */
   const syncLogout = useCallback(() => {
-    clearAuth();
-    broadcastAuthEvent('logout');
-  }, [clearAuth, broadcastAuthEvent]);
+    if (isAuthenticated) {
+      clearAuth();
+      broadcastAuthEvent('logout');
+    }
+  }, [isAuthenticated, clearAuth, broadcastAuthEvent]);
 
   /** Sync token refresh */
   const syncTokenRefresh = useCallback((newTokenData: any) => {
-    if (newTokenData?.accessToken) {
+    if (newTokenData?.accessToken && isAuthenticated) {
       setToken(newTokenData.accessToken);
+      broadcastAuthEvent('token-refresh', newTokenData);
     }
-    broadcastAuthEvent('token-refresh', newTokenData);
-  }, [setToken, broadcastAuthEvent]);
+  }, [isAuthenticated, setToken, broadcastAuthEvent]);
 
   /** Sync session timeout */
   const syncSessionTimeout = useCallback(() => {
-    clearAuth();
-    broadcastAuthEvent('session-timeout');
-  }, [clearAuth, broadcastAuthEvent]);
+    if (isAuthenticated) {
+      clearAuth();
+      broadcastAuthEvent('session-timeout');
+    }
+  }, [isAuthenticated, clearAuth, broadcastAuthEvent]);
 
   return {
     syncLogin,
