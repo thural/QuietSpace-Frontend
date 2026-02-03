@@ -11,11 +11,6 @@ export {
     AuthModuleFactory
 } from './AuthModule';
 
-// Core authentication service - Clean API
-export {
-    EnterpriseAuthService
-} from './AuthModule';
-
 // NEW: SOLID architecture services
 export {
     AuthOrchestrator
@@ -25,15 +20,6 @@ export {
 } from './enterprise/ProviderManager';
 export {
     AuthValidator
-} from './enterprise/AuthValidator';
-export {
-    AuthOrchestrator as _AuthOrchestrator
-} from './enterprise/AuthOrchestrator';
-export {
-    ProviderManager as _ProviderManager
-} from './enterprise/ProviderManager';
-export {
-    AuthValidator as _AuthValidator
 } from './enterprise/AuthValidator';
 
 // Type exports for public API
@@ -69,26 +55,6 @@ export type {
     TokenInfo
 } from './interfaces/ITokenManager';
 
-export type {
-    IAuthenticator as _IAuthenticator
-} from './interfaces/IAuthenticator';
-export type {
-    IUserManager as _IUserManager
-} from './interfaces/IUserManager';
-export type {
-    ITokenManager as _ITokenManager
-} from './interfaces/ITokenManager';
-export type {
-    IProviderManager as _IProviderManager
-} from './interfaces/IProviderManager';
-export type {
-    SecurityContext as _SecurityContext,
-    ValidationResult as _ValidationResult
-} from './interfaces/IAuthValidator';
-export type {
-    TokenInfo as _TokenInfo
-} from './interfaces/ITokenManager';
-
 // Domain types - Clean API
 export type {
     AuthResult,
@@ -100,13 +66,6 @@ export type {
 } from './types/auth.domain.types';
 
 // Factory functions - Clean service creation
-export {
-    createDefaultAuthService,
-    createCustomAuthService,
-    createAuthService
-} from './factory';
-
-// NEW: SOLID architecture factory functions
 export {
     createDefaultAuthOrchestrator,
     createCustomAuthOrchestrator,
@@ -177,18 +136,9 @@ export { AuthConfigLoader, createAuthConfigLoader, loadAuthConfiguration } from 
 export const AUTH_MODULE_VERSION = '1.0.0';
 export const AUTH_MODULE_INFO = {
     name: 'Enterprise Authentication Module',
-    version: AUTH_MODULE_VERSION,
-    description: 'Centralized authentication management with enterprise patterns',
-    deprecatedExports: [
-        '_AnalyticsPlugin',
-        '_SecurityPlugin',
-        '_JwtAuthProvider',
-        '_OAuthAuthProvider',
-        '_SessionAuthProvider',
-        '_SAMLAuthProvider',
-        '_LDAPAuthProvider'
-    ],
-    migrationGuide: 'Use factory functions instead of direct provider imports',
+    version: '2.0.0',
+    description: 'SOLID-compliant authentication with enterprise patterns',
+    architecture: 'SOLID principles with interface segregation',
     newFeatures: [
         'SOLID principles compliance',
         'Interface segregation',

@@ -13,7 +13,7 @@ import { PostDataService } from '../../features/post/data/services/PostDataServi
 import { ProfileDataService } from '../../features/profile/data/services/ProfileDataService';
 import { SearchDataService } from '../../features/search/data/services/SearchDataService';
 import { SettingsDataService } from '../../features/settings/data/services/SettingsDataService';
-import { EnterpriseAuthService } from '../authentication';
+import { createDefaultAuthOrchestrator } from '../authentication';
 import { createCacheProvider, createCacheServiceManager } from '../caching';
 import { createContainer } from './factory';
 import { createDIAuthenticatedApiClient } from '../network';
@@ -239,15 +239,16 @@ export function createAppContainer() {
   );
   container.registerInstance('NotificationRepository', notificationRepository);
 
-  // Register enterprise auth service
-  const enterpriseAuthService = new EnterpriseAuthService(null as any, null as any, null as any, null as any, null as any);
-  container.registerInstance('EnterpriseAuthService', enterpriseAuthService);
+  // Register enterprise auth orchestrator (SOLID architecture)
+  const authOrchestrator = createDefaultAuthOrchestrator();
+  container.registerInstance('AuthOrchestrator', authOrchestrator);
+  container.registerInstance('EnterpriseAuthService', authOrchestrator); // Backward compatibility
 
   // Auth adapter is now handled by the auth service itself
 
   // Example of using typed string tokens for registration
   // This provides type safety - only valid TYPES values are allowed
-  container.registerInstanceByToken(TYPES.AUTH_SERVICE, enterpriseAuthService);
+  container.registerInstanceByToken(TYPES.AUTH_SERVICE, authOrchestrator);
 
   // Feature containers (commented out until feature modules are created)
   // const feedContainer = registerFeedContainer(container);
