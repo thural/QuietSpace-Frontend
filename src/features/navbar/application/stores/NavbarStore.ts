@@ -10,7 +10,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { NotificationStatusEntity } from "../domain";
+import type { NotificationStatusEntity } from "../../domain";
 
 /**
  * Navbar state interface for advanced state management.
@@ -19,19 +19,19 @@ export interface NavbarState {
   // Notification state
   notificationData: NotificationStatusEntity | null;
   lastNotificationUpdate: number | null;
-  
+
   // UI state
   isMenuOpen: boolean;
   activeNavItem: string | null;
-  
+
   // Loading and error states
   isLoading: boolean;
   error: Error | null;
-  
+
   // Cache and synchronization
   lastSyncTime: number | null;
   isOnline: boolean;
-  
+
   // Actions
   setNotificationData: (data: NotificationStatusEntity) => void;
   setMenuOpen: (isOpen: boolean) => void;
@@ -54,7 +54,7 @@ export interface NavbarState {
  */
 export const useNavbarStore = create<NavbarState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Initial state
       notificationData: null,
       lastNotificationUpdate: null,
@@ -87,21 +87,19 @@ export const useNavbarStore = create<NavbarState>()(
 
       // Synchronization actions
       syncState: async () => {
-        const currentState = get();
-        
         try {
           set({ isLoading: true, error: null });
-          
+
           // Simulate server sync - in real app, this would call API
           await new Promise(resolve => setTimeout(resolve, 100));
-          
-          set({ 
+
+          set({
             isLoading: false,
             lastSyncTime: Date.now(),
             isOnline: navigator.onLine
           });
         } catch (error) {
-          set({ 
+          set({
             isLoading: false,
             error: error as Error,
             lastSyncTime: Date.now()
@@ -151,18 +149,18 @@ export const useNavbarStore = create<NavbarState>()(
  */
 export const useNavbarState = () => {
   const state = useNavbarStore();
-  
+
   // Computed values
   const hasUnreadNotifications = state.notificationData?.hasPendingNotification || false;
   const hasUnreadChats = state.notificationData?.hasUnreadChat || false;
-  
+
   // Check if sync is needed (no sync in last 5 minutes)
-  const needsSync = !state.lastSyncTime || 
+  const needsSync = !state.lastSyncTime ||
     (Date.now() - state.lastSyncTime) > 5 * 60 * 1000;
-  
+
   // Connection status with fallback
   const isConnected = state.isOnline && !state.error;
-  
+
   return {
     ...state,
     hasUnreadNotifications,
@@ -182,7 +180,7 @@ export const useNavbarState = () => {
  */
 export const useNavbarActions = () => {
   const store = useNavbarStore();
-  
+
   return {
     setNotificationData: store.setNotificationData,
     setMenuOpen: store.setMenuOpen,
@@ -204,7 +202,7 @@ export const useNavbarActions = () => {
  */
 export const useOptimisticUpdate = () => {
   const { setLoading, setError, clearError } = useNavbarActions();
-  
+
   return async (updateFn: () => Promise<void>) => {
     try {
       setLoading(true);

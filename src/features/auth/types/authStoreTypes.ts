@@ -1,5 +1,9 @@
 import { AuthResponse, RefreshTokenResponse } from "@/features/auth/data/models/auth";
 
+/**
+ * @deprecated This interface is for legacy useAuthStore compatibility.
+ * New code should use useFeatureAuth from the core authentication module.
+ */
 export interface UseAuthStoreProps {
     isAuthenticated: boolean,
     isLoading: boolean,

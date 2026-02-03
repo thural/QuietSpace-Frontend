@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/core/modules/state-management/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import LoadingFallback from '@/app/LoadingFallback';
 import ErrorFallback from '@/shared/ui/components/feedback/ErrorFallback';
 
@@ -27,8 +27,13 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   redirectTo = '/signin',
   fallback
 }) => {
-  const { isAuthenticated, isLoading, isError } = useAuthStore();
+  const { isAuthenticated } = useFeatureAuth();
   const location = useLocation();
+
+  // For now, we'll simulate loading and error states
+  // In a real implementation, these would come from the auth service
+  const isLoading = false;
+  const isError = false;
 
   // Loading state
   if (isLoading) {

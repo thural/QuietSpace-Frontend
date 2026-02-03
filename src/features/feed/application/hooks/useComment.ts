@@ -3,7 +3,7 @@ import { CommentResponse } from "@/features/feed/data/models/comment";
 import { ContentType } from "@/shared/api/models/commonNative";
 import { ReactionType } from "@/features/feed/data/models/reactionNative";
 import { useCommentServices } from "./useCommentService";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useState } from "react";
 
 /**
@@ -27,17 +27,17 @@ import { useState } from "react";
 const useComment = (comment: CommentResponse) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useCommentServices();
 
     const handleLikeToggle = async (event: Event) => {
         event.preventDefault();
-        
+
         try {
             await feedFeatureService.interactWithPost(
-                comment.id, 
-                user.id, 
-                'like', 
+                comment.id,
+                user.id,
+                'like',
                 authData.accessToken
             );
         } catch (error) {
@@ -49,8 +49,8 @@ const useComment = (comment: CommentResponse) => {
     const handleDeleteComment = async () => {
         try {
             await feedFeatureService.deleteCommentWithFullInvalidation(
-                comment.id, 
-                comment.postId, 
+                comment.id,
+                comment.postId,
                 user.id
             );
         } catch (error) {

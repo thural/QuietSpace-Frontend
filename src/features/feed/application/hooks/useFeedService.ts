@@ -1,7 +1,7 @@
 import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
 import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
 import { useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomInfiniteQuery';
-import { useFeatureAuth } from '@/core/modules/authentication';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useDIContainer } from '@/core/modules/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
 import {
@@ -82,7 +82,7 @@ export const useFeed = (query: PostQuery = {}) => {
  * Custom hook for getting a single post with business logic
  */
 export const usePost = (postId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { feedDataService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
@@ -116,7 +116,7 @@ export const usePost = (postId: ResId) => {
  * Custom hook for creating posts with business validation
  */
 export const useCreatePost = (toggleForm?: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
@@ -193,7 +193,7 @@ export const useCreatePost = (toggleForm?: ConsumerFn) => {
  * Custom hook for updating posts with business validation
  */
 export const useUpdatePost = (postId: ResId, toggleForm?: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
@@ -246,7 +246,7 @@ export const useUpdatePost = (postId: ResId, toggleForm?: ConsumerFn) => {
  * Custom hook for deleting posts with business logic
  */
 export const useDeletePost = () => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
@@ -306,7 +306,7 @@ export const useDeletePost = () => {
  * Hook for creating reposts with business validation
  */
 export const useCreateRepost = (toggleForm?: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
     return useMutation({
@@ -328,7 +328,7 @@ export const useCreateRepost = (toggleForm?: ConsumerFn) => {
  * Hook for post interactions (like, dislike, share, save)
  */
 export const usePostInteraction = () => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
     return useMutation({
@@ -356,7 +356,7 @@ export const usePostInteraction = () => {
  * Hook for voting on polls with business logic
  */
 export const useVotePoll = () => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
     return useMutation({
@@ -376,7 +376,7 @@ export const useVotePoll = () => {
  * Hook for getting posts by user with caching
  */
 export const useUserPosts = (userId: ResId, query: PostQuery = {}) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { postDataService } = useFeedServices();
 
     return useInfiniteQuery({
@@ -400,7 +400,7 @@ export const useUserPosts = (userId: ResId, query: PostQuery = {}) => {
  * Hook for getting saved posts with caching
  */
 export const useSavedPosts = (query: PostQuery = {}) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { postDataService } = useFeedServices();
 
     return useInfiniteQuery({
@@ -424,7 +424,7 @@ export const useSavedPosts = (query: PostQuery = {}) => {
  * Hook for searching posts with caching
  */
 export const useSearchPosts = (queryText: string, query: PostQuery = {}) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { postDataService } = useFeedServices();
 
     return useQuery({
@@ -442,7 +442,7 @@ export const useSearchPosts = (queryText: string, query: PostQuery = {}) => {
  * Hook for post analytics and engagement metrics
  */
 export const usePostAnalytics = (postId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { postFeatureService } = useFeedServices();
 
     return useQuery({
@@ -460,7 +460,7 @@ export const usePostAnalytics = (postId: ResId) => {
  * Hook for feed analytics and business insights
  */
 export const useFeedAnalytics = (userId?: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
     return useQuery({

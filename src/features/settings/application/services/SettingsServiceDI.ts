@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import * as React from 'react';
 import { Injectable, Inject, useService } from '@core/di';
 
@@ -24,39 +24,39 @@ interface UserSettings {
   theme: 'light' | 'dark' | 'auto';
   accentColor: string;
   fontSize: 'small' | 'medium' | 'large';
-  
+
   // Privacy settings
   profileVisibility: 'public' | 'private' | 'friends';
   showOnlineStatus: boolean;
   allowDirectMessages: boolean;
   showEmail: boolean;
   showPhone: boolean;
-  
+
   // Notification settings
   emailNotifications: boolean;
   pushNotifications: boolean;
   inAppNotifications: boolean;
   notificationSound: boolean;
-  
+
   // Content settings
   contentLanguage: string;
   autoPlayVideos: boolean;
   showSensitiveContent: boolean;
-  
+
   // Account settings
   twoFactorAuth: boolean;
   loginAlerts: boolean;
   sessionTimeout: number;
-  
+
   // Accessibility settings
   reduceMotion: boolean;
   highContrast: boolean;
   screenReader: boolean;
-  
+
   // Performance settings
   dataSaver: boolean;
   lowPowerMode: boolean;
-  
+
   // Metadata
   lastUpdated: Date;
   version: string;
@@ -67,33 +67,33 @@ const DEFAULT_SETTINGS: UserSettings = {
   theme: 'auto',
   accentColor: '#007bff',
   fontSize: 'medium',
-  
+
   profileVisibility: 'public',
   showOnlineStatus: true,
   allowDirectMessages: true,
   showEmail: false,
   showPhone: false,
-  
+
   emailNotifications: true,
   pushNotifications: true,
   inAppNotifications: true,
   notificationSound: true,
-  
+
   contentLanguage: 'en',
   autoPlayVideos: false,
   showSensitiveContent: false,
-  
+
   twoFactorAuth: false,
   loginAlerts: true,
   sessionTimeout: 3600,
-  
+
   reduceMotion: false,
   highContrast: false,
   screenReader: false,
-  
+
   dataSaver: false,
   lowPowerMode: false,
-  
+
   lastUpdated: new Date(),
   version: '1.0.0'
 };
@@ -117,10 +117,10 @@ export class SettingsRepository implements ISettingsRepository {
       ...settings,
       lastUpdated: new Date()
     };
-    
+
     // Simulate saving to storage
     await new Promise(resolve => setTimeout(resolve, 50));
-    
+
     return this.settings;
   }
 
@@ -129,13 +129,13 @@ export class SettingsRepository implements ISettingsRepository {
     if (!currentSettings) {
       throw new Error('No settings found');
     }
-    
+
     const updatedSettings = {
       ...currentSettings,
       ...updates,
       lastUpdated: new Date()
     };
-    
+
     return await this.save(updatedSettings);
   }
 
@@ -151,7 +151,7 @@ export class SettingsRepository implements ISettingsRepository {
 export class SettingsService implements ISettingsService {
   constructor(
     @Inject(SettingsRepository) private settingsRepository: ISettingsRepository
-  ) {}
+  ) { }
 
   async getSettings(): Promise<UserSettings> {
     const settings = await this.settingsRepository.find();
@@ -177,7 +177,7 @@ export class SettingsService implements ISettingsService {
   async importSettings(settingsJson: string): Promise<UserSettings> {
     try {
       const importedSettings = JSON.parse(settingsJson);
-      
+
       // Validate imported settings
       const validatedSettings: UserSettings = {
         ...DEFAULT_SETTINGS,
@@ -185,7 +185,7 @@ export class SettingsService implements ISettingsService {
         lastUpdated: new Date(),
         version: '1.0.0'
       };
-      
+
       return await this.settingsRepository.save(validatedSettings);
     } catch (error) {
       throw new Error('Invalid settings format');
@@ -224,7 +224,7 @@ export const useSettingsDI = () => {
   const fetchSettings = React.useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const settingsData = await settingsService.getSettings();
       setSettings(settingsData);
@@ -238,7 +238,7 @@ export const useSettingsDI = () => {
   const updateSettings = React.useCallback(async (updates: Partial<UserSettings>) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const updatedSettings = await settingsService.updateSettings(updates);
       setSettings(updatedSettings);
@@ -252,7 +252,7 @@ export const useSettingsDI = () => {
   const resetToDefaults = React.useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const defaultSettings = await settingsService.resetToDefaults();
       setSettings(defaultSettings);
@@ -275,7 +275,7 @@ export const useSettingsDI = () => {
   const importSettings = React.useCallback(async (settingsJson: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const importedSettings = await settingsService.importSettings(settingsJson);
       setSettings(importedSettings);

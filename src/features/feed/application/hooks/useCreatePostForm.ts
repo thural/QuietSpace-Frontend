@@ -1,7 +1,7 @@
 import useUserQueries from "@features/profile/data/userQueries";
 import { PollRequest, PostRequest } from "@/features/feed/data/models/post";
 import { useFeedServices } from "./useFeedService";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import { getOffsetDateTime } from "@/shared/utils/dateUtils";
 import { toUpperFirstChar } from "@/shared/utils/stringUtils";
@@ -43,9 +43,9 @@ export interface PollView {
 const useCreatePostForm = (toggleForm: ConsumerFn) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
-    
+
     const viewAccessOptions = ["friends", "anyone"];
     const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(null);
     const [pollView, setPollView] = useState<PollView>({ enabled: false, extraOption: false });
@@ -80,7 +80,7 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
     const handleSubmit = async (event: SubmitEvent) => {
         event.preventDefault();
-        
+
         try {
             const formattedDate = getOffsetDateTime(810000);
             const poll: PollRequest = { dueDate: formattedDate, options: [] };
@@ -99,10 +99,10 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
             // Use feature service for business validation and creation
             await feedFeatureService.createPostWithValidation(
-                postData, 
+                postData,
                 authData.accessToken
             );
-            
+
             toggleForm();
         } catch (error) {
             console.error('Error creating post:', error);

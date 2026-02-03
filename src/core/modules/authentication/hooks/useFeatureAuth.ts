@@ -7,7 +7,7 @@
 
 import { useCallback } from 'react';
 
-import { useDIContainer } from '../../di';
+import { useDIContainer } from '../../dependency-injection/providers';
 import { createFeatureAuthService } from '../factory/featureAuthFactory';
 
 /**

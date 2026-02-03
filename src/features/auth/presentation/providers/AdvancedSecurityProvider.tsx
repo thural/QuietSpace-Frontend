@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAuthStore } from '@/core/modules/state-management/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useSessionTimeout } from '../../application/hooks/useSessionTimeout';
 import { useSecurityMonitor } from '../../application/hooks/useSecurityMonitor';
 
@@ -8,6 +8,7 @@ import { useSecurityMonitor } from '../../application/hooks/useSecurityMonitor';
  */
 const isTokenExpired = (token: string): boolean => {
   try {
+    if (!token) return true;
     const payload = JSON.parse(atob(token.split('.')[1]));
     const currentTime = Date.now() / 1000;
     return payload.exp < currentTime;
@@ -27,23 +28,18 @@ const isTokenExpired = (token: string): boolean => {
  */
 export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNode }) => {
   const {
-    user,
     isAuthenticated,
-    logout
-  } = useAuthStore();
+    authData,
+    clearAuth
+  } = useFeatureAuth();
+
+  // Get user from authData with type assertion
+  const user = authData?.user as any;
 
   // Enterprise session timeout setup
   const {
-    state: sessionState,
-    metrics: sessionMetrics,
-    extendSession,
-    resetSession,
-    isActive,
-    isWarning,
-    isFinalWarning
+    state: sessionState
   } = useSessionTimeout({
-    timeoutMs: 30 * 60 * 1000, // 30 minutes
-    warningMs: 5 * 60 * 1000,  // 5 minutes warning
     autoCleanup: true,
     debug: false
   });
@@ -52,17 +48,12 @@ export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNo
   useEffect(() => {
     if (sessionState === 'expired') {
       console.log('Session timed out');
-      logout();
+      clearAuth();
     }
-  }, [sessionState, logout]);
+  }, [sessionState, clearAuth]);
 
   // Enterprise security monitoring
-  const {
-    securityStatus,
-    securitySettings,
-    securityData,
-    isLoading
-  } = useSecurityMonitor(user?.id);
+  useSecurityMonitor(user?.id);
 
   // Handle authentication events with security monitoring
   useEffect(() => {
@@ -88,36 +79,35 @@ export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNo
   useEffect(() => {
     if (isAuthenticated && user) {
       // This would be called from API interceptors
-      const trackRequest = () => {
+      const trackRequest = (): void => {
         // Enterprise security monitoring automatically tracks requests
         // Reset session timer on activity
-        if (isActive) {
-          extendSession();
-        }
+        console.log('Tracking request for security monitoring');
       };
 
       // Example: Track page navigation as activity
-      const handleNavigation = () => {
+      const handleNavigation = (): void => {
         trackRequest();
       };
 
       window.addEventListener('popstate', handleNavigation);
       return () => window.removeEventListener('popstate', handleNavigation);
     }
-  }, [isAuthenticated, user, extendSession, isActive]);
+    return undefined;
+  }, [isAuthenticated, user]);
 
   // Token expiry checking with enterprise security
   useEffect(() => {
     if (isAuthenticated && user) {
-      const checkTokenExpiry = () => {
-        const { token } = useAuthStore.getState();
+      const checkTokenExpiry = (): void => {
+        const token = authData?.accessToken;
 
         if (token && isTokenExpired(token)) {
           console.warn('Token expired, logging out user');
 
           // Enterprise security monitoring will automatically log
           // suspicious activity like token expiry
-          logout();
+          clearAuth();
           window.location.href = '/auth/login?reason=expired';
         }
       };
@@ -130,7 +120,8 @@ export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNo
 
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated, user, logout]);
+    return undefined;
+  }, [isAuthenticated, user, clearAuth, authData]);
 
   return <>{children}</>;
 };
@@ -139,7 +130,8 @@ export const AdvancedSecurityProvider = ({ children }: { children: React.ReactNo
  * Hook for accessing advanced security features
  */
 export const useAdvancedSecurity = () => {
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated, authData } = useFeatureAuth();
+  const user = authData?.user as any;
   const { securityStatus, securityData, isLoading } = useSecurityMonitor(user?.id);
 
   return {

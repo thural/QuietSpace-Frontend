@@ -4,8 +4,7 @@
  * Exports all authentication-related types for public consumption.
  */
 
-// Store types
-export type { UseAuthStoreProps } from './authStoreTypes';
+// Note: UseAuthStoreProps removed as we're migrating to useFeatureAuth
 
 // Form types
 export type { AuthState, SetAuthState, AuthFormProps, SignupFormProps, ActivationFormProps } from './auth.ui.types';

@@ -11,7 +11,7 @@ import { PostSearchRepository } from "@search/data/repositories/PostSearchReposi
 import { MockSearchRepository } from "@search/data/repositories/MockSearchRepository";
 import { SearchService } from "@search/application/services/SearchService";
 import { SearchQueryService } from "@search/application/services/SearchQueryService";
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 
 /**
  * DI Container configuration options.
@@ -53,10 +53,9 @@ export class SearchDIContainer {
      * Register repository dependencies.
      */
     private registerRepositories(): void {
-        const authStore = useAuthStore.getState();
-        const token = authStore.data.accessToken || null;
+        const { token } = useFeatureAuth();
 
-        const repository = this.config.useMockRepositories 
+        const repository = this.config.useMockRepositories
             ? new MockSearchRepository()
             : this.createProductionRepositories();
 
@@ -72,11 +71,10 @@ export class SearchDIContainer {
         if (this.config.enableLogging) {
             console.log('Initializing production repositories with real API calls');
         }
-        
+
         // Create real repositories with token
-        const authStore = useAuthStore.getState();
-        const token = authStore.data.accessToken || null;
-        
+        const { token } = useFeatureAuth();
+
         return new MockSearchRepository(); // For now, use mock with real token
         // TODO: Implement real search repository when API is available
         // return new SearchRepository(token);

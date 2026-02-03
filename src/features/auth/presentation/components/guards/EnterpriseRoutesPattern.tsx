@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/core/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import AuthGuard from './AuthGuard';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -34,7 +34,7 @@ import ProtectedRoute from './ProtectedRoute';
  *    - Provide user-friendly error pages
  */
 export const EnterpriseRoutes: React.FC = () => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, authData } = useFeatureAuth();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

@@ -2,7 +2,7 @@ import useUserQueries from "@features/profile/data/userQueries";
 import { ReactionType } from "../../../feed/data/models/reaction";
 import { ContentType, ResId } from "@shared/api/models/common";
 import { useFeedServices } from "./useFeedService";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 
 /**
  * Custom hook for managing reactions (likes/dislikes) on content.
@@ -20,7 +20,7 @@ import { useAuthStore } from "@/core/store/zustand";
 const useReaction = (contentId: ResId) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
     /**

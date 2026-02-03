@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useAuthStore } from '@/core/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useDIContainer } from '@/core/modules/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { CommentRequest, CommentResponse } from '@/features/feed/data/models/comment';
@@ -11,7 +11,7 @@ import { ConsumerFn } from '@/shared/types/genericTypes';
  */
 export const useCommentServices = () => {
     const container = useDIContainer();
-    
+
     return {
         feedFeatureService: container.getByToken(TYPES.FEED_FEATURE_SERVICE),
         commentDataService: container.getByToken(TYPES.COMMENT_DATA_SERVICE),
@@ -22,7 +22,7 @@ export const useCommentServices = () => {
  * Hook for getting comments by post ID with caching
  */
 export const useComments = (postId: ResId, pageParams?: string) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { commentDataService } = useCommentServices();
 
     return useQuery({
@@ -41,7 +41,7 @@ export const useComments = (postId: ResId, pageParams?: string) => {
  * Hook for getting the latest comment for a user on a post
  */
 export const useLatestComment = (userId: ResId, postId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { commentDataService } = useCommentServices();
 
     return useQuery({
@@ -60,7 +60,7 @@ export const useLatestComment = (userId: ResId, postId: ResId) => {
  * Hook for creating comments with business validation
  */
 export const useCreateComment = (onSuccess?: ConsumerFn, onError?: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useCommentServices();
 
     return useMutation({
@@ -83,18 +83,18 @@ export const useCreateComment = (onSuccess?: ConsumerFn, onError?: ConsumerFn) =
  * Hook for deleting comments with business logic
  */
 export const useDeleteComment = () => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useCommentServices();
 
     return useMutation({
-        mutationFn: async ({ 
-            commentId, 
-            postId, 
-            userId 
-        }: { 
-            commentId: ResId; 
-            postId: ResId; 
-            userId: ResId 
+        mutationFn: async ({
+            commentId,
+            postId,
+            userId
+        }: {
+            commentId: ResId;
+            postId: ResId;
+            userId: ResId
         }) => {
             return await feedFeatureService.deleteCommentWithFullInvalidation(commentId, postId, userId);
         },
@@ -112,7 +112,7 @@ export const useDeleteComment = () => {
  * Hook for batch loading comments for multiple posts
  */
 export const useBatchComments = (postIds: ResId[], pageParams?: string) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { commentDataService } = useCommentServices();
 
     return useQuery({

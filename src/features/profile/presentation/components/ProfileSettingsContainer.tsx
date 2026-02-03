@@ -8,11 +8,12 @@
 import React, { useState } from 'react';
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
-import OutlineButton from "@/shared/buttons/OutlineButton";
-import DefaultContainer from "@/shared/DefaultContainer";
-import Typography from "@/shared/Typography";
+import { getErrorBoundaryService } from "@/shared/services/ErrorBoundaryService";
+import OutlineButton from "@/shared/ui/buttons/OutlineButton";
+import DefaultContainer from "@/shared/ui/components/layout/DefaultContainer";
+import Typography from "@/shared/ui/components/utility/Typography";
 import { useProfileSettings } from "@features/profile/application/hooks/useProfileSettings";
-import { useAuthStore } from '@services/store/zustand';
+import { useFeatureAuth } from '@core/modules/authentication';
 import { LoadingSpinner } from "@/shared/ui/components";
 
 /**
@@ -28,8 +29,8 @@ import { LoadingSpinner } from "@/shared/ui/components";
  * @returns {JSX.Element} - The rendered ProfileSettingsContainer component.
  */
 function ProfileSettingsContainer() {
-    const { data: authData } = useAuthStore();
-    const currentUserId = authData?.userId || 'current-user';
+    const { userId } = useFeatureAuth();
+    const currentUserId = userId || 'current-user';
 
     // Enterprise settings hook
     const {
@@ -44,7 +45,6 @@ function ProfileSettingsContainer() {
         resetSettings,
         resetPrivacy,
         discardChanges,
-        clearError
     } = useProfileSettings({ userId: currentUserId });
 
     // Local state for form management
@@ -67,7 +67,6 @@ function ProfileSettingsContainer() {
             <DefaultContainer>
                 <ErrorComponent
                     message={`Error loading settings: ${error.message}`}
-                    onRetry={clearError}
                 />
             </DefaultContainer>
         );
@@ -128,13 +127,13 @@ function ProfileSettingsContainer() {
 
     return (
         <DefaultContainer>
-            <Typography variant="h2" className="mb-6">
+            <Typography type="h2" className="mb-6">
                 Profile Settings
             </Typography>
 
             {/* Settings Section */}
             <div className="mb-8">
-                <Typography variant="h3" className="mb-4">
+                <Typography type="h3" className="mb-4">
                     General Settings
                 </Typography>
 
@@ -201,7 +200,7 @@ function ProfileSettingsContainer() {
 
             {/* Privacy Section */}
             <div className="mb-8">
-                <Typography variant="h3" className="mb-4">
+                <Typography type="h3" className="mb-4">
                     Privacy Settings
                 </Typography>
 
@@ -305,7 +304,7 @@ function ProfileSettingsContainer() {
             {/* Unsaved Changes Warning */}
             {hasUnsavedChanges && (
                 <div className="mt-4 p-3 bg-yellow-100 border border-yellow-400 rounded">
-                    <Typography variant="small" className="text-yellow-800">
+                    <Typography type="small" className="text-yellow-800">
                         You have unsaved changes. Click "Save Changes" to apply them.
                     </Typography>
                 </div>
@@ -314,13 +313,17 @@ function ProfileSettingsContainer() {
     );
 }
 
-// Export with error boundary
-export default withErrorBoundary(ProfileSettingsContainer, {
-    fallback: <ErrorComponent message="Settings component encountered an error" />,
-    onError: (error, errorInfo) => {
-        console.error('ProfileSettingsContainer error:', error, errorInfo);
-    }
+// Configure error boundary service
+const errorBoundaryService = getErrorBoundaryService();
+errorBoundaryService.setFallbackComponent(() => (
+    <ErrorComponent message="Settings component encountered an error" />
+));
+errorBoundaryService.setErrorCallback((error, errorInfo) => {
+    console.error('ProfileSettingsContainer error:', error, errorInfo);
 });
+
+// Export with error boundary
+export default withErrorBoundary(ProfileSettingsContainer);
 
 // Export the component for testing
 export { ProfileSettingsContainer };

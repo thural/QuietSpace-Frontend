@@ -1,12 +1,14 @@
 import { fetchResendCode } from "@features/auth/data/authRequests";
 import { AuthPages } from "@/features/auth/types/auth.ui.types";
 import { useState } from "react";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useTimer } from "./useTimer";
 import { useEnterpriseAuth } from "@/core/modules/authentication";
 
 export const useActivationForm = () => {
-    const { formData, setCurrentPage } = useAuthStore();
+    // Using local state instead of auth store for form management
+    const [currentPage, setCurrentPage] = useState(AuthPages.LOGIN);
+    const [formData, setFormData] = useState({ email: '', activationCode: '' });
 
     const activationNotice = (message: string) => alert(message);
     const [activationCode, setActivationCode] = useState("");

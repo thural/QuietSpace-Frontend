@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useAuthStore } from '@/core/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 
 // Extend Window interface to include tabId
 declare global {
@@ -23,16 +23,14 @@ interface MultiTabSyncOptions {
  */
 export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
   const { channelName = 'auth-sync', enabled = true } = options;
-  const { 
-    user, 
-    token, 
-    isAuthenticated, 
-    login, 
-    logout, 
-    setAuthData,
-    setIsAuthenticated 
-  } = useAuthStore();
-  
+  const {
+    authData,
+    token,
+    isAuthenticated,
+    setToken,
+    clearAuth
+  } = useFeatureAuth();
+
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
   const localStorageRef = useRef<boolean>(false);
 
@@ -77,7 +75,7 @@ export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
     if (!enabled) return;
 
     let authEvent;
-    
+
     // Handle BroadcastChannel message
     if (event.data && event.data.type) {
       authEvent = event.data;
@@ -100,33 +98,29 @@ export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
     // Process auth events
     switch (authEvent.type) {
       case 'login':
-        if (authEvent.data?.user && authEvent.data?.token) {
-          setAuthData(authEvent.data);
-          setIsAuthenticated(true);
+        if (authEvent.data?.token) {
+          setToken(authEvent.data.token);
         }
         break;
-        
+
       case 'logout':
-        logout();
+        clearAuth();
         break;
-        
+
       case 'token-refresh':
         if (authEvent.data?.accessToken) {
-          setAuthData({
-            ...authEvent.data,
-            accessToken: authEvent.data.accessToken
-          });
+          setToken(authEvent.data.accessToken);
         }
         break;
-        
+
       case 'session-timeout':
-        logout();
+        clearAuth();
         break;
-        
+
       default:
         console.log('Unknown auth event type:', authEvent.type);
     }
-  }, [enabled, channelName, login, logout, setAuthData, setIsAuthenticated]);
+  }, [enabled, channelName, setToken, clearAuth]);
 
   /** Setup sync mechanisms */
   useEffect(() => {
@@ -154,7 +148,7 @@ export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
         handleAuthEvent(event);
       };
       window.addEventListener('storage', handleStorageEvent);
-      
+
       return () => {
         window.removeEventListener('storage', handleStorageEvent);
       };
@@ -171,27 +165,29 @@ export const useMultiTabSync = (options: MultiTabSyncOptions = {}) => {
 
   /** Sync login action */
   const syncLogin = useCallback((userData: any, userToken: string) => {
-    login(userData, userToken);
+    setToken(userToken);
     broadcastAuthEvent('login', { user: userData, token: userToken });
-  }, [login, broadcastAuthEvent]);
+  }, [setToken, broadcastAuthEvent]);
 
   /** Sync logout action */
   const syncLogout = useCallback(() => {
-    logout();
+    clearAuth();
     broadcastAuthEvent('logout');
-  }, [logout, broadcastAuthEvent]);
+  }, [clearAuth, broadcastAuthEvent]);
 
   /** Sync token refresh */
   const syncTokenRefresh = useCallback((newTokenData: any) => {
-    setAuthData(newTokenData);
+    if (newTokenData?.accessToken) {
+      setToken(newTokenData.accessToken);
+    }
     broadcastAuthEvent('token-refresh', newTokenData);
-  }, [setAuthData, broadcastAuthEvent]);
+  }, [setToken, broadcastAuthEvent]);
 
   /** Sync session timeout */
   const syncSessionTimeout = useCallback(() => {
-    logout();
+    clearAuth();
     broadcastAuthEvent('session-timeout');
-  }, [logout, broadcastAuthEvent]);
+  }, [clearAuth, broadcastAuthEvent]);
 
   return {
     syncLogin,
@@ -248,11 +244,11 @@ export class MultiTabSyncManager {
       this.broadcastChannel.close();
       this.broadcastChannel = null;
     }
-    
+
     if (this.useLocalStorage) {
       window.removeEventListener('storage', this.handleStorageEvent.bind(this));
     }
-    
+
     this.eventHandlers.clear();
   }
 

@@ -6,7 +6,7 @@
  */
 
 import { ResId } from "@/shared/api/models/common";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useCallback, useState } from "react";
 import { useChatMessaging } from "@features/chat/application/hooks/useChatMessaging";
 import { useCustomQuery } from '@/core/hooks';
@@ -55,7 +55,7 @@ export interface ChatActions {
  * @returns {ChatState & ChatActions} - An object containing chat-related data and methods.
  */
 export const useChat = (chatId: ResId): ChatState & ChatActions => {
-    const { data: { userId: senderId }, token } = useAuthStore();
+    const { userId: senderId, token } = useFeatureAuth();
     const { sendMessage, isClientConnected, chats } = useChatMessaging();
     const { chatDataService, chatFeatureService } = useChatServices();
     const invalidateCache = useCacheInvalidation();
@@ -69,7 +69,7 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
             staleTime: CACHE_TIME_MAPPINGS.CHAT_STALE_TIME,
             cacheTime: CACHE_TIME_MAPPINGS.CHAT_CACHE_TIME,
             onSuccess: (data) => {
-                const chatName = data.members?.length > 1 
+                const chatName = data.members?.length > 1
                     ? `Group Chat (${data.members.length} members)`
                     : data.members?.[0]?.name || 'Unknown Chat';
                 console.log('Chat details loaded:', { chatId: data.id, name: chatName });
@@ -134,10 +134,10 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
             staleTime: CACHE_TIME_MAPPINGS.CHAT_STALE_TIME,
             cacheTime: CACHE_TIME_MAPPINGS.CHAT_CACHE_TIME,
             onSuccess: (data, allPages) => {
-                console.log('Chat messages loaded:', { 
-                    chatId, 
-                    totalMessages: data.length, 
-                    totalPages: allPages.length 
+                console.log('Chat messages loaded:', {
+                    chatId,
+                    totalMessages: data.length,
+                    totalPages: allPages.length
                 });
             },
             onError: (error) => {
@@ -191,7 +191,7 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
         {
             onSuccess: () => {
                 console.log("Chat deleted successfully:", { chatId });
-                
+
                 // Invalidate all chat-related caches
                 invalidateCache.invalidateChatData(chatId);
                 invalidateCache.invalidateUserChatData(senderId);
@@ -205,14 +205,14 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
                 const existingChats = cache.get<any>(cacheKey) || { items: [] };
                 const filteredChats = existingChats.items.filter((chat: any) => chat.id !== chatId);
                 cache.set(cacheKey, { ...existingChats, items: filteredChats });
-                
+
                 return () => {
                     // Rollback on error - restore the chat
                     if (currentChat) {
                         const restoredChats = cache.get<any>(cacheKey) || { items: [] };
-                        cache.set(cacheKey, { 
-                            ...restoredChats, 
-                            items: [currentChat, ...restoredChats.items] 
+                        cache.set(cacheKey, {
+                            ...restoredChats,
+                            items: [currentChat, ...restoredChats.items]
                         });
                     }
                 };
@@ -232,11 +232,11 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
     }, [deleteChatMutation]);
 
     // Combine all messages from pages
-    const messages = Array.isArray(messagesData) 
-        ? messagesData 
+    const messages = Array.isArray(messagesData)
+        ? messagesData
         : messagesPages?.flatMap(page => page.data) || [];
     const messageCount = messages.length;
-    
+
     const isInputEnabled: boolean = isSuccess && !!isClientConnected;
 
     return {

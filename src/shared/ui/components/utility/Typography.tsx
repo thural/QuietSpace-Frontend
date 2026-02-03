@@ -1,7 +1,8 @@
-import { Text, Title } from "@/shared/ui/components"
+import Text from '@/shared/ui/components/typography/Text';
+import Title from '@/shared/ui/components/typography/Title';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes"
 
-export type headingSize = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type headingSize = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "small";
 
 export interface TypographyProps extends Omit<React.ComponentProps<typeof Text>, 'variant'>, Omit<GenericWrapper, 'children'> {
     type?: headingSize;
@@ -16,6 +17,7 @@ const Typography: React.FC<TypographyProps> = ({ type, children, ...props }) => 
         case "h4": return <Title variant="h4" {...props}>{children}</Title>
         case "h5": return <Title variant="h5" {...props}>{children}</Title>
         case "h6": return <Title variant="h6" {...props}>{children}</Title>
+        case "small": return <Text variant="caption" {...props}>{children}</Text>
         default: return <Text {...props}>{children}</Text>
     }
 }

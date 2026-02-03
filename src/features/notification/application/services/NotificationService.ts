@@ -5,9 +5,11 @@
  * Provides high-level operations for notification management.
  */
 
-import type { INotificationRepository, NotificationQuery, NotificationFilters } from "../../domain/entities/INotificationRepository";
 import type { NotificationPage, NotificationResponse, NotificationType } from "@/features/notification/data/models/notification";
-import type { ResId, JwtToken } from "@/shared/api/models/common";
+import type { ResId } from "@/shared/api/models/common";
+import type { INotificationRepository, NotificationQuery } from "../../domain/entities/INotificationRepository";
+import { useDIContainer } from "@/core/modules/dependency-injection/providers";
+import { createFeatureAuthService } from "@/core/modules/authentication/factory/featureAuthFactory";
 
 /**
  * Notification Service interface.
@@ -29,9 +31,19 @@ export interface INotificationService {
  */
 export class NotificationService implements INotificationService {
     private notificationRepository: INotificationRepository;
+    private authService;
 
     constructor(notificationRepository: INotificationRepository) {
         this.notificationRepository = notificationRepository;
+
+        // Initialize authentication service using DI
+        try {
+            const container = useDIContainer();
+            this.authService = createFeatureAuthService(container);
+        } catch (error) {
+            console.error('NotificationService: Failed to initialize auth service:', error);
+            this.authService = null;
+        }
     }
 
     /**
@@ -193,13 +205,17 @@ export class NotificationService implements INotificationService {
     }
 
     /**
-     * Get authentication token from store.
+     * Get authentication token from the authentication core module.
      */
     private getAuthToken(): string {
-        import { useAuthStore } from '@services/store/zustand';
         try {
-            const authStore = useAuthStore.getState();
-            return authStore.data.accessToken || '';
+            if (!this.authService) {
+                console.error('NotificationService: Auth service not initialized');
+                return '';
+            }
+
+            const token = this.authService.getToken();
+            return token || '';
         } catch (error) {
             console.error('NotificationService: Error getting auth token', error);
             return '';

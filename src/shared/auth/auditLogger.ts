@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/core/modules/state-management/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 
 // Audit log event types
 export enum AuditEventType {
@@ -83,7 +83,7 @@ export interface AuditLogOptions {
  * Provides multiple logging destinations and configurable options.
  */
 export class AuditLogger {
-  private options: Required<AuditLogOptions>;
+  private options: AuditLogOptions;
   private logs: AuditLogEntry[] = [];
   private sessionId: string;
 
@@ -93,7 +93,7 @@ export class AuditLogger {
       maxLogs: options.maxLogs || 1000,
       consoleLog: options.consoleLog !== false,
       localStorageLog: options.localStorageLog || false,
-      remoteEndpoint: options.remoteEndpoint
+      ...(options.remoteEndpoint && { remoteEndpoint: options.remoteEndpoint })
     };
 
     this.sessionId = this.generateSessionId();
@@ -107,10 +107,10 @@ export class AuditLogger {
 
   /** Get current user info */
   private getUserInfo() {
-    const { user } = useAuthStore.getState();
+    const auth = useFeatureAuth();
     return {
-      userId: user?.id,
-      username: user?.username
+      userId: auth.userId || 'anonymous',
+      username: auth.userEmail?.split('@')[0] || auth.userId || 'anonymous'
     };
   }
 
@@ -167,8 +167,8 @@ export class AuditLogger {
     this.logs.push(entry);
 
     // Maintain max log limit
-    if (this.logs.length > this.options.maxLogs) {
-      this.logs = this.logs.slice(-this.options.maxLogs);
+    if (this.logs.length > (this.options.maxLogs || 1000)) {
+      this.logs = this.logs.slice(-(this.options.maxLogs || 1000));
     }
 
     // Console logging
@@ -280,7 +280,7 @@ export class AuditLogger {
       AuditEventType.LOGIN_FAILED,
       AuditSeverity.HIGH,
       details,
-      { success: false, errorMessage }
+      { success: false, ...(errorMessage && { errorMessage }) }
     );
     this.addLog(entry);
   }

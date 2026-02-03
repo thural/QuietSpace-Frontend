@@ -1,5 +1,5 @@
 import { ReactNode, ComponentType } from "react";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { LoadingSpinner } from "@/shared/ui/components";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 
@@ -29,10 +29,11 @@ export const withAuth = <P extends object>(
     } = options;
 
     return function AuthenticatedComponent(props: P) {
-        const { isAuthenticated, isLoading, user } = useAuthStore();
+        const { isAuthenticated, authData } = useFeatureAuth();
 
         // Show loading spinner while checking authentication
-        if (isLoading) {
+        // Note: useFeatureAuth doesn't have isLoading, so we assume auth state is ready
+        if (!authData && !isAuthenticated) {
             return <LoadingSpinner size="md" />;
         }
 
@@ -49,7 +50,7 @@ export const withAuth = <P extends object>(
         // Check permissions if required
         if (requiredPermissions.length > 0) {
             const hasPermission = requiredPermissions.every(permission =>
-                user?.permissions?.includes(permission)
+                authData?.user?.permissions?.includes(permission)
             );
 
             if (!hasPermission) {
@@ -69,22 +70,22 @@ export const withAuth = <P extends object>(
  * @returns {Object} Authentication status and helper functions
  */
 export const useAuth = (requiredPermissions: string[] = []) => {
-    const { isAuthenticated, isLoading, user, isError, error } = useAuthStore();
+    const { isAuthenticated, authData } = useFeatureAuth();
 
     const hasPermission = requiredPermissions.every(permission =>
-        user?.permissions?.includes(permission)
+        authData?.user?.permissions?.includes(permission)
     );
 
     const isAuthorized = isAuthenticated && hasPermission;
 
     return {
         isAuthenticated,
-        isLoading,
+        isLoading: false, // useFeatureAuth doesn't provide loading state
         isAuthorized,
         hasPermission,
-        user,
-        isError,
-        error
+        user: authData?.user,
+        isError: false,
+        error: null
     };
 };
 

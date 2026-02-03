@@ -4,6 +4,7 @@ import { useCustomInfiniteQuery, useCustomMutation, useCustomQuery } from '@/cor
 import {
   CACHE_TIME_MAPPINGS
 } from '@/core/hooks/migrationUtils';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import type { PostQuery } from '@/features/feed/domain';
 import type { ResId } from '@/shared/api/models/common';
 import type { FeedDataService } from '../FeedDataService';
@@ -121,7 +122,7 @@ export const useUserPosts = (userId: ResId, options: { page?: number; limit?: nu
  */
 export const useSavedPosts = (options: { page?: number; limit?: number } = {}) => {
   const { page = 1, limit = 20 } = options;
-  const { data: authData, isAuthenticated } = useAuthStore();
+  const { authData, isAuthenticated } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomInfiniteQuery(
@@ -253,7 +254,7 @@ export const useUpdatePost = (onSuccess?: () => void) => {
  * Delete post mutation
  */
 export const useDeletePost = (onSuccess?: () => void) => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomMutation(
@@ -275,7 +276,7 @@ export const useDeletePost = (onSuccess?: () => void) => {
  * Toggle post like mutation
  */
 export const useTogglePostLike = () => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomMutation(
@@ -336,7 +337,7 @@ export const useUpdateComment = (onSuccess?: () => void) => {
  * Delete comment mutation
  */
 export const useDeleteComment = (onSuccess?: () => void) => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomMutation(
@@ -397,7 +398,7 @@ export const useCreateRepost = (onSuccess?: () => void) => {
  * Share post mutation
  */
 export const useSharePost = () => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomMutation(
@@ -416,7 +417,7 @@ export const useSharePost = () => {
  * Save post mutation
  */
 export const useSavePost = () => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomMutation(
@@ -435,7 +436,7 @@ export const useSavePost = () => {
  * Unsave post mutation
  */
 export const useUnsavePost = () => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomMutation(

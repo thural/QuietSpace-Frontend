@@ -1,26 +1,26 @@
 import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/react-query';
-import { useAuthStore } from '@/core/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useDIContainer } from '@/core/modules/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
-import type { 
-    PostQuery, 
-    PostResponse, 
-    PostRequest, 
-    RepostRequest, 
-    VoteBody 
+import type {
+    PostQuery,
+    PostResponse,
+    PostRequest,
+    RepostRequest,
+    VoteBody
 } from '@/features/feed/domain';
 import type { FeedPage, FeedItem } from '@/features/feed/data/services/FeedDataService';
 import type { ResId } from '@/shared/api/models/common';
 import { ConsumerFn } from '@/shared/types/genericTypes';
-import { 
-  useCustomQuery, 
-  useCustomMutation, 
-  useCustomInfiniteQuery 
+import {
+    useCustomQuery,
+    useCustomMutation,
+    useCustomInfiniteQuery
 } from '@/core/hooks';
-import { 
-  CACHE_TIME_MAPPINGS, 
-  convertQueryKeyToCacheKey,
-  useCacheInvalidation 
+import {
+    CACHE_TIME_MAPPINGS,
+    convertQueryKeyToCacheKey,
+    useCacheInvalidation
 } from '@/core/hooks/migrationUtils';
 
 /**
@@ -36,7 +36,7 @@ import {
  */
 export const useFeedServicesCustom = () => {
     const container = useDIContainer();
-    
+
     return {
         feedFeatureService: container.getByToken(TYPES.FEED_FEATURE_SERVICE),
         postFeatureService: container.getByToken(TYPES.POST_FEATURE_SERVICE),
@@ -51,7 +51,7 @@ export const useFeedServicesCustom = () => {
  * Replaces: useFeed (React Query)
  */
 export const useFeedCustom = (query: PostQuery = {}) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { feedFeatureService } = useFeedServicesCustom();
     const invalidateCache = useCacheInvalidation();
 
@@ -73,10 +73,10 @@ export const useFeedCustom = (query: PostQuery = {}) => {
                 return lastPage.pagination.hasNext ? allPages.length : undefined;
             },
             onSuccess: (data, allPages) => {
-                console.log('Feed loaded successfully:', { 
-                    totalItems: data.length, 
+                console.log('Feed loaded successfully:', {
+                    totalItems: data.length,
                     totalPages: allPages.length,
-                    query 
+                    query
                 });
             },
             onError: (error) => {
@@ -95,7 +95,7 @@ export const useFeedCustom = (query: PostQuery = {}) => {
  * Replaces: usePost (React Query)
  */
 export const usePostCustom = (postId: ResId) => {
-    const { data: authData, isAuthenticated } = useAuthStore();
+    const { authData, isAuthenticated } = useFeatureAuth();
     const { feedDataService } = useFeedServicesCustom();
     const invalidateCache = useCacheInvalidation();
 
@@ -110,10 +110,10 @@ export const usePostCustom = (postId: ResId) => {
             cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
             refetchInterval: 10 * 60 * 1000, // 10 minutes
             onSuccess: (data) => {
-                console.log('Post loaded successfully:', { 
-                    postId: data.post.id, 
+                console.log('Post loaded successfully:', {
+                    postId: data.post.id,
                     title: data.post.title,
-                    commentCount: data.comments.content.length 
+                    commentCount: data.comments.content.length
                 });
             },
             onError: (error) => {
@@ -130,7 +130,7 @@ export const usePostCustom = (postId: ResId) => {
  * Replaces: useCreatePost (React Query)
  */
 export const useCreatePostCustom = (toggleForm?: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServicesCustom();
     const invalidateCache = useCacheInvalidation();
 
@@ -142,10 +142,10 @@ export const useCreatePostCustom = (toggleForm?: ConsumerFn) => {
             onSuccess: (data, variables) => {
                 console.log('Post created successfully:', data);
                 toggleForm?.();
-                
+
                 // Invalidate all feed-related caches
                 invalidateCache.invalidateFeed();
-                
+
                 // Also invalidate user-specific caches
                 if (authData?.user?.id) {
                     invalidateCache.invalidateUser(authData.user.id);
@@ -181,7 +181,7 @@ export const useCreatePostCustom = (toggleForm?: ConsumerFn) => {
                 // Add to feed cache optimistically
                 const feedKey = convertQueryKeyToCacheKey(['feed', {}]);
                 const existingFeed = cache.get(feedKey);
-                
+
                 if (existingFeed) {
                     const updatedFeed = {
                         ...existingFeed,
@@ -208,7 +208,7 @@ export const useCreatePostCustom = (toggleForm?: ConsumerFn) => {
  * Replaces: useUpdatePost (React Query)
  */
 export const useUpdatePostCustom = (postId: ResId, toggleForm?: ConsumerFn) => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServicesCustom();
     const invalidateCache = useCacheInvalidation();
 
@@ -220,7 +220,7 @@ export const useUpdatePostCustom = (postId: ResId, toggleForm?: ConsumerFn) => {
             onSuccess: (data, variables) => {
                 console.log('Post updated successfully:', data);
                 toggleForm?.();
-                
+
                 // Invalidate post-specific caches
                 invalidateCache.invalidatePost(postId);
                 invalidateCache.invalidateFeed();
@@ -239,7 +239,7 @@ export const useUpdatePostCustom = (postId: ResId, toggleForm?: ConsumerFn) => {
                 // Optimistically update post in all caches
                 const postKey = convertQueryKeyToCacheKey(['post', postId]);
                 const existingPost = cache.get(postKey);
-                
+
                 if (existingPost) {
                     const updatedPost = {
                         ...existingPost,
@@ -265,7 +265,7 @@ export const useUpdatePostCustom = (postId: ResId, toggleForm?: ConsumerFn) => {
  * Replaces: useDeletePost (React Query)
  */
 export const useDeletePostCustom = () => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServicesCustom();
     const invalidateCache = useCacheInvalidation();
 
@@ -276,7 +276,7 @@ export const useDeletePostCustom = () => {
         {
             onSuccess: (_, variables) => {
                 console.log('Post deleted successfully:', variables);
-                
+
                 // Comprehensive cache invalidation
                 invalidateCache.invalidatePost(variables.postId);
                 invalidateCache.invalidateFeed();
@@ -296,10 +296,10 @@ export const useDeletePostCustom = () => {
                 // Optimistically remove post from all caches
                 const postKey = convertQueryKeyToCacheKey(['post', variables.postId]);
                 cache.delete(postKey);
-                
+
                 const feedKey = convertQueryKeyToCacheKey(['feed', {}]);
                 const existingFeed = cache.get(feedKey);
-                
+
                 if (existingFeed) {
                     const updatedFeed = {
                         ...existingFeed,
@@ -325,72 +325,72 @@ export const useDeletePostCustom = () => {
  * Enhanced version with more interaction types
  */
 export const useInteractWithPostCustom = () => {
-    const { data: authData } = useAuthStore();
+    const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServicesCustom();
     const invalidateCache = useCacheInvalidation();
 
     return useCustomMutation(
-        async ({ 
-            postId, 
-            interactionType, 
-            additionalData 
-        }: { 
-            postId: ResId; 
+        async ({
+            postId,
+            interactionType,
+            additionalData
+        }: {
+            postId: ResId;
             interactionType: 'like' | 'dislike' | 'save' | 'vote' | 'share';
             additionalData?: any;
         }) => {
             let result;
-            
+
             switch (interactionType) {
                 case 'like':
                 case 'dislike':
                     result = await feedFeatureService.interactWithPost(
-                        postId, 
-                        authData.user.id, 
-                        interactionType, 
+                        postId,
+                        authData.user.id,
+                        interactionType,
                         authData.accessToken
                     );
                     break;
                 case 'save':
                     result = await feedFeatureService.interactWithPost(
-                        postId, 
-                        authData.user.id, 
-                        'save', 
+                        postId,
+                        authData.user.id,
+                        'save',
                         authData.accessToken
                     );
                     break;
                 case 'vote':
                     result = await feedFeatureService.interactWithPost(
-                        postId, 
-                        authData.user.id, 
-                        'vote', 
+                        postId,
+                        authData.user.id,
+                        'vote',
                         authData.accessToken
                     );
                     break;
                 case 'share':
                     result = await feedFeatureService.createPostWithValidation(
-                        additionalData as PostRequest, 
+                        additionalData as PostRequest,
                         authData.accessToken
                     );
                     break;
                 default:
                     throw new Error(`Unknown interaction type: ${interactionType}`);
             }
-            
+
             return { postId, interactionType, result, additionalData };
         },
         {
             onSuccess: (data, variables) => {
                 console.log(`Post ${variables.interactionType} successful:`, data);
-                
+
                 // Invalidate post-specific cache
                 invalidateCache.invalidatePost(variables.postId);
-                
+
                 // If it's a share/repost, also invalidate feed
                 if (variables.interactionType === 'share') {
                     invalidateCache.invalidateFeed();
                 }
-                
+
                 // Invalidate user-specific caches for saved posts
                 if (variables.interactionType === 'save' && authData?.user?.id) {
                     invalidateCache.invalidateUser(authData.user.id);
@@ -409,10 +409,10 @@ export const useInteractWithPostCustom = () => {
                 // Optimistic updates for different interaction types
                 const postKey = convertQueryKeyToCacheKey(['post', variables.postId]);
                 const existingPost = cache.get(postKey);
-                
+
                 if (existingPost) {
                     const updatedPost = { ...existingPost };
-                    
+
                     switch (variables.interactionType) {
                         case 'like':
                             updatedPost.post.likeCount = (updatedPost.post.likeCount || 0) + 1;
@@ -432,7 +432,7 @@ export const useInteractWithPostCustom = () => {
                             // Save state would be handled separately
                             break;
                     }
-                    
+
                     cache.set(postKey, updatedPost);
                 }
 
@@ -452,11 +452,11 @@ export const useInteractWithPostCustom = () => {
 export const useFeedServiceCustom = {
     // DI access
     useFeedServices: useFeedServicesCustom,
-    
+
     // Queries
     useFeed: useFeedCustom,
     usePost: usePostCustom,
-    
+
     // Mutations
     useCreatePost: useCreatePostCustom,
     useUpdatePost: useUpdatePostCustom,

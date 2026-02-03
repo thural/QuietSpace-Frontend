@@ -12,16 +12,16 @@ import { WebSocketService } from '@/features/chat/data/services/WebSocketService
 import { ChatDataService } from '@/features/chat/data/services/ChatDataService';
 import { ChatFeatureService } from '@/features/chat/application/services/ChatFeatureService';
 import { CacheProvider } from '@/core/cache';
-import { useAuthStore } from '@core/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 
 // Mock dependencies
 jest.mock('@/features/chat/application/hooks/useChatServices');
 jest.mock('@core/hooks/migrationUtils');
-jest.mock('@core/store/zustand');
+jest.mock('@/core/modules/authentication/hooks/useFeatureAuth');
 
 const mockUseChatServices = require('@/features/chat/application/hooks/useChatServices').useChatServices;
 const mockUseCacheInvalidation = require('@core/hooks/migrationUtils').useCacheInvalidation;
-const mockUseAuthStore = require('@core/store/zustand').useAuthStore;
+const mockUseFeatureAuth = require('@/core/modules/authentication/hooks/useFeatureAuth').useFeatureAuth;
 
 describe('useUnifiedChat', () => {
   let mockChatDataService: jest.Mocked<ChatDataService>;
@@ -93,17 +93,16 @@ describe('useUnifiedChat', () => {
     mockUseCacheInvalidation.mockReturnValue(mockInvalidateCache);
 
     // Mock auth store
-    mockUseAuthStore.mockReturnValue({
-      getState: jest.fn().mockReturnValue({
-        data: {
-          accessToken: 'test-token',
-          user: {
-            id: 'user-123',
-            username: 'testuser',
-            email: 'test@example.com'
-          }
+    mockUseFeatureAuth.mockReturnValue({
+      userId: 'test-user-id',
+      token: 'test-token',
+      authData: {
+        user: {
+          id: 'user-123',
+          username: 'testuser',
+          email: 'test@example.com'
         }
-      })
+      }
     });
   });
 
@@ -175,7 +174,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useUnifiedChat('user-123', undefined, { cacheStrategy: 'aggressive' })
       );
 
@@ -187,7 +186,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useUnifiedChat('user-123', undefined, { cacheStrategy: 'conservative' })
       );
 
@@ -198,7 +197,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useUnifiedChat('user-123', 'chat-123', { enableRealTime: true })
       );
 
@@ -384,7 +383,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      renderHook(() => 
+      renderHook(() =>
         useUnifiedChat('user-123', 'chat-123', { enableRealTime: true })
       );
 
@@ -395,7 +394,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      renderHook(() => 
+      renderHook(() =>
         useUnifiedChat('user-123', 'chat-123', { enableRealTime: true })
       );
 
@@ -410,7 +409,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useUnifiedChat('user-123', 'chat-123', { enableRealTime: true })
       );
 
@@ -424,7 +423,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useUnifiedChat('user-123', undefined, { enableOptimisticUpdates: true })
       );
 
@@ -436,7 +435,7 @@ describe('useUnifiedChat', () => {
       mockChatDataService.getChats.mockResolvedValue({ content: [] });
       mockChatDataService.getUnreadCount.mockResolvedValue(0);
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useUnifiedChat('user-123', undefined, { enableOptimisticUpdates: false })
       );
 

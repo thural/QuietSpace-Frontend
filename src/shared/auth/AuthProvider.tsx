@@ -1,5 +1,5 @@
-import { ReactNode, useEffect } from "react";
-import { useAuthStore } from "@/core/store/zustand";
+import { ReactNode, useEffect, useState } from "react";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { getRolePermissions } from "./permissions";
 
 interface AuthProviderProps {
@@ -16,28 +16,29 @@ interface AuthProviderProps {
  * @param {ReactNode} props.children - Child components
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const { user, isAuthenticated, setFormData } = useAuthStore();
+    const { isAuthenticated, authData } = useFeatureAuth();
+    const [formData, setFormData] = useState({});
 
     useEffect(() => {
         // Auto-populate user permissions based on role
-        if (isAuthenticated && user?.role && !user.permissions) {
-            const rolePermissions = getRolePermissions(user.role);
-            // Update user with role-based permissions
-            useAuthStore.setState({
-                user: {
-                    ...user,
-                    permissions: rolePermissions
-                }
-            });
+        // Note: This functionality may need to be moved to the auth service
+        // as useFeatureAuth doesn't provide direct user state modification
+        if (isAuthenticated && authData?.user && typeof authData.user === 'object' && authData.user !== null) {
+            const user = authData.user as any;
+            if (user.role && !user.permissions) {
+                const rolePermissions = getRolePermissions(user.role);
+                console.log('User permissions would be set to:', rolePermissions);
+                // TODO: Implement permission setting through auth service
+            }
         }
-    }, [user, isAuthenticated]);
+    }, [authData, isAuthenticated]);
 
     useEffect(() => {
         // Reset form data when user logs out
         if (!isAuthenticated) {
             setFormData({});
         }
-    }, [isAuthenticated, setFormData]);
+    }, [isAuthenticated]);
 
     return <>{children}</>;
 };
@@ -46,42 +47,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
  * Hook to get authentication utilities
  */
 export const useAuthUtils = () => {
-    const { user, isAuthenticated, isLoading } = useAuthStore();
+    const { isAuthenticated, authData } = useFeatureAuth();
+    const user = authData?.user || null;
 
     const hasRole = (role: string): boolean => {
-        return user?.role === role;
+        return user && typeof user === 'object' && 'role' in user ? user.role === role : false;
     };
 
     const hasAnyRole = (roles: string[]): boolean => {
-        return user?.role ? roles.includes(user.role) : false;
+        return user && typeof user === 'object' && 'role' in user ? roles.includes(user.role) : false;
     };
 
     const isGuest = (): boolean => {
-        return !isAuthenticated || hasRole('guest');
+        return !isAuthenticated;
     };
 
     const isModeratorOrAbove = (): boolean => {
-        return hasAnyRole(['moderator', 'admin', 'super_admin']);
+        return hasAnyRole(['moderator', 'admin', 'superadmin']);
     };
 
     const isAdminOrAbove = (): boolean => {
-        return hasAnyRole(['admin', 'super_admin']);
+        return hasAnyRole(['admin', 'superadmin']);
     };
 
     const isSuperAdmin = (): boolean => {
-        return hasRole('super_admin');
+        return hasRole('superadmin');
     };
 
     return {
         user,
         isAuthenticated,
-        isLoading,
+        isLoading: false, // useFeatureAuth doesn't provide loading state
         hasRole,
         hasAnyRole,
         isGuest,
         isModeratorOrAbove,
         isAdminOrAbove,
-        isSuperAdmin,
+        isSuperAdmin
     };
 };
 

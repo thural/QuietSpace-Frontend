@@ -1,5 +1,5 @@
 import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/hooks';
-import { useAuthStore } from '@/core/store/zustand';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useDIContainer } from '@/core/modules/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { FeedDataService } from '../FeedDataService';
@@ -20,7 +20,7 @@ export const createQueryHook = <T>(
   queryFn: (feedDataService: FeedDataService, authData: any) => Promise<T>,
   options: any = {}
 ) => {
-  const { data: authData, isAuthenticated } = useAuthStore();
+  const { authData, isAuthenticated } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   return useCustomQuery(
@@ -42,7 +42,7 @@ export const createInfiniteQueryHook = <T>(
   paginationOptions: { limit?: number; type?: 'feed' | 'post' | 'comment' | 'search' } = {},
   options: any = {}
 ) => {
-  const { data: authData, isAuthenticated } = useAuthStore();
+  const { authData, isAuthenticated } = useFeatureAuth();
   const feedDataService = useFeedDataService();
   const { limit = 20, type = 'feed' } = paginationOptions;
 
@@ -82,7 +82,7 @@ export const createMutationHook = <TVariables, TData>(
   operationName: string,
   options: { onSuccessCallback?: () => void; customErrorHandler?: (error: any) => void } = {}
 ) => {
-  const { data: authData } = useAuthStore();
+  const { authData } = useFeatureAuth();
   const feedDataService = useFeedDataService();
 
   const mutationConfig = options.customErrorHandler

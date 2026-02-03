@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
-import { useAuthStore } from "@/core/store/zustand";
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { LoadingSpinner } from "@/shared/ui/components";
 
 interface ProtectedRouteProps {
@@ -26,11 +26,12 @@ export const ProtectedRoute = ({
     requiredPermissions = [],
     fallback = "/signin"
 }: ProtectedRouteProps) => {
-    const { isAuthenticated, isLoading, user } = useAuthStore();
+    const { isAuthenticated, authData } = useFeatureAuth();
     const location = useLocation();
 
     // Show loading spinner while checking authentication
-    if (isLoading) {
+    // Note: useFeatureAuth doesn't have isLoading, so we assume auth state is ready
+    if (!authData && !isAuthenticated) {
         return <LoadingSpinner size="md" />;
     }
 
@@ -42,7 +43,7 @@ export const ProtectedRoute = ({
     // Check permissions if required
     if (requiredPermissions.length > 0) {
         const hasPermission = requiredPermissions.every(permission =>
-            user?.permissions?.includes(permission)
+            authData?.user?.permissions?.includes(permission)
         );
 
         if (!hasPermission) {
