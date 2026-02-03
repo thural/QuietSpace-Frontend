@@ -5,6 +5,8 @@ import { ChatDataService } from '../../features/chat/data/services/ChatDataServi
 import { CommentDataService } from '../../features/comment/data/services/CommentDataService';
 import { ContentDataService } from '../../features/content/data/services/ContentDataService';
 import { FeedDataService } from '../../features/feed/data/services/FeedDataService';
+import { FeedFeatureService } from '../../features/feed/application/services/FeedFeatureService';
+import { PostFeatureService } from '../../features/feed/application/services/PostFeatureService';
 import { NavbarDataService } from '../../features/navbar/data/services/NavbarDataService';
 import { NotificationDataService } from '../../features/notification/data/services/NotificationDataService';
 import { PostDataService } from '../../features/post/data/services/PostDataService';
@@ -117,8 +119,7 @@ export function createAppContainer() {
     null as any, // IFeedRepository - will be injected properly later
     null as any, // IPostRepository - will be injected properly later  
     null as any, // ICommentRepository - will be injected properly later
-    cacheProvider,
-    null as any // IWebSocketService - will be injected properly later
+    {} // FeedDataServiceConfig
   );
   container.registerInstanceByToken(TYPES.FEED_DATA_SERVICE, feedDataService);
 
@@ -189,6 +190,23 @@ export function createAppContainer() {
     null as any // IWebSocketService - will be injected properly later
   );
   container.registerInstanceByToken(TYPES.SEARCH_DATA_SERVICE, searchDataService);
+
+  // Register feature services using factory functions - Manual Registration + Factory Functions
+  // Create services with injected dependencies
+
+  // FeedFeatureService has constructor dependencies
+  const feedFeatureService = new FeedFeatureService(
+    feedDataService,
+    cacheProvider
+  );
+  container.registerInstanceByToken(TYPES.FEED_FEATURE_SERVICE, feedFeatureService);
+
+  // PostFeatureService has constructor dependencies
+  const postFeatureService = new PostFeatureService(
+    postDataService,
+    cacheProvider
+  );
+  container.registerInstanceByToken(TYPES.POST_FEATURE_SERVICE, postFeatureService);
 
   // Register repositories using factory functions - Manual Registration + Factory Functions
   // Dependencies are resolved and injected manually

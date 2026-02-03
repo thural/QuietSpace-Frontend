@@ -4,7 +4,6 @@
  * Single responsibility: Cache operations and management
  */
 
-import type { ICacheProvider } from '@/core/cache';
 
 export interface ICacheManager {
   /**
