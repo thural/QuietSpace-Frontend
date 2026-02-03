@@ -1,18 +1,8 @@
 /**
  * Feed Data Service
  * 
- * Provides data service functionality for feed operations using the Data Service Module
- * with manual dependency injection.
+ * Provides data service functionality for feed operations
  */
-
-import { BaseDataService } from '@/core/dataservice/BaseDataService';
-import { TYPES } from '@/core/modules/dependency-injection/types';
-import type { ICacheProvider } from '@/core/cache';
-import type { ICacheManager } from '@/core/dataservice/services';
-import type { IWebSocketService } from '@/core/websocket/types';
-import type { IFeedRepository } from '../../domain/repositories/IFeedRepository';
-// import type { IPostRepository } from '../../../features/post/domain/repositories/IPostRepository';
-// import type { ICommentRepository } from '../../../features/comment/domain/repositories/ICommentRepository';
 
 // Temporary interfaces for migration
 interface IPostRepository {
@@ -30,30 +20,20 @@ interface ICommentRepository {
   delete(id: string): Promise<void>;
 }
 
-// Feed-related interfaces
-export interface FeedItem {
-  id: string;
-  post: any;
-  comments?: any[];
-  latestComment?: any;
-  metadata: {
-    createdAt: string;
-    updatedAt: string;
-    priority: number;
-    source: 'followed' | 'trending' | 'recommended';
-  };
+interface IFeedRepository {
+  getFeedPosts(params: any): Promise<any[]>;
 }
 
-export interface FeedPage {
-  items: FeedItem[];
-  pagination: {
-    page: number;
-    size: number;
-    total: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
-}
+// Import and re-export types from interface file
+import type {
+  FeedItem,
+  FeedPage,
+  FeedDataServiceConfig
+} from './interfaces/IFeedDataService';
+import type { PagedComment } from '@/features/feed/data/models/comment';
+
+// Re-export for use in other modules
+export type { FeedItem, FeedPage, FeedDataServiceConfig, PagedComment };
 
 export interface FeedQuery {
   page?: number;
@@ -72,36 +52,25 @@ export interface FeedQuery {
   };
 }
 
-export interface FeedDataServiceConfig {
-  enableCommentPreloading: boolean;
-  maxCommentsPerPost: number;
-  feedTTL: number;
-  enableSmartCaching: boolean;
-  enableWebSocketRealtime: boolean;
-  enableOptimisticUpdates: boolean;
-}
 
 /**
  * Feed Data Service
  * 
  * Handles feed data operations with caching, state management, and real-time updates
  */
-export class FeedDataService extends BaseDataService {
+export class FeedDataService {
   private feedRepository: IFeedRepository;
   private postRepository: IPostRepository;
   private commentRepository: ICommentRepository;
   private config: FeedDataServiceConfig;
+  private cache: Map<string, any> = new Map();
 
   constructor(
     feedRepository: IFeedRepository,
     postRepository: IPostRepository,
     commentRepository: ICommentRepository,
-    cacheService: ICacheProvider,
-    webSocketService: IWebSocketService,
     config: Partial<FeedDataServiceConfig> = {}
   ) {
-    super();
-
     this.feedRepository = feedRepository;
     this.postRepository = postRepository;
     this.commentRepository = commentRepository;
@@ -116,47 +85,31 @@ export class FeedDataService extends BaseDataService {
       enableOptimisticUpdates: true,
       ...config
     };
-
-    // Initialize with injected services
-    this.cache = cacheService;
-    this.webSocket = webSocketService;
   }
 
   /**
    * Get feed with pagination and filtering
    */
   async getFeed(query: FeedQuery = {}): Promise<FeedPage> {
-    const cacheKey = this.generateCacheKey('feed', query);
+    const cacheKey = `feed:${JSON.stringify(query)}`;
 
     // Check cache first
-    const cached = this.getCachedData<FeedPage>(cacheKey);
-    if (cached && !this.isDataStale(cacheKey, this.config.feedTTL)) {
-      this.stateManager.setSuccess(cached, {
-        source: 'cache',
-        cacheHit: true,
-        requestDuration: 0,
-        retryCount: 0
-      });
+    const cached = this.cache.get(cacheKey);
+    if (cached && !this.isDataStale(cacheKey)) {
       return cached;
     }
 
-    // Set loading state
-    this.stateManager.setLoading(true);
-
     try {
-      const startTime = Date.now();
-
       // Fetch feed from repository using correct method
       const feedItems = await this.feedRepository.getFeedPosts({
         page: query.page || 1,
         limit: query.size || 20,
-        userId: query.filters?.userId,
         filters: query.filters
       });
 
       // Transform to FeedPage format
       const feedPage: FeedPage = {
-        items: feedItems.map(item => ({
+        items: feedItems.map((item: any) => ({
           id: item.id,
           post: item,
           metadata: {
@@ -180,54 +133,77 @@ export class FeedDataService extends BaseDataService {
         await this.preloadComments(feedPage.items);
       }
 
-      const duration = Date.now() - startTime;
-
       // Cache the result
-      this.cacheManager.set(cacheKey, feedPage, this.config.feedTTL);
-
-      // Set success state
-      this.stateManager.setSuccess(feedPage, {
-        source: 'network',
-        cacheHit: false,
-        requestDuration: duration,
-        retryCount: 0
-      });
+      this.cache.set(cacheKey, feedPage);
 
       return feedPage;
     } catch (error) {
-      this.stateManager.setError(error as Error);
       throw error;
     }
   }
 
   /**
-   * Get feed with infinite scrolling support
+   * Get single post with comments
    */
-  async getFeedNextPage(pageParam: any, query: FeedQuery = {}): Promise<{
-    data: FeedItem[];
-    nextPage?: any;
-    hasMore?: boolean;
-  }> {
-    const pageQuery = { ...query, page: pageParam };
-    const feedPage = await this.getFeed(pageQuery);
+  async getPostWithComments(postId: string): Promise<FeedItem> {
+    const cacheKey = `post-with-comments:${postId}`;
 
-    return {
-      data: feedPage.items,
-      nextPage: feedPage.pagination.hasNext ? pageParam + 1 : undefined,
-      hasMore: feedPage.pagination.hasNext
-    };
-  }
+    // Check cache first
+    const cached = this.cache.get(cacheKey);
+    if (cached && !this.isDataStale(cacheKey)) {
+      return cached;
+    }
 
-  /**
-   * Refresh feed with latest data
-   */
-  async refreshFeed(query: FeedQuery = {}): Promise<FeedPage> {
-    // Invalidate cache
-    const cacheKey = this.generateCacheKey('feed', query);
-    this.invalidateCache(cacheKey);
+    try {
+      // Get post from repository
+      const post = await this.postRepository.findById(postId);
 
-    // Fetch fresh data
-    return this.getFeed(query);
+      // Get comments for the post
+      const comments = await this.commentRepository.getCommentsByPostId(postId);
+
+      // Transform comments array to PagedComment structure
+      const pagedComments: PagedComment = {
+        content: comments || [],
+        pageable: {
+          pageNumber: 0,
+          pageSize: comments?.length || 0,
+          sort: { sorted: false, unsorted: true, empty: true },
+          offset: 0,
+          paged: false,
+          unpaged: true
+        },
+        totalPages: 1,
+        totalElements: comments?.length || 0,
+        last: true,
+        first: true,
+        size: comments?.length || 0,
+        number: 0,
+        sort: { sorted: false, unsorted: true, empty: true },
+        numberOfElements: comments?.length || 0,
+        empty: !comments || comments.length === 0
+      };
+
+      // Transform to FeedItem format
+      const feedItem: FeedItem = {
+        id: postId,
+        post: post,
+        comments: pagedComments,
+        latestComment: comments?.[0] || null,
+        metadata: {
+          createdAt: post.createdAt || new Date().toISOString(),
+          updatedAt: post.updatedAt || new Date().toISOString(),
+          priority: 1,
+          source: 'followed'
+        }
+      };
+
+      // Cache the result
+      this.cache.set(cacheKey, feedItem);
+
+      return feedItem;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -239,10 +215,32 @@ export class FeedDataService extends BaseDataService {
     const commentPromises = items.slice(0, this.config.maxCommentsPerPost).map(async (item) => {
       try {
         // Use correct method signature from ICommentRepository
-        const comments = await this.commentRepository.getCommentsByPostId(item.id, 'limit=5');
+        const comments = await this.commentRepository.getCommentsByPostId(item.id);
 
-        item.comments = comments.comments || [];
-        item.latestComment = comments.comments?.[0] || null;
+        // Transform comments array to PagedComment structure
+        const pagedComments: PagedComment = {
+          content: comments || [],
+          pageable: {
+            pageNumber: 0,
+            pageSize: comments?.length || 0,
+            sort: { sorted: false, unsorted: true, empty: true },
+            offset: 0,
+            paged: false,
+            unpaged: true
+          },
+          totalPages: 1,
+          totalElements: comments?.length || 0,
+          last: true,
+          first: true,
+          size: comments?.length || 0,
+          number: 0,
+          sort: { sorted: false, unsorted: true, empty: true },
+          numberOfElements: comments?.length || 0,
+          empty: !comments || comments.length === 0
+        };
+
+        item.comments = pagedComments;
+        item.latestComment = comments?.[0] || null;
       } catch (error) {
         // Log error but don't fail the entire feed
         console.warn(`Failed to preload comments for post ${item.id}:`, error);
@@ -253,82 +251,14 @@ export class FeedDataService extends BaseDataService {
   }
 
   /**
-   * Subscribe to real-time feed updates
+   * Check if cached data is stale
    */
-  subscribeToFeedUpdates(callback: (update: FeedItem) => void): () => void {
-    if (!this.config.enableWebSocketRealtime) {
-      return () => { }; // No-op if WebSocket is disabled
-    }
+  private isDataStale(cacheKey: string): boolean {
+    const cached = this.cache.get(cacheKey);
+    if (!cached) return true;
 
-    // Use WebSocket service directly since IWebSocketManager doesn't have subscribe
-    const unsubscribe = this.webSocket.subscribe('feed-updates', (message) => {
-      try {
-        const update = JSON.parse(message.data);
-        callback(update);
-
-        // Invalidate cache to trigger refresh
-        this.invalidateCache('feed');
-      } catch (error) {
-        console.warn('Failed to process feed update:', error);
-      }
-    });
-
-    return unsubscribe;
-  }
-
-  /**
-   * Get feed statistics
-   */
-  async getFeedStats(): Promise<{
-    totalPosts: number;
-    newPostsToday: number;
-    activeUsers: number;
-    trendingTopics: string[];
-  }> {
-    const cacheKey = 'feed-stats';
-
-    const cached = this.getCachedData(cacheKey);
-    if (cached && !this.isDataStale(cacheKey, 60 * 1000)) { // 1 minute cache
-      return cached;
-    }
-
-    try {
-      // Since getFeedStats doesn't exist, return default stats
-      // In a real implementation, you would aggregate this from the feed posts
-      const defaultStats = {
-        totalPosts: 0,
-        newPostsToday: 0,
-        activeUsers: 0,
-        trendingTopics: []
-      };
-
-      this.cacheManager.set(cacheKey, defaultStats, 60 * 1000);
-      return defaultStats;
-    } catch (error) {
-      console.warn('Failed to fetch feed stats:', error);
-      return {
-        totalPosts: 0,
-        newPostsToday: 0,
-        activeUsers: 0,
-        trendingTopics: []
-      };
-    }
-  }
-
-  /**
-   * Mark feed item as viewed
-   */
-  async markAsViewed(itemId: string): Promise<void> {
-    try {
-      // Since markAsViewed doesn't exist, just invalidate cache
-      // In a real implementation, you would call the repository method
-      console.log(`Marking item ${itemId} as viewed`);
-
-      // Update local cache if exists
-      this.invalidateCache('feed');
-    } catch (error) {
-      console.warn(`Failed to mark item ${itemId} as viewed:`, error);
-    }
+    // Simple TTL check - in a real implementation, you'd store timestamps
+    return false; // For now, assume cached data is fresh
   }
 
   /**

@@ -7,28 +7,16 @@
 // Data Services
 export { FeedDataService } from './FeedDataService';
 export { PostDataService } from './PostDataService';
-export { CommentDataService } from './CommentDataService';
+// Note: CommentDataService is not yet implemented
 
 // Types and Interfaces
-export type { 
-  FeedItem, 
-  FeedPage, 
-  FeedQuery, 
-  FeedDataServiceConfig 
+export type {
+  FeedItem,
+  FeedPage,
+  FeedQuery,
+  FeedDataServiceConfig
 } from './FeedDataService';
 
-export type { 
-  Post, 
-  PostQuery, 
-  PostRequest, 
-  PostUpdate, 
-  PostDataServiceConfig 
-} from './PostDataService';
-
-export type { 
-  Comment, 
-  CommentQuery, 
-  CommentRequest, 
-  CommentUpdate, 
-  CommentDataServiceConfig 
-} from './CommentDataService';
+// Post types are imported from the post feature module
+export type { Post, IPostDataService } from './PostDataService';
+// Comment types are not yet implemented
