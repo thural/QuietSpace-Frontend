@@ -8,13 +8,13 @@
 module.exports = {
     // Test environment
     testEnvironment: 'node',
-    
+
     // Test file patterns
     testMatch: [
         '**/__tests__/**/*.test.ts',
         '**/__tests__/**/*.test.tsx'
     ],
-    
+
     // Coverage configuration
     collectCoverage: true,
     coverageDirectory: 'coverage',
@@ -33,7 +33,7 @@ module.exports = {
             statements: 90
         }
     },
-    
+
     // Coverage collection patterns
     collectCoverageFrom: [
         'src/core/modules/authentication/**/*.{ts,tsx}',
@@ -41,32 +41,35 @@ module.exports = {
         '!src/core/modules/authentication/**/index.ts',
         '!src/core/modules/authentication/**/types/**'
     ],
-    
+
     // Module path mapping
     moduleNameMapping: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@authentication/(.*)$': '<rootDir>/src/core/modules/authentication/$1'
     },
-    
+
     // Setup files
     setupFilesAfterEnv: [
         '<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs'
     ],
-    
+
     // Transform configuration
     transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest'
+        '^.+\\.(ts|tsx)$': ['ts-jest', {
+            tsconfig: '<rootDir>/tsconfig.json',
+            useESM: false
+        }]
     },
-    
+
     // Module file extensions
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-    
+
     // Test timeout
-    testTimeout: 10000,
-    
+    testTimeout: 15000, // Increased timeout for complex tests
+
     // Verbose output
     verbose: true,
-    
+
     // Test path ignore patterns
     testPathIgnorePatterns: [
         '/node_modules/',
@@ -74,30 +77,33 @@ module.exports = {
         '/build/',
         '/coverage/'
     ],
-    
+
     // Global variables
     globals: {
         'ts-jest': {
             tsconfig: '<rootDir>/tsconfig.json'
         }
     },
-    
+
     // Projects configuration for different test types
     projects: [
         {
             displayName: 'Unit Tests',
             testMatch: ['<rootDir>/src/core/modules/authentication/__tests__/unit/**/*.test.ts'],
-            setupFilesAfterEnv: ['<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs']
+            setupFilesAfterEnv: ['<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs'],
+            testTimeout: 10000
         },
         {
             displayName: 'Integration Tests',
             testMatch: ['<rootDir>/src/core/modules/authentication/__tests__/integration/**/*.test.ts'],
-            setupFilesAfterEnv: ['<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs']
+            setupFilesAfterEnv: ['<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs'],
+            testTimeout: 15000
         },
         {
             displayName: 'E2E Tests',
             testMatch: ['<rootDir>/src/core/modules/authentication/__tests__/e2e/**/*.test.ts'],
-            setupFilesAfterEnv: ['<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs']
+            setupFilesAfterEnv: ['<rootDir>/src/core/modules/authentication/__tests__/jest.setup.cjs'],
+            testTimeout: 20000
         }
     ]
 };

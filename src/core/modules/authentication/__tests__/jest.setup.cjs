@@ -5,6 +5,12 @@
  * and test utilities for authentication module testing.
  */
 
+// Set up global Jest functions
+const { jest } = require('@jest/globals');
+
+// Make jest available globally for all test files
+global.jest = jest;
+
 // Mock console methods to avoid noise in test output
 global.console = {
     ...console,
@@ -21,7 +27,7 @@ global.fetch = jest.fn();
 global.testUtils = {
     createMockDate: (offset = 0) => new Date(Date.now() + offset),
     createMockUUID: () => 'test-uuid-' + Math.random().toString(36).substr(2, 9),
-    createMockAuthEvent: (type: string) => ({
+    createMockAuthEvent: (type) => ({
         type,
         timestamp: new Date(),
         details: { test: true }
@@ -36,10 +42,10 @@ process.env.API_BASE_URL = 'http://localhost:3000';
 // Extend Jest matchers
 expect.extend({
     toBeValidAuthResult(received) {
-        const pass = received && 
-                   typeof received === 'object' && 
-                   typeof received.success === 'boolean';
-        
+        const pass = received &&
+            typeof received === 'object' &&
+            typeof received.success === 'boolean';
+
         if (pass) {
             return {
                 message: () => `expected ${received} to be a valid AuthResult`,
@@ -52,14 +58,14 @@ expect.extend({
             };
         }
     },
-    
+
     toBeValidSession(received) {
-        const pass = received && 
-                   typeof received === 'object' && 
-                   received.user && 
-                   received.token && 
-                   received.provider;
-        
+        const pass = received &&
+            typeof received === 'object' &&
+            received.user &&
+            received.token &&
+            received.provider;
+
         if (pass) {
             return {
                 message: () => `expected ${received} to be a valid AuthSession`,
@@ -72,12 +78,12 @@ expect.extend({
             };
         }
     },
-    
+
     toBeHealthy(received) {
-        const pass = received && 
-                   typeof received === 'object' && 
-                   typeof received.healthy === 'boolean';
-        
+        const pass = received &&
+            typeof received === 'object' &&
+            typeof received.healthy === 'boolean';
+
         if (pass) {
             return {
                 message: () => `expected ${received} to be a valid HealthCheckResult`,
