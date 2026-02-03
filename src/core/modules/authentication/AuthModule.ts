@@ -13,6 +13,7 @@ import { loadAuthConfiguration } from './config/AuthConfigLoader';
 import { DefaultAuthConfig } from './config/DefaultAuthConfig';
 import { createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
 import { EnterpriseAuthService } from './enterprise/AuthService';
+import { EnterpriseAuthServiceAdapter } from './enterprise/AuthServiceAdapter';
 import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
 import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { AnalyticsPlugin } from './plugins/AnalyticsPlugin';
@@ -132,6 +133,8 @@ export class AuthModuleFactory {
     }
     /**
      * Creates enterprise authentication service with default components
+     * 
+     * @deprecated Use createDefaultAuthOrchestrator instead
      */
     static createDefault(): EnterpriseAuthService {
         const repository = new LocalAuthRepository();
@@ -140,7 +143,7 @@ export class AuthModuleFactory {
         const security = new EnterpriseSecurityService();
         const config = new DefaultAuthConfig();
 
-        const authService = new EnterpriseAuthService(
+        const authService = new EnterpriseAuthServiceAdapter(
             repository,
             logger,
             metrics,
@@ -148,9 +151,13 @@ export class AuthModuleFactory {
             config
         );
 
-        // Register JWT provider
-        const jwtProvider = new JwtAuthProvider();
-        authService.registerProvider(jwtProvider);
+        // Log deprecation warning
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn(
+                '⚠️  AuthModuleFactory.createDefault() is deprecated. ' +
+                'Use createDefaultAuthOrchestrator() instead.'
+            );
+        }
 
         return authService;
     }

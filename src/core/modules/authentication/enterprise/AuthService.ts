@@ -1,6 +1,9 @@
 /**
  * Enterprise authentication service
  *
+ * @deprecated Use AuthOrchestrator instead. This service duplicates functionality
+ * already provided by AuthOrchestrator and will be removed in a future version.
+ * 
  * Implements modular authentication with dependency injection
  * using the existing Inversify container for consistency.
  */
@@ -44,6 +47,14 @@ export class EnterpriseAuthService implements IAuthService {
         security: IAuthSecurityService,
         config: IAuthConfig
     ) {
+        // @deprecated warning for developers
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn(
+                '⚠️  EnterpriseAuthService is deprecated. Use AuthOrchestrator instead. ' +
+                'This service will be removed in a future version.'
+            );
+        }
+
         this.repository = repository;
         this.logger = logger;
         this.metrics = metrics;
