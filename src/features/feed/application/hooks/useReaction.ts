@@ -1,8 +1,8 @@
-import useUserQueries from "@features/profile/data/userQueries";
-import { ReactionType } from "../../../feed/data/models/reaction";
-import { ContentType, ResId } from "@shared/api/models/common";
-import { useFeedServices } from "./useFeedService";
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
+import useUserQueries from "@features/profile/data/userQueries";
+import { ContentType, ResId } from "@shared/api/models/common";
+import { ReactionType } from "../../../feed/data/models/reaction";
+import { useFeedServices } from "./useFeedService";
 
 /**
  * Custom hook for managing reactions (likes/dislikes) on content.
@@ -32,6 +32,12 @@ const useReaction = (contentId: ResId) => {
      */
     const handleReaction = async (contentType: ContentType, reactionType: ReactionType) => {
         try {
+            // Check if user is authenticated
+            if (!authData) {
+                console.error('User not authenticated - cannot perform reaction');
+                return;
+            }
+
             await feedFeatureService.interactWithPost(
                 contentId,
                 user.id,

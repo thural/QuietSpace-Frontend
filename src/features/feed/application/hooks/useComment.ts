@@ -1,10 +1,9 @@
-import useUserQueries from "@features/profile/data/userQueries";
-import { CommentResponse } from "@/features/feed/data/models/comment";
-import { ContentType } from "@/shared/api/models/commonNative";
-import { ReactionType } from "@/features/feed/data/models/reactionNative";
-import { useCommentServices } from "./useCommentService";
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
+import { CommentResponse } from "@/features/feed/data/models/comment";
+import { ReactionType } from "@/features/feed/data/models/types/reactionNative";
+import useUserQueries from "@features/profile/data/userQueries";
 import { useState } from "react";
+import { useCommentServices } from "./useCommentService";
 
 /**
  * Custom hook for managing comment-related actions and state.
@@ -28,15 +27,21 @@ const useComment = (comment: CommentResponse) => {
     const { getSignedUserElseThrow } = useUserQueries();
     const user = getSignedUserElseThrow();
     const { authData } = useFeatureAuth();
-    const { feedFeatureService } = useCommentServices();
+    const { feedFeatureService, commentDataService } = useCommentServices();
 
     const handleLikeToggle = async (event: Event) => {
         event.preventDefault();
 
+        // Check if user is authenticated before proceeding
+        if (!authData) {
+            console.warn('User not authenticated - cannot like comment');
+            return;
+        }
+
         try {
             await feedFeatureService.interactWithPost(
-                comment.id,
-                user.id,
+                String(comment.id),
+                String(user.id),
                 'like',
                 authData.accessToken
             );
@@ -48,14 +53,10 @@ const useComment = (comment: CommentResponse) => {
 
     const handleDeleteComment = async () => {
         try {
-            await feedFeatureService.deleteCommentWithFullInvalidation(
-                comment.id,
-                comment.postId,
-                user.id
-            );
+            await commentDataService.deleteComment(String(comment.id));
         } catch (error) {
             console.error('Error deleting comment:', error);
-            // Error handling is done in the feature service
+            // Error handling is done in the data service
         }
     };
 

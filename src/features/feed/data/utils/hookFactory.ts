@@ -1,11 +1,10 @@
-import { useCustomQuery, useCustomMutation, useCustomInfiniteQuery } from '@/core/hooks';
+import { useCustomInfiniteQuery, useCustomMutation, useCustomQuery } from '@/core/hooks';
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useDIContainer } from '@/core/modules/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
 import type { FeedDataService } from '../FeedDataService';
-import { createInfiniteQueryConfig, createPostInfiniteQueryConfig, createCommentInfiniteQueryConfig } from './paginationUtils';
-import { createMutationConfig, createPostMutationConfig, createCommentMutationConfig, createInteractionMutationConfig } from './mutationUtils';
-import { CACHE_TIME_MAPPINGS } from '@/core/hooks/migrationUtils';
+import { createMutationConfig, createPostMutationConfig } from './mutationUtils';
+import { createCommentInfiniteQueryConfig, createInfiniteQueryConfig, createPostInfiniteQueryConfig } from './paginationUtils';
 
 /**
  * Hook factory utilities for creating standardized feed hooks

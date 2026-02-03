@@ -1,7 +1,7 @@
-import {z} from "zod";
-import {BaseSchema, PageContentSchema, PageSchema, ResIdSchema} from "@/shared/api/models/commonZod";
-import {ReactionResponseSchema} from "./reactionZod";
-import {PhotoResponseSchema} from "@/shared/api/models/photoZod";
+import { z } from "zod";
+import { BaseSchema, PageContentSchema, PageSchema, ResIdSchema } from "@/shared/api/models/commonZod";
+import { ReactionResponseSchema } from "./reactionZod";
+import { PhotoResponseSchema } from "@/shared/api/models/photoZod";
 
 
 export const VoteBodySchema = z.object({
@@ -62,7 +62,14 @@ export const PostResponseSchema = BaseSchema.extend({
     likeCount: z.number(),
     dislikeCount: z.number(),
     commentCount: z.number(),
-    userReaction: ReactionResponseSchema,
+    replyCount: z.number(),
+    repostCount: z.number(),
+    isRepost: z.boolean(),
+    originalPostId: z.nullable(ResIdSchema),
+    photos: z.array(z.any()),
+    tags: z.array(z.string()),
+    mentions: z.array(z.string()),
+    userReaction: z.nullable(ReactionResponseSchema),
 });
 
 export const PostListSchema = PageContentSchema(PostResponseSchema);

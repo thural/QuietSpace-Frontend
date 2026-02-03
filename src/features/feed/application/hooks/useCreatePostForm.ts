@@ -91,13 +91,25 @@ const useCreatePostForm = (toggleForm: ConsumerFn) => {
 
             const formData = new FormData();
             formData.append('userId', user.id.toString());
-            formData.append('title', postData.title);
             formData.append('text', postData.text);
 
-            if (poll.options.length) formData.append('poll', JSON.stringify(poll));
-            if (postData.photoData !== null) formData.append('photoData', postData.photoData);
+            if (postData.title !== undefined) {
+                formData.append('title', postData.title);
+            }
+
+            if (poll.options.length) {
+                formData.append('poll', JSON.stringify(poll));
+            }
+
+            if (postData.photoData !== null && postData.photoData !== undefined) {
+                formData.append('photoData', postData.photoData);
+            }
 
             // Use feature service for business validation and creation
+            if (!authData) {
+                throw new Error('User not authenticated');
+            }
+
             await feedFeatureService.createPostWithValidation(
                 postData,
                 authData.accessToken

@@ -1,8 +1,6 @@
-import { ContentType } from "@/shared/api/models/commonNative";
-import { ReactionType } from "@/features/feed/data/models/reactionNative";
-import { useFeedServices } from "./useFeedService";
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { ResId } from "@/shared/api/models/common";
+import { useFeedServices } from "./useFeedService";
 
 const usePostActions = (postId: ResId) => {
     const { authData } = useFeatureAuth();
@@ -10,6 +8,11 @@ const usePostActions = (postId: ResId) => {
 
     const handleDeletePost = async (e: React.MouseEvent) => {
         e && e.stopPropagation();
+
+        if (!authData?.user?.id) {
+            console.error('User not authenticated or missing user ID');
+            return;
+        }
 
         try {
             await feedFeatureService.deletePostWithBusinessLogic(
@@ -26,6 +29,11 @@ const usePostActions = (postId: ResId) => {
     const handleLike = async (e: React.MouseEvent) => {
         e && e.stopPropagation();
 
+        if (!authData?.user?.id) {
+            console.error('User not authenticated or missing user ID');
+            return;
+        }
+
         try {
             await feedFeatureService.interactWithPost(
                 postId,
@@ -41,6 +49,11 @@ const usePostActions = (postId: ResId) => {
 
     const handleDislike = async (e: React.MouseEvent) => {
         e && e.stopPropagation();
+
+        if (!authData?.user?.id) {
+            console.error('User not authenticated or missing user ID');
+            return;
+        }
 
         try {
             await feedFeatureService.interactWithPost(

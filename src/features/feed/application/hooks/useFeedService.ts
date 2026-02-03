@@ -1,6 +1,4 @@
-import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
-import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
-import { useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomInfiniteQuery';
+// Removed React Query dependency - now using custom data query system from core modules
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import { useDIContainer } from '@/core/modules/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
@@ -9,14 +7,20 @@ import {
     convertQueryKeyToCacheKey,
     useCacheInvalidation
 } from '@/core/modules/hooks/migrationUtils';
+import { useCustomInfiniteQuery } from '@/core/modules/hooks/useCustomInfiniteQuery';
+import { useCustomMutation } from '@/core/modules/hooks/useCustomMutation';
+import { useCustomQuery } from '@/core/modules/hooks/useCustomQuery';
+import type { FeedItem } from '@/features/feed/data/services/FeedDataService';
+import type { ICommentDataService } from '@/features/feed/data/services/interfaces/ICommentDataService';
+import type { IFeedDataService } from '@/features/feed/data/services/interfaces/IFeedDataService';
+import type { IPostDataService } from '@/features/feed/data/services/interfaces/IPostDataService';
 import type {
     PostQuery,
-    PostResponse,
     PostRequest,
+    PostResponse,
     RepostRequest,
     VoteBody
 } from '@/features/feed/domain';
-import type { FeedPage, FeedItem } from '@/features/feed/data/services/FeedDataService';
 import type { ResId } from '@/shared/api/models/common';
 import { ConsumerFn } from '@/shared/types/genericTypes';
 
@@ -27,11 +31,11 @@ export const useFeedServices = () => {
     const container = useDIContainer();
 
     return {
-        feedFeatureService: container.getByToken(TYPES.FEED_FEATURE_SERVICE),
-        postFeatureService: container.getByToken(TYPES.POST_FEATURE_SERVICE),
-        feedDataService: container.getByToken(TYPES.FEED_DATA_SERVICE),
-        postDataService: container.getByToken(TYPES.POST_DATA_SERVICE),
-        commentDataService: container.getByToken(TYPES.COMMENT_DATA_SERVICE),
+        feedFeatureService: (container.tryGetByToken(TYPES.FEED_FEATURE_SERVICE) as any),
+        postFeatureService: (container.tryGetByToken(TYPES.POST_FEATURE_SERVICE) as any),
+        feedDataService: container.getByToken(TYPES.FEED_DATA_SERVICE) as IFeedDataService,
+        postDataService: container.getByToken(TYPES.POST_DATA_SERVICE) as IPostDataService,
+        commentDataService: container.getByToken(TYPES.COMMENT_DATA_SERVICE) as ICommentDataService,
     };
 };
 
@@ -41,13 +45,17 @@ export const useFeedServices = () => {
 export const useFeed = (query: PostQuery = {}) => {
     const { token, isAuthenticated } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
-    const invalidateCache = useCacheInvalidation();
 
-    return useCustomInfiniteQuery(
+    return useCustomInfiniteQuery<FeedItem>(
         ['feed', query],
-        async ({ pageParam = 0 }) => {
+        async (pageParam: number = 0) => {
             const feedQuery = { ...query, page: pageParam };
-            return await feedFeatureService.loadFeed(feedQuery, token || '');
+            const result = await feedFeatureService.loadFeed(feedQuery, token || '');
+            return {
+                data: result.items,
+                hasNextPage: result.pagination.hasNext,
+                hasPreviousPage: result.pagination.hasPrev
+            };
         },
         {
             enabled: isAuthenticated,
@@ -57,23 +65,20 @@ export const useFeed = (query: PostQuery = {}) => {
             refetchOnMount: true,
             refetchOnWindowFocus: false,
             initialPageParam: 0,
-            getNextPageParam: (lastPage, allPages) => {
-                return lastPage.pagination.hasNext ? allPages.length : undefined;
+            getNextPageParam: (lastPage: unknown, allPages: unknown[]) => {
+                const feedPage = lastPage as { hasNextPage: boolean };
+                return feedPage.hasNextPage ? allPages.length : undefined;
             },
-            onSuccess: (data, allPages) => {
+            onSuccess: (data: FeedItem[], allPages: unknown[]) => {
                 console.log('Feed loaded successfully:', {
                     totalItems: data.length,
                     totalPages: allPages.length,
                     query
                 });
             },
-            onError: (error) => {
+            onError: (error: Error) => {
                 console.error('Error loading feed:', error);
-            },
-            // Feed is critical data, so we want more aggressive caching
-            cacheTime: 15 * 60 * 1000, // 15 minutes
-            // Enable background updates for real-time feel
-            refetchIntervalInBackground: true
+            }
         }
     );
 };
@@ -84,11 +89,13 @@ export const useFeed = (query: PostQuery = {}) => {
 export const usePost = (postId: ResId) => {
     const { authData, isAuthenticated } = useFeatureAuth();
     const { feedDataService } = useFeedServices();
-    const invalidateCache = useCacheInvalidation();
 
-    return useCustomQuery(
+    return useCustomQuery<FeedItem>(
         ['post', postId],
         async (): Promise<FeedItem> => {
+            if (!authData) {
+                throw new Error('Authentication required to access post');
+            }
             return await feedDataService.getPostWithComments(postId, authData.accessToken);
         },
         {
@@ -96,18 +103,16 @@ export const usePost = (postId: ResId) => {
             staleTime: CACHE_TIME_MAPPINGS.POST_STALE_TIME,
             cacheTime: CACHE_TIME_MAPPINGS.POST_CACHE_TIME,
             refetchInterval: 10 * 60 * 1000, // 10 minutes
-            onSuccess: (data) => {
+            onSuccess: (data: FeedItem) => {
                 console.log('Post loaded successfully:', {
                     postId: data.post.id,
                     title: data.post.title,
-                    commentCount: data.comments.content.length
+                    commentCount: data.comments?.content?.length || 0
                 });
             },
-            onError: (error) => {
+            onError: (error: Error) => {
                 console.error('Error loading post:', { postId, error: error.message });
-            },
-            // Posts with comments are expensive to fetch, cache longer
-            cacheTime: 20 * 60 * 1000 // 20 minutes
+            }
         }
     );
 };
@@ -120,12 +125,15 @@ export const useCreatePost = (toggleForm?: ConsumerFn) => {
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
-    return useCustomMutation(
+    return useCustomMutation<PostResponse, Error, PostRequest>(
         async (postData: PostRequest): Promise<PostResponse> => {
+            if (!authData) {
+                throw new Error('Authentication required to create post');
+            }
             return await feedFeatureService.createPostWithValidation(postData, authData.accessToken);
         },
         {
-            onSuccess: (data, variables) => {
+            onSuccess: (data: PostResponse, _variables: PostRequest) => {
                 console.log('Post created successfully:', data);
                 toggleForm?.();
 
@@ -137,20 +145,24 @@ export const useCreatePost = (toggleForm?: ConsumerFn) => {
                     invalidateCache.invalidateUser(authData.user.id);
                 }
             },
-            onError: (error, variables) => {
+            onError: (error: Error, _variables: PostRequest) => {
                 console.error('Error creating post:', error.message);
                 alert(`Error creating post: ${error.message}`);
             },
             retry: 2,
             retryDelay: 1000,
             invalidateQueries: ['feed', 'posts'],
-            optimisticUpdate: (cache, variables) => {
+            optimisticUpdate: (cache, variables: PostRequest) => {
                 // Create optimistic post
                 const optimisticPost: PostResponse = {
                     id: `temp-${Date.now()}`,
-                    ...variables,
+                    userId: variables.userId, // Use userId from variables
+                    username: 'CurrentUser', // TODO: Get from auth context
+                    title: variables.title || '', // Ensure title is always a string
+                    text: variables.text,
                     createDate: new Date().toISOString(),
                     updateDate: new Date().toISOString(),
+                    commentCount: 0,
                     userReaction: null,
                     replyCount: 0,
                     repostCount: 0,
@@ -197,12 +209,15 @@ export const useUpdatePost = (postId: ResId, toggleForm?: ConsumerFn) => {
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
-    return useCustomMutation(
+    return useCustomMutation<PostResponse, Error, PostRequest>(
         async (postData: PostRequest): Promise<PostResponse> => {
+            if (!authData) {
+                throw new Error('Authentication required to update post');
+            }
             return await feedFeatureService.updatePostWithValidation(postId, postData, authData.accessToken);
         },
         {
-            onSuccess: (data, variables) => {
+            onSuccess: (data: PostResponse, variables: PostRequest) => {
                 console.log('Post updated successfully:', data);
                 toggleForm?.();
 
@@ -210,17 +225,13 @@ export const useUpdatePost = (postId: ResId, toggleForm?: ConsumerFn) => {
                 invalidateCache.invalidatePost(postId);
                 invalidateCache.invalidateFeed();
             },
-            onError: (error, variables) => {
+            onError: (error: Error, variables: PostRequest) => {
                 console.error('Error updating post:', error.message);
                 alert(`Error updating post: ${error.message}`);
             },
             retry: 2,
-            invalidateQueries: (variables) => [
-                `post:${postId}`,
-                'feed',
-                'posts'
-            ],
-            optimisticUpdate: (cache, variables) => {
+            invalidateQueries: [`post:${postId}`, 'feed', 'posts'],
+            optimisticUpdate: (cache, variables: PostRequest) => {
                 // Optimistically update post in all caches
                 const postKey = convertQueryKeyToCacheKey(['post', postId]);
                 const existingPost = cache.get(postKey);
@@ -250,12 +261,12 @@ export const useDeletePost = () => {
     const { feedFeatureService } = useFeedServices();
     const invalidateCache = useCacheInvalidation();
 
-    return useCustomMutation(
+    return useCustomMutation<void, Error, { postId: ResId; userId: ResId }>(
         async ({ postId, userId }: { postId: ResId; userId: ResId }) => {
-            return await feedFeatureService.deletePostWithBusinessLogic(postId, userId, authData.accessToken);
+            return await feedFeatureService.deletePostWithBusinessLogic(postId, userId, authData?.accessToken || '');
         },
         {
-            onSuccess: (_, variables) => {
+            onSuccess: (_: void, variables: { postId: ResId; userId: ResId }) => {
                 console.log('Post deleted successfully:', variables.postId);
 
                 // Comprehensive cache invalidation
@@ -263,18 +274,13 @@ export const useDeletePost = () => {
                 invalidateCache.invalidateFeed();
                 invalidateCache.invalidateUser(variables.userId);
             },
-            onError: (error, variables) => {
+            onError: (error: Error, variables: { postId: ResId; userId: ResId }) => {
                 console.error('Error deleting post:', error.message);
                 alert(`Error deleting post: ${error.message}`);
             },
             retry: 1,
-            invalidateQueries: (variables) => [
-                `post:${variables.postId}`,
-                'feed',
-                'posts',
-                `posts:${variables.userId}`
-            ],
-            optimisticUpdate: (cache, variables) => {
+            invalidateQueries: ['feed', 'posts'],
+            optimisticUpdate: (cache, variables: { postId: ResId; userId: ResId }) => {
                 // Optimistically remove post from all caches
                 const postKey = convertQueryKeyToCacheKey(['posts', variables.postId]);
                 cache.delete(postKey);
@@ -285,7 +291,7 @@ export const useDeletePost = () => {
                 if (existingFeed) {
                     const updatedFeed = {
                         ...existingFeed,
-                        items: existingFeed.items.filter(item => item.post.id !== variables.postId),
+                        items: existingFeed.items.filter((item: any) => item.post.id !== variables.postId),
                         pagination: {
                             ...existingFeed.pagination,
                             total: Math.max(0, existingFeed.pagination.total - 1)
@@ -309,19 +315,34 @@ export const useCreateRepost = (toggleForm?: ConsumerFn) => {
     const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
-    return useMutation({
-        mutationFn: async (repostData: RepostRequest): Promise<PostResponse> => {
-            return await feedFeatureService.createPostWithValidation(repostData as PostRequest, authData.accessToken);
+    return useCustomMutation<PostResponse, Error, RepostRequest>(
+        async (repostData: RepostRequest): Promise<PostResponse> => {
+            if (!authData) {
+                throw new Error('Authentication required to create repost');
+            }
+            // Transform RepostRequest to PostRequest for the service
+            const postRequest: PostRequest = {
+                text: repostData.text,
+                userId: repostData.userId,
+                viewAccess: 'anyone', // Default view access for reposts
+                poll: null,           // Reposts don't have polls
+                title: undefined,     // Reposts don't have titles
+                photoData: undefined  // Reposts don't have additional photos
+            };
+
+            return await feedFeatureService.createPostWithValidation(postRequest, authData.accessToken);
         },
-        onSuccess: (data) => {
-            console.log('Repost created successfully:', data);
-            toggleForm?.();
-        },
-        onError: (error) => {
-            console.error('Error creating repost:', error.message);
-            alert(`Error creating repost: ${error.message}`);
-        },
-    });
+        {
+            onSuccess: (data: PostResponse) => {
+                console.log('Repost created successfully:', data);
+                toggleForm?.();
+            },
+            onError: (error: Error) => {
+                console.error('Error creating repost:', error.message);
+                alert(`Error creating repost: ${error.message}`);
+            },
+        }
+    );
 };
 
 /**
@@ -331,8 +352,12 @@ export const usePostInteraction = () => {
     const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
-    return useMutation({
-        mutationFn: async ({
+    return useCustomMutation<void, Error, {
+        postId: ResId;
+        userId: ResId;
+        interaction: 'like' | 'dislike' | 'share' | 'save'
+    }>(
+        async ({
             postId,
             userId,
             interaction
@@ -341,15 +366,28 @@ export const usePostInteraction = () => {
             userId: ResId;
             interaction: 'like' | 'dislike' | 'share' | 'save'
         }) => {
+            if (!authData) {
+                throw new Error('Authentication required to interact with post');
+            }
             return await feedFeatureService.interactWithPost(postId, userId, interaction, authData.accessToken);
         },
-        onSuccess: (_, variables) => {
-            console.log(`Post ${variables.interaction} successful:`, variables.postId);
-        },
-        onError: (error, variables) => {
-            console.error(`Error ${variables.interaction} post:`, error.message);
-        },
-    });
+        {
+            onSuccess: (_: void, variables: {
+                postId: ResId;
+                userId: ResId;
+                interaction: 'like' | 'dislike' | 'share' | 'save'
+            }) => {
+                console.log(`Post ${variables.interaction} successful:`, variables.postId);
+            },
+            onError: (error: Error, variables: {
+                postId: ResId;
+                userId: ResId;
+                interaction: 'like' | 'dislike' | 'share' | 'save'
+            }) => {
+                console.error(`Error ${variables.interaction} post:`, error.message);
+            },
+        }
+    );
 };
 
 /**
@@ -359,17 +397,22 @@ export const useVotePoll = () => {
     const { authData } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
-    return useMutation({
-        mutationFn: async (voteData: VoteBody) => {
+    return useCustomMutation<void, Error, VoteBody>(
+        async (voteData: VoteBody) => {
+            if (!authData) {
+                throw new Error('Authentication required to vote on poll');
+            }
             return await feedFeatureService.interactWithPost(voteData.postId, voteData.userId, 'vote', authData.accessToken);
         },
-        onSuccess: (_, variables) => {
-            console.log('Poll vote successful:', variables.postId);
-        },
-        onError: (error) => {
-            console.error('Error voting on poll:', error.message);
-        },
-    });
+        {
+            onSuccess: (_: void, variables: VoteBody) => {
+                console.log('Poll vote successful:', variables.postId);
+            },
+            onError: (error: Error) => {
+                console.error('Error voting on poll:', error.message);
+            },
+        }
+    );
 };
 
 /**
@@ -379,21 +422,32 @@ export const useUserPosts = (userId: ResId, query: PostQuery = {}) => {
     const { authData, isAuthenticated } = useFeatureAuth();
     const { postDataService } = useFeedServices();
 
-    return useInfiniteQuery({
-        queryKey: ['userPosts', userId, query],
-        queryFn: async ({ pageParam = 0 }) => {
+    return useCustomInfiniteQuery<any>(
+        ['userPosts', userId, query],
+        async (pageParam: number = 0) => {
+            if (!authData) {
+                throw new Error('Authentication required to access user posts');
+            }
             const userQuery = { ...query, userId, page: pageParam };
-            return await postDataService.getPostsByUserId(userId, userQuery, authData.accessToken);
+            const result = await postDataService.getPostsByUserId(userId, userQuery, authData.accessToken);
+            return {
+                data: result || [],
+                hasNextPage: false, // Array doesn't have pagination info, assume no more pages
+                hasPreviousPage: pageParam > 0
+            };
         },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage, allPages) => {
-            return lastPage.hasNext ? allPages.length : undefined;
-        },
-        enabled: isAuthenticated && !!userId,
-        staleTime: 1000 * 60 * 3, // 3 minutes
-        refetchInterval: 1000 * 60 * 6, // 6 minutes
-        gcTime: 1000 * 60 * 10, // 10 minutes
-    });
+        {
+            initialPageParam: 0,
+            getNextPageParam: (lastPage: unknown, allPages: unknown[]) => {
+                const page = lastPage as { hasNextPage: boolean };
+                return page.hasNextPage ? allPages.length : undefined;
+            },
+            enabled: isAuthenticated && !!userId,
+            staleTime: 1000 * 60 * 3, // 3 minutes
+            cacheTime: 1000 * 60 * 10, // 10 minutes
+            refetchInterval: 1000 * 60 * 6, // 6 minutes
+        }
+    );
 };
 
 /**
@@ -403,21 +457,32 @@ export const useSavedPosts = (query: PostQuery = {}) => {
     const { authData, isAuthenticated } = useFeatureAuth();
     const { postDataService } = useFeedServices();
 
-    return useInfiniteQuery({
-        queryKey: ['savedPosts', query],
-        queryFn: async ({ pageParam = 0 }) => {
+    return useCustomInfiniteQuery<any>(
+        ['savedPosts', query],
+        async (pageParam: number = 0) => {
+            if (!authData) {
+                throw new Error('Authentication required to access saved posts');
+            }
             const savedQuery = { ...query, page: pageParam };
-            return await postDataService.getSavedPosts(savedQuery, authData.accessToken);
+            const result = await postDataService.getPosts(savedQuery, authData.accessToken);
+            return {
+                data: result.content || [],
+                hasNextPage: !result.last,
+                hasPreviousPage: !result.first
+            };
         },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage, allPages) => {
-            return lastPage.hasNext ? allPages.length : undefined;
-        },
-        enabled: isAuthenticated,
-        staleTime: 1000 * 60 * 3, // 3 minutes
-        refetchInterval: 1000 * 60 * 6, // 6 minutes
-        gcTime: 1000 * 60 * 10, // 10 minutes
-    });
+        {
+            initialPageParam: 0,
+            getNextPageParam: (lastPage: unknown, allPages: unknown[]) => {
+                const page = lastPage as { hasNextPage: boolean };
+                return page.hasNextPage ? allPages.length : undefined;
+            },
+            enabled: isAuthenticated,
+            staleTime: 1000 * 60 * 3, // 3 minutes
+            cacheTime: 1000 * 60 * 10, // 10 minutes
+            refetchInterval: 1000 * 60 * 6, // 6 minutes
+        }
+    );
 };
 
 /**
@@ -427,15 +492,20 @@ export const useSearchPosts = (queryText: string, query: PostQuery = {}) => {
     const { authData, isAuthenticated } = useFeatureAuth();
     const { postDataService } = useFeedServices();
 
-    return useQuery({
-        queryKey: ['searchPosts', queryText, query],
-        queryFn: async () => {
-            return await postDataService.searchPosts(queryText, query, authData.accessToken);
+    return useCustomQuery<any>(
+        ['searchPosts', queryText, query],
+        async () => {
+            if (!authData) {
+                throw new Error('Authentication required to search posts');
+            }
+            return await postDataService.getPosts({ ...query, search: queryText }, authData.accessToken);
         },
-        enabled: isAuthenticated && !!queryText.trim(),
-        staleTime: 1000 * 60 * 2, // 2 minutes for search results
-        gcTime: 1000 * 60 * 5, // 5 minutes
-    });
+        {
+            enabled: isAuthenticated && !!queryText.trim(),
+            staleTime: 1000 * 60 * 2, // 2 minutes for search results
+            cacheTime: 1000 * 60 * 5, // 5 minutes
+        }
+    );
 };
 
 /**
@@ -445,15 +515,21 @@ export const usePostAnalytics = (postId: ResId) => {
     const { authData, isAuthenticated } = useFeatureAuth();
     const { postFeatureService } = useFeedServices();
 
-    return useQuery({
-        queryKey: ['postAnalytics', postId],
-        queryFn: async () => {
+    return useCustomQuery<any>(
+        ['postAnalytics', postId],
+        async () => {
+            if (!authData) {
+                throw new Error('Authentication required to access post analytics');
+            }
             return await postFeatureService.calculatePostEngagement(postId, authData.accessToken);
         },
-        enabled: isAuthenticated && !!postId,
-        staleTime: 1000 * 60 * 5, // 5 minutes
-        refetchInterval: 1000 * 60 * 10, // 10 minutes
-    });
+        {
+            enabled: isAuthenticated && !!postId,
+            staleTime: 1000 * 60 * 5, // 5 minutes
+            cacheTime: 1000 * 60 * 15, // 15 minutes
+            refetchInterval: 1000 * 60 * 10, // 10 minutes
+        }
+    );
 };
 
 /**
@@ -463,13 +539,19 @@ export const useFeedAnalytics = (userId?: ResId) => {
     const { authData, isAuthenticated } = useFeatureAuth();
     const { feedFeatureService } = useFeedServices();
 
-    return useQuery({
-        queryKey: ['feedAnalytics', userId],
-        queryFn: async () => {
+    return useCustomQuery<any>(
+        ['feedAnalytics', userId],
+        async () => {
+            if (!authData) {
+                throw new Error('Authentication required to access feed analytics');
+            }
             return await feedFeatureService.getFeedAnalytics(userId, authData.accessToken);
         },
-        enabled: isAuthenticated,
-        staleTime: 1000 * 60 * 15, // 15 minutes for analytics
-        refetchInterval: 1000 * 60 * 30, // 30 minutes
-    });
+        {
+            enabled: isAuthenticated,
+            staleTime: 1000 * 60 * 15, // 15 minutes for analytics
+            cacheTime: 1000 * 60 * 30, // 30 minutes
+            refetchInterval: 1000 * 60 * 30, // 30 minutes
+        }
+    );
 };
