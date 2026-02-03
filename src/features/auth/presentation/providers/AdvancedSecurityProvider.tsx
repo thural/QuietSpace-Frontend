@@ -9,7 +9,14 @@ import { useSecurityMonitor } from '../../application/hooks/useSecurityMonitor';
 const isTokenExpired = (token: string): boolean => {
   try {
     if (!token) return true;
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const parts = token.split('.');
+    if (parts.length < 2) return true;
+
+    // Ensure the payload part exists before calling atob
+    const payloadPart = parts[1];
+    if (!payloadPart) return true;
+
+    const payload = JSON.parse(atob(payloadPart));
     const currentTime = Date.now() / 1000;
     return payload.exp < currentTime;
   } catch (error) {

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { LoginBody, SignupBody } from '@shared/types/auth.dto';
-import { useService } from '@core/di';
-import { TYPES } from '@core/di/types';
-import { EnterpriseAuthAdapter } from '@core/auth/adapters/EnterpriseAuthAdapter';
-import { useAuthStore } from '@core/store/zustand';
+import { useService } from '@core/modules/dependency-injection';
+import { TYPES } from '@core/modules/dependency-injection/types';
+import { EnterpriseAuthAdapter } from '@core/modules/authentication/adapters/EnterpriseAuthAdapter';
+import { useAuthStore } from '@core/modules/state-management/zustand';
 
 /**
  * Enterprise authentication hook using the enterprise auth service
@@ -17,12 +17,10 @@ import { useAuthStore } from '@core/store/zustand';
  */
 export const useEnterpriseAuthHook = () => {
     const {
-        login,
         logout,
         setLoading,
         setError,
-        setAuthData,
-        setIsAuthenticated
+        setAuthData
     } = useAuthStore();
 
     const container = useService(TYPES.AUTH_CONTAINER) as any;
@@ -39,13 +37,12 @@ export const useEnterpriseAuthHook = () => {
             // Use enterprise auth adapter for authentication
             const authData = await authAdapter.authenticate(credentials);
             setAuthData(authData);
-            setIsAuthenticated(true);
         } catch (error) {
             setError(error instanceof Error ? error : new Error(String(error)));
         } finally {
             setLoading(false);
         }
-    }, [authAdapter, setLoading, setError, setAuthData, setIsAuthenticated]);
+    }, [authAdapter, setLoading, setError, setAuthData]);
 
     /**
      * Registers new user with enterprise validation
@@ -89,13 +86,12 @@ export const useEnterpriseAuthHook = () => {
 
             await authAdapter.signout();
             logout();
-            setIsAuthenticated(false);
         } catch (error) {
             setError(error instanceof Error ? error : new Error(String(error)));
         } finally {
             setLoading(false);
         }
-    }, [authAdapter, logout, setLoading, setError, setIsAuthenticated]);
+    }, [authAdapter, logout, setLoading, setError]);
 
     /**
      * Gets security metrics from enterprise auth service

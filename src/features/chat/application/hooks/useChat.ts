@@ -5,17 +5,15 @@
  * Manages chat data, messages, and user interactions.
  */
 
-import { ResId } from "@/shared/api/models/common";
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
-import { useCallback, useState } from "react";
-import { useChatMessaging } from "@features/chat/application/hooks/useChatMessaging";
-import { useCustomQuery } from '@/core/hooks';
-import { useCustomInfiniteQuery } from '@/core/hooks';
-import { useCustomMutation } from '@/core/hooks';
-import { useChatServices } from './useChatServices';
-import { useCacheInvalidation } from '@/core/hooks/migrationUtils';
+import { useCustomInfiniteQuery, useCustomMutation, useCustomQuery } from '@/core/modules/hooks';
+import { CACHE_TIME_MAPPINGS, useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
+import { ResId } from "@/shared/api/models/common";
 import { CHAT_CACHE_KEYS } from '@chat/data/cache/ChatCacheKeys';
-import { CACHE_TIME_MAPPINGS } from '@/core/hooks/migrationUtils';
+import { useChatMessaging } from "@features/chat/application/hooks/useChatMessaging";
+import { MessageSchema } from '@features/chat/data/models/chatNative';
+import { useCallback, useState } from "react";
+import { useChatServices } from './useChatServices';
 
 /**
  * Chat State interface - represents the data returned by useChat
@@ -57,7 +55,7 @@ export interface ChatActions {
 export const useChat = (chatId: ResId): ChatState & ChatActions => {
     const { userId: senderId, token } = useFeatureAuth();
     const { sendMessage, isClientConnected, chats } = useChatMessaging();
-    const { chatDataService, chatFeatureService } = useChatServices();
+    const { chatDataService } = useChatServices();
     const invalidateCache = useCacheInvalidation();
 
     // Get current chat details
@@ -80,33 +78,6 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
         }
     );
 
-    // Define the type for a single message
-    interface Message {
-        chatId?: string | number;
-        senderId?: string | number;
-        recipientId?: string | number;
-        photoData?: any;
-        text?: string;
-        id?: string | number;
-        version?: number;
-        createDate?: string;
-        updateDate?: string;
-        senderName?: string;
-        isSeen?: boolean;
-        photo?: {
-            id?: string | number;
-            url?: string;
-            [key: string]: any;
-        };
-    }
-
-    // Define the type for a single page of messages
-    interface MessagePage {
-        data: Message[];
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-    }
-
     // Get messages with pagination
     const {
         data: messagesData,
@@ -117,19 +88,21 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
         hasNextPage,
         isFetchingNextPage,
         fetchNextPage
-    } = useCustomInfiniteQuery<Message>(
+    } = useCustomInfiniteQuery<MessageSchema>(
         ['chat', 'messages', chatId],
         async (pageParam: number) => {
             const pagedMessage = await chatDataService.getMessages(chatId, pageParam, token || '');
             return {
-                data: pagedMessage.content || [],
+                data: pagedMessage.content as MessageSchema[] || [],
                 hasNextPage: !pagedMessage.last,
                 hasPreviousPage: !pagedMessage.first
             };
         },
         {
-            getNextPageParam: (lastPage, allPages) => {
-                return lastPage.hasNextPage ? allPages.length : undefined;
+            getNextPageParam: (lastPage: unknown, allPages: unknown[]) => {
+                const page = lastPage as { data: MessageSchema[]; hasNextPage: boolean; hasPreviousPage: boolean };
+                const pages = allPages as any[];
+                return page.hasNextPage ? pages.length : undefined;
             },
             staleTime: CACHE_TIME_MAPPINGS.CHAT_STALE_TIME,
             cacheTime: CACHE_TIME_MAPPINGS.CHAT_CACHE_TIME,
@@ -194,28 +167,21 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
 
                 // Invalidate all chat-related caches
                 invalidateCache.invalidateChatData(chatId);
-                invalidateCache.invalidateUserChatData(senderId);
+                if (senderId) {
+                    invalidateCache.invalidateUserChatData(senderId);
+                }
             },
             onError: (error: Error) => {
                 console.error("Error deleting chat:", { chatId, error: error.message });
             },
             optimisticUpdate: (cache) => {
                 // Optimistically remove chat from cache
-                const cacheKey = CHAT_CACHE_KEYS.USER_CHATS(senderId);
-                const existingChats = cache.get<any>(cacheKey) || { items: [] };
-                const filteredChats = existingChats.items.filter((chat: any) => chat.id !== chatId);
-                cache.set(cacheKey, { ...existingChats, items: filteredChats });
-
-                return () => {
-                    // Rollback on error - restore the chat
-                    if (currentChat) {
-                        const restoredChats = cache.get<any>(cacheKey) || { items: [] };
-                        cache.set(cacheKey, {
-                            ...restoredChats,
-                            items: [currentChat, ...restoredChats.items]
-                        });
-                    }
-                };
+                if (senderId) {
+                    const cacheKey = CHAT_CACHE_KEYS.USER_CHATS(senderId);
+                    const existingChats = cache.get<any>(cacheKey) || { items: [] };
+                    const filteredChats = existingChats.items.filter((chat: any) => chat.id !== chatId);
+                    cache.set(cacheKey, { ...existingChats, items: filteredChats });
+                }
             },
             retry: 2,
             retryDelay: 1000
@@ -244,7 +210,7 @@ export const useChat = (chatId: ResId): ChatState & ChatActions => {
         chats,
         recipientName,
         recipientId,
-        signedUserId: senderId,
+        signedUserId: senderId || undefined,
         messages,
         messageList: messages,
         messageCount,

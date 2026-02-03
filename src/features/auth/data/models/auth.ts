@@ -150,3 +150,4 @@ export enum AuthStatus {
 export type AuthRequest = AuthCredentials;
 export type AuthResponse = AuthResult<AuthSession>;
 export type RegisterRequest = AuthCredentials;
+export type RefreshTokenResponse = AuthResult<{ accessToken: string; message: string }>;

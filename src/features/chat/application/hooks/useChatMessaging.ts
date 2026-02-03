@@ -5,17 +5,15 @@
  * Handles chat creation, message sending, and real-time communication.
  */
 
-import { useState, useCallback } from 'react';
+import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
+import { useCustomMutation, useCustomQuery } from '@/core/modules/hooks';
+import { CACHE_TIME_MAPPINGS, useCacheInvalidation } from '@/core/modules/hooks/migrationUtils';
 import { ChatResponse, CreateChatRequest } from "@/features/chat/data/models/chat";
 import { ResId } from "@/shared/api/models/commonNative";
-import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
-import { useNavigate } from "react-router-dom";
-import { useCustomQuery } from '@/core/hooks';
-import { useCustomMutation } from '@/core/hooks';
-import { useChatServices } from './useChatServices';
-import { useCacheInvalidation } from '@/core/hooks/migrationUtils';
 import { CHAT_CACHE_KEYS } from '@chat/data/cache/ChatCacheKeys';
-import { CACHE_TIME_MAPPINGS } from '@/core/hooks/migrationUtils';
+import { useCallback } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useChatServices } from './useChatServices';
 
 export const useChatMessaging = () => {
     const { userId: senderId } = useFeatureAuth();
@@ -24,7 +22,8 @@ export const useChatMessaging = () => {
     // const { sendChatMessage, isClientConnected } = clientMethods;
 
     // Mock values for now
-    const sendChatMessage = () => console.log('Chat message sending not implemented');
+    const sendChatMessage = (params: { chatId: ResId; senderId: string | null; recipientId: ResId; text: string }) =>
+        console.log('Chat message sending not implemented:', params);
     const isClientConnected = false;
     const navigate = useNavigate();
     const { chatDataService, chatFeatureService } = useChatServices();
@@ -32,7 +31,7 @@ export const useChatMessaging = () => {
 
     // Get user chats with custom query
     const { data: chatsData, isLoading: chatsLoading } = useCustomQuery(
-        ['chats', senderId],
+        ['chats', senderId || 'anonymous'],
         () => chatDataService.getChats(senderId || '', ''),
         {
             enabled: !!senderId,
@@ -55,7 +54,9 @@ export const useChatMessaging = () => {
                 console.log("Chat created successfully:", data);
 
                 // Invalidate user chats cache
-                invalidateCache.invalidateUserChatData(senderId);
+                if (senderId) {
+                    invalidateCache.invalidateUserChatData(senderId!);
+                }
 
                 // Navigate to the new chat
                 navigate(`/chat/${data.id}`);
@@ -67,15 +68,15 @@ export const useChatMessaging = () => {
                 // Create optimistic chat matching ChatResponse schema
                 const optimisticChat: ChatResponse = {
                     id: `temp-${Date.now()}`,
-                    userIds: [senderId, variables.recipientId],
+                    userIds: [senderId || '', variables.recipientId],
                     members: [
-                        { id: senderId, name: 'You' },
+                        { id: senderId || '', name: 'You' },
                         { id: variables.recipientId, name: 'User' }
                     ],
                     recentMessage: variables.text ? {
                         id: `temp-msg-${Date.now()}`,
                         chatId: `temp-${Date.now()}`,
-                        senderId: senderId,
+                        senderId: senderId || '',
                         recipientId: variables.recipientId,
                         text: variables.text,
                         senderName: 'You',
@@ -88,6 +89,7 @@ export const useChatMessaging = () => {
                 };
 
                 // Add to cache optimistically
+                if (!senderId) return; // Early return if senderId is null
                 const cacheKey = CHAT_CACHE_KEYS.USER_CHATS(senderId);
                 const existingChats = cache.get<any>(cacheKey) || { content: [] };
                 cache.set(cacheKey, {
@@ -116,6 +118,12 @@ export const useChatMessaging = () => {
         );
 
         if (existingChat) return existingChat.id;
+
+        // Ensure senderId exists before creating chat
+        if (!senderId) {
+            console.error('Cannot create chat: senderId is null');
+            return undefined;
+        }
 
         const createChatRequestBody: CreateChatRequest = {
             isGroupChat: false,

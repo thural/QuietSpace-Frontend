@@ -1,9 +1,8 @@
-import { fetchResendCode } from "@features/auth/data/authRequests";
-import { AuthPages } from "@/features/auth/types/auth.ui.types";
-import { useState } from "react";
-import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
-import { useTimer } from "./useTimer";
 import { useEnterpriseAuth } from "@/core/modules/authentication";
+import { AuthPages } from "@/features/auth/types/auth.ui.types";
+import { fetchResendCode } from "@features/auth/data/authRequests";
+import { useState } from "react";
+import { useTimer } from "./useTimer";
 
 export const useActivationForm = () => {
     // Using local state instead of auth store for form management

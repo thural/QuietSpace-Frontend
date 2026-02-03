@@ -1,5 +1,5 @@
-import React from "react";
-import { LoginBody, SignupBody, ActivationData } from "@/shared/types/auth.dto";
+import * as React from "react";
+import { LoginBody, SignupBody, ActivationData } from "../../../shared/types/auth.dto";
 
 export enum AuthPages {
     LOGIN = "LOGIN",
