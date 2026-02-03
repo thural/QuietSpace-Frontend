@@ -16,6 +16,26 @@ export {
     EnterpriseAuthService
 } from './AuthModule';
 
+// NEW: SOLID architecture services
+export {
+    AuthOrchestrator
+} from './enterprise/AuthOrchestrator';
+export {
+    ProviderManager
+} from './enterprise/ProviderManager';
+export {
+    AuthValidator
+} from './enterprise/AuthValidator';
+export {
+    AuthOrchestrator as _AuthOrchestrator
+} from './enterprise/AuthOrchestrator';
+export {
+    ProviderManager as _ProviderManager
+} from './enterprise/ProviderManager';
+export {
+    AuthValidator as _AuthValidator
+} from './enterprise/AuthValidator';
+
 // Type exports for public API
 export type {
     IAuthProvider,
@@ -26,7 +46,48 @@ export type {
     IAuthSecurityService,
     IAuthConfig,
     IAuthPlugin
-} from './AuthModule';
+} from './interfaces/authInterfaces';
+
+// NEW: Segregated interfaces for SOLID compliance
+export type {
+    IAuthenticator
+} from './interfaces/IAuthenticator';
+export type {
+    IUserManager
+} from './interfaces/IUserManager';
+export type {
+    ITokenManager
+} from './interfaces/ITokenManager';
+export type {
+    IProviderManager
+} from './interfaces/IProviderManager';
+export type {
+    SecurityContext,
+    ValidationResult
+} from './interfaces/IAuthValidator';
+export type {
+    TokenInfo
+} from './interfaces/ITokenManager';
+
+export type {
+    IAuthenticator as _IAuthenticator
+} from './interfaces/IAuthenticator';
+export type {
+    IUserManager as _IUserManager
+} from './interfaces/IUserManager';
+export type {
+    ITokenManager as _ITokenManager
+} from './interfaces/ITokenManager';
+export type {
+    IProviderManager as _IProviderManager
+} from './interfaces/IProviderManager';
+export type {
+    SecurityContext as _SecurityContext,
+    ValidationResult as _ValidationResult
+} from './interfaces/IAuthValidator';
+export type {
+    TokenInfo as _TokenInfo
+} from './interfaces/ITokenManager';
 
 // Domain types - Clean API
 export type {
@@ -43,6 +104,13 @@ export {
     createDefaultAuthService,
     createCustomAuthService,
     createAuthService
+} from './factory';
+
+// NEW: SOLID architecture factory functions
+export {
+    createDefaultAuthOrchestrator,
+    createCustomAuthOrchestrator,
+    createAuthOrchestratorWithAllProviders
 } from './factory';
 
 // Feature authentication factory functions - DI-based auth for features
@@ -120,7 +188,14 @@ export const AUTH_MODULE_INFO = {
         '_SAMLAuthProvider',
         '_LDAPAuthProvider'
     ],
-    migrationGuide: 'Use factory functions instead of direct provider imports'
+    migrationGuide: 'Use factory functions instead of direct provider imports',
+    newFeatures: [
+        'SOLID principles compliance',
+        'Interface segregation',
+        'Service responsibility separation',
+        'Enhanced validation',
+        'Provider management'
+    ]
 };
 export { EnvironmentAuthConfig, createEnvironmentAuthConfig } from './config/EnvironmentAuthConfig';
 

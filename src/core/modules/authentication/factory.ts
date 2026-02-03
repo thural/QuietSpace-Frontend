@@ -2,11 +2,14 @@
  * Authentication System Factory Functions
  *
  * Factory functions for creating authentication services following Black Box pattern.
- * Provides clean service creation with dependency injection support.
+ * Provides clean service creation with dependency injection support and SOLID principles.
  */
 
 import { DefaultAuthConfig } from './config/DefaultAuthConfig';
 import { EnterpriseAuthService } from './enterprise/AuthService';
+import { AuthOrchestrator } from './enterprise/AuthOrchestrator';
+import { ProviderManager } from './enterprise/ProviderManager';
+import { AuthValidator } from './enterprise/AuthValidator';
 import { ConsoleAuthLogger } from './loggers/ConsoleAuthLogger';
 import { InMemoryAuthMetrics } from './metrics/InMemoryAuthMetrics';
 import { JwtAuthProvider } from './providers/JwtAuthProvider';
@@ -22,10 +25,11 @@ import type { IAuthProvider, IAuthRepository, IAuthValidator, IAuthLogger, IAuth
 import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession } from './types/auth.domain.types';
 
 /**
- * Creates a default authentication service
+ * Creates a default authentication service (Legacy - for backward compatibility)
  *
  * @param config - Optional authentication configuration
  * @returns Configured authentication service
+ * @deprecated Use createDefaultAuthOrchestrator() for new implementations
  */
 export function createDefaultAuthService(config?: Partial<IAuthConfig>): EnterpriseAuthService {
     // Create configuration instance
@@ -56,10 +60,54 @@ export function createDefaultAuthService(config?: Partial<IAuthConfig>): Enterpr
 }
 
 /**
- * Creates a custom authentication service with specific configuration
+ * Creates a default authentication orchestrator (New SOLID implementation)
+ *
+ * @param config - Optional authentication configuration
+ * @returns Configured authentication orchestrator
+ */
+export function createDefaultAuthOrchestrator(config?: Partial<IAuthConfig>): AuthOrchestrator {
+    // Create configuration instance
+    const finalConfig = new DefaultAuthConfig();
+
+    // Apply any overrides if provided
+    if (config) {
+        // For now, we'll use the default config as is
+        // TODO: Implement config merging in DefaultAuthConfig
+    }
+
+    // Create default services
+    const repository = new LocalAuthRepository();
+    const logger = new ConsoleAuthLogger();
+    const metrics = new InMemoryAuthMetrics();
+    const security = new EnterpriseSecurityService();
+
+    // Create new SOLID services
+    const providerManager = new ProviderManager(logger);
+    const authValidator = new AuthValidator(security, finalConfig, logger);
+
+    // Create and configure the orchestrator
+    const orchestrator = new AuthOrchestrator(
+        providerManager,
+        authValidator,
+        repository,
+        logger,
+        metrics,
+        security,
+        finalConfig
+    );
+
+    // Register default providers
+    registerDefaultProviders(orchestrator, finalConfig);
+
+    return orchestrator;
+}
+
+/**
+ * Creates a custom authentication service with specific configuration (Legacy)
  *
  * @param config - Authentication configuration
  * @returns Configured authentication service
+ * @deprecated Use createCustomAuthOrchestrator() for new implementations
  */
 export function createCustomAuthService(config: IAuthConfig): EnterpriseAuthService {
     // Create default services
@@ -88,14 +136,55 @@ export function createCustomAuthService(config: IAuthConfig): EnterpriseAuthServ
 }
 
 /**
- * Creates an authentication service with all providers
+ * Creates a custom authentication orchestrator with specific configuration
+ *
+ * @param config - Authentication configuration
+ * @returns Configured authentication orchestrator
+ */
+export function createCustomAuthOrchestrator(config: IAuthConfig): AuthOrchestrator {
+    // Create default services
+    const repository = new LocalAuthRepository();
+    const logger = new ConsoleAuthLogger();
+    const metrics = new InMemoryAuthMetrics();
+    const security = new EnterpriseSecurityService();
+
+    // Create new SOLID services
+    const providerManager = new ProviderManager(logger);
+    const authValidator = new AuthValidator(security, config, logger);
+
+    // Create and configure the orchestrator
+    const orchestrator = new AuthOrchestrator(
+        providerManager,
+        authValidator,
+        repository,
+        logger,
+        metrics,
+        security,
+        config
+    );
+
+    // Register all providers
+    registerAllProviders(orchestrator);
+
+    return orchestrator;
+}
+
+/**
+ * Creates an authentication service with all providers (Legacy)
  *
  * @param config - Optional authentication configuration
  * @returns Authentication service with all providers
+ * @deprecated Use createAuthOrchestratorWithAllProviders() for new implementations
  */
 export function createAuthService(config?: Partial<IAuthConfig>): EnterpriseAuthService {
     // Create configuration instance
     const finalConfig = new DefaultAuthConfig();
+
+    // Apply any overrides if provided
+    if (config) {
+        // For now, we'll use the default config as is
+        // TODO: Implement config merging in DefaultAuthConfig
+    }
 
     // Create default services
     const repository = new LocalAuthRepository();
@@ -112,7 +201,7 @@ export function createAuthService(config?: Partial<IAuthConfig>): EnterpriseAuth
         finalConfig
     );
 
-    // Add all available providers
+    // Add all providers
     authService.registerProvider(new JwtAuthProvider());
     authService.registerProvider(new OAuthAuthProvider());
     authService.registerProvider(new SAMLAuthProvider());
@@ -120,6 +209,94 @@ export function createAuthService(config?: Partial<IAuthConfig>): EnterpriseAuth
     authService.registerProvider(new LDAPAuthProvider());
 
     return authService;
+}
+
+/**
+ * Creates an authentication orchestrator with all providers
+ *
+ * @param config - Optional authentication configuration
+ * @returns Authentication orchestrator with all providers
+ */
+export function createAuthOrchestratorWithAllProviders(config?: Partial<IAuthConfig>): AuthOrchestrator {
+    // Create configuration instance
+    const finalConfig = new DefaultAuthConfig();
+
+    // Apply any overrides if provided
+    if (config) {
+        // For now, we'll use the default config as is
+        // TODO: Implement config merging in DefaultAuthConfig
+    }
+
+    // Create default services
+    const repository = new LocalAuthRepository();
+    const logger = new ConsoleAuthLogger();
+    const metrics = new InMemoryAuthMetrics();
+    const security = new EnterpriseSecurityService();
+
+    // Create new SOLID services
+    const providerManager = new ProviderManager(logger);
+    const authValidator = new AuthValidator(security, finalConfig, logger);
+
+    // Create and configure the orchestrator
+    const orchestrator = new AuthOrchestrator(
+        providerManager,
+        authValidator,
+        repository,
+        logger,
+        metrics,
+        security,
+        finalConfig
+    );
+
+    // Register all providers
+    registerAllProviders(orchestrator);
+
+    return orchestrator;
+}
+
+/**
+ * Registers default providers based on configuration
+ */
+function registerDefaultProviders(orchestrator: AuthOrchestrator, config: IAuthConfig): void {
+    const allowedProviders = (config.get<string[]>('allowedProviders')) || ['jwt'];
+
+    // Always register JWT provider as fallback
+    if (allowedProviders.includes('jwt')) {
+        const jwtProvider = new JwtAuthProvider();
+        orchestrator.registerProvider(jwtProvider);
+    }
+
+    // Register other providers when they become available
+    if (allowedProviders.includes('oauth')) {
+        const oauthProvider = new OAuthAuthProvider();
+        orchestrator.registerProvider(oauthProvider);
+    }
+
+    if (allowedProviders.includes('saml')) {
+        const samlProvider = new SAMLAuthProvider();
+        orchestrator.registerProvider(samlProvider);
+    }
+
+    if (allowedProviders.includes('ldap')) {
+        const ldapProvider = new LDAPAuthProvider();
+        orchestrator.registerProvider(ldapProvider);
+    }
+
+    if (allowedProviders.includes('session')) {
+        const sessionProvider = new SessionAuthProvider();
+        orchestrator.registerProvider(sessionProvider);
+    }
+}
+
+/**
+ * Registers all available providers
+ */
+function registerAllProviders(orchestrator: AuthOrchestrator): void {
+    orchestrator.registerProvider(new JwtAuthProvider());
+    orchestrator.registerProvider(new OAuthAuthProvider());
+    orchestrator.registerProvider(new SAMLAuthProvider());
+    orchestrator.registerProvider(new SessionAuthProvider());
+    orchestrator.registerProvider(new LDAPAuthProvider());
 }
 
 /**
