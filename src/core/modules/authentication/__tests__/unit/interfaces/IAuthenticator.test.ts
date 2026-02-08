@@ -174,7 +174,7 @@ describe('IAuthenticator Interface', () => {
 
             await authenticator.initialize();
 
-            expect(authenticator.initialize).toHaveBeenCalledWith(undefined);
+            expect(authenticator.initialize).toHaveBeenCalledWith();
         });
 
         it('should initialize with custom options', async () => {
@@ -203,12 +203,12 @@ describe('IAuthenticator Interface', () => {
 
         it('should handle initialization timeout', async () => {
             (authenticator.initialize as jest.Mock).mockImplementation(
-                () => new Promise(resolve => setTimeout(resolve, 3000))
+                () => new Promise((_, reject) => setTimeout(() => reject(new Error('Initialization timeout')), 1000))
             );
 
             const options: InitializationOptions = { timeout: 1000 };
 
-            await expect(authenticator.initialize(options)).rejects.toThrow();
+            await expect(authenticator.initialize(options)).rejects.toThrow('Initialization timeout');
         });
     });
 
@@ -235,15 +235,15 @@ describe('IAuthenticator Interface', () => {
 
             await authenticator.shutdown();
 
-            expect(authenticator.shutdown).toHaveBeenCalledWith(30000); // Default timeout
+            expect(authenticator.shutdown).toHaveBeenCalledWith(); // No arguments for default
         });
 
         it('should handle shutdown timeout', async () => {
             (authenticator.shutdown as jest.Mock).mockImplementation(
-                () => new Promise(resolve => setTimeout(resolve, 5000))
+                () => new Promise((_, reject) => setTimeout(() => reject(new Error('Shutdown timeout')), 1000))
             );
 
-            await expect(authenticator.shutdown(1000)).rejects.toThrow();
+            await expect(authenticator.shutdown(1000)).rejects.toThrow('Shutdown timeout');
         });
     });
 

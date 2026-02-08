@@ -13,26 +13,95 @@ import { ProviderManager } from '../../../enterprise/ProviderManager';
 import type { IAuthenticator } from '../../../interfaces/IAuthenticator';
 import type { IAuthLogger } from '../../../interfaces/authInterfaces';
 import { ProviderPriority } from '../../../interfaces/IProviderManager';
+import type { AuthCredentials, AuthResult, AuthSession, AuthErrorType } from '../../../types/auth.domain.types';
 
 // Mock implementations for testing
-const createMockAuthenticator = (name: string, type: string): IAuthenticator => ({
-    name,
-    type: type as any,
-    config: {},
-    authenticate: jest.fn(),
-    validateSession: jest.fn(),
-    refreshToken: jest.fn(),
-    configure: jest.fn(),
-    getCapabilities: jest.fn(() => [`${type}_auth`, `${type}_mfa`]),
-    initialize: jest.fn(),
-    healthCheck: jest.fn(),
-    getPerformanceMetrics: jest.fn(),
-    resetPerformanceMetrics: jest.fn(),
-    isHealthy: jest.fn(),
-    isInitialized: jest.fn(() => true),
-    getUptime: jest.fn(() => 1000),
-    shutdown: jest.fn()
-});
+const createMockAuthenticator = (name: string, type: string): IAuthenticator & {
+    authenticate: jest.MockedFunction<(credentials: AuthCredentials) => Promise<AuthResult<AuthSession>>>;
+    validateSession: jest.MockedFunction<() => Promise<AuthResult<boolean>>>;
+    refreshToken: jest.MockedFunction<() => Promise<AuthResult<AuthSession>>>;
+    configure: jest.MockedFunction<(config: Record<string, unknown>) => void>;
+    getCapabilities: jest.MockedFunction<() => string[]>;
+    initialize: jest.MockedFunction<(options?: any) => Promise<void>>;
+    healthCheck: jest.MockedFunction<() => Promise<any>>;
+    getPerformanceMetrics: jest.MockedFunction<() => any>;
+    resetPerformanceMetrics: jest.MockedFunction<() => void>;
+    isHealthy: jest.MockedFunction<() => Promise<boolean>>;
+    isInitialized: jest.MockedFunction<() => boolean>;
+    getUptime: jest.MockedFunction<() => number>;
+    shutdown: jest.MockedFunction<(timeout?: number) => Promise<void>>;
+} => {
+    const mockAuth = jest.fn() as jest.MockedFunction<(credentials: AuthCredentials) => Promise<AuthResult<AuthSession>>>;
+    const mockValidateSession = jest.fn() as jest.MockedFunction<() => Promise<AuthResult<boolean>>>;
+    const mockRefreshToken = jest.fn() as jest.MockedFunction<() => Promise<AuthResult<AuthSession>>>;
+    const mockConfigure = jest.fn() as jest.MockedFunction<(config: Record<string, unknown>) => void>;
+    const mockGetCapabilities = jest.fn(() => [`${type}_auth`, `${type}_mfa`]) as jest.MockedFunction<() => string[]>;
+    const mockInitialize = jest.fn() as jest.MockedFunction<(options?: any) => Promise<void>>;
+    const mockHealthCheck = jest.fn() as jest.MockedFunction<() => Promise<any>>;
+    const mockGetPerformanceMetrics = jest.fn() as jest.MockedFunction<() => any>;
+    const mockResetPerformanceMetrics = jest.fn() as jest.MockedFunction<() => void>;
+    const mockIsHealthy = jest.fn() as jest.MockedFunction<() => Promise<boolean>>;
+    const mockIsInitialized = jest.fn(() => true) as jest.MockedFunction<() => boolean>;
+    const mockGetUptime = jest.fn(() => 1000) as jest.MockedFunction<() => number>;
+    const mockShutdown = jest.fn() as jest.MockedFunction<(timeout?: number) => Promise<void>>;
+
+    // Set up default mock implementations
+    mockAuth.mockResolvedValue({
+        success: false,
+        error: {
+            type: 'unknown_error' as AuthErrorType,
+            message: 'Mock not implemented',
+            code: 'MOCK_ERROR'
+        }
+    });
+    mockValidateSession.mockResolvedValue({
+        success: false,
+        error: {
+            type: 'unknown_error' as AuthErrorType,
+            message: 'Mock not implemented',
+            code: 'MOCK_ERROR'
+        }
+    });
+    mockRefreshToken.mockResolvedValue({
+        success: false,
+        error: {
+            type: 'unknown_error' as AuthErrorType,
+            message: 'Mock not implemented',
+            code: 'MOCK_ERROR'
+        }
+    });
+    mockInitialize.mockResolvedValue(undefined);
+    mockHealthCheck.mockResolvedValue({ healthy: true, timestamp: new Date(), responseTime: 100 });
+    mockGetPerformanceMetrics.mockReturnValue({
+        totalAttempts: 0,
+        successfulAuthentications: 0,
+        failedAuthentications: 0,
+        averageResponseTime: 0,
+        errorsByType: {},
+        statistics: { successRate: 0, failureRate: 0, throughput: 0 }
+    });
+    mockIsHealthy.mockResolvedValue(true);
+    mockShutdown.mockResolvedValue(undefined);
+
+    return {
+        name,
+        type: type as any,
+        config: {},
+        authenticate: mockAuth,
+        validateSession: mockValidateSession,
+        refreshToken: mockRefreshToken,
+        configure: mockConfigure,
+        getCapabilities: mockGetCapabilities,
+        initialize: mockInitialize,
+        healthCheck: mockHealthCheck,
+        getPerformanceMetrics: mockGetPerformanceMetrics,
+        resetPerformanceMetrics: mockResetPerformanceMetrics,
+        isHealthy: mockIsHealthy,
+        isInitialized: mockIsInitialized,
+        getUptime: mockGetUptime,
+        shutdown: mockShutdown
+    };
+};
 
 const createMockLogger = (): IAuthLogger => ({
     name: 'mock-logger',
@@ -139,14 +208,14 @@ describe('ProviderManager', () => {
             const provider1 = createMockAuthenticator('provider1', 'oauth');
             const provider2 = createMockAuthenticator('provider2', 'saml');
 
-            (provider1.healthCheck as jest.Mock).mockResolvedValue({
+            provider1.healthCheck.mockResolvedValue({
                 healthy: true,
                 timestamp: new Date(),
                 responseTime: 100,
                 message: 'OK'
             });
 
-            (provider2.healthCheck as jest.Mock).mockResolvedValue({
+            provider2.healthCheck.mockResolvedValue({
                 healthy: false,
                 timestamp: new Date(),
                 responseTime: 200,
@@ -315,7 +384,7 @@ describe('ProviderManager', () => {
 
         it('should start and stop health monitoring', () => {
             const provider = createMockAuthenticator('monitor-test', 'oauth');
-            (provider.healthCheck as jest.Mock).mockResolvedValue({
+            provider.healthCheck.mockResolvedValue({
                 healthy: true,
                 timestamp: new Date(),
                 responseTime: 50,
@@ -352,7 +421,7 @@ describe('ProviderManager', () => {
 
         it('should handle health monitoring errors gracefully', async () => {
             const provider = createMockAuthenticator('error-test', 'oauth');
-            (provider.healthCheck as jest.Mock).mockRejectedValue(new Error('Health check failed'));
+            provider.healthCheck.mockRejectedValue(new Error('Health check failed'));
 
             providerManager.registerProvider(provider);
             providerManager.startHealthMonitoring(1000);
@@ -388,8 +457,8 @@ describe('ProviderManager', () => {
             const provider1 = createMockAuthenticator('init1', 'oauth');
             const provider2 = createMockAuthenticator('init2', 'saml');
 
-            (provider1.initialize as jest.Mock).mockResolvedValue(undefined);
-            (provider2.initialize as jest.Mock).mockResolvedValue(undefined);
+            provider1.initialize.mockResolvedValue(undefined);
+            provider2.initialize.mockResolvedValue(undefined);
 
             providerManager.registerProvider(provider1);
             providerManager.registerProvider(provider2);
@@ -402,7 +471,7 @@ describe('ProviderManager', () => {
 
         it('should handle initialization timeout', async () => {
             const provider = createMockAuthenticator('timeout-test', 'oauth');
-            (provider.initialize as jest.Mock).mockReturnValue(Promise.reject(new Error('Initialization timeout')));
+            provider.initialize.mockReturnValue(Promise.reject(new Error('Initialization timeout')));
 
             providerManager.registerProvider(provider);
 
@@ -418,8 +487,8 @@ describe('ProviderManager', () => {
             const provider1 = createMockAuthenticator('shutdown1', 'oauth');
             const provider2 = createMockAuthenticator('shutdown2', 'saml');
 
-            (provider1.shutdown as jest.Mock).mockResolvedValue(undefined);
-            (provider2.shutdown as jest.Mock).mockResolvedValue(undefined);
+            provider1.shutdown.mockResolvedValue(undefined);
+            provider2.shutdown.mockResolvedValue(undefined);
 
             providerManager.registerProvider(provider1);
             providerManager.registerProvider(provider2);
