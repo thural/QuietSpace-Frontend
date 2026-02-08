@@ -55,6 +55,7 @@ export interface ProviderHealthConfig {
     retries: number;              // Number of retries before marking unhealthy
     circuitBreaker: CircuitBreakerConfig;
     fallbackProviders: string[];  // Backup providers
+    minResponseTime?: number;     // Minimum response time for tests (optional)
 }
 
 /**
@@ -234,8 +235,10 @@ export class ProviderHealthMonitor {
     async performHealthCheck(provider: IAuthenticator): Promise<HealthCheckResult> {
         const startTime = Date.now();
 
-        // Add small delay to ensure response time > 0
-        await new Promise(resolve => setTimeout(resolve, 1));
+        // Add small delay to ensure response time > 0 (configurable for tests)
+        if (this.config.minResponseTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, this.config.minResponseTime));
+        }
 
         try {
             // Execute health check through circuit breaker

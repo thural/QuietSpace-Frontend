@@ -153,7 +153,7 @@ describe('ProviderHealthMonitor', () => {
 
         expect(result.providerName).toBe('Test Provider');
         expect(result.status).toBe('healthy');
-        expect(result.responseTime).toBeGreaterThan(0);
+        expect(result.responseTime).toBeGreaterThanOrEqual(0);
         expect(result.error).toBeUndefined();
     });
 
