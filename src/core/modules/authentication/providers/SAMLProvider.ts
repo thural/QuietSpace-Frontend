@@ -13,7 +13,7 @@
 
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 
-import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { IAuthenticator } from '../interfaces/authInterfaces';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -76,7 +76,7 @@ interface SAMLAuthRequest {
 /**
  * SAML Provider Implementation
  */
-export class SAMLAuthProvider implements IAuthProvider {
+export class SAMLAuthProvider implements IAuthenticator {
     readonly name = 'SAML Provider';
     readonly type = AuthProviderType.SAML;
     readonly config: Record<string, unknown> = {

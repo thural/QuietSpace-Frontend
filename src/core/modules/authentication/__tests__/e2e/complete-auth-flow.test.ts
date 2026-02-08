@@ -21,7 +21,7 @@ import {
 } from '../../interfaces/IProviderManager';
 import {
     IAuthLogger
-} from '../../interfaces/IAuthProvider';
+} from '../../interfaces/IAuthenticator';
 import {
     ValidationResult,
     SecurityContext,

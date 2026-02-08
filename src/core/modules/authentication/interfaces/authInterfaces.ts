@@ -11,73 +11,15 @@ import type {
     AuthSession,
     AuthEvent,
     AuthErrorType,
-    AuthProviderType
+    AuthProviderType,
+    AuthUser,
+    AuthToken
 } from '../types/auth.domain.types';
+
+import type { IAuthenticator } from './IAuthenticator';
 
 // Re-export commonly used types for convenience
 export type { AuthEvent, AuthErrorType, AuthProviderType, AuthCredentials, AuthResult, AuthSession };
-
-/**
- * Authentication provider interface
- *
- * Defines contract for all authentication providers
- * enabling easy swapping and testing of different auth mechanisms.
- */
-export interface IAuthProvider {
-    readonly name: string;
-    readonly type: AuthProviderType;
-    readonly config: Record<string, unknown>;
-
-    /**
-     * Authenticates user with credentials
-     */
-    authenticate(credentials: AuthCredentials): Promise<AuthResult<AuthSession>>;
-
-    /**
-     * Registers new user and returns user data
-     */
-    register(userData: AuthCredentials): Promise<AuthResult<unknown>>;
-
-    /**
-     * Activates user account and returns session
-     */
-    activate(code: string): Promise<AuthResult<AuthSession>>;
-
-    /**
-     * Signs out user
-     */
-    signout(): Promise<AuthResult<void>>;
-
-    /**
-     * Refreshes authentication token
-     */
-    refreshToken(): Promise<AuthResult<AuthSession>>;
-
-    /**
-     * Resends activation code to user
-     */
-    resendActivationCode(email: string): Promise<AuthResult<void>>;
-
-    /**
-     * Validates current session
-     */
-    validateSession(): Promise<AuthResult<boolean>>;
-
-    /**
-     * Configures provider with settings
-     */
-    configure(config: Record<string, unknown>): void;
-
-    /**
-     * Gets provider capabilities
-     */
-    getCapabilities(): string[];
-
-    /**
-     * Initializes provider
-     */
-    initialize?(): Promise<void>;
-}
 
 /**
  * Authentication repository interface
@@ -343,7 +285,7 @@ export interface IAuthService {
     /**
      * Registers authentication provider
      */
-    registerProvider(provider: IAuthProvider): void;
+    registerProvider(provider: IAuthenticator): void;
 
     /**
      * Registers plugin

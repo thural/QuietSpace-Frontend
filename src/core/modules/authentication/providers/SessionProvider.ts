@@ -15,7 +15,7 @@
 
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 
-import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { IAuthenticator } from '../interfaces/authInterfaces';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -55,7 +55,7 @@ interface SessionData {
 /**
  * Session Provider Implementation
  */
-export class SessionAuthProvider implements IAuthProvider {
+export class SessionAuthProvider implements IAuthenticator {
     readonly name = 'Session Provider';
     readonly type = AuthProviderType.SESSION;
     readonly config: Record<string, unknown> = {

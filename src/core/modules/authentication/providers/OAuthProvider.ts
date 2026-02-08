@@ -15,7 +15,7 @@
 
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 
-import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { IAuthenticator } from '../interfaces/authInterfaces';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -69,7 +69,7 @@ interface OAuthUserInfo {
 /**
  * OAuth Provider Implementation
  */
-export class OAuthAuthProvider implements IAuthProvider {
+export class OAuthAuthProvider implements IAuthenticator {
     readonly name = 'OAuth Provider';
     readonly type = AuthProviderType.OAUTH;
     readonly config: Record<string, any> = {

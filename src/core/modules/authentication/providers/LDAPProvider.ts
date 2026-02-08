@@ -15,7 +15,7 @@
 
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 
-import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { IAuthenticator } from '../interfaces/authInterfaces';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -86,7 +86,7 @@ interface LDAPAuthResult {
 /**
  * LDAP Provider Implementation
  */
-export class LDAPAuthProvider implements IAuthProvider {
+export class LDAPAuthProvider implements IAuthenticator {
     readonly name = 'LDAP Provider';
     readonly type = AuthProviderType.LDAP;
     readonly config: Record<string, unknown> = {

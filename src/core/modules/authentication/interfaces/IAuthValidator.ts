@@ -251,16 +251,6 @@ export interface IAuthValidator {
     addValidationRule(rule: ValidationRule): void;
 
     /**
-     * Adds custom validation rule (legacy compatibility)
-     * 
-     * @param name - Rule name
-     * @param rule - Validation function
-     * @param priority - Rule priority (higher = earlier execution)
-     * @deprecated Use addValidationRule with ValidationRule object
-     */
-    addRule(name: string, rule: (data: unknown, context?: SecurityContext) => ValidationResult, priority?: number): void;
-
-    /**
      * Removes validation rule
      * 
      * @param name - Rule name

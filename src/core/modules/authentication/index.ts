@@ -48,7 +48,6 @@ export {
 
 // Type exports for public API
 export type {
-    IAuthProvider,
     IAuthRepository,
     IAuthValidator,
     IAuthLogger,
@@ -135,26 +134,6 @@ export {
     AUTH_CONSTANTS,
     AuthLogLevel
 } from './constants';
-
-// Legacy exports for backward compatibility (with underscore prefix)
-export {
-    AnalyticsPlugin as _AnalyticsPlugin,
-    SecurityPlugin as _SecurityPlugin
-} from './AuthModule';
-
-// Provider implementations moved to legacy exports (Black Box pattern)
-// Note: These should be accessed through factory functions, not direct imports
-// TODO: Uncomment when providers are implemented
-// export {
-//     JwtAuthProvider as _JwtAuthProvider,
-//     OAuthAuthProvider as _OAuthAuthProvider,
-//     SessionAuthProvider as _SessionAuthProvider,
-//     SAMLAuthProvider as _SAMLAuthProvider,
-//     LDAPAuthProvider as _LDAPAuthProvider
-// } from './providers';
-
-// Configuration functions - Use existing exports
-export { AuthConfigLoader, createAuthConfigLoader, loadAuthConfiguration } from './config/AuthConfigLoader';
 
 // Module information
 export const AUTH_MODULE_VERSION = '1.0.0';

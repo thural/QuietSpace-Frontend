@@ -189,31 +189,6 @@ function registerAllProviders(orchestrator: AuthOrchestrator): void {
 }
 
 /**
- * Creates a JWT authentication provider
- *
- * @param config - Provider configuration
- * @returns JWT authentication provider
- */
-export function createAuthProvider(type: AuthProviderType, config?: Partial<IAuthConfig>): IAuthProvider {
-    const finalConfig = { ...DefaultAuthConfig, ...config };
-
-    switch (type) {
-        case AuthProviderType.JWT:
-            return new JwtAuthProvider();
-        case AuthProviderType.OAUTH:
-            return new OAuthAuthProvider();
-        case AuthProviderType.SAML:
-            return new SAMLAuthProvider();
-        case AuthProviderType.SESSION:
-            return new SessionAuthProvider();
-        case AuthProviderType.LDAP:
-            return new LDAPAuthProvider();
-        default:
-            throw new Error(`Unsupported auth provider type: ${type}`);
-    }
-}
-
-/**
  * Creates an authentication repository
  *
  * @param type - Repository type
@@ -304,20 +279,6 @@ export function createAuthSecurityService(config?: unknown): IAuthSecurityServic
     return new EnterpriseSecurityService();
 }
 
-// TODO: Fix mock service interface mismatches
-// The following functions have complex interface issues and need to be refactored:
-// - createMockAuthService (returns plain object instead of EnterpriseAuthService)
-// - createMockUser (properties don't match AuthUser interface)
-// - createMockToken (properties don't match AuthToken interface)
-// These will be fixed in a separate PR to focus on core functionality first
-
-// Mock functions commented out due to interface mismatches
-/*
-export function createMockAuthService(): EnterpriseAuthService {
-    // This function has interface mismatches and needs to be refactored
-}
-*/
-
 /**
  * Creates an authentication plugin
  *
@@ -328,7 +289,7 @@ export function createMockAuthService(): EnterpriseAuthService {
 export function createAuthPlugin(name: string, plugin: unknown): unknown {
     return {
         name,
-        ...plugin
+        plugin
     };
 }
 
@@ -361,7 +322,7 @@ export const authFactoryRegistry = {
     /**
      * Register a custom auth factory
      */
-    register(name: string, factory: (config?: Partial<IAuthConfig>) => EnterpriseAuthService): void {
+    register(name: string, factory: (config?: Partial<IAuthConfig>) => AuthOrchestrator): void {
         // In a real implementation, this would store the factory
         console.log(`Registered auth factory: ${name}`);
     },
@@ -369,7 +330,7 @@ export const authFactoryRegistry = {
     /**
      * Get a registered auth factory
      */
-    get(name: string): ((config?: Partial<IAuthConfig>) => EnterpriseAuthService) | undefined {
+    get(name: string): ((config?: Partial<IAuthConfig>) => AuthOrchestrator) | undefined {
         // In a real implementation, this would return the registered factory
         console.log(`Getting auth factory: ${name}`);
         return undefined;

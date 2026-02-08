@@ -6,11 +6,12 @@
  * token lifecycle management, multi-tab synchronization, and security monitoring.
  */
 
-import { AuthModuleFactory } from '../AuthModule';
+import { createDefaultAuthOrchestrator } from '../factory';
 
 import { AdvancedTokenRotationManager, createAdvancedTokenRotationManager } from './AdvancedTokenRotationManager';
 
-import type { EnterpriseAuthService } from '../enterprise/AuthService';
+import type { AuthOrchestrator } from '../enterprise/AuthOrchestrator';
+import type { AuthResult } from '../types/auth.domain.types';
 
 
 export interface TokenRefreshOptions<T = unknown> {
@@ -53,7 +54,7 @@ export interface TokenRefreshMetrics {
  * - Circuit breaker pattern for reliability
  */
 export class EnterpriseTokenRefreshManager {
-    private readonly authService: EnterpriseAuthService;
+    private readonly authOrchestrator: AuthOrchestrator;
     private refreshIntervalId: number | null = null;
     private isActive: boolean = false;
     private readonly metrics: TokenRefreshMetrics;
@@ -64,7 +65,7 @@ export class EnterpriseTokenRefreshManager {
     private advancedRotationManager: AdvancedTokenRotationManager | null = null;
 
     constructor() {
-        this.authService = AuthModuleFactory.getInstance();
+        this.authOrchestrator = createDefaultAuthOrchestrator();
         this.metrics = {
             totalRefreshes: 0,
             successfulRefreshes: 0,
@@ -95,8 +96,8 @@ export class EnterpriseTokenRefreshManager {
             if (options.enableAdvancedRotation) {
                 this.advancedRotationManager = createAdvancedTokenRotationManager({
                     strategy: options.rotationStrategy || 'adaptive',
-                    rotationBuffer: options.rotationBuffer,
-                    enableRefreshTokenRotation: options.enableRefreshTokenRotation,
+                    rotationBuffer: options.rotationBuffer || 300000, // 5 minutes default
+                    enableRefreshTokenRotation: options.enableRefreshTokenRotation || false,
                     enableTokenValidation: true,
                     maxRefreshAttempts: 3,
                     rotationDelay: 1000
@@ -220,7 +221,7 @@ export class EnterpriseTokenRefreshManager {
 
         try {
             // Get current session
-            const currentSession = await this.authService.getCurrentSession();
+            const currentSession = await this.authOrchestrator.getCurrentSession();
 
             if (!currentSession) {
                 throw new Error('No active authentication session found');
@@ -296,7 +297,7 @@ export class EnterpriseTokenRefreshManager {
     /**
      * Refreshes token through enterprise auth service
      */
-    private async refreshTokenThroughEnterprise(session: unknown): Promise<unknown> {
+    private async refreshTokenThroughEnterprise(session: any): Promise<AuthResult<any>> {
         // This would integrate with the enterprise auth service's token refresh mechanism
         // For now, we'll simulate the refresh process
 
@@ -318,7 +319,10 @@ export class EnterpriseTokenRefreshManager {
         } catch (error) {
             return {
                 success: false,
-                error: error instanceof Error ? error : new Error(String(error))
+                error: {
+                    type: 'token_refresh_failed' as any,
+                    message: error instanceof Error ? error.message : String(error)
+                }
             };
         }
     }
@@ -459,15 +463,15 @@ export class EnterpriseTokenRefreshManager {
  * This replaces the legacy createTokenRefreshManager from jwtAuthUtils
  * with enterprise-grade functionality.
  */
-export function createTokenRefreshManager(options?: TokenRefreshOptions): EnterpriseTokenRefreshManager {
+export function createTokenRefreshManager(_options?: TokenRefreshOptions): EnterpriseTokenRefreshManager {
     return new EnterpriseTokenRefreshManager();
 }
 
 /**
  * Factory function for creating advanced token rotation manager
  */
-export function createAdvancedTokenRefreshManager(options?: TokenRotationOptions): AdvancedTokenRotationManager {
-    return new AdvancedTokenRotationManager(options);
+export function createAdvancedTokenRefreshManager(_options?: any): AdvancedTokenRotationManager {
+    return new AdvancedTokenRotationManager();
 }
 
 /**

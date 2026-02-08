@@ -25,7 +25,7 @@ import {
 import type {
     ProviderHealthConfig
 } from '../health/HealthChecker';
-import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { IAuthenticator } from '../interfaces/authInterfaces';
 import type { AuthResult } from '../types/auth.domain.types';
 
 describe('CircuitBreaker', () => {
@@ -130,7 +130,7 @@ describe('CircuitBreaker', () => {
 
 describe('ProviderHealthMonitor', () => {
     let monitor: ProviderHealthMonitor;
-    let mockProvider: IAuthProvider;
+    let mockProvider: IAuthenticator;
     let config: ProviderHealthConfig;
 
     beforeEach(() => {
@@ -268,8 +268,8 @@ describe('ProviderHealthMonitor', () => {
 
 describe('HealthCheckManager', () => {
     let manager: HealthCheckManager;
-    let mockProvider1: IAuthProvider;
-    let mockProvider2: IAuthProvider;
+    let mockProvider1: IAuthenticator;
+    let mockProvider2: IAuthenticator;
 
     beforeEach(() => {
         mockProvider1 = {

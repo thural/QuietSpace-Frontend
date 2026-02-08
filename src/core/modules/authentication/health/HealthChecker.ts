@@ -12,7 +12,7 @@
  * - Provider recovery detection
  */
 
-import type { IAuthProvider } from '../interfaces/authInterfaces';
+import type { IAuthenticator } from '../interfaces/IAuthenticator';
 import type { AuthResult } from '../types/auth.domain.types';
 
 /**
@@ -210,7 +210,7 @@ export class ProviderHealthMonitor {
     /**
      * Starts health monitoring
      */
-    startMonitoring(provider: IAuthProvider): void {
+    startMonitoring(provider: IAuthenticator): void {
         this.stopMonitoring();
 
         this.checkTimer = setInterval(async () => {
@@ -231,7 +231,7 @@ export class ProviderHealthMonitor {
     /**
      * Performs a health check on the provider
      */
-    async performHealthCheck(provider: IAuthProvider): Promise<HealthCheckResult> {
+    async performHealthCheck(provider: IAuthenticator): Promise<HealthCheckResult> {
         const startTime = Date.now();
 
         // Add small delay to ensure response time > 0
@@ -335,7 +335,7 @@ export class ProviderHealthMonitor {
     /**
      * Executes the actual health check
      */
-    private async executeHealthCheck(provider: IAuthProvider): Promise<AuthResult<unknown>> {
+    private async executeHealthCheck(provider: IAuthenticator): Promise<AuthResult<unknown>> {
         // Try to validate current session first
         try {
             const validationResult = await provider.validateSession();
@@ -399,7 +399,7 @@ export class ProviderHealthMonitor {
  */
 export class HealthCheckManager {
     private readonly monitors: Map<string, ProviderHealthMonitor> = new Map();
-    private readonly providers: Map<string, IAuthProvider> = new Map();
+    private readonly providers: Map<string, IAuthenticator> = new Map();
     private readonly fallbackChains: Map<string, string[]> = new Map();
     private readonly healthCheckCallbacks: ((result: HealthCheckResult) => void)[] = [];
 
@@ -407,7 +407,7 @@ export class HealthCheckManager {
      * Registers a provider for health monitoring
      */
     registerProvider(
-        provider: IAuthProvider,
+        provider: IAuthenticator,
         config: ProviderHealthConfig,
         fallbackProviders?: string[]
     ): void {
@@ -463,7 +463,7 @@ export class HealthCheckManager {
      */
     async executeWithFallback<T>(
         primaryProvider: string,
-        operation: (provider: IAuthProvider) => Promise<T>
+        operation: (provider: IAuthenticator) => Promise<T>
     ): Promise<AuthResult<T>> {
         const providersToTry = [primaryProvider, ...this.getFallbackProviders(primaryProvider)];
 

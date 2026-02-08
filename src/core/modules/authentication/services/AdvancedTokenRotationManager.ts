@@ -9,9 +9,9 @@
  * - Graceful degradation and fallback mechanisms
  */
 
-import { AuthModuleFactory } from '../AuthModule';
+import { createDefaultAuthOrchestrator } from '../factory';
 
-import type { EnterpriseAuthService } from '../enterprise/AuthService';
+import type { AuthOrchestrator } from '../enterprise/AuthOrchestrator';
 import type { IAuthLogger, IAuthMetrics } from '../interfaces/authInterfaces';
 
 export interface TokenRotationStrategy {
@@ -58,24 +58,28 @@ export interface TokenRotationMetrics {
  * security monitoring and performance optimization.
  */
 export class AdvancedTokenRotationManager {
-  private readonly authService: EnterpriseAuthService;
-  private rotationIntervalId: number | null = null;
-  private isActive: boolean = false;
-  private readonly metrics: TokenRotationMetrics;
-  private readonly options: Required<TokenRotationOptions>;
-  private rotationCount: number = 0;
+  private readonly authOrchestrator: AuthOrchestrator;
+  private readonly logger: IAuthLogger;
+  private readonly metrics: IAuthMetrics;
+  private readonly options: TokenRotationOptions;
+  private rotationStrategies: Map<string, TokenRotationStrategy>;
+  private currentStrategy: TokenRotationStrategy;
+  private isRotating: boolean = false;
+  private rotationQueue: Array<() => Promise<void>> = [];
   private lastRotationAttempt: Date | null = null;
 
   constructor(options: TokenRotationOptions = {}) {
-    this.authService = AuthModuleFactory.getInstance();
+    this.authOrchestrator = createDefaultAuthOrchestrator();
+    this.logger = this.authOrchestrator.logger;
+    this.metrics = this.authOrchestrator.metrics;
     this.options = {
-      strategy: options.strategy || 'adaptive',
-      customStrategy: options.customStrategy || this.getDefaultStrategy(),
-      rotationBuffer: options.rotationBuffer || 5 * 60 * 1000, // 5 minutes
-      enableRefreshTokenRotation: options.enableRefreshTokenRotation !== false,
-      enableTokenValidation: options.enableTokenValidation !== false,
-      maxRefreshAttempts: options.maxRefreshAttempts || 3,
-      rotationDelay: options.rotationDelay || 1000 // 1 second
+      strategy: 'adaptive',
+      rotationBuffer: 300000, // 5 minutes
+      enableRefreshTokenRotation: false,
+      enableTokenValidation: true,
+      maxRefreshAttempts: 3,
+      rotationDelay: 1000,
+      ...options
     };
 
     this.metrics = {
