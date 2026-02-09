@@ -20,7 +20,6 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@services/(.*)$': '<rootDir>/src/features/$1',
-        '^@/services/(.*)$': '<rootDir>/src/features/$1',
         '^@core/(.*)$': '<rootDir>/src/core/$1',
         '^@features/(.*)$': '<rootDir>/src/features/$1',
         '^@chat/(.*)$': '<rootDir>/src/features/chat/$1',
@@ -28,6 +27,7 @@ module.exports = {
         '^@auth/(.*)$': '<rootDir>/src/features/auth/$1',
         '^@feed/(.*)$': '<rootDir>/src/features/feed/$1',
         '^@profile/(.*)$': '<rootDir>/src/features/profile/$1',
+        '^@config/(.*)$': '<rootDir>/src/core/modules/authentication/config/$1',
         '^@search/(.*)$': '<rootDir>/src/features/search/$1',
         '^@settings/(.*)$': '<rootDir>/src/features/settings/$1',
         '^@navbar/(.*)$': '<rootDir>/src/features/navbar/$1',

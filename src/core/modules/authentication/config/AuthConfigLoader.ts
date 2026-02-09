@@ -67,13 +67,13 @@ export interface AuthConfigFile {
 export interface ConfigLoaderOptions {
     /** Custom environment (overrides NODE_ENV) */
     environment?: string;
-    
+
     /** Configuration directory path */
     configDir?: string;
-    
+
     /** Custom environment variables */
     customEnv?: Record<string, string | undefined>;
-    
+
     /** Enable environment variable overrides */
     enableEnvOverrides?: boolean;
 }
@@ -83,36 +83,40 @@ export interface ConfigLoaderOptions {
  */
 class FileBasedAuthConfig implements IAuthConfig {
     readonly name = 'FileBasedAuthConfig';
-    
+
     private config: AuthConfigFile;
-    
+
     constructor(config: AuthConfigFile) {
         this.config = config;
     }
-    
+
     get<T>(key: string): T {
         return this.config[key] as T;
     }
-    
+
     set<T>(key: string, value: T): void {
         (this.config as any)[key] = value;
     }
-    
+
     getAll(): Record<string, unknown> {
         return { ...this.config };
     }
-    
+
     validate(): AuthResult<boolean> {
         return { success: true, data: true };
     }
-    
+
     reset(): void {
         // No-op for file-based config
     }
-    
+
     watch(_key: string, _callback: (value: unknown) => void): () => void {
         // No-op for file-based config
-        return () => {};
+        return () => { };
+    }
+
+    updateConfig(newConfig: Partial<AuthConfigFile>): void {
+        this.config = { ...this.config, ...newConfig };
     }
 }
 
@@ -454,3 +458,6 @@ export async function loadAuthConfiguration(environment?: string): Promise<IAuth
     const loader = createAuthConfigLoader({ environment });
     return loader.loadConfiguration();
 }
+
+// Export FileBasedAuthConfig for external use
+export { FileBasedAuthConfig };
