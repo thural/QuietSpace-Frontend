@@ -5,9 +5,9 @@
  * including token validation, refresh, and security.
  */
 
-import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
+import { AuthProviderType } from '../types/auth.domain.types';
 
-import type { IAuthenticator, HealthCheckResult, PerformanceMetrics } from '../interfaces/IAuthenticator';
+import type { HealthCheckResult, IAuthenticator, PerformanceMetrics } from '../interfaces/IAuthenticator';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -268,4 +268,3 @@ export class JwtAuthProvider implements IAuthenticator {
     }
 }
 
-export default JwtAuthProvider;

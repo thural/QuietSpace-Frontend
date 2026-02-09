@@ -67,11 +67,13 @@ export class AdvancedTokenRotationManager {
   private isRotating: boolean = false;
   private rotationQueue: Array<() => Promise<void>> = [];
   private lastRotationAttempt: Date | null = null;
+  private isActive: boolean = false;
+  private rotationIntervalId: NodeJS.Timeout | null = null;
 
   constructor(options: TokenRotationOptions = {}) {
     this.authOrchestrator = createDefaultAuthOrchestrator();
-    this.logger = this.authOrchestrator.logger;
-    this.metrics = this.authOrchestrator.metrics;
+    this.logger = this.authOrchestrator.getLogger;
+    this.metrics = this.authOrchestrator.getMetrics;
     this.options = {
       strategy: 'adaptive',
       rotationBuffer: 300000, // 5 minutes

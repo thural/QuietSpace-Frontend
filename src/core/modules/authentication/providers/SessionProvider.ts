@@ -94,7 +94,7 @@ export class SessionAuthProvider implements IAuthenticator {
 
             // Handle session validation from existing session
             if (credentials.sessionId) {
-                return await this.validateSessionById(credentials.sessionId);
+                return await this.validateSessionById(credentials.sessionId as string);
             }
 
             // Handle session restoration from cookie

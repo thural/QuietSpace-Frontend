@@ -5,23 +5,20 @@
  * interface segregation and service responsibility separation.
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
+import { DefaultAuthConfig } from '../config/DefaultAuthConfig';
 import { AuthOrchestrator } from '../enterprise/AuthOrchestrator';
-import { ProviderManager } from '../enterprise/ProviderManager';
 import { AuthValidator } from '../enterprise/AuthValidator';
+import { ProviderManager } from '../enterprise/ProviderManager';
 import { createDefaultAuthOrchestrator } from '../factory';
 import { ConsoleAuthLogger } from '../loggers/ConsoleAuthLogger';
 import { InMemoryAuthMetrics } from '../metrics/InMemoryAuthMetrics';
 import { LocalAuthRepository } from '../repositories/LocalAuthRepository';
 import { EnterpriseSecurityService } from '../security/EnterpriseSecurityService';
-import { DefaultAuthConfig } from '../config/DefaultAuthConfig';
 
-import type { IAuthenticator } from '../interfaces/IAuthenticator';
-import type { IUserManager } from '../interfaces/IUserManager';
-import type { ITokenManager } from '../interfaces/ITokenManager';
-import type { IProviderManager } from '../interfaces/IProviderManager';
 import type { IAuthValidator } from '../interfaces/IAuthValidator';
+import type { IProviderManager } from '../interfaces/IProviderManager';
 
 describe('Authentication Module SOLID Improvements', () => {
     let providerManager: IProviderManager;

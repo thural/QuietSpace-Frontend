@@ -7,12 +7,12 @@
  * - File system monitoring for configuration changes
  * - Runtime configuration updates
  * - Graceful session handling during config changes
- * - Debounced change detection
  * - Multiple file format support
  */
 
 import type { IAuthConfig } from '../interfaces/authInterfaces';
 import type { AuthResult } from '../types/auth.domain.types';
+import { AuthErrorType } from '../types/auth.domain.types';
 
 /**
  * Configuration change event
@@ -28,7 +28,6 @@ export interface ConfigurationChangeEvent {
  * Configuration watcher options
  */
 export interface ConfigurationWatcherOptions {
-    debounceMs?: number;
     watchInterval?: number;
     ignorePatterns?: string[];
     includePatterns?: string[];
@@ -40,17 +39,23 @@ export interface ConfigurationWatcherOptions {
 export type ConfigurationChangeListener = (event: ConfigurationChangeEvent) => void | Promise<void>;
 
 /**
+ * File watcher interface
+ */
+interface FileWatcher {
+    close(): void;
+}
+
+/**
  * Configuration Watcher Implementation
  */
 export class ConfigurationWatcher {
-    private readonly watchers: Map<string, unknown> = new Map();
+    private readonly watchers: Map<string, FileWatcher> = new Map();
     private readonly listeners: Map<string, ConfigurationChangeListener[]> = new Map();
     private readonly options: ConfigurationWatcherOptions;
     private isWatching = false;
 
     constructor(options: ConfigurationWatcherOptions = {}) {
         this.options = {
-            debounceMs: 300,
             watchInterval: 1000,
             ignorePatterns: [
                 '**/node_modules/**',
@@ -80,7 +85,7 @@ export class ConfigurationWatcher {
                 return {
                     success: false,
                     error: {
-                        type: 'validation_error' as const,
+                        type: AuthErrorType.VALIDATION_ERROR,
                         message: 'Configuration watcher is already running',
                         code: 'WATCHER_ALREADY_RUNNING'
                     }
@@ -102,8 +107,8 @@ export class ConfigurationWatcher {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as const,
-                    message: `Failed to start configuration watcher: ${error.message}`,
+                    type: AuthErrorType.SERVER_ERROR,
+                    message: `Failed to start configuration watcher: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'WATCHER_START_FAILED'
                 }
             };
@@ -119,7 +124,7 @@ export class ConfigurationWatcher {
                 return {
                     success: false,
                     error: {
-                        type: 'validation_error' as const,
+                        type: AuthErrorType.VALIDATION_ERROR,
                         message: 'Configuration watcher is not running',
                         code: 'WATCHER_NOT_RUNNING'
                     }
@@ -129,9 +134,7 @@ export class ConfigurationWatcher {
             // Close all watchers
             this.watchers.forEach(async (watcher, path) => {
                 try {
-                    if (watcher && typeof watcher.close === 'function') {
-                        await watcher.close();
-                    }
+                    await watcher.close();
                 } catch (error) {
                     console.warn(`Failed to close watcher for ${path}:`, error);
                 }
@@ -148,8 +151,8 @@ export class ConfigurationWatcher {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as const,
-                    message: `Failed to stop configuration watcher: ${error.message}`,
+                    type: AuthErrorType.SERVER_ERROR,
+                    message: `Failed to stop configuration watcher: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'WATCHER_STOP_FAILED'
                 }
             };
@@ -200,7 +203,6 @@ export class ConfigurationWatcher {
         try {
             // Check if path exists
             const fs = await import('fs');
-            const path = await import('path');
 
             if (!fs.existsSync(watchPath)) {
                 console.warn(`Configuration path does not exist: ${watchPath}`);
@@ -229,21 +231,18 @@ export class ConfigurationWatcher {
     private async watchDirectory(dirPath: string): Promise<void> {
         const fs = await import('fs');
 
-        // Create debounced change handler
-        const debouncedHandler = this.debounce((event: ConfigurationChangeEvent) => {
-            this.notifyListeners(event);
-        }, this.options.debounceMs);
-
         // Set up polling-based watcher (simplified version without chokidar)
+        let pollInterval: NodeJS.Timeout;
+
         const watcher = {
             close: () => {
                 // Stop polling
-                clearInterval(this.options.watchInterval);
+                clearInterval(pollInterval);
             }
         };
 
         // Start polling for changes
-        const pollInterval = setInterval(async () => {
+        pollInterval = setInterval(async () => {
             try {
                 const files = fs.readdirSync(dirPath);
                 for (const file of files) {
@@ -267,16 +266,13 @@ export class ConfigurationWatcher {
     private async watchFile(filePath: string): Promise<void> {
         const fs = await import('fs');
 
-        // Create debounced change handler
-        const debouncedHandler = this.debounce((event: ConfigurationChangeEvent) => {
-            this.notifyListeners(event);
-        }, this.options.debounceMs);
-
         // Set up polling-based watcher
+        let pollInterval: NodeJS.Timeout;
+
         const watcher = {
             close: () => {
                 // Stop polling
-                clearInterval(this.options.watchInterval);
+                clearInterval(pollInterval);
             }
         };
 
@@ -288,7 +284,7 @@ export class ConfigurationWatcher {
             // File doesn't exist yet
         }
 
-        const pollInterval = setInterval(async () => {
+        pollInterval = setInterval(async () => {
             try {
                 const stats = fs.statSync(filePath);
                 if (stats.mtimeMs > lastModified) {
@@ -320,7 +316,7 @@ export class ConfigurationWatcher {
                 type,
                 filePath,
                 timestamp: new Date(),
-                content
+                ...(content !== undefined && { content })
             };
 
             this.notifyListeners(event);
@@ -349,18 +345,18 @@ export class ConfigurationWatcher {
      */
     private shouldIncludeFile(filePath: string): boolean {
         // Check include patterns
-        const shouldInclude = this.options.includePatterns.some(pattern =>
+        const shouldInclude = this.options.includePatterns?.some(pattern =>
             this.matchPattern(filePath, pattern)
-        );
+        ) ?? true; // If no include patterns, include all files
 
         if (!shouldInclude) {
             return false;
         }
 
         // Check ignore patterns
-        const shouldIgnore = this.options.ignorePatterns.some(pattern =>
+        const shouldIgnore = this.options.ignorePatterns?.some(pattern =>
             this.matchPattern(filePath, pattern)
-        );
+        ) ?? false; // If no ignore patterns, don't ignore any
 
         return !shouldIgnore;
     }
@@ -378,18 +374,6 @@ export class ConfigurationWatcher {
         );
 
         return regex.test(filePath);
-    }
-
-    /**
-     * Creates a debounced function
-     */
-    private debounce<T extends (...args: unknown[]) => unknown>(func: T, wait: number): (...args: Parameters<T>) => void {
-        let timeout: NodeJS.Timeout;
-
-        return (...args: Parameters<T>) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
     }
 }
 
@@ -428,8 +412,8 @@ export class ConfigurationHotReloadManager {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as const,
-                    message: `Failed to start hot reload: ${error.message}`,
+                    type: AuthErrorType.SERVER_ERROR,
+                    message: `Failed to start hot reload: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'HOT_RELOAD_START_FAILED'
                 }
             };

@@ -4,7 +4,9 @@
  * Tests for runtime provider registration, unregistration, and switching
  */
 
-import { AuthModuleFactory } from '../AuthModule';
+import { jest } from '@jest/globals';
+
+import { AuthModuleFactory } from '../';
 import { JwtAuthProvider } from '../providers/JwtAuthProvider';
 import { LDAPAuthProvider } from '../providers/LDAPProvider';
 import { OAuthAuthProvider } from '../providers/OAuthProvider';
@@ -73,7 +75,7 @@ describe('Dynamic Provider Registration', () => {
             const result = await AuthModuleFactory.registerProvider('test-service', provider);
 
             expect(result.success).toBe(false);
-            expect(result.error?.code).toBe('PROVIDER_REGISTRATION_FAILED');
+            expect(result.error?.code).toBe('PROVIDER_INITIALIZATION_FAILED');
         });
     });
 

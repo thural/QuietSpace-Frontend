@@ -9,6 +9,13 @@
 
 import { AuthProviderType, AuthErrorType } from '../types/auth.domain.types';
 
+/**
+ * Import meta interface for Vite environment
+ */
+interface ImportMeta {
+    env?: Record<string, string | undefined>;
+}
+
 import type { IAuthConfig, AuthResult } from '../interfaces/authInterfaces';
 
 /**
@@ -183,8 +190,13 @@ export class EnvironmentAuthConfig implements IAuthConfig {
         }
 
         // Check if we're in browser environment with Vite
-        if (typeof import.meta !== 'undefined' && (import.meta as unknown as Record<string, unknown>).env) {
-            return (import.meta as unknown as Record<string, unknown>).env as Record<string, string | undefined>;
+        if (typeof import.meta !== 'undefined' && import.meta.env) {
+            return import.meta.env as Record<string, string | undefined>;
+        }
+
+        // Fallback for Jest/test environment
+        if (typeof global !== 'undefined' && (global as any).import && (global as any).import.meta) {
+            return (global as any).import.meta.env || {};
         }
 
         // Fallback to empty object
@@ -350,7 +362,18 @@ function getImportMetaEnvProperty(property: string): string | undefined {
         if (env && typeof env === 'object' && env !== null && property in env) {
             return String((env as Record<string, unknown>)[property]);
         }
+        return undefined;
     }
+
+    // Fallback for Jest/test environment
+    if (typeof global !== 'undefined' && (global as any).import && (global as any).import.meta) {
+        const env = (global as any).import.meta.env;
+        if (env && typeof env === 'object' && env !== null && property in env) {
+            return String(env[property]);
+        }
+        return undefined;
+    }
+
     return undefined;
 }
 
@@ -359,8 +382,8 @@ function getImportMetaEnvProperty(property: string): string | undefined {
  */
 export function getCurrentEnvironment(): string {
     const env = typeof process !== 'undefined' && process.env
-        ? process.env.NODE_ENV
+        ? process.env.NODE_ENV || 'development'
         : getImportMetaEnvProperty('MODE') || 'development';
 
-    return env || 'development';
+    return env;
 }

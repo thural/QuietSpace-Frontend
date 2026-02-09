@@ -113,6 +113,25 @@ Object.defineProperty(global, 'crypto', {
     },
 });
 
+// Mock import.meta for Vite environment variables in Jest
+Object.defineProperty(global, 'import', {
+    value: {
+        meta: {
+            env: {
+                MODE: 'test',
+                DEV: false,
+                PROD: false,
+                SSR: false,
+                BASE_URL: '/',
+                PROTOCOL: 'http:',
+                HOST: 'localhost',
+                PORT: '3000',
+            },
+        },
+    },
+    writable: true,
+});
+
 // Load shared test mocks (STOMP / SockJS) so they are available before tests import modules
 try {
     const s = require('./test/setup/stompMocks.js');

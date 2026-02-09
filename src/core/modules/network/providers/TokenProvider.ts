@@ -7,7 +7,7 @@
 
 import type { ITokenProvider } from '../interfaces';
 
-import { useAuthStore } from '../../store/zustand';
+import { useAuthStore } from '../../state-management/zustand';
 
 // DI Container interface for type safety
 interface IDIContainer {

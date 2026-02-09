@@ -19,7 +19,7 @@ import type {
 import type { IAuthenticator } from './IAuthenticator';
 
 // Re-export commonly used types for convenience
-export type { AuthEvent, AuthErrorType, AuthProviderType, AuthCredentials, AuthResult, AuthSession };
+export type { AuthEvent, AuthErrorType, AuthProviderType, AuthCredentials, AuthResult, AuthSession, IAuthenticator };
 
 /**
  * Authentication repository interface

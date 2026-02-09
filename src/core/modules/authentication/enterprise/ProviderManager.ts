@@ -28,6 +28,7 @@ interface ProviderRegistrationData {
     lastHealthCheck?: Date;
     consecutiveFailures: number;
     uptime: number;
+    priority: ProviderPriority;
 }
 
 /**
@@ -64,7 +65,8 @@ export class ProviderManager implements IProviderManager {
             registrationTime: new Date(),
             enabled: options.autoEnable ?? true,
             consecutiveFailures: 0,
-            uptime: 0
+            uptime: 0,
+            priority: options.priority ?? ProviderPriority.NORMAL
         };
 
         if (this.providers.has(provider.name)) {
@@ -110,7 +112,8 @@ export class ProviderManager implements IProviderManager {
             registrationTime: new Date(),
             enabled: options.autoEnable ?? true,
             consecutiveFailures: 0,
-            uptime: 0
+            uptime: 0,
+            priority: options.priority ?? ProviderPriority.NORMAL
         };
 
         if (this.userManagers.has(userManager.name)) {
@@ -153,7 +156,8 @@ export class ProviderManager implements IProviderManager {
             registrationTime: new Date(),
             enabled: options.autoEnable ?? true,
             consecutiveFailures: 0,
-            uptime: 0
+            uptime: 0,
+            priority: options.priority ?? ProviderPriority.NORMAL
         };
 
         if (this.tokenManagers.has(tokenManager.name)) {
@@ -409,7 +413,7 @@ export class ProviderManager implements IProviderManager {
     getAllProvidersHealth(enabledOnly: boolean = false): ProviderHealthStatus[] {
         const healthStatuses: ProviderHealthStatus[] = [];
 
-        for (const [name, registration] of this.providers.entries()) {
+        for (const [name, registration] of Array.from(this.providers.entries())) {
             if (enabledOnly && !registration.enabled) continue;
 
             const health = this.getProviderHealth(name);
@@ -422,117 +426,19 @@ export class ProviderManager implements IProviderManager {
     }
 
     /**
-     * Performs health check on all providers
-     */
-    async performHealthChecks(): Promise<void> {
-        const healthCheckPromises: Promise<void>[] = [];
-
-        for (const [, registration] of this.providers.entries()) {
-            if (!registration.enabled) continue;
-
-            const provider = registration.provider as IAuthenticator;
-            if ('healthCheck' in provider && typeof provider.healthCheck === 'function') {
-                healthCheckPromises.push(
-                    provider.healthCheck().then(result => {
-                        registration.lastHealthCheck = new Date();
-                        if (!result.healthy) {
-                            registration.consecutiveFailures++;
-                        } else {
-                            registration.consecutiveFailures = 0;
-                        }
-                    }).catch(() => {
                         registration.consecutiveFailures++;
-                        registration.lastHealthCheck = new Date();
-                    })
-                );
-            }
+                    } else {
+                        registration.consecutiveFailures = 0;
+                    }
+                }).catch(() => {
+                    registration.consecutiveFailures++;
+                    registration.lastHealthCheck = new Date();
+                })
+            );
         }
-
-        await Promise.allSettled(healthCheckPromises);
     }
 
-    /**
-     * Enables or disables a provider
-     */
-    setProviderEnabled(name: string, enabled: boolean): boolean {
-        const registration = this.providers.get(name);
-        if (!registration) return false;
-
-        registration.enabled = enabled;
-
-        this.logger?.log({
-            type: enabled ? 'provider_enabled' : 'provider_disabled' as any,
-            timestamp: new Date(),
-            details: { providerName: name, enabled }
-        });
-
-        return true;
-    }
-
-    /**
-     * Checks if provider is enabled
-     */
-    isProviderEnabled(name: string): boolean {
-        const registration = this.providers.get(name);
-        return registration?.enabled ?? false;
-    }
-
-    /**
-     * Sets provider priority
-     */
-    setProviderPriority(name: string, priority: ProviderPriority): boolean {
-        const registration = this.providers.get(name);
-        if (!registration) return false;
-
-        registration.options.priority = priority;
-
-        this.logger?.log({
-            type: 'provider_priority_changed' as any,
-            timestamp: new Date(),
-            details: { providerName: name, priority }
-        });
-
-        return true;
-    }
-
-    /**
-     * Gets provider priority
-     */
-    getProviderPriority(name: string): ProviderPriority | undefined {
-        const registration = this.providers.get(name);
-        return registration?.options.priority;
-    }
-
-    /**
-     * Gets providers by priority level
-     */
-    getProvidersByPriority(priority: ProviderPriority, enabledOnly: boolean = false): IAuthenticator[] {
-        const providers: IAuthenticator[] = [];
-
-        for (const [, registration] of this.providers.entries()) {
-            if (enabledOnly && !registration.enabled) continue;
-            if (registration.options.priority === priority) {
-                providers.push(registration.provider as IAuthenticator);
-            }
-        }
-
-        return providers;
-    }
-
-    /**
-     * Gets best available provider based on health and priority
-     */
-    getBestProvider(type?: string): IAuthenticator | undefined {
-        let bestProvider: IAuthenticator | undefined;
-        let bestPriority = ProviderPriority.BACKUP;
-
-        for (const [, registration] of this.providers.entries()) {
-            if (!registration.enabled) continue;
-            if (type && (registration.provider as any).type !== type) continue;
-            if (registration.consecutiveFailures > 0) continue;
-
-            if (registration.options.priority! < bestPriority) {
-                bestPriority = registration.options.priority!;
+    await Promise.allSettled(healthCheckPromises);
                 bestProvider = registration.provider as IAuthenticator;
             }
         }
@@ -558,7 +464,7 @@ export class ProviderManager implements IProviderManager {
         let enabledProviders = 0;
 
         // Count provider types and capabilities
-        for (const registration of this.providers.values()) {
+        for (const registration of Array.from(this.providers.values())) {
             const provider = registration.provider as IAuthenticator;
 
             if (registration.enabled) {
@@ -641,7 +547,7 @@ export class ProviderManager implements IProviderManager {
     async initializeAllProviders(timeout: number = 30000): Promise<void> {
         const initializationPromises: Promise<void>[] = [];
 
-        for (const registration of this.providers.values()) {
+        for (const registration of Array.from(this.providers.values())) {
             const provider = registration.provider as IAuthenticator;
             if ('initialize' in provider && typeof provider.initialize === 'function') {
                 initializationPromises.push(
@@ -666,7 +572,7 @@ export class ProviderManager implements IProviderManager {
 
         const shutdownPromises: Promise<void>[] = [];
 
-        for (const registration of this.providers.values()) {
+        for (const registration of Array.from(this.providers.values())) {
             const provider = registration.provider as IAuthenticator;
             if ('shutdown' in provider && typeof provider.shutdown === 'function') {
                 shutdownPromises.push(
@@ -681,5 +587,123 @@ export class ProviderManager implements IProviderManager {
         }
 
         await Promise.allSettled(shutdownPromises);
+    }
+
+    /**
+     * Performs health check on all providers
+     */
+    async performHealthChecks(): Promise<void> {
+        const healthCheckPromises: Promise<void>[] = [];
+
+        for (const [name, registration] of Array.from(this.providers.entries())) {
+            if (registration.enabled) {
+                healthCheckPromises.push(
+                    Promise.resolve()
+                        .then(async () => {
+                            const result = await this.getProviderHealth(name);
+                            if (!result?.health?.healthy) {
+                                // Log health check failure but don't throw
+                                console.warn(`Health check failed for provider ${name}:`, result.health?.message);
+                            }
+                        })
+                        .catch((error: any) => {
+                            // Log health check failure but don't throw
+                            console.warn(`Health check failed for provider ${name}:`, error);
+                        })
+                );
+            }
+        }
+
+        await Promise.allSettled(healthCheckPromises);
+    }
+
+    /**
+     * Enables or disables a provider
+     */
+    setProviderEnabled(name: string, enabled: boolean): boolean {
+        const registration = this.providers.get(name);
+        if (!registration) {
+            return false;
+        }
+
+        registration.enabled = enabled;
+        registration.lastHealthCheck = new Date();
+
+        return true;
+    }
+
+    /**
+     * Checks if provider is enabled
+     */
+    isProviderEnabled(name: string): boolean {
+        const registration = this.providers.get(name);
+        return registration?.enabled ?? false;
+    }
+
+    /**
+     * Sets provider priority
+     */
+    setProviderPriority(name: string, priority: ProviderPriority): boolean {
+        const registration = this.providers.get(name);
+        if (!registration) {
+            return false;
+        }
+
+        registration.priority = priority;
+        return true;
+    }
+
+    /**
+     * Gets provider priority
+     */
+    getProviderPriority(name: string): ProviderPriority | undefined {
+        const registration = this.providers.get(name);
+        return registration?.priority;
+    }
+
+    /**
+     * Gets providers by priority level
+     */
+    getProvidersByPriority(priority: ProviderPriority, enabledOnly: boolean = false): IAuthenticator[] {
+        const providers: IAuthenticator[] = [];
+
+        for (const [name, registration] of Array.from(this.providers.entries())) {
+            if (enabledOnly && !registration.enabled) continue;
+
+            if (registration.priority === priority) {
+                providers.push(registration.provider as IAuthenticator);
+            }
+        }
+
+        return providers;
+    }
+
+    /**
+     * Gets best available provider based on health and priority
+     */
+    getBestProvider(type?: string): IAuthenticator | undefined {
+        let bestProvider: IAuthenticator | undefined;
+        let bestPriority = ProviderPriority.BACKUP;
+        let bestScore = -1;
+
+        for (const [name, registration] of Array.from(this.providers.entries())) {
+            if (!registration.enabled) continue;
+
+            // Filter by type if specified
+            if (type && (registration.provider as IAuthenticator).type !== type) continue;
+
+            // Calculate score based on priority and health
+            const priority = registration.priority;
+            const healthScore = registration.consecutiveFailures === 0 ? 1 : 0;
+            const score = (ProviderPriority.BACKUP - priority) * 10 + healthScore * 5;
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestPriority = priority;
+                bestProvider = registration.provider as IAuthenticator;
+            }
+        }
+
+        return bestProvider;
     }
 }

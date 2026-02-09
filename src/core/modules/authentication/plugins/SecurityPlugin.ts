@@ -8,6 +8,7 @@
 import { EnterpriseSecurityService } from '../security/EnterpriseSecurityService';
 
 import type { AuthEvent, IAuthPlugin, IAuthService } from '../interfaces/authInterfaces';
+import { AuthEventType } from '../types/auth.domain.types';
 
 export class SecurityPlugin implements IAuthPlugin {
     readonly name = 'security';
@@ -41,18 +42,28 @@ export class SecurityPlugin implements IAuthPlugin {
     async execute(hook: string, ...args: unknown[]): Promise<unknown> {
         switch (hook) {
             case 'pre_authenticate':
-                return this.preAuthenticateCheck(args[0], args[1]);
+                return this.preAuthenticateCheck(
+                    args[0] as string,
+                    args[1] as any
+                );
 
             case 'auth_failure':
-                this.handleAuthFailure(args[0], args[1], args[2]);
+                this.handleAuthFailure(
+                    args[0] as string,
+                    args[1] as string,
+                    args[2] as any
+                );
                 break;
 
             case 'auth_success':
-                this.handleAuthSuccess(args[0], args[1]);
+                this.handleAuthSuccess(
+                    args[0] as string,
+                    args[1] as any
+                );
                 break;
 
             case 'suspicious_activity':
-                await this.handleSuspiciousActivity(args[0]);
+                await this.handleSuspiciousActivity(args[0] as AuthEvent);
                 break;
 
             default:
@@ -65,7 +76,7 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     private preAuthenticateCheck(providerName: string, credentials: unknown): { allowed: boolean; reason?: string } {
         const typedCredentials = credentials as Record<string, unknown>;
-        const userId = typedCredentials.email || typedCredentials.username || 'anonymous';
+        const userId = (typedCredentials.email || typedCredentials.username || 'anonymous') as string;
 
         // Check plugin-level blocking first
         const pluginAttempts = this.pluginFailedAttempts.get(userId) || 0;
@@ -99,8 +110,8 @@ export class SecurityPlugin implements IAuthPlugin {
         if (this.enterpriseSecurityService) {
             try {
                 // Create a mock event for the enterprise service to analyze
-                const mockEvent = {
-                    type: 'auth_attempt' as const,
+                const mockEvent: AuthEvent = {
+                    type: AuthEventType.LOGIN_ATTEMPT,
                     timestamp: new Date(),
                     userId,
                     details: {
@@ -140,7 +151,7 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     private handleAuthFailure(providerName: string, credentials: unknown, error: unknown): void {
         const typedCredentials = credentials as Record<string, unknown>;
-        const userId = typedCredentials.email || typedCredentials.username || 'anonymous';
+        const userId = (typedCredentials.email || typedCredentials.username || 'anonymous') as string;
 
         // Track plugin-level failures
         const currentAttempts = (this.pluginFailedAttempts.get(userId) || 0) + 1;
@@ -165,8 +176,8 @@ export class SecurityPlugin implements IAuthPlugin {
         if (this.enterpriseSecurityService) {
             try {
                 // Create security event for enterprise service
-                const securityEvent = {
-                    type: 'auth_failure' as const,
+                const securityEvent: AuthEvent = {
+                    type: AuthEventType.LOGIN_FAILURE,
                     timestamp: new Date(),
                     userId,
                     details: {
@@ -191,7 +202,7 @@ export class SecurityPlugin implements IAuthPlugin {
      */
     private handleAuthSuccess(providerName: string, session: unknown): void {
         const typedSession = session as Record<string, unknown>;
-        const userId = (typedSession.user as Record<string, unknown>)?.id || typedSession.email || 'anonymous';
+        const userId = ((typedSession.user as Record<string, unknown>)?.id || typedSession.email || 'anonymous') as string;
 
         // Reset plugin-level counters
         this.pluginFailedAttempts.delete(userId);
@@ -201,8 +212,8 @@ export class SecurityPlugin implements IAuthPlugin {
         // Notify enterprise service of successful auth for risk scoring
         if (this.enterpriseSecurityService) {
             try {
-                const successEvent = {
-                    type: 'auth_success' as const,
+                const successEvent: AuthEvent = {
+                    type: AuthEventType.LOGIN_SUCCESS,
                     timestamp: new Date(),
                     userId,
                     details: {

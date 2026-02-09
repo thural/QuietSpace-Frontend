@@ -67,85 +67,52 @@ export interface AuthConfigFile {
 export interface ConfigLoaderOptions {
     /** Custom environment (overrides NODE_ENV) */
     environment?: string;
-    /** Custom config directory path */
+    
+    /** Configuration directory path */
     configDir?: string;
+    
     /** Custom environment variables */
     customEnv?: Record<string, string | undefined>;
-    /** Enable/disable environment variable overrides */
+    
+    /** Enable environment variable overrides */
     enableEnvOverrides?: boolean;
-    /** Enable/disable file watching */
-    enableWatching?: boolean;
 }
 
 /**
- * File-based Authentication Configuration
- *
- * Implements IAuthConfig interface for file-loaded configuration
- * with support for watching and dynamic updates.
+ * File-based authentication configuration
  */
-export class FileBasedAuthConfig implements IAuthConfig {
+class FileBasedAuthConfig implements IAuthConfig {
     readonly name = 'FileBasedAuthConfig';
-
+    
     private config: AuthConfigFile;
-    private readonly watchers: Map<string, ((value: unknown) => void)[]> = new Map();
-
+    
     constructor(config: AuthConfigFile) {
-        this.config = { ...config };
+        this.config = config;
     }
-
+    
     get<T>(key: string): T {
-        return this.config[key as keyof AuthConfigFile] as T;
+        return this.config[key] as T;
     }
-
+    
     set<T>(key: string, value: T): void {
-        this.config[key as keyof AuthConfigFile] = value;
-        this.notifyWatchers(key, value);
+        (this.config as any)[key] = value;
     }
-
+    
     getAll(): Record<string, unknown> {
         return { ...this.config };
     }
-
+    
     validate(): AuthResult<boolean> {
         return { success: true, data: true };
     }
-
+    
     reset(): void {
-        // File-based config doesn't have a concept of "defaults" to reset to
+        // No-op for file-based config
     }
-
-    watch(key: string, callback: (value: unknown) => void): () => void {
-        if (!this.watchers.has(key)) {
-            this.watchers.set(key, []);
-        }
-
-        const keyWatchers = this.watchers.get(key)!;
-        keyWatchers.push(callback);
-
-        return () => {
-            const index = keyWatchers.indexOf(callback);
-            if (index > -1) {
-                keyWatchers.splice(index, 1);
-            }
-        };
-    }
-
-    updateConfig(newConfig: Partial<AuthConfigFile>): void {
-        this.config = { ...this.config, ...newConfig };
-        this.notifyAllWatchers();
-    }
-
-    private notifyWatchers(key: string, value: unknown): void {
-        const keyWatchers = this.watchers.get(key);
-        if (keyWatchers) {
-            keyWatchers.forEach(callback => callback(value));
-        }
-    }
-
-    private notifyAllWatchers(): void {
-        Object.entries(this.config).forEach(([key, value]) => {
-            this.notifyWatchers(key, value);
-        });
+    
+    watch(_key: string, _callback: (value: unknown) => void): () => void {
+        // No-op for file-based config
+        return () => {};
     }
 }
 
@@ -450,12 +417,16 @@ export class AuthConfigLoader {
     }
 
     private parseBoolean(value: string | undefined): boolean | undefined {
-        if (value === undefined) return undefined;
+        if (value === undefined) {
+            return undefined;
+        }
         return value.toLowerCase() === 'true';
     }
 
     private parseNumber(value: string | undefined): number | undefined {
-        if (value === undefined) return undefined;
+        if (value === undefined) {
+            return undefined;
+        }
         const parsed = parseInt(value, 10);
         return isNaN(parsed) ? undefined : parsed;
     }

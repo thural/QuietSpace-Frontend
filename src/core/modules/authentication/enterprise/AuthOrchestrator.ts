@@ -13,6 +13,7 @@ import type { IAuthLogger } from '../interfaces/authInterfaces';
 import type { IAuthMetrics } from '../interfaces/authInterfaces';
 import type { IAuthSecurityService } from '../interfaces/authInterfaces';
 import type { IAuthConfig } from '../interfaces/authInterfaces';
+import { AuthProviderType } from '../types/auth.domain.types';
 import type { IAuthenticator } from '../interfaces/IAuthenticator';
 import type { IUserManager } from '../interfaces/IUserManager';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
@@ -36,6 +37,20 @@ export class AuthOrchestrator implements IAuthService {
         private readonly security: IAuthSecurityService,
         private readonly config: IAuthConfig
     ) { }
+
+    /**
+     * Gets the logger instance
+     */
+    get getLogger(): IAuthLogger {
+        return this.logger;
+    }
+
+    /**
+     * Gets the metrics instance
+     */
+    get getMetrics(): IAuthMetrics {
+        return this.metrics;
+    }
 
     /**
      * Registers authentication provider
@@ -133,7 +148,7 @@ export class AuthOrchestrator implements IAuthService {
                 this.logger.log({
                     type: 'login_success' as any,
                     timestamp: new Date(),
-                    providerType: providerName as string,
+                    providerType: providerName as AuthProviderType,
                     details: {
                         userId: authResult.data.user.id,
                         sessionId: authResult.data.token.accessToken.substring(0, 10) + '...',
@@ -158,10 +173,12 @@ export class AuthOrchestrator implements IAuthService {
                 this.logger.log({
                     type: 'login_failure' as any,
                     timestamp: new Date(),
-                    providerType: providerName as string,
-                    error: authResult.error?.type,
-                    details: authResult.error?.details,
-                    requestId
+                    providerType: providerName as AuthProviderType,
+                    ...(authResult.error && { error: authResult.error.type }),
+                    details: {
+                        ...authResult.error?.details,
+                        requestId
+                    }
                 });
 
                 // Record metrics
@@ -169,7 +186,11 @@ export class AuthOrchestrator implements IAuthService {
 
                 return {
                     success: false,
-                    error: authResult.error,
+                    error: authResult.error || {
+                        type: 'UNKNOWN_ERROR' as any,
+                        message: 'Authentication failed',
+                        code: 'AUTH_FAILED'
+                    },
                     metadata: {
                         timestamp: new Date(),
                         duration: Date.now() - startTime,
@@ -273,7 +294,6 @@ export class AuthOrchestrator implements IAuthService {
      */
     getCapabilities(): string[] {
         const providerCapabilities = this.providerManager.listProviders().length > 0 ? ['provider_management'] : [];
-        const validatorCapabilities = this.authValidator.getCapabilities();
 
         return [
             'authentication',
@@ -282,8 +302,7 @@ export class AuthOrchestrator implements IAuthService {
             'security',
             'logging',
             'metrics',
-            ...providerCapabilities,
-            ...validatorCapabilities
+            ...providerCapabilities
         ];
     }
 
@@ -300,11 +319,6 @@ export class AuthOrchestrator implements IAuthService {
                     capabilities: this.getCapabilities()
                 }
             });
-
-            // Initialize validator if it supports initialization
-            if (this.authValidator.initialize) {
-                await this.authValidator.initialize();
-            }
 
             // Initialize all providers that support initialization
             for (const providerName of this.providerManager.listProviders()) {

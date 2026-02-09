@@ -111,7 +111,7 @@ describe('ConfigurationWatcher', () => {
 
     describe('Event Listeners', () => {
         test('should add and remove listeners', () => {
-            const listener = jest.fn();
+            const listener = jest.fn<(event: ConfigurationChangeEvent) => void>();
 
             watcher.addListener('test', listener);
             watcher.removeListener('test', listener);
@@ -121,7 +121,7 @@ describe('ConfigurationWatcher', () => {
         });
 
         test('should notify listeners of events', (done) => {
-            const listener = jest.fn((event: ConfigurationChangeEvent) => {
+            const listener = jest.fn<(event: ConfigurationChangeEvent) => void>((event: ConfigurationChangeEvent) => {
                 expect(event.type).toBe('modified');
                 expect(event.filePath).toBe('/test/file.json');
                 expect(event.content).toBe('{"test": "content"}');
@@ -143,8 +143,8 @@ describe('ConfigurationWatcher', () => {
         });
 
         test('should handle listener errors gracefully', () => {
-            const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-            const errorListener = jest.fn(() => {
+            const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+            const errorListener = jest.fn<(event: ConfigurationChangeEvent) => void>(() => {
                 throw new Error('Listener error');
             });
 
@@ -230,7 +230,7 @@ describe('ConfigurationHotReloadManager', () => {
         });
 
         test('should add and remove reload handlers', () => {
-            const handler = jest.fn();
+            const handler = jest.fn<(newConfig: unknown) => void>();
 
             manager.addReloadHandler('test', handler);
             manager.removeReloadHandler('test');
@@ -242,7 +242,7 @@ describe('ConfigurationHotReloadManager', () => {
 
     describe('Configuration Change Handling', () => {
         test('should handle JSON configuration changes', (done) => {
-            const handler = jest.fn();
+            const handler = jest.fn<(newConfig: unknown) => void>();
             manager.addReloadHandler('development', handler);
 
             const event: ConfigurationChangeEvent = {
@@ -274,7 +274,7 @@ describe('ConfigurationHotReloadManager', () => {
         });
 
         test('should handle invalid JSON gracefully', (done) => {
-            const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+            const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
 
             const event: ConfigurationChangeEvent = {
                 type: 'modified',
@@ -296,7 +296,7 @@ describe('ConfigurationHotReloadManager', () => {
 
     describe('Integration', () => {
         test('should handle full configuration reload', async () => {
-            const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+            const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
 
             const event: ConfigurationChangeEvent = {
                 type: 'modified',

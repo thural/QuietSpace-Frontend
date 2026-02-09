@@ -5,12 +5,13 @@
  * and security contexts following Single Responsibility Principle.
  */
 
-import { AuthErrorType } from '../types/auth.domain.types';
+import { AuthErrorType, AuthCredentials } from '../types/auth.domain.types';
 
-import type { IAuthValidator, SecurityContext, ValidationResult } from '../interfaces/IAuthValidator';
+import type { IAuthValidator, SecurityContext, ValidationResult, ValidationRule, ValidationRuleGroup, AsyncValidationOptions } from '../interfaces/IAuthValidator';
 import type { IAuthSecurityService } from '../interfaces/authInterfaces';
 import type { IAuthConfig } from '../interfaces/authInterfaces';
 import type { IAuthLogger } from '../interfaces/authInterfaces';
+import type { AuthEvent } from '../types/auth.domain.types';
 
 /**
  * Authentication validator implementation
@@ -24,9 +25,12 @@ export class AuthValidator implements IAuthValidator {
     readonly rules: Record<string, unknown> = {};
 
     private readonly validationRules = new Map<string, {
-        rule: (data: unknown, context?: SecurityContext) => ValidationResult;
+        rule: (data: unknown, context?: SecurityContext) => Promise<ValidationResult>;
         priority: number;
+        enabled: boolean;
     }>();
+
+    private readonly validationRuleGroups = new Map<string, ValidationRuleGroup>();
 
     private statistics = {
         totalValidations: 0,
@@ -361,7 +365,7 @@ export class AuthValidator implements IAuthValidator {
                 return this.createValidationResult(false, errors, [], startTime, rulesApplied);
             }
 
-            const eventData = event as Record<string, unknown>;
+            const eventData = event as unknown as Record<string, unknown>;
 
             // Required fields validation
             if (!eventData.type) {
@@ -404,16 +408,32 @@ export class AuthValidator implements IAuthValidator {
     }
 
     /**
-     * Adds custom validation rule
+     * Adds validation rule with enhanced options
      */
-    addRule(name: string, rule: (data: unknown, context?: SecurityContext) => ValidationResult, priority: number = 0): void {
-        this.validationRules.set(name, { rule, priority });
-        this.rules[name] = { priority };
+    addValidationRule(rule: ValidationRule): void {
+        this.validationRules.set(rule.name, {
+            rule: rule.validate,
+            priority: rule.priority,
+            enabled: rule.enabled
+        });
+        this.rules[rule.name] = { priority: rule.priority, enabled: rule.enabled };
 
         this.logger?.log({
             type: 'validation_rule_added' as any,
             timestamp: new Date(),
-            details: { ruleName: name, priority }
+            details: { ruleName: rule.name, priority: rule.priority, enabled: rule.enabled }
+        });
+    }
+
+    /**
+     * Adds custom validation rule (legacy compatibility)
+     */
+    addRule(name: string, rule: (data: unknown, context?: SecurityContext) => ValidationResult, priority: number = 0): void {
+        this.addValidationRule({
+            name,
+            priority,
+            enabled: true,
+            validate: async (data: unknown, context?: SecurityContext) => rule(data, context)
         });
     }
 
@@ -435,37 +455,49 @@ export class AuthValidator implements IAuthValidator {
     }
 
     /**
-     * Gets validation rule
+     * Creates validation rule group for composition
      */
-    getRule(name: string): ((data: unknown, context?: SecurityContext) => ValidationResult) | undefined {
-        return this.validationRules.get(name)?.rule;
+    createRuleGroup(group: ValidationRuleGroup): void {
+        this.validationRuleGroups.set(group.name, group);
+
+        this.logger?.log({
+            type: 'validation_rule_group_created' as any,
+            timestamp: new Date(),
+            details: { groupName: group.name, ruleCount: group.rules.length }
+        });
     }
 
     /**
-     * Lists all validation rule names
+     * Removes validation rule group
      */
-    listRules(): string[] {
-        return Array.from(this.validationRules.keys());
-    }
-
-    /**
-     * Validates data against specific rule
-     */
-    validateWithRule(ruleName: string, data: unknown, context?: SecurityContext): ValidationResult {
-        const rule = this.validationRules.get(ruleName);
-        if (!rule) {
-            return this.createValidationResult(false, [{
-                type: AuthErrorType.VALIDATION_ERROR,
-                message: `Validation rule '${ruleName}' not found`,
-                code: 'RULE_NOT_FOUND'
-            }], [], Date.now(), []);
+    removeRuleGroup(name: string): boolean {
+        const removed = this.validationRuleGroups.delete(name);
+        if (removed) {
+            this.logger?.log({
+                type: 'validation_rule_group_removed' as any,
+                timestamp: new Date(),
+                details: { groupName: name }
+            });
         }
+        return removed;
+    }
 
-        // Update rule usage statistics
-        const count = this.statistics.ruleUsage.get(ruleName) || 0;
-        this.statistics.ruleUsage.set(ruleName, count + 1);
+    /**
+     * Gets validation rule group
+     */
+    getRuleGroup(name: string): ValidationRuleGroup | undefined {
+        return this.validationRuleGroups.get(name);
+    }
 
-        return rule.rule(data, context);
+    /**
+     * Lists all rule group names
+     */
+    listRuleGroups(enabledOnly?: boolean): string[] {
+        const groups = Array.from(this.validationRuleGroups.keys());
+        if (enabledOnly) {
+            return groups.filter(name => this.validationRuleGroups.get(name)?.enabled);
+        }
+        return groups;
     }
 
     /**
@@ -479,6 +511,319 @@ export class AuthValidator implements IAuthValidator {
             timestamp: new Date(),
             details: { configKeys: Object.keys(config) }
         });
+    }
+
+    /**
+     * Gets validation rule
+     */
+    getRule(name: string): ValidationRule | undefined {
+        const rule = this.validationRules.get(name);
+        if (!rule) return undefined;
+
+        return {
+            name,
+            priority: rule.priority || 0,
+            enabled: rule.enabled,
+            validate: async (data: unknown, context?: SecurityContext) => rule.rule(data, context)
+        };
+    }
+
+    /**
+     * Lists all validation rule names
+     */
+    listRules(enabledOnly?: boolean): string[] {
+        const rules = Array.from(this.validationRules.keys());
+        if (enabledOnly) {
+            return rules.filter(name => this.validationRules.get(name)?.enabled);
+        }
+        return rules;
+    }
+
+    /**
+     * Enables or disables validation rule
+     */
+    setRuleEnabled(name: string, enabled: boolean): boolean {
+        const rule = this.validationRules.get(name);
+        if (rule) {
+            rule.enabled = enabled;
+            this.logger?.log({
+                type: 'validation_rule_enabled_changed' as any,
+                timestamp: new Date(),
+                details: { ruleName: name, enabled }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if validation rule is enabled
+     */
+    isRuleEnabled(name: string): boolean {
+        const rule = this.validationRules.get(name);
+        return rule?.enabled ?? false;
+    }
+
+    /**
+     * Sets validation rule priority
+     */
+    setRulePriority(name: string, priority: number): boolean {
+        const rule = this.validationRules.get(name);
+        if (rule) {
+            rule.priority = priority;
+            this.logger?.log({
+                type: 'validation_rule_priority_changed' as any,
+                timestamp: new Date(),
+                details: { ruleName: name, priority }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets validation rule priority
+     */
+    getRulePriority(name: string): number | undefined {
+        const rule = this.validationRules.get(name);
+        return rule?.priority;
+    }
+
+    /**
+     * Validates data using rule group
+     */
+    async validateWithRuleGroup(groupName: string, data: unknown, context?: SecurityContext, _options?: AsyncValidationOptions): Promise<ValidationResult> {
+        const group = this.validationRuleGroups.get(groupName);
+        if (!group) {
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.VALIDATION_ERROR,
+                message: `Validation rule group '${groupName}' not found`,
+                code: 'RULE_GROUP_NOT_FOUND'
+            }], [], Date.now(), []);
+        }
+
+        if (!group.enabled) {
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.VALIDATION_ERROR,
+                message: `Validation rule group '${groupName}' is disabled`,
+                code: 'RULE_GROUP_DISABLED'
+            }], [], Date.now(), []);
+        }
+
+        const startTime = Date.now();
+        const errors: Array<{ type: AuthErrorType; message: string; field?: string; code?: string }> = [];
+        const warnings: Array<{ type: string; message: string; severity: 'low' | 'medium' | 'high' }> = [];
+        const rulesApplied: string[] = [];
+
+        try {
+            switch (group.executionMode) {
+                case 'all':
+                    for (const rule of group.rules) {
+                        if (rule.enabled) {
+                            const result = await rule.validate(data, context);
+                            if (!result.isValid && result.errors) {
+                                errors.push(...result.errors);
+                            }
+                            if (result.warnings) {
+                                warnings.push(...result.warnings);
+                            }
+                            rulesApplied.push(rule.name);
+                        }
+                    }
+                    break;
+                case 'any':
+                    let anyPassed = false;
+                    for (const rule of group.rules) {
+                        if (rule.enabled) {
+                            const result = await rule.validate(data, context);
+                            if (result.isValid) {
+                                anyPassed = true;
+                                if (result.warnings) {
+                                    warnings.push(...result.warnings);
+                                }
+                                rulesApplied.push(rule.name);
+                                break;
+                            }
+                            if (result.errors) {
+                                errors.push(...result.errors);
+                            }
+                            rulesApplied.push(rule.name);
+                        }
+                    }
+                    if (!anyPassed && group.rules.length > 0) {
+                        errors.push({
+                            type: AuthErrorType.VALIDATION_ERROR,
+                            message: 'No rule in group passed validation',
+                            code: 'GROUP_VALIDATION_FAILED'
+                        });
+                    }
+                    break;
+                case 'first':
+                    let firstPassed = false;
+                    for (const rule of group.rules) {
+                        if (rule.enabled) {
+                            const result = await rule.validate(data, context);
+                            rulesApplied.push(rule.name);
+                            if (result.isValid) {
+                                firstPassed = true;
+                                if (result.warnings) {
+                                    warnings.push(...result.warnings);
+                                }
+                                break;
+                            }
+                            if (result.errors) {
+                                errors.push(...result.errors);
+                                break;
+                            }
+                        }
+                    }
+                    if (!firstPassed && group.rules.length > 0) {
+                        errors.push({
+                            type: AuthErrorType.VALIDATION_ERROR,
+                            message: 'First rule in group failed validation',
+                            code: 'FIRST_RULE_FAILED'
+                        });
+                    }
+                    break;
+            }
+
+            return this.createValidationResult(errors.length === 0, errors, warnings, startTime, rulesApplied);
+
+        } catch (error) {
+            this.logger?.logError(error as Error, { operation: 'validateWithRuleGroup', groupName });
+
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.SERVER_ERROR,
+                message: 'Rule group validation failed due to server error',
+                code: 'RULE_GROUP_VALIDATION_SERVER_ERROR'
+            }], [], startTime, rulesApplied);
+        }
+    }
+
+    /**
+     * Validates security context asynchronously
+     */
+    async validateSecurityContextAsync(context: SecurityContext, _options?: AsyncValidationOptions): Promise<ValidationResult> {
+        const startTime = Date.now();
+        const errors: Array<{ type: AuthErrorType; message: string; field?: string; code?: string }> = [];
+        const rulesApplied: string[] = [];
+
+        try {
+            // Required fields validation
+            if (!context.timestamp) {
+                errors.push({
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'Security context timestamp is required',
+                    code: 'MISSING_TIMESTAMP'
+                });
+            }
+
+            // Timestamp validation (not too old)
+            const maxAge = 5 * 60 * 1000; // 5 minutes
+            if (context.timestamp && Date.now() - context.timestamp.getTime() > maxAge) {
+                errors.push({
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'Security context timestamp is too old',
+                    code: 'TIMESTAMP_TOO_OLD'
+                });
+            }
+
+            rulesApplied.push('security_context_validation');
+
+            return this.createValidationResult(errors.length === 0, errors, [], startTime, rulesApplied);
+
+        } catch (error) {
+            this.logger?.logError(error as Error, { operation: 'validateSecurityContextAsync' });
+
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.SERVER_ERROR,
+                message: 'Security context validation failed due to server error',
+                code: 'SECURITY_CONTEXT_VALIDATION_SERVER_ERROR'
+            }], [], startTime, rulesApplied);
+        }
+    }
+
+    /**
+     * Validates authentication event asynchronously
+     */
+    async validateAuthEventAsync(event: AuthEvent, _options?: AsyncValidationOptions): Promise<ValidationResult> {
+        const startTime = Date.now();
+        const errors: Array<{ type: AuthErrorType; message: string; field?: string; code?: string }> = [];
+        const rulesApplied: string[] = [];
+
+        try {
+            // Type validation
+            if (!event || typeof event !== 'object') {
+                errors.push({
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'Auth event must be an object',
+                    code: 'INVALID_EVENT_TYPE'
+                });
+                return this.createValidationResult(false, errors, [], startTime, rulesApplied);
+            }
+
+            const eventData = event as unknown as Record<string, unknown>;
+
+            // Required fields validation
+            if (!eventData.type) {
+                errors.push({
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'Event type is required',
+                    field: 'type',
+                    code: 'MISSING_EVENT_TYPE'
+                });
+            }
+
+            if (!eventData.timestamp) {
+                errors.push({
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'Event timestamp is required',
+                    field: 'timestamp',
+                    code: 'MISSING_EVENT_TIMESTAMP'
+                });
+            }
+
+            rulesApplied.push('event_structure_validation');
+
+            return this.createValidationResult(errors.length === 0, errors, [], startTime, rulesApplied);
+
+        } catch (error) {
+            this.logger?.logError(error as Error, { operation: 'validateAuthEventAsync' });
+
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.SERVER_ERROR,
+                message: 'Event validation failed due to server error',
+                code: 'EVENT_VALIDATION_SERVER_ERROR'
+            }], [], startTime, rulesApplied);
+        }
+    }
+
+    /**
+     * Validates data against specific rule
+     */
+    async validateWithRule(ruleName: string, data: unknown, context?: SecurityContext, _options?: AsyncValidationOptions): Promise<ValidationResult> {
+        const rule = this.validationRules.get(ruleName);
+        if (!rule) {
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.VALIDATION_ERROR,
+                message: `Validation rule '${ruleName}' not found`,
+                code: 'RULE_NOT_FOUND'
+            }], [], Date.now(), []);
+        }
+
+        if (!rule.enabled) {
+            return this.createValidationResult(false, [{
+                type: AuthErrorType.VALIDATION_ERROR,
+                message: `Validation rule '${ruleName}' is disabled`,
+                code: 'RULE_DISABLED'
+            }], [], Date.now(), []);
+        }
+
+        // Update rule usage statistics
+        const count = this.statistics.ruleUsage.get(ruleName) || 0;
+        this.statistics.ruleUsage.set(ruleName, count + 1);
+
+        return rule.rule(data, context);
     }
 
     /**
@@ -506,6 +851,14 @@ export class AuthValidator implements IAuthValidator {
         averageDuration: number;
         ruleUsage: Record<string, number>;
         errorTypes: Record<string, number>;
+        asyncValidations: number;
+        batchValidations: number;
+        ruleGroupUsage: Record<string, number>;
+        performanceByRule: Record<string, {
+            averageDuration: number;
+            successRate: number;
+            usageCount: number;
+        }>;
     } {
         const successRate = this.statistics.totalValidations > 0
             ? this.statistics.successCount / this.statistics.totalValidations
@@ -520,7 +873,11 @@ export class AuthValidator implements IAuthValidator {
             successRate,
             averageDuration,
             ruleUsage: Object.fromEntries(this.statistics.ruleUsage),
-            errorTypes: Object.fromEntries(this.statistics.errorTypes)
+            errorTypes: Object.fromEntries(this.statistics.errorTypes),
+            asyncValidations: 0,
+            batchValidations: 0,
+            ruleGroupUsage: {},
+            performanceByRule: {} as Record<string, { averageDuration: number; successRate: number; usageCount: number; }>
         };
     }
 
@@ -701,4 +1058,57 @@ export class AuthValidator implements IAuthValidator {
 
         return result;
     }
+
+    /**
+     * Validates user credentials asynchronously
+     */
+    async validateCredentialsAsync(credentials: AuthCredentials, context?: SecurityContext, options?: AsyncValidationOptions): Promise<ValidationResult> {
+        return this.validateCredentials(credentials, context);
+    }
+
+    /**
+     * Validates authentication token asynchronously
+     */
+    async validateTokenAsync(token: string, context?: SecurityContext, options?: AsyncValidationOptions): Promise<ValidationResult> {
+        return this.validateToken(token, context);
+    }
+
+    /**
+     * Validates user data asynchronously
+     */
+    async validateUserAsync(user: unknown, context?: SecurityContext, options?: AsyncValidationOptions): Promise<ValidationResult> {
+        return this.validateUser(user, context);
+    }
+
+    /**
+     * Validates multiple data items in batch
+     */
+    async validateBatch(items: Array<{
+        type: 'credentials' | 'token' | 'user' | 'event' | 'context';
+        data: unknown;
+    }>, _context?: SecurityContext, _options?: AsyncValidationOptions): Promise<ValidationResult[]> {
+        return items.map(item => {
+            switch (item.type) {
+                case 'credentials': return this.validateCredentials(item.data as AuthCredentials, _context);
+                case 'token': return this.validateToken(item.data as string, _context);
+                case 'user': return this.validateUser(item.data, _context);
+                case 'event': return this.validateAuthEvent(item.data as AuthEvent);
+                case 'context': {
+                    const contextResult = this.validateSecurityContext(item.data as SecurityContext);
+                    return contextResult.success
+                        ? this.createValidationResult(true, [], [], Date.now(), ['context_validation'])
+                        : this.createValidationResult(false, [{
+                            type: AuthErrorType.VALIDATION_ERROR,
+                            message: contextResult.error?.message || 'Security context validation failed',
+                            code: 'CONTEXT_VALIDATION_FAILED'
+                        }], [], Date.now(), ['context_validation']);
+                }
+                default: return this.createValidationResult(false, [{
+                    type: AuthErrorType.VALIDATION_ERROR,
+                    message: 'Unknown item type'
+                }], [], Date.now(), []);
+            }
+        });
+    }
+
 }
