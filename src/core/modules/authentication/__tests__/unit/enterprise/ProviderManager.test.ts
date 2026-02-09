@@ -4,7 +4,6 @@
  * Tests for enhanced ProviderManager implementation including:
  * - Health monitoring capabilities
  * - Priority management
- * - Provider lifecycle management
  * - Enhanced statistics and metrics
  */
 

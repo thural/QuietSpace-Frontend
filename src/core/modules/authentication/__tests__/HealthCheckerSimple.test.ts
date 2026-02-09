@@ -16,7 +16,7 @@ import { AuthResult } from '../types/auth.domain.types';
 
 import type {
     ProviderHealthConfig
-} from '../health/HealthChecker';
+} from '../../health/HealthChecker';
 import type { IAuthenticator } from '../interfaces/authInterfaces';
 
 

@@ -1,3 +1,9 @@
+/**
+ * End-to-End Authentication Flow Tests
+ */
+
+import { jest } from '@jest/globals';
+
 import {
     AuthProviderType,
     AuthCredentials,
