@@ -84,11 +84,17 @@ export class TOTPService implements ITOTPService {
                 this.statistics.failedVerifications++;
             }
 
-            return {
+            const result: TOTPVerificationResult = {
                 valid: isValid,
-                remainingTime,
-                currentCode: process.env.NODE_ENV === 'test' ? this.generateMockTOTP(secret) : undefined
+                remainingTime
             };
+
+            // Only include currentCode in test environment
+            if (process.env.NODE_ENV === 'test') {
+                result.currentCode = this.generateMockTOTP(secret);
+            }
+
+            return result;
         } catch (error) {
             this.statistics.failedVerifications++;
             throw new Error(`Failed to verify TOTP code: ${error instanceof Error ? error.message : 'Unknown error'}`);

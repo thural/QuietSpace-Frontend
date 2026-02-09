@@ -53,21 +53,22 @@ export class SecurityPlugin implements IAuthPlugin {
                     args[1] as string,
                     args[2] as any
                 );
-                break;
+                return { handled: true, hook: 'auth_failure' };
 
             case 'auth_success':
                 this.handleAuthSuccess(
                     args[0] as string,
                     args[1] as any
                 );
-                break;
+                return { handled: true, hook: 'auth_success' };
 
             case 'suspicious_activity':
                 await this.handleSuspiciousActivity(args[0] as AuthEvent);
-                break;
+                return { handled: true, hook: 'suspicious_activity' };
 
             default:
                 console.log(`[SecurityPlugin] Unknown hook: ${hook}`);
+                return { handled: false, hook, message: 'Unknown hook' };
         }
     }
 
@@ -302,12 +303,34 @@ export class SecurityPlugin implements IAuthPlugin {
             }
         }
 
-        return {
+        const result: {
+            pluginStats: {
+                failedAttempts: Record<string, number>;
+                totalFailedAttempts: number;
+            };
+            integrationStatus: 'full' | 'partial' | 'plugin_only';
+            enterpriseStats?: {
+                blockedIPs: string[];
+                rateLimitEntries: number;
+                totalBlockedIPs: number;
+            };
+            authServiceCapabilities?: string[];
+        } = {
             pluginStats,
-            enterpriseStats,
-            integrationStatus,
-            authServiceCapabilities
+            integrationStatus
         };
+
+        // Only add enterpriseStats if it exists
+        if (enterpriseStats) {
+            result.enterpriseStats = enterpriseStats;
+        }
+
+        // Only add authServiceCapabilities if it exists
+        if (authServiceCapabilities) {
+            result.authServiceCapabilities = authServiceCapabilities;
+        }
+
+        return result;
     }
 
     /**

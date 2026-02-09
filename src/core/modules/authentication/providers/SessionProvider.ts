@@ -14,8 +14,7 @@
  */
 
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
-
-import type { IAuthenticator } from '../interfaces/authInterfaces';
+import type { IAuthenticator, HealthCheckResult, PerformanceMetrics } from '../interfaces/IAuthenticator';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -71,13 +70,23 @@ export class SessionAuthProvider implements IAuthenticator {
         maxRetries: 3
     };
 
-    private currentSession?: SessionData;
-    private refreshTimer?: NodeJS.Timeout;
+    private currentSession: SessionData | undefined;
+    private refreshTimer?: NodeJS.Timeout | undefined;
     private readonly storageKey = 'auth_session_data';
-    private syncChannel?: BroadcastChannel;
+    private syncChannel?: BroadcastChannel | null;
+    private initTime?: number;
+    private performanceMetrics = {
+        totalAttempts: 0,
+        successfulAuthentications: 0,
+        failedAuthentications: 0,
+        averageResponseTime: 0,
+        lastAuthentication: undefined as Date | undefined,
+        errorsByType: {} as Record<string, number>
+    };
 
     constructor() {
         this.initializeCrossTabSync();
+        this.initTime = Date.now();
     }
 
     /**
@@ -85,8 +94,6 @@ export class SessionAuthProvider implements IAuthenticator {
      */
     async authenticate(credentials: AuthCredentials): Promise<AuthResult<AuthSession>> {
         try {
-            const startTime = Date.now();
-
             // Handle session creation from login credentials
             if (credentials.email && credentials.password) {
                 return await this.createSession(credentials);
@@ -110,12 +117,13 @@ export class SessionAuthProvider implements IAuthenticator {
                     code: 'SESSION_MISSING_CREDENTIALS'
                 }
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session authentication failed: ${error.message}`,
+                    message: `Session authentication failed: ${errorMessage}`,
                     code: 'SESSION_AUTH_ERROR'
                 }
             };
@@ -149,22 +157,28 @@ export class SessionAuthProvider implements IAuthenticator {
             const sessionResult = await this.createSession(userData);
 
             if (!sessionResult.success) {
-                return {
-                    success: false,
-                    error: sessionResult.error
+                const result: AuthResult<void> = {
+                    success: false
                 };
+
+                if (sessionResult.error) {
+                    result.error = sessionResult.error;
+                }
+
+                return result;
             }
 
             return {
                 success: true,
                 data: undefined
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session registration failed: ${error.message}`,
+                    message: `Session registration failed: ${errorMessage}`,
                     code: 'SESSION_REGISTER_ERROR'
                 }
             };
@@ -187,12 +201,13 @@ export class SessionAuthProvider implements IAuthenticator {
                 success: true,
                 data: undefined
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session activation failed: ${error.message}`,
+                    message: `Session activation failed: ${errorMessage}`,
                     code: 'SESSION_ACTIVATE_ERROR'
                 }
             };
@@ -228,12 +243,13 @@ export class SessionAuthProvider implements IAuthenticator {
                 success: true,
                 data: undefined
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session signout failed: ${error.message}`,
+                    message: `Session signout failed: ${errorMessage}`,
                     code: 'SESSION_SIGNOUT_ERROR'
                 }
             };
@@ -243,7 +259,7 @@ export class SessionAuthProvider implements IAuthenticator {
     /**
      * Refreshes session (extends expiration)
      */
-    async refreshToken(): Promise<AuthResult> {
+    async refreshToken(): Promise<AuthResult<AuthSession>> {
         try {
             if (!this.currentSession) {
                 return {
@@ -256,8 +272,9 @@ export class SessionAuthProvider implements IAuthenticator {
                 };
             }
 
-            // Check if session is still valid
             const now = new Date();
+
+            // Check if session is still valid
             if (now >= this.currentSession.expiresAt) {
                 return {
                     success: false,
@@ -270,7 +287,7 @@ export class SessionAuthProvider implements IAuthenticator {
             }
 
             // Extend session expiration
-            const newExpiresAt = new Date(now.getTime() + this.config.sessionTimeout);
+            const newExpiresAt = new Date(now.getTime() + (this.config.sessionTimeout as number));
             this.currentSession.expiresAt = newExpiresAt;
             this.currentSession.lastAccessed = now;
 
@@ -286,16 +303,37 @@ export class SessionAuthProvider implements IAuthenticator {
             return {
                 success: true,
                 data: {
-                    sessionId: this.currentSession.sessionId,
-                    expiresAt: newExpiresAt
+                    user: {
+                        id: this.currentSession.userId,
+                        email: this.currentSession.email,
+                        roles: this.currentSession.roles,
+                        permissions: this.currentSession.permissions
+                    },
+                    token: {
+                        accessToken: this.currentSession.sessionId,
+                        refreshToken: '',
+                        expiresAt: newExpiresAt,
+                        tokenType: 'Session',
+                        scope: ['session']
+                    },
+                    provider: this.type,
+                    createdAt: this.currentSession.createdAt,
+                    expiresAt: newExpiresAt,
+                    isActive: true,
+                    metadata: {
+                        ipAddress: this.currentSession.ipAddress || 'unknown',
+                        userAgent: this.currentSession.userAgent || 'unknown',
+                        sessionId: this.currentSession.sessionId
+                    }
                 }
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session refresh failed: ${error.message}`,
+                    message: `Session refresh failed: ${errorMessage}`,
                     code: 'SESSION_REFRESH_ERROR'
                 }
             };
@@ -333,12 +371,13 @@ export class SessionAuthProvider implements IAuthenticator {
                 success: true,
                 data: true
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session validation failed: ${error.message}`,
+                    message: `Session validation failed: ${errorMessage}`,
                     code: 'SESSION_VALIDATION_ERROR'
                 }
             };
@@ -389,6 +428,111 @@ export class SessionAuthProvider implements IAuthenticator {
     }
 
     /**
+     * Performs health check on authentication provider
+     */
+    async healthCheck(): Promise<HealthCheckResult> {
+        const startTime = Date.now();
+        const isHealthy = this.currentSession?.isActive || false;
+        const responseTime = Date.now() - startTime;
+
+        return {
+            healthy: isHealthy,
+            timestamp: new Date(),
+            responseTime,
+            message: isHealthy ? 'Session provider is healthy' : 'No active session',
+            metadata: {
+                hasActiveSession: !!this.currentSession,
+                sessionId: this.currentSession?.sessionId,
+                lastAccessed: this.currentSession?.lastAccessed
+            }
+        };
+    }
+
+    /**
+     * Gets performance metrics for authentication provider
+     */
+    getPerformanceMetrics(): PerformanceMetrics {
+        const successRate = this.performanceMetrics.totalAttempts > 0
+            ? (this.performanceMetrics.successfulAuthentications / this.performanceMetrics.totalAttempts) * 100
+            : 0;
+
+        return {
+            totalAttempts: this.performanceMetrics.totalAttempts,
+            successfulAuthentications: this.performanceMetrics.successfulAuthentications,
+            failedAuthentications: this.performanceMetrics.failedAuthentications,
+            averageResponseTime: this.performanceMetrics.averageResponseTime,
+            lastAuthentication: this.performanceMetrics.lastAuthentication || new Date(),
+            errorsByType: this.performanceMetrics.errorsByType,
+            statistics: {
+                successRate,
+                failureRate: 100 - successRate,
+                throughput: this.performanceMetrics.totalAttempts / (this.getUptime() / 60000) // per minute
+            }
+        };
+    }
+
+    /**
+     * Resets performance metrics
+     */
+    resetPerformanceMetrics(): void {
+        this.performanceMetrics = {
+            totalAttempts: 0,
+            successfulAuthentications: 0,
+            failedAuthentications: 0,
+            averageResponseTime: 0,
+            lastAuthentication: undefined,
+            errorsByType: {}
+        };
+    }
+
+    /**
+     * Checks if provider is currently healthy
+     */
+    async isHealthy(): Promise<boolean> {
+        const healthResult = await this.healthCheck();
+        return healthResult.healthy;
+    }
+
+    /**
+     * Gets provider initialization status
+     */
+    isInitialized(): boolean {
+        return !!this.initTime;
+    }
+
+    /**
+     * Gets provider uptime in milliseconds
+     */
+    getUptime(): number {
+        return this.initTime ? Date.now() - this.initTime : 0;
+    }
+
+    /**
+     * Gracefully shuts down provider
+     */
+    async shutdown(): Promise<void> {
+        // Clear session
+        if (this.currentSession) {
+            await this.signout();
+        }
+
+        // Clear timers
+        if (this.refreshTimer) {
+            clearInterval(this.refreshTimer);
+            this.refreshTimer = undefined;
+        }
+
+        // Close broadcast channel
+        if (this.syncChannel) {
+            this.syncChannel.close();
+            this.syncChannel = null;
+        }
+
+        // Reset metrics
+        this.resetPerformanceMetrics();
+    }
+
+    /**
      * Creates new session from user credentials
      */
     private async createSession(credentials: AuthCredentials): Promise<AuthResult<AuthSession>> {
@@ -397,20 +541,29 @@ export class SessionAuthProvider implements IAuthenticator {
             const authResult = await this.authenticateUser(credentials);
 
             if (!authResult.success) {
-                return authResult as AuthResult<AuthSession>;
+                return {
+                    success: false,
+                    error: authResult.error!
+                } as AuthResult<AuthSession>;
             }
+
+            const userData = authResult.data as {
+                userId: string;
+                roles: string[];
+                permissions: string[];
+            };
 
             const now = new Date();
             const sessionId = this.generateSessionId();
-            const expiresAt = new Date(now.getTime() + this.config.sessionTimeout);
+            const expiresAt = new Date(now.getTime() + (this.config.sessionTimeout as number));
 
             // Create session data
             this.currentSession = {
                 sessionId,
-                userId: authResult.data!.userId,
+                userId: userData.userId,
                 email: credentials.email!,
-                roles: authResult.data!.roles,
-                permissions: authResult.data!.permissions,
+                roles: userData.roles,
+                permissions: userData.permissions,
                 createdAt: now,
                 expiresAt,
                 lastAccessed: now,
@@ -442,7 +595,7 @@ export class SessionAuthProvider implements IAuthenticator {
                     permissions: this.currentSession.permissions
                 },
                 token: {
-                    accessToken: sessionId,
+                    accessToken: this.currentSession.sessionId,
                     refreshToken: '',
                     expiresAt,
                     tokenType: 'Session',
@@ -453,22 +606,23 @@ export class SessionAuthProvider implements IAuthenticator {
                 expiresAt,
                 isActive: true,
                 metadata: {
-                    ipAddress: this.currentSession.ipAddress!,
-                    userAgent: this.currentSession.userAgent!,
-                    sessionId
-                } as unknown
+                    ipAddress: this.currentSession.ipAddress || 'unknown',
+                    userAgent: this.currentSession.userAgent || 'unknown',
+                    sessionId: this.currentSession.sessionId
+                }
             };
 
             return {
                 success: true,
                 data: authSession
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session creation failed: ${error.message}`,
+                    message: `Session creation failed: ${errorMessage}`,
                     code: 'SESSION_CREATION_ERROR'
                 }
             };
@@ -486,7 +640,7 @@ export class SessionAuthProvider implements IAuthenticator {
             if (!validationResult.success) {
                 return {
                     success: false,
-                    error: validationResult.error
+                    error: validationResult.error!
                 };
             }
 
@@ -496,7 +650,7 @@ export class SessionAuthProvider implements IAuthenticator {
             this.currentSession = {
                 ...sessionData,
                 lastAccessed: new Date()
-            };
+            } as SessionData;
 
             // Save updated session
             await this.saveSession();
@@ -526,22 +680,23 @@ export class SessionAuthProvider implements IAuthenticator {
                 expiresAt: this.currentSession.expiresAt,
                 isActive: true,
                 metadata: {
-                    ipAddress: this.currentSession.ipAddress!,
-                    userAgent: this.currentSession.userAgent!,
+                    ipAddress: this.currentSession.ipAddress || 'unknown',
+                    userAgent: this.currentSession.userAgent || 'unknown',
                     sessionId: this.currentSession.sessionId
-                } as unknown
+                }
             };
 
             return {
                 success: true,
                 data: authSession
             };
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session validation failed: ${error.message}`,
+                    message: `Session validation failed: ${errorMessage}`,
                     code: 'SESSION_VALIDATION_ERROR'
                 }
             };
@@ -567,12 +722,13 @@ export class SessionAuthProvider implements IAuthenticator {
             }
 
             return await this.validateSessionById(sessionId);
-        } catch (error) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Session restoration failed: ${error.message}`,
+                    message: `Session restoration failed: ${errorMessage}`,
                     code: 'SESSION_RESTORATION_ERROR'
                 }
             };
@@ -630,7 +786,7 @@ export class SessionAuthProvider implements IAuthenticator {
      * Sets session cookie
      */
     private setSessionCookie(sessionId: string): void {
-        const expires = new Date(Date.now() + this.config.sessionTimeout).toUTCString();
+        const expires = new Date(Date.now() + (this.config.sessionTimeout as number)).toUTCString();
         let cookieString = `${this.config.cookieName}=${sessionId}; expires=${expires}; path=${this.config.cookiePath}`;
 
         if (this.config.secure) {
@@ -689,7 +845,7 @@ export class SessionAuthProvider implements IAuthenticator {
             if (this.currentSession) {
                 await this.refreshToken();
             }
-        }, this.config.refreshInterval);
+        }, this.config.refreshInterval as number);
     }
 
     /**
@@ -700,7 +856,7 @@ export class SessionAuthProvider implements IAuthenticator {
             this.syncChannel = new BroadcastChannel('auth_session_sync');
 
             this.syncChannel.onmessage = (event) => {
-                const { type, data } = event.data;
+                const { type } = event.data;
 
                 switch (type) {
                     case 'create':
@@ -736,7 +892,10 @@ export class SessionAuthProvider implements IAuthenticator {
 
         let result = '';
         for (let i = 0; i < array.length; i++) {
-            result += String.fromCharCode(array[i]);
+            const value = array[i];
+            if (value !== undefined) {
+                result += String.fromCharCode(value);
+            }
         }
         return btoa(result).replace(/[^a-zA-Z0-9]/g, '');
     }
@@ -744,7 +903,11 @@ export class SessionAuthProvider implements IAuthenticator {
     /**
      * Simulates user authentication (replace with real API call)
      */
-    private async authenticateUser(credentials: AuthCredentials): Promise<AuthResult<unknown>> {
+    private async authenticateUser(credentials: AuthCredentials): Promise<AuthResult<{
+        userId: string;
+        roles: string[];
+        permissions: string[];
+    }>> {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -766,17 +929,6 @@ export class SessionAuthProvider implements IAuthenticator {
                 type: AuthErrorType.CREDENTIALS_INVALID,
                 message: 'Invalid email or password',
                 code: 'SESSION_INVALID_CREDENTIALS'
-            }
-        };
-    }
-
-    /**
-        return {
-            success: false,
-            error: {
-                type: AuthErrorType.SERVER_ERROR,
-                message: `Session restoration failed: ${error.message}`,
-                code: 'SESSION_RESTORATION_ERROR'
             }
         };
     }

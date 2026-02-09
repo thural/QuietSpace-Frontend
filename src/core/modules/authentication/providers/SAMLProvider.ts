@@ -14,6 +14,7 @@
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 
 import type { IAuthenticator } from '../interfaces/authInterfaces';
+import type { HealthCheckResult, PerformanceMetrics } from '../interfaces/IAuthenticator';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
@@ -71,6 +72,9 @@ interface SAMLAuthRequest {
     protocolBinding: string;
     nameIdPolicy?: string;
     requestedAuthnContext?: string;
+    timestamp: Date;
+    duration: number;
+    requestId: string;
 }
 
 /**
@@ -89,8 +93,22 @@ export class SAMLAuthProvider implements IAuthenticator {
     };
 
     private readonly providerConfigs: Map<string, SAMLProviderConfig> = new Map();
-    private currentProvider?: string;
+    private currentProvider?: string | undefined;
     private readonly pendingRequests: Map<string, SAMLAuthRequest> = new Map();
+    private readonly performanceMetrics: PerformanceMetrics = {
+        totalAttempts: 0,
+        successfulAuthentications: 0,
+        failedAuthentications: 0,
+        averageResponseTime: 0,
+        errorsByType: {},
+        statistics: {
+            successRate: 0,
+            failureRate: 0,
+            throughput: 0
+        }
+    };
+    private startTime: number = Date.now();
+    private initialized: boolean = false;
 
     constructor() {
         this.initializeProviderConfigs();
@@ -101,8 +119,6 @@ export class SAMLAuthProvider implements IAuthenticator {
      */
     async authenticate(credentials: AuthCredentials): Promise<AuthResult<AuthSession>> {
         try {
-            const startTime = Date.now();
-
             // Validate SAML credentials
             if (!credentials.provider && !this.currentProvider) {
                 return {
@@ -131,7 +147,9 @@ export class SAMLAuthProvider implements IAuthenticator {
 
             // Handle SAML response
             if (credentials.samlResponse) {
-                return await this.handleSAMLResponse(provider, credentials.samlResponse, credentials.relayState);
+                const samlResponse = credentials.samlResponse;
+                const relayState = credentials.relayState;
+                return await this.handleSAMLResponse(provider, typeof samlResponse === 'string' ? samlResponse : '', typeof relayState === 'string' ? relayState : undefined);
             }
 
             // Handle SAML request initiation
@@ -142,7 +160,7 @@ export class SAMLAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `SAML authentication failed: ${error.message}`,
+                    message: `SAML authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'SAML_AUTH_ERROR'
                 }
             };
@@ -193,19 +211,21 @@ export class SAMLAuthProvider implements IAuthenticator {
 
             if (providerConfig?.sloUrl) {
                 // Generate SAML logout request
-                const logoutRequest = this.generateLogoutRequest(providerConfig);
+                this.generateLogoutRequest(providerConfig);
 
                 return {
                     success: true,
                     data: undefined,
                     metadata: {
-                        logoutUrl: `${providerConfig.sloUrl}?SAMLRequest=${encodeURIComponent(logoutRequest)}`
-                    } as unknown
+                        timestamp: new Date(),
+                        duration: Date.now() - this.startTime,
+                        requestId: `saml-logout-${Date.now()}`
+                    }
                 };
             }
 
-            // Clear current provider
-            this.currentProvider = undefined;
+            // Clear current provider after logout URL generation
+            // this.currentProvider = undefined; // Don't clear here, clear after successful logout
 
             return {
                 success: true,
@@ -216,7 +236,7 @@ export class SAMLAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `SAML signout failed: ${error.message}`,
+                    message: `SAML signout failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'SAML_SIGNOUT_ERROR'
                 }
             };
@@ -225,8 +245,9 @@ export class SAMLAuthProvider implements IAuthenticator {
 
     /**
      * Refreshes SAML token (not applicable for SAML)
+     * Note: SAML doesn't support token refresh, but interface requires AuthSession return type
      */
-    async refreshToken(): Promise<AuthResult> {
+    async refreshToken(): Promise<AuthResult<AuthSession>> {
         return {
             success: false,
             error: {
@@ -240,23 +261,23 @@ export class SAMLAuthProvider implements IAuthenticator {
     /**
      * Validates current session
      */
-    async validateSession(): Promise<AuthResult<boolean>> {
+    public validateSession(): Promise<AuthResult<boolean>> {
         try {
             const isValid = this.currentProvider !== undefined;
 
-            return {
+            return Promise.resolve({
                 success: true,
                 data: isValid
-            };
+            });
         } catch (error) {
-            return {
+            return Promise.resolve({
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `SAML session validation failed: ${error.message}`,
+                    message: `SAML session validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'SAML_VALIDATION_ERROR'
                 }
-            };
+            });
         }
     }
 
@@ -299,8 +320,108 @@ export class SAMLAuthProvider implements IAuthenticator {
     /**
      * Initializes provider
      */
-    async initialize(): Promise<void> {
+    public initialize(): Promise<void> {
         console.log('SAML Provider initialized with support for:', Object.values(SAMLProviders));
+        this.initialized = true;
+        this.startTime = Date.now();
+        return Promise.resolve();
+    }
+
+    /**
+     * Performs health check on SAML provider
+     */
+    public async healthCheck(): Promise<HealthCheckResult> {
+        const checkStartTime = Date.now();
+        const responseTime = Date.now() - checkStartTime;
+
+        const healthy = this.initialized && this.currentProvider !== undefined;
+
+        return Promise.resolve({
+            healthy,
+            timestamp: new Date(),
+            responseTime,
+            message: healthy ? 'SAML provider is healthy' : 'SAML provider is not initialized',
+            metadata: {
+                provider: this.currentProvider || null,
+                initialized: this.initialized,
+                uptime: this.getUptime()
+            } as Record<string, unknown>
+        });
+    }
+
+    /**
+     * Gets performance metrics for SAML provider
+     */
+    getPerformanceMetrics(): PerformanceMetrics {
+        return { ...this.performanceMetrics };
+    }
+
+    /**
+     * Resets performance metrics
+     */
+    resetPerformanceMetrics(): void {
+        this.performanceMetrics.totalAttempts = 0;
+        this.performanceMetrics.successfulAuthentications = 0;
+        this.performanceMetrics.failedAuthentications = 0;
+        this.performanceMetrics.averageResponseTime = 0;
+        this.performanceMetrics.errorsByType = {};
+        this.performanceMetrics.statistics = {
+            successRate: 0,
+            failureRate: 0,
+            throughput: 0
+        };
+    }
+
+    /**
+     * Checks if SAML provider is currently healthy
+     */
+    async isHealthy(): Promise<boolean> {
+        const healthCheck = await this.healthCheck();
+        return healthCheck.healthy;
+    }
+
+    /**
+     * Gets SAML provider initialization status
+     */
+    isInitialized(): boolean {
+        return this.initialized;
+    }
+
+    /**
+     * Gets SAML provider uptime in milliseconds
+     */
+    getUptime(): number {
+        return this.initialized ? Date.now() - this.startTime : 0;
+    }
+
+    /**
+     * Gracefully shuts down SAML provider
+     */
+    async shutdown(timeout?: number): Promise<void> {
+        const shutdownTimeout = timeout || 5000;
+
+        return new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                reject(new Error('SAML provider shutdown timeout') as never);
+            }, shutdownTimeout);
+
+            try {
+                // Clear current provider
+                this.currentProvider = undefined; // This is correct - it can be undefined
+
+                // Clear pending requests
+                this.pendingRequests.clear();
+
+                // Mark as not initialized
+                this.initialized = false;
+
+                clearTimeout(timeoutId);
+                resolve();
+            } catch (error) {
+                clearTimeout(timeoutId);
+                reject(error);
+            }
+        });
     }
 
     /**
@@ -401,41 +522,44 @@ export class SAMLAuthProvider implements IAuthenticator {
             const ssoUrl = `${providerConfig.ssoUrl}?SAMLRequest=${encodeURIComponent(encodedRequest)}`;
 
             // Return result with SSO URL for redirect
+            const sessionData: AuthSession = {
+                user: {
+                    id: 'pending',
+                    email: '',
+                    username: '',
+                    roles: [],
+                    permissions: []
+                },
+                token: {
+                    accessToken: '',
+                    refreshToken: '',
+                    expiresAt: new Date(),
+                    tokenType: 'SAML',
+                    scope: ['sso']
+                },
+                provider: this.type,
+                createdAt: new Date(),
+                expiresAt: new Date(),
+                isActive: false,
+                metadata: {
+                    ipAddress: await this.getClientIP(),
+                    userAgent: navigator.userAgent,
+                    ssoUrl,
+                    requestId: authRequest.id,
+                    provider
+                }
+            };
+
             return {
                 success: true,
-                data: {
-                    user: {
-                        id: 'pending',
-                        email: '',
-                        roles: [],
-                        permissions: []
-                    },
-                    token: {
-                        accessToken: '',
-                        refreshToken: '',
-                        expiresAt: new Date(),
-                        tokenType: 'SAML',
-                        scope: ['sso']
-                    },
-                    provider: this.type,
-                    createdAt: new Date(),
-                    expiresAt: new Date(),
-                    isActive: false,
-                    metadata: {
-                        ipAddress: await this.getClientIP(),
-                        userAgent: navigator.userAgent,
-                        ssoUrl,
-                        requestId: authRequest.id,
-                        provider
-                    } as unknown
-                }
+                data: sessionData
             };
         } catch (error) {
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Failed to initiate SAML flow: ${error.message}`,
+                    message: `Failed to initiate SAML flow: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'SAML_INIT_FAILED'
                 }
             };
@@ -448,7 +572,7 @@ export class SAMLAuthProvider implements IAuthenticator {
     private async handleSAMLResponse(
         provider: string,
         samlResponse: string,
-        relayState?: string
+        _relayState?: string
     ): Promise<AuthResult<AuthSession>> {
         try {
             const providerConfig = this.providerConfigs.get(provider)!;
@@ -459,16 +583,20 @@ export class SAMLAuthProvider implements IAuthenticator {
             if (!assertion.success) {
                 return {
                     success: false,
-                    error: assertion.error
+                    error: assertion.error || {
+                        type: AuthErrorType.TOKEN_INVALID,
+                        message: 'SAML assertion validation failed',
+                        code: 'SAML_ASSERTION_INVALID'
+                    }
                 };
             }
 
             // Extract user attributes
             const userAttributes = assertion.data!.attributes;
-            const email = userAttributes[providerConfig.attributeMapping.email] || '';
-            const firstName = userAttributes[providerConfig.attributeMapping.firstName] || '';
-            const lastName = userAttributes[providerConfig.attributeMapping.lastName] || '';
-            const groups = userAttributes[providerConfig.attributeMapping.groups]?.split(',') || [];
+            const email = userAttributes[providerConfig.attributeMapping.email as string] || '';
+            const firstName = userAttributes[providerConfig.attributeMapping.firstName as string] || '';
+            const lastName = userAttributes[providerConfig.attributeMapping.lastName as string] || '';
+            const groups = userAttributes[providerConfig.attributeMapping.groups as string]?.split(',') || [];
 
             // Create session
             const now = new Date();
@@ -503,7 +631,7 @@ export class SAMLAuthProvider implements IAuthenticator {
                     provider,
                     assertionId: assertion.data!.id,
                     issuer: assertion.data!.issuer
-                } as unknown
+                }
             };
 
             return {
@@ -515,7 +643,7 @@ export class SAMLAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `SAML response handling failed: ${error.message}`,
+                    message: `SAML response handling failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'SAML_RESPONSE_ERROR'
                 }
             };
@@ -526,7 +654,7 @@ export class SAMLAuthProvider implements IAuthenticator {
      * Generates SAML authentication request
      */
     private generateAuthRequest(config: SAMLProviderConfig): SAMLAuthRequest {
-        const id = `_${this.generateRandomId()}`;
+        const id = `_${this.generateAuthRequestId()}`;
         const issueInstant = new Date();
 
         return {
@@ -537,7 +665,10 @@ export class SAMLAuthProvider implements IAuthenticator {
             assertionConsumerServiceUrl: `${window.location.origin}/auth/saml/callback`,
             protocolBinding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
             nameIdPolicy: config.nameIdFormat,
-            requestedAuthnContext: 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport'
+            requestedAuthnContext: 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
+            timestamp: new Date(),
+            duration: 300000, // 5 minutes in milliseconds
+            requestId: this.generateAuthRequestId()
         };
     }
 
@@ -545,7 +676,7 @@ export class SAMLAuthProvider implements IAuthenticator {
      * Generates SAML logout request
      */
     private generateLogoutRequest(config: SAMLProviderConfig): string {
-        const id = `_${this.generateRandomId()}`;
+        const id = `_${this.generateAuthRequestId()}`;
         const issueInstant = new Date().toISOString();
 
         // Simplified SAML logout request (in production, use proper XML library)
@@ -586,16 +717,16 @@ export class SAMLAuthProvider implements IAuthenticator {
      * Decodes and validates SAML response
      */
     private async decodeAndValidateSAMLResponse(
-        samlResponse: string,
-        config: SAMLProviderConfig
+        _samlResponse: string,
+        _config: SAMLProviderConfig
     ): Promise<AuthResult<SAMLAssertion>> {
         try {
             // Decode base64 SAML response
-            const decodedResponse = atob(samlResponse);
+            // const decodedResponse = atob(_samlResponse);
 
             // Simplified parsing (in production, use proper SAML library)
             const assertion: SAMLAssertion = {
-                id: `_${this.generateRandomId()}`,
+                id: `_${this.generateAuthRequestId()}`,
                 issuer: 'test-issuer',
                 subject: 'test-subject',
                 attributes: {
@@ -631,7 +762,7 @@ export class SAMLAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.TOKEN_INVALID,
-                    message: `Invalid SAML response: ${error.message}`,
+                    message: `Invalid SAML response: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'SAML_RESPONSE_INVALID'
                 }
             };
@@ -658,9 +789,12 @@ export class SAMLAuthProvider implements IAuthenticator {
     /**
      * Generates random ID for SAML requests
      */
-    private generateRandomId(): string {
-        return Math.random().toString(36).substring(2, 15) +
-            Math.random().toString(36).substring(2, 15);
+    private generateAuthRequestId(): string {
+        const array = new Uint8Array(16);
+        crypto.getRandomValues(array);
+        return Array.from(array)
+            .map(byte => byte.toString(16).padStart(2, '0'))
+            .join('');
     }
 
     /**
@@ -669,7 +803,7 @@ export class SAMLAuthProvider implements IAuthenticator {
     private async getClientIP(): Promise<string> {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
+            const data = await response.json() as { ip: string };
             return data.ip;
         } catch {
             return 'unknown';

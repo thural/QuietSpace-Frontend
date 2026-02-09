@@ -15,6 +15,7 @@ import type { IBackupCodeService, BackupCodesConfig, BackupCodesEnrollmentData, 
  */
 export class BackupCodeService implements IBackupCodeService {
     readonly name = 'BackupCodeService';
+    private readonly config: BackupCodesConfig;
     private readonly statistics = {
         totalGenerations: 0,
         successfulVerifications: 0,
@@ -23,29 +24,41 @@ export class BackupCodeService implements IBackupCodeService {
     };
     private readonly userCodes = new Map<string, BackupCodesEnrollmentData>();
 
+    constructor(config: Partial<BackupCodesConfig> = {}) {
+        this.config = {
+            count: 10,
+            length: 8,
+            format: 'alphanumeric',
+            ...config
+        };
+    }
+
     /**
      * Generates backup codes for user
      */
-    async generateBackupCodes(userId: string, config: BackupCodesConfig): Promise<BackupCodesEnrollmentData> {
+    async generateBackupCodes(userId: string, config?: BackupCodesConfig): Promise<BackupCodesEnrollmentData> {
         try {
+            // Use provided config or fall back to instance config
+            const finalConfig = { ...this.config, ...config };
+
             // Generate backup codes
             const codes: string[] = [];
-            for (let i = 0; i < config.count; i++) {
-                codes.push(this.generateBackupCode(config.length, config.format));
+            for (let i = 0; i < finalConfig.count; i++) {
+                codes.push(this.generateBackupCode(finalConfig.length, finalConfig.format));
             }
 
             const enrollmentData: BackupCodesEnrollmentData = {
                 codes,
                 usedCodes: [],
                 generatedAt: Date.now(),
-                expiresAt: config.format === 'numeric' ? undefined : Date.now() + (365 * 24 * 60 * 60 * 1000) // 1 year for non-numeric
+                ...(finalConfig.format === 'numeric' ? {} : { expiresAt: Date.now() + (365 * 24 * 60 * 60 * 1000) })
             };
 
             // Store user codes
             this.userCodes.set(userId, enrollmentData);
 
             this.statistics.totalGenerations++;
-            this.statistics.totalCodesGenerated += config.count;
+            this.statistics.totalCodesGenerated += finalConfig.count;
 
             return enrollmentData;
         } catch (error) {
@@ -59,7 +72,7 @@ export class BackupCodeService implements IBackupCodeService {
     async verifyBackupCode(userId: string, code: string): Promise<BackupCodeVerificationResult> {
         try {
             const userEnrollment = this.userCodes.get(userId);
-            
+
             if (!userEnrollment) {
                 return {
                     valid: false,
@@ -88,7 +101,7 @@ export class BackupCodeService implements IBackupCodeService {
 
             // Check if code is valid
             const isValid = userEnrollment.codes.includes(code);
-            
+
             if (isValid) {
                 // Mark code as used
                 userEnrollment.usedCodes.push(code);
@@ -116,7 +129,7 @@ export class BackupCodeService implements IBackupCodeService {
      */
     async getRemainingCodes(userId: string): Promise<string[]> {
         const userEnrollment = this.userCodes.get(userId);
-        
+
         if (!userEnrollment) {
             return [];
         }
@@ -137,7 +150,7 @@ export class BackupCodeService implements IBackupCodeService {
         try {
             // Remove existing codes
             this.userCodes.delete(userId);
-            
+
             // Generate new codes
             return this.generateBackupCodes(userId, config);
         } catch (error) {
@@ -150,7 +163,7 @@ export class BackupCodeService implements IBackupCodeService {
      */
     generateBackupCode(length: number, format: string): string {
         let chars: string;
-        
+
         switch (format) {
             case 'numeric':
                 chars = '0123456789';
@@ -177,7 +190,7 @@ export class BackupCodeService implements IBackupCodeService {
      */
     validateBackupCodeFormat(code: string, format: string): boolean {
         let regex: RegExp;
-        
+
         switch (format) {
             case 'numeric':
                 regex = /^\d+$/;
@@ -200,7 +213,7 @@ export class BackupCodeService implements IBackupCodeService {
      */
     async areBackupCodesExpired(userId: string): Promise<boolean> {
         const userEnrollment = this.userCodes.get(userId);
-        
+
         if (!userEnrollment || !userEnrollment.expiresAt) {
             return false; // No expiration set
         }
@@ -213,8 +226,8 @@ export class BackupCodeService implements IBackupCodeService {
      */
     getStatistics() {
         const activeUsers = this.userCodes.size;
-        const averageCodesPerUser = activeUsers > 0 
-            ? this.statistics.totalCodesGenerated / activeUsers 
+        const averageCodesPerUser = activeUsers > 0
+            ? this.statistics.totalCodesGenerated / activeUsers
             : 0;
 
         return {

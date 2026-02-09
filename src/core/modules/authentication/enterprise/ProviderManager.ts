@@ -603,7 +603,7 @@ export class ProviderManager implements IProviderManager {
                             const result = await this.getProviderHealth(name);
                             if (!result?.health?.healthy) {
                                 // Log health check failure but don't throw
-                                console.warn(`Health check failed for provider ${name}:`, result.health?.message);
+                                console.warn(`Health check failed for provider ${name}:`, result?.health?.message || 'No health information available');
                             }
                         })
                         .catch((error: any) => {
@@ -683,7 +683,6 @@ export class ProviderManager implements IProviderManager {
      */
     getBestProvider(type?: string): IAuthenticator | undefined {
         let bestProvider: IAuthenticator | undefined;
-        let bestPriority = ProviderPriority.BACKUP;
         let bestScore = -1;
 
         for (const [name, registration] of Array.from(this.providers.entries())) {
@@ -699,7 +698,6 @@ export class ProviderManager implements IProviderManager {
 
             if (score > bestScore) {
                 bestScore = score;
-                bestPriority = priority;
                 bestProvider = registration.provider as IAuthenticator;
             }
         }

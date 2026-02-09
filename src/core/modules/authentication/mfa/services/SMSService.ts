@@ -40,7 +40,7 @@ export class SMSService implements ISMSService {
      */
     async enrollSMS(userId: string, phoneNumber: string, countryCode: string): Promise<SMSEnrollmentData> {
         const startTime = Date.now();
-        
+
         try {
             // Check rate limiting
             const rateLimitCheck = this.canSendSMS(userId);
@@ -55,7 +55,7 @@ export class SMSService implements ISMSService {
 
             // Generate verification code
             const verificationCode = this.generateVerificationCode();
-            
+
             // Send SMS
             const sendSuccess = await this.sendSMSVerification(phoneNumber, verificationCode);
             if (!sendSuccess) {
@@ -92,10 +92,10 @@ export class SMSService implements ISMSService {
      */
     async verifySMSEnrollment(userId: string, enrollmentId: string, code: string): Promise<SMSVerificationResult> {
         const startTime = Date.now();
-        
+
         try {
             const verification = this.verificationStore.get(userId);
-            
+
             if (!verification) {
                 throw new Error('No pending SMS verification found');
             }
@@ -124,7 +124,7 @@ export class SMSService implements ISMSService {
 
             // Verify code
             const isValid = verification.code === code;
-            
+
             if (isValid) {
                 this.statistics.successfulVerifications++;
                 this.verificationStore.delete(userId);
@@ -132,11 +132,16 @@ export class SMSService implements ISMSService {
                 this.statistics.failedVerifications++;
             }
 
-            return {
+            const result: SMSVerificationResult = {
                 valid: isValid,
-                remainingAttempts: 3 - verification.attempts,
-                nextSMSTime: isValid ? undefined : Date.now() + 60000
+                remainingAttempts: 3 - verification.attempts
             };
+
+            if (!isValid) {
+                result.nextSMSTime = Date.now() + 60000;
+            }
+
+            return result;
         } catch (error) {
             this.statistics.failedVerifications++;
             throw new Error(`Failed to verify SMS enrollment: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -153,7 +158,7 @@ export class SMSService implements ISMSService {
             // Mock SMS sending - in real implementation, use SMS provider API
             const message = this.config.template.replace('{code}', code);
             console.log(`[MOCK] Sending SMS to ${phoneNumber}: ${message}`);
-            
+
             this.statistics.totalSMSSent++;
             return true;
         } catch (error) {
@@ -202,13 +207,13 @@ export class SMSService implements ISMSService {
     canSendSMS(userId: string): { canSend: boolean; nextAvailableTime?: number } {
         const now = Date.now();
         const userLimit = this.rateLimitStore.get(userId);
-        
+
         if (!userLimit) {
             return { canSend: true };
         }
 
         const timeSinceLastSent = now - userLimit.lastSent;
-        
+
         // Reset count if more than a minute has passed
         if (timeSinceLastSent > 60000) {
             return { canSend: true };
@@ -228,8 +233,8 @@ export class SMSService implements ISMSService {
      * Gets SMS service statistics
      */
     getStatistics() {
-        const averageDeliveryTime = this.statistics.totalSMSSent > 0 
-            ? this.statistics.totalDeliveryTime / this.statistics.totalSMSSent 
+        const averageDeliveryTime = this.statistics.totalSMSSent > 0
+            ? this.statistics.totalDeliveryTime / this.statistics.totalSMSSent
             : 0;
 
         return {
@@ -247,7 +252,7 @@ export class SMSService implements ISMSService {
     private updateRateLimit(userId: string): void {
         const now = Date.now();
         const userLimit = this.rateLimitStore.get(userId);
-        
+
         if (!userLimit || now - userLimit.lastSent > 60000) {
             // New user or reset after minute
             this.rateLimitStore.set(userId, { lastSent: now, count: 1 });

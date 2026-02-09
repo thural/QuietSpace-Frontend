@@ -11,6 +11,8 @@
  * - Email verification as fallback method
  */
 
+import { DeviceInfo } from '../mfa/types/mfa.types';
+
 export interface MFAConfig {
   /** Enable TOTP authentication */
   enableTOTP: boolean;
@@ -334,7 +336,7 @@ export class MFAService {
   /**
    * Enroll in TOTP authentication
    */
-  public async enrollTOTP(userId: string, deviceInfo?: unknown): Promise<TOTPEnrollmentData> {
+  public async enrollTOTP(userId: string, deviceInfo?: DeviceInfo): Promise<TOTPEnrollmentData> {
     if (!this.config.enableTOTP) {
       throw new Error('TOTP authentication is not enabled');
     }
@@ -349,7 +351,7 @@ export class MFAService {
     const manualKey = this.formatManualKey(secret);
 
     // Generate backup codes for setup verification
-    const backupCodes = this.generateBackupCodes(3);
+    const backupCodes = this.generateBackupCodesArray(3);
 
     const enrollmentData: TOTPEnrollmentData = {
       secret,
@@ -364,7 +366,12 @@ export class MFAService {
       userId,
       method: { type: 'totp', name: 'Authenticator App', description: '', icon: '📱', enabled: true, priority: 1, setupRequired: false },
       status: 'pending',
-      deviceInfo,
+      deviceInfo: deviceInfo || {
+        name: 'Unknown Device',
+        type: 'web',
+        platform: navigator.platform || 'Unknown',
+        userAgent: navigator.userAgent
+      },
       metadata: {
         enrolledAt: Date.now(),
         usageCount: 0
@@ -502,7 +509,7 @@ export class MFAService {
       throw new Error('Backup codes are not enabled');
     }
 
-    const codes = this.generateBackupCodes(this.config.backupCodesConfig.count);
+    const codes = this.generateBackupCodesArray(this.config.backupCodesConfig.count);
 
     const enrollmentData: BackupCodesEnrollmentData = {
       codes,
@@ -696,7 +703,7 @@ export class MFAService {
     return secret.match(/.{1,4}/g)?.join(' ') || secret;
   }
 
-  private generateBackupCodes(count: number): string[] {
+  private generateBackupCodesArray(count: number): string[] {
     const codes: string[] = [];
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 

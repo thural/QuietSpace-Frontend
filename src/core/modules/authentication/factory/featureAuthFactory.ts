@@ -7,7 +7,8 @@
 
 import { FeatureAuthService } from '../services/FeatureAuthService';
 
-import type { Container } from '../../di/factory';
+import type { Container } from '../../dependency-injection/factory';
+import { TYPES } from '../../dependency-injection/types';
 
 /**
  * Create a feature authentication service
@@ -28,7 +29,7 @@ export function createFeatureAuthService(container: Container): FeatureAuthServi
 export function createFeatureAuthServiceFromDI(container: Container): FeatureAuthService | null {
     try {
         // Try to get from DI container first
-        return container.getByToken<FeatureAuthService>('FEATURE_AUTH_SERVICE');
+        return container.getByToken<FeatureAuthService>(TYPES.AUTH_FEATURE_SERVICE);
     } catch {
         // Fallback to direct creation
         return createFeatureAuthService(container);
@@ -43,11 +44,11 @@ export function createFeatureAuthServiceFromDI(container: Container): FeatureAut
  */
 export function createSingletonFeatureAuthService(container: Container): FeatureAuthService {
     try {
-        return container.getByToken<FeatureAuthService>('FEATURE_AUTH_SERVICE');
+        return container.getByToken<FeatureAuthService>(TYPES.AUTH_FEATURE_SERVICE);
     } catch {
         // Register as singleton if not found
         const service = createFeatureAuthService(container);
-        container.registerInstanceByToken('FEATURE_AUTH_SERVICE', service);
+        container.registerInstanceByToken(TYPES.AUTH_FEATURE_SERVICE, service);
         return service;
     }
 }

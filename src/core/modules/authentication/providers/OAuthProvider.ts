@@ -15,19 +15,19 @@
 
 import { AuthErrorType, AuthProviderType } from '../types/auth.domain.types';
 
-import type { IAuthenticator } from '../interfaces/authInterfaces';
+import type { IAuthenticator, HealthCheckResult, PerformanceMetrics } from '../interfaces/IAuthenticator';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
 
 /**
  * Supported OAuth providers
  */
-export const OAuthProviders = {
+export const OAUTH_PROVIDERS = {
     GOOGLE: 'google',
     GITHUB: 'github',
     MICROSOFT: 'microsoft'
 } as const;
 
-export type OAuthProvider = typeof OAuthProviders[keyof typeof OAuthProviders];
+export type OAuthProvider = typeof OAUTH_PROVIDERS[keyof typeof OAUTH_PROVIDERS];
 
 /**
  * OAuth provider configuration
@@ -46,24 +46,24 @@ export interface OAuthProviderConfig {
 /**
  * OAuth token response
  */
-interface OAuthTokenResponse {
-    access_token: string;
-    refresh_token?: string;
-    token_type: string;
-    expires_in: number;
+export interface OAuthTokenResponse {
+    accessToken: string;
+    refreshToken?: string;
+    tokenType: string;
+    expiresIn: number;
     scope?: string;
 }
 
 /**
  * OAuth user info response
  */
-interface OAuthUserInfo {
+export interface OAuthUserInfo {
     id: string;
     email?: string;
     name?: string;
     login?: string;
     picture?: string;
-    avatar_url?: string;
+    avatarUrl?: string;
 }
 
 /**
@@ -72,7 +72,7 @@ interface OAuthUserInfo {
 export class OAuthAuthProvider implements IAuthenticator {
     readonly name = 'OAuth Provider';
     readonly type = AuthProviderType.OAUTH;
-    readonly config: Record<string, any> = {
+    readonly config: Record<string, unknown> = {
         tokenRefreshInterval: 300000, // 5 minutes
         maxRetries: 3,
         pkceEnabled: true,
@@ -83,6 +83,20 @@ export class OAuthAuthProvider implements IAuthenticator {
     private readonly providerConfigs: Map<string, OAuthProviderConfig> = new Map();
     private currentProvider?: string;
     private pkceVerifier?: string;
+    private initialized = false;
+    private initTime?: number;
+    private performanceMetrics: PerformanceMetrics = {
+        totalAttempts: 0,
+        successfulAuthentications: 0,
+        failedAuthentications: 0,
+        averageResponseTime: 0,
+        errorsByType: {},
+        statistics: {
+            successRate: 0,
+            failureRate: 0,
+            throughput: 0
+        }
+    };
 
     constructor() {
         this.initializeProviderConfigs();
@@ -93,8 +107,6 @@ export class OAuthAuthProvider implements IAuthenticator {
      */
     async authenticate(credentials: AuthCredentials): Promise<AuthResult<AuthSession>> {
         try {
-            const startTime = Date.now();
-
             // Validate OAuth credentials
             if (!credentials.provider && !this.currentProvider) {
                 return {
@@ -123,23 +135,30 @@ export class OAuthAuthProvider implements IAuthenticator {
 
             // Handle authorization code flow
             if (credentials.authorizationCode) {
-                return await this.handleAuthorizationCodeFlow(provider, credentials.authorizationCode, credentials.codeVerifier);
+                const codeVerifier = credentials.codeVerifier;
+                const authCode = credentials.authorizationCode;
+                return await this.handleAuthorizationCodeFlow(
+                    provider,
+                    typeof authCode === 'string' ? authCode : '',
+                    typeof codeVerifier === 'string' ? codeVerifier : undefined
+                );
             }
 
             // Handle access token flow (for testing/debug)
             if (credentials.accessToken) {
-                return await this.handleAccessTokenFlow(provider, credentials.accessToken);
+                const accessToken = credentials.accessToken;
+                return await this.handleAccessTokenFlow(provider, typeof accessToken === 'string' ? accessToken : '');
             }
 
             // Initiate OAuth flow
-            return await this.initiateOAuthFlow(provider);
+            return await this.initiateOAuthFlowInternal(provider);
 
         } catch (error) {
             return {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `OAuth authentication failed: ${error.message}`,
+                    message: `OAuth authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'OAUTH_AUTH_ERROR'
                 }
             };
@@ -180,8 +199,8 @@ export class OAuthAuthProvider implements IAuthenticator {
     async signout(): Promise<AuthResult<void>> {
         try {
             // Clear current provider and PKCE verifier
-            this.currentProvider = undefined;
-            this.pkceVerifier = undefined;
+            delete this.currentProvider;
+            delete this.pkceVerifier;
 
             return {
                 success: true,
@@ -192,7 +211,7 @@ export class OAuthAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `OAuth signout failed: ${error.message}`,
+                    message: `OAuth signout failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'OAUTH_SIGNOUT_ERROR'
                 }
             };
@@ -202,7 +221,7 @@ export class OAuthAuthProvider implements IAuthenticator {
     /**
      * Refreshes OAuth token
      */
-    async refreshToken(): Promise<AuthResult> {
+    async refreshToken(): Promise<AuthResult<AuthSession>> {
         try {
             if (!this.currentProvider) {
                 return {
@@ -230,7 +249,7 @@ export class OAuthAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `OAuth token refresh failed: ${error.message}`,
+                    message: `OAuth token refresh failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'OAUTH_REFRESH_ERROR'
                 }
             };
@@ -254,7 +273,7 @@ export class OAuthAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `OAuth session validation failed: ${error.message}`,
+                    message: `OAuth session validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'OAUTH_VALIDATION_ERROR'
                 }
             };
@@ -264,13 +283,13 @@ export class OAuthAuthProvider implements IAuthenticator {
     /**
      * Configures provider
      */
-    configure(config: Record<string, any>): void {
+    configure(config: Record<string, unknown>): void {
         Object.assign(this.config, config);
 
         // Update provider configurations if provided
         if (config.providers) {
             Object.entries(config.providers).forEach(([provider, providerConfig]) => {
-                if (Object.values(OAuthProviders).includes(provider as OAuthProvider)) {
+                if (Object.values(OAUTH_PROVIDERS).includes(provider as OAuthProvider)) {
                     this.providerConfigs.set(
                         provider,
                         providerConfig as OAuthProviderConfig
@@ -297,63 +316,30 @@ export class OAuthAuthProvider implements IAuthenticator {
     }
 
     /**
-     * Initializes provider
+     * Initiates OAuth flow
      */
-    async initialize(): Promise<void> {
-        console.log('OAuth Provider initialized with support for:', Object.values(OAuthProviders));
-    }
-
-    /**
-     * Initializes OAuth provider configurations
-     */
-    private initializeProviderConfigs(): void {
-        // Google OAuth configuration
-        this.providerConfigs.set(OAuthProviders.GOOGLE, {
-            clientId: process.env.VITE_GOOGLE_CLIENT_ID || 'test-google-client-id',
-            redirectUri: process.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/auth/google/callback`,
-            scope: ['openid', 'email', 'profile'],
-            authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-            tokenEndpoint: 'https://oauth2.googleapis.com/token',
-            userInfoEndpoint: 'https://www.googleapis.com/oauth2/v2/userinfo',
-            pkce: true
-        });
-
-        // GitHub OAuth configuration
-        this.providerConfigs.set(OAuthProviders.GITHUB, {
-            clientId: process.env.VITE_GITHUB_CLIENT_ID || 'test-github-client-id',
-            redirectUri: process.env.VITE_GITHUB_REDIRECT_URI || `${window.location.origin}/auth/github/callback`,
-            scope: ['user:email'],
-            authorizationEndpoint: 'https://github.com/login/oauth/authorize',
-            tokenEndpoint: 'https://github.com/login/oauth/access_token',
-            userInfoEndpoint: 'https://api.github.com/user',
-            pkce: true
-        });
-
-        // Microsoft OAuth configuration
-        this.providerConfigs.set(OAuthProviders.MICROSOFT, {
-            clientId: process.env.VITE_MICROSOFT_CLIENT_ID || 'test-microsoft-client-id',
-            redirectUri: process.env.VITE_MICROSOFT_REDIRECT_URI || `${window.location.origin}/auth/microsoft/callback`,
-            scope: ['openid', 'email', 'profile'],
-            authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-            tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-            userInfoEndpoint: 'https://graph.microsoft.com/v1.0/me',
-            pkce: true
-        });
-    }
-
-    /**
-     * Initiates OAuth flow by generating authorization URL
-     */
-    private async initiateOAuthFlow(provider: string): Promise<AuthResult<AuthSession>> {
+    private async initiateOAuthFlowInternal(provider: string): Promise<AuthResult<AuthSession>> {
         try {
-            const providerConfig = this.providerConfigs.get(provider)!;
-            this.currentProvider = provider;
+            const providerConfig = this.providerConfigs.get(provider);
+            if (!providerConfig) {
+                return {
+                    success: false,
+                    error: {
+                        type: AuthErrorType.VALIDATION_ERROR,
+                        message: `Unsupported OAuth provider: ${provider}`,
+                        code: 'OAUTH_UNSUPPORTED_PROVIDER'
+                    }
+                };
+            }
 
             // Generate PKCE verifier and challenge if enabled
+            let codeVerifier: string | undefined;
             let codeChallenge: string | undefined;
+
             if (providerConfig.pkce) {
-                this.pkceVerifier = this.generateCodeVerifier();
-                codeChallenge = await this.generateCodeChallenge(this.pkceVerifier);
+                codeVerifier = this.generateCodeVerifier();
+                codeChallenge = await this.generateCodeChallenge(codeVerifier);
+                this.pkceVerifier = codeVerifier;
             }
 
             // Generate state for CSRF protection
@@ -365,43 +351,26 @@ export class OAuthAuthProvider implements IAuthenticator {
                 redirect_uri: providerConfig.redirectUri,
                 scope: providerConfig.scope.join(' '),
                 response_type: 'code',
-                state,
-                ...(codeChallenge && {
-                    code_challenge: codeChallenge,
-                    code_challenge_method: 'S256'
-                })
+                state
             });
 
-            const authorizationUrl = `${providerConfig.authorizationEndpoint}?${authParams.toString()}`;
+            if (codeChallenge) {
+                authParams.append('code_challenge', codeChallenge);
+                authParams.append('code_challenge_method', 'S256');
+            }
 
-            // Return result with authorization URL for redirect
+            const authUrl = `${providerConfig.authorizationEndpoint}?${authParams.toString()}`;
+
+            // Redirect to OAuth provider
+            window.location.href = authUrl;
+
+            // This will not be reached due to redirect
             return {
-                success: true,
-                data: {
-                    user: {
-                        id: 'pending',
-                        email: '',
-                        roles: [],
-                        permissions: []
-                    },
-                    token: {
-                        accessToken: '',
-                        refreshToken: '',
-                        expiresAt: new Date(),
-                        tokenType: 'Bearer',
-                        scope: providerConfig.scope
-                    },
-                    provider: this.type,
-                    createdAt: new Date(),
-                    expiresAt: new Date(),
-                    isActive: false,
-                    metadata: {
-                        ipAddress: await this.getClientIP(),
-                        userAgent: navigator.userAgent,
-                        authorizationUrl,
-                        state,
-                        provider
-                    }
+                success: false,
+                error: {
+                    type: AuthErrorType.UNKNOWN_ERROR,
+                    message: 'OAuth flow initiated - user will be redirected',
+                    code: 'OAUTH_REDIRECT_INITIATED'
                 }
             };
         } catch (error) {
@@ -409,11 +378,162 @@ export class OAuthAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Failed to initiate OAuth flow: ${error.message}`,
-                    code: 'OAUTH_INIT_FAILED'
+                    message: `OAuth flow initiation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    code: 'OAUTH_FLOW_INIT_ERROR'
                 }
             };
         }
+    }
+
+    /**
+     * Performs health check on the OAuth provider
+     */
+    async healthCheck(): Promise<HealthCheckResult> {
+        const startTime = Date.now();
+
+        try {
+            // Check if provider configurations are loaded
+            const hasConfigs = this.providerConfigs.size > 0;
+
+            // Check if crypto API is available
+            const cryptoAvailable = typeof crypto !== 'undefined' &&
+                typeof crypto.subtle !== 'undefined' &&
+                typeof crypto.getRandomValues !== 'undefined';
+
+            const healthy = hasConfigs && cryptoAvailable;
+            const responseTime = Date.now() - startTime;
+
+            return {
+                healthy,
+                timestamp: new Date(),
+                responseTime,
+                message: healthy ? 'OAuth provider is healthy' : 'OAuth provider has issues',
+                metadata: {
+                    providerCount: this.providerConfigs.size,
+                    cryptoAvailable,
+                    currentProvider: this.currentProvider
+                }
+            };
+        } catch (error) {
+            const responseTime = Date.now() - startTime;
+            return {
+                healthy: false,
+                timestamp: new Date(),
+                responseTime,
+                message: `Health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                metadata: {
+                    error: error instanceof Error ? error.name : 'Unknown'
+                }
+            };
+        }
+    }
+
+    /**
+     * Gets performance metrics for the OAuth provider
+     */
+    getPerformanceMetrics(): PerformanceMetrics {
+        return { ...this.performanceMetrics };
+    }
+
+    /**
+     * Resets performance metrics
+     */
+    resetPerformanceMetrics(): void {
+        this.performanceMetrics = {
+            totalAttempts: 0,
+            successfulAuthentications: 0,
+            failedAuthentications: 0,
+            averageResponseTime: 0,
+            errorsByType: {},
+            statistics: {
+                successRate: 0,
+                failureRate: 0,
+                throughput: 0
+            }
+        };
+    }
+
+    /**
+     * Checks if the OAuth provider is currently healthy
+     */
+    async isHealthy(): Promise<boolean> {
+        const healthResult = await this.healthCheck();
+        return healthResult.healthy;
+    }
+
+    /**
+     * Gets provider initialization status
+     */
+    isInitialized(): boolean {
+        return this.initialized;
+    }
+
+    /**
+     * Gets provider uptime in milliseconds
+     */
+    getUptime(): number {
+        if (!this.initialized || !this.initTime) {
+            return 0;
+        }
+        return Date.now() - this.initTime;
+    }
+
+    /**
+     * Gracefully shuts down the OAuth provider
+     */
+    async shutdown(_timeout?: number): Promise<void> {
+        try {
+            // Clear current state
+            delete this.currentProvider;
+            delete this.pkceVerifier;
+            this.initialized = false;
+
+            // Clear provider configs
+            this.providerConfigs.clear();
+
+            console.log('OAuth provider shutdown successfully');
+        } catch (error) {
+            console.error('Error during OAuth provider shutdown:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Initializes OAuth provider configurations
+     */
+    private initializeProviderConfigs(): void {
+        // Google OAuth configuration
+        this.providerConfigs.set(OAUTH_PROVIDERS.GOOGLE, {
+            clientId: process.env.VITE_GOOGLE_CLIENT_ID || 'test-google-client-id',
+            redirectUri: process.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/auth/google/callback`,
+            scope: ['openid', 'email', 'profile'],
+            authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+            tokenEndpoint: 'https://oauth2.googleapis.com/token',
+            userInfoEndpoint: 'https://www.googleapis.com/oauth2/v2/userinfo',
+            pkce: true
+        });
+
+        // GitHub OAuth configuration
+        this.providerConfigs.set(OAUTH_PROVIDERS.GITHUB, {
+            clientId: process.env.VITE_GITHUB_CLIENT_ID || 'test-github-client-id',
+            redirectUri: process.env.VITE_GITHUB_REDIRECT_URI || `${window.location.origin}/auth/github/callback`,
+            scope: ['user:email'],
+            authorizationEndpoint: 'https://github.com/login/oauth/authorize',
+            tokenEndpoint: 'https://github.com/login/oauth/access_token',
+            userInfoEndpoint: 'https://api.github.com/user',
+            pkce: true
+        });
+
+        // Microsoft OAuth configuration
+        this.providerConfigs.set(OAUTH_PROVIDERS.MICROSOFT, {
+            clientId: process.env.VITE_MICROSOFT_CLIENT_ID || 'test-microsoft-client-id',
+            redirectUri: process.env.VITE_MICROSOFT_REDIRECT_URI || `${window.location.origin}/auth/microsoft/callback`,
+            scope: ['openid', 'email', 'profile'],
+            authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+            tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+            userInfoEndpoint: 'https://graph.microsoft.com/v1.0/me',
+            pkce: true
+        });
     }
 
     /**
@@ -426,58 +546,51 @@ export class OAuthAuthProvider implements IAuthenticator {
     ): Promise<AuthResult<AuthSession>> {
         try {
             const providerConfig = this.providerConfigs.get(provider)!;
+            this.currentProvider = provider;
 
             // Exchange authorization code for tokens
-            const tokenResponse = await this.exchangeCodeForTokens(
-                providerConfig,
-                authorizationCode,
-                codeVerifier || this.pkceVerifier
-            );
+            const tokenResponse = await this.exchangeCodeForTokens(providerConfig, authorizationCode, codeVerifier);
 
             if (!tokenResponse.success) {
                 return {
                     success: false,
-                    error: tokenResponse.error
+                    error: tokenResponse.error || {
+                        type: AuthErrorType.SERVER_ERROR,
+                        message: 'Token exchange failed',
+                        code: 'OAUTH_TOKEN_EXCHANGE_FAILED'
+                    }
                 };
             }
 
-            // Get user information
-            const userInfoResponse = await this.getUserInfo(providerConfig, tokenResponse.data!.access_token);
+            // Get user info
+            const userInfo = await this.getUserInfo(providerConfig, tokenResponse.data!.accessToken);
 
-            if (!userInfoResponse.success) {
+            if (!userInfo.success) {
                 return {
                     success: false,
-                    error: userInfoResponse.error
+                    ...(userInfo.error && { error: userInfo.error })
                 };
             }
 
             // Create session
-            const now = new Date();
-            const expiresAt = new Date(now.getTime() + (tokenResponse.data!.expires_in * 1000));
-
             const session: AuthSession = {
                 user: {
-                    id: userInfoResponse.data!.id,
-                    email: userInfoResponse.data!.email || '',
-                    username: userInfoResponse.data!.login || userInfoResponse.data!.name,
-                    roles: ['user'],
-                    permissions: ['read:posts', 'create:posts'],
-                    profile: {
-                        firstName: userInfoResponse.data!.name?.split(' ')[0],
-                        lastName: userInfoResponse.data!.name?.split(' ')[1],
-                        avatar: userInfoResponse.data!.picture || userInfoResponse.data!.avatar_url
-                    }
+                    id: userInfo.data!.id,
+                    email: userInfo.data!.email || '',
+                    username: userInfo.data!.email || '',
+                    roles: [],
+                    permissions: []
                 },
                 token: {
-                    accessToken: tokenResponse.data!.access_token,
-                    refreshToken: tokenResponse.data!.refresh_token || '',
-                    expiresAt,
-                    tokenType: tokenResponse.data!.token_type,
-                    scope: tokenResponse.data!.scope?.split(' ') || providerConfig.scope
+                    accessToken: tokenResponse.data!.accessToken,
+                    refreshToken: tokenResponse.data!.refreshToken || '',
+                    expiresAt: new Date(Date.now() + (tokenResponse.data!.expiresIn * 1000)),
+                    tokenType: tokenResponse.data!.tokenType,
+                    scope: Array.isArray(tokenResponse.data!.scope) ? tokenResponse.data!.scope : [tokenResponse.data!.scope || ''].filter(Boolean)
                 },
                 provider: this.type,
-                createdAt: now,
-                expiresAt,
+                createdAt: new Date(),
+                expiresAt: new Date(Date.now() + (tokenResponse.data!.expiresIn * 1000)),
                 isActive: true,
                 metadata: {
                     ipAddress: await this.getClientIP(),
@@ -495,7 +608,7 @@ export class OAuthAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Authorization code flow failed: ${error.message}`,
+                    message: `Authorization code flow failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'OAUTH_CODE_FLOW_ERROR'
                 }
             };
@@ -503,49 +616,42 @@ export class OAuthAuthProvider implements IAuthenticator {
     }
 
     /**
-     * Handles access token flow (for testing)
+     * Handles access token flow
      */
     private async handleAccessTokenFlow(provider: string, accessToken: string): Promise<AuthResult<AuthSession>> {
         try {
             const providerConfig = this.providerConfigs.get(provider)!;
+            this.currentProvider = provider;
 
-            // Get user information with access token
-            const userInfoResponse = await this.getUserInfo(providerConfig, accessToken);
+            // Get user info directly with access token
+            const userInfo = await this.getUserInfo(providerConfig, accessToken);
 
-            if (!userInfoResponse.success) {
+            if (!userInfo.success) {
                 return {
                     success: false,
-                    error: userInfoResponse.error
+                    ...(userInfo.error && { error: userInfo.error })
                 };
             }
 
             // Create session
-            const now = new Date();
-            const expiresAt = new Date(now.getTime() + (60 * 60 * 1000)); // 1 hour default
-
             const session: AuthSession = {
                 user: {
-                    id: userInfoResponse.data!.id,
-                    email: userInfoResponse.data!.email || '',
-                    username: userInfoResponse.data!.login || userInfoResponse.data!.name,
-                    roles: ['user'],
-                    permissions: ['read:posts', 'create:posts'],
-                    profile: {
-                        firstName: userInfoResponse.data!.name?.split(' ')[0],
-                        lastName: userInfoResponse.data!.name?.split(' ')[1],
-                        avatar: userInfoResponse.data!.picture || userInfoResponse.data!.avatar_url
-                    }
+                    id: userInfo.data!.id,
+                    email: userInfo.data!.email || '',
+                    username: userInfo.data!.email || '',
+                    roles: [],
+                    permissions: []
                 },
                 token: {
                     accessToken,
                     refreshToken: '',
-                    expiresAt,
+                    expiresAt: new Date(Date.now() + (3600 * 1000)), // 1 hour default
                     tokenType: 'Bearer',
                     scope: providerConfig.scope
                 },
                 provider: this.type,
-                createdAt: now,
-                expiresAt,
+                createdAt: new Date(),
+                expiresAt: new Date(Date.now() + (3600 * 1000)),
                 isActive: true,
                 metadata: {
                     ipAddress: await this.getClientIP(),
@@ -563,8 +669,8 @@ export class OAuthAuthProvider implements IAuthenticator {
                 success: false,
                 error: {
                     type: AuthErrorType.SERVER_ERROR,
-                    message: `Access token flow failed: ${error.message}`,
-                    code: 'OAUTH_TOKEN_FLOW_ERROR'
+                    message: `Access token flow failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    code: 'OAUTH_ACCESS_TOKEN_ERROR'
                 }
             };
         }
@@ -580,76 +686,72 @@ export class OAuthAuthProvider implements IAuthenticator {
     ): Promise<AuthResult<OAuthTokenResponse>> {
         try {
             const tokenParams = new URLSearchParams({
-                client_id: config.clientId,
+                clientId: config.clientId,
                 code,
-                redirect_uri: config.redirectUri,
-                grant_type: 'authorization_code'
+                redirectUri: config.redirectUri,
+                grantType: 'authorization_code'
             });
 
             if (codeVerifier) {
                 tokenParams.append('code_verifier', codeVerifier);
             }
 
-            const response = await fetch(config.tokenEndpoint, {
+            const response = await fetch(`${config.tokenEndpoint}?${tokenParams.toString()}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept': 'application/json'
-                },
-                body: tokenParams.toString()
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
             });
 
             if (!response.ok) {
-                throw new Error(`Token exchange failed: ${response.status} ${response.statusText}`);
+                throw new Error(`Token exchange failed: ${response.statusText}`);
             }
 
-            const tokenData = await response.json();
+            const data = await response.json() as OAuthTokenResponse;
+
             return {
                 success: true,
-                data: tokenData
+                data
             };
         } catch (error) {
             return {
                 success: false,
                 error: {
-                    type: AuthErrorType.NETWORK_ERROR,
-                    message: `Token exchange failed: ${error.message}`,
-                    code: 'OAUTH_TOKEN_EXCHANGE_ERROR'
+                    type: AuthErrorType.SERVER_ERROR,
+                    message: `Code exchange failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    code: 'OAUTH_CODE_EXCHANGE_ERROR'
                 }
             };
         }
     }
 
     /**
-     * Gets user information from OAuth provider
+     * Gets user info from OAuth provider
      */
-    private async getUserInfo(
-        config: OAuthProviderConfig,
-        accessToken: string
-    ): Promise<AuthResult<OAuthUserInfo>> {
+    private async getUserInfo(config: OAuthProviderConfig, accessToken: string): Promise<AuthResult<OAuthUserInfo>> {
         try {
-            const response = await fetch(config.userInfoEndpoint, {
+            const response = await fetch(`${config.userInfoEndpoint}?access_token=${accessToken}`, {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Accept': 'application/json'
+                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 
             if (!response.ok) {
-                throw new Error(`User info request failed: ${response.status} ${response.statusText}`);
+                throw new Error(`User info request failed: ${response.statusText}`);
             }
 
-            const userData = await response.json();
+            const data = await response.json() as OAuthUserInfo;
+
             return {
                 success: true,
-                data: userData
+                data
             };
         } catch (error) {
             return {
                 success: false,
                 error: {
-                    type: AuthErrorType.NETWORK_ERROR,
-                    message: `User info request failed: ${error.message}`,
+                    type: AuthErrorType.SERVER_ERROR,
+                    message: `User info request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     code: 'OAUTH_USER_INFO_ERROR'
                 }
             };
@@ -657,47 +759,39 @@ export class OAuthAuthProvider implements IAuthenticator {
     }
 
     /**
-     * Generates random state for CSRF protection
-     */
-    private generateState(): string {
-        const randomBytes = new Uint8Array(this.config.stateLength);
-        crypto.getRandomValues(randomBytes);
-
-        let result = '';
-        for (let i = 0; i < randomBytes.length; i++) {
-            result += String.fromCharCode(randomBytes[i]);
-        }
-        return btoa(result).replace(/[^a-zA-Z0-9]/g, '').substring(0, this.config.stateLength);
-    }
-
-    /**
      * Generates PKCE code verifier
      */
     private generateCodeVerifier(): string {
-        const randomBytes = new Uint8Array(this.config.codeVerifierLength);
-        crypto.getRandomValues(randomBytes);
-
-        let result = '';
-        for (let i = 0; i < randomBytes.length; i++) {
-            result += String.fromCharCode(randomBytes[i]);
-        }
-        return btoa(result).replace(/[^a-zA-Z0-9]/g, '');
+        const length = (this.config.codeVerifierLength as number) || 128;
+        const array = new Uint8Array(length);
+        crypto.getRandomValues(array);
+        return Array.from(array)
+            .map((byte: number) => byte.toString(16).padStart(2, '0'))
+            .join('');
     }
 
     /**
-     * Generates PKCE code challenge from verifier
+     * Generates PKCE code challenge
      */
     private async generateCodeChallenge(verifier: string): Promise<string> {
         const encoder = new TextEncoder();
         const data = encoder.encode(verifier);
         const digest = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(digest))
+            .map((byte: number) => byte.toString(16).padStart(2, '0'))
+            .join('');
+    }
 
-        let result = '';
-        const view = new Uint8Array(digest);
-        for (let i = 0; i < view.length; i++) {
-            result += String.fromCharCode(view[i]);
-        }
-        return btoa(result).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    /**
+     * Generates random state for CSRF protection
+     */
+    private generateState(): string {
+        const length = (this.config.stateLength as number) || 32;
+        const array = new Uint8Array(length);
+        crypto.getRandomValues(array);
+        return Array.from(array)
+            .map((byte: number) => byte.toString(16).padStart(2, '0'))
+            .join('');
     }
 
     /**

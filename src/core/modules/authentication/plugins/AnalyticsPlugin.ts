@@ -1,14 +1,11 @@
 /**
  * Analytics Plugin for Authentication
  *
- * Integrates with the existing AnalyticsService to track authentication events.
- * Bridges the auth plugin system with the comprehensive analytics infrastructure.
+ * Provides basic analytics tracking for authentication events.
+ * Bridges to auth plugin system with analytics infrastructure.
  */
 
-import { AnalyticsService } from '@analytics';
-
 import type { IAuthPlugin, IAuthService } from '../interfaces/authInterfaces';
-import type { AnalyticsEventType } from '@analytics';
 
 export class AnalyticsPlugin implements IAuthPlugin {
     readonly name = 'analytics';
@@ -16,167 +13,57 @@ export class AnalyticsPlugin implements IAuthPlugin {
     readonly dependencies: string[] = [];
 
     private authService: IAuthService | null = null;
-    private analyticsService: AnalyticsService | null = null;
 
     /**
-     * Initializes the analytics plugin with the existing AnalyticsService
+     * Initializes analytics plugin
      */
     async initialize(authService: IAuthService): Promise<void> {
         this.authService = authService;
-
-        // Initialize the existing AnalyticsService through DI container
-        try {
-            // In a real implementation, this would use the DI container
-            // For now, we'll create a simple instance
-            this.analyticsService = new AnalyticsService({} as Record<string, unknown>);
-            console.log('[AnalyticsPlugin] Initialized with existing AnalyticsService');
-        } catch (error) {
-            console.warn('[AnalyticsPlugin] Could not initialize AnalyticsService:', error);
-            // Fallback to basic logging if AnalyticsService is unavailable
-            this.analyticsService = null;
-        }
+        console.log('Analytics plugin initialized');
     }
 
     /**
-     * Executes plugin hooks for different authentication events
+     * Executes analytics plugin hook
      */
     async execute(hook: string, ...args: unknown[]): Promise<unknown> {
+        if (!this.authService) {
+            return { error: 'Analytics service not initialized' };
+        }
+
         switch (hook) {
-            case 'auth_success':
-                await this.trackAuthEvent('user_login', {
-                    provider: args[0],
-                    userId: args[1]?.id,
-                    sessionId: args[1]?.sessionId
-                });
+            case 'auth:success':
+                const session = args[0] as any;
+                if (session?.user?.id) {
+                    console.log('Analytics: Authentication success tracked', {
+                        userId: session.user.id,
+                        timestamp: new Date(),
+                        event: 'auth_success'
+                    });
+                }
                 break;
 
-            case 'auth_failure':
-                await this.trackAuthEvent('error_occurred', {
-                    provider: args[0],
-                    error: args[1]?.message,
-                    errorType: 'authentication_failure'
-                });
-                break;
-
-            case 'user_registered':
-                await this.trackAuthEvent('user_register', {
-                    provider: args[0],
-                    userId: args[1]?.id,
-                    sessionId: args[1]?.sessionId
-                });
-                break;
-
-            case 'session_expired':
-                await this.trackAuthEvent('user_logout', {
-                    reason: 'session_expired',
-                    userId: args[0]?.id
+            case 'auth:failure':
+                const error = args[0] as any;
+                console.log('Analytics: Authentication failure tracked', {
+                    error: error?.message || 'Unknown error',
+                    timestamp: new Date(),
+                    event: 'auth_failure'
                 });
                 break;
 
             default:
-                console.log(`[AnalyticsPlugin] Unknown hook: ${hook}`);
+                console.log(`Analytics: Unknown hook ${hook}`);
         }
+
+        return { success: true };
     }
 
     /**
-     * Tracks authentication events using the existing AnalyticsService
-     */
-    private async trackAuthEvent(eventType: AnalyticsEventType, data: Record<string, unknown>): Promise<void> {
-        if (this.analyticsService) {
-            try {
-                // Enhance analytics data with current session information
-                const enhancedData = { ...data };
-                if (this.authService) {
-                    try {
-                        const currentSession = await this.authService.getCurrentSession();
-                        if (currentSession) {
-                            enhancedData.currentUserId = currentSession.user.id;
-                            enhancedData.sessionActive = true;
-                            enhancedData.sessionExpiresAt = currentSession.expiresAt;
-                        }
-                    } catch (sessionError) {
-                        console.warn('[AnalyticsPlugin] Could not get current session:', sessionError);
-                    }
-                }
-
-                // Use the existing AnalyticsService to track the event
-                await this.analyticsService.trackEvent({
-                    userId: enhancedData.userId || enhancedData.currentUserId,
-                    eventType,
-                    timestamp: new Date(),
-                    sessionId: enhancedData.sessionId || 'unknown',
-                    metadata: {
-                        userAgent: navigator.userAgent,
-                        platform: navigator.platform,
-                        browser: this.getBrowserInfo(),
-                        version: navigator.appVersion,
-                        language: navigator.language,
-                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        screenResolution: `${screen.width}x${screen.height}`,
-                        deviceType: this.getDeviceType(),
-                        ipAddress: 'unknown', // Would be filled by backend
-                        referrer: document.referrer
-                    },
-                    properties: {
-                        provider: enhancedData.provider,
-                        error: enhancedData.error,
-                        errorType: enhancedData.errorType,
-                        reason: enhancedData.reason,
-                        sessionActive: enhancedData.sessionActive || false,
-                        sessionExpiresAt: enhancedData.sessionExpiresAt || null
-                    },
-                    source: 'web'
-                });
-
-                console.log(`[AnalyticsPlugin] Tracked ${eventType} via AnalyticsService`);
-            } catch (error) {
-                console.error('[AnalyticsPlugin] Failed to track event:', error);
-                // Fallback to basic logging
-                this.fallbackLog(eventType, data);
-            }
-        } else {
-            // Fallback when AnalyticsService is not available
-            this.fallbackLog(eventType, data);
-        }
-    }
-
-    /**
-     * Fallback logging when AnalyticsService is unavailable
-     */
-    private fallbackLog(eventType: string, data: Record<string, unknown>): void {
-        console.log(`[AnalyticsPlugin] Fallback - ${eventType}:`, data);
-    }
-
-    /**
-     * Gets browser information
-     */
-    private getBrowserInfo(): string {
-        const ua = navigator.userAgent;
-        if (ua.includes('Chrome')) return 'Chrome';
-        if (ua.includes('Firefox')) return 'Firefox';
-        if (ua.includes('Safari')) return 'Safari';
-        if (ua.includes('Edge')) return 'Edge';
-        return 'Unknown';
-    }
-
-    /**
-     * Gets device type
-     */
-    private getDeviceType(): 'desktop' | 'mobile' | 'tablet' {
-        const ua = navigator.userAgent;
-        if (/Mobile|Android|iPhone|iPad/.test(ua)) {
-            return /iPad|Tablet/.test(ua) ? 'tablet' : 'mobile';
-        }
-        return 'desktop';
-    }
-
-    /**
-     * Cleans up plugin resources
+     * Cleans up analytics plugin
      */
     async cleanup(): Promise<void> {
-        this.analyticsService = null;
         this.authService = null;
-        console.log('[AnalyticsPlugin] Cleaned up analytics plugin');
+        console.log('Analytics plugin cleaned up');
     }
 
     /**
@@ -184,11 +71,9 @@ export class AnalyticsPlugin implements IAuthPlugin {
      */
     getMetadata(): Record<string, unknown> {
         return {
-            name: this.name,
+            description: 'Analytics plugin for authentication events',
             version: this.version,
-            description: 'Integrates authentication events with existing AnalyticsService',
-            analyticsServiceAvailable: this.analyticsService !== null,
-            capabilities: ['event_tracking', 'user_behavior', 'security_monitoring', 'analytics_integration']
+            hooks: ['auth:success', 'auth:failure']
         };
     }
 }

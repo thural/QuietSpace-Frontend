@@ -12,6 +12,8 @@
  * - Provider recovery detection
  */
 
+import { AuthErrorType } from '../types/auth.domain.types';
+
 import type { IAuthenticator } from '../interfaces/IAuthenticator';
 import type { AuthResult } from '../types/auth.domain.types';
 
@@ -97,7 +99,7 @@ export class CircuitBreaker {
                 return {
                     success: false,
                     error: {
-                        type: 'server_error' as const,
+                        type: AuthErrorType.SERVER_ERROR,
                         message: 'Circuit breaker is OPEN',
                         code: 'CIRCUIT_BREAKER_OPEN'
                     }
@@ -114,8 +116,8 @@ export class CircuitBreaker {
             return {
                 success: false,
                 error: {
-                    type: 'server_error' as const,
-                    message: `Operation failed: ${error.message}`,
+                    type: AuthErrorType.SERVER_ERROR,
+                    message: `Operation failed: ${error instanceof Error ? error.message : String(error)}`,
                     code: 'OPERATION_FAILED'
                 }
             };
@@ -147,8 +149,8 @@ export class CircuitBreaker {
     reset(): void {
         this.state = CircuitBreakerState.CLOSED;
         this.failures = 0;
-        this.lastFailureTime = undefined;
-        this.nextAttempt = undefined;
+        (this.lastFailureTime as Date | undefined) = undefined;
+        (this.nextAttempt as Date | undefined) = undefined;
     }
 
     /**
@@ -157,8 +159,8 @@ export class CircuitBreaker {
     private onSuccess(): void {
         this.failures = 0;
         this.state = CircuitBreakerState.CLOSED;
-        this.lastFailureTime = undefined;
-        this.nextAttempt = undefined;
+        (this.lastFailureTime as Date | undefined) = undefined;
+        (this.nextAttempt as Date | undefined) = undefined;
     }
 
     /**
@@ -192,7 +194,7 @@ export class ProviderHealthMonitor {
     private readonly circuitBreaker: CircuitBreaker;
     private metrics: HealthMetrics;
     private healthHistory: HealthCheckResult[] = [];
-    private checkTimer?: NodeJS.Timeout;
+    private checkTimer: NodeJS.Timeout | undefined;
 
     constructor(config: ProviderHealthConfig) {
         this.config = config;
@@ -214,8 +216,8 @@ export class ProviderHealthMonitor {
     startMonitoring(provider: IAuthenticator): void {
         this.stopMonitoring();
 
-        this.checkTimer = setInterval(async () => {
-            await this.performHealthCheck(provider);
+        this.checkTimer = setInterval(() => {
+            void this.performHealthCheck(provider);
         }, this.config.checkInterval);
     }
 
@@ -236,7 +238,7 @@ export class ProviderHealthMonitor {
         const startTime = Date.now();
 
         // Add small delay to ensure response time > 0 (configurable for tests)
-        if (this.config.minResponseTime > 0) {
+        if (this.config.minResponseTime && this.config.minResponseTime > 0) {
             await new Promise(resolve => setTimeout(resolve, this.config.minResponseTime));
         }
 
@@ -252,7 +254,7 @@ export class ProviderHealthMonitor {
                 status: result.success ? 'healthy' : 'unhealthy',
                 responseTime,
                 timestamp: new Date(),
-                error: result.success ? undefined : result.error?.message,
+                ...(result.success ? {} : { error: result.error?.message || 'Unknown error' }),
                 details: result
             };
 
@@ -272,7 +274,7 @@ export class ProviderHealthMonitor {
                 status: 'unhealthy',
                 responseTime,
                 timestamp: new Date(),
-                error: error.message
+                error: error instanceof Error ? error.message : String(error)
             };
 
             this.updateMetrics(healthResult);
@@ -291,8 +293,8 @@ export class ProviderHealthMonitor {
         circuitBreaker: unknown;
         lastCheck: HealthCheckResult | null;
     } {
-        const lastCheck = this.healthHistory.length > 0
-            ? this.healthHistory[this.healthHistory.length - 1]
+        const lastCheck: HealthCheckResult | null = this.healthHistory.length > 0
+            ? this.healthHistory[this.healthHistory.length - 1] ?? null
             : null;
 
         let status: 'healthy' | 'unhealthy' | 'degraded' = 'healthy';
@@ -345,7 +347,7 @@ export class ProviderHealthMonitor {
             if (validationResult.success) {
                 return { success: true, data: 'Session validation successful' };
             }
-        } catch (error) {
+        } catch {
             // Session validation failed, continue with other checks
         }
 
@@ -355,7 +357,7 @@ export class ProviderHealthMonitor {
             if (capabilities && capabilities.length > 0) {
                 return { success: true, data: 'Provider responsive' };
             }
-        } catch (error) {
+        } catch {
             // Capabilities check failed
         }
 
@@ -363,7 +365,7 @@ export class ProviderHealthMonitor {
         return {
             success: false,
             error: {
-                type: 'server_error' as const,
+                type: AuthErrorType.SERVER_ERROR,
                 message: 'Provider health check failed',
                 code: 'HEALTH_CHECK_FAILED'
             }
@@ -387,7 +389,8 @@ export class ProviderHealthMonitor {
         }
 
         // Update average response time
-        const totalTime = this.metrics.averageResponseTime * (this.metrics.totalChecks - 1) + result.responseTime;
+        const totalTime =
+            this.metrics.averageResponseTime * (this.metrics.totalChecks - 1) + result.responseTime;
         this.metrics.averageResponseTime = totalTime / this.metrics.totalChecks;
 
         // Update uptime
@@ -444,9 +447,9 @@ export class HealthCheckManager {
      * Gets health status for all providers
      */
     getAllHealthStatus(): Map<string, unknown> {
-        const status = new Map();
+        const status: Map<string, unknown> = new Map();
 
-        for (const [providerName, monitor] of this.monitors) {
+        for (const [providerName, monitor] of Array.from(this.monitors.entries())) {
             status.set(providerName, monitor.getHealthStatus());
         }
 
@@ -501,7 +504,7 @@ export class HealthCheckManager {
         return {
             success: false,
             error: {
-                type: 'server_error' as const,
+                type: AuthErrorType.SERVER_ERROR,
                 message: 'All providers failed',
                 code: 'ALL_PROVIDERS_FAILED'
             }
@@ -536,7 +539,7 @@ export class HealthCheckManager {
      * Stops all health monitoring
      */
     stopAllMonitoring(): void {
-        for (const monitor of this.monitors.values()) {
+        for (const monitor of Array.from(this.monitors.values())) {
             monitor.stopMonitoring();
         }
     }
@@ -557,8 +560,9 @@ export class HealthCheckManager {
         const allStatus = this.getAllHealthStatus();
         let healthy = 0, unhealthy = 0, degraded = 0;
 
-        for (const status of allStatus.values()) {
-            switch (status.status) {
+        for (const status of Array.from(allStatus.values())) {
+            const statusData = status as { status: 'healthy' | 'unhealthy' | 'degraded' };
+            switch (statusData.status) {
                 case 'healthy':
                     healthy++;
                     break;
