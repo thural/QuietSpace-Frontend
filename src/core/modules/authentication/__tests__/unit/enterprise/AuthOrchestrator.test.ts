@@ -6,13 +6,13 @@
  */
 
 import { jest } from '@jest/globals';
-import { AuthOrchestrator } from '../../enterprise/AuthOrchestrator';
-import { ProviderManager } from '../../enterprise/ProviderManager';
-import { AuthValidator } from '../../enterprise/AuthValidator';
+import { AuthOrchestrator } from '../../../enterprise/AuthOrchestrator';
+import { ProviderManager } from '../../../enterprise/ProviderManager';
+import { AuthValidator } from '../../../enterprise/AuthValidator';
 
-import type { IAuthenticator, HealthCheckResult, PerformanceMetrics } from '../../interfaces/IAuthenticator';
-import type { IAuthRepository, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig } from '../../interfaces/authInterfaces';
-import type { AuthCredentials, AuthResult, AuthSession, AuthErrorType } from '../../types/auth.domain.types';
+import type { IAuthenticator, HealthCheckResult, PerformanceMetrics } from '../../../interfaces/IAuthenticator';
+import type { IAuthRepository, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig } from '../../../interfaces/authInterfaces';
+import type { AuthCredentials, AuthResult, AuthSession, AuthErrorType } from '../../../types/auth.domain.types';
 
 // Mock implementations
 class MockAuthRepository implements IAuthRepository {
@@ -135,7 +135,7 @@ class MockConfig implements IAuthConfig {
         // Mock implementation
     }
     watch(callback: (key: string, value: any) => void): () => void {
-        return () => {}; // Unwatch function
+        return () => { }; // Unwatch function
     }
 }
 
@@ -261,10 +261,10 @@ describe('AuthOrchestrator', () => {
         metrics = new MockAuthMetrics();
         security = new MockSecurityService();
         config = new MockConfig();
-        
+
         providerManager = new ProviderManager(logger);
         authValidator = new AuthValidator(logger, metrics, security);
-        
+
         authOrchestrator = new AuthOrchestrator(
             providerManager,
             authValidator,
@@ -286,24 +286,24 @@ describe('AuthOrchestrator', () => {
 
         it('should initialize all registered providers', async () => {
             providerManager.registerProvider(mockProvider);
-            
+
             await authOrchestrator.initialize();
-            
+
             expect(mockProvider.isInitialized()).toBe(true);
         });
 
         it('should handle initialization timeout gracefully', async () => {
             const slowProvider = new MockAuthProvider();
-            jest.spyOn(slowProvider, 'initialize').mockImplementation(() => 
+            jest.spyOn(slowProvider, 'initialize').mockImplementation(() =>
                 new Promise(resolve => setTimeout(resolve, 2000))
             );
-            
+
             providerManager.registerProvider(slowProvider);
-            
+
             const startTime = Date.now();
             await authOrchestrator.initialize({ timeout: 1000 });
             const endTime = Date.now();
-            
+
             expect(endTime - startTime).toBeLessThan(1500); // Should timeout before 2000ms
         });
     });
@@ -379,23 +379,23 @@ describe('AuthOrchestrator', () => {
 
         it('should list registered providers', () => {
             authOrchestrator.registerProvider(mockProvider);
-            
+
             const providers = authOrchestrator.getProviders();
-            
+
             expect(providers).toContain(mockProvider.name);
         });
 
         it('should get provider by name', () => {
             authOrchestrator.registerProvider(mockProvider);
-            
+
             const provider = authOrchestrator.getProvider(mockProvider.name);
-            
+
             expect(provider).toBe(mockProvider);
         });
 
         it('should return undefined for non-existent provider', () => {
             const provider = authOrchestrator.getProvider('non-existent');
-            
+
             expect(provider).toBeUndefined();
         });
     });
@@ -416,11 +416,11 @@ describe('AuthOrchestrator', () => {
         it('should handle unhealthy providers gracefully', async () => {
             const unhealthyProvider = new MockAuthProvider();
             jest.spyOn(unhealthyProvider, 'isHealthy').mockResolvedValue(false);
-            
+
             authOrchestrator.registerProvider(unhealthyProvider);
-            
+
             const healthResults = await authOrchestrator.checkHealth();
-            
+
             expect(healthResults[unhealthyProvider.name].healthy).toBe(false);
         });
 
@@ -456,16 +456,16 @@ describe('AuthOrchestrator', () => {
     describe('Capabilities', () => {
         it('should return combined capabilities from all providers', () => {
             authOrchestrator.registerProvider(mockProvider);
-            
+
             const capabilities = authOrchestrator.getCapabilities();
-            
+
             expect(Array.isArray(capabilities)).toBe(true);
             expect(capabilities.length).toBeGreaterThan(0);
         });
 
         it('should return empty capabilities when no providers registered', () => {
             const capabilities = authOrchestrator.getCapabilities();
-            
+
             expect(Array.isArray(capabilities)).toBe(true);
             expect(capabilities.length).toBe(0);
         });
@@ -487,9 +487,9 @@ describe('AuthOrchestrator', () => {
         it('should handle provider initialization errors', async () => {
             const errorProvider = new MockAuthProvider();
             jest.spyOn(errorProvider, 'initialize').mockRejectedValue(new Error('Init failed'));
-            
+
             authOrchestrator.registerProvider(errorProvider);
-            
+
             await expect(authOrchestrator.initialize()).rejects.toThrow('Init failed');
         });
     });
@@ -497,9 +497,9 @@ describe('AuthOrchestrator', () => {
     describe('Security Integration', () => {
         it('should log security events during authentication', async () => {
             const logSpy = jest.spyOn(logger, 'logSecurity');
-            
+
             authOrchestrator.registerProvider(mockProvider);
-            
+
             const credentials = {
                 username: 'testuser',
                 password: 'testpass'
@@ -512,7 +512,7 @@ describe('AuthOrchestrator', () => {
 
         it('should validate security headers', async () => {
             const validateSpy = jest.spyOn(security, 'validateSecurityHeaders');
-            
+
             await authOrchestrator.validateSession();
 
             expect(validateSpy).toHaveBeenCalled();
@@ -522,24 +522,24 @@ describe('AuthOrchestrator', () => {
     describe('Cleanup', () => {
         it('should shut down all providers gracefully', async () => {
             authOrchestrator.registerProvider(mockProvider);
-            
+
             await authOrchestrator.shutdown();
-            
+
             expect(mockProvider.isInitialized()).toBe(false);
         });
 
         it('should handle shutdown timeout gracefully', async () => {
             const slowProvider = new MockAuthProvider();
-            jest.spyOn(slowProvider, 'shutdown').mockImplementation(() => 
+            jest.spyOn(slowProvider, 'shutdown').mockImplementation(() =>
                 new Promise(resolve => setTimeout(resolve, 2000))
             );
-            
+
             authOrchestrator.registerProvider(slowProvider);
-            
+
             const startTime = Date.now();
             await authOrchestrator.shutdown(1000);
             const endTime = Date.now();
-            
+
             expect(endTime - startTime).toBeLessThan(1500); // Should timeout before 2000ms
         });
     });

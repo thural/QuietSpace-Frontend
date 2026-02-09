@@ -4,6 +4,8 @@
  * Tests for runtime provider registration without importing problematic modules
  */
 
+import { jest } from '@jest/globals';
+
 // Mock the providers to avoid import issues
 jest.mock('../providers/JwtAuthProvider');
 jest.mock('../providers/OAuthProvider');

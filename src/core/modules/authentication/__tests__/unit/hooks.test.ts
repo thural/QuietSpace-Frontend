@@ -52,7 +52,7 @@ const mockContext = {
 const TestWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <div>
-            {children}
+        { children }
         </div>
     );
 };
@@ -60,7 +60,7 @@ const TestWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
 describe('Authentication Hooks', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        
+
         // Setup default mock implementations
         mockContainer.get.mockReturnValue(mockAuthService);
         mockAuthService.getCurrentSession.mockResolvedValue(null);
@@ -440,7 +440,7 @@ describe('Authentication Hooks', () => {
             // Track render count
             let renderCount = 0;
             const originalRender = result.current;
-            
+
             rerender();
 
             // Should not cause additional renders without state changes

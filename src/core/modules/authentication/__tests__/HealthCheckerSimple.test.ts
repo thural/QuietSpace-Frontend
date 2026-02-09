@@ -4,6 +4,7 @@
  * Tests for provider health monitoring, circuit breaker, and automatic fallback
  */
 
+import { jest } from '@jest/globals';
 import {
     HealthCheckManager,
     ProviderHealthMonitor,
