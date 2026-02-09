@@ -126,14 +126,14 @@ class FileBasedAuthConfig implements IAuthConfig {
 export class AuthConfigLoader {
     private readonly configDir: string;
     private readonly environment: string;
-    private readonly customEnv?: Record<string, string | undefined>;
+    private readonly customEnv: Record<string, string | undefined>;
     private readonly enableEnvOverrides: boolean;
     private readonly cachedConfigs: Map<string, AuthConfigFile> = new Map();
 
     constructor(options: ConfigLoaderOptions = {}) {
         this.configDir = options.configDir || '/config/auth';
         this.environment = options.environment || this.detectEnvironment();
-        this.customEnv = options.customEnv;
+        this.customEnv = options.customEnv ?? {};
         this.enableEnvOverrides = options.enableEnvOverrides !== false;
     }
 
@@ -334,19 +334,29 @@ export class AuthConfigLoader {
     }
 
     private mergeConfigurations(...configs: AuthConfigFile[]): AuthConfigFile {
-        return configs.reduce((merged, config) => {
-            return this.deepMerge(merged, config);
-        }, {});
+        return configs.reduce((merged: AuthConfigFile, config: AuthConfigFile): AuthConfigFile => {
+            return this.deepMerge(merged, config) as AuthConfigFile;
+        }, {} as AuthConfigFile);
     }
 
     private deepMerge(target: unknown, source: unknown): unknown {
-        const result = { ...target };
+        // Ensure target is an object for spread operation
+        const targetObj = (target && typeof target === 'object' && !Array.isArray(target))
+            ? target as Record<string, unknown>
+            : {};
 
-        for (const key in source) {
-            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-                result[key] = this.deepMerge(result[key] || {}, source[key]);
+        // Ensure source is an object for iteration
+        const sourceObj = (source && typeof source === 'object' && !Array.isArray(source))
+            ? source as Record<string, unknown>
+            : {};
+
+        const result = { ...targetObj };
+
+        for (const key in sourceObj) {
+            if (sourceObj[key] && typeof sourceObj[key] === 'object' && !Array.isArray(sourceObj[key])) {
+                result[key] = this.deepMerge(result[key] || {}, sourceObj[key]);
             } else {
-                result[key] = source[key];
+                result[key] = sourceObj[key];
             }
         }
 
@@ -400,7 +410,7 @@ export class AuthConfigLoader {
     }
 
     private applyEnvironmentOverrides(config: AuthConfigFile, overrides: Record<string, unknown>): AuthConfigFile {
-        return this.deepMerge(config, overrides);
+        return this.deepMerge(config, overrides) as AuthConfigFile;
     }
 
     private detectEnvironment(): string {
@@ -413,8 +423,10 @@ export class AuthConfigLoader {
             return process.env;
         }
 
-        if (typeof import.meta !== 'undefined' && (import.meta as Record<string, unknown>).env) {
-            return (import.meta as Record<string, unknown>).env as Record<string, string | undefined>;
+        // Type assertion to bypass TypeScript restriction
+        const meta = (globalThis as any).import?.meta;
+        if (meta?.env) {
+            return meta.env as Record<string, string | undefined>;
         }
 
         return {};
@@ -455,7 +467,11 @@ export function createAuthConfigLoader(options?: ConfigLoaderOptions): AuthConfi
  * Utility function to load configuration with default options
  */
 export async function loadAuthConfiguration(environment?: string): Promise<IAuthConfig> {
-    const loader = createAuthConfigLoader({ environment });
+    const options: ConfigLoaderOptions = {};
+    if (environment !== undefined) {
+        options.environment = environment;
+    }
+    const loader = createAuthConfigLoader(options);
     return loader.loadConfiguration();
 }
 

@@ -7,9 +7,9 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "ESNext",
+    "module": "ES2022",
+    "moduleResolution": "node",
     "skipLibCheck": true,
-    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": false,
@@ -125,6 +125,7 @@
   "include": [
     "src",
     "src/**/*",
+    "src/vite-env.d.ts",
     "src/__mocks__/**/*.d.ts",
     "src/shared/types/**/*.d.ts"
   ],

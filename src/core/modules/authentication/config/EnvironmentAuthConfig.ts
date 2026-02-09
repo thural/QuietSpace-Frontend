@@ -7,14 +7,9 @@
  * Supports both Node.js (process.env) and browser (import.meta.env) environments.
  */
 
-import { AuthProviderType, AuthErrorType } from '../types/auth.domain.types';
+/// <reference path="../../../../vite-env.d.ts" />
 
-/**
- * Import meta interface for Vite environment
- */
-interface ImportMeta {
-    env?: Record<string, string | undefined>;
-}
+import { AuthProviderType, AuthErrorType } from '../types/auth.domain.types';
 
 import type { IAuthConfig, AuthResult } from '../interfaces/authInterfaces';
 
@@ -190,8 +185,9 @@ export class EnvironmentAuthConfig implements IAuthConfig {
         }
 
         // Check if we're in browser environment with Vite
-        if (typeof import.meta !== 'undefined' && import.meta.env) {
-            return import.meta.env as Record<string, string | undefined>;
+        const meta = (globalThis as any).import?.meta;
+        if (meta?.env) {
+            return meta.env;
         }
 
         // Fallback for Jest/test environment
@@ -354,17 +350,11 @@ export function createEnvironmentAuthConfig(customEnv?: Record<string, string | 
 }
 
 /**
- * Safely access import.meta.env properties
+ * Helper function to get import.meta.env property with type safety
  */
 function getImportMetaEnvProperty(property: string): string | undefined {
-    if (typeof import.meta !== 'undefined' && (import.meta as unknown as Record<string, unknown>).env) {
-        const env = (import.meta as unknown as Record<string, unknown>).env;
-        if (env && typeof env === 'object' && env !== null && property in env) {
-            return String((env as Record<string, unknown>)[property]);
-        }
-        return undefined;
-    }
-
+    const meta = (globalThis as any).import?.meta;
+    return meta?.env?.[property];
     // Fallback for Jest/test environment
     if (typeof global !== 'undefined' && (global as any).import && (global as any).import.meta) {
         const env = (global as any).import.meta.env;
@@ -373,7 +363,6 @@ function getImportMetaEnvProperty(property: string): string | undefined {
         }
         return undefined;
     }
-
     return undefined;
 }
 
