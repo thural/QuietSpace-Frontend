@@ -179,3 +179,26 @@ export {
 export {
     useEnterpriseAuth
 } from './hooks/useEnterpriseAuth';
+
+// Enterprise Token Refresh Manager
+export {
+    EnterpriseTokenRefreshManager,
+    createTokenRefreshManager
+} from './services/TokenRefreshManager';
+
+export type {
+    TokenRefreshOptions,
+    TokenRefreshMetrics
+} from './services/TokenRefreshManager';
+
+// Permission System - Export from feature domain
+export {
+    PERMISSIONS,
+    ROLES,
+    ROLE_PERMISSIONS,
+    hasPermission,
+    getRolePermissions,
+    checkUserPermissions,
+    type Permission,
+    type Role
+} from '@/features/auth/domain/permissions';

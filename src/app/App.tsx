@@ -9,11 +9,7 @@ import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
 // import { useGetNotifications } from "@/features/notification/data/useNotificationData";
 import { useEnterpriseAuth } from "@/core/modules/authentication";
-// import { useChatWebSocket } from "@/core/websocket/hooks";
-// import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
-import { AdvancedSecurityProvider } from "@/features/auth/presentation/providers/AdvancedSecurityProvider";
 import { AuthProvider } from "@/features/auth/presentation/providers/AuthProvider";
-import { useAuditLogger } from "../shared/auth/auditLogger";
 import AuthGuard from "@/features/auth/presentation/components/guards/AuthGuard";
 
 // Lazy-loaded components for better performance
@@ -51,53 +47,6 @@ const AuthPage = lazy(() => import("../pages/auth/AuthPage"));
 const App = () => {
     const navigate = useNavigate();
     const { isAuthenticated } = useEnterpriseAuth();
-
-    // Security audit logging (optional - for additional tracking)
-    const auditLog = useAuditLogger();
-
-    // Enterprise WebSocket connections with enhanced error handling
-    const { connect: connectWebSocket, disconnect: disconnectWebSocket, isConnected } = useEnterpriseWebSocket({
-        featureName: 'app',
-        onError: (error) => {
-            console.error('Enterprise WebSocket error:', error);
-            auditLog.logSuspiciousActivity({
-                type: 'WEBSOCKET_ERROR',
-                message: error.message
-            }, 'MEDIUM');
-        },
-        onConnect: () => {
-            console.log('Enterprise WebSocket connected');
-        },
-        onDisconnect: () => {
-            console.log('Enterprise WebSocket disconnected');
-        }
-    });
-
-    // Chat WebSocket integration
-    const { connect: connectChat, disconnect: disconnectChat } = useChatWebSocket({
-        autoConnect: true,
-        onError: (error) => {
-            console.error('Chat WebSocket error:', error);
-            auditLog.logSuspiciousActivity({
-                type: 'CHAT_WEBSOCKET_ERROR',
-                message: error.message
-            }, 'MEDIUM');
-        }
-    });
-
-    // Initialize WebSocket connections when authenticated
-    useEffect(() => {
-        if (isAuthenticated) {
-            connectWebSocket();
-            connectChat();
-        }
-
-        return () => {
-            disconnectWebSocket();
-            disconnectChat();
-        };
-    }, [isAuthenticated, connectWebSocket, disconnectWebSocket, connectChat, disconnectChat]);
-    useGetNotifications();
     const { refreshToken } = useEnterpriseAuth();
 
     /**
@@ -135,35 +84,33 @@ const App = () => {
     useEffect(initAuth, []);
 
     return (
-        <AdvancedSecurityProvider>
-            <AuthProvider>
-                <Suspense fallback={<LoadingFallback />}>
-                    <Routes>
-                        {/* === UNAUTHENTICATED ROUTES ONLY === */}
-                        <Route path="/auth/*" element={<AuthGuard requireAuth={false}><AuthPage /></AuthGuard>} />
-                        <Route path="/signin" element={<Navigate to="/auth/login" replace />} />
-                        <Route path="/signout" element={<Navigate to="/auth/logout" replace />} />
-                        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        <AuthProvider>
+            <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                    {/* === UNAUTHENTICATED ROUTES ONLY === */}
+                    <Route path="/auth/*" element={<AuthGuard requireAuth={false}><AuthPage /></AuthGuard>} />
+                    <Route path="/signin" element={<Navigate to="/auth/login" replace />} />
+                    <Route path="/signout" element={<Navigate to="/auth/logout" replace />} />
+                    <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-                        {/* === AUTHENTICATION REQUIRED ROUTES === */}
-                        <Route path="/*" element={
-                            <AuthGuard requireAuth={true}>
-                                <>
-                                    {/* <NavBar /> */}
-                                    <Routes>
-                                        {/* Default redirect for authenticated users */}
-                                        <Route path="/" element={<Navigate to="/feed" replace />} />
+                    {/* === AUTHENTICATION REQUIRED ROUTES === */}
+                    <Route path="/*" element={
+                        <AuthGuard requireAuth={true}>
+                            <>
+                                {/* <NavBar /> */}
+                                <Routes>
+                                    {/* Default redirect for authenticated users */}
+                                    <Route path="/" element={<Navigate to="/feed" replace />} />
 
-                                        {/* All authenticated routes handled by RoutesConfig */}
-                                        <Route path="/*" element={<RoutesConfig />} />
-                                    </Routes>
-                                </>
-                            </AuthGuard>
-                        } />
-                    </Routes>
-                </Suspense>
-            </AuthProvider>
-        </AdvancedSecurityProvider>
+                                    {/* All authenticated routes handled by RoutesConfig */}
+                                    <Route path="/*" element={<RoutesConfig />} />
+                                </Routes>
+                            </>
+                        </AuthGuard>
+                    } />
+                </Routes>
+            </Suspense>
+        </AuthProvider>
     );
 };
 

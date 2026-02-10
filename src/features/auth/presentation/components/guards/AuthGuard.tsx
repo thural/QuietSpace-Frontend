@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
 import LoadingFallback from '@/app/LoadingFallback';
@@ -9,6 +9,14 @@ interface AuthGuardProps {
   requireAuth?: boolean;
   redirectTo?: string;
   fallback?: React.ReactNode;
+}
+
+interface AuthGuardState {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  isError: boolean;
+  isInitialized: boolean;
+  location: Location | null;
 }
 
 /**
@@ -30,28 +38,59 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   const { isAuthenticated } = useFeatureAuth();
   const location = useLocation();
 
-  // For now, we'll simulate loading and error states
-  // In a real implementation, these would come from the auth service
-  const isLoading = false;
-  const isError = false;
+  // Enhanced state management for robustness
+  const [state, setState] = useState<AuthGuardState>({
+    isAuthenticated: false,
+    isLoading: true,
+    isError: false,
+    isInitialized: false,
+    location: null
+  });
+
+  // Initialize authentication state with proper error handling
+  useEffect(() => {
+    try {
+      setState({
+        isAuthenticated,
+        isLoading: false,
+        isError: false,
+        isInitialized: true,
+        location: window.location
+      });
+    } catch (error) {
+      console.error('AuthGuard initialization error:', error);
+      setState({
+        isAuthenticated: false,
+        isLoading: false,
+        isError: true,
+        isInitialized: true,
+        location: window.location
+      });
+    }
+  }, [isAuthenticated]);
+
+  // Loading state during initialization
+  if (!state.isInitialized) {
+    return fallback || <LoadingFallback />;
+  }
 
   // Loading state
-  if (isLoading) {
+  if (state.isLoading) {
     return fallback || <LoadingFallback />;
   }
 
   // Error state
-  if (isError) {
+  if (state.isError) {
     return fallback || <ErrorFallback error="Authentication service unavailable" />;
   }
 
   // Authentication required but not authenticated
-  if (requireAuth && !isAuthenticated) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  if (requireAuth && !state.isAuthenticated) {
+    return <Navigate to={redirectTo} state={{ from: state.location || location }} replace />;
   }
 
   // Authentication not required but authenticated (for login/register pages)
-  if (!requireAuth && isAuthenticated) {
+  if (!requireAuth && state.isAuthenticated) {
     return <Navigate to="/feed" replace />;
   }
 
