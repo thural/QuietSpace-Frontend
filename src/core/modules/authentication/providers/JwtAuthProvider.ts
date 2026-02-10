@@ -1,270 +1,71 @@
-/**
- * JWT Authentication Provider
- *
- * Implements JWT-based authentication with enterprise features
- * including token validation, refresh, and security.
- */
-
 import { AuthProviderType } from '../types/auth.domain.types';
 
-import type { HealthCheckResult, IAuthenticator, PerformanceMetrics } from '../interfaces/IAuthenticator';
 import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.domain.types';
+import { BaseAuthenticator } from './BaseAuthenticator';
+import { createMockSession, createSuccessResult, delay } from './ProviderUtils';
 
 /**
  * JWT Authentication Provider Implementation
  */
-export class JwtAuthProvider implements IAuthenticator {
-    readonly name = 'JWT Provider';
-    readonly type = AuthProviderType.JWT;
-    readonly config: Record<string, any> = {
+export class JwtAuthProvider extends BaseAuthenticator {
+    protected override _name = 'JWT Provider';
+    protected override _type = AuthProviderType.JWT;
+    protected override _config: Record<string, any> = {
         tokenRefreshInterval: 540000, // 9 minutes
         maxRetries: 3,
         encryptionEnabled: true
     };
 
-    private metrics: PerformanceMetrics = {
-        totalAttempts: 0,
-        successfulAuthentications: 0,
-        failedAuthentications: 0,
-        averageResponseTime: 0,
-        errorsByType: {},
-        statistics: {
-            successRate: 100,
-            failureRate: 0,
-            throughput: 0
-        }
-    };
-
-    private initializedAt: Date = new Date();
-
     /**
-     * Authenticates user with JWT
+     * JWT-specific authentication implementation
      */
-    async authenticate(credentials: AuthCredentials): Promise<AuthResult<AuthSession>> {
-        const startTime = Date.now();
-        this.metrics.totalAttempts++;
+    protected async authenticateImpl(credentials: AuthCredentials): Promise<AuthResult<AuthSession>> {
+        if (!credentials.email || !credentials.password) {
+            throw new Error('Invalid credentials');
+        }
 
-        try {
-            // Mock JWT authentication - in real provider, this would validate JWT
-            if (!credentials.email || !credentials.password) {
-                throw new Error('Invalid credentials');
+        await delay(100);
+        const session = createMockSession('jwt' as AuthProviderType, {
+            user: {
+                email: credentials.email,
+                username: credentials.username || credentials.email
             }
+        });
 
-            // Simulate authentication delay
-            await new Promise(resolve => setTimeout(resolve, 100));
-
-            this.metrics.successfulAuthentications++;
-            this.updateAverageResponseTime(startTime);
-
-            return {
-                success: true,
-                data: {
-                    user: {
-                        id: 'jwt-user-id',
-                        email: credentials.email,
-                        username: credentials.username || credentials.email,
-                        roles: ['user'],
-                        permissions: ['read'],
-                        profile: {
-                            firstName: 'JWT',
-                            lastName: 'User'
-                        },
-                        security: {
-                            lastLogin: new Date(),
-                            loginAttempts: 0,
-                            mfaEnabled: false
-                        }
-                    },
-                    token: {
-                        accessToken: 'mock-jwt-token',
-                        refreshToken: 'mock-refresh-token',
-                        expiresAt: new Date(Date.now() + 3600000),
-                        tokenType: 'Bearer'
-                    },
-                    provider: 'jwt' as AuthProviderType,
-                    createdAt: new Date(),
-                    expiresAt: new Date(),
-                    isActive: true
-                }
-            };
-        } catch (error) {
-            this.metrics.failedAuthentications++;
-            this.updateAverageResponseTime(startTime);
-
-            return {
-                success: false,
-                error: {
-                    type: 'credentials_invalid' as any,
-                    message: error instanceof Error ? error.message : 'Authentication failed'
-                }
-            };
-        }
+        return createSuccessResult(session);
     }
 
     /**
-     * Validates current authentication session
+     * JWT-specific session validation
      */
-    async validateSession(): Promise<AuthResult<boolean>> {
-        try {
-            // Mock session validation
-            return {
-                success: true,
-                data: true
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: {
-                    type: 'session_invalid' as any,
-                    message: 'Session validation failed'
-                }
-            };
-        }
-    }
-
-    /**
-     * Refreshes authentication token
-     */
-    async refreshToken(): Promise<AuthResult<AuthSession>> {
-        try {
-            // Mock token refresh
-            return {
-                success: true,
-                data: {
-                    user: {
-                        id: 'jwt-user-id',
-                        email: 'user@example.com',
-                        username: 'user',
-                        roles: ['user'],
-                        permissions: ['read'],
-                        profile: {
-                            firstName: 'JWT',
-                            lastName: 'User'
-                        },
-                        security: {
-                            lastLogin: new Date(),
-                            loginAttempts: 0,
-                            mfaEnabled: false
-                        }
-                    },
-                    token: {
-                        accessToken: 'new-jwt-token',
-                        refreshToken: 'new-refresh-token',
-                        expiresAt: new Date(Date.now() + 3600000),
-                        tokenType: 'Bearer'
-                    },
-                    provider: 'jwt' as AuthProviderType,
-                    createdAt: new Date(),
-                    expiresAt: new Date(),
-                    isActive: true
-                }
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: {
-                    type: 'token_refresh_failed' as any,
-                    message: 'Token refresh failed'
-                }
-            };
-        }
-    }
-
-    /**
-     * Configures provider with settings
-     */
-    configure(config: Record<string, unknown>): void {
-        Object.assign(this.config, config);
-    }
-
-    /**
-     * Gets provider capabilities
-     */
-    getCapabilities(): string[] {
-        return ['jwt_auth', 'token_refresh', 'session_validation'];
-    }
-
-    /**
-     * Initializes provider
-     */
-    async initialize(): Promise<void> {
-        console.log('JWT Provider initialized');
-    }
-
-    /**
-     * Performs health check
-     */
-    async healthCheck(): Promise<HealthCheckResult> {
+    protected async validateSessionImpl(): Promise<AuthResult<boolean>> {
         return {
-            healthy: true,
-            timestamp: new Date(),
-            responseTime: 50,
-            message: 'JWT Provider is healthy'
+            success: true,
+            data: true
         };
     }
 
     /**
-     * Gets performance metrics
+     * JWT-specific token refresh
      */
-    getPerformanceMetrics(): PerformanceMetrics {
-        return { ...this.metrics };
+    protected async refreshTokenImpl(): Promise<AuthResult<AuthSession>> {
+        const session = createMockSession('jwt' as AuthProviderType);
+        return createSuccessResult(session);
     }
 
     /**
-     * Resets performance metrics
+     * JWT-specific health check
      */
-    resetPerformanceMetrics(): void {
-        this.metrics = {
-            totalAttempts: 0,
-            successfulAuthentications: 0,
-            failedAuthentications: 0,
-            averageResponseTime: 0,
-            errorsByType: {},
-            statistics: {
-                successRate: 100,
-                failureRate: 0,
-                throughput: 0
-            }
-        };
-    }
-
-    /**
-     * Checks if provider is healthy
-     */
-    async isHealthy(): Promise<boolean> {
-        const health = await this.healthCheck();
-        return health.healthy;
-    }
-
-    /**
-     * Gets provider initialization status
-     */
-    isInitialized(): boolean {
+    protected async performHealthCheck(): Promise<boolean> {
+        // Mock health check - in real implementation, would check JWT service
         return true;
     }
 
     /**
-     * Gets provider uptime
+     * Gets JWT-specific capabilities
      */
-    getUptime(): number {
-        return Date.now() - this.initializedAt.getTime();
-    }
-
-    /**
-     * Gracefully shuts down the provider
-     */
-    async shutdown(): Promise<void> {
-        console.log('JWT Provider shutdown');
-    }
-
-    /**
-     * Updates average response time
-     */
-    private updateAverageResponseTime(startTime: number): void {
-        const responseTime = Date.now() - startTime;
-        const total = this.metrics.totalAttempts;
-        this.metrics.averageResponseTime =
-            (this.metrics.averageResponseTime * (total - 1) + responseTime) / total;
+    override getCapabilities(): string[] {
+        return [...super.getCapabilities(), 'jwt_auth', 'token_management'];
     }
 }
 

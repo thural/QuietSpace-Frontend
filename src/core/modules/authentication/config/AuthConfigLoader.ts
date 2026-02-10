@@ -9,7 +9,6 @@
  */
 
 import { AuthProviderType, AuthResult } from '../types/auth.domain.types';
-
 import { EnvironmentAuthConfig, AUTH_ENV_VARS } from './EnvironmentAuthConfig';
 
 import type { IAuthConfig } from '../interfaces/authInterfaces';
@@ -103,357 +102,307 @@ class FileBasedAuthConfig implements IAuthConfig {
     }
 
     validate(): AuthResult<boolean> {
-        return { success: true, data: true };
+        const errors: string[] = [];
+
+        // Validate required fields
+        if (!this.config.provider) {
+            errors.push('Provider is required');
+        }
+
+        const provider = this.config.provider;
+        const allowedProviders = this.config.allowedProviders || [];
+
+        if (!allowedProviders.includes(provider)) {
+            errors.push(`Provider '${provider}' is not in allowed providers: ${allowedProviders.join(', ')}`);
+        }
+
+        // Validate token configuration
+        const tokenConfig = this.config.token || {};
+        if (tokenConfig.refreshInterval && tokenConfig.refreshInterval < 60000) {
+            errors.push('Token refresh interval must be at least 60 seconds');
+        }
+
+        if (tokenConfig.expiration && tokenConfig.expiration < 300000) {
+            errors.push('Token expiration must be at least 5 minutes');
+        }
+
+        // Validate session configuration
+        const sessionConfig = this.config.session || {};
+        if (sessionConfig.timeout && sessionConfig.timeout < 60000) {
+            errors.push('Session timeout must be at least 60 seconds');
+        }
+
+        // Validate security configuration
+        const securityConfig = this.config.security || {};
+        if (securityConfig.maxLoginAttempts && securityConfig.maxLoginAttempts < 1) {
+            errors.push('Max login attempts must be at least 1');
+        }
+
+        if (securityConfig.lockoutDuration && securityConfig.lockoutDuration < 60000) {
+            errors.push('Lockout duration must be at least 60 seconds');
+        }
+
+        if (securityConfig.rateLimitWindow && securityConfig.rateLimitWindow < 60000) {
+            errors.push('Rate limit window must be at least 60 seconds');
+        }
+
+        if (securityConfig.rateLimitMaxAttempts && securityConfig.rateLimitMaxAttempts < 1) {
+            errors.push('Rate limit max attempts must be at least 1');
+        }
+
+        return {
+            success: errors.length === 0,
+            data: errors.length === 0,
+            error: errors.length > 0 ? {
+                type: 'validation_error',
+                message: errors.join('; '),
+                code: 'CONFIG_VALIDATION_FAILED'
+            } : undefined
+        };
     }
 
     reset(): void {
-        // No-op for file-based config
+        this.config = {};
     }
 
-    watch(_key: string, _callback: (value: unknown) => void): () => void {
-        // No-op for file-based config
-        return () => { };
+    watch(key: string, callback: (value: unknown) => void): () => void {
+        // Simple implementation - in real scenario would use proper watchers
+        let lastValue = this.config[key];
+
+        const interval = setInterval(() => {
+            const currentValue = this.config[key];
+            if (currentValue !== lastValue) {
+                lastValue = currentValue;
+                callback(currentValue);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
     }
 
-    updateConfig(newConfig: Partial<AuthConfigFile>): void {
-        this.config = { ...this.config, ...newConfig };
+    getSources(): string[] {
+        return ['file'];
     }
 }
 
 /**
- * Authentication configuration loader
+ * Main configuration loader function
  */
-export class AuthConfigLoader {
-    private readonly configDir: string;
-    private readonly environment: string;
-    private readonly customEnv: Record<string, string | undefined>;
-    private readonly enableEnvOverrides: boolean;
-    private readonly cachedConfigs: Map<string, AuthConfigFile> = new Map();
-
-    constructor(options: ConfigLoaderOptions = {}) {
-        this.configDir = options.configDir || '/config/auth';
-        this.environment = options.environment || this.detectEnvironment();
-        this.customEnv = options.customEnv ?? {};
-        this.enableEnvOverrides = options.enableEnvOverrides !== false;
-    }
-
-    async loadConfiguration(): Promise<IAuthConfig> {
-        try {
-            const baseConfig = await this.loadConfigFile('auth.base.json');
-            const envConfig = await this.loadConfigFile(`auth.${this.environment}.json`);
-            const mergedConfig = this.mergeConfigurations(baseConfig, envConfig);
-
-            if (this.enableEnvOverrides) {
-                const envOverrides = this.loadEnvironmentOverrides();
-                const finalConfig = this.applyEnvironmentOverrides(mergedConfig, envOverrides);
-                return new FileBasedAuthConfig(finalConfig);
-            }
-
-            return new FileBasedAuthConfig(mergedConfig);
-        } catch (error) {
-            console.error('Failed to load authentication configuration:', error);
-
-            if (this.enableEnvOverrides) {
-                return new EnvironmentAuthConfig(this.customEnv);
-            }
-
-            throw new Error(`Authentication configuration loading failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        }
-    }
-
-    private async loadConfigFile(filename: string): Promise<AuthConfigFile> {
-        const cacheKey = filename;
-
-        if (this.cachedConfigs.has(cacheKey)) {
-            return this.cachedConfigs.get(cacheKey)!;
-        }
-
-        try {
-            const config = await this.simulateFileLoad(filename);
-            this.cachedConfigs.set(cacheKey, config);
-            return config;
-        } catch (error) {
-            console.warn(`Configuration file ${filename} not found, using defaults`);
-            return {};
-        }
-    }
-
-    private async simulateFileLoad(filename: string): Promise<AuthConfigFile> {
-        switch (filename) {
-            case 'auth.base.json':
-                return {
-                    provider: 'jwt',
-                    defaultProvider: 'jwt',
-                    allowedProviders: ['jwt'],
-                    featureFlags: {
-                        mfaRequired: false,
-                        encryptionEnabled: true,
-                        auditEnabled: true,
-                        rateLimitingEnabled: false
-                    },
-                    token: {
-                        refreshInterval: 540000,
-                        expiration: 3600000,
-                        maxRetries: 3
-                    },
-                    session: {
-                        timeout: 1800000,
-                        maxConcurrentSessions: 5
-                    },
-                    security: {
-                        maxLoginAttempts: 10,
-                        lockoutDuration: 300000,
-                        rateLimitWindow: 300000,
-                        rateLimitMaxAttempts: 10
-                    },
-                    environment: {
-                        name: 'development',
-                        apiBaseUrl: 'http://localhost:3000',
-                        debugMode: true
-                    },
-                    logging: {
-                        level: 'debug',
-                        retentionDays: 7
-                    }
-                };
-
-            case 'auth.development.json':
-                return {
-                    provider: 'jwt',
-                    defaultProvider: 'jwt',
-                    allowedProviders: ['jwt', 'oauth'],
-                    featureFlags: {
-                        mfaRequired: false,
-                        encryptionEnabled: true,
-                        auditEnabled: true,
-                        rateLimitingEnabled: true
-                    },
-                    token: {
-                        refreshInterval: 540000,
-                        expiration: 3600000,
-                        maxRetries: 3
-                    },
-                    session: {
-                        timeout: 1800000,
-                        maxConcurrentSessions: 3
-                    },
-                    security: {
-                        maxLoginAttempts: 5,
-                        lockoutDuration: 900000,
-                        rateLimitWindow: 900000,
-                        rateLimitMaxAttempts: 5
-                    },
-                    environment: {
-                        name: 'development',
-                        apiBaseUrl: 'http://localhost:3000',
-                        debugMode: true
-                    },
-                    logging: {
-                        level: 'info',
-                        retentionDays: 30
-                    }
-                };
-
-            case 'auth.staging.json':
-                return {
-                    provider: 'oauth',
-                    defaultProvider: 'oauth',
-                    allowedProviders: ['oauth', 'saml', 'jwt'],
-                    featureFlags: {
-                        mfaRequired: true,
-                        encryptionEnabled: true,
-                        auditEnabled: true,
-                        rateLimitingEnabled: true
-                    },
-                    token: {
-                        refreshInterval: 300000,
-                        expiration: 1800000,
-                        maxRetries: 2
-                    },
-                    session: {
-                        timeout: 900000,
-                        maxConcurrentSessions: 2
-                    },
-                    security: {
-                        maxLoginAttempts: 3,
-                        lockoutDuration: 1800000,
-                        rateLimitWindow: 600000,
-                        rateLimitMaxAttempts: 3
-                    },
-                    environment: {
-                        name: 'staging',
-                        apiBaseUrl: 'https://api-staging.quietspace.com',
-                        debugMode: true
-                    },
-                    logging: {
-                        level: 'info',
-                        retentionDays: 14
-                    }
-                };
-
-            case 'auth.production.json':
-                return {
-                    provider: 'saml',
-                    defaultProvider: 'saml',
-                    allowedProviders: ['saml', 'oauth', 'ldap'],
-                    featureFlags: {
-                        mfaRequired: true,
-                        encryptionEnabled: true,
-                        auditEnabled: true,
-                        rateLimitingEnabled: true
-                    },
-                    token: {
-                        refreshInterval: 240000,
-                        expiration: 900000,
-                        maxRetries: 1
-                    },
-                    session: {
-                        timeout: 600000,
-                        maxConcurrentSessions: 1
-                    },
-                    security: {
-                        maxLoginAttempts: 3,
-                        lockoutDuration: 3600000,
-                        rateLimitWindow: 300000,
-                        rateLimitMaxAttempts: 2
-                    },
-                    environment: {
-                        name: 'production',
-                        apiBaseUrl: 'https://api.quietspace.com',
-                        debugMode: false
-                    },
-                    logging: {
-                        level: 'warn',
-                        retentionDays: 90
-                    }
-                };
-
-            default:
-                return {};
-        }
-    }
-
-    private mergeConfigurations(...configs: AuthConfigFile[]): AuthConfigFile {
-        return configs.reduce((merged: AuthConfigFile, config: AuthConfigFile): AuthConfigFile => {
-            return this.deepMerge(merged, config) as AuthConfigFile;
-        }, {} as AuthConfigFile);
-    }
-
-    private deepMerge(target: unknown, source: unknown): unknown {
-        // Ensure target is an object for spread operation
-        const targetObj = (target && typeof target === 'object' && !Array.isArray(target))
-            ? target as Record<string, unknown>
-            : {};
-
-        // Ensure source is an object for iteration
-        const sourceObj = (source && typeof source === 'object' && !Array.isArray(source))
-            ? source as Record<string, unknown>
-            : {};
-
-        const result = { ...targetObj };
-
-        for (const key in sourceObj) {
-            if (sourceObj[key] && typeof sourceObj[key] === 'object' && !Array.isArray(sourceObj[key])) {
-                result[key] = this.deepMerge(result[key] || {}, sourceObj[key]);
-            } else {
-                result[key] = sourceObj[key];
-            }
-        }
-
-        return result;
-    }
-
-    private loadEnvironmentOverrides(): Record<string, unknown> {
-        const env = this.customEnv || this.getEnvironmentVariables();
-
-        return {
-            provider: env[AUTH_ENV_VARS.DEFAULT_PROVIDER],
-            defaultProvider: env[AUTH_ENV_VARS.DEFAULT_PROVIDER],
-            allowedProviders: env[AUTH_ENV_VARS.ALLOWED_PROVIDERS]?.split(','),
-
+export async function loadAuthConfiguration(options?: ConfigLoaderOptions): Promise<IAuthConfig> {
+    try {
+        // Load base configuration
+        const baseConfig: AuthConfigFile = {
+            provider: 'jwt',
+            defaultProvider: 'jwt',
+            allowedProviders: ['jwt', 'oauth', 'saml', 'ldap', 'session'],
             featureFlags: {
-                mfaRequired: this.parseBoolean(env[AUTH_ENV_VARS.MFA_REQUIRED]),
-                encryptionEnabled: this.parseBoolean(env[AUTH_ENV_VARS.ENCRYPTION_ENABLED]),
-                auditEnabled: this.parseBoolean(env[AUTH_ENV_VARS.AUDIT_ENABLED]),
-                rateLimitingEnabled: this.parseBoolean(env[AUTH_ENV_VARS.RATE_LIMITING_ENABLED])
+                mfaRequired: false,
+                encryptionEnabled: true,
+                auditEnabled: true,
+                rateLimitingEnabled: true
             },
-
             token: {
-                refreshInterval: this.parseNumber(env[AUTH_ENV_VARS.TOKEN_REFRESH_INTERVAL]),
-                expiration: this.parseNumber(env[AUTH_ENV_VARS.TOKEN_EXPIRATION]),
-                maxRetries: this.parseNumber(env[AUTH_ENV_VARS.MAX_RETRIES])
+                refreshInterval: 540000, // 9 minutes
+                expiration: 3600000,
+                maxRetries: 3
             },
-
             session: {
-                timeout: this.parseNumber(env[AUTH_ENV_VARS.SESSION_TIMEOUT]),
-                maxConcurrentSessions: this.parseNumber(env[AUTH_ENV_VARS.MAX_CONCURRENT_SESSIONS])
+                timeout: 1800000,
+                maxConcurrentSessions: 3
             },
-
             security: {
-                maxLoginAttempts: this.parseNumber(env[AUTH_ENV_VARS.MAX_LOGIN_ATTEMPTS]),
-                lockoutDuration: this.parseNumber(env[AUTH_ENV_VARS.LOCKOUT_DURATION]),
-                rateLimitWindow: this.parseNumber(env[AUTH_ENV_VARS.RATE_LIMIT_WINDOW]),
-                rateLimitMaxAttempts: this.parseNumber(env[AUTH_ENV_VARS.RATE_LIMIT_MAX_ATTEMPTS])
-            },
-
-            environment: {
-                name: env[AUTH_ENV_VARS.ENVIRONMENT],
-                apiBaseUrl: env[AUTH_ENV_VARS.API_BASE_URL],
-                debugMode: this.parseBoolean(env[AUTH_ENV_VARS.DEBUG_MODE])
-            },
-
-            logging: {
-                level: env[AUTH_ENV_VARS.LOG_LEVEL],
-                retentionDays: this.parseNumber(env[AUTH_ENV_VARS.LOG_RETENTION_DAYS])
+                maxLoginAttempts: 5,
+                lockoutDuration: 900000,
+                rateLimitWindow: 900000,
+                rateLimitMaxAttempts: 10
             }
         };
-    }
 
-    private applyEnvironmentOverrides(config: AuthConfigFile, overrides: Record<string, unknown>): AuthConfigFile {
-        return this.deepMerge(config, overrides) as AuthConfigFile;
-    }
+        // Load environment-specific configuration
+        let envConfig: Partial<AuthConfigFile> = {};
+        if (options?.environment) {
+            const envAuthConfig = new EnvironmentAuthConfig();
+            envConfig = await envAuthConfig.load();
+            envConfig = envAuthConfig.getConfiguration();
 
-    private detectEnvironment(): string {
-        const env = this.getEnvironmentVariables();
-        return env[AUTH_ENV_VARS.ENVIRONMENT] || env.NODE_ENV || 'development';
-    }
-
-    private getEnvironmentVariables(): Record<string, string | undefined> {
-        if (typeof process !== 'undefined' && process.env) {
-            return process.env;
+            envConfig = {
+                environment: envConfig.environment,
+                ...envConfig
+            };
         }
 
-        // Type assertion to bypass TypeScript restriction
-        const meta = (globalThis as any).import?.meta;
-        if (meta?.env) {
-            return meta.env as Record<string, string | undefined>;
+        // Load file-based configuration
+        let fileConfig: Partial<AuthConfigFile> = {};
+        if (options?.configDir) {
+            fileConfig = await loadConfigurationFile(options.configDir + '/auth.base.json');
+            fileConfig = await loadConfigurationFile(options.configDir + '/auth.' + (envConfig.environment || 'development') + '.json');
         }
 
-        return {};
+        // Merge configurations
+        const mergedConfig = {
+            ...baseConfig,
+            ...envConfig,
+            ...fileConfig
+        };
+
+        // Apply runtime overrides
+        if (options?.customEnv) {
+            Object.assign(mergedConfig, options.customEnv);
+        }
+
+        // Apply environment variable overrides if enabled
+        if (options?.enableEnvOverrides !== false) {
+            // Apply environment variables
+            mergedConfig.provider = process.env.AUTH_PROVIDER || mergedConfig.provider;
+            mergedConfig.defaultProvider = process.env.AUTH_DEFAULT_PROVIDER || mergedConfig.defaultProvider;
+
+            // Apply other environment variables
+            if (process.env.AUTH_DEBUG) {
+                mergedConfig.environment = mergedConfig.environment || process.env.NODE_ENV;
+                mergedConfig.debugMode = true;
+            }
+        }
+
+        // Create and return configuration instance
+        return new FileBasedAuthConfig(mergedConfig);
+
+    } catch (error) {
+        console.error('Failed to load authentication configuration:', error);
+
+        // Return default configuration on error
+        return new FileBasedAuthConfig(baseConfig);
+    }
+}
+
+/**
+ * Loads configuration from JSON file
+ */
+async function loadConfigurationFile(filePath: string): Promise<AuthConfigFile> {
+    try {
+        // In real implementation, this would use fs/promises
+        // For now, return mock configuration based on environment
+        const isProduction = process.env.NODE_ENV === 'production';
+
+        if (filePath.includes('staging')) {
+            return {
+                provider: 'saml',
+                defaultProvider: 'saml',
+                allowedProviders: ['saml', 'oauth', 'ldap'],
+                featureFlags: {
+                    mfaRequired: true,
+                    encryptionEnabled: true,
+                    auditEnabled: true,
+                    rateLimitingEnabled: true
+                },
+                token: {
+                    refreshInterval: 240000,
+                    expiration: 900000,
+                    maxRetries: 1
+                },
+                session: {
+                    timeout: 600000,
+                    maxConcurrentSessions: 1
+                },
+                security: {
+                    maxLoginAttempts: 3,
+                    lockoutDuration: 3600000,
+                    rateLimitWindow: 300000,
+                    rateLimitMaxAttempts: 2
+                },
+                environment: {
+                    name: 'staging',
+                    apiBaseUrl: 'https://api-staging.quietspace.com',
+                    debugMode: true
+                },
+                logging: {
+                    level: 'info',
+                    retentionDays: 14
+                }
+            };
+        }
+
+        if (filePath.includes('production')) {
+            return {
+                provider: 'saml',
+                defaultProvider: 'saml',
+                allowedProviders: ['saml', 'oauth', 'ldap'],
+                featureFlags: {
+                    mfaRequired: true,
+                    encryptionEnabled: true,
+                    auditEnabled: true,
+                    rateLimitingEnabled: true
+                },
+                token: {
+                    refreshInterval: 240000,
+                    expiration: 900000,
+                    maxRetries: 1
+                },
+                session: {
+                    timeout: 600000,
+                    maxConcurrentSessions: 1
+                },
+                security: {
+                    maxLoginAttempts: 3,
+                    lockoutDuration: 3600000,
+                    rateLimitWindow: 300000,
+                    rateLimitMaxAttempts: 2
+                },
+                environment: {
+                    name: 'production',
+                    apiBaseUrl: 'https://api.quietspace.com',
+                    debugMode: false
+                },
+                logging: {
+                    level: 'warn',
+                    retentionDays: 90
+                }
+            };
+        }
+
+        // Default mock configuration
+        return {
+            provider: 'jwt',
+            defaultProvider: 'jwt',
+            allowedProviders: ['jwt', 'oauth', 'saml', 'ldap', 'session']
+        };
+
+    } catch (error) {
+        console.error(`Failed to load configuration from ${filePath}:`, error);
+        throw error;
+    }
+}
+
+// Type assertion to bypass TypeScript restriction
+const meta = (globalThis as any).import?.meta;
+if (meta?.env) {
+    // ... rest of the code remains the same ...
+}
+
+return {};
     }
 
     private parseBoolean(value: string | undefined): boolean | undefined {
-        if (value === undefined) {
-            return undefined;
-        }
-        return value.toLowerCase() === 'true';
+    if (value === undefined) {
+        return undefined;
     }
+    return value.toLowerCase() === 'true';
+}
 
     private parseNumber(value: string | undefined): number | undefined {
-        if (value === undefined) {
-            return undefined;
-        }
-        const parsed = parseInt(value, 10);
-        return isNaN(parsed) ? undefined : parsed;
+    if (value === undefined) {
+        return undefined;
     }
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? undefined : parsed;
+}
 
-    clearCache(): void {
-        this.cachedConfigs.clear();
-    }
+clearCache(): void {
+    this.cachedConfigs.clear();
+}
 
-    getEnvironment(): string {
-        return this.environment;
-    }
+getEnvironment(): string {
+    return this.environment;
+}
 }
 
 /**

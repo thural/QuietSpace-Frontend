@@ -6,13 +6,13 @@
  */
 
 // Main MFA service
-export { MFAOrchestrator } from './MFAOrchestrator';
+export { UnifiedMFAOrchestrator } from './UnifiedMFAOrchestrator';
 export type { IMFAService } from './interfaces/IMFAService';
 
 // Individual MFA services
-export { TOTPService } from './services/TOTPService';
-export { SMSService } from './services/SMSService';
-export { BackupCodeService } from './services/BackupCodeService';
+export { UnifiedTOTPService } from './services/UnifiedTOTPService';
+export { UnifiedSMSService } from './services/UnifiedSMSService';
+export { UnifiedBackupCodeService } from './services/UnifiedBackupCodeService';
 
 export type { ITOTPService, TOTPConfig, TOTPEnrollmentData, TOTPVerificationResult } from './interfaces/ITOTPService';
 export type { ISMSService, SMSConfig, SMSEnrollmentData, SMSVerificationResult } from './interfaces/ISMSService';
