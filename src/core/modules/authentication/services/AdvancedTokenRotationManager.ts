@@ -59,21 +59,23 @@ export interface TokenRotationMetrics {
  */
 export class AdvancedTokenRotationManager {
   private readonly authOrchestrator: AuthOrchestrator;
+  private readonly authService: any;
   private readonly logger: IAuthLogger;
-  private readonly metrics: IAuthMetrics;
+  private readonly metrics: TokenRotationMetrics;
   private readonly options: TokenRotationOptions;
-  private rotationStrategies: Map<string, TokenRotationStrategy>;
+  private rotationStrategies: Map<string, TokenRotationStrategy> = new Map();
   private currentStrategy: TokenRotationStrategy;
   private isRotating: boolean = false;
   private rotationQueue: Array<() => Promise<void>> = [];
   private lastRotationAttempt: Date | null = null;
   private isActive: boolean = false;
-  private rotationIntervalId: NodeJS.Timeout | null = null;
+  private rotationCount: number = 0;
+  private rotationIntervalId: number = 0;
 
   constructor(options: TokenRotationOptions = {}) {
     this.authOrchestrator = createDefaultAuthOrchestrator();
+    this.authService = this.authOrchestrator;
     this.logger = this.authOrchestrator.getLogger;
-    this.metrics = this.authOrchestrator.getMetrics;
     this.options = {
       strategy: 'adaptive',
       rotationBuffer: 300000, // 5 minutes
@@ -84,17 +86,17 @@ export class AdvancedTokenRotationManager {
       ...options
     };
 
-    this.metrics = {
-      totalRotations: 0,
-      successfulRotations: 0,
-      failedRotations: 0,
-      averageRotationTime: 0,
-      lastRotationTime: null,
-      rotationStrategy: this.options.strategy,
-      refreshTokensRotated: 0,
-      validationFailures: 0,
-      fallbackActivations: 0
-    };
+    // Initialize rotation strategies
+    this.rotationStrategies.set('eager', this.getEagerStrategy());
+    this.rotationStrategies.set('lazy', this.getLazyStrategy());
+    this.rotationStrategies.set('adaptive', this.getAdaptiveStrategy());
+    if (this.options.customStrategy) {
+      this.rotationStrategies.set('custom', this.options.customStrategy);
+    }
+
+    // Set initial strategy
+    this.currentStrategy = this.getRotationStrategy();
+
   }
 
   /**
@@ -201,8 +203,8 @@ export class AdvancedTokenRotationManager {
 
     return {
       isActive: this.isActive,
-      strategy: this.options.strategy,
-      lastRotation: this.metrics.lastRotationTime,
+      strategy: this.options.strategy || 'adaptive',
+      lastRotation: this.metrics.lastRotationTime || null,
       nextRotation
     };
   }
@@ -493,6 +495,3 @@ export class AdvancedTokenRotationManager {
 export function createAdvancedTokenRotationManager(options?: TokenRotationOptions): AdvancedTokenRotationManager {
   return new AdvancedTokenRotationManager(options);
 }
-
-// Export types for external use
-export type { TokenRotationStrategy, TokenInfo, TokenRotationOptions, TokenRotationMetrics };

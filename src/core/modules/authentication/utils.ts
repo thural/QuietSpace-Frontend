@@ -4,7 +4,7 @@
  * Utility functions for the authentication system.
  */
 
-import { AuthErrorType } from './types/auth.domain.types';
+import { AuthErrorType, AuthProviderType } from './types/auth.domain.types';
 
 import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession } from './types/auth.domain.types';
 
@@ -290,7 +290,7 @@ export function createMockAuthSession(overrides?: Partial<AuthSession>): AuthSes
     return {
         user: createMockAuthUser(),
         token: createMockAuthToken(),
-        provider: 'jwt' as const,
+        provider: AuthProviderType.JWT,
         createdAt: new Date(),
         expiresAt: new Date(Date.now() + 3600000),
         isActive: true,

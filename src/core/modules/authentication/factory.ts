@@ -20,7 +20,7 @@ import { LocalAuthRepository } from './repositories/LocalAuthRepository';
 import { EnterpriseSecurityService } from './security/EnterpriseSecurityService';
 import { AuthProviderType } from './types/auth.domain.types';
 
-import type { IAuthRepository, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig } from './interfaces/authInterfaces';
+import type { IAuthRepository, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig, IAuthPlugin } from './interfaces/authInterfaces';
 import type { AuthResult, AuthUser, AuthCredentials, AuthToken, AuthSession, AuthEvent } from './types/auth.domain.types';
 
 /**
@@ -298,9 +298,13 @@ export function createAuthPlugin(name: string, plugin: unknown): unknown {
  *
  * @param plugin - Plugin to register
  */
-export function registerAuthPlugin(plugin: unknown): void {
+export function registerAuthPlugin(plugin: IAuthPlugin): void {
     // In a real implementation, this would register the plugin
-    console.log(`Registered auth plugin: ${plugin.name}`);
+    if (plugin && plugin.name) {
+        console.log(`Registered auth plugin: ${plugin.name}`);
+    } else {
+        console.warn('Invalid plugin provided to registerAuthPlugin');
+    }
 }
 
 /**

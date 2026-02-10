@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { Frame } from "stompjs";
 
 import '@/app/App.css';
 
@@ -9,8 +8,8 @@ import LoadingFallback from "./LoadingFallback";
 import RoutesConfig from "./RoutesConfig";
 // import { useGetNotifications } from "@/features/notification/data/useNotificationData";
 import { useEnterpriseAuth } from "@/core/modules/authentication";
-import { AuthProvider } from "@/features/auth/presentation/providers/AuthProvider";
 import AuthGuard from "@/features/auth/presentation/components/guards/AuthGuard";
+import { AuthProvider } from "@/features/auth/presentation/providers/AuthProvider";
 
 // Lazy-loaded components for better performance
 lazy(() => import("../features/navbar/presentation/components/Navbar"));
@@ -46,7 +45,6 @@ const AuthPage = lazy(() => import("../pages/auth/AuthPage"));
  */
 const App = () => {
     const navigate = useNavigate();
-    const { isAuthenticated } = useEnterpriseAuth();
     const { refreshToken } = useEnterpriseAuth();
 
     /**

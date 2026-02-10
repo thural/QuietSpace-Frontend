@@ -192,13 +192,14 @@ export type {
 } from './services/TokenRefreshManager';
 
 // Permission System - Export from feature domain
-export {
-    PERMISSIONS,
-    ROLES,
-    ROLE_PERMISSIONS,
-    hasPermission,
-    getRolePermissions,
-    checkUserPermissions,
-    type Permission,
-    type Role
-} from '@/features/auth/domain/permissions';
+// Note: Permission system should be imported from the feature layer when needed
+// export {
+//     PERMISSIONS,
+//     ROLES,
+//     ROLE_PERMISSIONS,
+//     hasPermission,
+//     getRolePermissions,
+//     checkUserPermissions,
+//     type Permission,
+//     type Role
+// } from '@/features/auth/domain/permissions';
