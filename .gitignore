@@ -122,3 +122,6 @@ pids
 # DynamoDB Local files
 .dynamodb/
 tsconfig.tsbuildinfo
+
+# Thir Party Licenses
+/public/third-party-licenses.txt

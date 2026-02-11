@@ -55,11 +55,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED
 
 IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, PUNITIVE, OR CONSEQUENTIAL DAMAGES (INCLUDING LOSS OF PROFITS, DATA, GOODWILL, OR BUSINESS OPPORTUNITIES) ARISING FROM OR RELATED TO THE SOFTWARE OR THIS LICENSE, WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
-## Governing Law and Jurisdiction
-
-This License shall be governed by and construed in accordance with the laws of the **Republic of Azerbaijan**, without regard to its conflict of law principles.  
-Any disputes shall be resolved exclusively in the courts located in **Baku, Republic of Azerbaijan**.
-
 ## Severability & Entire Agreement
 
 If any provision is held invalid or unenforceable, the remaining provisions remain in full force and effect.  

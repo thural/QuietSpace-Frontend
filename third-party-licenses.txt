@@ -1,0 +1,989 @@
+├─ @babel/code-frame@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/code-frame
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/code-frame/LICENSE
+├─ @babel/generator@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/generator
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/generator/LICENSE
+├─ @babel/helper-globals@7.28.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-globals
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-globals/LICENSE
+├─ @babel/helper-module-imports@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-module-imports
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-module-imports/LICENSE
+├─ @babel/helper-string-parser@7.27.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-string-parser
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-string-parser/LICENSE
+├─ @babel/helper-validator-identifier@7.28.5
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-validator-identifier
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/helper-validator-identifier/LICENSE
+├─ @babel/parser@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/parser
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/parser/LICENSE
+├─ @babel/runtime@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/runtime
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/runtime/LICENSE
+├─ @babel/template@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/template
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/template/LICENSE
+├─ @babel/traverse@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/traverse
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/traverse/LICENSE
+├─ @babel/types@7.28.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/babel/babel
+│  ├─ publisher: The Babel Team
+│  ├─ url: https://babel.dev/team
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/types
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@babel/types/LICENSE
+├─ @emoji-mart/data@1.2.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/missive/emoji-mart
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emoji-mart/data
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emoji-mart/data/LICENSE
+├─ @emoji-mart/react@1.1.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/missive/emoji-mart
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-input-emoji/node_modules/@emoji-mart/react
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-input-emoji/node_modules/@emoji-mart/react/LICENSE
+├─ @emotion/babel-plugin@11.13.5
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/babel-plugin
+│  ├─ publisher: Kye Hohenberger
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/babel-plugin
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/babel-plugin/LICENSE
+├─ @emotion/cache@11.14.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/cache
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/cache
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/cache/LICENSE
+├─ @emotion/hash@0.9.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/hash
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/hash
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/hash/LICENSE
+├─ @emotion/is-prop-valid@1.4.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/is-prop-valid
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/node_modules/@emotion/is-prop-valid
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/node_modules/@emotion/is-prop-valid/LICENSE
+├─ @emotion/memoize@0.9.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/memoize
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/memoize
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/memoize/LICENSE
+├─ @emotion/react@11.14.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/react
+│  ├─ publisher: Emotion Contributors
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/react
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/react/LICENSE
+├─ @emotion/serialize@1.3.3
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/serialize
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/serialize
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/serialize/LICENSE
+├─ @emotion/sheet@1.4.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/sheet
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/sheet
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/sheet/LICENSE
+├─ @emotion/unitless@0.10.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/unitless
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/unitless
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/unitless/LICENSE
+├─ @emotion/use-insertion-effect-with-fallbacks@1.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/use-insertion-effect-with-fallbacks
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/use-insertion-effect-with-fallbacks
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/use-insertion-effect-with-fallbacks/LICENSE
+├─ @emotion/utils@1.4.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/utils
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/utils
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/utils/LICENSE
+├─ @emotion/weak-memoize@0.4.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/emotion-js/emotion/tree/main/packages/weak-memoize
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/weak-memoize
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/weak-memoize/LICENSE
+├─ @jridgewell/gen-mapping@0.3.13
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jridgewell/sourcemaps
+│  ├─ publisher: Justin Ridgewell
+│  ├─ email: justin@ridgewell.name
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/gen-mapping
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/gen-mapping/LICENSE
+├─ @jridgewell/resolve-uri@3.1.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jridgewell/resolve-uri
+│  ├─ publisher: Justin Ridgewell
+│  ├─ email: justin@ridgewell.name
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/resolve-uri
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/resolve-uri/LICENSE
+├─ @jridgewell/sourcemap-codec@1.5.5
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jridgewell/sourcemaps
+│  ├─ publisher: Justin Ridgewell
+│  ├─ email: justin@ridgewell.name
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/sourcemap-codec
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/sourcemap-codec/LICENSE
+├─ @jridgewell/trace-mapping@0.3.31
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jridgewell/sourcemaps
+│  ├─ publisher: Justin Ridgewell
+│  ├─ email: justin@ridgewell.name
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/trace-mapping
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@jridgewell/trace-mapping/LICENSE
+├─ @types/parse-json@4.0.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@types/parse-json
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@types/parse-json/LICENSE
+├─ @types/react@19.2.10
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@types/react
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@types/react/LICENSE
+├─ @types/stylis@4.2.7
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@types/stylis
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@types/stylis/LICENSE
+├─ asynckit@0.4.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/alexindigo/asynckit
+│  ├─ publisher: Alex Indigo
+│  ├─ email: iam@alexindigo.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/asynckit
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/asynckit/LICENSE
+├─ axios@1.13.4
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/axios/axios
+│  ├─ publisher: Matt Zabriskie
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/axios
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/axios/LICENSE
+├─ babel-plugin-macros@3.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/kentcdodds/babel-plugin-macros
+│  ├─ publisher: Kent C. Dodds
+│  ├─ email: me@kentcdodds.com
+│  ├─ url: https://kentcdodds.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/babel-plugin-macros
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/babel-plugin-macros/LICENSE
+├─ bufferutil@4.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/websockets/bufferutil
+│  ├─ publisher: Einar Otto Stangvik
+│  ├─ email: einaros@gmail.com
+│  ├─ url: http://2x.io
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/bufferutil
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/bufferutil/LICENSE
+├─ call-bind-apply-helpers@1.0.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/call-bind-apply-helpers
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/call-bind-apply-helpers
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/call-bind-apply-helpers/LICENSE
+├─ callsites@3.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/callsites
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/callsites
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/callsites/license
+├─ camelize@1.0.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/camelize
+│  ├─ publisher: James Halliday
+│  ├─ email: mail@substack.net
+│  ├─ url: http://substack.net
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/camelize
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/camelize/LICENSE
+├─ combined-stream@1.0.8
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/felixge/node-combined-stream
+│  ├─ publisher: Felix Geisendörfer
+│  ├─ email: felix@debuggable.com
+│  ├─ url: http://debuggable.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/combined-stream
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/combined-stream/License
+├─ convert-source-map@1.9.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/thlorenz/convert-source-map
+│  ├─ publisher: Thorsten Lorenz
+│  ├─ email: thlorenz@gmx.de
+│  ├─ url: http://thlorenz.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/babel-plugin/node_modules/convert-source-map
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/@emotion/babel-plugin/node_modules/convert-source-map/LICENSE
+├─ cookie@1.1.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jshttp/cookie
+│  ├─ publisher: Roman Shtylman
+│  ├─ email: shtylman@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/cookie
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/cookie/LICENSE
+├─ cosmiconfig@7.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/davidtheclark/cosmiconfig
+│  ├─ publisher: David Clark
+│  ├─ email: david.dave.clark@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/cosmiconfig
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/cosmiconfig/LICENSE
+├─ css-color-keywords@1.0.0
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/sonicdoe/css-color-keywords
+│  ├─ publisher: Jakob Krigovsky
+│  ├─ email: jakob@krigovsky.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/css-color-keywords
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/css-color-keywords/LICENSE
+├─ css-to-react-native@3.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/styled-components/css-to-react-native
+│  ├─ publisher: Jacob Parker
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/css-to-react-native
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/css-to-react-native/LICENSE.md
+├─ csstype@3.2.3
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/frenic/csstype
+│  ├─ publisher: Fredrik Nicol
+│  ├─ email: fredrik.nicol@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/csstype
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/csstype/LICENSE
+├─ d@1.0.2
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/d
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/d
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/d/LICENSE
+├─ date-fns@4.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/date-fns/date-fns
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/date-fns
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/date-fns/LICENSE.md
+├─ debug@2.6.9
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/visionmedia/debug
+│  ├─ publisher: TJ Holowaychuk
+│  ├─ email: tj@vision-media.ca
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket/node_modules/debug
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket/node_modules/debug/LICENSE
+├─ debug@3.2.7
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/visionmedia/debug
+│  ├─ publisher: TJ Holowaychuk
+│  ├─ email: tj@vision-media.ca
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/sockjs-client/node_modules/debug
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/sockjs-client/node_modules/debug/LICENSE
+├─ debug@4.4.3
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/debug-js/debug
+│  ├─ publisher: Josh Junon
+│  ├─ url: https://github.com/qix-
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/debug
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/debug/LICENSE
+├─ delayed-stream@1.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/felixge/node-delayed-stream
+│  ├─ publisher: Felix Geisendörfer
+│  ├─ email: felix@debuggable.com
+│  ├─ url: http://debuggable.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/delayed-stream
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/delayed-stream/License
+├─ dunder-proto@1.0.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/es-shims/dunder-proto
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/dunder-proto
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/dunder-proto/LICENSE
+├─ emoji-mart@5.6.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/missive/emoji-mart
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/emoji-mart
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/emoji-mart/LICENSE
+├─ error-ex@1.3.4
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/qix-/node-error-ex
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/error-ex
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/error-ex/LICENSE
+├─ es-define-property@1.0.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/es-define-property
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es-define-property
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es-define-property/LICENSE
+├─ es-errors@1.3.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/es-errors
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es-errors
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es-errors/LICENSE
+├─ es-object-atoms@1.1.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/es-object-atoms
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es-object-atoms
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es-object-atoms/LICENSE
+├─ es-set-tostringtag@2.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/es-shims/es-set-tostringtag
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es-set-tostringtag
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es-set-tostringtag/LICENSE
+├─ es5-ext@0.10.64
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/es5-ext
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es5-ext
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es5-ext/LICENSE
+├─ es6-iterator@2.0.3
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/medikoo/es6-iterator
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es6-iterator
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es6-iterator/LICENSE
+├─ es6-symbol@3.1.4
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/es6-symbol
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/es6-symbol
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/es6-symbol/LICENSE
+├─ escape-string-regexp@4.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/escape-string-regexp
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: https://sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/escape-string-regexp
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/escape-string-regexp/license
+├─ esniff@2.0.1
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/esniff
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/esniff
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/esniff/LICENSE
+├─ event-emitter@0.3.5
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/medikoo/event-emitter
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/event-emitter
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/event-emitter/LICENSE
+├─ eventsource@2.0.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/EventSource/eventsource
+│  ├─ publisher: Aslak Hellesøy
+│  ├─ email: aslak.hellesoy@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/eventsource
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/eventsource/LICENSE
+├─ ext@1.7.0
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/es5-ext.git#ext
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/ext
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/ext/LICENSE
+├─ faye-websocket@0.11.4
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/faye/faye-websocket-node
+│  ├─ publisher: James Coglan
+│  ├─ email: jcoglan@gmail.com
+│  ├─ url: http://jcoglan.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/faye-websocket
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/faye-websocket/LICENSE.md
+├─ find-root@1.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/js-n/find-root
+│  ├─ publisher: jsdnxx
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/find-root
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/find-root/LICENSE.md
+├─ follow-redirects@1.15.11
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/follow-redirects/follow-redirects
+│  ├─ publisher: Ruben Verborgh
+│  ├─ email: ruben@verborgh.org
+│  ├─ url: https://ruben.verborgh.org/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/follow-redirects
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/follow-redirects/LICENSE
+├─ form-data@4.0.5
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/form-data/form-data
+│  ├─ publisher: Felix Geisendörfer
+│  ├─ email: felix@debuggable.com
+│  ├─ url: http://debuggable.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/form-data
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/form-data/License
+├─ function-bind@1.1.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/Raynos/function-bind
+│  ├─ publisher: Raynos
+│  ├─ email: raynos2@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/function-bind
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/function-bind/LICENSE
+├─ get-intrinsic@1.3.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/get-intrinsic
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/get-intrinsic
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/get-intrinsic/LICENSE
+├─ get-proto@1.0.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/get-proto
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/get-proto
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/get-proto/LICENSE
+├─ gopd@1.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ljharb/gopd
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/gopd
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/gopd/LICENSE
+├─ has-symbols@1.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/inspect-js/has-symbols
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ url: http://ljharb.codes
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/has-symbols
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/has-symbols/LICENSE
+├─ has-tostringtag@1.0.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/inspect-js/has-tostringtag
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ url: http://ljharb.codes
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/has-tostringtag
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/has-tostringtag/LICENSE
+├─ hasown@2.0.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/inspect-js/hasOwn
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/hasown
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/hasown/LICENSE
+├─ hoist-non-react-statics@3.3.2
+│  ├─ licenses: BSD-3-Clause
+│  ├─ repository: https://github.com/mridgway/hoist-non-react-statics
+│  ├─ publisher: Michael Ridgway
+│  ├─ email: mcridgway@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/hoist-non-react-statics
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/hoist-non-react-statics/LICENSE.md
+├─ http-parser-js@0.5.10
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/creationix/http-parser-js
+│  ├─ publisher: Tim Caswell
+│  ├─ url: https://github.com/creationix
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/http-parser-js
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/http-parser-js/LICENSE.md
+├─ import-fresh@3.3.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/import-fresh
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: https://sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/import-fresh
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/import-fresh/license
+├─ inherits@2.0.4
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/isaacs/inherits
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/inherits
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/inherits/LICENSE
+├─ is-arrayish@0.2.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/qix-/node-is-arrayish
+│  ├─ publisher: Qix
+│  ├─ url: http://github.com/qix-
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/is-arrayish
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/is-arrayish/LICENSE
+├─ is-core-module@2.16.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/inspect-js/is-core-module
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/is-core-module
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/is-core-module/LICENSE
+├─ is-typedarray@1.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/hughsk/is-typedarray
+│  ├─ publisher: Hugh Kennedy
+│  ├─ email: hughskennedy@gmail.com
+│  ├─ url: http://hughsk.io/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/is-typedarray
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/is-typedarray/LICENSE.md
+├─ js-tokens@4.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/lydell/js-tokens
+│  ├─ publisher: Simon Lydell
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/js-tokens
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/js-tokens/LICENSE
+├─ jsesc@3.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/mathiasbynens/jsesc
+│  ├─ publisher: Mathias Bynens
+│  ├─ url: https://mathiasbynens.be/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/jsesc
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/jsesc/LICENSE-MIT.txt
+├─ json-parse-even-better-errors@2.3.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/npm/json-parse-even-better-errors
+│  ├─ publisher: Kat Marchán
+│  ├─ email: kzm@zkat.tech
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/json-parse-even-better-errors
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/json-parse-even-better-errors/LICENSE.md
+├─ lines-and-columns@1.2.4
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/eventualbuddha/lines-and-columns
+│  ├─ publisher: Brian Donovan
+│  ├─ email: brian@donovans.cc
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/lines-and-columns
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/lines-and-columns/LICENSE
+├─ math-intrinsics@1.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/es-shims/math-intrinsics
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/math-intrinsics
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/math-intrinsics/LICENSE
+├─ mime-db@1.52.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jshttp/mime-db
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/mime-db
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/mime-db/LICENSE
+├─ mime-types@2.1.35
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jshttp/mime-types
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/mime-types
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/mime-types/LICENSE
+├─ ms@2.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/zeit/ms
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket/node_modules/ms
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket/node_modules/ms/license.md
+├─ ms@2.1.3
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/vercel/ms
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/ms
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/ms/license.md
+├─ nanoid@3.3.11
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ai/nanoid
+│  ├─ publisher: Andrey Sitnik
+│  ├─ email: andrey@sitnik.ru
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/nanoid
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/nanoid/LICENSE
+├─ next-tick@1.1.0
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/next-tick
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: http://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/next-tick
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/next-tick/LICENSE
+├─ node-gyp-build@4.8.4
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/prebuild/node-gyp-build
+│  ├─ publisher: Mathias Buus
+│  ├─ url: @mafintosh
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/node-gyp-build
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/node-gyp-build/LICENSE
+├─ parent-module@1.0.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/parent-module
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/parent-module
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/parent-module/license
+├─ parse-json@5.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/parse-json
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: https://sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/parse-json
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/parse-json/license
+├─ path-parse@1.0.7
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/jbgutierrez/path-parse
+│  ├─ publisher: Javier Blanco
+│  ├─ email: http://jbgutierrez.info
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/path-parse
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/path-parse/LICENSE
+├─ path-type@4.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/path-type
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/path-type
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/path-type/license
+├─ picocolors@1.1.1
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/alexeyraspopov/picocolors
+│  ├─ publisher: Alexey Raspopov
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/picocolors
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/picocolors/LICENSE
+├─ postcss-value-parser@4.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/TrySound/postcss-value-parser
+│  ├─ publisher: Bogdan Chadkin
+│  ├─ email: trysound@yandex.ru
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/postcss-value-parser
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/postcss-value-parser/LICENSE
+├─ postcss@8.4.49
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/postcss/postcss
+│  ├─ publisher: Andrey Sitnik
+│  ├─ email: andrey@sitnik.ru
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/node_modules/postcss
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/node_modules/postcss/LICENSE
+├─ proxy-from-env@1.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/Rob--W/proxy-from-env
+│  ├─ publisher: Rob Wu
+│  ├─ email: rob@robwu.nl
+│  ├─ url: https://robwu.nl/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/proxy-from-env
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/proxy-from-env/LICENSE
+├─ querystringify@2.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/unshiftio/querystringify
+│  ├─ publisher: Arnout Kazemier
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/querystringify
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/querystringify/LICENSE
+├─ quiet-space@1.0.0
+│  ├─ licenses: [1m[31mUNLICENSED[39m[22m
+│  ├─ private: true
+│  ├─ publisher: thural
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/README.md
+├─ react-dom@19.2.4
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/facebook/react
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-dom
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-dom/LICENSE
+├─ react-easy-emoji@1.8.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/appfigures/react-easy-emoji
+│  ├─ publisher: Oz Michaeli
+│  ├─ url: http://twitter.com/oztune
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-easy-emoji
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-easy-emoji/LICENSE
+├─ react-error-boundary@6.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/bvaughn/react-error-boundary
+│  ├─ publisher: Brian Vaughn
+│  ├─ email: brian.david.vaughn@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-error-boundary
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-error-boundary/LICENSE
+├─ react-icons@5.5.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/react-icons/react-icons
+│  ├─ publisher: Goran Gajic
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-icons
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-icons/LICENSE
+├─ react-input-emoji@5.9.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/cesarwbr/react-input-emoji
+│  ├─ publisher: cesarwbr
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-input-emoji
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-input-emoji/LICENSE
+├─ react-is@16.13.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/facebook/react
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-is
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-is/LICENSE
+├─ react-router-dom@7.13.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/remix-run/react-router
+│  ├─ publisher: Remix Software
+│  ├─ email: hello@remix.run
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-router-dom
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-router-dom/LICENSE.md
+├─ react-router@7.13.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/remix-run/react-router
+│  ├─ publisher: Remix Software
+│  ├─ email: hello@remix.run
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react-router
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react-router/LICENSE.md
+├─ react@19.2.4
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/facebook/react
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/react
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/react/LICENSE
+├─ reflect-metadata@0.2.2
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/rbuckton/reflect-metadata
+│  ├─ publisher: Ron Buckton
+│  ├─ email: ron.buckton@microsoft.com
+│  ├─ url: http://github.com/rbuckton
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/reflect-metadata
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/reflect-metadata/LICENSE
+├─ requires-port@1.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/unshiftio/requires-port
+│  ├─ publisher: Arnout Kazemier
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/requires-port
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/requires-port/LICENSE
+├─ resolve-from@4.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/resolve-from
+│  ├─ publisher: Sindre Sorhus
+│  ├─ email: sindresorhus@gmail.com
+│  ├─ url: sindresorhus.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/resolve-from
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/resolve-from/license
+├─ resolve@1.22.11
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/browserify/resolve
+│  ├─ publisher: James Halliday
+│  ├─ email: mail@substack.net
+│  ├─ url: http://substack.net
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/resolve
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/resolve/LICENSE
+├─ safe-buffer@5.2.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/feross/safe-buffer
+│  ├─ publisher: Feross Aboukhadijeh
+│  ├─ email: feross@feross.org
+│  ├─ url: https://feross.org
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/safe-buffer
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/safe-buffer/LICENSE
+├─ scheduler@0.27.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/facebook/react
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/scheduler
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/scheduler/LICENSE
+├─ set-cookie-parser@2.7.2
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/nfriedly/set-cookie-parser
+│  ├─ publisher: Nathan Friedly
+│  ├─ url: http://nfriedly.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/set-cookie-parser
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/set-cookie-parser/LICENSE
+├─ shallowequal@1.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/dashed/shallowequal
+│  ├─ publisher: Alberto Leal
+│  ├─ email: mailforalberto@gmail.com
+│  ├─ url: github.com/dashed
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/shallowequal
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/shallowequal/LICENSE
+├─ sockjs-client@1.6.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sockjs/sockjs-client
+│  ├─ publisher: Bryce Kahle
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/sockjs-client
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/sockjs-client/LICENSE
+├─ source-map-js@1.2.1
+│  ├─ licenses: BSD-3-Clause
+│  ├─ repository: https://github.com/7rulnik/source-map-js
+│  ├─ publisher: Valentin 7rulnik Semirulnik
+│  ├─ email: v7rulnik@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/source-map-js
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/source-map-js/LICENSE
+├─ source-map@0.5.7
+│  ├─ licenses: BSD-3-Clause
+│  ├─ repository: https://github.com/mozilla/source-map
+│  ├─ publisher: Nick Fitzgerald
+│  ├─ email: nfitzgerald@mozilla.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/source-map
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/source-map/LICENSE
+├─ stompjs@2.3.3
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/jmesnil/stomp-websocket
+│  ├─ publisher: Jeff Mesnil
+│  ├─ email: jmesnil@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/stompjs
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/stompjs/LICENSE.txt
+├─ string-replace-to-array@2.1.1
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/appfigures/string-replace-to-array
+│  ├─ publisher: Oz Michaeli
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/string-replace-to-array
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/string-replace-to-array/LICENSE
+├─ styled-components@6.3.8
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/styled-components/styled-components
+│  ├─ publisher: Glen Maddern
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/LICENSE
+├─ stylis@4.2.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/thysultan/stylis.js
+│  ├─ publisher: Sultan Tarimo
+│  ├─ email: sultantarimo@me.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/stylis
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/stylis/LICENSE
+├─ stylis@4.3.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/thysultan/stylis.js
+│  ├─ publisher: Sultan Tarimo
+│  ├─ email: sultantarimo@me.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/node_modules/stylis
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/styled-components/node_modules/stylis/LICENSE
+├─ supports-preserve-symlinks-flag@1.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/inspect-js/node-supports-preserve-symlinks-flag
+│  ├─ publisher: Jordan Harband
+│  ├─ email: ljharb@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/supports-preserve-symlinks-flag
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/supports-preserve-symlinks-flag/LICENSE
+├─ tslib@2.8.1
+│  ├─ licenses: 0BSD
+│  ├─ repository: https://github.com/Microsoft/tslib
+│  ├─ publisher: Microsoft Corp.
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/tslib
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/tslib/LICENSE.txt
+├─ type@2.7.3
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/medikoo/type
+│  ├─ publisher: Mariusz Nowak
+│  ├─ email: medyk@medikoo.com
+│  ├─ url: https://www.medikoo.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/type
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/type/LICENSE
+├─ typedarray-to-buffer@3.1.5
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/feross/typedarray-to-buffer
+│  ├─ publisher: Feross Aboukhadijeh
+│  ├─ email: feross@feross.org
+│  ├─ url: http://feross.org/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/typedarray-to-buffer
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/typedarray-to-buffer/LICENSE
+├─ url-parse@1.5.10
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/unshiftio/url-parse
+│  ├─ publisher: Arnout Kazemier
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/url-parse
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/url-parse/LICENSE
+├─ utf-8-validate@5.0.10
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/websockets/utf-8-validate
+│  ├─ publisher: Einar Otto Stangvik
+│  ├─ email: einaros@gmail.com
+│  ├─ url: http://2x.io
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/utf-8-validate
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/utf-8-validate/LICENSE
+├─ websocket-driver@0.7.4
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/faye/websocket-driver-node
+│  ├─ publisher: James Coglan
+│  ├─ email: jcoglan@gmail.com
+│  ├─ url: http://jcoglan.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket-driver
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket-driver/LICENSE.md
+├─ websocket-extensions@0.1.4
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/faye/websocket-extensions-node
+│  ├─ publisher: James Coglan
+│  ├─ email: jcoglan@gmail.com
+│  ├─ url: http://jcoglan.com/
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket-extensions
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket-extensions/LICENSE.md
+├─ websocket@1.0.35
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/theturtle32/WebSocket-Node
+│  ├─ publisher: Brian McKelvey
+│  ├─ email: theturtle32@gmail.com
+│  ├─ url: https://github.com/theturtle32
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/websocket/LICENSE
+├─ yaeti@0.0.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/ibc/yaeti
+│  ├─ publisher: Iñaki Baz Castillo
+│  ├─ email: ibc@aliax.net
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/yaeti
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/yaeti/LICENSE
+├─ yaml@1.10.2
+│  ├─ licenses: ISC
+│  ├─ repository: https://github.com/eemeli/yaml
+│  ├─ publisher: Eemeli Aro
+│  ├─ email: eemeli@gmail.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/cosmiconfig/node_modules/yaml
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/cosmiconfig/node_modules/yaml/LICENSE
+├─ zod-validation-error@5.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/causaly/zod-validation-error
+│  ├─ publisher: Dimitrios C. Michalakos
+│  ├─ email: dimitris@jmike.gr
+│  ├─ url: https://github.com/jmike
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/zod-validation-error
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/zod-validation-error/LICENSE
+├─ zod@4.3.6
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/colinhacks/zod
+│  ├─ publisher: Colin McDonnell
+│  ├─ email: zod@colinhacks.com
+│  ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/zod
+│  └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/zod/LICENSE
+└─ zustand@5.0.10
+   ├─ licenses: MIT
+   ├─ repository: https://github.com/pmndrs/zustand
+   ├─ publisher: Paul Henschel
+   ├─ path: /home/sigma/github/QuietSpace-Frontend/node_modules/zustand
+   └─ licenseFile: /home/sigma/github/QuietSpace-Frontend/node_modules/zustand/LICENSE
