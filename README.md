@@ -293,26 +293,6 @@ Documentation is available in the `/docs` directory:
 - CI/CD pipeline with testing
 - Security scanning and vulnerability detection
 
-## Contributing
-
-We welcome contributions! Please follow our guidelines:
-
-### Contribution Guidelines
-- Follow existing code style and architecture patterns
-- Write clear, commented code with TypeScript type safety
-- Add/update tests for new functionality
-- Run linting and type checking before submitting
-- Update documentation for new features
-- Follow the architecture principles
-- Use the dependency injection system appropriately
-
-### Development Workflow
-1. Create feature branch from `main`
-2. Implement changes following the feature structure
-3. Add tests (unit, integration, E2E)
-4. Update documentation
-5. Submit pull request with detailed description
-
 ## Contact
 
 Reach out via GitHub issues or discussions for any queries, bug reports, or feature requests.
@@ -332,6 +312,35 @@ This project is a social media platform currently in early development with:
 
 The system demonstrates modern software engineering practices and is actively being developed.
 
-# License
+# License Notice
 
-This repository is licensed under the GNU Affero General Public License v3.0 (AGPLv3). This license requires that any modifications or distributions of the software, including commercial or proprietary use, must be made available under the same terms. Failure to comply with these terms may result in legal action.
+**Proprietary Software – Strictly Limited to Educational Purposes Only – All Other Rights Reserved**
+
+Copyright © 2026 Tural Musaibov. All rights reserved.
+
+This software and all associated materials (the "Software") are the exclusive proprietary property of Tural Musaibov.
+
+**Limited License Granted Solely for Educational Purposes**  
+A narrow, revocable, non-transferable license is granted **only** for bona fide personal or institutional non-commercial educational use (e.g., learning, study, academic coursework, non-profit teaching/demos).  
+
+**Mandatory Attribution**: Any use must prominently credit:  
+"This work is based on proprietary software © 2026 Tural Musaibov. All rights reserved. Used under limited educational license only."
+
+**All Other Uses Strictly Prohibited**  
+No rights are granted for commercial, professional, production, deployment, modification, distribution, sale, or any non-educational purpose without my explicit prior written permission.
+
+The Software is provided "AS IS" with no warranties. I disclaim all liability.
+
+For any other use or permissions, contact:  
+Tural Musaibov  
+tural.musaibov@gmail.com  
+LinkedIn: https://linkedin.com/in/tural-musaibov
+
+# Third-Party License Notices
+
+This project uses open-source third-party libraries under permissive licenses (primarily MIT, Apache-2.0, and BSD variants). Full license texts, copyright notices, and attributions for all production dependencies are available in:
+
+- /third-party-licenses.txt (in the deployed app)  
+- Or in the repository's `/public/third-party-licenses.txt` file.
+
+All third-party code is used in compliance with their respective licenses. No copyleft obligations apply, and this project remains proprietary (see License Notice above).
