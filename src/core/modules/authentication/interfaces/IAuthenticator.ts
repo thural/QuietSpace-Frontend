@@ -176,6 +176,28 @@ export interface IAuthenticator {
     getUptime(): number;
 
     /**
+     * Gets core capabilities for authentication and token management
+     * 
+     * @returns Array of core capability identifiers
+     */
+    getCoreCapabilities(): string[];
+
+    /**
+     * Performs comprehensive authentication with token management
+     * 
+     * @param credentials - User authentication credentials
+     * @returns Authentication result with session and token setup
+     */
+    authenticateWithToken(credentials: AuthCredentials): Promise<AuthResult<AuthSession>>;
+
+    /**
+     * Validates current session and refreshes token if needed
+     * 
+     * @returns Validation result with refreshed session if applicable
+     */
+    validateAndRefresh(): Promise<AuthResult<AuthSession>>;
+
+    /**
      * Gracefully shuts down the provider
      * 
      * @param timeout - Optional timeout for shutdown in milliseconds

@@ -374,4 +374,19 @@ export interface IProviderManager {
      * @returns Promise when all providers are shut down
      */
     shutdownAllProviders(timeout?: number): Promise<void>;
+
+    /**
+     * Gets management capabilities for provider operations
+     * 
+     * @returns Array of management capability identifiers
+     */
+    getManagementCapabilities(): string[];
+
+    /**
+     * Performs comprehensive provider management with multiple operations
+     * 
+     * @param operations - Array of provider management operations
+     * @returns Management result with operation outcomes
+     */
+    manageProviders(operations: any[]): Promise<any>;
 }

@@ -17,10 +17,10 @@ import type { AuthCredentials, AuthResult, AuthSession } from '../types/auth.dom
 export interface IUserManager {
     /** Provider name for identification */
     readonly name: string;
-    
+
     /** Provider type for categorization */
     readonly type: string;
-    
+
     /** Provider configuration settings */
     readonly config: Record<string, unknown>;
 
@@ -68,6 +68,22 @@ export interface IUserManager {
      * @returns Array of capability identifiers
      */
     getCapabilities(): string[];
+
+    /**
+     * Gets management capabilities for user and provider operations
+     * 
+     * @returns Array of management capability identifiers
+     */
+    getManagementCapabilities(): string[];
+
+    /**
+     * Performs comprehensive user management with multiple operations
+     * 
+     * @param userId - User identifier
+     * @param operations - Array of user management operations
+     * @returns Management result with operation outcomes
+     */
+    manageUser(userId: string, operations: any[]): Promise<any>;
 
     /**
      * Initializes user manager (optional)

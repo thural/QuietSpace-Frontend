@@ -24,10 +24,7 @@ export {
 
 // NEW: MFA services (refactored from MFAService)
 export {
-    MFAOrchestrator,
-    TOTPService,
-    SMSService,
-    BackupCodeService
+    UnifiedMFAOrchestrator
 } from './mfa';
 export type {
     IMFAService,
@@ -88,12 +85,19 @@ export type {
     AuthEvent
 } from './types/auth.domain.types';
 
-// Factory functions - Clean service creation
+// Utility functions - Enhanced workflow API
 export {
-    createDefaultAuthOrchestrator,
-    createCustomAuthOrchestrator,
-    createAuthOrchestratorWithAllProviders
-} from './factory';
+    createCompleteAuthService,
+    getAuthCoreCapabilities,
+    getAuthManagementCapabilities,
+    getAllAuthCapabilities,
+    performAuthWithToken,
+    performValidateAndRefresh,
+    performManageUser,
+    performManageProviders,
+    performCompleteAuthentication,
+    getServiceHealthStatus
+} from './utils/authWorkflows';
 
 // Feature authentication factory functions - DI-based auth for features
 export {
