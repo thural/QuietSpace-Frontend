@@ -5,17 +5,17 @@
  * Internal implementation classes are completely hidden from consumers.
  */
 
-import { TYPES } from '../di/types';
+import { TYPES } from '../dependency-injection/types';
 
 import { ApiClient } from './api/ApiClient';
-import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
 import { RestClient } from './rest/RestClient';
 import { createApiError, ERROR_CODES } from './utils';
+import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
 
 // Import implementations (internal)
 
 import type { IApiClient, IApiClientConfig } from './interfaces';
-import type { Container } from '../di/container/Container';
+import type { Container } from '../dependency-injection/container/Container';
 
 
 /**
@@ -34,11 +34,17 @@ export function createApiClient(config?: Partial<IApiClientConfig>): IApiClient 
             ...config?.headers
         },
         retryConfig: {
-            ...DEFAULT_API_CONFIG.retryConfig,
+            maxAttempts: DEFAULT_API_CONFIG.retryConfig?.maxAttempts ?? 3,
+            retryDelay: DEFAULT_API_CONFIG.retryConfig?.retryDelay ?? 1000,
+            retryCondition: DEFAULT_API_CONFIG.retryConfig?.retryCondition || (() => true),
+            exponentialBackoff: DEFAULT_API_CONFIG.retryConfig?.exponentialBackoff ?? true,
             ...config?.retryConfig
         },
         cacheConfig: {
-            ...DEFAULT_API_CONFIG.cacheConfig,
+            enabled: DEFAULT_API_CONFIG.cacheConfig?.enabled ?? true,
+            ttl: DEFAULT_API_CONFIG.cacheConfig?.ttl ?? 300000,
+            maxSize: DEFAULT_API_CONFIG.cacheConfig?.maxSize ?? 1000,
+            keyGenerator: DEFAULT_API_CONFIG.cacheConfig?.keyGenerator || ((url: string) => url),
             ...config?.cacheConfig
         }
     };
@@ -134,7 +140,7 @@ export function createRestClientFromDI(
  * @returns Environment-specific API client
  */
 export function createApiClientForEnvironment(
-    environment: keyof typeof ENVIRONMENT_CONFIG,
+    environment: 'development' | 'staging' | 'production',
     config?: Partial<IApiClientConfig>
 ): IApiClient {
     const envConfig = ENVIRONMENT_CONFIG[environment];
