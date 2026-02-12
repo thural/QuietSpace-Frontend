@@ -1,30 +1,65 @@
 /**
- * Core Hooks Index
+ * Custom Hooks - Enterprise Edition
  *
- * Exports all custom query hooks for use throughout the application
+ * This module provides comprehensive hooks for enterprise-grade features including:
+ * - Custom query hooks with ICacheProvider integration
+ * - WebSocket hooks for real-time communication
+ * - Authentication hooks for enterprise auth
+ * - Dependency injection container support
+ * - Global state management with Zustand
+ * - Optimistic updates and rollback
+ * - Retry logic with exponential backoff
+ * - Background refetching and invalidation
+ * - Type-safe interfaces throughout
  */
 
-// Export custom query hooks from modules
-export { useCustomQuery } from '../modules/hooks/useCustomQuery';
-export { useCustomMutation } from '../modules/hooks/useCustomMutation';
-export { useCustomInfiniteQuery } from '../modules/hooks/useCustomInfiniteQuery';
+// Core query hooks
+export { useCustomQuery } from './useCustomQuery';
+export type { QueryOptions, QueryState, CustomQueryResult } from './useCustomQuery';
 
-// Export types
-export type { 
-  QueryOptions, 
-  QueryState, 
-  CustomQueryResult 
-} from '../modules/hooks/useCustomQuery';
+export { useCustomMutation } from './useCustomMutation';
+export type { MutationOptions, MutationState, CustomMutationResult } from './useCustomMutation';
 
-export type { 
-  MutationOptions, 
-  MutationState, 
-  CustomMutationResult 
-} from '../modules/hooks/useCustomMutation';
-
+export { useCustomInfiniteQuery } from './useCustomInfiniteQuery';
 export type {
   InfiniteQueryOptions,
   InfiniteQueryPage,
   InfiniteQueryState,
   CustomInfiniteQueryResult
-} from '../modules/hooks/useCustomInfiniteQuery';
+} from './useCustomInfiniteQuery';
+
+// Global state management
+export {
+  useQueryState,
+  useIsFetching,
+  useIsMutating,
+  useGlobalLoading,
+  useQuerySubscription,
+  useMutationSubscription,
+  useQueryStateStore
+} from './useQueryState';
+export type { GlobalQueryState } from './useQueryState';
+
+// WebSocket hooks
+export {
+  useEnterpriseWebSocket,
+  useFeatureWebSocket,
+  useWebSocketConnection,
+  useWebSocketMetrics
+} from './useWebSocket';
+export type {
+  UseEnterpriseWebSocketOptions,
+  UseFeatureWebSocketOptions,
+  WebSocketConnectionState,
+  WebSocketMetrics
+} from './useWebSocket';
+
+// Authentication hooks
+export {
+  useEnterpriseAuth,
+  useFeatureAuth,
+  useReactiveFeatureAuth
+} from './useAuthentication';
+
+// Re-export for convenience
+export type { ICacheProvider, CacheConfig, CacheStats } from '@/core/cache';

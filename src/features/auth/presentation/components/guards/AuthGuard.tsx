@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useFeatureAuth } from '@/core/modules/authentication/hooks/useFeatureAuth';
+import { useFeatureAuth } from '@/core/hooks/useAuthentication';
 import LoadingFallback from '@/app/LoadingFallback';
 import ErrorFallback from '@/shared/ui/components/feedback/ErrorFallback';
 

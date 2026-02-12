@@ -5,8 +5,8 @@
  * Provides type-safe WebSocket functionality for React components.
  */
 
-import { useDIContainer } from '@core/di';
-import { TYPES } from '@core/di/types';
+import { useDIContainer } from '../modules/dependency-injection/providers';
+import { TYPES } from '../modules/dependency-injection/types';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 import type {
@@ -16,7 +16,7 @@ import type {
   WebSocketMessage,
   WebSocketEventListener,
   ConnectionMetrics
-} from '@/core/websocket';
+} from '../modules/websocket';
 
 export interface UseEnterpriseWebSocketOptions {
   autoConnect?: boolean;
@@ -54,7 +54,7 @@ export interface WebSocketMetrics {
 /**
  * Enterprise WebSocket Hook
  *
- * Main hook for accessing the enterprise WebSocket service.
+ * Main hook for accessing enterprise WebSocket service.
  */
 export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = {}) {
   const {
@@ -168,7 +168,7 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
   const subscribe = useCallback((feature: string, listener: WebSocketEventListener) => {
     return webSocketService.subscribe(feature, {
       ...listener,
-      onMessage: (message) => {
+      onMessage: (message: WebSocketMessage) => {
         updateMetrics();
         listener.onMessage?.(message);
       },
@@ -176,11 +176,11 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
         updateConnectionState();
         listener.onConnect?.();
       },
-      onDisconnect: (event) => {
+      onDisconnect: (event: CloseEvent) => {
         updateConnectionState();
         listener.onDisconnect?.(event);
       },
-      onError: (error) => {
+      onError: (error: Event) => {
         updateConnectionState();
         listener.onError?.(error);
       }
@@ -190,7 +190,7 @@ export function useEnterpriseWebSocket(options: UseEnterpriseWebSocketOptions = 
   // Auto-connect on mount
   useEffect(() => {
     if (autoConnect || reconnectOnMount) {
-      // In a real implementation, you would get the token from auth store
+      // In a real implementation, you would get token from auth store
       // const token = getAuthToken();
       // if (token) {
       //   connect(token).catch(console.error);
@@ -272,12 +272,12 @@ export function useFeatureWebSocket(options: UseFeatureWebSocketOptions) {
 
     if (webSocket.isConnected && !isSubscribed) {
       unsubscribe = webSocket.subscribe(feature, {
-        onMessage: (message) => {
+        onMessage: (message: WebSocketMessage) => {
           setFeatureMessages(prev => [message, ...prev.slice(0, 99)]); // Keep last 100 messages
           onMessage?.(message);
         },
-        onError: (error) => {
-          onError?.(error instanceof Error ? error : new Error('WebSocket error'));
+        onError: (error: Event) => {
+          onError?.(error as unknown as Error);
         },
         onConnect: () => {
           setIsSubscribed(true);

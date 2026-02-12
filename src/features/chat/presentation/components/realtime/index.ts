@@ -14,7 +14,7 @@ export {
     useFeatureWebSocket,
     useWebSocketConnection,
     useWebSocketMetrics
-} from '@/core/websocket/hooks/useEnterpriseWebSocket';
+} from '@/core/hooks/useWebSocket';
 
 // Export types from core WebSocket system
 export type {
@@ -22,7 +22,7 @@ export type {
     UseFeatureWebSocketOptions,
     WebSocketConnectionState,
     WebSocketMetrics
-} from '@/core/websocket/hooks/useEnterpriseWebSocket';
+} from '@/core/hooks/useWebSocket';
 
 // Utilities
 export const RealTimeUtils = {

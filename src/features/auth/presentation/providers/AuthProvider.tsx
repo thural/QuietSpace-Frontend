@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from "react";
-import { useFeatureAuth } from "@/core/modules/authentication/hooks/useFeatureAuth";
+import { useFeatureAuth } from '@/core/hooks/useAuthentication';
 import { getRolePermissions } from "../../domain/permissions";
 
 interface AuthProviderProps {

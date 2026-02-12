@@ -1,15 +1,17 @@
 /**
- * Enterprise Authentication Hook
+ * Enterprise Authentication Hooks.
  *
- * Provides comprehensive authentication operations using the core authentication module.
- * This hook eliminates direct auth state access and enforces enterprise patterns.
+ * React hooks for integrating with the enterprise authentication system.
+ * Provides type-safe authentication functionality for React components.
  */
 
 import { useCallback, useState } from 'react';
-import { createDefaultAuthOrchestrator } from '../factory';
-import { useFeatureAuth } from './useFeatureAuth';
 
-import type { AuthCredentials } from '../types/auth.domain.types';
+import { useDIContainer } from '../modules/dependency-injection/providers';
+import { createFeatureAuthService } from '../modules/authentication/factory/featureAuthFactory';
+import { createDefaultAuthOrchestrator } from '../modules/authentication/factory';
+
+import type { AuthCredentials } from '../modules/authentication/types/auth.domain.types';
 
 // Define signup body type for compatibility
 interface SignupBody {
@@ -26,9 +28,99 @@ interface LoginBody {
 }
 
 /**
+ * Hook for accessing authentication state in features
+ *
+ * @returns Authentication state and methods
+ */
+export const useFeatureAuth = () => {
+    const container = useDIContainer();
+    const authService = createFeatureAuthService(container);
+
+    const getToken = useCallback(() => {
+        return authService.getToken();
+    }, [authService]);
+
+    const getAuthData = useCallback(() => {
+        return authService.getAuthData();
+    }, [authService]);
+
+    const isAuthenticated = useCallback(() => {
+        return authService.isAuthenticated();
+    }, [authService]);
+
+    const getUserId = useCallback(() => {
+        return authService.getUserId();
+    }, [authService]);
+
+    const getUserEmail = useCallback(() => {
+        return authService.getUserEmail();
+    }, [authService]);
+
+    const getAuthHeader = useCallback(() => {
+        return authService.getAuthHeader();
+    }, [authService]);
+
+    const hasPermission = useCallback((permission: string) => {
+        return authService.hasPermission(permission);
+    }, [authService]);
+
+    const hasAnyRole = useCallback((roles: string[]) => {
+        return authService.hasAnyRole(roles);
+    }, [authService]);
+
+    const setToken = useCallback((token: string) => {
+        authService.setToken(token);
+    }, [authService]);
+
+    const clearAuth = useCallback(() => {
+        authService.clearAuth();
+    }, [authService]);
+
+    const refreshToken = useCallback(async () => {
+        return await authService.refreshToken();
+    }, [authService]);
+
+    return {
+        // State getters
+        token: getToken(),
+        authData: getAuthData(),
+        isAuthenticated: isAuthenticated(),
+        userId: getUserId(),
+        userEmail: getUserEmail(),
+        authHeader: getAuthHeader(),
+
+        // Permission checks
+        hasPermission,
+        hasAnyRole,
+
+        // Actions
+        setToken,
+        clearAuth,
+        refreshToken,
+
+        // Raw service access (for advanced usage)
+        authService
+    };
+};
+
+/**
+ * Hook for accessing authentication state with reactive updates
+ *
+ * @returns Authentication state with reactivity
+ */
+export const useReactiveFeatureAuth = () => {
+    const auth = useFeatureAuth();
+
+    // TODO: Add reactivity by listening to auth events
+    // This could be implemented using an event system
+
+    return auth;
+};
+
+/**
  * Enterprise authentication hook with full functionality
  *
- * Provides all authentication operations through the core auth module,
+ * Provides all authentication operations through core auth module,
  * eliminating direct state access and enforcing enterprise patterns.
  */
 export const useEnterpriseAuth = () => {
@@ -241,7 +333,7 @@ export const useEnterpriseAuth = () => {
                 return false;
             }
 
-            // Basic token validation - in a real implementation, this would validate with the server
+            // Basic token validation - in a real implementation, this would validate with server
             const tokenParts = token.split('.');
             if (tokenParts.length !== 3) {
                 handleAuthFailure();

@@ -123,17 +123,6 @@ export type {
   CacheInvalidationConfig
 } from './cache/WebSocketCacheManager';
 
-// Hooks (React integration)
-export {
-  useEnterpriseWebSocket,
-  useFeatureWebSocket,
-  useWebSocketConnection,
-  useWebSocketMetrics,
-  type UseEnterpriseWebSocketOptions,
-  type UseFeatureWebSocketOptions,
-  type WebSocketConnectionState
-} from './hooks/useEnterpriseWebSocket';
-
 // Internal Utilities - NOT EXPORTED (Black Box Pattern)
 // WebSocketMessageBuilder, WebSocketMessageValidator, WebSocketConnectionMonitor
 // are internal utilities and not part of the public API

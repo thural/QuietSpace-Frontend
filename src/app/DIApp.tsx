@@ -16,10 +16,8 @@ import RoutesConfig from "./RoutesConfig";
 import { useGetChats } from "@chat/data/useChatData.ts";
 import { useGetNotifications } from "@notification/data";
 import { useGetCurrentUser } from "@profile/data";
-import { useEnterpriseAuth } from "@/core/modules/authentication";
-import { useNotificationWebSocket } from "@/core/websocket/hooks";
-import { useChatWebSocket } from "@/core/websocket/hooks";
-import { useEnterpriseWebSocket } from "@/core/websocket/hooks";
+import { useEnterpriseAuth } from "@/core/hooks/useAuthentication";
+import { useFeatureWebSocket } from "@/core/hooks/useWebSocket";
 import { useAuthStore } from "../core/store/zustand";
 
 // DI Services (new)
@@ -75,73 +73,77 @@ const DIApp = () => {
         autoConnect: true
     });
 
-    const { connect: connectChat, disconnect: disconnectChat } = useChatWebSocket({
-        autoConnect: true,
-        onError: (error) => console.error('Chat WebSocket error:', error)
-    });
+    const chatSocket = useFeatureWebSocket({ feature: "chat" });
+    const notificationSocket = useFeatureWebSocket({ feature: "notifications" });
 
-    const { connect: connectNotifications, disconnect: disconnectNotifications } = useNotificationWebSocket({
-        autoConnect: true,
-        onError: (error) => console.error('Notification WebSocket error:', error)
-    });
-
-    // Initialize WebSocket connections
-    useEffect(() => {
-        connectWebSocket();
-        connectChat();
-        connectNotifications();
-
-        return () => {
-            disconnectWebSocket();
-            disconnectChat();
-            disconnectNotifications();
-        };
-    }, [connectWebSocket, connectChat, connectNotifications, disconnectWebSocket, disconnectChat, disconnectNotifications]);
-
-    useGetNotifications();
-    useGetChats();
-
-    const { refreshToken } = useEnterpriseAuth();
-    const { validateSession } = useEnterpriseAuth();
-
-    /**
-     * Initializes authentication by setting up token refresh and validating session.
-     * Redirects to sign-in page on error.
-     */
-    const initAuth = () => {
-        try {
-            refreshToken();
-            // Optional: Validate session with enterprise security
-            validateSession().catch(console.error);
-        } catch (error: unknown) {
-            console.error(error);
-            navigate("/signin");
-        }
+    const { connect: connectChat, disconnect: disconnectChat } = {
+        connect: chatSocket.connect || (() => Promise.resolve()),
+        disconnect: chatSocket.disconnect || (() => { }),
+        sendMessage: chatSocket.sendFeatureMessage || (() => Promise.resolve()),
+        ...chatSocket
     };
 
-    useEffect(initAuth, []);
+    const { connect: connectNotifications, disconnect: disconnectNotifications } = {
+        connect: notificationSocket.connect || (() => Promise.resolve()),
+        disconnect: notificationSocket.disconnect || (() => { }),
+        sendMessage: notificationSocket.sendFeatureMessage || (() => Promise.resolve()),
+        // Initialize WebSocket connections
+        useEffect(() => {
+    connectWebSocket();
+    chatSocket.connect();
+    notificationSocket.connect();
 
-    return (
-        <DIProvider container={container}>
-            {/* Theme is now managed by DI ThemeService */}
-            <div>
-                {isUserLoading ? (
-                    <LoadingFallback />
-                ) : !isAuthenticated || isUserError ? (
-                    <Suspense fallback={<LoadingFallback />}>
-                        <AuthPage />
+    return () => {
+        disconnectWebSocket();
+        chatSocket.disconnect();
+        notificationSocket.disconnect();
+    };
+}, [connectWebSocket, disconnectWebSocket, chatSocket, notificationSocket]);
+
+useGetNotifications();
+useGetChats();
+
+const { refreshToken } = useEnterpriseAuth();
+const { validateSession } = useEnterpriseAuth();
+
+/**
+ * Initializes authentication by setting up token refresh and validating session.
+ * Redirects to sign-in page on error.
+ */
+const initAuth = () => {
+    try {
+        refreshToken();
+        // Optional: Validate session with enterprise security
+        validateSession().catch(console.error);
+    } catch (error: unknown) {
+        console.error(error);
+        navigate("/signin");
+    }
+};
+
+useEffect(initAuth, []);
+
+return (
+    <DIProvider container={container}>
+        {/* Theme is now managed by DI ThemeService */}
+        <div>
+            {isUserLoading ? (
+                <LoadingFallback />
+            ) : !isAuthenticated || isUserError ? (
+                <Suspense fallback={<LoadingFallback />}>
+                    <AuthPage />
+                </Suspense>
+            ) : (
+                <>
+                    <NavBar />
+                    <Suspense fallback={<LoadingSpinner size="md" />}>
+                        <RoutesConfig />
                     </Suspense>
-                ) : (
-                    <>
-                        <NavBar />
-                        <Suspense fallback={<LoadingSpinner size="md" />}>
-                            <RoutesConfig />
-                        </Suspense>
-                    </>
-                )}
-            </div>
-        </DIProvider>
-    );
+                </>
+            )}
+        </div>
+    </DIProvider>
+);
 };
 
 export default DIApp;

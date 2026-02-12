@@ -173,17 +173,6 @@ export {
 //     useAuthStatus
 // } from './hooks';
 
-// Feature authentication hooks - DI-based auth for features
-export {
-    useFeatureAuth,
-    useReactiveFeatureAuth
-} from './hooks/useFeatureAuth';
-
-// Enterprise authentication hooks - Full-featured auth with enterprise patterns
-export {
-    useEnterpriseAuth
-} from './hooks/useEnterpriseAuth';
-
 // Enterprise Token Refresh Manager
 export {
     EnterpriseTokenRefreshManager,
