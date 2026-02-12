@@ -8,10 +8,10 @@
 import { ReactNode, createContext, memo, useMemo, useState } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
-import { enhanceTheme } from './enhancers/themeEnhancers';
-import { getTheme, getThemeVariants } from './variants';
+import { enhanceTheme } from '../../../../core/modules/theming/enhancers/themeEnhancers';
+import { getTheme, getThemeVariants } from '../../../../core/modules/theming/variants';
 
-import type { ThemeTokens } from './tokens';
+import type { ThemeTokens } from '../../../../core/modules/theming/tokens';
 
 export interface EnhancedTheme extends ThemeTokens {
   // Add any computed theme values here

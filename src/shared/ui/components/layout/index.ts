@@ -12,3 +12,6 @@ export { default as DefaultContainer } from './DefaultContainer';
 export { default as InfinateScrollContainer } from './InfinateScrollContainer';
 export { default as Overlay } from './Overlay';
 export { default as OverlayWithStore } from './OverlayWithStore';
+export { Container } from './Container';
+export { FlexContainer } from './FlexContainer';
+export { GridContainer } from './GridContainer';

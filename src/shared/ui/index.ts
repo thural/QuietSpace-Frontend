@@ -37,6 +37,9 @@ export * from './components/navigation';
 // Typography Components
 export * from './components/typography';
 
+// Provider Components (NEW - migrated from core)
+export * from './components/providers';
+
 // ====================================================================
 // CORE COMPONENTS
 // ====================================================================
@@ -55,6 +58,9 @@ export * from './styles/base-simple';
 
 // Component Styles
 export * from './styles';
+
+// UI Utilities (NEW - migrated from core)
+export * from './utils';
 
 // ====================================================================
 // TYPES & INTERFACES
@@ -108,7 +114,7 @@ export const UI_LIBRARY_INFO = {
   description: 'Central UI component library for QuietSpace application',
   components: {
     layout: 'Layout and container components',
-    forms: 'Form input and control components', 
+    forms: 'Form input and control components',
     feedback: 'Loading, error, and feedback components',
     user: 'User profile and avatar components',
     utility: 'Utility and helper components',

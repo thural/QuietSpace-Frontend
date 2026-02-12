@@ -3,8 +3,8 @@
  *
  * Provides UI integration hooks for React components:
  * - Theme management and styling
- * - Dependency injection container access
+ * 
+ * NOTE: Dependency injection hooks have been moved to @/shared/ui/components/providers
  */
 
 export * from './theme';
-export * from './dependency-injection';

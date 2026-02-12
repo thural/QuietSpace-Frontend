@@ -3,16 +3,12 @@
  *
  * Clean public interface for theme system consumers.
  * Internal implementation details are hidden.
+ * 
+ * NOTE: Provider components have been moved to @/shared/ui/components/providers
  */
 
 // Core theme system
 export { themeSystem, ThemeSystem } from '../ThemeSystem';
-
-// Provider components
-export {
-    ThemeProvider,
-    EnhancedThemeProvider
-} from '../providers';
 
 // Hooks for React integration
 export {
@@ -20,7 +16,7 @@ export {
     useThemeSwitch,
     useThemeTokens,
     useTheme
-} from '@/core/hooks/ui/theme';
+} from '../../../hooks/ui/theme';
 
 // Type exports for public API
 export type {
@@ -30,9 +26,9 @@ export type {
     ThemeContextValue
 } from '../types/ProviderTypes';
 
-// Utility exports
+// Utility exports - Now re-exported from shared UI
 export {
     createStyledComponent,
     media,
     animations
-} from '../styledUtils';
+} from '../../../../shared/ui/utils';

@@ -2,21 +2,21 @@
  * Styled Components Performance Utilities.
  *
  * Legacy file maintained for backward compatibility.
- * All functionality has been moved to dedicated modules.
+ * All functionality has been moved to shared UI utilities.
  *
- * @deprecated Import from specific modules instead:
- * - factories/styledFactory
- * - utils/mediaQueries
- * - animations/animations
- * - components/layoutComponents
- * - components/uiComponents
- * - hooks/utilityHooks
+ * @deprecated Import from @/shared/ui/utils instead:
+ * - createStyledComponent → @/shared/ui/utils/styledFactory
+ * - media → @/shared/ui/utils/mediaQueries
+ * - animations → @/shared/ui/utils/animations
+ * - useResponsiveStyles → @/core/hooks/ui/theme
  */
 
-// Re-export from new locations for backward compatibility
-export { createStyledComponent } from './factories/styledFactory';
-export { media } from './utils/mediaQueries';
-export { animations } from './animations/animations';
-export { Container, FlexContainer, GridContainer } from './components/layoutComponents';
-export { StyledButton } from './components/uiComponents';
-export { useResponsiveStyles } from '@/core/hooks/ui/theme';
+// Re-export from new shared UI locations for backward compatibility
+export { createStyledComponent } from '../../../../../shared/ui/utils/styledFactory';
+export { media } from '../../../../../shared/ui/utils/mediaQueries';
+export { animations } from '../../../../../shared/ui/utils/animations';
+export { useResponsiveStyles } from '../../hooks/ui/theme';
+
+// NOTE: UI components have been moved to shared/ui/components
+// Container, FlexContainer, GridContainer → @/shared/ui/components/layout
+// StyledButton → @/shared/ui/components/forms

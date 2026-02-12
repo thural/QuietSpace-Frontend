@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { createContext, useContext, useCallback, useMemo } from 'react';
-import { Container } from '../container/Container';
+import { Container } from '../../../../core/modules/dependency-injection/container/Container';
 
 // Define local types to avoid import issues
 type ServiceIdentifier<T = any> = string | symbol | (new (...args: any[]) => T);

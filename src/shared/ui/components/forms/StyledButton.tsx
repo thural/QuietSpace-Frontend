@@ -1,13 +1,13 @@
 /**
- * UI Components.
+ * StyledButton Component.
  *
- * Pre-built UI components using styled components.
- * Provides clean separation of UI component logic.
+ * Optimized button component with variants and sizes.
+ * Provides consistent button styling across the application.
  */
 
 import { css } from 'styled-components';
 
-import { createStyledComponent } from '../factories/styledFactory';
+import { createStyledComponent } from '../../../../core/modules/theming/factories/styledFactory';
 
 // Extend DefaultTheme to include our enhanced theme
 declare module 'styled-components' {

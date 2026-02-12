@@ -3,9 +3,11 @@
  *
  * Factory functions for creating optimized styled components.
  * Provides clean separation of component creation logic.
+ * 
+ * Moved from core theming to shared UI utilities.
  */
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 /**
  * Optimized styled component factory with memoization

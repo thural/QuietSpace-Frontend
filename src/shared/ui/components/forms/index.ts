@@ -24,3 +24,6 @@ export { default as EnterpriseInput } from './EnterpriseInput';
 
 // Styles
 export * from './CheckboxStyles';
+
+// Migrated components from core
+export { StyledButton } from './StyledButton';

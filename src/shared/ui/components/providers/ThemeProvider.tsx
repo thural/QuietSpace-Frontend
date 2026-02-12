@@ -10,9 +10,9 @@ import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
 import { useThemeEnhancement } from '@/core/hooks/ui/theme';
 
-import { ThemeContext } from './ThemeContext';
+import { ThemeContext } from '../../../../core/modules/theming/providers/ThemeContext';
 
-import type { ThemeProviderProps } from '../types/ProviderTypes';
+import type { ThemeProviderProps } from '../../../../core/modules/theming/types/ProviderTypes';
 
 
 
