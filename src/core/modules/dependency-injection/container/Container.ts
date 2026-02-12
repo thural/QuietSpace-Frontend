@@ -10,6 +10,9 @@ import { ServiceLifetime } from '../registry/ServiceRegistry';
 
 import { ServiceContainer } from './ServiceContainer';
 
+// Import centralized error handling
+import { createSystemError } from '../../error';
+
 import type { ServiceIdentifier } from '../registry/ServiceRegistry';
 import type { TypeKeys } from '../types';
 
@@ -262,6 +265,11 @@ export class Container {
             }
           } catch (error) {
             console.warn(`Failed to auto-register ${serviceName}:`, error);
+            throw createSystemError(
+              `Failed to auto-register service: ${serviceName}`,
+              'Container',
+              'autoRegister'
+            );
           }
         }
       }

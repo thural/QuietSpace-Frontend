@@ -12,17 +12,12 @@
 import { loadAuthConfiguration } from './config/AuthConfigLoader';
 import { DefaultAuthConfig } from './config/DefaultAuthConfig';
 import { createDefaultAuthOrchestrator } from './factory';
-import { JwtAuthProvider } from './providers/JwtAuthProvider';
-import { OAuthAuthProvider } from './providers/OAuthProvider';
-import { SAMLAuthProvider } from './providers/SAMLProvider';
-import { SessionAuthProvider } from './providers/SessionProvider';
-import { LDAPAuthProvider } from './providers/LDAPProvider';
 
 // Import centralized error handling
 import { createAuthenticationError } from '../error';
 
-import type { IAuthRepository, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig } from './interfaces/authInterfaces';
 import type { AuthOrchestrator } from './enterprise/AuthOrchestrator';
+import type { IAuthConfig, IAuthLogger, IAuthMetrics, IAuthRepository, IAuthSecurityService } from './interfaces/authInterfaces';
 
 /**
  * Enterprise Authentication Module Factory
