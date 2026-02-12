@@ -164,7 +164,8 @@ export {
 } from './factory';
 
 // React hooks for integration (if available)
-// TODO: Uncomment when hooks are implemented
+// Note: React hooks are planned but not yet implemented
+// TODO: Implement React hooks for authentication
 // export {
 //     useAuth,
 //     useAuthUser,
