@@ -5,8 +5,8 @@
  * for real-time cache invalidation and message persistence.
  */
 
-import { type FeatureCacheService } from '../../cache';
-import { LoggerService } from '../../services/LoggerService';
+import { type ICacheServiceManager } from '../../caching';
+import { _LoggerService } from '../../../services';
 import { WebSocketMessage } from '../services/EnterpriseWebSocketService';
 
 export interface CacheInvalidationStrategy {
@@ -37,11 +37,11 @@ export interface CacheMetrics {
  */
 export interface IWebSocketCacheManager {
   // Core cache operations
-  get(key: string): unknown;
-  set(key: string, value: unknown, ttl?: number): void;
-  invalidate(key: string): boolean;
-  clear(): void;
-  has(key: string): boolean;
+  get(key: string): Promise<unknown>;
+  set(key: string, value: unknown, ttl?: number): Promise<void>;
+  invalidate(key: string): Promise<boolean>;
+  clear(): Promise<void>;
+  has(key: string): Promise<boolean>;
 
   // WebSocket-specific operations
   invalidateCache(message: WebSocketMessage): Promise<void>;
@@ -56,11 +56,6 @@ export interface IWebSocketCacheManager {
   // Lifecycle
   cleanup(): Promise<void>;
   dispose(): Promise<void>;
-
-  // Backward compatibility methods for external adapters
-  set(key: string, value: unknown, ttl?: number): void;
-  invalidate(key: string): boolean;
-  invalidatePattern(pattern: string): number;
 }
 
 /**
@@ -72,8 +67,8 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   private readonly config: CacheInvalidationConfig;
 
   constructor(
-    private readonly cacheManager: FeatureCacheService,
-    private readonly logger: LoggerService
+    private readonly cacheManager: ICacheServiceManager,
+    private readonly logger: _LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();
@@ -120,7 +115,7 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
 
         // Invalidate cache patterns
         for (const pattern of strategy.patterns) {
-          this.cacheManager.invalidatePattern(pattern);
+          await this.cacheManager.invalidatePattern(pattern);
           invalidatedPatterns.push(pattern);
         }
       }
@@ -156,13 +151,13 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
 
       // Also add to feature message list
       const featureListKey = `ws:messages:${message.feature}`;
-      const existingMessages = this.wsCache.get<string[]>(featureListKey) || [];
+      const existingMessages = await this.wsCache.get<string[]>(featureListKey) || [];
 
       // Add message ID to the list (keep most recent)
       const updatedMessages = [message.id, ...existingMessages.filter(id => id !== message.id)]
         .slice(0, this.config.maxCacheSize);
 
-      this.wsCache.set(featureListKey, updatedMessages, this.config.defaultTTL);
+      await this.wsCache.set(featureListKey, updatedMessages, this.config.defaultTTL);
 
       this.metrics.messagesPersisted++;
 
@@ -177,7 +172,7 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
 
   async getMessage(messageId: string): Promise<WebSocketMessage | null> {
     try {
-      const cached = this.wsCache.get(`ws:message:*:${messageId}`);
+      const cached = await this.wsCache.get(`ws:message:*:${messageId}`);
 
       if (cached && typeof cached === 'object' && cached !== null && 'message' in cached) {
         this.metrics.hits++;
@@ -197,7 +192,7 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   async getFeatureMessages(feature: string, limit: number = 50): Promise<WebSocketMessage[]> {
     try {
       const featureListKey = `ws:messages:${feature}`;
-      const messageIds = this.wsCache.get<string[]>(featureListKey) || [];
+      const messageIds = await this.wsCache.get<string[]>(featureListKey) || [];
 
       const limitedIds = messageIds.slice(0, limit);
       const messagePromises = limitedIds.map(id => this.getMessage(id));
@@ -317,13 +312,13 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
 
       for (const feature of allFeatures) {
         const featureListKey = `ws:messages:${feature}`;
-        const messageIds = this.wsCache.get<string[]>(featureListKey) || [];
+        const messageIds = await this.wsCache.get<string[]>(featureListKey) || [];
 
         // Keep only recent messages
         const recentIds = messageIds.slice(0, this.config.maxCacheSize);
 
         if (recentIds.length !== messageIds.length) {
-          this.wsCache.set(featureListKey, recentIds, this.config.defaultTTL);
+          await this.wsCache.set(featureListKey, recentIds, this.config.defaultTTL);
         }
       }
 
@@ -362,10 +357,10 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   /**
    * Get cache value
    */
-  get(key: string): unknown {
+  async get(key: string): Promise<unknown> {
     try {
       const websocketCache = this.cacheManager.getCache('websocket');
-      return websocketCache.get(key);
+      return await websocketCache.get(key);
     } catch (error) {
       this.logger.error('[WebSocketCacheManager] Cache get failed:', error instanceof Error ? error : new Error(String(error)));
       return undefined;
@@ -375,10 +370,10 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   /**
    * Clear all cache entries
    */
-  clear(): void {
+  async clear(): Promise<void> {
     try {
       const websocketCache = this.cacheManager.getCache('websocket');
-      websocketCache.clear();
+      await websocketCache.clear();
       this.logger.info('[WebSocketCacheManager] Cache cleared');
     } catch (error) {
       this.logger.error('[WebSocketCacheManager] Cache clear failed:', error instanceof Error ? error : new Error(String(error)));
@@ -388,10 +383,10 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   /**
    * Check if key exists in cache
    */
-  has(key: string): boolean {
+  async has(key: string): Promise<boolean> {
     try {
       const websocketCache = this.cacheManager.getCache('websocket');
-      return websocketCache.has(key);
+      return await websocketCache.has(key);
     } catch (error) {
       this.logger.error('[WebSocketCacheManager] Cache has check failed:', error instanceof Error ? error : new Error(String(error)));
       return false;
@@ -416,14 +411,14 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   /**
    * Set cache value (for external adapter compatibility)
    */
-  set(key: string, value: unknown, ttl?: number): void {
+  async set(key: string, value: unknown, ttl?: number): Promise<void> {
     try {
       const websocketCache = this.cacheManager.getCache('websocket');
-      websocketCache.set(key, value, ttl || this.config.defaultTTL);
+      await websocketCache.set(key, value, ttl || this.config.defaultTTL);
       this.logger.debug(`[WebSocketCacheManager] Cache set: ${key}`);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.error('[WebSocketCacheManager] Cache set failed:', errorMessage);
+      this.logger.error('[WebSocketCacheManager] Cache set failed:', new Error(errorMessage));
       throw new Error(errorMessage);
     }
   }
@@ -431,14 +426,15 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   /**
    * Invalidate specific cache key (for external adapter compatibility)
    */
-  invalidate(key: string): boolean {
+  async invalidate(key: string): Promise<boolean> {
     try {
       const websocketCache = this.cacheManager.getCache('websocket');
-      const result = websocketCache.invalidate(key);
+      const result = await websocketCache.invalidate(key);
       this.logger.debug(`[WebSocketCacheManager] Cache invalidated: ${key}, success: ${result}`);
       return result;
-    } catch (error) {
-      this.logger.error('[WebSocketCacheManager] Cache invalidate failed:', error instanceof Error ? error : new Error(String(error)));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error('[WebSocketCacheManager] Cache invalidate failed:', new Error(errorMessage));
       return false;
     }
   }
@@ -446,10 +442,10 @@ export class WebSocketCacheManager implements IWebSocketCacheManager {
   /**
    * Invalidate cache entries matching pattern (for external adapter compatibility)
    */
-  invalidatePattern(pattern: string): number {
+  async invalidatePattern(pattern: string): Promise<number> {
     try {
       // Use the cache manager's pattern invalidation
-      const invalidatedCount = this.cacheManager.invalidatePattern(pattern);
+      const invalidatedCount = await this.cacheManager.invalidatePattern(pattern);
       this.logger.debug(`[WebSocketCacheManager] Cache pattern invalidated: ${pattern}, count: ${invalidatedCount}`);
       return invalidatedCount;
     } catch (error) {

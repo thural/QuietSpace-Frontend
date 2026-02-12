@@ -5,8 +5,8 @@
  * for enterprise WebSocket communications.
  */
 
-import { ICacheServiceManager } from '../../cache';
-import { LoggerService } from '../../services/LoggerService';
+import { ICacheServiceManager } from '../../caching';
+import { _LoggerService } from '../../../services';
 
 import { WebSocketMessage } from './EnterpriseWebSocketService';
 
@@ -76,7 +76,7 @@ export class MessageRouter implements IMessageRouter {
 
   constructor(
     private readonly cache: ICacheServiceManager,
-    private readonly logger: LoggerService
+    private readonly logger: _LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();
@@ -123,7 +123,7 @@ export class MessageRouter implements IMessageRouter {
       const routes = this.routes.get(key);
 
       if (!routes || routes.length === 0) {
-        this.handleUnroutableMessage(message);
+        await this.handleUnroutableMessage(message);
         return;
       }
 
@@ -131,7 +131,7 @@ export class MessageRouter implements IMessageRouter {
       const enabledRoute = routes.find(route => route.enabled);
       if (!enabledRoute) {
         this.logger.warn(`[MessageRouter] No enabled routes for: ${key}`);
-        this.metrics.messagesDropped++;
+        await this.handleUnroutableMessage(message);
         return;
       }
 
@@ -145,7 +145,8 @@ export class MessageRouter implements IMessageRouter {
       this.logger.debug(`[MessageRouter] Routed message: ${key}`);
 
     } catch (error) {
-      this.logger.error('[MessageRouter] Failed to route message:', error);
+      const errorObj = error instanceof Error ? error : new Error(String(error));
+      this.logger.error('[MessageRouter] Failed to route message:', errorObj);
 
       // Update error metrics
       this.updateMetrics(message.feature, Date.now() - startTime, false);
@@ -155,7 +156,7 @@ export class MessageRouter implements IMessageRouter {
         this.deadLetterQueue.push(message);
       }
 
-      throw error;
+      throw errorObj;
     }
   }
 
@@ -225,15 +226,13 @@ export class MessageRouter implements IMessageRouter {
 
     // Cache processed message for debugging/audit
     if (this.config.enableMetrics) {
-      const defaultCache = this.cache.getDefaultCache();
+      const defaultCache = this.cache.getCache('websocket');
       await defaultCache.set(`msg:processed:${processedMessage.id}`, {
         original: message,
         processed: processedMessage,
         route: `${route.feature}:${route.messageType}`,
         processedAt: new Date()
-      }, {
-        ttl: 300000 // 5 minutes
-      });
+      }, 300000); // 5 minutes
     }
   }
 
@@ -249,7 +248,7 @@ export class MessageRouter implements IMessageRouter {
     ]);
   }
 
-  private handleUnroutableMessage(message: WebSocketMessage): void {
+  private async handleUnroutableMessage(message: WebSocketMessage): Promise<void> {
     this.logger.warn(`[MessageRouter] Unroutable message: ${message.feature}:${message.type}`);
     this.metrics.messagesDropped++;
 
@@ -259,12 +258,11 @@ export class MessageRouter implements IMessageRouter {
     }
 
     // Cache unroutable message for analysis
-    this.cache.set(`msg:unroutable:${message.id}`, {
+    const messageCache = this.cache.getCache('message-router');
+    await messageCache.set(`msg:unroutable:${message.id}`, {
       message,
       receivedAt: new Date()
-    }, {
-      ttl: 3600000 // 1 hour
-    });
+    }, 3600000); // 1 hour
   }
 
   private updateMetrics(feature: string, processingTime: number, success: boolean): void {
@@ -345,12 +343,11 @@ export class MessageRouter implements IMessageRouter {
     this.logger.debug('[MessageRouter] Heartbeat received from:', message.metadata?.source);
 
     // Update connection health in cache
-    await this.cache.set(`ws:heartbeat:${message.metadata?.source || 'unknown'}`, {
+    const systemCache = this.cache.getCache('system');
+    await systemCache.set(`ws:heartbeat:${message.metadata?.source || 'unknown'}`, {
       lastHeartbeat: new Date(),
       payload: message.payload
-    }, {
-      ttl: 60000 // 1 minute
-    });
+    }, 60000); // 1 minute
   }
 
   private async handlePing(message: WebSocketMessage): Promise<void> {
@@ -358,41 +355,38 @@ export class MessageRouter implements IMessageRouter {
 
     // In a real implementation, you would send a pong response
     // For now, just log and cache
-    await this.cache.set(`ws:ping:${message.id}`, {
+    const systemCache = this.cache.getCache('system');
+    await systemCache.set(`ws:ping:${message.id}`, {
       receivedAt: new Date(),
       payload: message.payload
-    }, {
-      ttl: 30000 // 30 seconds
-    });
+    }, 30000); // 30 seconds
   }
 
   private async handlePong(message: WebSocketMessage): Promise<void> {
     this.logger.debug('[MessageRouter] Pong received');
 
     // Update latency measurement
-    if (message.metadata?.sentAt) {
+    if (message.metadata?.sentAt && typeof message.metadata.sentAt === 'string') {
       const latency = Date.now() - new Date(message.metadata.sentAt).getTime();
-      await this.cache.set(`ws:latency:${message.metadata?.source || 'unknown'}`, {
+      const systemCache = this.cache.getCache('system');
+      await systemCache.set(`ws:latency:${message.metadata?.source || 'unknown'}`, {
         latency,
         measuredAt: new Date()
-      }, {
-        ttl: 60000 // 1 minute
-      });
+      }, 60000); // 1 minute
     }
   }
 
   private async handleError(message: WebSocketMessage): Promise<void> {
-    this.logger.error('[MessageRouter] Error message received:', message.payload);
+    this.logger.error('[MessageRouter] Error message received:', message.payload as Error);
 
     // Cache error for analysis
-    await this.cache.set(`ws:error:${message.id}`, {
+    const errorCache = this.cache.getCache('errors');
+    await errorCache.set(`ws:error:${message.id}`, {
       error: message.payload,
       feature: message.feature,
       timestamp: message.timestamp,
       metadata: message.metadata
-    }, {
-      ttl: 3600000 // 1 hour
-    });
+    }, 3600000); // 1 hour
   }
 
   private validateErrorMessage(message: WebSocketMessage): boolean {
@@ -400,7 +394,8 @@ export class MessageRouter implements IMessageRouter {
     return !!(
       message.payload &&
       typeof message.payload === 'object' &&
-      (message.payload.error || message.payload.message)
+      message.payload &&
+      ('error' in message.payload || 'message' in message.payload)
     );
   }
 
@@ -454,7 +449,8 @@ export class MessageRouter implements IMessageRouter {
         await this.routeMessage(message);
         this.logger.debug(`[MessageRouter] Successfully retried message: ${message.id}`);
       } catch (error) {
-        this.logger.error(`[MessageRouter] Failed to retry message: ${message.id}`, error);
+        const errorObj = error instanceof Error ? error : new Error(String(error));
+        this.logger.error(`[MessageRouter] Failed to retry message: ${message.id}`, errorObj);
         // Put it back in the queue
         this.deadLetterQueue.push(message);
       }

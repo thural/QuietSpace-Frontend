@@ -5,14 +5,14 @@
  * enterprise architecture patterns.
  */
 
-import { ICacheServiceManager } from '../../cache';
-import { TYPES } from '../../di/types';
-import { LoggerService } from '../../services/LoggerService';
+import { ICacheServiceManager } from '../../caching';
+import { TYPES } from '../../dependency-injection/types';
+import { _LoggerService } from '../../../services';
 import { ConnectionManager } from '../managers/ConnectionManager';
 import { EnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
 import { MessageRouter } from '../services/MessageRouter';
 
-import type { Container } from '../../di';
+import type { Container } from '../../dependency-injection';
 import type { IConnectionManager } from '../managers/ConnectionManager';
 import type { IEnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
 import type { IMessageRouter } from '../services/MessageRouter';
@@ -36,12 +36,11 @@ export function createWebSocketContainer(
 
   // Get required dependencies from parent container
   const cacheService = parentContainer.get<ICacheServiceManager>(TYPES.CACHE_SERVICE);
-  const loggerService = parentContainer.get<LoggerService>(TYPES.LOGGER_SERVICE);
+  const loggerService = parentContainer.get<_LoggerService>(TYPES.LOGGER_SERVICE);
 
   // Create WebSocket services with injected dependencies
   const enterpriseWebSocketService = new EnterpriseWebSocketService(
     cacheService as any, // Type cast for FeatureCacheService compatibility
-    null, // authService - will be injected later if needed
     loggerService
   );
 
@@ -138,7 +137,7 @@ export async function initializeWebSocketServices(
     );
 
     const cacheService = container.get<ICacheServiceManager>(TYPES.CACHE_SERVICE);
-    const loggerService = container.get<LoggerService>(TYPES.LOGGER_SERVICE);
+    const loggerService = container.get<_LoggerService>(TYPES.LOGGER_SERVICE);
 
     // Initialize message router with default routes
     console.log('📡 Setting up message routing...');
@@ -148,16 +147,30 @@ export async function initializeWebSocketServices(
       feature: 'chat',
       messageType: 'message',
       handler: async (message) => {
-        loggerService.info(`[Chat] Message received: ${message.payload.content}`);
+        // Type assertion for chat message payload
+        const payload = message.payload as {
+          content?: string;
+          chatId?: string;
+          senderId?: string;
+        };
+
+        loggerService.info(`[Chat] Message received: ${payload.content}`);
         // Cache message for chat history
-        const chatCache = cacheService.getCache('chat');
-        chatCache.set(`message:${message.payload.chatId}:${message.id}`, message, 3600000); // 1 hour
+        if (payload.chatId) {
+          const chatCache = cacheService.getCache('chat');
+          chatCache.set(`message:${payload.chatId}:${message.id}`, message, 3600000); // 1 hour
+        }
       },
       validator: (message) => {
+        const payload = message.payload as {
+          chatId?: unknown;
+          content?: unknown;
+          senderId?: unknown;
+        };
         return !!(
-          message.payload?.chatId &&
-          message.payload.content &&
-          message.payload.senderId
+          payload.chatId &&
+          payload.content &&
+          payload.senderId
         );
       },
       priority: 5,
@@ -169,7 +182,12 @@ export async function initializeWebSocketServices(
       feature: 'notification',
       messageType: 'push',
       handler: async (message) => {
-        loggerService.info(`[Notification] Push notification: ${message.payload.title}`);
+        // Type assertion for notification payload
+        const payload = message.payload as {
+          title?: string;
+        };
+
+        loggerService.info(`[Notification] Push notification: ${payload.title}`);
         // Cache notification for offline access
         const notificationCache = cacheService.getCache('notification');
         notificationCache.set(`notification:${message.id}`, message, 86400000); // 24 hours
@@ -183,7 +201,12 @@ export async function initializeWebSocketServices(
       feature: 'feed',
       messageType: 'update',
       handler: async (message) => {
-        loggerService.info(`[Feed] Update received: ${message.payload.type}`);
+        // Type assertion for feed update payload
+        const payload = message.payload as {
+          type?: string;
+        };
+
+        loggerService.info(`[Feed] Update received: ${payload.type}`);
         // Invalidate relevant cache entries
         await cacheService.invalidatePattern('feed:*');
         await cacheService.invalidatePattern('post:*');

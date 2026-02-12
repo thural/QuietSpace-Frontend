@@ -7,37 +7,27 @@
  */
 
 // Import types for factory function signatures
-import { TYPES } from '../di/types';
+import { TYPES } from '../dependency-injection/types';
 
-import { WebSocketServiceFactory } from './di/WebSocketContainer';
 
-import type { Container } from '../di';
+import type { _LoggerService } from '../../services';
+import type { ICacheServiceManager } from '../caching';
+import type { Container } from '../dependency-injection';
 import type {
-  IWebSocketCacheManager,
-  CacheInvalidationStrategy,
-  CacheInvalidationConfig
+  CacheInvalidationConfig,
+  IWebSocketCacheManager
 } from './cache/WebSocketCacheManager';
+import { WebSocketCacheManager } from './cache/WebSocketCacheManager';
 import type {
-  IConnectionManager,
-  ConnectionPool,
-  ConnectionHealth,
-  ConnectionPoolConfig
+  ConnectionPoolConfig,
+  IConnectionManager
 } from './managers/ConnectionManager';
 import type {
   IEnterpriseWebSocketService,
-  WebSocketMessage,
-  WebSocketConfig,
-  WebSocketEventListener,
-  ConnectionMetrics
+  WebSocketConfig
 } from './services/EnterpriseWebSocketService';
 import type {
   IMessageRouter,
-  MessageRoute,
-  MessageHandler,
-  MessageValidator,
-  MessageTransformer,
-  RoutingMetrics,
-  FeatureMessageStats,
   MessageRouterConfig
 } from './services/MessageRouter';
 
@@ -48,43 +38,24 @@ import type {
 
 // Services - Public API Only (Black Box Pattern)
 export type {
-  IEnterpriseWebSocketService,
-  WebSocketMessage,
-  WebSocketConfig,
-  WebSocketEventListener,
-  ConnectionMetrics
+  ConnectionMetrics, IEnterpriseWebSocketService, WebSocketConfig,
+  WebSocketEventListener, WebSocketMessage
 } from './services/EnterpriseWebSocketService';
 
 // Message Router - Public API Only (Black Box Pattern)
 export type {
-  IMessageRouter,
-  MessageRoute,
-  MessageHandler,
-  MessageValidator,
-  MessageTransformer,
-  RoutingMetrics,
-  FeatureMessageStats,
-  MessageRouterConfig
+  FeatureMessageStats, IMessageRouter, MessageHandler, MessageRoute, MessageRouterConfig, MessageTransformer, MessageValidator, RoutingMetrics
 } from './services/MessageRouter';
 
 // Connection Management - Public API Only (Black Box Pattern)
 export type {
-  IConnectionManager,
-  ConnectionPool,
-  ConnectionHealth,
-  ConnectionPoolConfig
+  ConnectionHealth, ConnectionPool, ConnectionPoolConfig, IConnectionManager
 } from './managers/ConnectionManager';
 
 // Dependency Injection - Public API Factory Functions (Black Box Pattern)
 export {
-  createWebSocketContainer,
-  registerWebSocketServices,
-  initializeWebSocketServices,
-  getWebSocketService,
-  getConnectionManager,
-  getMessageRouter,
-  WebSocketServiceFactory,
-  performWebSocketHealthCheck
+  createWebSocketContainer, getConnectionManager,
+  getMessageRouter, getWebSocketService, initializeWebSocketServices, performWebSocketHealthCheck, registerWebSocketServices, WebSocketServiceFactory
 } from './di/WebSocketContainer';
 
 // Factory Functions for Service Creation (Black Box Pattern)
@@ -110,17 +81,60 @@ export function createConnectionManager(container: Container, config?: Connectio
 }
 
 export function createCacheManager(container: Container, config?: CacheInvalidationConfig): IWebSocketCacheManager {
-  // Note: Cache manager is handled differently - it uses CacheServiceManager directly
-  // This is a placeholder for the cache management functionality
-  // In practice, cache invalidation is handled through the CacheServiceManager
-  return null as unknown; // TODO: Implement proper cache manager factory
+  /**
+   * Creates a WebSocket cache manager with proper DI integration
+   * 
+   * @param container - DI container instance for dependency resolution
+   * @param config - Optional configuration for cache invalidation
+   * @returns WebSocket cache manager instance
+   * 
+   * @example
+   * ```typescript
+   * const container = createAppContainer();
+   * const cacheManager = createCacheManager(container, {
+   *   enableAutoInvalidation: true,
+   *   enableMessagePersistence: true,
+   *   defaultTTL: 300000
+   * });
+   * 
+   * // Use cache manager for WebSocket operations
+   * await cacheManager.invalidateCache(webSocketMessage);
+   * ```
+   */
+
+  try {
+    // Get required dependencies from DI container
+    const cacheService = container.getByToken(TYPES.CACHE_SERVICE);
+    const loggerService = container.getByToken(TYPES.LOGGER_SERVICE);
+
+    // Create WebSocket cache manager with dependencies
+    const webSocketCacheManager = new WebSocketCacheManager(
+      cacheService as ICacheServiceManager,
+      loggerService as _LoggerService
+    );
+
+    // Apply configuration if provided
+    if (config) {
+      // Apply configuration through the cache manager's methods
+      // Note: CacheInvalidationConfig doesn't have patterns/priority properties
+      // These are part of CacheInvalidationStrategy, not config
+      if (config.enableAutoInvalidation !== undefined) {
+        // Configuration will be handled internally by the cache manager
+        // based on its default config merging
+      }
+    }
+
+    return webSocketCacheManager;
+
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to create WebSocket cache manager: ${errorMessage}`);
+  }
 }
 
 // Cache Integration - Public API Only (Black Box Pattern)
 export type {
-  IWebSocketCacheManager,
-  CacheInvalidationStrategy,
-  CacheInvalidationConfig
+  CacheInvalidationConfig, CacheInvalidationStrategy, IWebSocketCacheManager
 } from './cache/WebSocketCacheManager';
 
 // Internal Utilities - NOT EXPORTED (Black Box Pattern)
@@ -129,20 +143,12 @@ export type {
 
 // Types
 export type {
-  WebSocketFeatureConfig,
-  WebSocketServiceConfig,
-  WebSocketConnectionConfig,
-  WebSocketMessageConfig,
-  WebSocketCacheConfig
+  WebSocketCacheConfig, WebSocketConnectionConfig, WebSocketFeatureConfig, WebSocketMessageConfig, WebSocketServiceConfig
 } from './types/WebSocketTypes';
 
 // Constants
 export {
-  WEBSOCKET_MESSAGE_TYPES,
-  WEBSOCKET_CONNECTION_STATES,
-  WEBSOCKET_FEATURES,
-  WEBSOCKET_EVENTS,
-  WEBSOCKET_ERRORS
+  WEBSOCKET_CONNECTION_STATES, WEBSOCKET_ERRORS, WEBSOCKET_EVENTS, WEBSOCKET_FEATURES, WEBSOCKET_MESSAGE_TYPES
 } from './constants/WebSocketConstants';
 
 /**

@@ -5,8 +5,8 @@
  * for enterprise WebSocket connections.
  */
 
-import { ICacheServiceManager } from '../../cache';
-import { LoggerService } from '../../services/LoggerService';
+import { ICacheServiceManager } from '../../caching';
+import { _LoggerService } from '../../../services';
 import { IEnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
 
 export interface ConnectionPool {
@@ -45,7 +45,7 @@ export interface IConnectionManager {
   createConnection(feature: string, priority?: number): Promise<string>;
   getConnection(feature: string): Promise<IEnterpriseWebSocketService | null>;
   releaseConnection(connectionId: string): Promise<void>;
-  getConnectionHealth(connectionId: string): ConnectionHealth | null;
+  getConnectionHealth(connectionId: string): Promise<ConnectionHealth | null>;
   getAllConnections(): ConnectionPool[];
   removeConnection(connectionId: string): Promise<void>;
   performHealthCheck(): Promise<void>;
@@ -63,7 +63,7 @@ export class ConnectionManager implements IConnectionManager {
 
   constructor(
     private readonly cache: ICacheServiceManager,
-    private readonly logger: LoggerService
+    private readonly logger: _LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.startHealthChecks();
@@ -113,7 +113,7 @@ export class ConnectionManager implements IConnectionManager {
     const cacheKey = `connections:${feature}:available`;
 
     // Try to get cached available connections first
-    const cachedConnections = this.cache.getCache('websocket').get<ConnectionPool[]>(cacheKey);
+    const cachedConnections = await this.cache.getCache('websocket').get<ConnectionPool[]>(cacheKey);
     if (cachedConnections) {
       const validConnections = cachedConnections.filter(conn => conn.isActive);
       if (validConnections.length > 0) {
@@ -134,7 +134,7 @@ export class ConnectionManager implements IConnectionManager {
     }
 
     // Cache the available connections for 30 seconds
-    this.cache.getCache('websocket').set(cacheKey, availableConnections, 30000);
+    await this.cache.getCache('websocket').set(cacheKey, availableConnections, 30000);
 
     const selectedConnection = this.selectConnection(availableConnections);
     selectedConnection.lastUsed = new Date();
@@ -151,17 +151,17 @@ export class ConnectionManager implements IConnectionManager {
 
       // Invalidate cached connections for this feature
       const cacheKey = `connections:${connection.feature}:available`;
-      this.cache.getCache('websocket').invalidate(cacheKey);
+      await this.cache.getCache('websocket').invalidate(cacheKey);
 
       this.logger.debug(`[ConnectionManager] Released connection: ${connectionId}`);
     }
   }
 
-  getConnectionHealth(connectionId: string): ConnectionHealth | null {
+  async getConnectionHealth(connectionId: string): Promise<ConnectionHealth | null> {
     const cacheKey = `health:${connectionId}`;
 
     // Try to get cached health status first
-    const cachedHealth = this.cache.getCache('websocket').get<ConnectionHealth>(cacheKey);
+    const cachedHealth = await this.cache.getCache('websocket').get<ConnectionHealth>(cacheKey);
     if (cachedHealth) {
       return cachedHealth;
     }
@@ -169,7 +169,7 @@ export class ConnectionManager implements IConnectionManager {
     const health = this.healthStatus.get(connectionId) || null;
     if (health) {
       // Cache health status for 15 seconds
-      this.cache.getCache('websocket').set(cacheKey, health, 15000);
+      await this.cache.getCache('websocket').set(cacheKey, health, 15000);
     }
 
     return health;
@@ -191,8 +191,8 @@ export class ConnectionManager implements IConnectionManager {
       this.healthStatus.delete(connectionId);
 
       // Invalidate all cache entries related to this connection
-      this.cache.getCache('websocket').invalidate(`health:${connectionId}`);
-      this.cache.getCache('websocket').invalidate(`connections:${connection.feature}:available`);
+      await this.cache.getCache('websocket').invalidate(`health:${connectionId}`);
+      await this.cache.getCache('websocket').invalidate(`connections:${connection.feature}:available`);
 
       this.logger.info(`[ConnectionManager] Removed connection: ${connectionId}`);
     }
@@ -208,7 +208,7 @@ export class ConnectionManager implements IConnectionManager {
 
           // Update cached health status
           const cacheKey = `health:${connectionId}`;
-          this.cache.getCache('websocket').set(cacheKey, health, 15000);
+          await this.cache.getCache('websocket').set(cacheKey, health, 15000);
         } catch (error) {
           // Convert unknown error to Error type
           const errorObj = error instanceof Error ? error : new Error(String(error));
@@ -230,7 +230,7 @@ export class ConnectionManager implements IConnectionManager {
 
           // Update cached health status
           const cacheKey = `health:${connectionId}`;
-          this.cache.getCache('websocket').set(cacheKey, health, 15000);
+          await this.cache.getCache('websocket').set(cacheKey, health, 15000);
         }
       }
     );
@@ -463,7 +463,7 @@ export class ConnectionManager implements IConnectionManager {
     await Promise.all(disconnectPromises);
 
     // Clear all WebSocket-related cache entries
-    this.cache.getCache('websocket').clear();
+    await this.cache.getCache('websocket').clear();
 
     this.logger.info('[ConnectionManager] Cleanup completed');
   }

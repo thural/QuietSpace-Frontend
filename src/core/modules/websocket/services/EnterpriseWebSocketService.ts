@@ -5,9 +5,9 @@
  * Replaces scattered WebSocket implementations across features.
  */
 
-import { type FeatureCacheService } from '../../cache';
+import { type ICacheServiceManager } from '../../caching';
 
-import type { LoggerService } from '../../services/LoggerService';
+import type { _LoggerService } from '../../../services';
 
 // WebSocket Message Types
 export interface WebSocketMessage {
@@ -76,9 +76,8 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private token: string | null = null;
 
   constructor(
-    private readonly cache: FeatureCacheService,
-    private readonly authService: unknown,
-    private readonly logger: LoggerService
+    private readonly cache: ICacheServiceManager,
+    private readonly logger: _LoggerService
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();
@@ -122,7 +121,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
     } catch (error) {
       this.connectionState = 'error';
-      this.logger.error('[WebSocket] Connection failed:', error);
+      this.logger.error('[WebSocket] Connection failed:', error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -164,7 +163,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
       this.logger.debug('[WebSocket] Message sent:', fullMessage);
     } catch (error) {
-      this.logger.error('[WebSocket] Failed to send message:', error);
+      this.logger.error('[WebSocket] Failed to send message:', error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -236,8 +235,12 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
           // Calculate latency if message contains timestamp
           if (message.metadata?.sentAt) {
-            const latency = Date.now() - new Date(message.metadata.sentAt).getTime();
-            this.updateLatency(latency);
+            const sentAt = message.metadata.sentAt;
+            // Ensure sentAt is a valid Date constructor argument
+            if (typeof sentAt === 'string' || typeof sentAt === 'number' || sentAt instanceof Date) {
+              const latency = Date.now() - new Date(sentAt).getTime();
+              this.updateLatency(latency);
+            }
           }
 
           // Cache received message
@@ -249,7 +252,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
           this.notifyListeners('onMessage', message);
 
         } catch (error) {
-          this.logger.error('[WebSocket] Message parsing error:', error);
+          this.logger.error('[WebSocket] Message parsing error:', error instanceof Error ? error : new Error(String(error)));
         }
       };
 
@@ -268,7 +271,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
       this.ws.onerror = (error) => {
         this.connectionState = 'error';
-        this.logger.error('[WebSocket] Connection error:', error);
+        this.logger.error('[WebSocket] Connection error:', error instanceof Error ? error : new Error(String(error)));
         this.notifyListeners('onError', error);
         reject(error);
       };
@@ -294,7 +297,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
           await this.connect(this.token);
         }
       } catch (error) {
-        this.logger.error('[WebSocket] Reconnection failed:', error);
+        this.logger.error('[WebSocket] Reconnection failed:', error instanceof Error ? error : new Error(String(error)));
         if (this.metrics.reconnectAttempts < this.config.reconnectAttempts) {
           this.handleReconnect();
         } else {
@@ -313,7 +316,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
           feature: 'system',
           payload: { timestamp: Date.now() }
         }).catch(error => {
-          this.logger.error('[WebSocket] Heartbeat failed:', error);
+          this.logger.error('[WebSocket] Heartbeat failed:', error instanceof Error ? error : new Error(String(error)));
         });
       }
     }, this.config.heartbeatInterval);
@@ -367,7 +370,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
               break;
           }
         } catch (error) {
-          this.logger.error(`[WebSocket] Error in ${event} handler:`, error);
+          this.logger.error(`[WebSocket] Error in ${event} handler:`, error instanceof Error ? error : new Error(String(error)));
         }
       });
     });
