@@ -9,8 +9,10 @@ import { TYPES } from '../dependency-injection/types';
 
 import { ApiClient } from './api/ApiClient';
 import { RestClient } from './rest/RestClient';
-import { createApiError, ERROR_CODES } from './utils';
 import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
+
+// Import centralized error handling
+import { createNetworkError } from '../error';
 
 // Import implementations (internal)
 
@@ -53,11 +55,12 @@ export function createApiClient(config?: Partial<IApiClientConfig>): IApiClient 
         // Create API client instance
         return new ApiClient(finalConfig);
     } catch (error) {
-        throw createApiError(
-            ERROR_CODES.CONFIGURATION_ERROR,
+        const networkError = createNetworkError(
             'Failed to create API client',
-            { originalError: error }
+            undefined,
+            undefined
         );
+        throw networkError;
     }
 }
 
@@ -103,11 +106,12 @@ export function createRestClient(config?: Partial<IApiClientConfig>): IApiClient
         // Create REST client instance
         return new RestClient(finalConfig);
     } catch (error) {
-        throw createApiError(
-            ERROR_CODES.CONFIGURATION_ERROR,
+        const networkError = createNetworkError(
             'Failed to create REST client',
-            { originalError: error }
+            undefined,
+            undefined
         );
+        throw networkError;
     }
 }
 
@@ -146,11 +150,12 @@ export function createApiClientForEnvironment(
     const envConfig = ENVIRONMENT_CONFIG[environment];
 
     if (!envConfig) {
-        throw createApiError(
-            ERROR_CODES.CONFIGURATION_ERROR,
+        const networkError = createNetworkError(
             `Unknown environment: ${environment}`,
-            { availableEnvironments: Object.keys(ENVIRONMENT_CONFIG) }
+            undefined,
+            undefined
         );
+        throw networkError;
     }
 
     // Merge environment config with provided config
@@ -261,11 +266,12 @@ class ApiClientFactoryRegistry {
     create(name: string, config?: Partial<IApiClientConfig>): IApiClient {
         const factory = this.factories.get(name);
         if (!factory) {
-            throw createApiError(
-                ERROR_CODES.CONFIGURATION_ERROR,
+            const networkError = createNetworkError(
                 `Unknown factory: ${name}`,
-                { availableFactories: Array.from(this.factories.keys()) }
+                undefined,
+                undefined
             );
+            throw networkError;
         }
         return factory(config);
     }

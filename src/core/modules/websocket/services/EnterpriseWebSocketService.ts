@@ -9,6 +9,9 @@ import { type ICacheServiceManager } from '../../caching';
 
 import type { _LoggerService } from '../../../services';
 
+// Import centralized error handling
+import { createSystemError, createNetworkError } from '../../error';
+
 // WebSocket Message Types
 export interface WebSocketMessage {
   id: string;
@@ -102,7 +105,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
       // Set connection timeout
       const timeoutPromise = new Promise<void>((_, reject) => {
-        setTimeout(() => reject(new Error('Connection timeout')), this.config.connectionTimeout);
+        setTimeout(() => reject(createNetworkError('Connection timeout', undefined, undefined)), this.config.connectionTimeout);
       });
 
       await Promise.race([
@@ -122,7 +125,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
     } catch (error) {
       this.connectionState = 'error';
       this.logger.error('[WebSocket] Connection failed:', error instanceof Error ? error : new Error(String(error)));
-      throw error;
+      throw createSystemError('Connection failed', 'EnterpriseWebSocketService', 'connect');
     }
   }
 
@@ -143,7 +146,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
 
   async sendMessage(message: Omit<WebSocketMessage, 'id' | 'timestamp'>): Promise<void> {
     if (!this.isConnected()) {
-      throw new Error('WebSocket not connected');
+      throw createNetworkError('WebSocket not connected', undefined, undefined);
     }
 
     const fullMessage: WebSocketMessage = {
@@ -164,7 +167,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
       this.logger.debug('[WebSocket] Message sent:', fullMessage);
     } catch (error) {
       this.logger.error('[WebSocket] Failed to send message:', error instanceof Error ? error : new Error(String(error)));
-      throw error;
+      throw createSystemError('Failed to send message', 'EnterpriseWebSocketService', 'sendMessage');
     }
   }
 
@@ -213,7 +216,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private async setupWebSocketHandlers(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.ws) {
-        reject(new Error('WebSocket not initialized'));
+        reject(createSystemError('WebSocket not initialized', 'EnterpriseWebSocketService', 'setupWebSocketHandlers'));
         return;
       }
 
@@ -273,7 +276,7 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
         this.connectionState = 'error';
         this.logger.error('[WebSocket] Connection error:', error instanceof Error ? error : new Error(String(error)));
         this.notifyListeners('onError', error);
-        reject(error);
+        reject(createSystemError('Connection error', 'EnterpriseWebSocketService', 'setupWebSocketHandlers'));
       };
     });
   }

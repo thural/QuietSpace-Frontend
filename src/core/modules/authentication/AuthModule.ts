@@ -18,6 +18,9 @@ import { SAMLAuthProvider } from './providers/SAMLProvider';
 import { SessionAuthProvider } from './providers/SessionProvider';
 import { LDAPAuthProvider } from './providers/LDAPProvider';
 
+// Import centralized error handling
+import { createAuthenticationError } from '../error';
+
 import type { IAuthRepository, IAuthLogger, IAuthMetrics, IAuthSecurityService, IAuthConfig } from './interfaces/authInterfaces';
 import type { AuthOrchestrator } from './enterprise/AuthOrchestrator';
 
@@ -46,7 +49,9 @@ export class AuthModuleFactory {
             // Validate configuration
             const validation = config.validate();
             if (!validation.success) {
-                throw new Error(`Invalid authentication configuration: ${validation.error?.message}`);
+                throw createAuthenticationError(
+                    `Invalid authentication configuration: ${validation.error?.message}`
+                );
             }
 
             // Create and return the orchestrator
