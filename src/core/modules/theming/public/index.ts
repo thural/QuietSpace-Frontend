@@ -20,7 +20,7 @@ export {
     useThemeSwitch,
     useThemeTokens,
     useTheme
-} from '../hooks/themeHooks';
+} from '@/core/hooks/ui/theme';
 
 // Type exports for public API
 export type {

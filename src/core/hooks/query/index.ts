@@ -1,18 +1,14 @@
 /**
- * Custom Query Hooks - Enterprise Edition
+ * Query Hooks - Enterprise Edition
  *
- * This module provides a comprehensive replacement for React Query
- * with enterprise-grade features including:
- * - Custom caching with ICacheProvider integration
- * - Dependency injection container support
- * - Global state management with Zustand
- * - Optimistic updates and rollback
- * - Retry logic with exponential backoff
- * - Background refetching and invalidation
- * - Type-safe interfaces throughout
+ * Provides comprehensive query management hooks including:
+ * - Custom query hooks with caching integration
+ * - Mutation hooks with optimistic updates
+ * - Infinite query hooks for pagination
+ * - Query state management hooks
+ * - WebSocket cache integration
  */
 
-// Core query hooks
 export { useCustomQuery } from './useCustomQuery';
 export type { QueryOptions, QueryState, CustomQueryResult } from './useCustomQuery';
 
@@ -27,7 +23,6 @@ export type {
   CustomInfiniteQueryResult
 } from './useCustomInfiniteQuery';
 
-// Global state management
 export {
   useQueryState,
   useIsFetching,
@@ -39,5 +34,5 @@ export {
 } from './useQueryState';
 export type { GlobalQueryState } from './useQueryState';
 
-// Re-export for convenience
-export type { ICacheProvider, CacheConfig, CacheStats } from '@/core/cache';
+export { useWebSocketCacheUpdater } from './useWebSocketCacheUpdater';
+export type { WebSocketCacheUpdaterOptions } from './useWebSocketCacheUpdater';

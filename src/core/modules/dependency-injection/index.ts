@@ -3,6 +3,9 @@
  *
  * Enterprise-grade dependency injection system inspired by Flutter patterns.
  * Provides IoC container, service registry, decorators, and providers.
+ * 
+ * Note: React hooks (DIProvider, useDIContainer, etc.) are now exported from
+ * @/core/hooks/ui/dependency-injection for better organization
  */
 
 // Core types and interfaces
@@ -18,10 +21,10 @@ export type {
   InjectionToken
 } from './types/index';
 
-// Service registry - Implementation moved to legacy exports
+// Service registry
 export type { ServiceRegistry } from './registry';
 
-// Service container - Implementation moved to legacy exports
+// Service container
 export type { ServiceContainer } from './types/index';
 
 // Decorators
@@ -34,18 +37,7 @@ export {
   isInjectable
 } from './decorators';
 
-// React providers
-export {
-  DIProvider,
-  useDIContainer,
-  useDIContext,
-  useService,
-  useTryService,
-  useHasService,
-  useDIScope
-} from './providers';
-
-// Factory functions - Clean API for service creation
+// Factory functions
 export {
   createContainer,
   createAutoContainer,
@@ -54,26 +46,12 @@ export {
   createChildContainer,
   createDevelopmentContainer,
   createProductionContainer,
-  createTestContainer,
-  validateContainer,
-  getContainerStats
+  createTestContainer
 } from './factory';
 
-// Platform-specific factory functions - Manual Registration + Factory Functions
+// Core classes
 export {
-  createPlatformContainer,
-  createDevelopmentContainer as createPlatformDevelopmentContainer,
-  createProductionContainer as createPlatformProductionContainer,
-  createTestContainer as createPlatformTestContainer,
-  getContainerStats as getPlatformContainerStats
-} from './factories/PlatformContainerFactory';
-
-// Legacy exports for backward compatibility (with underscore prefix)
-export {
-  ServiceContainer as _ServiceContainer,
-  Container as _Container
+  Container,
+  ServiceContainer,
+  ServiceRegistry
 } from './container';
-
-// Main exports for new code
-export { Container } from './container';
-export { ServiceRegistry as _ServiceRegistry } from './registry';

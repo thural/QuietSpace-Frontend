@@ -11,18 +11,23 @@ export type {
   IBaseDataService,
   ICacheConfig,
   WebSocketUpdateStrategy,
+  IDataServiceFactoryOptions,
   IDataServiceQueryOptions,
   IDataServiceMutationOptions,
   IDataServiceInfiniteQueryOptions,
-  IDataServiceFactoryOptions,
   IDataRepository,
-  IDataServiceStats,
   IDataState,
-  IDataStateWithMetadata,
   IDataStateManager
 } from './interfaces';
 
-// Factory functions
+export type {
+  ICacheManager,
+  IUpdateStrategy,
+  IWebSocketManager,
+  IQueryExecutor
+} from './services';
+
+// Factory functions - Clean API for service creation
 export {
   createDataService,
   createDefaultDataService,
@@ -34,33 +39,27 @@ export {
   createDataServiceForEnvironment
 } from './factory';
 
-// Re-export types from dependencies for convenience
+// Service classes - For advanced usage
+export {
+  CacheManager,
+  UpdateStrategy,
+  WebSocketManager,
+  QueryExecutor,
+  DataStateManager
+} from './services';
+
+// Base class for extension
+export { BaseDataService } from './BaseDataService';
+
+// Configuration - Remove config exports as they don't exist
+// Note: Configuration is handled internally by the factory functions
+
+// Re-exports for convenience
 export type { ICacheProvider } from '@/core/cache';
 export type { IWebSocketService } from '@/core/websocket/types';
 
-// Service types for advanced usage (interfaces only)
-export type {
-  ICacheManager,
-  IUpdateStrategy,
-  IWebSocketManager,
-  IQueryExecutor,
-  UpdateStrategyType
-} from './services';
-
-// Export configuration
-export { DataServiceConfig } from './config/DataServiceConfig';
-
-// React hooks for data fetching
-export {
-  useQuery,
-  useMutation,
-  useInfiniteQuery,
-  type UseQueryOptions,
-  type UseQueryResult,
-  type UseMutationOptions,
-  type UseMutationResult,
-  type UseInfiniteQueryResult
-} from './hooks';
+// Note: React hooks (useQuery, useMutation, useInfiniteQuery) are now exported from
+// @/core/hooks/query for better organization
 
 /**
  * Data Service Module Version

@@ -8,9 +8,9 @@ import type { ICacheManager } from './ICacheManager';
 import type { IQueryExecutor } from './IQueryExecutor';
 import type { IWebSocketManager } from './IWebSocketManager';
 
-import { useCustomInfiniteQuery } from '@/core/hooks/useCustomInfiniteQuery';
-import { useCustomMutation } from '@/core/hooks/useCustomMutation';
-import { useCustomQuery } from '@/core/hooks/useCustomQuery';
+import { useCustomInfiniteQuery } from '@/core/hooks/query';
+import { useCustomMutation } from '@/core/hooks/query';
+import { useCustomQuery } from '@/core/hooks/query';
 
 export class QueryExecutor implements IQueryExecutor {
   async executeQuery<T>(

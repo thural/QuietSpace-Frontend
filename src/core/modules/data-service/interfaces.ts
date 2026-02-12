@@ -6,9 +6,9 @@
  */
 
 import type { ICacheProvider } from '@/core/cache';
-import type { InfiniteQueryOptions } from '@/core/hooks/useCustomInfiniteQuery';
-import type { MutationOptions } from '@/core/hooks/useCustomMutation';
-import type { QueryOptions } from '@/core/hooks/useCustomQuery';
+import type { InfiniteQueryOptions } from '@/core/hooks/query';
+import type { MutationOptions } from '@/core/hooks/query';
+import type { QueryOptions } from '@/core/hooks/query';
 import type { IWebSocketService } from '@/core/websocket/types';
 
 /**

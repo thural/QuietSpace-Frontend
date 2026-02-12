@@ -10,7 +10,7 @@ import type { IDataServiceFactoryOptions, ICacheConfig } from './interfaces';
 import type { ICacheProvider } from '@/core/cache';
 import type { IWebSocketService } from '@/core/websocket/types';
 
-import { useDIContainer } from '@/core/modules/dependency-injection';
+import { useDIContainer } from '@/core/hooks/ui/dependency-injection';
 import { TYPES } from '@/core/modules/dependency-injection/types';
 
 

@@ -8,7 +8,7 @@
 import { memo, useState } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
-import { useThemeEnhancement } from '../enhancers/useThemeEnhancement';
+import { useThemeEnhancement } from '@/core/hooks/ui/theme';
 
 import { ThemeContext } from './ThemeContext';
 

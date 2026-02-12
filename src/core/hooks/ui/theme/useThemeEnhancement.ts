@@ -7,12 +7,11 @@
 
 import { useMemo } from 'react';
 
-import { getTheme } from '../variants';
+import { getTheme } from '../../../modules/theming/variants';
+import { enhanceTheme } from '../../../modules/theming/enhancers/themeEnhancers';
 
-import { enhanceTheme } from './themeEnhancers';
-
-import type { ThemeTokens } from '../tokens';
-import type { EnhancedTheme } from '../types/ProviderTypes';
+import type { ThemeTokens } from '../../../modules/theming/tokens';
+import type { EnhancedTheme } from '../../../modules/theming/types/ProviderTypes';
 
 /**
  * Theme enhancement hook interface

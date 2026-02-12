@@ -19,4 +19,4 @@ export { media } from './utils/mediaQueries';
 export { animations } from './animations/animations';
 export { Container, FlexContainer, GridContainer } from './components/layoutComponents';
 export { StyledButton } from './components/uiComponents';
-export { useResponsiveStyles } from './hooks/utilityHooks';
+export { useResponsiveStyles } from '@/core/hooks/ui/theme';
