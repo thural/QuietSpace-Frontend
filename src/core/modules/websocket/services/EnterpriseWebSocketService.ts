@@ -7,7 +7,8 @@
 
 import { type ICacheServiceManager } from '../../caching';
 
-import type { _LoggerService } from '../../../services';
+// Import centralized logging
+import { getLogger } from '../../logging';
 
 // Import centralized error handling
 import { createSystemError, createNetworkError } from '../../error';
@@ -77,10 +78,10 @@ export class EnterpriseWebSocketService implements IEnterpriseWebSocketService {
   private latencyTimer: NodeJS.Timeout | null = null;
   private connectionStartTime: number = 0;
   private token: string | null = null;
+  private readonly logger = getLogger('app.websocket');
 
   constructor(
-    private readonly cache: ICacheServiceManager,
-    private readonly logger: _LoggerService
+    private readonly cache: ICacheServiceManager
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();

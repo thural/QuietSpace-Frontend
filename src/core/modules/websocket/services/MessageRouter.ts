@@ -6,7 +6,7 @@
  */
 
 import { ICacheServiceManager } from '../../caching';
-import { _LoggerService } from '../../../services';
+import { getLogger } from '../../logging';
 
 import { WebSocketMessage } from './EnterpriseWebSocketService';
 
@@ -68,15 +68,15 @@ export interface IMessageRouter {
 /**
  * Message Router Implementation
  */
-export class MessageRouter implements IMessageRouter {
-  private readonly routes: Map<string, MessageRoute[]> = new Map();
-  private metrics: RoutingMetrics;
+export class MessageRouter {
+  private readonly routes = new Map<string, MessageRoute[]>();
+  private readonly metrics: RoutingMetrics;
   private readonly config: MessageRouterConfig;
   private deadLetterQueue: WebSocketMessage[] = [];
+  private readonly logger = getLogger('app.websocket.messageRouter');
 
   constructor(
-    private readonly cache: ICacheServiceManager,
-    private readonly logger: _LoggerService
+    private readonly cache: ICacheServiceManager
   ) {
     this.config = this.getDefaultConfig();
     this.metrics = this.getDefaultMetrics();

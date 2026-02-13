@@ -9,6 +9,7 @@ import { AuthErrorType, AuthEventType } from '../types/auth.domain.types';
 
 import type { IAuthLogger } from '../interfaces/authInterfaces';
 import type { AuthEvent } from '../types/auth.domain.types';
+import { getLogger } from '../../logging';
 
 /**
  * Console authentication logger implementation
@@ -17,6 +18,7 @@ export class ConsoleAuthLogger implements IAuthLogger {
     readonly name = 'ConsoleAuthLogger';
     private _level: 'debug' | 'info' | 'warn' | 'error' | 'security' = 'info';
     private logs: AuthEvent[] = [];
+    private readonly logger = getLogger('app.auth');
 
     get level(): 'debug' | 'info' | 'warn' | 'error' | 'security' {
         return this._level;
@@ -31,23 +33,21 @@ export class ConsoleAuthLogger implements IAuthLogger {
         const logLevel = this.getLogLevel(event.type);
         const message = this.formatLogMessage(event);
 
-        switch (logLevel) {
-            case 'debug':
-                console.debug(`[Auth] ${message}`, event);
-                break;
-            case 'info':
-                console.info(`[Auth] ${message}`, event);
-                break;
-            case 'warn':
-                console.warn(`[Auth] ${message}`, event);
-                break;
-            case 'error':
-                console.error(`[Auth] ${message}`, event);
-                break;
-            case 'security':
-                console.error(`[Auth] ${message}`, event);
-                break;
-        }
+        // Use centralized logging with structured context
+        this.logger.info(
+            {
+                userId: event.userId,
+                action: event.type,
+                component: 'ConsoleAuthLogger',
+                route: event.details?.route as string | undefined,
+                timestamp: event.timestamp.toISOString(),
+                error: event.error,
+                details: event.details
+            },
+            'Auth event: {} - {}',
+            event.type,
+            message
+        );
     }
 
     /**

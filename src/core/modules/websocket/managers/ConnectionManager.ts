@@ -6,7 +6,7 @@
  */
 
 import { ICacheServiceManager } from '../../caching';
-import { _LoggerService } from '../../../services';
+import { getLogger } from '../../logging';
 import { IEnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
 
 export interface ConnectionPool {
@@ -55,15 +55,14 @@ export interface IConnectionManager {
  * Connection Manager Implementation
  */
 export class ConnectionManager implements IConnectionManager {
-  private readonly connections: Map<string, ConnectionPool> = new Map();
-  private readonly healthStatus: Map<string, ConnectionHealth> = new Map();
-  private healthCheckTimer: NodeJS.Timeout | null = null;
+  private readonly connections = new Map<string, ConnectionPool>();
+  private readonly healthChecks = new Map<string, NodeJS.Timeout>();
   private readonly config: ConnectionPoolConfig;
   private roundRobinIndex = 0;
+  private readonly logger = getLogger('app.websocket.connectionManager');
 
   constructor(
-    private readonly cache: ICacheServiceManager,
-    private readonly logger: _LoggerService
+    private readonly cache: ICacheServiceManager
   ) {
     this.config = this.getDefaultConfig();
     this.startHealthChecks();

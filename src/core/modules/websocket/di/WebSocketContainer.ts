@@ -7,7 +7,6 @@
 
 import { ICacheServiceManager } from '../../caching';
 import { TYPES } from '../../dependency-injection/types';
-import { _LoggerService } from '../../../services';
 import { ConnectionManager } from '../managers/ConnectionManager';
 import { EnterpriseWebSocketService } from '../services/EnterpriseWebSocketService';
 import { MessageRouter } from '../services/MessageRouter';
@@ -36,16 +35,14 @@ export function createWebSocketContainer(
 
   // Get required dependencies from parent container
   const cacheService = parentContainer.get<ICacheServiceManager>(TYPES.CACHE_SERVICE);
-  const loggerService = parentContainer.get<_LoggerService>(TYPES.LOGGER_SERVICE);
 
   // Create WebSocket services with injected dependencies
   const enterpriseWebSocketService = new EnterpriseWebSocketService(
-    cacheService as any, // Type cast for FeatureCacheService compatibility
-    loggerService
+    cacheService as any // Type cast for FeatureCacheService compatibility
   );
 
-  const connectionManager = new ConnectionManager(cacheService, loggerService);
-  const messageRouter = new MessageRouter(cacheService, loggerService);
+  const connectionManager = new ConnectionManager(cacheService);
+  const messageRouter = new MessageRouter(cacheService);
 
   // Register service instances
   webSocketContainer.registerInstanceByToken(
@@ -137,7 +134,6 @@ export async function initializeWebSocketServices(
     );
 
     const cacheService = container.get<ICacheServiceManager>(TYPES.CACHE_SERVICE);
-    const loggerService = container.get<_LoggerService>(TYPES.LOGGER_SERVICE);
 
     // Initialize message router with default routes
     console.log('📡 Setting up message routing...');
@@ -154,7 +150,7 @@ export async function initializeWebSocketServices(
           senderId?: string;
         };
 
-        loggerService.info(`[Chat] Message received: ${payload.content}`);
+        console.info(`[Chat] Message received: ${payload.content}`);
         // Cache message for chat history
         if (payload.chatId) {
           const chatCache = cacheService.getCache('chat');
@@ -187,7 +183,7 @@ export async function initializeWebSocketServices(
           title?: string;
         };
 
-        loggerService.info(`[Notification] Push notification: ${payload.title}`);
+        console.info(`[Notification] Push notification: ${payload.title}`);
         // Cache notification for offline access
         const notificationCache = cacheService.getCache('notification');
         notificationCache.set(`notification:${message.id}`, message, 86400000); // 24 hours
@@ -206,7 +202,7 @@ export async function initializeWebSocketServices(
           type?: string;
         };
 
-        loggerService.info(`[Feed] Update received: ${payload.type}`);
+        console.info(`[Feed] Update received: ${payload.type}`);
         // Invalidate relevant cache entries
         await cacheService.invalidatePattern('feed:*');
         await cacheService.invalidatePattern('post:*');
