@@ -1,5 +1,5 @@
 /**
- * Internal Theme Enhancer.
+ * Internal Theme Enhancer
  *
  * Handles theme enhancement and computed value logic.
  * Separated from composition and factory concerns.
@@ -8,110 +8,185 @@
 import type { ThemeTokens } from '../tokens';
 import type { EnhancedTheme, ComposedTheme } from '../types';
 
+import { IEnhancementService, enhancementService } from '../../shared/services/EnhancementService';
+import { IThemeErrorFactory, themeErrorFactory } from '../../shared/errors/ThemeErrors';
+
 /**
- * Theme Enhancer interface
+ * Theme Enhancer Interface
  */
 export interface IThemeEnhancer {
     enhance(theme: ComposedTheme): EnhancedTheme;
     addUtilities(theme: EnhancedTheme): EnhancedTheme;
+    addComputedValues(theme: EnhancedTheme): EnhancedTheme;
+    addBackwardCompatibility(theme: EnhancedTheme): EnhancedTheme;
+    validateEnhancedTheme(theme: EnhancedTheme): Promise<boolean>;
 }
 
 /**
- * Theme Enhancer implementation
+ * Theme Enhancer Implementation
+ * 
+ * Handles theme enhancement and computed values with dependency injection support.
  */
 export class ThemeEnhancer implements IThemeEnhancer {
+    private readonly enhancementService: IEnhancementService;
+    private readonly errorFactory: IThemeErrorFactory;
+
+    constructor(
+        enhancementServiceInstance: IEnhancementService = enhancementService,
+        errorFactory: IThemeErrorFactory = themeErrorFactory
+    ) {
+        this.enhancementService = enhancementServiceInstance;
+        this.errorFactory = errorFactory;
+    }
+
     /**
      * Enhance a composed theme with computed values and utilities
      */
     public enhance(theme: ComposedTheme): EnhancedTheme {
-        let enhancedTheme: EnhancedTheme = {
-            ...theme.tokens,
-            getSpacing: (key: keyof ThemeTokens['spacing']) => theme.tokens.spacing[key],
-            getColor: (path: string) => this.getNestedValue(theme.tokens.colors, path),
-            getTypography: (key: keyof ThemeTokens['typography']) => theme.tokens.typography[key],
-            getBreakpoint: (key: keyof ThemeTokens['breakpoints']) => theme.tokens.breakpoints[key],
+        const startTime = performance.now();
 
-            // Backward compatibility
-            primary: theme.tokens.colors.brand,
-            secondary: theme.tokens.colors.neutral,
-            success: theme.tokens.colors.semantic?.success || '#10b981',
-            warning: theme.tokens.colors.semantic?.warning || '#f59e0b',
-            error: theme.tokens.colors.semantic?.error || '#ef4444',
-            info: theme.tokens.colors.semantic?.info || '#3b82f6'
-        };
+        try {
+            let enhancedTheme = this.enhancementService.enhance(theme);
 
-        // Add additional utilities
-        enhancedTheme = this.addUtilities(enhancedTheme);
+            // Validate enhanced theme
+            this.validateThemeStructure(enhancedTheme);
 
-        return enhancedTheme;
+            // Log performance warning if slow
+            const duration = performance.now() - startTime;
+            if (duration > 20) { // 20ms threshold
+                console.warn(`Slow theme enhancement: ${duration.toFixed(2)}ms for theme: ${theme.name}`);
+            }
+
+            return enhancedTheme;
+
+        } catch (error) {
+            if (error instanceof Error && error.name.startsWith('Theme')) {
+                throw error;
+            }
+
+            throw this.errorFactory.createEnhancementError(
+                `Failed to enhance theme: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                theme.name,
+                'enhancement'
+            );
+        }
     }
 
     /**
      * Add utility methods to theme
      */
     public addUtilities(theme: EnhancedTheme): EnhancedTheme {
-        return {
-            ...theme,
-            // Additional utility methods can be added here
-            getContrastColor: (backgroundColor: string) => this.getContrastColor(backgroundColor),
-            getLightColor: (color: string, amount: number) => this.lightenColor(color, amount),
-            getDarkColor: (color: string, amount: number) => this.darkenColor(color, amount)
-        } as EnhancedTheme;
-    }
-
-    /**
-     * Get nested value from object path
-     */
-    private getNestedValue(obj: unknown, path: string): string {
         try {
-            const result = path.split('.').reduce((current: unknown, key: string) => {
-                if (current && typeof current === 'object' && key in current) {
-                    return (current as Record<string, unknown>)[key];
-                }
-                return undefined;
-            }, obj);
-
-            return typeof result === 'string' ? result : String(result || '');
-        } catch {
-            return '';
+            return this.enhancementService.addUtilities(theme);
+        } catch (error) {
+            throw this.errorFactory.createEnhancementError(
+                `Failed to add utilities: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                'unknown',
+                'utilities'
+            );
         }
     }
 
     /**
-     * Get contrast color (black or white) for background
+     * Add computed values to theme
      */
-    private getContrastColor(backgroundColor: string): string {
-        // Simple luminance calculation
-        const hex = backgroundColor.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-        return luminance > 0.5 ? '#000000' : '#ffffff';
+    public addComputedValues(theme: EnhancedTheme): EnhancedTheme {
+        try {
+            return this.enhancementService.addComputedValues(theme);
+        } catch (error) {
+            throw this.errorFactory.createEnhancementError(
+                `Failed to add computed values: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                'unknown',
+                'computed-values'
+            );
+        }
     }
 
     /**
-     * Lighten a color by amount
+     * Add backward compatibility properties
      */
-    private lightenColor(color: string, amount: number): string {
-        const hex = color.replace('#', '');
-        const r = Math.min(255, parseInt(hex.substr(0, 2), 16) + amount);
-        const g = Math.min(255, parseInt(hex.substr(2, 2), 16) + amount);
-        const b = Math.min(255, parseInt(hex.substr(4, 2), 16) + amount);
-
-        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    public addBackwardCompatibility(theme: EnhancedTheme): EnhancedTheme {
+        try {
+            return this.enhancementService.addBackwardCompatibility(theme);
+        } catch (error) {
+            throw this.errorFactory.createEnhancementError(
+                `Failed to add backward compatibility: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                'unknown',
+                'backward-compatibility'
+            );
+        }
     }
 
     /**
-     * Darken a color by amount
+     * Validate enhanced theme asynchronously
      */
-    private darkenColor(color: string, amount: number): string {
-        const hex = color.replace('#', '');
-        const r = Math.max(0, parseInt(hex.substr(0, 2), 16) - amount);
-        const g = Math.max(0, parseInt(hex.substr(2, 2), 16) - amount);
-        const b = Math.max(0, parseInt(hex.substr(4, 2), 16) - amount);
+    public async validateEnhancedTheme(theme: EnhancedTheme): Promise<boolean> {
+        try {
+            // Check required methods
+            const requiredMethods = ['getSpacing', 'getColor', 'getTypography', 'getBreakpoint'];
+            for (const method of requiredMethods) {
+                if (typeof (theme as any)[method] !== 'function') {
+                    console.error(`Missing required method: ${method}`);
+                    return false;
+                }
+            }
 
-        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            // Check required properties
+            const requiredProperties = ['primary', 'secondary', 'success', 'warning', 'error', 'info'];
+            for (const prop of requiredProperties) {
+                if (!(prop in theme)) {
+                    console.error(`Missing required property: ${prop}`);
+                    return false;
+                }
+            }
+
+            // Test utility methods
+            if ((theme as any).getContrastColor) {
+                try {
+                    (theme as any).getContrastColor('#ffffff');
+                } catch (error) {
+                    console.error('getContrastColor method failed:', error);
+                    return false;
+                }
+            }
+
+            return true;
+
+        } catch (error) {
+            console.error('Theme validation error:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Validate theme structure
+     */
+    private validateThemeStructure(theme: EnhancedTheme): void {
+        const errors: string[] = [];
+
+        // Check required methods
+        const requiredMethods = ['getSpacing', 'getColor', 'getTypography', 'getBreakpoint'];
+        for (const method of requiredMethods) {
+            if (typeof (theme as any)[method] !== 'function') {
+                errors.push(`Missing required method: ${method}`);
+            }
+        }
+
+        // Check required properties
+        const requiredProperties = ['primary', 'secondary', 'success', 'warning', 'error', 'info'];
+        for (const prop of requiredProperties) {
+            if (!(prop in theme)) {
+                errors.push(`Missing required property: ${prop}`);
+            }
+        }
+
+        if (errors.length > 0) {
+            throw this.errorFactory.createValidationError(errors);
+        }
     }
 }
+
+/**
+ * Export singleton instance for backward compatibility
+ */
+export const themeEnhancer = new ThemeEnhancer();

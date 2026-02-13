@@ -1,14 +1,18 @@
 /**
  * Navigation Components Index
  * 
- * Exports all navigation-related UI components from the shared UI library.
- * These components provide reusable navigation elements with enterprise patterns.
+ * Exports all navigation components from the shared UI library.
+ * Includes Breadcrumb, Pagination, Menu, Sidebar, and future navigation-related components.
  */
 
-// Core navigation components
-export { default as SegmentedControl } from './SegmentedControl';
-export { default as Tabs } from './Tabs';
+export { Breadcrumb } from './Breadcrumb';
+export type { IBreadcrumbProps, IBreadcrumbItem, IBreadcrumbSeparator } from './Breadcrumb';
 
-// New reusable components
-export { default as FilterTabs } from './FilterTabs';
-export { default as TabNavigation } from './TabNavigation';
+export { Pagination } from './Pagination';
+export type { IPaginationProps, IPaginationConfig } from './Pagination';
+
+export { Menu } from './Menu';
+export type { IMenuProps, IMenuItem } from './Menu';
+
+export { Sidebar } from './Sidebar';
+export type { ISidebarProps, ISidebarSection } from './Sidebar';
