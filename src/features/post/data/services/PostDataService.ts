@@ -11,6 +11,7 @@ import type { ICacheProvider } from '@/core/cache';
 import type { ICacheManager } from '@/core/dataservice/services';
 import type { IWebSocketService } from '@/core/websocket/types';
 import type { IPostRepository } from '../../domain/repositories/IPostRepository';
+import { getLogger } from '@/core/modules/logging';
 // import type { ICommentRepository } from '../../../features/comment/domain/repositories/ICommentRepository';
 
 // Temporary interface for migration
@@ -91,6 +92,7 @@ export class PostDataService extends BaseDataService {
   private postRepository: IPostRepository;
   private commentRepository: ICommentRepository;
   private config: PostDataServiceConfig;
+  private readonly logger = getLogger('app.post.dataService');
 
   constructor(
     postRepository: IPostRepository,
@@ -119,6 +121,22 @@ export class PostDataService extends BaseDataService {
     // Initialize with injected services
     this.cache = cacheService;
     this.webSocket = webSocketService;
+
+    // Log initialization
+    this.logger.info(
+      {
+        component: 'PostDataService',
+        action: 'initialize',
+        additionalData: {
+          enableRealTimeUpdates: this.config.enableRealTimeUpdates,
+          enableOptimisticUpdates: this.config.enableOptimisticUpdates,
+          postTTL: this.config.postTTL
+        }
+      },
+      'PostDataService initialized with config: realTime={}, optimistic={}',
+      this.config.enableRealTimeUpdates,
+      this.config.enableOptimisticUpdates
+    );
   }
 
   /**

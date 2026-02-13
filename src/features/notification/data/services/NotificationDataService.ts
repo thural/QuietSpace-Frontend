@@ -4,6 +4,7 @@ import { INotificationRepository, NotificationQuery, NotificationFilters, Notifi
 import { NotificationPage, NotificationResponse, NotificationType } from '../models/notification';
 import { JwtToken } from '@/shared/api/models/common';
 import { NOTIFICATION_CACHE_KEYS, NOTIFICATION_CACHE_TTL, NOTIFICATION_CACHE_INVALIDATION } from '../cache/NotificationCacheKeys';
+import { getLogger } from '@/core/modules/logging';
 
 /**
  * Notification Data Service
@@ -12,10 +13,20 @@ import { NOTIFICATION_CACHE_KEYS, NOTIFICATION_CACHE_TTL, NOTIFICATION_CACHE_INV
  * Implements enterprise-grade caching with real-time notification strategies
  */
 export class NotificationDataService {
+  private readonly logger = getLogger('app.notification.dataService');
+
   constructor(
     private cache: ICacheProvider,
     private repository: INotificationRepository
-  ) { }
+  ) {
+    this.logger.info(
+      {
+        component: 'NotificationDataService',
+        action: 'initialize'
+      },
+      'NotificationDataService initialized'
+    );
+  }
 
   // Core notification operations with caching
   async getUserNotifications(userId: string, query: Partial<NotificationQuery> = {}, token: JwtToken): Promise<NotificationPage> {
@@ -37,7 +48,20 @@ export class NotificationDataService {
 
       return data;
     } catch (error) {
-      console.error('Error fetching user notifications:', error);
+      this.logger.error(
+        {
+          component: 'NotificationDataService',
+          action: 'getUserNotifications',
+          userId,
+          additionalData: {
+            query,
+            error: error instanceof Error ? error.message : String(error)
+          }
+        },
+        'Error fetching user notifications for user {}: {}',
+        userId,
+        error instanceof Error ? error.message : String(error)
+      );
       throw error;
     }
   }
