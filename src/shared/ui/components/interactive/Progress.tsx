@@ -1,6 +1,7 @@
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { getColor, getRadius, getSpacing, getTransition } from '../utils';
 
 interface IProgressProps extends BaseComponentProps {
   value?: number;
@@ -11,20 +12,32 @@ interface IProgressProps extends BaseComponentProps {
   animated?: boolean;
 }
 
-const ProgressContainer = styled.div<{ $size: string }>`
+const ProgressContainer = styled.div<{ $size: string; theme?: any }>`
   width: 100%;
-  height: ${props => props.$size === 'sm' ? '0.25rem' : props.$size === 'lg' ? '0.75rem' : '0.5rem'};
-  background-color: ${props => props.theme.colors?.border || '#e1e4e8'};
-  border-radius: ${props => props.$size === 'sm' ? '0.125rem' : props.$size === 'lg' ? '0.375rem' : '0.25rem'};
+  height: ${props => {
+    switch (props.$size) {
+      case 'sm': return getSpacing(props.theme, 2);
+      case 'lg': return getSpacing(props.theme, 12);
+      default: return getSpacing(props.theme, 8);
+    }
+  }};
+  background-color: ${props => getColor(props.theme, 'border.light')};
+  border-radius: ${props => {
+    switch (props.$size) {
+      case 'sm': return getRadius(props.theme, 'xs');
+      case 'lg': return getRadius(props.theme, 'sm');
+      default: return getRadius(props.theme, 'xs');
+    }
+  }};
   overflow: hidden;
 `;
 
-const ProgressBar = styled.div<{ $value: number; $size: string; $color: string; $striped: boolean; $animated: boolean }>`
+const ProgressBar = styled.div<{ $value: number; $size: string; $color: string; $striped: boolean; $animated: boolean; theme?: any }>`
   height: 100%;
   width: ${props => Math.min(Math.max(props.$value, 0), 100)}%;
-  background-color: ${props => props.$color || props.theme.colors?.primary || '#007bff'};
+  background-color: ${props => getColor(props.theme, props.$color || 'brand.500')};
   border-radius: inherit;
-  transition: width 0.3s ease;
+  transition: ${props => getTransition(props.theme, 'width', 'normal', 'ease')};
   
   ${props => props.$striped && `
     background-image: linear-gradient(
@@ -37,7 +50,7 @@ const ProgressBar = styled.div<{ $value: number; $size: string; $color: string; 
       transparent 75%,
       transparent
     );
-    background-size: 1rem 1rem;
+    background-size: ${props => getSpacing(props.theme, 16)} ${props => getSpacing(props.theme, 16)};
   `}
   
   ${props => props.$animated && props.$striped && `
@@ -46,7 +59,7 @@ const ProgressBar = styled.div<{ $value: number; $size: string; $color: string; 
   
   @keyframes progress-bar-stripes {
     0% {
-      background-position: 1rem 0;
+      background-position: ${props => getSpacing(props.theme, 16)} 0;
     }
     100% {
       background-position: 0 0;

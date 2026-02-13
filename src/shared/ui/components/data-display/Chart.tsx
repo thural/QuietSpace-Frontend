@@ -11,6 +11,7 @@
 
 import React, { PureComponent, createRef, RefObject } from 'react';
 import { TableContainer } from './Table.styles';
+import { getColor, getTypography } from '../utils';
 
 /**
  * Chart data point interface
@@ -81,6 +82,8 @@ export interface IChartProps {
   onClick?: (point: IChartDataPoint, series: IChartSeries) => void;
   /** Hover handler */
   onHover?: (point: IChartDataPoint | null, series: IChartSeries | null) => void;
+  /** Theme object */
+  theme?: any;
 }
 
 /**
@@ -104,7 +107,7 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     width: '100%',
     height: 400,
     responsive: true,
-    colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'],
+    colors: [], // Will be populated from theme
     loading: false,
     emptyText: 'No data available',
     showDataLabels: false,
@@ -149,6 +152,33 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+  };
+
+  /**
+   * Get theme colors for chart
+   */
+  private getThemeColors = (): string[] => {
+    const { colors, theme } = this.props;
+
+    // If custom colors are provided, use them
+    if (colors && colors.length > 0) {
+      return colors;
+    }
+
+    // Otherwise, use theme colors with fallbacks
+    if (theme) {
+      return [
+        getColor(theme, 'brand.500') || '#3b82f6',
+        getColor(theme, 'semantic.success') || '#10b981',
+        getColor(theme, 'semantic.warning') || '#f59e0b',
+        getColor(theme, 'semantic.error') || '#ef4444',
+        getColor(theme, 'brand.600') || '#2563eb',
+        getColor(theme, 'text.primary') || '#8b5cf6'
+      ];
+    }
+
+    // Fallback to default colors
+    return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
   };
 
   /**
@@ -304,8 +334,17 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     const { width, height, type, data, colors, showDataLabels } = this.props;
 
     // Set canvas size
-    canvas.width = width || 800;
-    canvas.height = height || 400;
+    const parseDimension = (value: number | string | undefined, fallback: number): number => {
+      if (typeof value === 'number') return value;
+      if (typeof value === 'string') {
+        const parsed = parseInt(value, 10);
+        return isNaN(parsed) ? fallback : parsed;
+      }
+      return fallback;
+    };
+
+    canvas.width = parseDimension(width, 800);
+    canvas.height = parseDimension(height, 400);
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -313,7 +352,7 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     // Draw based on chart type
     switch (type) {
       case 'line':
-        this.drawLineChart(ctx);
+        this.drawLineChart(ctx, data, colors || []);
         break;
       case 'bar':
         this.drawBarChart(ctx);
@@ -330,9 +369,10 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
       case 'doughnut':
         this.drawDoughnutChart(ctx);
         break;
+      default:
+        this.drawLineChart(ctx, data, colors || []);
     }
 
-    // Draw data labels
     if (showDataLabels) {
       this.drawDataLabels(ctx);
     }
@@ -344,14 +384,14 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
   /**
    * Draw line chart
    */
-  private drawLineChart = (ctx: CanvasRenderingContext2D) => {
-    const { data, colors } = this.props;
+  private drawLineChart = (ctx: CanvasRenderingContext2D, data: IChartSeries[], colors: string[]) => {
     const padding = 40;
     const chartWidth = ctx.canvas.width - padding * 2;
     const chartHeight = ctx.canvas.height - padding * 2;
+    const themeColors = this.getThemeColors();
 
     data.forEach((series, seriesIndex) => {
-      const color = series.color || (colors && colors[seriesIndex % colors.length]) || '#3b82f6';
+      const color = series.color || (colors && colors[seriesIndex % colors.length]) || themeColors[seriesIndex % themeColors.length] || '#3b82f6';
       const points = series.data.map(point => ({
         x: padding + (this.getXPosition(point.x, series.data) * chartWidth),
         y: padding + chartHeight - (this.getYPosition(point.y, data) * chartHeight),
@@ -389,9 +429,10 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     const chartWidth = ctx.canvas.width - padding * 2;
     const chartHeight = ctx.canvas.height - padding * 2;
     const barWidth = chartWidth / ((data[0]?.data.length) || 1) * 0.8;
+    const themeColors = this.getThemeColors();
 
     data.forEach((series, seriesIndex) => {
-      const color = series.color || (colors && colors[seriesIndex % colors.length]) || '#3b82f6';
+      const color = series.color || (colors && colors[seriesIndex % colors.length]) || themeColors[seriesIndex % themeColors.length] || '#3b82f6';
 
       series.data.forEach((point, pointIndex) => {
         const x = padding + ((pointIndex / ((series.data.length - 1) || 1)) * chartWidth);
@@ -412,16 +453,17 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     const padding = 40;
     const chartWidth = ctx.canvas.width - padding * 2;
     const chartHeight = ctx.canvas.height - padding * 2;
+    const themeColors = this.getThemeColors();
 
     data.forEach((series, seriesIndex) => {
-      const color = series.color || (colors && colors[seriesIndex % colors.length]) || '#3b82f6';
+      const color = series.color || (colors && colors[seriesIndex % colors.length]) || themeColors[seriesIndex % themeColors.length] || '#3b82f6';
       const points = series.data.map(point => ({
         x: padding + (this.getXPosition(point.x, series.data) * chartWidth),
         y: padding + chartHeight - (this.getYPosition(point.y, data) * chartHeight),
       }));
 
       // Draw area
-      ctx.fillStyle = color + '33'; // Add transparency
+      ctx.fillStyle = (color || '#3b82f6') + '33'; // Add transparency
       ctx.beginPath();
       points.forEach((point, index) => {
         if (index === 0) {
@@ -431,12 +473,17 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
           ctx.lineTo(point.x, point.y);
         }
       });
-      ctx.lineTo(points[points.length - 1].x, padding + chartHeight);
+      if (points.length > 0) {
+        const lastPoint = points[points.length - 1];
+        if (lastPoint) {
+          ctx.lineTo(lastPoint.x, padding + chartHeight);
+        }
+      }
       ctx.closePath();
       ctx.fill();
 
       // Draw line
-      ctx.strokeStyle = color;
+      ctx.strokeStyle = color || '#3b82f6';
       ctx.lineWidth = 2;
       ctx.beginPath();
       points.forEach((point, index) => {
@@ -458,9 +505,10 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
     const padding = 40;
     const chartWidth = ctx.canvas.width - padding * 2;
     const chartHeight = ctx.canvas.height - padding * 2;
+    const themeColors = this.getThemeColors();
 
     data.forEach((series, seriesIndex) => {
-      const color = series.color || (colors && colors[seriesIndex % colors.length]) || '#3b82f6';
+      const color = series.color || (colors && colors[seriesIndex % colors.length]) || themeColors[seriesIndex % themeColors.length] || '#3b82f6';
 
       series.data.forEach(point => {
         const x = padding + (this.getXPosition(point.x, series.data) * chartWidth);
@@ -478,19 +526,23 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
    * Draw pie chart
    */
   private drawPieChart = (ctx: CanvasRenderingContext2D) => {
-    const { data, colors } = this.props;
-
+    const { data } = this.props;
+    const padding = 40;
     const centerX = ctx.canvas.width / 2;
     const centerY = ctx.canvas.height / 2;
-    const radius = Math.min(ctx.canvas.width, ctx.canvas.height) / 2 - 40;
+    const radius = Math.min(centerX, centerY) - padding;
+    const themeColors = this.getThemeColors();
 
-    const total = data.reduce((sum, series) => sum + series.data.reduce((s, p) => s + p.y, 0), 0);
+    const total = data.reduce((sum, series) => {
+      return sum + series.data.reduce((s, p) => s + p.y, 0);
+    }, 0);
+
     let currentAngle = -Math.PI / 2;
 
     data.forEach((series, seriesIndex) => {
       const seriesTotal = series.data.reduce((s, p) => s + p.y, 0);
       const angle = (seriesTotal / total) * 2 * Math.PI;
-      const color = series.color || (colors && colors[seriesIndex % colors.length]) || '#3b82f6';
+      const color = series.color || themeColors[seriesIndex % themeColors.length] || '#3b82f6';
 
       ctx.fillStyle = color;
       ctx.beginPath();
@@ -507,20 +559,24 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
    * Draw doughnut chart
    */
   private drawDoughnutChart = (ctx: CanvasRenderingContext2D) => {
-    const { data, colors } = this.props;
-
+    const { data } = this.props;
+    const padding = 40;
     const centerX = ctx.canvas.width / 2;
     const centerY = ctx.canvas.height / 2;
-    const outerRadius = Math.min(ctx.canvas.width, ctx.canvas.height) / 2 - 40;
+    const outerRadius = Math.min(centerX, centerY) - padding;
     const innerRadius = outerRadius * 0.6;
+    const themeColors = this.getThemeColors();
 
-    const total = data.reduce((sum, series) => sum + series.data.reduce((s, p) => s + p.y, 0), 0);
+    const total = data.reduce((sum, series) => {
+      return sum + series.data.reduce((s, p) => s + p.y, 0);
+    }, 0);
+
     let currentAngle = -Math.PI / 2;
 
     data.forEach((series, seriesIndex) => {
       const seriesTotal = series.data.reduce((s, p) => s + p.y, 0);
       const angle = (seriesTotal / total) * 2 * Math.PI;
-      const color = series.color || (colors && colors[seriesIndex % colors.length]) || '#3b82f6';
+      const color = series.color || themeColors[seriesIndex % themeColors.length] || '#3b82f6';
 
       ctx.fillStyle = color;
       ctx.beginPath();
@@ -538,19 +594,18 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
    * Draw data labels
    */
   private drawDataLabels = (ctx: CanvasRenderingContext2D) => {
-    const { data, dataLabelFormat } = this.props;
-    const padding = 40;
-    const chartWidth = ctx.canvas.width - padding * 2;
-    const chartHeight = ctx.canvas.height - padding * 2;
+    const { theme, data, dataLabelFormat } = this.props;
+    const chartWidth = ctx.canvas.width - 80;
+    const chartHeight = ctx.canvas.height - 80;
 
-    ctx.fillStyle = '#333';
-    ctx.font = '12px sans-serif';
+    ctx.fillStyle = theme ? getColor(theme, 'text.primary') : '#333';
+    ctx.font = theme ? getTypography(theme, 'fontSize.sm') + ' sans-serif' : '12px sans-serif';
     ctx.textAlign = 'center';
 
     data.forEach(series => {
       series.data.forEach(point => {
-        const x = padding + (this.getXPosition(point.x, series.data) * chartWidth);
-        const y = padding + chartHeight - (this.getYPosition(point.y, data) * chartHeight);
+        const x = 40 + (this.getXPosition(point.x, series.data) * chartWidth);
+        const y = 40 + chartHeight - (this.getYPosition(point.y, data) * chartHeight);
 
         const label = dataLabelFormat ? dataLabelFormat(point) : String(point.y);
         ctx.fillText(label, x, y - 10);
@@ -562,23 +617,23 @@ export class Chart extends PureComponent<IChartProps, IChartState> {
    * Draw axes
    */
   private drawAxes = (ctx: CanvasRenderingContext2D) => {
-    const padding = 40;
-    const chartWidth = ctx.canvas.width - padding * 2;
-    const chartHeight = ctx.canvas.height - padding * 2;
+    const { theme } = this.props;
+    const chartWidth = ctx.canvas.width - 80;
+    const chartHeight = ctx.canvas.height - 80;
 
-    ctx.strokeStyle = '#ccc';
+    ctx.strokeStyle = theme ? getColor(theme, 'border.light') : '#ccc';
     ctx.lineWidth = 1;
 
     // X-axis
     ctx.beginPath();
-    ctx.moveTo(padding, padding + chartHeight);
-    ctx.lineTo(padding + chartWidth, padding + chartHeight);
+    ctx.moveTo(40, 40 + chartHeight);
+    ctx.lineTo(40 + chartWidth, 40 + chartHeight);
     ctx.stroke();
 
     // Y-axis
     ctx.beginPath();
-    ctx.moveTo(padding, padding);
-    ctx.lineTo(padding, padding + chartHeight);
+    ctx.moveTo(40, 40);
+    ctx.lineTo(40, 40 + chartHeight);
     ctx.stroke();
   };
 

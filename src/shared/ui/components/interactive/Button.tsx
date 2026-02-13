@@ -39,7 +39,7 @@ const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
     border: ${(props: any) => getBorderWidth(props.theme, 'md')} solid;
   `}
   ${(props: any) => props.$props.gradient && `
-    background: ${props.theme.colors?.gradient || 'linear-gradient(45deg, #007bff, #6f42c1)'};
+    background: ${props.theme.colors?.gradient || `linear-gradient(45deg, ${getColor(props.theme, 'brand.500')}, ${getColor(props.theme, 'brand.600')})`};
     color: ${(props: any) => getColor(props.theme, 'text.inverse')};
     border: none;
   `}

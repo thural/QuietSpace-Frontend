@@ -6,7 +6,7 @@
  * No legacy adapters or migration code - pure modern theme integration.
  */
 
-import { EnhancedTheme } from '@/core/theme';
+import { EnhancedTheme } from '@/core/modules/theming';
 import {
     LayoutProps,
     FlexProps,
@@ -42,8 +42,9 @@ export const getColor = (theme: EnhancedTheme, colorPath?: string): string => {
 
     // Handle brand colors (e.g., "brand.500")
     if (colorPath.startsWith('brand.')) {
-        const shade = colorPath.split('.')[1] as keyof typeof theme.colors.brand;
-        return theme.colors.brand[shade] || colorPath;
+        const shade = colorPath.split('.')[1];
+        const brandColors = theme.colors.brand;
+        return brandColors[shade as unknown as keyof typeof brandColors] || colorPath;
     }
 
     // Handle semantic colors
@@ -229,12 +230,12 @@ export const typographyPropsToStyles = (props: TypographyProps, theme: EnhancedT
     // Handle individual typography properties
     if (props.size) styles.push(`font-size: ${getSpacing(theme, props.size)}`);
     if (props.weight) styles.push(`font-weight: ${props.weight}`);
-    if (props.height) styles.push(`line-height: ${props.height}`);
-    if (props.family) styles.push(`font-family: ${props.family}`);
+    if (props.lineHeight) styles.push(`line-height: ${props.lineHeight}`);
+    if (props.fontFamily) styles.push(`font-family: ${props.fontFamily}`);
     if (props.color) styles.push(`color: ${getColor(theme, props.color)}`);
-    if (props.align) styles.push(`text-align: ${props.align}`);
-    if (props.transform) styles.push(`text-transform: ${props.transform}`);
-    if (props.decoration) styles.push(`text-decoration: ${props.decoration}`);
+    if (props.textAlign) styles.push(`text-align: ${props.textAlign}`);
+    if (props.textTransform) styles.push(`text-transform: ${props.textTransform}`);
+    if (props.textDecoration) styles.push(`text-decoration: ${props.textDecoration}`);
 
     // Handle text overflow
     if (props.truncate) {
@@ -257,7 +258,7 @@ export const typographyPropsToStyles = (props: TypographyProps, theme: EnhancedT
  * Get variant-specific styles for buttons using modern theme tokens
  */
 export const getButtonVariantStyles = (variant: ComponentVariant, theme: EnhancedTheme): string => {
-    const variants = {
+    const variants: Record<ComponentVariant, string> = {
         primary: `
             background-color: ${getColor(theme, 'brand.500')};
             color: ${getColor(theme, 'text.inverse')};
@@ -280,20 +281,22 @@ export const getButtonVariantStyles = (variant: ComponentVariant, theme: Enhance
                 border-color: ${getColor(theme, 'border.medium')};
             }
         `,
-        outline: `
-            background-color: transparent;
-            color: ${getColor(theme, 'brand.500')};
-            border: 1px solid ${getColor(theme, 'brand.500')};
+        success: `
+            background-color: ${getColor(theme, 'semantic.success')};
+            color: ${getColor(theme, 'text.inverse')};
+            border: 1px solid ${getColor(theme, 'semantic.success')};
             &:hover {
-                background-color: ${getColor(theme, 'brand.50')};
+                background-color: ${getColor(theme, 'semantic.success')};
+                opacity: 0.9;
             }
         `,
-        ghost: `
-            background-color: transparent;
-            color: ${getColor(theme, 'text.primary')};
-            border: 1px solid transparent;
+        warning: `
+            background-color: ${getColor(theme, 'semantic.warning')};
+            color: ${getColor(theme, 'text.inverse')};
+            border: 1px solid ${getColor(theme, 'semantic.warning')};
             &:hover {
-                background-color: ${getColor(theme, 'background.secondary')};
+                background-color: ${getColor(theme, 'semantic.warning')};
+                opacity: 0.9;
             }
         `,
         danger: `
@@ -303,6 +306,33 @@ export const getButtonVariantStyles = (variant: ComponentVariant, theme: Enhance
             &:hover {
                 background-color: ${getColor(theme, 'semantic.error')};
                 opacity: 0.9;
+            }
+        `,
+        info: `
+            background-color: ${getColor(theme, 'semantic.info')};
+            color: ${getColor(theme, 'text.inverse')};
+            border: 1px solid ${getColor(theme, 'semantic.info')};
+            &:hover {
+                background-color: ${getColor(theme, 'semantic.info')};
+                opacity: 0.9;
+            }
+        `,
+        light: `
+            background-color: ${getColor(theme, 'background.primary')};
+            color: ${getColor(theme, 'text.primary')};
+            border: 1px solid ${getColor(theme, 'border.light')};
+            &:hover {
+                background-color: ${getColor(theme, 'background.secondary')};
+                border-color: ${getColor(theme, 'border.medium')};
+            }
+        `,
+        dark: `
+            background-color: ${getColor(theme, 'text.primary')};
+            color: ${getColor(theme, 'text.inverse')};
+            border: 1px solid ${getColor(theme, 'text.primary')};
+            &:hover {
+                background-color: ${getColor(theme, 'text.secondary')};
+                border-color: ${getColor(theme, 'text.secondary')};
             }
         `
     };
@@ -318,31 +348,31 @@ export const getSizeStyles = (size: ComponentSize, theme: EnhancedTheme): string
         xs: `
             padding: ${theme.spacing.xs} ${theme.spacing.sm};
             font-size: ${theme.typography.fontSize.xs};
-            border-radius: ${theme.radius.xs};
+            border-radius: ${getRadius(theme, 'none')};
             border-width: ${theme.border.hairline};
         `,
         sm: `
             padding: ${theme.spacing.sm} ${theme.spacing.md};
             font-size: ${theme.typography.fontSize.sm};
-            border-radius: ${theme.radius.sm};
+            border-radius: ${getRadius(theme, 'sm')};
             border-width: ${theme.border.xs};
         `,
         md: `
             padding: ${theme.spacing.md} ${theme.spacing.lg};
             font-size: ${theme.typography.fontSize.base};
-            border-radius: ${theme.radius.md};
+            border-radius: ${getRadius(theme, 'md')};
             border-width: ${theme.border.sm};
         `,
         lg: `
             padding: ${theme.spacing.lg} ${theme.spacing.xl};
             font-size: ${theme.typography.fontSize.lg};
-            border-radius: ${theme.radius.lg};
+            border-radius: ${getRadius(theme, 'lg')};
             border-width: ${theme.border.md};
         `,
         xl: `
             padding: ${theme.spacing.xl} ${theme.spacing.xxl};
             font-size: ${theme.typography.fontSize.xl};
-            border-radius: ${theme.radius.xl};
+            border-radius: ${getRadius(theme, 'xl')};
             border-width: ${theme.border.lg};
         `
     };
@@ -460,14 +490,20 @@ export const getComponentSize = (theme: EnhancedTheme, component: keyof typeof t
     const componentSizes = theme.size[component];
 
     if (!componentSizes) {
-        console.warn(`Component size not found: ${component}`);
+        console.warn(`Component size not found: ${String(component)}`);
         return 'md';
     }
 
     if (!size) {
         // Return default size for component
-        if (component === 'avatar') return componentSizes.md;
-        if (component === 'skeleton') return componentSizes.height;
+        if (component === 'avatar') {
+            const avatarSizes = componentSizes as { xs: string; sm: string; md: string; lg: string; };
+            return avatarSizes.md;
+        }
+        if (component === 'skeleton') {
+            const skeletonSizes = componentSizes as { minWidth: string; height: string; };
+            return skeletonSizes.height;
+        }
         return 'md';
     }
 
@@ -513,5 +549,162 @@ export const getSkeletonStyles = (theme: EnhancedTheme, variant?: 'default' | 'c
         `
     };
 
-    return variantStyles[variant || 'default'] || variantStyles.default;
+    return variantStyles[variant || 'default'];
+};
+
+/**
+ * Common styled component patterns to reduce duplication
+ */
+
+/**
+ * Get size-based spacing for components (sm, md, lg)
+ */
+export const getSizeBasedSpacing = (theme: EnhancedTheme, size: 'sm' | 'md' | 'lg' = 'md'): string => {
+    const spacingMap = {
+        sm: getSpacing(theme, 'sm'),
+        md: getSpacing(theme, 'md'),
+        lg: getSpacing(theme, 'lg')
+    };
+    return spacingMap[size];
+};
+
+/**
+ * Get common input field styles
+ */
+export const getInputFieldStyles = (theme: EnhancedTheme, size: 'sm' | 'md' | 'lg' = 'md') => {
+    const sizeStyles = {
+        sm: {
+            padding: `${getSpacing(theme, 'xs')} ${getSpacing(theme, 'sm')}`,
+            fontSize: getTypography(theme, 'fontSize.sm'),
+            borderRadius: getRadius(theme, 'sm')
+        },
+        md: {
+            padding: `${getSpacing(theme, 'sm')} ${getSpacing(theme, 'md')}`,
+            fontSize: getTypography(theme, 'fontSize.md'),
+            borderRadius: getRadius(theme, 'md')
+        },
+        lg: {
+            padding: `${getSpacing(theme, 'md')} ${getSpacing(theme, 'lg')}`,
+            fontSize: getTypography(theme, 'fontSize.lg'),
+            borderRadius: getRadius(theme, 'lg')
+        }
+    };
+
+    return {
+        ...sizeStyles[size],
+        border: `${getBorderWidth(theme, 'thin')} solid ${getColor(theme, 'border.light')}`,
+        backgroundColor: getColor(theme, 'background.primary'),
+        color: getColor(theme, 'text.primary'),
+        transition: getTransition(theme, 'all'),
+        '&:focus': {
+            outline: 'none',
+            borderColor: getColor(theme, 'brand.500'),
+            boxShadow: `0 0 0 2px ${getColor(theme, 'brand.500')}20`
+        },
+        '&:disabled': {
+            backgroundColor: getColor(theme, 'background.tertiary'),
+            color: getColor(theme, 'text.secondary'),
+            cursor: 'not-allowed'
+        }
+    };
+};
+
+/**
+ * Get common button styles for interactive elements
+ */
+export const getInteractiveButtonStyles = (theme: EnhancedTheme, variant: 'primary' | 'secondary' | 'ghost' = 'primary', size: 'sm' | 'md' | 'lg' = 'md') => {
+    const sizeStyles = {
+        sm: {
+            padding: `${getSpacing(theme, 'xs')} ${getSpacing(theme, 'sm')}`,
+            fontSize: getTypography(theme, 'fontSize.sm'),
+            borderRadius: getRadius(theme, 'sm')
+        },
+        md: {
+            padding: `${getSpacing(theme, 'sm')} ${getSpacing(theme, 'md')}`,
+            fontSize: getTypography(theme, 'fontSize.md'),
+            borderRadius: getRadius(theme, 'md')
+        },
+        lg: {
+            padding: `${getSpacing(theme, 'md')} ${getSpacing(theme, 'lg')}`,
+            fontSize: getTypography(theme, 'fontSize.lg'),
+            borderRadius: getRadius(theme, 'lg')
+        }
+    };
+
+    const variantStyles = {
+        primary: {
+            backgroundColor: getColor(theme, 'brand.500'),
+            color: getColor(theme, 'text.inverse'),
+            border: 'none',
+            '&:hover': {
+                backgroundColor: getColor(theme, 'brand.600')
+            }
+        },
+        secondary: {
+            backgroundColor: getColor(theme, 'background.secondary'),
+            color: getColor(theme, 'text.primary'),
+            border: `${getBorderWidth(theme, 'thin')} solid ${getColor(theme, 'border.light')}`,
+            '&:hover': {
+                backgroundColor: getColor(theme, 'background.tertiary')
+            }
+        },
+        ghost: {
+            backgroundColor: 'transparent',
+            color: getColor(theme, 'text.primary'),
+            border: 'none',
+            '&:hover': {
+                backgroundColor: getColor(theme, 'background.secondary')
+            }
+        }
+    };
+
+    return {
+        ...sizeStyles[size],
+        ...variantStyles[variant],
+        cursor: 'pointer',
+        transition: getTransition(theme, 'all'),
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: getTypography(theme, 'fontWeight.medium'),
+        '&:disabled': {
+            backgroundColor: getColor(theme, 'background.tertiary'),
+            color: getColor(theme, 'text.secondary'),
+            cursor: 'not-allowed',
+            opacity: 0.6
+        }
+    };
+};
+
+/**
+ * Get common container styles
+ */
+export const getContainerStyles = (theme: EnhancedTheme, variant: 'card' | 'modal' | 'panel' = 'card') => {
+    const baseStyles = {
+        backgroundColor: getColor(theme, 'background.primary'),
+        borderRadius: getRadius(theme, 'md'),
+        boxShadow: getShadow(theme, 'sm')
+    };
+
+    const variantStyles = {
+        card: {
+            ...baseStyles,
+            padding: getSpacing(theme, 'lg'),
+            border: `${getBorderWidth(theme, 'thin')} solid ${getColor(theme, 'border.light')}`
+        },
+        modal: {
+            ...baseStyles,
+            padding: getSpacing(theme, 'xl'),
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            overflow: 'auto'
+        },
+        panel: {
+            ...baseStyles,
+            padding: getSpacing(theme, 'md'),
+            backgroundColor: getColor(theme, 'background.secondary')
+        }
+    };
+
+    return variantStyles[variant];
 };

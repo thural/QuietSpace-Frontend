@@ -1,6 +1,7 @@
 import React, { PureComponent, ReactNode, createRef } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getTransition, getSizeBasedSpacing, getInputFieldStyles } from '../utils';
 
 interface IPinInputProps extends BaseComponentProps {
     length?: number;
@@ -15,37 +16,87 @@ interface IPinInputState {
     pinValues: string[];
 }
 
-const PinInputContainer = styled.div<{ $size: string }>`
+const PinInputContainer = styled.div<{ $size: string; theme?: any }>`
   display: flex;
-  gap: ${props => props.$size === 'sm' ? '0.5rem' : props.$size === 'lg' ? '1rem' : '0.75rem'};
+  gap: ${props => getSizeBasedSpacing(props.theme, props.$size as 'sm' | 'md' | 'lg')};
 `;
 
-const PinInputField = styled.input<{ $size: string }>`
-  width: ${props => props.$size === 'sm' ? '2rem' : props.$size === 'lg' ? '3.5rem' : '3rem'};
-  height: ${props => props.$size === 'sm' ? '2rem' : props.$size === 'lg' ? '3.5rem' : '3rem'};
-  font-size: ${props => props.$size === 'sm' ? '1rem' : props.$size === 'lg' ? '1.5rem' : '1.25rem'};
-  text-align: center;
-  border: 2px solid ${props => props.theme.colors?.border || '#e1e4e8'};
-  border-radius: ${props => props.$size === 'sm' ? '0.25rem' : props.$size === 'lg' ? '0.5rem' : '0.375rem'};
-  background-color: ${props => props.theme.colors?.surface || '#ffffff'};
-  color: ${props => props.theme.colors?.text?.primary || '#1a1a1a'};
-  transition: all 0.2s ease;
+const PinInputField = styled.input<{ $size: string; theme?: any }>`
+  ${props => {
+        const baseStyles = getInputFieldStyles(props.theme, props.$size as 'sm' | 'md' | 'lg');
+        return `
+      width: 3rem;
+      height: 3rem;
+      text-align: center;
+      font-size: ${getTypography(props.theme, 'fontSize.lg')};
+      font-weight: ${getTypography(props.theme, 'fontWeight.bold')};
+      ${Object.entries(baseStyles).map(([key, value]) => `${key}: ${value}`).join('; ')};
+      &:focus {
+        ${baseStyles['&:focus']};
+      }
+      &:disabled {
+        ${baseStyles['&:disabled']};
+      }
+    `;
+    }}
+`;
+width: ${
+    props => {
+        switch (props.$size) {
+            case 'sm': return getSpacing(props.theme, 32);
+            case 'lg': return getSpacing(props.theme, 56);
+            default: return getSpacing(props.theme, 48);
+        }
+    }
+};
+height: ${
+    props => {
+        switch (props.$size) {
+            case 'sm': return getSpacing(props.theme, 32);
+            case 'lg': return getSpacing(props.theme, 56);
+            default: return getSpacing(props.theme, 48);
+        }
+    }
+};
+font - size: ${
+    props => {
+        switch (props.$size) {
+            case 'sm': return getTypography(props.theme, 'fontSize.base');
+            case 'lg': return getTypography(props.theme, 'fontSize.xl');
+            default: return getTypography(props.theme, 'fontSize.lg');
+        }
+    }
+};
+text - align: center;
+border: ${ props => getBorderWidth(props.theme, 'sm') } solid ${ props => getColor(props.theme, 'border.medium') };
+border - radius: ${
+    props => {
+        switch (props.$size) {
+            case 'sm': return getRadius(props.theme, 'sm');
+            case 'lg': return getRadius(props.theme, 'md');
+            default: return getRadius(props.theme, 'md');
+        }
+    }
+};
+background - color: ${ props => getColor(props.theme, 'background.primary') };
+color: ${ props => getColor(props.theme, 'text.primary') };
+transition: ${ props => getTransition(props.theme, 'all', 'fast', 'ease') };
   
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors?.primary || '#007bff'};
-    box-shadow: 0 0 0 2px ${props => props.theme.colors?.primary || '#007bff'}20;
-  }
+    border - color: ${ props => getColor(props.theme, 'brand.500') };
+    box - shadow: 0 0 0 ${ props => getBorderWidth(props.theme, 'md') } solid ${ props => getColor(props.theme, 'brand.200') };
+}
   
   &:disabled {
-    background-color: ${props => props.theme.colors?.border || '#e1e4e8'};
-    cursor: not-allowed;
-  }
+    background - color: ${ props => getColor(props.theme, 'background.tertiary') };
+    cursor: not - allowed;
+}
   
   &::selection {
-    background-color: ${props => props.theme.colors?.primary || '#007bff'};
-    color: white;
-  }
+    background - color: ${ props => getColor(props.theme, 'brand.500') };
+    color: ${ props => getColor(props.theme, 'text.inverse') };
+}
 `;
 
 class PinInput extends PureComponent<IPinInputProps, IPinInputState> {

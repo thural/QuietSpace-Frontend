@@ -1,6 +1,7 @@
-import React, { PureComponent, ReactNode, ChangeEvent } from 'react';
+import { ChangeEvent, PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { getBorderWidth, getColor, getRadius, getSpacing, getTransition, getTypography } from '../utils';
 
 interface IFileInputProps extends BaseComponentProps {
   value?: File | null;
@@ -30,29 +31,59 @@ const FileInputInput = styled.input<{ $size: string }>`
   }
 `;
 
-const FileInputButton = styled.div<{ $size: string; $disabled: boolean }>`
+const FileInputButton = styled.div<{ $size: string; $disabled: boolean; theme?: any }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${props => props.$size === 'sm' ? '0.5rem' : props.$size === 'lg' ? '1rem' : '0.75rem'};
-  padding: ${props => props.$size === 'sm' ? '0.5rem 1rem' : props.$size === 'lg' ? '1rem 2rem' : '0.75rem 1.5rem'};
-  border: 2px dashed ${props => props.$disabled ? props.theme.colors?.border || '#e1e4e8' : props.theme.colors?.primary || '#007bff'};
-  border-radius: ${props => props.$size === 'sm' ? '0.25rem' : props.$size === 'lg' ? '0.5rem' : '0.375rem'};
-  background-color: ${props => props.theme.colors?.surface || '#ffffff'};
-  color: ${props => props.$disabled ? props.theme.colors?.text?.secondary || '#666666' : props.theme.colors?.primary || '#007bff'};
-  font-size: ${props => props.$size === 'sm' ? '0.75rem' : props.$size === 'lg' ? '1rem' : '0.875rem'};
-  font-weight: 500;
-  transition: all 0.2s ease;
+  gap: ${props => {
+    switch (props.$size) {
+      case 'sm': return getSpacing(props.theme, 'sm');
+      case 'lg': return getSpacing(props.theme, 'lg');
+      default: return getSpacing(props.theme, 'md');
+    }
+  }};
+  padding: ${props => {
+    switch (props.$size) {
+      case 'sm': return `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'lg')}`;
+      case 'lg': return `${getSpacing(props.theme, 'lg')} ${getSpacing(props.theme, 'xl')}`;
+      default: return `${getSpacing(props.theme, 'md')} ${getSpacing(props.theme, 'xl')}`;
+    }
+  }};
+  border: ${props => getBorderWidth(props.theme, 'md')} dashed ${props => getColor(props.theme, props.$disabled ? 'border.light' : 'brand.500')};
+  border-radius: ${props => {
+    switch (props.$size) {
+      case 'sm': return getRadius(props.theme, 'sm');
+      case 'lg': return getRadius(props.theme, 'md');
+      default: return getRadius(props.theme, 'md');
+    }
+  }};
+  background-color: ${props => getColor(props.theme, 'background.primary')};
+  color: ${props => getColor(props.theme, props.$disabled ? 'text.secondary' : 'brand.500')};
+  font-size: ${props => {
+    switch (props.$size) {
+      case 'sm': return getTypography(props.theme, 'fontSize.sm');
+      case 'lg': return getTypography(props.theme, 'fontSize.base');
+      default: return getTypography(props.theme, 'fontSize.sm');
+    }
+  }};
+  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
+  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   
   &:hover {
-    background-color: ${props => props.$disabled ? 'transparent' : props.theme.colors?.primary || '#007bff'}10;
+    background-color: ${props => props.$disabled ? 'transparent' : `${getColor(props.theme, 'brand.500')}10`};
   }
 `;
 
-const FileInputText = styled.span<{ $size: string }>`
-  font-size: ${props => props.$size === 'sm' ? '0.75rem' : props.$size === 'lg' ? '1rem' : '0.875rem'};
-  color: ${props => props.theme.colors?.text?.primary || '#1a1a1a'};
+const FileInputText = styled.span<{ $size: string; theme?: any }>`
+  font-size: ${props => {
+    switch (props.$size) {
+      case 'sm': return getTypography(props.theme, 'fontSize.sm');
+      case 'lg': return getTypography(props.theme, 'fontSize.base');
+      default: return getTypography(props.theme, 'fontSize.sm');
+    }
+  }};
+  color: ${props => getColor(props.theme, 'text.primary')};
 `;
 
 class FileInput extends PureComponent<IFileInputProps> {
@@ -94,8 +125,8 @@ class FileInput extends PureComponent<IFileInputProps> {
           disabled={disabled}
           multiple={multiple}
         />
-        <FileInputButton $size={size} $disabled={disabled}>
-          <FileInputText $size={size}>{displayText}</FileInputText>
+        <FileInputButton $size={size} $disabled={disabled} theme={undefined}>
+          <FileInputText $size={size} theme={undefined}>{displayText}</FileInputText>
         </FileInputButton>
       </FileInputContainer>
     );

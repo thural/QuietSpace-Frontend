@@ -13,10 +13,10 @@ export interface BaseComponentProps {
     className?: string;
     children?: React.ReactNode;
     testId?: string;
-    id?: string | number;
+    id?: string;
     onClick?: (event: React.MouseEvent) => void;
     style?: React.CSSProperties;
-    ref?: React.Ref<HTMLElement>;
+    ref?: React.Ref<any>;
 }
 
 // Base interface for generic wrapper components with ref forwarding

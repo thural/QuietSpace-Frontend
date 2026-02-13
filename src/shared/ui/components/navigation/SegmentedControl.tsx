@@ -8,41 +8,42 @@
 import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { getColor, getRadius, getSpacing, getTransition, getTypography } from '../utils';
 
 // Styled components
 const SegmentedContainer = styled.div<{ theme: any }>`
   display: flex;
-  background-color: ${props => props.theme.colors?.backgroundSecondary || '#f5f5f5'};
-  border-radius: ${props => props.theme.radius?.md || '4px'};
-  padding: 4px;
+  background-color: ${props => getColor(props.theme, 'background.secondary')};
+  border-radius: ${props => getRadius(props.theme, 'sm')};
+  padding: ${props => getSpacing(props.theme, 'xs')};
   width: fit-content;
 `;
 
 const SegmentedButton = styled.button<{ theme: any; active?: boolean; color?: string }>`
   background: ${props => props.active ?
-        (props.color || props.theme.colors?.primary || '#007bff') :
+        getColor(props.theme, props.color || 'brand.500') :
         'transparent'};
   color: ${props => props.active ?
-        '#ffffff' :
-        props.theme.colors?.text || '#333'};
+        getColor(props.theme, 'text.inverse') :
+        getColor(props.theme, 'text.primary')};
   border: none;
-  padding: ${props => props.theme.spacing(props.theme.spacingFactor.sm)} ${props => props.theme.spacing(props.theme.spacingFactor.lg)};
+  padding: ${props => getSpacing(props.theme, 'sm')} ${props => getSpacing(props.theme, 'lg')};
   cursor: pointer;
-  font-size: ${props => props.theme.typography.fontSize.primary};
-  border-radius: ${props => props.theme.radius?.sm || '2px'};
-  transition: all 0.2s ease;
-  font-weight: 500;
+  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
+  border-radius: ${props => getRadius(props.theme, 'xs')};
+  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
+  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
   white-space: nowrap;
 
   &:hover {
     background: ${props => props.active ?
-        (props.color || props.theme.colors?.primary || '#007bff') :
-        props.theme.colors?.backgroundTertiary || '#e0e0e0'};
+        getColor(props.theme, props.color || 'brand.500') :
+        getColor(props.theme, 'background.tertiary')};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px ${(props => props.theme.colors?.primary || '#007bff') + '20'};
+    box-shadow: 0 0 0 ${props => getSpacing(props.theme, 2)} solid ${props => getColor(props.theme, 'brand.200')};
   }
 
   &:disabled {
@@ -76,11 +77,11 @@ interface ISegmentedControlState {
 // Size styles
 const getSizeStyles = (size: string, theme: any) => {
     const sizes = {
-        xs: { padding: `${theme.spacing(theme.spacingFactor.xs)} ${theme.spacing(theme.spacingFactor.sm)}`, fontSize: '12px' },
-        sm: { padding: `${theme.spacing(theme.spacingFactor.sm)} ${theme.spacing(theme.spacingFactor.md)}`, fontSize: '13px' },
-        md: { padding: `${theme.spacing(theme.spacingFactor.sm)} ${theme.spacing(theme.spacingFactor.lg)}`, fontSize: '14px' },
-        lg: { padding: `${theme.spacing(theme.spacingFactor.md)} ${theme.spacing(theme.spacingFactor.xl)}`, fontSize: '16px' },
-        xl: { padding: `${theme.spacing(theme.spacingFactor.md)} ${theme.spacing(theme.spacingFactor.xxl)}`, fontSize: '18px' }
+        xs: { padding: `${getSpacing(theme, 'xs')} ${getSpacing(theme, 'sm')}`, fontSize: getTypography(theme, 'fontSize.xs') },
+        sm: { padding: `${getSpacing(theme, 'sm')} ${getSpacing(theme, 'md')}`, fontSize: getTypography(theme, 'fontSize.sm') },
+        md: { padding: `${getSpacing(theme, 'sm')} ${getSpacing(theme, 'lg')}`, fontSize: getTypography(theme, 'fontSize.base') },
+        lg: { padding: `${getSpacing(theme, 'md')} ${getSpacing(theme, 'xl')}`, fontSize: getTypography(theme, 'fontSize.lg') },
+        xl: { padding: `${getSpacing(theme, 'md')} ${getSpacing(theme, 'xxl')}`, fontSize: getTypography(theme, 'fontSize.xl') }
     };
     return sizes[size as keyof typeof sizes] || sizes.md;
 };
@@ -128,12 +129,8 @@ class SegmentedControl extends PureComponent<ISegmentedControlProps, ISegmentedC
      * Get size styles
      */
     private getSizeStyles = (): React.CSSProperties => {
-        const { size = 'md' } = this.props;
-
-        return getSizeStyles(size, {
-            spacing: () => '8px',
-            spacingFactor: { xs: 0.5, sm: 0.75, md: 1, lg: 1.5, xl: 2, xxl: 3 }
-        } as any);
+        const { size = 'md', theme } = this.props;
+        return getSizeStyles(size, theme);
     };
 
     override render(): ReactNode {
@@ -145,6 +142,7 @@ class SegmentedControl extends PureComponent<ISegmentedControlProps, ISegmentedC
             disabled = false,
             className,
             testId,
+            theme,
             ...props
         } = this.props;
 
@@ -155,6 +153,7 @@ class SegmentedControl extends PureComponent<ISegmentedControlProps, ISegmentedC
             <SegmentedContainer
                 className={className}
                 data-testid={testId}
+                theme={theme}
                 style={{
                     width: fullWidth ? '100%' : 'fit-content'
                 }}
@@ -168,6 +167,7 @@ class SegmentedControl extends PureComponent<ISegmentedControlProps, ISegmentedC
                         disabled={disabled || item.disabled}
                         onClick={() => this.handleValueChange(item.value)}
                         style={sizeStyles}
+                        theme={theme}
                     >
                         {item.label}
                     </SegmentedButton>

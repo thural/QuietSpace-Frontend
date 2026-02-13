@@ -5,11 +5,11 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode, isValidElement, Children } from 'react';
+import { Children, PureComponent, ReactNode, isValidElement } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { getBorderWidth, getColor, getSpacing, getTransition, getTypography } from '../utils';
 
-// Styled components
 const TabsContainer = styled.div<{ theme: any }>`
   display: flex;
   flex-direction: column;
@@ -20,35 +20,35 @@ const TabsList = styled.div<{ theme: any; justify?: 'center' | 'start' | 'end'; 
   display: flex;
   justify-content: ${props => props.justify || 'start'};
   ${props => props.grow && 'flex: 1;'}
-  border-bottom: 1px solid ${props => props.theme.colors?.border || '#e0e0e0'};
-  margin-bottom: ${props => props.theme.spacing(props.theme.spacingFactor.md)};
+  border-bottom: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.light')};
+  margin-bottom: ${props => getSpacing(props.theme, 'md')};
 `;
 
 const TabButton = styled.button<{ theme: any; active?: boolean; color?: string }>`
   background: none;
   border: none;
-  padding: ${props => props.theme.spacing(props.theme.spacingFactor.sm)} ${props => props.theme.spacing(props.theme.spacingFactor.lg)};
+  padding: ${props => getSpacing(props.theme, 'sm')} ${props => getSpacing(props.theme, 'lg')};
   cursor: pointer;
-  font-size: ${props => props.theme.typography.fontSize.primary};
+  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
   color: ${props => props.active ?
-        (props.color || props.theme.colors?.primary || '#007bff') :
-        props.theme.colors?.textSecondary || '#666'};
-  border-bottom: 2px solid ${props => props.active ?
-        (props.color || props.theme.colors?.primary || '#007bff') :
+        getColor(props.theme, props.color || 'brand.500') :
+        getColor(props.theme, 'text.secondary')};
+  border-bottom: ${props => getBorderWidth(props.theme, 'md')} solid ${props => props.active ?
+        getColor(props.theme, props.color || 'brand.500') :
         'transparent'};
-  transition: all 0.2s ease;
+  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing(props.theme.spacingFactor.sm)};
+  gap: ${props => getSpacing(props.theme, 'sm')};
 
   &:hover {
-    color: ${props => props.color || props.theme.colors?.primary || '#007bff'};
-    background-color: ${props => props.theme.colors?.backgroundSecondary || '#f5f5f5'};
+    color: ${props => getColor(props.theme, props.color || 'brand.500')};
+    background-color: ${props => getColor(props.theme, 'background.secondary')};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px ${(props => props.theme.colors?.primary || '#007bff') + '20'};
+    box-shadow: 0 0 0 ${props => getSpacing(props.theme, 2)} solid ${props => getColor(props.theme, 'brand.200')};
   }
 `;
 
@@ -97,7 +97,7 @@ class Tab extends PureComponent<ITabProps> {
         const { value, label, leftSection, rightSection, disabled } = this.props;
 
         return (
-            <TabButton disabled={disabled}>
+            <TabButton disabled={disabled} theme={undefined}>
                 {leftSection}
                 {label}
                 {rightSection}
@@ -112,7 +112,7 @@ class TabsListInternal extends PureComponent<ITabsListProps> {
         const { children, justify, grow } = this.props;
 
         return (
-            <TabsList justify={justify} grow={grow}>
+            <TabsList justify={justify} grow={grow} theme={undefined}>
                 {children}
             </TabsList>
         );
