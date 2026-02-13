@@ -3,6 +3,7 @@
  *
  * Central dependency injection container with auto-registration.
  * Provides enterprise-grade DI with reflection support.
+ * Enhanced with comprehensive health monitoring and cycle detection.
  */
 
 import { getConstructorDependencies, getInjectableMetadata } from '../decorators/Injectable';
@@ -13,6 +14,13 @@ import { ServiceContainer } from './ServiceContainer';
 // Import centralized error handling
 import { createSystemError } from '../../error';
 
+// Import health monitoring
+import {
+  ContainerHealthMonitor,
+  type ContainerHealthCheckResult,
+  type ContainerHealthCheckConfig
+} from '../health/ContainerHealthMonitor';
+
 import type { ServiceIdentifier } from '../registry/ServiceRegistry';
 import type { TypeKeys } from '../types';
 
@@ -22,6 +30,7 @@ import type { TypeKeys } from '../types';
 export class Container {
   private readonly container = new ServiceContainer();
   private readonly autoRegistered = new Set<new (...args: unknown[]) => unknown>();
+  private healthMonitor?: ContainerHealthMonitor;
 
   /**
    * Create new container instance
@@ -289,11 +298,49 @@ export class Container {
       if (descriptor.lifetime === ServiceLifetime.Singleton) {
         const instance = this.container.tryGet(identifier);
         if (instance) {
-          childContainer.registerInstance(identifier, instance);
+          childContainer.container.register(identifier, instance);
         }
       }
     }
 
     return childContainer;
+  }
+
+  /**
+   * Perform health check on the container
+   */
+  async performHealthCheck(config?: Partial<ContainerHealthCheckConfig>): Promise<ContainerHealthCheckResult> {
+    if (!this.healthMonitor) {
+      const defaultConfig: ContainerHealthCheckConfig = {
+        enabled: true,
+        checkInterval: 60000, // 1 minute
+        memoryThreshold: 100 * 1024 * 1024, // 100MB
+        maxDependencyDepth: 10,
+        enableCycleDetection: true,
+        enablePerformanceMonitoring: true,
+        timeout: 5000 // 5 seconds
+      };
+
+      this.healthMonitor = new ContainerHealthMonitor(
+        { ...defaultConfig, ...config },
+        this
+      );
+    }
+
+    return this.healthMonitor.performHealthCheck();
+  }
+
+  /**
+   * Get health check history
+   */
+  getHealthHistory(): ContainerHealthCheckResult[] {
+    return this.healthMonitor?.getHealthHistory() || [];
+  }
+
+  /**
+   * Get dependency graph for diagnostics
+   */
+  getDependencyGraph(): Map<ServiceIdentifier, any> {
+    return this.healthMonitor?.getDependencyGraph() || new Map();
   }
 }

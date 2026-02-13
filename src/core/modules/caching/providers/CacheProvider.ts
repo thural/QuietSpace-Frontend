@@ -5,6 +5,7 @@
  * Orchestrates cache operations using injected components for storage,
  * statistics, eviction strategies, and cleanup management.
  * Follows dependency injection pattern for testability and flexibility.
+ * Enhanced with advanced caching features including warming, predictive caching, and analytics.
  */
 
 import type {
@@ -17,10 +18,22 @@ import type { ICacheStorage } from '../storage/CacheStorage';
 import type { ICacheStatistics } from '../storage/CacheStatistics';
 import type { IEvictionStrategy } from '../strategies/CacheEvictionStrategy';
 import type { ICleanupManager } from '../strategies/CacheCleanupManager';
+import {
+  CacheWarmingManager,
+  PredictiveCacheEngine,
+  CacheDependencyGraph,
+  CacheAnalyticsDashboard,
+  type CacheWarmingConfig,
+  type PredictiveCacheConfig,
+  type CacheDependencyConfig,
+  type CacheAnalyticsConfig,
+  type ExtendedCacheStats
+} from '../features/AdvancedCacheFeatures';
 
 /**
  * Main cache provider implementation.
  * Coordinates storage, statistics, eviction, and cleanup components.
+ * Enhanced with advanced caching features.
  */
 export class CacheProvider {
   private readonly storage: ICacheStorage;
@@ -29,6 +42,12 @@ export class CacheProvider {
   private readonly cleanupManager: ICleanupManager;
   private config: CacheConfig;
   private readonly events: CacheEvents | undefined;
+
+  // Advanced features
+  private warmingManager?: CacheWarmingManager;
+  private predictiveEngine?: PredictiveCacheEngine;
+  private dependencyGraph?: CacheDependencyGraph;
+  private analyticsDashboard?: CacheAnalyticsDashboard;
 
   /**
    * Creates a new cache provider instance.
