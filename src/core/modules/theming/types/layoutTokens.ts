@@ -43,4 +43,29 @@ export interface RadiusTokens {
     lg: string;
     xl: string;
     full: string;
+    round: string;
+}
+
+export interface BorderTokens {
+    none: string;
+    hairline: string;
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+}
+
+export interface SizeTokens {
+    skeleton: {
+        minWidth: string;
+        height: string;
+    };
+    avatar: {
+        xs: string;
+        sm: string;
+        md: string;
+        lg: string;
+    };
 }

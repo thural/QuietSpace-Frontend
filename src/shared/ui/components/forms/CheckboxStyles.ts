@@ -1,56 +1,56 @@
-import styled, { css } from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+import styled from 'styled-components';
+import { getSpacing, getColor, getRadius, getBorderWidth, getTransition } from '../utils';
 
 // Enterprise styled-components for checkbox styling
-export const CheckboxWrapper = styled.div<{ theme: EnhancedTheme }>`
+export const CheckboxWrapper = styled.div<{ theme: any }>`
   display: flex;
   align-items: center;
-  margin: ${props => props.theme.spacing.xs} 0;
+  margin: ${props => getSpacing(props.theme, 'xs')} 0;
 `;
 
-export const CheckboxInput = styled.input<{ theme: EnhancedTheme; variant?: 'default' | 'primary' | 'secondary' }>`
-  width: 20px;
-  height: 20px;
+export const CheckboxInput = styled.input<{ theme: any; variant?: 'default' | 'primary' | 'secondary' }>`
+  width: ${props => getSpacing(props.theme, 20)};
+  height: ${props => getSpacing(props.theme, 20)};
   appearance: none;
-  background: ${props => props.theme.colors.background.primary};
-  border: 1px solid ${props => props.theme.colors.border.medium};
-  border-radius: ${props => props.theme.radius.full};
+  background: ${props => getColor(props.theme, 'background.primary')};
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
+  border-radius: ${props => getRadius(props.theme, 'full')};
   outline: none;
   cursor: pointer;
-  margin-right: ${props => props.theme.spacing.sm};
+  margin-right: ${props => getSpacing(props.theme, 'sm')};
   position: relative;
-  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
   
   &:hover {
-    border-color: ${props => props.theme.colors.border.dark};
+    border-color: ${props => getColor(props.theme, 'border.dark')};
   }
   
   &:focus {
-    outline: 2px solid ${props => props.theme.colors.brand[300]};
+    outline: 2px solid ${props => getColor(props.theme, 'brand.300')};
     outline-offset: 2px;
   }
   
   &:checked {
     background: ${props => {
-      switch (props.variant) {
-        case 'primary':
-          return props.theme.colors.brand[500];
-        case 'secondary':
-          return props.theme.colors.background.secondary;
-        default:
-          return props.theme.colors.brand[500];
-      }
-    }};
+    switch (props.variant) {
+      case 'primary':
+        return getColor(props.theme, 'brand.500');
+      case 'secondary':
+        return getColor(props.theme, 'background.secondary');
+      default:
+        return getColor(props.theme, 'brand.500');
+    }
+  }};
     border-color: ${props => {
-      switch (props.variant) {
-        case 'primary':
-          return props.theme.colors.brand[500];
-        case 'secondary':
-          return props.theme.colors.border.medium;
-        default:
-          return props.theme.colors.brand[500];
-      }
-    }};
+    switch (props.variant) {
+      case 'primary':
+        return getColor(props.theme, 'brand.500');
+      case 'secondary':
+        return getColor(props.theme, 'border.medium');
+      default:
+        return getColor(props.theme, 'brand.500');
+    }
+  }};
   }
   
   &:checked::after {
@@ -59,9 +59,9 @@ export const CheckboxInput = styled.input<{ theme: EnhancedTheme; variant?: 'def
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 6px;
-    height: 6px;
-    background: ${props => props.theme.colors.text.inverse};
+    width: ${props => getSpacing(props.theme, 6)};
+    height: ${props => getSpacing(props.theme, 6)};
+    background: ${props => getColor(props.theme, 'text.inverse')};
     border-radius: 50%;
   }
   
@@ -71,13 +71,13 @@ export const CheckboxInput = styled.input<{ theme: EnhancedTheme; variant?: 'def
   }
 `;
 
-export const CheckboxLabel = styled.label<{ theme: EnhancedTheme }>`
-  font-size: ${props => props.theme.typography.fontSize.sm};
-  color: ${props => props.theme.colors.text.primary};
+export const CheckboxLabel = styled.label<{ theme: any }>`
+  font-size: ${props => getSpacing(props.theme, 14)};
+  color: ${props => getColor(props.theme, 'text.primary')};
   cursor: pointer;
   user-select: none;
   
   &:hover {
-    color: ${props => props.theme.colors.text.secondary};
+    color: ${props => getColor(props.theme, 'text.secondary')};
   }
 `;

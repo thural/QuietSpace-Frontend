@@ -5,10 +5,14 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { TypographyProps } from '../types';
 import { typographyPropsToStyles } from '../utils';
+
+interface ITextProps extends TypographyProps {
+    children?: ReactNode;
+}
 
 // Styled component implementation
 const StyledText = styled.p<{ theme: any; $props: TypographyProps }>`
@@ -26,20 +30,22 @@ const StyledText = styled.p<{ theme: any; $props: TypographyProps }>`
  * @param props - Typography props for text styling
  * @returns JSX Element
  */
-export const Text: React.FC<TypographyProps> = (props) => {
-    const { children, theme, className, testId, ...typographyProps } = props;
+class Text extends PureComponent<ITextProps> {
+    override render(): ReactNode {
+        const { children, theme, className, testId, ...typographyProps } = this.props;
 
-    return (
-        <StyledText
-            theme={theme}
-            $props={typographyProps}
-            className={className}
-            data-testid={testId}
-        >
-            {children}
-        </StyledText>
-    );
-};
+        return (
+            <StyledText
+                theme={theme}
+                $props={typographyProps}
+                className={className}
+                data-testid={testId}
+            >
+                {children}
+            </StyledText>
+        );
+    }
+}
 
 Text.displayName = 'Text';
 

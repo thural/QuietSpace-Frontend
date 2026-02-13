@@ -5,10 +5,11 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode, RefObject } from 'react';
+import { PureComponent, ReactNode, RefObject } from 'react';
 import styled from 'styled-components';
 import { LayoutProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getSpacing } from '../utils';
 
 // Styled components with theme token integration
 const StyledContainer = styled.div<{
@@ -41,8 +42,8 @@ const StyledContainer = styled.div<{
           width: 100%;
           max-width: ${props.theme?.breakpoints?.xl || '1280px'};
           margin: 0 auto;
-          padding-left: ${props.theme?.spacing?.lg || '24px'};
-          padding-right: ${props.theme?.spacing?.lg || '24px'};
+          padding-left: ${getSpacing(props.theme, 'lg')};
+          padding-right: ${getSpacing(props.theme, 'lg')};
         `;
             default:
                 return `
@@ -55,11 +56,11 @@ const StyledContainer = styled.div<{
   ${props => {
         if (props.padding && typeof props.padding === 'string') {
             const paddingMap: Record<ComponentSize, string> = {
-                xs: props.theme?.spacing?.xs || '4px',
-                sm: props.theme?.spacing?.sm || '8px',
-                md: props.theme?.spacing?.md || '16px',
-                lg: props.theme?.spacing?.lg || '24px',
-                xl: props.theme?.spacing?.xl || '32px'
+                xs: getSpacing(props.theme, 'xs'),
+                sm: getSpacing(props.theme, 'sm'),
+                md: getSpacing(props.theme, 'md'),
+                lg: getSpacing(props.theme, 'lg'),
+                xl: getSpacing(props.theme, 'xl')
             };
             if (paddingMap[props.padding as ComponentSize]) {
                 return `padding: ${paddingMap[props.padding as ComponentSize]};`;
@@ -73,11 +74,11 @@ const StyledContainer = styled.div<{
   ${props => {
         if (props.margin && typeof props.margin === 'string') {
             const marginMap: Record<ComponentSize, string> = {
-                xs: props.theme?.spacing?.xs || '4px',
-                sm: props.theme?.spacing?.sm || '8px',
-                md: props.theme?.spacing?.md || '16px',
-                lg: props.theme?.spacing?.lg || '24px',
-                xl: props.theme?.spacing?.xl || '32px'
+                xs: getSpacing(props.theme, 'xs'),
+                sm: getSpacing(props.theme, 'sm'),
+                md: getSpacing(props.theme, 'md'),
+                lg: getSpacing(props.theme, 'lg'),
+                xl: getSpacing(props.theme, 'xl')
             };
             if (marginMap[props.margin as ComponentSize]) {
                 return `margin: ${marginMap[props.margin as ComponentSize]};`;
@@ -90,8 +91,8 @@ const StyledContainer = styled.div<{
   /* Responsive design using theme breakpoints */
   @media (max-width: ${props => props.theme?.breakpoints?.sm || '768px'}) {
     ${props => props.variant === 'constrained' && `
-      padding-left: ${props.theme?.spacing?.md || '16px'};
-      padding-right: ${props.theme?.spacing?.md || '16px'};
+      padding-left: ${getSpacing(props.theme, 'md')};
+      padding-right: ${getSpacing(props.theme, 'md')};
     `}
   }
 `;
@@ -102,6 +103,7 @@ interface IContainerProps extends LayoutProps {
     padding?: ComponentSize | string;
     margin?: ComponentSize | string;
     ref?: RefObject<HTMLDivElement>;
+    theme?: any;
 }
 
 /**
@@ -119,8 +121,8 @@ export class Container extends PureComponent<IContainerProps> {
     /**
      * Get container styles based on props and theme tokens
      */
-    private getContainerStyles = (): React.CSSProperties => {
-        const { variant, size, padding, margin } = this.props;
+    private getContainerStyles = (theme: any): React.CSSProperties => {
+        const { variant } = this.props;
         const styles: React.CSSProperties = {};
 
         // Apply variant-specific styles
@@ -137,7 +139,7 @@ export class Container extends PureComponent<IContainerProps> {
                 break;
             case 'constrained':
                 styles.width = '100%';
-                styles.maxWidth = '1280px';
+                styles.maxWidth = theme?.breakpoints?.xl || '1280px';
                 styles.margin = '0 auto';
                 break;
         }
@@ -158,18 +160,18 @@ export class Container extends PureComponent<IContainerProps> {
             onClick,
             style,
             ref,
-            ...layoutProps
         } = this.props;
 
-        const containerStyles = { ...this.getContainerStyles(), ...style };
+        const containerStyles = { ...this.getContainerStyles(theme), ...style };
 
         return (
             <StyledContainer
                 ref={ref}
-                variant={variant}
-                size={size}
+                variant={variant || 'default'}
+                size={size || 'md'}
                 padding={padding}
                 margin={margin}
+                theme={theme}
                 className={className}
                 id={id?.toString()}
                 data-testid={testId}
@@ -182,6 +184,6 @@ export class Container extends PureComponent<IContainerProps> {
     }
 }
 
-Container.displayName = 'Container';
+(Container as any).displayName = 'Container';
 
 export default Container;

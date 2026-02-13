@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { PureComponent, ReactNode, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
-interface FileInputProps extends BaseComponentProps {
-    value?: File | null;
-    onChange?: (file: File | null) => void;
-    placeholder?: string;
-    accept?: string;
-    disabled?: boolean;
-    multiple?: boolean;
-    size?: 'sm' | 'md' | 'lg';
+interface IFileInputProps extends BaseComponentProps {
+  value?: File | null;
+  onChange?: (file: File | null) => void;
+  placeholder?: string;
+  accept?: string;
+  disabled?: boolean;
+  multiple?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const FileInputContainer = styled.div<{ $size: string }>`
@@ -55,42 +55,51 @@ const FileInputText = styled.span<{ $size: string }>`
   color: ${props => props.theme.colors?.text?.primary || '#1a1a1a'};
 `;
 
-export const FileInput: React.FC<FileInputProps> = ({
-    value,
-    onChange,
-    placeholder = "Choose file or drag and drop",
-    accept,
-    disabled = false,
-    multiple = false,
-    size = 'md',
-    className,
-    style,
-    testId,
-}) => {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        onChange?.(file);
-    };
+class FileInput extends PureComponent<IFileInputProps> {
+  /**
+   * Handle file input change event
+   */
+  private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { onChange } = this.props;
+    const file = e.target.files?.[0] || null;
+    onChange?.(file);
+  };
+
+  override render(): ReactNode {
+    const {
+      value,
+      placeholder = "Choose file or drag and drop",
+      accept,
+      disabled = false,
+      multiple = false,
+      size = 'md',
+      className,
+      style,
+      testId
+    } = this.props;
 
     const displayText = value ? value.name : placeholder;
 
     return (
-        <FileInputContainer
-            className={className}
-            style={style}
-            data-testid={testId}
-        >
-            <FileInputInput
-                type="file"
-                $size={size}
-                onChange={handleChange}
-                accept={accept}
-                disabled={disabled}
-                multiple={multiple}
-            />
-            <FileInputButton $size={size} $disabled={disabled}>
-                <FileInputText $size={size}>{displayText}</FileInputText>
-            </FileInputButton>
-        </FileInputContainer>
+      <FileInputContainer
+        className={className}
+        style={style}
+        data-testid={testId}
+      >
+        <FileInputInput
+          type="file"
+          $size={size}
+          onChange={this.handleChange}
+          accept={accept}
+          disabled={disabled}
+          multiple={multiple}
+        />
+        <FileInputButton $size={size} $disabled={disabled}>
+          <FileInputText $size={size}>{displayText}</FileInputText>
+        </FileInputButton>
+      </FileInputContainer>
     );
-};
+  }
+}
+
+export default FileInput;

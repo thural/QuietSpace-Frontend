@@ -4,6 +4,7 @@ import FlexStyled from "@/shared/FlexStyled";
 import Typography, { TypographyProps } from "@/shared/Typography";
 import styles from "@/features/profile/presentation/styles/privateBlockStyles";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import React, { PureComponent, ReactNode } from 'react';
 
 /**
  * PrivateBlockProps interface.
@@ -13,9 +14,10 @@ import { GenericWrapper } from "@shared-types/sharedComponentTypes";
  * @property {string} message - The message to display in the private block.
  * @property {React.ComponentType} [Icon] - An optional icon component to display alongside the message.
  */
-export interface PrivateBlockProps extends TypographyProps, GenericWrapper {
+export interface IPrivateBlockProps extends TypographyProps, GenericWrapper {
     message: string;
     Icon?: React.ComponentType;
+    children?: ReactNode;
 }
 
 /**
@@ -26,31 +28,35 @@ export interface PrivateBlockProps extends TypographyProps, GenericWrapper {
  * is a lock symbol, representing privacy. The component is centered and styled for visual 
  * clarity.
  * 
- * @param {PrivateBlockProps} props - The component props.
+ * @param {IPrivateBlockProps} props - The component props.
  * @returns {JSX.Element} - The rendered PrivateBlock component.
  */
-const PrivateBlock: React.FC<PrivateBlockProps> = ({
-    message = "private content",
-    Icon = RxLockClosed,
-    type = "h4",
-    children,
-    ...props
-}) => {
-    const classes = styles(); // Apply styles
+class PrivateBlock extends PureComponent<IPrivateBlockProps> {
+    override render(): ReactNode {
+        const {
+            message = "private content",
+            Icon = RxLockClosed,
+            type = "h4",
+            children,
+            ...props
+        } = this.props;
 
-    return (
-        <CenterContainer {...props}> {/* Center the content */}
-            <FlexStyled className={classes.privateBlock}>
-                <Icon className={classes.icon} /> {/* Render the icon */}
-                <FlexStyled className={classes.messageSection}>
-                    <Typography className={classes.primaryMessage} type={type}>
-                        {message} {/* Render the message */}
-                    </Typography>
-                    {children} {/* Render any additional children */}
+        const classes = styles(); // Apply styles
+
+        return (
+            <CenterContainer {...props}> {/* Center the content */}
+                <FlexStyled className={classes.privateBlock}>
+                    <Icon className={classes.icon} /> {/* Render the icon */}
+                    <FlexStyled className={classes.messageSection}>
+                        <Typography className={classes.primaryMessage} type={type}>
+                            {message} {/* Render the message */}
+                        </Typography>
+                        {children} {/* Render any additional children */}
+                    </FlexStyled>
                 </FlexStyled>
-            </FlexStyled>
-        </CenterContainer>
-    );
+            </CenterContainer>
+        );
+    }
 }
 
 export default PrivateBlock;

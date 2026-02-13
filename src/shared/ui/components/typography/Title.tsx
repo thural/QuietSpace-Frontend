@@ -5,10 +5,14 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { TypographyProps } from '../types';
 import { typographyPropsToStyles } from '../utils';
+
+interface ITitleProps extends TypographyProps {
+    children?: ReactNode;
+}
 
 // Styled component implementation
 const StyledTitle = styled.h1<{ theme: any; $props: TypographyProps }>`
@@ -27,20 +31,22 @@ const StyledTitle = styled.h1<{ theme: any; $props: TypographyProps }>`
  * @param props - Typography props for title styling
  * @returns JSX Element
  */
-export const Title: React.FC<TypographyProps> = (props) => {
-    const { children, theme, className, testId, ...typographyProps } = props;
+class Title extends PureComponent<ITitleProps> {
+    override render(): ReactNode {
+        const { children, theme, className, testId, ...typographyProps } = this.props;
 
-    return (
-        <StyledTitle
-            theme={theme}
-            $props={typographyProps}
-            className={className}
-            data-testid={testId}
-        >
-            {children}
-        </StyledTitle>
-    );
-};
+        return (
+            <StyledTitle
+                theme={theme}
+                $props={typographyProps}
+                className={className}
+                data-testid={testId}
+            >
+                {children}
+            </StyledTitle>
+        );
+    }
+}
 
 Title.displayName = 'Title';
 

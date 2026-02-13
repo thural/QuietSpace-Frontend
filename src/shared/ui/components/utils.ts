@@ -22,7 +22,7 @@ import {
  */
 export const getSpacing = (theme: EnhancedTheme, value?: string | number): string => {
     if (value === undefined || value === null) return '0';
-    
+
     if (typeof value === 'string') {
         // Handle direct token references
         if (theme.spacing[value as keyof typeof theme.spacing]) {
@@ -30,7 +30,7 @@ export const getSpacing = (theme: EnhancedTheme, value?: string | number): strin
         }
         return value;
     }
-    
+
     return `${value}px`;
 };
 
@@ -39,23 +39,23 @@ export const getSpacing = (theme: EnhancedTheme, value?: string | number): strin
  */
 export const getColor = (theme: EnhancedTheme, colorPath?: string): string => {
     if (!colorPath) return 'inherit';
-    
+
     // Handle brand colors (e.g., "brand.500")
     if (colorPath.startsWith('brand.')) {
         const shade = colorPath.split('.')[1] as keyof typeof theme.colors.brand;
         return theme.colors.brand[shade] || colorPath;
     }
-    
+
     // Handle semantic colors
     if (colorPath.startsWith('semantic.')) {
         const semanticType = colorPath.split('.')[1] as keyof typeof theme.colors.semantic;
         return theme.colors.semantic[semanticType] || colorPath;
     }
-    
+
     // Handle direct color paths
     const parts = colorPath.split('.');
     let colorValue: any = theme.colors;
-    
+
     for (const part of parts) {
         if (colorValue && typeof colorValue === 'object' && part in colorValue) {
             colorValue = colorValue[part];
@@ -63,7 +63,7 @@ export const getColor = (theme: EnhancedTheme, colorPath?: string): string => {
             return colorPath; // Return original if path not found
         }
     }
-    
+
     return typeof colorValue === 'string' ? colorValue : colorPath;
 };
 
@@ -72,10 +72,10 @@ export const getColor = (theme: EnhancedTheme, colorPath?: string): string => {
  */
 export const getTypography = (theme: EnhancedTheme, path?: string): any => {
     if (!path) return theme.typography;
-    
+
     const parts = path.split('.');
     let typoValue: any = theme.typography;
-    
+
     for (const part of parts) {
         if (typoValue && typeof typoValue === 'object' && part in typoValue) {
             typoValue = typoValue[part];
@@ -83,7 +83,7 @@ export const getTypography = (theme: EnhancedTheme, path?: string): any => {
             return path;
         }
     }
-    
+
     return typoValue || path;
 };
 
@@ -92,11 +92,13 @@ export const getTypography = (theme: EnhancedTheme, path?: string): any => {
  */
 export const getRadius = (theme: EnhancedTheme, size?: string): string => {
     if (!size) return theme.radius.md;
-    
+
+    if (size === 'round') return '50%';
+
     if (theme.radius[size as keyof typeof theme.radius]) {
         return theme.radius[size as keyof typeof theme.radius];
     }
-    
+
     return size;
 };
 
@@ -105,11 +107,11 @@ export const getRadius = (theme: EnhancedTheme, size?: string): string => {
  */
 export const getShadow = (theme: EnhancedTheme, type?: string): string => {
     if (!type) return theme.shadows.md;
-    
+
     if (theme.shadows[type as keyof typeof theme.shadows]) {
         return theme.shadows[type as keyof typeof theme.shadows];
     }
-    
+
     return theme.shadows.md;
 };
 
@@ -118,11 +120,11 @@ export const getShadow = (theme: EnhancedTheme, type?: string): string => {
  */
 export const getAnimationDuration = (theme: EnhancedTheme, duration?: string): string => {
     if (!duration) return theme.animation.duration.normal;
-    
+
     if (theme.animation.duration[duration as keyof typeof theme.animation.duration]) {
         return theme.animation.duration[duration as keyof typeof theme.animation.duration];
     }
-    
+
     return theme.animation.duration.normal;
 };
 
@@ -131,11 +133,11 @@ export const getAnimationDuration = (theme: EnhancedTheme, duration?: string): s
  */
 export const getAnimationEasing = (theme: EnhancedTheme, easing?: string): string => {
     if (!easing) return theme.animation.easing.ease;
-    
+
     if (theme.animation.easing[easing as keyof typeof theme.animation.easing]) {
         return theme.animation.easing[easing as keyof typeof theme.animation.easing];
     }
-    
+
     return theme.animation.easing.ease;
 };
 
@@ -143,9 +145,9 @@ export const getAnimationEasing = (theme: EnhancedTheme, easing?: string): strin
  * Get transition value from theme animation tokens
  */
 export const getTransition = (
-    theme: EnhancedTheme, 
-    properties: string = 'all', 
-    duration?: string, 
+    theme: EnhancedTheme,
+    properties: string = 'all',
+    duration?: string,
     easing?: string
 ): string => {
     const durationValue = getAnimationDuration(theme, duration);
@@ -158,7 +160,7 @@ export const getTransition = (
  */
 export const layoutPropsToStyles = (props: LayoutProps, theme: EnhancedTheme): string => {
     const styles: string[] = [];
-    
+
     if (props.display) styles.push(`display: ${props.display}`);
     if (props.position) styles.push(`position: ${props.position}`);
     if (props.width) styles.push(`width: ${getSpacing(theme, props.width)}`);
@@ -167,21 +169,21 @@ export const layoutPropsToStyles = (props: LayoutProps, theme: EnhancedTheme): s
     if (props.minHeight) styles.push(`min-height: ${getSpacing(theme, props.minHeight)}`);
     if (props.maxWidth) styles.push(`max-width: ${getSpacing(theme, props.maxWidth)}`);
     if (props.maxHeight) styles.push(`max-height: ${getSpacing(theme, props.maxHeight)}`);
-    
+
     // Margin properties
     if (props.margin) styles.push(`margin: ${getSpacing(theme, props.margin)}`);
     if (props.marginTop) styles.push(`margin-top: ${getSpacing(theme, props.marginTop)}`);
     if (props.marginRight) styles.push(`margin-right: ${getSpacing(theme, props.marginRight)}`);
     if (props.marginBottom) styles.push(`margin-bottom: ${getSpacing(theme, props.marginBottom)}`);
     if (props.marginLeft) styles.push(`margin-left: ${getSpacing(theme, props.marginLeft)}`);
-    
+
     // Padding properties
     if (props.padding) styles.push(`padding: ${getSpacing(theme, props.padding)}`);
     if (props.paddingTop) styles.push(`padding-top: ${getSpacing(theme, props.paddingTop)}`);
     if (props.paddingRight) styles.push(`padding-right: ${getSpacing(theme, props.paddingRight)}`);
     if (props.paddingBottom) styles.push(`padding-bottom: ${getSpacing(theme, props.paddingBottom)}`);
     if (props.paddingLeft) styles.push(`padding-left: ${getSpacing(theme, props.paddingLeft)}`);
-    
+
     return styles.join('; ');
 };
 
@@ -191,7 +193,7 @@ export const layoutPropsToStyles = (props: LayoutProps, theme: EnhancedTheme): s
 export const flexPropsToStyles = (props: FlexProps, theme: EnhancedTheme): string => {
     const layoutStyles = layoutPropsToStyles(props, theme);
     const flexStyles: string[] = [];
-    
+
     if (props.flexDirection) flexStyles.push(`flex-direction: ${props.flexDirection}`);
     if (props.flexWrap) flexStyles.push(`flex-wrap: ${props.flexWrap}`);
     if (props.justifyContent) flexStyles.push(`justify-content: ${props.justifyContent}`);
@@ -205,7 +207,7 @@ export const flexPropsToStyles = (props: FlexProps, theme: EnhancedTheme): strin
     if (props.flexGrow !== undefined) flexStyles.push(`flex-grow: ${props.flexGrow}`);
     if (props.flexShrink !== undefined) flexStyles.push(`flex-shrink: ${props.flexShrink}`);
     if (props.order !== undefined) flexStyles.push(`order: ${props.order}`);
-    
+
     return layoutStyles ? `${layoutStyles}; ${flexStyles.join('; ')}` : flexStyles.join('; ');
 };
 
@@ -214,7 +216,7 @@ export const flexPropsToStyles = (props: FlexProps, theme: EnhancedTheme): strin
  */
 export const typographyPropsToStyles = (props: TypographyProps, theme: EnhancedTheme): string => {
     const styles: string[] = [];
-    
+
     // Handle variant
     if (props.variant) {
         const variantStyles = getTypography(theme, props.variant);
@@ -223,7 +225,7 @@ export const typographyPropsToStyles = (props: TypographyProps, theme: EnhancedT
         if (variantStyles.lineHeight) styles.push(`line-height: ${variantStyles.lineHeight}`);
         if (variantStyles.fontFamily) styles.push(`font-family: ${variantStyles.fontFamily}`);
     }
-    
+
     // Handle individual typography properties
     if (props.size) styles.push(`font-size: ${getSpacing(theme, props.size)}`);
     if (props.weight) styles.push(`font-weight: ${props.weight}`);
@@ -233,21 +235,21 @@ export const typographyPropsToStyles = (props: TypographyProps, theme: EnhancedT
     if (props.align) styles.push(`text-align: ${props.align}`);
     if (props.transform) styles.push(`text-transform: ${props.transform}`);
     if (props.decoration) styles.push(`text-decoration: ${props.decoration}`);
-    
+
     // Handle text overflow
     if (props.truncate) {
         styles.push('white-space: nowrap');
         styles.push('overflow: hidden');
         styles.push('text-overflow: ellipsis');
     }
-    
+
     if (props.lineClamp) {
         styles.push(`display: -webkit-box`);
         styles.push(`-webkit-line-clamp: ${props.lineClamp}`);
         styles.push('-webkit-box-orient: vertical');
         styles.push('overflow: hidden');
     }
-    
+
     return styles.join('; ');
 };
 
@@ -304,7 +306,7 @@ export const getButtonVariantStyles = (variant: ComponentVariant, theme: Enhance
             }
         `
     };
-    
+
     return variants[variant] || variants.primary;
 };
 
@@ -317,29 +319,34 @@ export const getSizeStyles = (size: ComponentSize, theme: EnhancedTheme): string
             padding: ${theme.spacing.xs} ${theme.spacing.sm};
             font-size: ${theme.typography.fontSize.xs};
             border-radius: ${theme.radius.xs};
+            border-width: ${theme.border.hairline};
         `,
         sm: `
             padding: ${theme.spacing.sm} ${theme.spacing.md};
             font-size: ${theme.typography.fontSize.sm};
             border-radius: ${theme.radius.sm};
+            border-width: ${theme.border.xs};
         `,
         md: `
             padding: ${theme.spacing.md} ${theme.spacing.lg};
             font-size: ${theme.typography.fontSize.base};
             border-radius: ${theme.radius.md};
+            border-width: ${theme.border.sm};
         `,
         lg: `
             padding: ${theme.spacing.lg} ${theme.spacing.xl};
             font-size: ${theme.typography.fontSize.lg};
             border-radius: ${theme.radius.lg};
+            border-width: ${theme.border.md};
         `,
         xl: `
             padding: ${theme.spacing.xl} ${theme.spacing.xxl};
             font-size: ${theme.typography.fontSize.xl};
             border-radius: ${theme.radius.xl};
+            border-width: ${theme.border.lg};
         `
     };
-    
+
     return sizes[size] || sizes.md;
 };
 
@@ -358,7 +365,7 @@ export const generateResponsiveStyles = (
     }
 ): string => {
     let styles = baseStyles;
-    
+
     if (responsive?.xs) {
         styles += ` @media (max-width: ${theme.breakpoints.xs}) { ${responsive.xs} }`;
     }
@@ -374,7 +381,7 @@ export const generateResponsiveStyles = (
     if (responsive?.xl) {
         styles += ` @media (max-width: ${theme.breakpoints.xl}) { ${responsive.xl} }`;
     }
-    
+
     return styles;
 };
 
@@ -405,4 +412,106 @@ export const getDisabledStyles = (theme: EnhancedTheme): string => {
             pointer-events: none;
         }
     `;
+};
+
+/**
+ * Get border width value from theme tokens
+ */
+export const getBorderWidth = (theme: EnhancedTheme, width?: string): string => {
+    if (!width) return theme.border.md;
+
+    if (theme.border[width as keyof typeof theme.border]) {
+        return theme.border[width as keyof typeof theme.border];
+    }
+
+    return width;
+};
+
+/**
+ * Get micro-spacing value for precise spacing adjustments
+ */
+export const getMicroSpacing = (theme: EnhancedTheme, value?: string | number): string => {
+    if (value === undefined || value === null) return '0';
+
+    if (typeof value === 'string') {
+        // Handle direct token references
+        if (theme.spacing[value as keyof typeof theme.spacing]) {
+            return theme.spacing[value as keyof typeof theme.spacing];
+        }
+        return value;
+    }
+
+    // For micro-spacing, use smaller increments
+    if (typeof value === 'number') {
+        // Convert to rem for smaller values (assuming base 16px)
+        if (value < 8) {
+            return `${value / 16}rem`;
+        }
+        return `${value}px`;
+    }
+
+    return `${value}px`;
+};
+
+/**
+ * Get component-specific size from theme tokens
+ */
+export const getComponentSize = (theme: EnhancedTheme, component: keyof typeof theme.size, size?: string): string => {
+    const componentSizes = theme.size[component];
+
+    if (!componentSizes) {
+        console.warn(`Component size not found: ${component}`);
+        return 'md';
+    }
+
+    if (!size) {
+        // Return default size for component
+        if (component === 'avatar') return componentSizes.md;
+        if (component === 'skeleton') return componentSizes.height;
+        return 'md';
+    }
+
+    if (componentSizes[size as keyof typeof componentSizes]) {
+        return componentSizes[size as keyof typeof componentSizes];
+    }
+
+    return size;
+};
+
+/**
+ * Get skeleton component styles using theme tokens
+ */
+export const getSkeletonStyles = (theme: EnhancedTheme, variant?: 'default' | 'circle' | 'text'): string => {
+    const baseStyles = `
+        background: linear-gradient(90deg, 
+            ${getColor(theme, 'background.tertiary')} 25%, 
+            ${getColor(theme, 'background.secondary')} 50%, 
+            ${getColor(theme, 'background.tertiary')} 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s ease-in-out infinite;
+        border-radius: ${theme.radius.md};
+    `;
+
+    const variantStyles = {
+        default: `
+            ${baseStyles}
+            min-width: ${theme.size.skeleton.minWidth};
+            height: ${theme.size.skeleton.height};
+        `,
+        circle: `
+            ${baseStyles}
+            border-radius: ${theme.radius.full};
+            width: 40px;
+            height: 40px;
+        `,
+        text: `
+            ${baseStyles}
+            height: 1rem;
+            border-radius: ${theme.radius.sm};
+            margin-bottom: ${theme.spacing.xs};
+        `
+    };
+
+    return variantStyles[variant || 'default'] || variantStyles.default;
 };

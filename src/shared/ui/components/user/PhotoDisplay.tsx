@@ -1,6 +1,6 @@
 import { PhotoResponse } from '@/shared/api/models/photo';
 import { Image } from '@/shared/ui/components';
-import { useEffect, useState } from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 
 /**
  * PhotoDisplayProps interface.
@@ -10,8 +10,12 @@ import { useEffect, useState } from 'react';
  * @property {PhotoResponse | undefined} photoResponse - The response object containing photo data,
  * which may be undefined if no photo is available.
  */
-interface PhotoDisplayProps {
+interface IPhotoDisplayProps {
     photoResponse: PhotoResponse | undefined;
+}
+
+interface IPhotoDisplayState {
+    photoData: string | null;
 }
 
 /**
@@ -21,31 +25,63 @@ interface PhotoDisplayProps {
  * it displays the image; otherwise, it shows a message indicating that no photo is available. The component
  * processes the photo response to create a base64-encoded image source for rendering.
  * 
- * @param {PhotoDisplayProps} props - The component props.
+ * @param {IPhotoDisplayProps} props - The component props.
  * @returns {JSX.Element} - The rendered PhotoDisplay component.
  */
-const PhotoDisplay: React.FC<PhotoDisplayProps> = ({ photoResponse }) => {
-    const [photoData, setPhotoData] = useState<string | null>(null); // State to hold the processed photo data
+class PhotoDisplay extends PureComponent<IPhotoDisplayProps, IPhotoDisplayState> {
+    constructor(props: IPhotoDisplayProps) {
+        super(props);
 
-    useEffect(() => {
-        // Effect to update photoData when photoResponse changes
+        this.state = {
+            photoData: null
+        };
+    }
+
+    override componentDidMount(): void {
+        this.processPhotoData();
+    }
+
+    override componentDidUpdate(prevProps: IPhotoDisplayProps): void {
+        const { photoResponse } = this.props;
+        const { photoResponse: prevPhotoResponse } = prevProps;
+
+        if (photoResponse !== prevPhotoResponse) {
+            this.processPhotoData();
+        }
+    }
+
+    /**
+     * Process photo data to create base64 image source
+     */
+    private processPhotoData = (): void => {
+        const { photoResponse } = this.props;
+
         if (photoResponse && photoResponse.data) {
             // Construct the base64 image source
-            setPhotoData(`data:${photoResponse.type};base64,${photoResponse.data}`);
+            const photoData = `data:${photoResponse.type};base64,${photoResponse.data}`;
+            this.setState({ photoData });
+        } else {
+            this.setState({ photoData: null });
         }
-    }, [photoResponse]); // Dependency on photoResponse
+    };
 
-    return (
-        <div>
-            {photoData ? (
-                // Render the image if photoData is available
-                <Image radius="md" src={photoData} alt={photoResponse.name} />
-            ) : (
-                // Render a fallback message if no photo data is available
-                <p>No photo available</p>
-            )}
-        </div>
-    );
-};
+    override render(): ReactNode {
+        const { photoResponse } = this.props;
+        const { photoData } = this.state;
+
+        return (
+            <div>
+                {photoData ? (
+                    // Render the image if photoData is available
+                    <Image radius="md" src={photoData} alt={photoResponse?.name || 'Photo'} />
+                ) : (
+                    // Render a fallback message if no photo data is available
+                    <p>No photo available</p>
+                )}
+            </div>
+        );
+    }
+}
 
 export default PhotoDisplay;
+export type { IPhotoDisplayProps };

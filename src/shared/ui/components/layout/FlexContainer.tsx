@@ -5,10 +5,11 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { FlexProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getSpacing } from '../utils';
 
 // Styled components with theme token integration
 const StyledFlexContainer = styled.div<{
@@ -41,11 +42,11 @@ const StyledFlexContainer = styled.div<{
   ${props => {
         if (props.gap && typeof props.gap === 'string') {
             const gapMap: Record<ComponentSize, string> = {
-                xs: props.theme?.spacing?.xs || '4px',
-                sm: props.theme?.spacing?.sm || '8px',
-                md: props.theme?.spacing?.md || '16px',
-                lg: props.theme?.spacing?.lg || '24px',
-                xl: props.theme?.spacing?.xl || '32px'
+                xs: getSpacing(props.theme, 'xs'),
+                sm: getSpacing(props.theme, 'sm'),
+                md: getSpacing(props.theme, 'md'),
+                lg: getSpacing(props.theme, 'lg'),
+                xl: getSpacing(props.theme, 'xl')
             };
             if (gapMap[props.gap as ComponentSize]) {
                 return `gap: ${gapMap[props.gap as ComponentSize]};`;
@@ -59,11 +60,11 @@ const StyledFlexContainer = styled.div<{
   ${props => {
         if (props.padding && typeof props.padding === 'string') {
             const paddingMap: Record<ComponentSize, string> = {
-                xs: props.theme?.spacing?.xs || '4px',
-                sm: props.theme?.spacing?.sm || '8px',
-                md: props.theme?.spacing?.md || '16px',
-                lg: props.theme?.spacing?.lg || '24px',
-                xl: props.theme?.spacing?.xl || '32px'
+                xs: getSpacing(props.theme, 'xs'),
+                sm: getSpacing(props.theme, 'sm'),
+                md: getSpacing(props.theme, 'md'),
+                lg: getSpacing(props.theme, 'lg'),
+                xl: getSpacing(props.theme, 'xl')
             };
             if (paddingMap[props.padding as ComponentSize]) {
                 return `padding: ${paddingMap[props.padding as ComponentSize]};`;
@@ -77,11 +78,11 @@ const StyledFlexContainer = styled.div<{
   ${props => {
         if (props.margin && typeof props.margin === 'string') {
             const marginMap: Record<ComponentSize, string> = {
-                xs: props.theme?.spacing?.xs || '4px',
-                sm: props.theme?.spacing?.sm || '8px',
-                md: props.theme?.spacing?.md || '16px',
-                lg: props.theme?.spacing?.lg || '24px',
-                xl: props.theme?.spacing?.xl || '32px'
+                xs: getSpacing(props.theme, 'xs'),
+                sm: getSpacing(props.theme, 'sm'),
+                md: getSpacing(props.theme, 'md'),
+                lg: getSpacing(props.theme, 'lg'),
+                xl: getSpacing(props.theme, 'xl')
             };
             if (marginMap[props.margin as ComponentSize]) {
                 return `margin: ${marginMap[props.margin as ComponentSize]};`;
@@ -97,18 +98,18 @@ const StyledFlexContainer = styled.div<{
     gap: ${props => {
         if (props.gap && typeof props.gap === 'string') {
             const gapMap: Record<ComponentSize, string> = {
-                xs: props.theme?.spacing?.xs || '4px',
-                sm: props.theme?.spacing?.sm || '8px',
-                md: props.theme?.spacing?.md || '16px',
-                lg: props.theme?.spacing?.lg || '24px',
-                xl: props.theme?.spacing?.xl || '32px'
+                xs: getSpacing(props.theme, 'xs'),
+                sm: getSpacing(props.theme, 'sm'),
+                md: getSpacing(props.theme, 'md'),
+                lg: getSpacing(props.theme, 'lg'),
+                xl: getSpacing(props.theme, 'xl')
             };
             if (gapMap[props.gap as ComponentSize]) {
                 return gapMap[props.gap as ComponentSize];
             }
             return props.gap;
         }
-        return props.theme?.spacing?.sm || '8px';
+        return getSpacing(props.theme, 'sm');
     }};
   }
 `;
@@ -121,6 +122,7 @@ interface IFlexContainerProps extends FlexProps {
     gap?: ComponentSize | string;
     padding?: ComponentSize | string;
     margin?: ComponentSize | string;
+    theme?: any;
 }
 
 /**
@@ -167,7 +169,8 @@ export class FlexContainer extends PureComponent<IFlexContainerProps> {
             className,
             testId,
             onClick,
-            style
+            style,
+            theme
         } = this.props;
 
         const flexStyles = { ...this.getFlexStyles(), ...style };
@@ -180,6 +183,7 @@ export class FlexContainer extends PureComponent<IFlexContainerProps> {
             gap,
             padding,
             margin,
+            theme,
             className,
             'data-testid': testId,
             onClick,

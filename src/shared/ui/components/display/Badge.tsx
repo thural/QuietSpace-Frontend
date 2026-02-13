@@ -1,7 +1,8 @@
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getShadow, getTransition } from '../utils';
 
 interface IBadgeProps extends BaseComponentProps {
     children: ReactNode;
@@ -10,6 +11,7 @@ interface IBadgeProps extends BaseComponentProps {
     size?: ComponentSize;
     leftSection?: ReactNode;
     rightSection?: ReactNode;
+    theme?: any;
 }
 
 const BadgeContainer = styled.span<{
@@ -22,38 +24,38 @@ const BadgeContainer = styled.span<{
   align-items: center;
   font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
   font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-  transition: all ${props => props.theme?.animation?.duration?.fast || '0.2s'} ${props => props.theme?.animation?.easing?.ease || 'ease'};
+  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
   
   /* Size variants using theme spacing tokens */
   ${props => {
         const size = props.$size || 'md';
         const gapMap = {
-            xs: props.theme?.spacing?.xs || '4px',
-            sm: props.theme?.spacing?.sm || '8px',
-            md: props.theme?.spacing?.md || '16px',
-            lg: props.theme?.spacing?.lg || '24px',
-            xl: props.theme?.spacing?.xl || '32px'
+            xs: getSpacing(props.theme, 'xs'),
+            sm: getSpacing(props.theme, 'sm'),
+            md: getSpacing(props.theme, 'md'),
+            lg: getSpacing(props.theme, 'lg'),
+            xl: getSpacing(props.theme, 'xl')
         };
         const paddingMap = {
-            xs: `${props.theme?.spacing?.xs || '4px'} ${props.theme?.spacing?.sm || '8px'}`,
-            sm: `${props.theme?.spacing?.sm || '8px'} ${props.theme?.spacing?.md || '16px'}`,
-            md: `${props.theme?.spacing?.sm || '8px'} ${props.theme?.spacing?.lg || '24px'}`,
-            lg: `${props.theme?.spacing?.md || '16px'} ${props.theme?.spacing?.xl || '32px'}`,
-            xl: `${props.theme?.spacing?.lg || '24px'} ${props.theme?.spacing?.xl || '32px'}`
+            xs: `${getSpacing(props.theme, 'xs')} ${getSpacing(props.theme, 'sm')}`,
+            sm: `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'md')}`,
+            md: `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'lg')}`,
+            lg: `${getSpacing(props.theme, 'md')} ${getSpacing(props.theme, 'xl')}`,
+            xl: `${getSpacing(props.theme, 'lg')} ${getSpacing(props.theme, 'xl')}`
         };
         const fontSizeMap = {
-            xs: props.theme?.typography?.fontSize?.xs || '12px',
-            sm: props.theme?.typography?.fontSize?.sm || '14px',
-            md: props.theme?.typography?.fontSize?.base || '16px',
-            lg: props.theme?.typography?.fontSize?.lg || '18px',
-            xl: props.theme?.typography?.fontSize?.xl || '20px'
+            xs: getTypography(props.theme, 'fontSize.xs'),
+            sm: getTypography(props.theme, 'fontSize.sm'),
+            md: getTypography(props.theme, 'fontSize.base'),
+            lg: getTypography(props.theme, 'fontSize.lg'),
+            xl: getTypography(props.theme, 'fontSize.xl')
         };
         const radiusMap = {
-            xs: props.theme?.radius?.sm || '4px',
-            sm: props.theme?.radius?.sm || '4px',
-            md: props.theme?.radius?.md || '6px',
-            lg: props.theme?.radius?.lg || '8px',
-            xl: props.theme?.radius?.lg || '8px'
+            xs: getRadius(props.theme, 'sm'),
+            sm: getRadius(props.theme, 'sm'),
+            md: getRadius(props.theme, 'md'),
+            lg: getRadius(props.theme, 'lg'),
+            xl: getRadius(props.theme, 'lg')
         };
 
         return `
@@ -68,32 +70,32 @@ const BadgeContainer = styled.span<{
   background-color: ${props => {
         switch (props.$variant) {
             case 'filled':
-                return props.$color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff';
+                return getColor(props.theme, props.$color || 'brand.500');
             case 'outline':
                 return 'transparent';
             case 'light':
-                return `${props.$color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff'}15`;
+                return `${getColor(props.theme, props.$color || 'brand.500')}15`;
             default:
-                return props.$color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff';
+                return getColor(props.theme, props.$color || 'brand.500');
         }
     }};
   
   color: ${props => {
         switch (props.$variant) {
             case 'filled':
-                return props.theme?.colors?.text?.inverse || '#ffffff';
+                return getColor(props.theme, 'text.inverse');
             case 'outline':
-                return props.$color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff';
+                return getColor(props.theme, props.$color || 'brand.500');
             case 'light':
-                return props.$color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff';
+                return getColor(props.theme, props.$color || 'brand.500');
             default:
-                return props.theme?.colors?.text?.inverse || '#ffffff';
+                return getColor(props.theme, 'text.inverse');
         }
     }};
   
   border: ${props => {
         if (props.$variant === 'outline') {
-            return `1px solid ${props.$color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff'}`;
+            return `${getBorderWidth(props.theme, 'sm')} solid ${getColor(props.theme, props.$color || 'brand.500')}`;
         }
         return 'none';
     }};
@@ -101,7 +103,7 @@ const BadgeContainer = styled.span<{
   /* Hover states */
   &:hover {
     transform: translateY(-1px);
-    box-shadow: ${props => props.theme?.shadows?.sm || '0 2px 4px rgba(0, 0, 0, 0.1)'};
+    box-shadow: ${props => getShadow(props.theme, 'sm')};
   }
 `;
 
@@ -111,11 +113,11 @@ class Badge extends PureComponent<IBadgeProps> {
         size: 'md'
     };
 
-    // Get badge color based on semantic theme tokens
-    private getBadgeColor = (color?: string): string => {
-        if (color) return color;
+    // Get badge color using theme tokens
+    private getBadgeColor = (theme: any, color?: string): string => {
+        if (color) return getColor(theme, color);
         // Default to brand color from theme
-        return '#007bff';
+        return getColor(theme, 'brand.500');
     };
 
     override render(): ReactNode {
@@ -128,10 +130,11 @@ class Badge extends PureComponent<IBadgeProps> {
             rightSection,
             className,
             style,
-            testId
+            testId,
+            theme
         } = this.props;
 
-        const badgeColor = this.getBadgeColor(color);
+        const badgeColor = this.getBadgeColor(theme, color);
 
         return (
             <BadgeContainer
@@ -141,6 +144,7 @@ class Badge extends PureComponent<IBadgeProps> {
                 className={className}
                 style={style}
                 data-testid={testId}
+                theme={theme}
             >
                 {leftSection}
                 {children}

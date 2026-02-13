@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { createContext, useContext, useCallback, useMemo } from 'react';
+import { createContext, useContext, useCallback, useMemo, PureComponent, ReactNode } from 'react';
 import { Container } from '../../../../core/modules/dependency-injection/container/Container';
 
 // Define local types to avoid import issues
@@ -18,63 +18,75 @@ interface ServiceProvider {
   has(identifier: ServiceIdentifier): boolean;
 }
 
-interface DIContext {
+interface IDIContext {
   container: Container;
   provider: ServiceProvider;
   scope?: any;
 }
 
+interface IDIProviderProps {
+  container?: Container;
+  children: React.ReactNode;
+}
+
 /**
  * DI context for React components
  */
-const ReactDIContext = createContext<DIContext | null>(null);
+const ReactDIContext = createContext<IDIContext | null>(null);
 
 /**
  * React DI Provider component
  */
-const DIProvider: React.FC<{
-  container?: Container;
-  children: React.ReactNode;
-}> = ({ container, children }) => {
-  // Use provided container or create default
-  const diContainer = useMemo(() => container || Container.create(), [container]);
-
-  // Get service with error handling
-  const getService = useCallback((identifier: ServiceIdentifier) => {
+class DIProvider extends PureComponent<IDIProviderProps> {
+  /**
+   * Get service with error handling
+   */
+  private getService = (diContainer: Container, identifier: ServiceIdentifier) => {
     const service = diContainer.tryGet(identifier);
     if (!service) {
       throw new Error(`Service ${String(identifier)} not found in DI container`);
     }
     return service;
-  }, [diContainer]);
+  };
 
-  // Try to get service
-  const tryGetService = useCallback((identifier: ServiceIdentifier) => {
+  /**
+   * Try to get service
+   */
+  private tryGetService = (diContainer: Container, identifier: ServiceIdentifier) => {
     return diContainer.tryGet(identifier);
-  }, [diContainer]);
+  };
 
-  // Check if Service exists
-  const hasService = useCallback((identifier: ServiceIdentifier) => {
+  /**
+   * Check if Service exists
+   */
+  private hasService = (diContainer: Container, identifier: ServiceIdentifier) => {
     return diContainer.has(identifier);
-  }, [diContainer]);
+  };
 
-  // Context value
-  const contextValue: DIContext = useMemo(() => ({
-    container: diContainer,
-    provider: {
-      get: getService,
-      tryGet: tryGetService,
-      has: hasService,
-    },
-    scope: undefined
-  }), [diContainer, getService, tryGetService, hasService]);
+  override render(): ReactNode {
+    const { container, children } = this.props;
 
-  return React.createElement(
-    ReactDIContext.Provider,
-    { value: contextValue },
-    children
-  );
-};
+    // Use provided container or create default
+    const diContainer = useMemo(() => container || Container.create(), [container]);
+
+    // Context value
+    const contextValue: IDIContext = useMemo(() => ({
+      container: diContainer,
+      provider: {
+        get: (identifier: ServiceIdentifier) => this.getService(diContainer, identifier),
+        tryGet: (identifier: ServiceIdentifier) => this.tryGetService(diContainer, identifier),
+        has: (identifier: ServiceIdentifier) => this.hasService(diContainer, identifier),
+      },
+      scope: undefined
+    }), [diContainer]);
+
+    return React.createElement(
+      ReactDIContext.Provider,
+      { value: contextValue },
+      children
+    );
+  }
+}
 
 export { DIProvider };
 
@@ -92,7 +104,7 @@ export const useDIContainer = (): Container => {
 /**
  * Hook to use DI context
  */
-export const useDIContext = (): DIContext => {
+export const useDIContext = (): IDIContext => {
   const context = useContext(ReactDIContext);
   if (!context) {
     throw new Error('useDIContext must be used within a DIProvider');

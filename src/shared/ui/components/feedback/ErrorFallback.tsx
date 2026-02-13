@@ -1,7 +1,8 @@
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getColor, getSpacing, getTypography, getRadius, getBorderWidth, getShadow, getTransition } from '../utils';
 
 // Styled components with theme token integration
 const ErrorFallbackContainer = styled.div<{ theme?: any }>`
@@ -9,17 +10,17 @@ const ErrorFallbackContainer = styled.div<{ theme?: any }>`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: ${props => props.theme?.colors?.background?.secondary || '#f8f9fa'};
+  background-color: ${props => getColor(props.theme, 'background.secondary')};
   font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
 `;
 
 const ErrorCard = styled.div<{ theme?: any }>`
   max-width: 28rem;
   width: 100%;
-  padding: ${props => props.theme?.spacing?.xl || '32px'};
-  background-color: ${props => props.theme?.colors?.background?.primary || '#ffffff'};
-  border-radius: ${props => props.theme?.radius?.lg || '8px'};
-  box-shadow: ${props => props.theme?.shadows?.md || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+  padding: ${props => getSpacing(props.theme, 'xl')};
+  background-color: ${props => getColor(props.theme, 'background.primary')};
+  border-radius: ${props => getRadius(props.theme, 'lg')};
+  box-shadow: ${props => getShadow(props.theme, 'md')};
 `;
 
 const ErrorContent = styled.div<{ theme?: any }>`
@@ -27,64 +28,64 @@ const ErrorContent = styled.div<{ theme?: any }>`
 `;
 
 const ErrorIconContainer = styled.div<{ theme?: any }>`
-  margin-bottom: ${props => props.theme?.spacing?.lg || '24px'};
+  margin-bottom: ${props => getSpacing(props.theme, 'lg')};
 `;
 
 const ErrorTitle = styled.h3<{ theme?: any }>`
-  font-size: ${props => props.theme?.typography?.fontSize?.xl || '20px'};
+  font-size: ${props => getTypography(props.theme, 'fontSize.xl')};
   font-weight: ${props => props.theme?.typography?.fontWeight?.semibold || '600'};
-  color: ${props => props.theme?.colors?.text?.primary || '#111827'};
-  margin-bottom: ${props => props.theme?.spacing?.sm || '8px'};
+  color: ${props => getColor(props.theme, 'text.primary')};
+  margin-bottom: ${props => getSpacing(props.theme, 'sm')};
 `;
 
 const ErrorMessage = styled.p<{ theme?: any }>`
-  font-size: ${props => props.theme?.typography?.fontSize?.base || '16px'};
-  color: ${props => props.theme?.colors?.text?.secondary || '#6b7280'};
-  margin-bottom: ${props => props.theme?.spacing?.xl || '32px'};
+  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
+  color: ${props => getColor(props.theme, 'text.secondary')};
+  margin-bottom: ${props => getSpacing(props.theme, 'xl')};
   line-height: ${props => props.theme?.typography?.lineHeight?.relaxed || '1.625'};
 `;
 
 const ActionButtonsContainer = styled.div<{ theme?: any }>`
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme?.spacing?.md || '16px'};
+  gap: ${props => getSpacing(props.theme, 'md')};
 `;
 
 const StyledButton = styled.button<{ theme?: any; variant?: 'primary' | 'secondary' }>`
   width: 100%;
-  padding: ${props => props.theme?.spacing?.md || '16px'} ${props => props.theme?.spacing?.lg || '24px'};
-  border: 2px solid ${props => props.variant === 'primary'
-        ? (props.theme?.colors?.brand?.[500] || '#007bff')
-        : (props.theme?.colors?.border?.medium || '#6c757d')};
+  padding: ${props => getSpacing(props.theme, 'md')} ${props => getSpacing(props.theme, 'lg')};
+  border: ${props => getBorderWidth(props.theme, 'md')} solid ${props => props.variant === 'primary'
+        ? getColor(props.theme, 'brand.500')
+        : getColor(props.theme, 'border.medium')};
   background-color: ${props => props.variant === 'primary'
-        ? (props.theme?.colors?.brand?.[500] || '#007bff')
+        ? getColor(props.theme, 'brand.500')
         : 'transparent'};
   color: ${props => props.variant === 'primary'
-        ? (props.theme?.colors?.text?.inverse || '#ffffff')
-        : (props.theme?.colors?.brand?.[500] || '#007bff')};
-  border-radius: ${props => props.theme?.radius?.md || '6px'};
+        ? getColor(props.theme, 'text.inverse')
+        : getColor(props.theme, 'brand.500')};
+  border-radius: ${props => getRadius(props.theme, 'md')};
   font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-  font-size: ${props => props.theme?.typography?.fontSize?.base || '16px'};
+  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
   font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
   cursor: pointer;
-  transition: all ${props => props.theme?.animation?.duration?.fast || '0.2s'} ${props => props.theme?.animation?.easing?.ease || 'ease'};
+  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: ${props => props.theme?.shadows?.md || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+    box-shadow: ${props => getShadow(props.theme, 'md')};
     ${props => props.variant === 'primary' && `
-      background-color: ${props.theme?.colors?.brand?.[600] || '#0056b3'};
-      border-color: ${props.theme?.colors?.brand?.[600] || '#0056b3'};
+      background-color: ${getColor(props.theme, 'brand.600')};
+      border-color: ${getColor(props.theme, 'brand.600')};
     `}
     ${props => props.variant === 'secondary' && `
-      background-color: ${props.theme?.colors?.background?.secondary || '#f8f9fa'};
-      border-color: ${props.theme?.colors?.border?.dark || '#495057'};
-      color: ${props.theme?.colors?.brand?.[500] || '#007bff'};
+      background-color: ${getColor(props.theme, 'background.secondary')};
+      border-color: ${getColor(props.theme, 'border.dark')};
+      color: ${getColor(props.theme, 'brand.500')};
     `}
   }
   
   &:focus {
-    outline: 2px solid ${props => props.theme?.colors?.brand?.[300] || '#80bdff'};
+    outline: 2px solid ${props => getColor(props.theme, 'brand.300')};
     outline-offset: 2px;
   }
   
@@ -129,10 +130,10 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
         return (
             <svg
                 style={{
-                    width: '64px',
-                    height: '64px',
+                    width: getSpacing(this.props.theme || {}, 64),
+                    height: getSpacing(this.props.theme || {}, 64),
                     margin: '0 auto',
-                    color: '#ef4444'
+                    color: getColor(this.props.theme || {}, 'semantic.error')
                 }}
                 fill="none"
                 stroke="currentColor"
@@ -175,23 +176,23 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
     };
 
     override render(): ReactNode {
-        const { error, variant, className, testId } = this.props;
+        const { error, variant, className, testId, theme } = this.props;
 
         return (
-            <ErrorFallbackContainer className={className} data-testid={testId}>
-                <ErrorCard>
-                    <ErrorContent>
+            <ErrorFallbackContainer className={className} data-testid={testId} theme={theme}>
+                <ErrorCard theme={theme}>
+                    <ErrorContent theme={theme}>
                         {/* Error Icon */}
-                        <ErrorIconContainer>
+                        <ErrorIconContainer theme={theme}>
                             {this.renderErrorIcon()}
                         </ErrorIconContainer>
 
                         {/* Error Message */}
-                        <ErrorTitle>
+                        <ErrorTitle theme={theme}>
                             {variant === 'auth' ? 'Authentication Error' : 'Something went wrong'}
                         </ErrorTitle>
 
-                        <ErrorMessage>
+                        <ErrorMessage theme={theme}>
                             {error}
                         </ErrorMessage>
 

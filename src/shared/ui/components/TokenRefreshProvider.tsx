@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, PureComponent, ReactNode } from 'react';
 import { createTokenRefreshManager, EnterpriseTokenRefreshManager } from '@/core/auth/services/TokenRefreshManager';
 
-interface TokenRefreshProviderProps {
+interface ITokenRefreshProviderProps {
   children: React.ReactNode;
   enabled?: boolean;
   refreshInterval?: number;
@@ -26,29 +26,58 @@ interface TokenRefreshProviderProps {
  * - Performance metrics and monitoring
  * - Intelligent retry logic with exponential backoff
  */
-export const TokenRefreshProvider: React.FC<TokenRefreshProviderProps> = ({
-  children,
-  enabled = true,
-  refreshInterval = 540000, // 9 minutes default
-  onTokenRefresh,
-  onRefreshError,
-  enableMultiTabSync = true,
-  enableSecurityMonitoring = true,
-  onMetricsUpdate
-}) => {
-  const managerRef = useRef<EnterpriseTokenRefreshManager | null>(null);
-  const isActiveRef = useRef(false);
-  const metricsIntervalRef = useRef<number | null>(null);
+class TokenRefreshProvider extends PureComponent<ITokenRefreshProviderProps> {
+  private managerRef = useRef<EnterpriseTokenRefreshManager | null>(null);
+  private isActiveRef = useRef(false);
+  private metricsIntervalRef = useRef<number | null>(null);
 
-  const startTokenRefresh = useCallback(() => {
-    if (!enabled || isActiveRef.current) return;
+  override componentDidMount(): void {
+    const { enabled = true } = this.props;
+
+    if (enabled) {
+      this.startTokenRefresh();
+    }
+  }
+
+  override componentDidUpdate(prevProps: ITokenRefreshProviderProps): void {
+    const { enabled = true } = this.props;
+    const { enabled: prevEnabled = true } = prevProps;
+
+    if (enabled !== prevEnabled) {
+      if (enabled) {
+        this.startTokenRefresh();
+      } else {
+        this.stopTokenRefresh();
+      }
+    }
+  }
+
+  override componentWillUnmount(): void {
+    this.stopTokenRefresh();
+  }
+
+  /**
+   * Start token refresh process
+   */
+  private startTokenRefresh = (): void => {
+    const {
+      enabled = true,
+      refreshInterval = 540000, // 9 minutes default
+      onTokenRefresh,
+      onRefreshError,
+      enableMultiTabSync = true,
+      enableSecurityMonitoring = true,
+      onMetricsUpdate
+    } = this.props;
+
+    if (!enabled || this.isActiveRef.current) return;
 
     try {
       // Create enterprise manager instance
-      managerRef.current = createTokenRefreshManager();
-      
+      this.managerRef.current = createTokenRefreshManager();
+
       // Start automatic refresh with enterprise features
-      managerRef.current.startTokenAutoRefresh({
+      this.managerRef.current.startTokenAutoRefresh({
         refreshInterval,
         onSuccessFn: (data) => {
           onTokenRefresh?.(data);
@@ -60,15 +89,15 @@ export const TokenRefreshProvider: React.FC<TokenRefreshProviderProps> = ({
         enableMultiTabSync,
         enableSecurityMonitoring
       });
-      
-      isActiveRef.current = true;
+
+      this.isActiveRef.current = true;
 
       // Start metrics monitoring if callback provided
       if (onMetricsUpdate) {
-        metricsIntervalRef.current = window.setInterval(() => {
-          if (managerRef.current) {
-            const metrics = managerRef.current.getMetrics();
-            const status = managerRef.current.getStatus();
+        this.metricsIntervalRef.current = window.setInterval(() => {
+          if (this.managerRef.current) {
+            const metrics = this.managerRef.current.getMetrics();
+            const status = this.managerRef.current.getStatus();
             onMetricsUpdate({ ...metrics, ...status });
           }
         }, 30000); // Update metrics every 30 seconds
@@ -77,49 +106,42 @@ export const TokenRefreshProvider: React.FC<TokenRefreshProviderProps> = ({
     } catch (error) {
       onRefreshError?.(error instanceof Error ? error : new Error(String(error)));
     }
-  }, [enabled, refreshInterval, onTokenRefresh, onRefreshError, enableMultiTabSync, enableSecurityMonitoring, onMetricsUpdate]);
+  };
 
-  const stopTokenRefresh = useCallback(() => {
-    if (managerRef.current && isActiveRef.current) {
-      managerRef.current.stopTokenAutoRefresh();
-      isActiveRef.current = false;
+  /**
+   * Stop token refresh process
+   */
+  private stopTokenRefresh = (): void => {
+    if (this.managerRef.current && this.isActiveRef.current) {
+      this.managerRef.current.stopTokenAutoRefresh();
+      this.isActiveRef.current = false;
     }
 
     // Clear metrics interval
-    if (metricsIntervalRef.current) {
-      window.clearInterval(metricsIntervalRef.current);
-      metricsIntervalRef.current = null;
+    if (this.metricsIntervalRef.current) {
+      window.clearInterval(this.metricsIntervalRef.current);
+      this.metricsIntervalRef.current = null;
     }
-  }, []);
-
-  // Start refresh when enabled or dependencies change
-  useEffect(() => {
-    if (enabled) {
-      startTokenRefresh();
-    } else {
-      stopTokenRefresh();
-    }
-
-    // Cleanup on unmount
-    return () => {
-      stopTokenRefresh();
-    };
-  }, [enabled, startTokenRefresh, stopTokenRefresh]);
-
-  // Provide context for manual control if needed
-  const contextValue = {
-    startTokenRefresh,
-    stopTokenRefresh,
-    isActive: isActiveRef.current,
-    getMetrics: () => managerRef.current?.getMetrics(),
-    getStatus: () => managerRef.current?.getStatus()
   };
 
-  return (
-    <>
-      {children}
-    </>
-  );
-};
+  override render(): ReactNode {
+    const { children } = this.props;
+
+    // Provide context for manual control if needed
+    const contextValue = {
+      startTokenRefresh: this.startTokenRefresh,
+      stopTokenRefresh: this.stopTokenRefresh,
+      isActive: this.isActiveRef.current,
+      getMetrics: () => this.managerRef.current?.getMetrics(),
+      getStatus: () => this.managerRef.current?.getStatus()
+    };
+
+    return (
+      <>
+        {children}
+      </>
+    );
+  }
+}
 
 export default TokenRefreshProvider;

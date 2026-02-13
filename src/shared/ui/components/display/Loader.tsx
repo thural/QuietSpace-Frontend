@@ -5,10 +5,11 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getSpacing, getColor, getBorderWidth, getTransition } from '../utils';
 
 // Styled components with theme token integration
 const LoaderContainer = styled.div<{ theme?: any }>`
@@ -18,18 +19,20 @@ const LoaderContainer = styled.div<{ theme?: any }>`
 `;
 
 interface SpinnerProps {
-    size?: string;
-    color?: string;
+    $size?: string;
+    $color?: string;
+    $borderWidth?: string;
     theme?: any;
 }
 
 const Spinner = styled.div<SpinnerProps>`
-  width: ${props => props.size || '30px'};
-  height: ${props => props.size || '30px'};
-  border: 3px solid ${props => props.theme?.colors?.background?.secondary || props.theme?.colors?.backgroundSecondary || '#f0f0f0'};
-  border-top: 3px solid ${props => props.color || props.theme?.colors?.primary || props.theme?.colors?.brand?.[500] || '#007bff'};
+  width: ${props => props.$size || '30px'};
+  height: ${props => props.$size || '30px'};
+  border: ${props => props.$borderWidth || '3px'} solid ${props => getColor(props.theme, 'background.secondary')};
+  border-top: ${props => props.$borderWidth || '3px'} solid ${props => props.$color || getColor(props.theme, 'brand.500')};
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -42,8 +45,10 @@ interface ILoaderProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
     size?: string | number;
     color?: string;
     variant?: ComponentSize;
+    borderWidth?: string;
     ref?: React.RefObject<HTMLDivElement>;
     id?: string;
+    theme?: any;
 }
 
 // Main Loader component
@@ -53,7 +58,7 @@ class Loader extends PureComponent<ILoaderProps> {
         variant: 'md'
     };
 
-    // Size mapping for consistent sizing using theme tokens
+    // Size mapping using theme tokens
     private readonly sizeMap: Record<string, string> = {
         xs: '16px',
         sm: '24px',
@@ -62,7 +67,7 @@ class Loader extends PureComponent<ILoaderProps> {
         xl: '48px'
     };
 
-    // Size mapping for variant prop
+    // Size mapping for variant prop using theme tokens
     private readonly variantSizeMap: Record<ComponentSize, string> = {
         xs: '16px',
         sm: '24px',
@@ -71,37 +76,58 @@ class Loader extends PureComponent<ILoaderProps> {
         xl: '48px'
     };
 
-    // Convert size variants to actual pixel values
-    private getSizePixels = (size: string | number | ComponentSize | undefined): string => {
-        if (typeof size === 'number') return `${size}px`;
-        if (typeof size === 'string' && this.sizeMap[size]) return this.sizeMap[size];
-        if (size && this.variantSizeMap[size as ComponentSize]) return this.variantSizeMap[size as ComponentSize];
-        return this.sizeMap.md;
+    // Border width mapping using theme tokens
+    private readonly borderWidthMap: Record<string, string> = {
+        thin: '1px',
+        normal: '3px',
+        thick: '4px'
     };
 
-    // Get color based on theme tokens or fallback
-    private getSpinnerColor = (color?: string): string => {
-        if (color) return color;
-        // Return theme brand color or fallback
-        return '#007bff';
+    // Get size using theme tokens
+    private getSize = (theme: any, size: string | number | ComponentSize | undefined): string => {
+        if (typeof size === 'number') return getSpacing(theme, size);
+        if (typeof size === 'string' && this.sizeMap[size]) return getSpacing(theme, this.sizeMap[size]);
+        if (size && this.variantSizeMap[size as ComponentSize]) return getSpacing(theme, this.variantSizeMap[size as ComponentSize]);
+        return getSpacing(theme, this.sizeMap.md);
+    };
+
+    // Get border width using theme tokens
+    private getBorderWidth = (theme: any, borderWidth?: string): string => {
+        if (borderWidth && this.borderWidthMap[borderWidth]) {
+            return getBorderWidth(theme, this.borderWidthMap[borderWidth]);
+        }
+        if (borderWidth) {
+            return getBorderWidth(theme, borderWidth);
+        }
+        return getBorderWidth(theme, 'sm');
+    };
+
+    // Get color using theme tokens
+    private getSpinnerColor = (theme: any, color?: string): string => {
+        if (color) return getColor(theme, color);
+        return getColor(theme, 'brand.500');
     };
 
     override render(): ReactNode {
-        const { size, color, variant, className, testId, ...props } = this.props;
+        const { size, color, variant, borderWidth, className, testId, theme, ...props } = this.props;
 
         // Use variant prop first, then size prop, then default
-        const finalSize = variant ? this.getSizePixels(variant) : this.getSizePixels(size);
-        const finalColor = this.getSpinnerColor(color);
+        const finalSize = variant ? this.getSize(theme, variant) : this.getSize(theme, size);
+        const finalColor = this.getSpinnerColor(theme, color);
+        const finalBorderWidth = this.getBorderWidth(theme, borderWidth || 'normal');
 
         return (
             <LoaderContainer
                 className={className}
                 data-testid={testId}
+                theme={theme}
                 {...props}
             >
                 <Spinner
-                    size={finalSize}
-                    color={finalColor}
+                    $size={finalSize}
+                    $color={finalColor}
+                    $borderWidth={finalBorderWidth}
+                    theme={theme}
                 />
             </LoaderContainer>
         );

@@ -14,7 +14,9 @@ export type {
   SpacingTokens,
   ShadowTokens,
   BreakpointTokens,
-  RadiusTokens
+  RadiusTokens,
+  BorderTokens,
+  SizeTokens
 } from './types/layoutTokens';
 export type { AnimationTokens } from './types/animationTokens';
 
@@ -25,7 +27,9 @@ import type {
   SpacingTokens,
   ShadowTokens,
   BreakpointTokens,
-  RadiusTokens
+  RadiusTokens,
+  BorderTokens,
+  SizeTokens
 } from './types/layoutTokens';
 import type { TypographyTokens } from './types/typographyTokens';
 
@@ -37,5 +41,7 @@ export interface ThemeTokens {
   shadows: ShadowTokens;
   breakpoints: BreakpointTokens;
   radius: RadiusTokens;
+  border: BorderTokens;
+  size: SizeTokens;
   animation: AnimationTokens;
 }

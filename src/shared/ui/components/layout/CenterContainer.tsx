@@ -5,7 +5,7 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { LayoutProps } from '../types';
 import { layoutPropsToStyles } from '../utils';
@@ -29,21 +29,23 @@ const StyledCenterContainer = styled.div<{ theme: any; $props: LayoutProps }>`
  * @param props - Layout props for styling and positioning
  * @returns JSX Element
  */
-export const CenterContainer: React.FC<LayoutProps> = (props) => {
-    const { children, theme, className, testId, ...layoutProps } = props;
+class CenterContainer extends PureComponent<LayoutProps> {
+    static displayName = 'CenterContainer';
 
-    return (
-        <StyledCenterContainer
-            theme={theme}
-            $props={layoutProps}
-            className={className}
-            data-testid={testId}
-        >
-            {children}
-        </StyledCenterContainer>
-    );
-};
+    override render(): ReactNode {
+        const { children, theme, className, testId, ...layoutProps } = this.props;
 
-CenterContainer.displayName = 'CenterContainer';
+        return (
+            <StyledCenterContainer
+                theme={theme}
+                $props={layoutProps}
+                className={className}
+                data-testid={testId}
+            >
+                {children}
+            </StyledCenterContainer>
+        );
+    }
+}
 
 export default CenterContainer;

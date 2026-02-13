@@ -2,6 +2,11 @@ import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
 import styled from 'styled-components';
 import { EnhancedTheme } from '@/core/theme';
+import React, { PureComponent, ReactNode } from 'react';
+
+interface IFormStyledProps extends GenericWrapperWithRef {
+  children?: ReactNode;
+}
 
 // Enterprise styled-components for form styling
 const FormContainer = styled.form<{ theme: EnhancedTheme }>`
@@ -31,12 +36,16 @@ const FormContainer = styled.form<{ theme: EnhancedTheme }>`
   }
 `;
 
-const FormStyled: React.FC<GenericWrapperWithRef> = ({ forwardedRef, children, ...props }) => {
-  return (
-    <FormContainer ref={forwardedRef}>
-      {children}
-    </FormContainer>
-  );
-};
+class FormStyled extends PureComponent<IFormStyledProps> {
+  override render(): ReactNode {
+    const { forwardedRef, children, ...props } = this.props;
+
+    return (
+      <FormContainer ref={forwardedRef} {...props}>
+        {children}
+      </FormContainer>
+    );
+  }
+}
 
 export default withForwardedRefAndErrBoundary(FormStyled);

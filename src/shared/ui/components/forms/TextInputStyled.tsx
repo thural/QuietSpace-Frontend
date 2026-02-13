@@ -1,20 +1,19 @@
 import { ConsumerFn } from "@/shared/types/genericTypes";
-import React from "react";
+import React, { PureComponent, ReactNode, ChangeEvent } from "react";
 import styled from 'styled-components';
 import { EnhancedTheme } from '@/core/theme';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
-interface TextInputStyledProps extends GenericWrapper {
-    name: string,
-    value: string | number,
-    handleChange: (value: string | number) => void,
-    placeholder?: string,
-    maxLength?: string,
-    minLength?: string,
-    hidden?: boolean,
-    isStyled?: boolean
+interface ITextInputStyledProps extends GenericWrapper {
+  name: string;
+  value: string | number;
+  handleChange: (value: string | number) => void;
+  placeholder?: string;
+  maxLength?: string;
+  minLength?: string;
+  hidden?: boolean;
+  isStyled?: boolean;
 }
-
 
 // Enterprise styled-components for text input styling
 const TextInput = styled.input<{ theme: EnhancedTheme }>`
@@ -56,29 +55,33 @@ const TextInput = styled.input<{ theme: EnhancedTheme }>`
   }
 `;
 
-const TextInputStyled: React.FC<TextInputStyledProps> = ({
-    name = "",
-    value,
-    handleChange,
-    placeholder,
-    maxLength = "999",
-    minLength = "0",
-    hidden = false,
-    isStyled = true,
-    ...props
-}) => {
-    return (
-        <TextInput
-            type='text'
-            name={name}
-            placeholder={placeholder ? placeholder : name}
-            value={value}
-            onChange={(e) => handleChange(e.target.value)}
-            hidden={hidden}
-            maxLength={parseInt(maxLength)}
-            minLength={parseInt(minLength)}
-        />
-    );
-};
+class TextInputStyled extends PureComponent<ITextInputStyledProps> {
+  override render(): ReactNode {
+    const {
+      name = "",
+      value,
+      handleChange,
+      placeholder,
+      maxLength = "999",
+      minLength = "0",
+      hidden = false,
+      isStyled = true,
+      ...props
+    } = this.props;
 
-export default TextInputStyled
+    return (
+      <TextInput
+        type='text'
+        name={name}
+        placeholder={placeholder ? placeholder : name}
+        value={value}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e.target.value)}
+        hidden={hidden}
+        maxLength={parseInt(maxLength)}
+        minLength={parseInt(minLength)}
+      />
+    );
+  }
+}
+
+export default TextInputStyled;

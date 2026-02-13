@@ -1,30 +1,41 @@
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef"
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes"
+import React, { PureComponent } from "react";
 
-const AnchorStyled: React.FC<GenericWrapperWithRef> = ({
-    href = "",
-    target = "_blank",
-    label = "blank",
-    forwardedRef,
-    style,
-    ...props
-}) => {
-    return (
-        <a
-            ref={forwardedRef}
-            href={href}
-            target={target}
-            style={{
-                textDecoration: 'none',
-                color: 'inherit',
-                cursor: 'pointer',
-                ...style
-            }}
-            {...props}
-        >
-            {label}
-        </a>
-    )
+interface IAnchorStyledProps extends GenericWrapperWithRef {
+    href?: string;
+    target?: string;
+    label?: string;
 }
 
-export default withForwardedRefAndErrBoundary(AnchorStyled)
+class AnchorStyled extends PureComponent<IAnchorStyledProps> {
+    override render(): React.ReactNode {
+        const {
+            href = "",
+            target = "_blank",
+            label = "blank",
+            forwardedRef,
+            style,
+            ...props
+        } = this.props;
+
+        return (
+            <a
+                ref={forwardedRef}
+                href={href}
+                target={target}
+                style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    ...style
+                }}
+                {...props}
+            >
+                {label}
+            </a>
+        )
+    }
+}
+
+export default withForwardedRefAndErrBoundary(AnchorStyled);

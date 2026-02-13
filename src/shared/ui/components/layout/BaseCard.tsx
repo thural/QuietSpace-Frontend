@@ -1,34 +1,39 @@
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FlexStyled from "./FlexStyled";
 import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+import { PureComponent, ReactNode } from 'react';
+import { getColor, getBorderWidth, getRadius, getSpacing, getShadow, getTransition } from '../utils';
 
 // Enterprise styled-components for base card styling
-const BaseCardContainer = styled.div<{ theme: EnhancedTheme }>`
-  background: ${props => props.theme.colors.background.primary};
-  border: 1px solid ${props => props.theme.colors.border.medium};
-  border-radius: ${props => props.theme.radius.md};
-  padding: ${props => props.theme.spacing.md};
-  box-shadow: ${props => props.theme.shadows.sm};
-  transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+const BaseCardContainer = styled.div<{ theme: any }>`
+  background: ${props => getColor(props.theme, 'background.primary')};
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
+  border-radius: ${props => getRadius(props.theme, 'md')};
+  padding: ${props => getSpacing(props.theme, 'md')};
+  box-shadow: ${props => getShadow(props.theme, 'sm')};
+  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
   
   &:hover {
-    box-shadow: ${props => props.theme.shadows.md};
-    border-color: ${props => props.theme.colors.border.dark};
+    box-shadow: ${props => getShadow(props.theme, 'md')};
+    border-color: ${props => getColor(props.theme, 'border.dark')};
   }
   
   // Responsive design
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    padding: ${props => props.theme.spacing.sm};
+  @media (max-width: ${props => props.theme?.breakpoints?.sm || '768px'}) {
+    padding: ${props => getSpacing(props.theme, 'sm')};
   }
 `;
 
-const BaseCard: React.FC<GenericWrapper> = ({ children }) => {
+class BaseCard extends PureComponent<GenericWrapper> {
+  override render(): ReactNode {
+    const { children, theme } = this.props;
+
     return (
-        <BaseCardContainer>
-            <FlexStyled>{children}</FlexStyled>
-        </BaseCardContainer>
+      <BaseCardContainer theme={theme}>
+        <FlexStyled theme={theme}>{children}</FlexStyled>
+      </BaseCardContainer>
     );
-};
+  }
+}
 
 export default BaseCard;

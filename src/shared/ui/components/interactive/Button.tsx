@@ -5,10 +5,10 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import { PureComponent, ReactNode, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { ButtonProps } from '../types';
-import { getButtonVariantStyles, getSizeStyles } from '../utils';
+import { getButtonVariantStyles, getSizeStyles, getBorderWidth, getRadius, getColor } from '../utils';
 
 // Styled component implementation
 const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
@@ -16,7 +16,7 @@ const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
   border: none;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s ease;
+  transition: all ${(props) => props.theme.animation?.duration?.fast || '0.2s'} ${(props) => props.theme.animation?.easing?.ease || 'ease'};
   outline: none;
   
   &:disabled {
@@ -25,22 +25,22 @@ const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
   }
   
   &:focus:not(:disabled) {
-    outline: 2px solid ${(props) => props.theme.colors?.primary || '#007bff'};
-    outline-offset: 2px;
+    outline: ${(props) => getBorderWidth(props.theme, 'md')} solid ${(props) => getColor(props.theme, 'brand.500')};
+    outline-offset: ${(props) => props.theme.spacing?.xs || '4px'};
   }
   
   ${(props) => getButtonVariantStyles(props.$props.variant || 'primary', props.theme)}
   ${(props) => getSizeStyles(props.$props.size || 'md', props.theme)}
   
   ${(props) => props.$props.fullWidth && 'width: 100%;'}
-  ${(props) => props.$props.rounded && 'border-radius: 50px;'}
-  ${(props) => props.$props.outlined && `
+  ${(props) => props.$props.rounded && `border-radius: ${getRadius(props.theme, 'round')};`}
+  ${(props: any) => props.$props.outlined && `
     background: transparent;
-    border: 2px solid;
+    border: ${(props: any) => getBorderWidth(props.theme, 'md')} solid;
   `}
-  ${(props) => props.$props.gradient && `
+  ${(props: any) => props.$props.gradient && `
     background: ${props.theme.colors?.gradient || 'linear-gradient(45deg, #007bff, #6f42c1)'};
-    color: white;
+    color: ${(props: any) => getColor(props.theme, 'text.inverse')};
     border: none;
   `}
 `;
@@ -54,48 +54,53 @@ const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
  * @param props - Button props for styling and behavior
  * @returns JSX Element
  */
-export const Button: React.FC<ButtonProps> = (props) => {
-    const {
-        children,
-        theme,
-        className,
-        testId,
-        disabled = false,
-        loading = false,
-        type = 'button',
-        onClick,
-        onFocus,
-        onBlur,
-        onMouseEnter,
-        onMouseLeave,
-        ...buttonProps
-    } = props;
+class Button extends PureComponent<ButtonProps> {
+  /**
+   * Handle button click event
+   */
+  private handleClick = (event: MouseEvent): void => {
+    const { disabled = false, loading = false, onClick } = this.props;
 
-    const handleClick = (event: React.MouseEvent) => {
-        if (!disabled && !loading && onClick) {
-            onClick(event);
-        }
-    };
+    if (!disabled && !loading && onClick) {
+      onClick(event);
+    }
+  };
+
+  override render(): ReactNode {
+    const {
+      children,
+      theme,
+      className,
+      testId,
+      disabled = false,
+      loading = false,
+      type = 'button',
+      onFocus,
+      onBlur,
+      onMouseEnter,
+      onMouseLeave,
+      ...buttonProps
+    } = this.props;
 
     return (
-        <StyledButton
-            theme={theme}
-            $props={props}
-            className={className}
-            data-testid={testId}
-            disabled={disabled || loading}
-            type={type}
-            onClick={handleClick}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-        >
-            {loading ? 'Loading...' : children}
-        </StyledButton>
+      <StyledButton
+        theme={theme}
+        $props={this.props}
+        className={className}
+        data-testid={testId}
+        disabled={disabled || loading}
+        type={type}
+        onClick={this.handleClick}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        {...buttonProps}
+      >
+        {loading ? 'Loading...' : children}
+      </StyledButton>
     );
-};
-
-Button.displayName = 'Button';
+  }
+}
 
 export default Button;

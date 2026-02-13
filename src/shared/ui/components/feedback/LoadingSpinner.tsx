@@ -1,27 +1,29 @@
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getSpacing, getColor, getBorderWidth, getTransition } from '../utils';
 
 // Styled components with theme token integration
 const LoadingSpinnerContainer = styled.div<{ theme?: any }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme?.spacing?.md || '16px'};
+  padding: ${props => getSpacing(props.theme, 'md')};
 `;
 
 const SpinnerElement = styled.div<{
-  size?: string;
-  color?: string;
+  $size?: string;
+  $color?: string;
   theme?: any;
 }>`
   animation: spin 1s linear infinite;
   border-radius: 50%;
-  border: 2px solid ${props => props.theme?.colors?.background?.secondary || '#f8f9fa'};
-  border-top: 2px solid ${props => props.color || props.theme?.colors?.brand?.[500] || '#007bff'};
-  width: ${props => props.size || '24px'};
-  height: ${props => props.size || '24px'};
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'background.secondary')};
+  border-top: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => props.$color || getColor(props.theme, 'brand.500')};
+  width: ${props => props.$size || '24px'};
+  height: ${props => props.$size || '24px'};
+  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -38,6 +40,7 @@ export interface ILoadingSpinnerProps extends BaseComponentProps {
   visible?: boolean;
   customSize?: string;
   customColor?: string;
+  theme?: any;
 }
 
 /**
@@ -68,17 +71,17 @@ export class LoadingSpinner extends PureComponent<ILoadingSpinnerProps> {
    * Color mapping for theme colors using semantic tokens
    */
   private readonly colorMap: Record<'primary' | 'secondary' | 'success' | 'error' | 'warning', string> = {
-    primary: '#007bff',
-    secondary: '#6c757d',
-    success: '#28a745',
-    error: '#dc3545',
-    warning: '#ffc107'
+    primary: 'brand.500',
+    secondary: 'text.secondary',
+    success: 'semantic.success',
+    error: 'semantic.error',
+    warning: 'semantic.warning'
   };
 
   /**
    * Get size in pixels based on prop
    */
-  private getSizePixels = (): string => {
+  private getSizePixels = (theme: any): string => {
     const { size, customSize } = this.props;
 
     if (customSize) {
@@ -86,16 +89,16 @@ export class LoadingSpinner extends PureComponent<ILoadingSpinnerProps> {
     }
 
     if (typeof size === 'number') {
-      return `${size}px`;
+      return getSpacing(theme, size);
     }
 
-    return this.sizeMap[size as ComponentSize] || this.sizeMap.md;
+    return getSpacing(theme, parseInt(this.sizeMap[size as ComponentSize] || this.sizeMap.md));
   };
 
   /**
    * Get color based on prop using theme tokens
    */
-  private getColor = (): string => {
+  private getColor = (theme: any): string => {
     const { color, customColor } = this.props;
 
     if (customColor) {
@@ -103,10 +106,10 @@ export class LoadingSpinner extends PureComponent<ILoadingSpinnerProps> {
     }
 
     if (color && this.colorMap[color]) {
-      return this.colorMap[color];
+      return getColor(theme, this.colorMap[color]);
     }
 
-    return this.colorMap.primary;
+    return getColor(theme, this.colorMap.primary);
   };
 
   /**
@@ -137,23 +140,25 @@ export class LoadingSpinner extends PureComponent<ILoadingSpinnerProps> {
   }
 
   override render(): ReactNode {
-    const { className = '', visible = true, testId } = this.props;
+    const { className = '', visible = true, testId, theme } = this.props;
 
     if (!visible) {
       return null;
     }
 
-    const size = this.getSizePixels();
-    const color = this.getColor();
+    const size = this.getSizePixels(theme || {});
+    const color = this.getColor(theme || {});
 
     return (
       <LoadingSpinnerContainer
         className={className}
         data-testid={testId || 'loading-spinner'}
+        theme={theme}
       >
         <SpinnerElement
-          size={size}
-          color={color}
+          $size={size}
+          $color={color}
+          theme={theme}
           role="status"
           aria-label="Loading"
         >

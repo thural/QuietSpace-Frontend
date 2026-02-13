@@ -1,5 +1,5 @@
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
-import { useState } from "react";
+import React, { PureComponent, ReactNode, MouseEvent } from "react";
 import { Container } from '@/shared/ui/components/layout/Container';
 import styled from 'styled-components';
 import { EnhancedTheme } from '@/core/theme';
@@ -18,7 +18,7 @@ import { EnhancedTheme } from '@/core/theme';
  * @property {string} [padding] - The padding within the menu.
  * @property {string} [display] - The CSS display property for the menu.
  */
-export interface MenuListStyleProps {
+export interface IMenuListStyleProps {
   position?: string;
   width?: string;
   fontSize?: string;
@@ -37,9 +37,14 @@ export interface MenuListStyleProps {
  * @property {React.ReactNode} menuIcon - The icon to display for the menu.
  * @property {MenuListStyleProps} [styleProps] - Optional style properties for the menu.
  */
-export interface ListMenuProps extends GenericWrapperWithRef {
+export interface IListMenuProps extends GenericWrapperWithRef {
   menuIcon: React.ReactNode;
-  styleProps?: MenuListStyleProps;
+  styleProps?: IMenuListStyleProps;
+  children?: ReactNode;
+}
+
+interface IListMenuState {
+  display: string;
 }
 
 /**
@@ -49,7 +54,7 @@ export interface ListMenuProps extends GenericWrapperWithRef {
  * The menu can be styled with various properties passed through styleProps. It also manages
  * the display state of the menu items, allowing for a simple dropdown-like functionality.
  * 
- * @param {ListMenuProps} props - The component props.
+ * @param {IListMenuProps} props - The component props.
  * @returns {JSX.Element} - The rendered ListMenu component.
  */
 // Enterprise styled-components for list menu styling
@@ -102,17 +107,23 @@ const MenuContent = styled.div<{
   }
 `;
 
-const ListMenu: React.FC<ListMenuProps> = ({ menuIcon, styleProps, children }) => {
-  const [display, setDisplay] = useState("none"); // State to manage menu visibility
+class ListMenu extends PureComponent<IListMenuProps, IListMenuState> {
+  constructor(props: IListMenuProps) {
+    super(props);
+    this.state = {
+      display: "none" // State to manage menu visibility
+    };
+  }
 
   /**
    * Toggles the display state of the menu.
    * 
    * @param {React.MouseEvent} event - The mouse event triggered by the click.
    */
-  const toggleDisplay = (event: React.MouseEvent) => {
+  private toggleDisplay = (event: MouseEvent): void => {
     event.stopPropagation(); // Prevent the event from bubbling up
-    setDisplay(display === "none" ? "block" : "none"); // Toggle display state
+    const { display } = this.state;
+    this.setState({ display: display === "none" ? "block" : "none" }); // Toggle display state
   };
 
   /**
@@ -120,23 +131,28 @@ const ListMenu: React.FC<ListMenuProps> = ({ menuIcon, styleProps, children }) =
    * 
    * @param {React.MouseEvent} event - The mouse event triggered by the click.
    */
-  const hideMenu = (event: React.MouseEvent) => {
+  private hideMenu = (event: MouseEvent): void => {
     event.stopPropagation(); // Prevent the event from bubbling up
-    setDisplay("none"); // Set display to none
+    this.setState({ display: "none" }); // Set display to none
   };
 
-  return (
-    <MenuContainer>
-      <MenuIcon onClick={toggleDisplay}>{menuIcon}</MenuIcon>
-      <MenuContent
-        {...styleProps}
-        display={display}
-        onClick={hideMenu}
-      >
-        {children}
-      </MenuContent>
-    </MenuContainer>
-  );
+  override render(): ReactNode {
+    const { menuIcon, styleProps, children } = this.props;
+    const { display } = this.state;
+
+    return (
+      <MenuContainer>
+        <MenuIcon onClick={this.toggleDisplay}>{menuIcon}</MenuIcon>
+        <MenuContent
+          {...styleProps}
+          display={display}
+          onClick={this.hideMenu}
+        >
+          {children}
+        </MenuContent>
+      </MenuContainer>
+    );
+  }
 }
 
 export default ListMenu;

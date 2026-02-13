@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import * as React from 'react';
-import { Injectable, useService } from '../../../core/di';
 
 // Base component interfaces
 interface IBaseComponent {
@@ -56,7 +55,6 @@ interface IErrorMessage extends IBaseComponent {
 }
 
 // Theme service for consistent styling
-@Injectable({ lifetime: 'singleton' })
 export class ComponentThemeService {
   private theme = {
     colors: {
@@ -109,23 +107,20 @@ export class ComponentThemeService {
 }
 
 // Button Component
-export const Button: React.FC<IButton> = ({
-  variant = 'primary',
-  size = 'medium',
-  disabled = false,
-  loading = false,
-  onClick,
-  children,
-  className = '',
-  style = {},
-  ...props
-}) => {
-  const themeService = useService(ComponentThemeService);
-  const colors = themeService.getColors();
-  const spacing = themeService.getSpacing();
-  const borderRadius = themeService.getBorderRadius();
+class Button extends React.PureComponent<IButton> {
+  private themeService: ComponentThemeService;
 
-  const getButtonStyles = (): React.CSSProperties => {
+  constructor(props: IButton) {
+    super(props);
+    this.themeService = new ComponentThemeService();
+  }
+
+  private getButtonStyles = (): React.CSSProperties => {
+    const { variant = 'primary', size = 'medium', disabled = false, style = {} } = this.props;
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+    const borderRadius = this.themeService.getBorderRadius();
+
     const baseStyles: React.CSSProperties = {
       padding: size === 'small' ? spacing.sm : size === 'large' ? spacing.lg : spacing.md,
       borderRadius: borderRadius.md,
@@ -173,107 +168,130 @@ export const Button: React.FC<IButton> = ({
     }
   };
 
-  return (
-    <button
-      className={`component-button ${className}`}
-      style={getButtonStyles()}
-      onClick={onClick}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading && <LoadingSpinner size="small" color="currentColor" />}
-      {children}
-    </button>
-  );
-};
+  override render(): React.ReactNode {
+    const { onClick, children, className = '', disabled = false, loading = false, ...props } = this.props;
+
+    return (
+      <button
+        className={`component-button ${className}`}
+        style={this.getButtonStyles()}
+        onClick={onClick}
+        disabled={disabled || loading}
+        {...props}
+      >
+        {loading && <LoadingSpinner size="small" color="currentColor" />}
+        {children}
+      </button>
+    );
+  }
+}
 
 // Input Component
-export const Input: React.FC<IInput> = ({
-  type = 'text',
-  placeholder,
-  value,
-  onChange,
-  error,
-  label,
-  required = false,
-  className = '',
-  style = {},
-  ...props
-}) => {
-  const themeService = useService(ComponentThemeService);
-  const colors = themeService.getColors();
-  const spacing = themeService.getSpacing();
-  const borderRadius = themeService.getBorderRadius();
+class Input extends React.PureComponent<IInput> {
+  private themeService: ComponentThemeService;
 
-  const getInputStyles = (): React.CSSProperties => ({
-    padding: spacing.md,
-    borderRadius: borderRadius.md,
-    border: `1px solid ${error ? colors.danger : colors.gray}`,
-    fontSize: '16px',
-    width: '100%',
-    outline: 'none',
-    transition: 'border-color 0.2s ease',
-    ...style
-  });
+  constructor(props: IInput) {
+    super(props);
+    this.themeService = new ComponentThemeService();
+  }
 
-  const getLabelStyles = (): React.CSSProperties => ({
-    display: 'block',
-    marginBottom: spacing.xs,
-    fontSize: '14px',
-    fontWeight: '500',
-    color: colors.dark
-  });
+  private getInputStyles = (): React.CSSProperties => {
+    const { error, style = {} } = this.props;
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+    const borderRadius = this.themeService.getBorderRadius();
 
-  const getErrorStyles = (): React.CSSProperties => ({
-    color: colors.danger,
-    fontSize: '12px',
-    marginTop: spacing.xs
-  });
+    return {
+      padding: spacing.md,
+      borderRadius: borderRadius.md,
+      border: `1px solid ${error ? colors.danger : colors.gray}`,
+      fontSize: '16px',
+      width: '100%',
+      outline: 'none',
+      transition: 'border-color 0.2s ease',
+      ...style
+    };
+  };
 
-  return (
-    <div className={`component-input ${className}`}>
-      {label && (
-        <label style={getLabelStyles()}>
-          {label}
-          {required && <span style={{ color: colors.danger }}> *</span>}
-        </label>
-      )}
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        style={getInputStyles()}
-        {...props}
-      />
-      {error && (
-        <div style={getErrorStyles()}>
-          {typeof error === 'string' ? error : error.message}
-        </div>
-      )}
-    </div>
-  );
-};
+  private getLabelStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+
+    return {
+      display: 'block',
+      marginBottom: spacing.xs,
+      fontSize: '14px',
+      fontWeight: '500',
+      color: colors.dark
+    };
+  };
+
+  private getErrorStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+
+    return {
+      color: colors.danger,
+      fontSize: '12px',
+      marginTop: spacing.xs
+    };
+  };
+
+  override render(): React.ReactNode {
+    const {
+      type = 'text',
+      placeholder,
+      value,
+      onChange,
+      error,
+      label,
+      required = false,
+      className = '',
+      ...props
+    } = this.props;
+
+    return (
+      <div className={`component-input ${className}`}>
+        {label && (
+          <label style={this.getLabelStyles()}>
+            {label}
+            {required && <span style={{ color: this.themeService.getColors().danger }}> *</span>}
+          </label>
+        )}
+        <input
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
+          style={this.getInputStyles()}
+          {...props}
+        />
+        {error && (
+          <div style={this.getErrorStyles()}>
+            {typeof error === 'string' ? error : error.message}
+          </div>
+        )}
+      </div>
+    );
+  }
+}
 
 // Card Component
-export const Card: React.FC<ICard> = ({
-  title,
-  subtitle,
-  footer,
-  elevation = 'medium',
-  padding = 'medium',
-  children,
-  className = '',
-  style = {},
-  ...props
-}) => {
-  const themeService = useService(ComponentThemeService);
-  const colors = themeService.getColors();
-  const spacing = themeService.getSpacing();
-  const borderRadius = themeService.getBorderRadius();
-  const shadows = themeService.getShadows();
+class Card extends React.PureComponent<ICard> {
+  private themeService: ComponentThemeService;
 
-  const getCardStyles = (): React.CSSProperties => {
+  constructor(props: ICard) {
+    super(props);
+    this.themeService = new ComponentThemeService();
+  }
+
+  private getCardStyles = (): React.CSSProperties => {
+    const { elevation = 'medium', padding = 'medium', style = {} } = this.props;
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+    const borderRadius = this.themeService.getBorderRadius();
+    const shadows = this.themeService.getShadows();
+
     const paddingValue = padding === 'none' ? '0' : padding === 'small' ? spacing.sm : padding === 'large' ? spacing.lg : spacing.md;
 
     return {
@@ -285,136 +303,160 @@ export const Card: React.FC<ICard> = ({
     };
   };
 
-  const getTitleStyles = (): React.CSSProperties => ({
-    fontSize: '18px',
-    fontWeight: 'bold',
-    marginBottom: spacing.xs,
-    color: colors.dark
-  });
+  private getTitleStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
 
-  const getSubtitleStyles = (): React.CSSProperties => ({
-    fontSize: '14px',
-    color: colors.gray,
-    marginBottom: spacing.md
-  });
-
-  const getFooterStyles = (): React.CSSProperties => ({
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
-    borderTop: `1px solid ${colors.light}`,
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: spacing.sm
-  });
-
-  return (
-    <div className={`component-card ${className}`} style={getCardStyles()} {...props}>
-      {title && <div style={getTitleStyles()}>{title}</div>}
-      {subtitle && <div style={getSubtitleStyles()}>{subtitle}</div>}
-      <div>{children}</div>
-      {footer && <div style={getFooterStyles()}>{footer}</div>}
-    </div>
-  );
-};
-
-// Loading Spinner Component
-export const LoadingSpinner: React.FC<ILoadingSpinner> = ({
-  size = 'medium',
-  color,
-  className = '',
-  style = {}
-}) => {
-  const themeService = useService(ComponentThemeService);
-  const colors = themeService.getColors();
-
-  const spinnerColor = color || colors.primary;
-  const spinnerSize = size === 'small' ? '16px' : size === 'large' ? '32px' : '24px';
-
-  const spinnerStyles: React.CSSProperties = {
-    width: spinnerSize,
-    height: spinnerSize,
-    border: `2px solid ${colors.light}`,
-    borderTop: `2px solid ${spinnerColor}`,
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-    ...style
+    return {
+      fontSize: '18px',
+      fontWeight: 'bold',
+      marginBottom: spacing.xs,
+      color: colors.dark
+    };
   };
 
-  return (
-    <div
-      className={`component-loading-spinner ${className}`}
-      style={spinnerStyles}
-    />
-  );
-};
+  private getSubtitleStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+
+    return {
+      fontSize: '14px',
+      color: colors.gray,
+      marginBottom: spacing.md
+    };
+  };
+
+  private getFooterStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+
+    return {
+      marginTop: spacing.md,
+      paddingTop: spacing.md,
+      borderTop: `1px solid ${colors.light}`,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: spacing.sm
+    };
+  };
+
+  override render(): React.ReactNode {
+    const { title, subtitle, footer, children, className = '', ...props } = this.props;
+
+    return (
+      <div className={`component-card ${className}`} style={this.getCardStyles()} {...props}>
+        {title && <div style={this.getTitleStyles()}>{title}</div>}
+        {subtitle && <div style={this.getSubtitleStyles()}>{subtitle}</div>}
+        <div>{children}</div>
+        {footer && <div style={this.getFooterStyles()}>{footer}</div>}
+      </div>
+    );
+  }
+}
+
+// Loading Spinner Component
+class LoadingSpinner extends React.PureComponent<ILoadingSpinner> {
+  private themeService: ComponentThemeService;
+
+  constructor(props: ILoadingSpinner) {
+    super(props);
+    this.themeService = new ComponentThemeService();
+  }
+
+  override render(): React.ReactNode {
+    const { size = 'medium', color, className = '', style = {} } = this.props;
+    const colors = this.themeService.getColors();
+
+    const spinnerColor = color || colors.primary;
+    const spinnerSize = size === 'small' ? '16px' : size === 'large' ? '32px' : '24px';
+
+    const spinnerStyles: React.CSSProperties = {
+      width: spinnerSize,
+      height: spinnerSize,
+      border: `2px solid ${colors.light}`,
+      borderTop: `2px solid ${spinnerColor}`,
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
+      ...style
+    };
+
+    return (
+      <div
+        className={`component-loading-spinner ${className}`}
+        style={spinnerStyles}
+      />
+    );
+  }
+}
 
 // Error Message Component
-export const ErrorMessage: React.FC<IErrorMessage> = ({
-  error,
-  onRetry,
-  variant = 'block',
-  className = '',
-  style = {}
-}) => {
-  const themeService = useService(ComponentThemeService);
-  const colors = themeService.getColors();
-  const spacing = themeService.getSpacing();
+class ErrorMessage extends React.PureComponent<IErrorMessage> {
+  private themeService: ComponentThemeService;
 
-  const errorMessage = typeof error === 'string' ? error : error.message;
+  constructor(props: IErrorMessage) {
+    super(props);
+    this.themeService = new ComponentThemeService();
+  }
 
-  const getErrorStyles = (): React.CSSProperties => ({
-    backgroundColor: colors.danger,
-    color: colors.white,
-    padding: spacing.md,
-    borderRadius: themeService.getBorderRadius().md,
-    display: variant === 'inline' ? 'inline-flex' : 'flex',
-    alignItems: 'center',
-    gap: spacing.sm,
-    ...style
-  });
+  private getErrorStyles = (): React.CSSProperties => {
+    const { variant = 'block', style = {} } = this.props;
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
 
-  const getRetryButtonStyles = (): React.CSSProperties => ({
-    backgroundColor: 'transparent',
-    color: colors.white,
-    border: `1px solid ${colors.white}`,
-    padding: `${spacing.xs} ${spacing.sm}`,
-    borderRadius: themeService.getBorderRadius().sm,
-    cursor: 'pointer',
-    fontSize: '12px'
-  });
+    return {
+      backgroundColor: colors.danger,
+      color: colors.white,
+      padding: spacing.md,
+      borderRadius: this.themeService.getBorderRadius().md,
+      display: variant === 'inline' ? 'inline-flex' : 'flex',
+      alignItems: 'center',
+      gap: spacing.sm,
+      ...style
+    };
+  };
 
-  return (
-    <div className={`component-error-message ${className}`} style={getErrorStyles()}>
-      <span>⚠️ {errorMessage}</span>
-      {onRetry && (
-        <button style={getRetryButtonStyles()} onClick={onRetry}>
-          Retry
-        </button>
-      )}
-    </div>
-  );
-};
+  private getRetryButtonStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+
+    return {
+      backgroundColor: 'transparent',
+      color: colors.white,
+      border: `1px solid ${colors.white}`,
+      padding: `${spacing.xs} ${spacing.sm}`,
+      borderRadius: this.themeService.getBorderRadius().sm,
+      cursor: 'pointer',
+      fontSize: '12px'
+    };
+  };
+
+  override render(): React.ReactNode {
+    const { error, onRetry, className = '' } = this.props;
+    const errorMessage = typeof error === 'string' ? error : error.message;
+
+    return (
+      <div className={`component-error-message ${className}`} style={this.getErrorStyles()}>
+        <span>⚠️ {errorMessage}</span>
+        {onRetry && (
+          <button style={this.getRetryButtonStyles()} onClick={onRetry}>
+            Retry
+          </button>
+        )}
+      </div>
+    );
+  }
+}
 
 // Modal Component
-export const Modal: React.FC<IModal> = ({
-  isOpen,
-  onClose,
-  title,
-  size = 'medium',
-  showCloseButton = true,
-  children,
-  className = '',
-  style = {}
-}) => {
-  const themeService = useService(ComponentThemeService);
-  const colors = themeService.getColors();
-  const spacing = themeService.getSpacing();
-  const borderRadius = themeService.getBorderRadius();
-  const shadows = themeService.getShadows();
+class Modal extends React.PureComponent<IModal> {
+  private themeService: ComponentThemeService;
 
-  if (!isOpen) return null;
+  constructor(props: IModal) {
+    super(props);
+    this.themeService = new ComponentThemeService();
+  }
 
-  const getOverlayStyles = (): React.CSSProperties => ({
+  private getOverlayStyles = (): React.CSSProperties => ({
     position: 'fixed',
     top: 0,
     left: 0,
@@ -427,7 +469,12 @@ export const Modal: React.FC<IModal> = ({
     zIndex: 1000
   });
 
-  const getModalStyles = (): React.CSSProperties => {
+  private getModalStyles = (): React.CSSProperties => {
+    const { size = 'medium', style = {} } = this.props;
+    const colors = this.themeService.getColors();
+    const borderRadius = this.themeService.getBorderRadius();
+    const shadows = this.themeService.getShadows();
+
     const sizeStyles = {
       small: { maxWidth: '400px', width: '90%' },
       medium: { maxWidth: '600px', width: '90%' },
@@ -446,48 +493,67 @@ export const Modal: React.FC<IModal> = ({
     };
   };
 
-  const getHeaderStyles = (): React.CSSProperties => ({
-    padding: spacing.md,
-    borderBottom: `1px solid ${colors.light}`,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  });
+  private getHeaderStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
 
-  const getBodyStyles = (): React.CSSProperties => ({
-    padding: spacing.md
-  });
+    return {
+      padding: spacing.md,
+      borderBottom: `1px solid ${colors.light}`,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    };
+  };
 
-  const getCloseButtonStyles = (): React.CSSProperties => ({
-    background: 'none',
-    border: 'none',
-    fontSize: '24px',
-    cursor: 'pointer',
-    color: colors.gray,
-    padding: 0,
-    lineHeight: 1
-  });
+  private getBodyStyles = (): React.CSSProperties => {
+    const spacing = this.themeService.getSpacing();
 
-  return (
-    <div className={`component-modal ${className}`} style={getOverlayStyles()}>
-      <div style={getModalStyles()}>
-        {(title || showCloseButton) && (
-          <div style={getHeaderStyles()}>
-            {title && <h2 style={{ margin: 0 }}>{title}</h2>}
-            {showCloseButton && (
-              <button style={getCloseButtonStyles()} onClick={onClose}>
-                ×
-              </button>
-            )}
+    return {
+      padding: spacing.md
+    };
+  };
+
+  private getCloseButtonStyles = (): React.CSSProperties => {
+    const colors = this.themeService.getColors();
+
+    return {
+      background: 'none',
+      border: 'none',
+      fontSize: '24px',
+      cursor: 'pointer',
+      color: colors.gray,
+      padding: 0,
+      lineHeight: 1
+    };
+  };
+
+  override render(): React.ReactNode {
+    const { isOpen, onClose, title, size = 'medium', showCloseButton = true, children, className = '', ...props } = this.props;
+
+    if (!isOpen) return null;
+
+    return (
+      <div className={`component-modal ${className}`} style={this.getOverlayStyles()}>
+        <div style={this.getModalStyles()} {...props}>
+          {(title || showCloseButton) && (
+            <div style={this.getHeaderStyles()}>
+              {title && <h2 style={{ margin: 0 }}>{title}</h2>}
+              {showCloseButton && (
+                <button style={this.getCloseButtonStyles()} onClick={onClose}>
+                  ×
+                </button>
+              )}
+            </div>
+          )}
+          <div style={this.getBodyStyles()}>
+            {children}
           </div>
-        )}
-        <div style={getBodyStyles()}>
-          {children}
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 // Add CSS animation for spinner
 const style = document.createElement('style');
@@ -499,12 +565,14 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Export all components (types only - components are already exported inline)
+// Export all components and types
+export { Button, Input, Card, LoadingSpinner, ErrorMessage, Modal };
 export type {
   IButton,
   IInput,
   ICard,
   IModal,
   ILoadingSpinner,
-  IErrorMessage
+  IErrorMessage,
+  IBaseComponent
 };

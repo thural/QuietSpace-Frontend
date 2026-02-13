@@ -1,30 +1,30 @@
-import { EnhancedTheme } from '@/core/theme';
-import React, { PureComponent, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
+import { getSpacing, getColor, getTypography, getRadius, getTransition } from '../utils';
 
 // Enterprise styled-components for enhanced switch styling
-const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | 'sm' | 'lg'; disabled?: boolean }>`
+const SwitchStyledContainer = styled.div<{ theme: any; size?: 'md' | 'sm' | 'lg'; disabled?: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing.sm};
+  gap: ${props => getSpacing(props.theme, 'sm')};
   opacity: ${props => props.disabled ? 0.6 : 1};
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   
   .switch-label {
-    font-family: ${props => props.theme.typography.fontFamily.sans.join(', ')};
+    font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
     font-size: ${props => {
     switch (props.size) {
-      case 'sm': return props.theme.typography.fontSize.sm;
-      case 'lg': return props.theme.typography.fontSize.lg;
-      default: return props.theme.typography.fontSize.base;
+      case 'sm': return getTypography(props.theme, 'fontSize.sm');
+      case 'lg': return getTypography(props.theme, 'fontSize.lg');
+      default: return getTypography(props.theme, 'fontSize.base');
     }
   }};
-    font-weight: ${props => props.theme.typography.fontWeight.medium};
-    color: ${props => props.disabled ? props.theme.colors.text.tertiary : props.theme.colors.text.primary};
+    font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
+    color: ${props => getColor(props.theme, props.disabled ? 'text.tertiary' : 'text.primary')};
     user-select: none;
     cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-    transition: color ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+    transition: ${props => getTransition(props.theme, 'color', 'fast', 'ease')};
   }
   
   .switch-input {
@@ -42,69 +42,69 @@ const SwitchStyledContainer = styled.div<{ theme: EnhancedTheme; size?: 'md' | '
       position: relative;
       display: inline-block;
       cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-      background: ${props => props.disabled ? props.theme.colors.border.light : props.theme.colors.border.medium};
+      background: ${props => getColor(props.theme, props.disabled ? 'border.light' : 'border.medium')};
       border-radius: ${props => {
     switch (props.size) {
-      case 'sm': return props.theme.radius.sm;
-      case 'lg': return props.theme.radius.lg;
-      default: return props.theme.radius.md;
+      case 'sm': return getRadius(props.theme, 'sm');
+      case 'lg': return getRadius(props.theme, 'lg');
+      default: return getRadius(props.theme, 'md');
     }
   }};
-      transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+      transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
       
       &:before {
         position: absolute;
         content: "";
         height: ${props => {
     switch (props.size) {
-      case 'sm': return '12px';
-      case 'lg': return '24px';
-      default: return '18px';
+      case 'sm': return getSpacing(props.theme, 12);
+      case 'lg': return getSpacing(props.theme, 24);
+      default: return getSpacing(props.theme, 18);
     }
   }};
         width: ${props => {
     switch (props.size) {
-      case 'sm': return '12px';
-      case 'lg': return '24px';
-      default: return '18px';
+      case 'sm': return getSpacing(props.theme, 12);
+      case 'lg': return getSpacing(props.theme, 24);
+      default: return getSpacing(props.theme, 18);
     }
   }};
         left: ${props => {
     switch (props.size) {
-      case 'sm': return '2px';
-      case 'lg': return '3px';
-      default: return '2px';
+      case 'sm': return getSpacing(props.theme, 2);
+      case 'lg': return getSpacing(props.theme, 3);
+      default: return getSpacing(props.theme, 2);
     }
   }};
         bottom: ${props => {
     switch (props.size) {
-      case 'sm': return '2px';
-      case 'lg': return '3px';
-      default: return '2px';
+      case 'sm': return getSpacing(props.theme, 2);
+      case 'lg': return getSpacing(props.theme, 3);
+      default: return getSpacing(props.theme, 2);
     }
   }};
-        background-color: white;
+        background-color: ${props => getColor(props.theme, 'text.inverse')};
         border-radius: 50%;
-        transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+        transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
       }
     }
     
     input:checked + .switch-slider {
-      background-color: ${props => props.disabled ? props.theme.colors.border.light : props.theme.colors.brand[500]};
+      background-color: ${props => getColor(props.theme, props.disabled ? 'border.light' : 'brand.500')};
       
       &:before {
         transform: translateX(${props => {
     switch (props.size) {
-      case 'sm': return '16px';
-      case 'lg': return '32px';
-      default: return '24px';
+      case 'sm': return getSpacing(props.theme, 16);
+      case 'lg': return getSpacing(props.theme, 32);
+      default: return getSpacing(props.theme, 24);
     }
   }});
       }
     }
     
     input:focus + .switch-slider {
-      box-shadow: 0 0 0 3px ${props => props.theme.colors.brand[200]};
+      box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'brand.200')};
     }
     
     input:disabled + .switch-slider {
@@ -122,6 +122,7 @@ interface ISwitchStyledProps extends IBaseComponentProps {
   labelPosition?: 'left' | 'right';
   onChange?: (checked: boolean) => void;
   className?: string;
+  theme?: any;
 
   // Enhanced props for Switch compatibility
   name?: string;
@@ -162,13 +163,10 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
   }
 
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { disabled, onChange, onValueChange, value } = this.props;
+    const { disabled, onValueChange, value } = this.props;
     const isChecked = event.target.checked;
 
     if (!disabled) {
-      // Call the original onChange prop
-      onChange?.(isChecked);
-
       // Call the enhanced onValueChange prop for Switch compatibility
       if (onValueChange && value !== undefined) {
         onValueChange(value, isChecked);
@@ -239,12 +237,12 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
       ...props
     } = this.props;
 
-    const { isFocused } = this.state;
+    const { theme } = this.props;
 
     const switchSize = {
-      sm: { width: '32px', height: '16px' },
-      md: { width: '48px', height: '24px' },
-      lg: { width: '64px', height: '32px' }
+      sm: { width: getSpacing(theme || {}, 32), height: getSpacing(theme || {}, 16) },
+      md: { width: getSpacing(theme || {}, 48), height: getSpacing(theme || {}, 24) },
+      lg: { width: getSpacing(theme || {}, 64), height: getSpacing(theme || {}, 32) }
     };
 
     const currentSize = switchSize[size] || switchSize.md;
@@ -254,6 +252,7 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
         className={className}
         size={size}
         disabled={disabled}
+        theme={theme}
         data-testid={testId || 'switch-styled'}
       >
         {label && labelPosition === 'left' && (
@@ -275,7 +274,14 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
             aria-label={ariaLabel}
             aria-describedby={ariaDescribedBy}
             aria-checked={checked}
-            onChange={this.handleChange}
+            onChange={(e) => {
+              const isChecked = e.target.checked;
+              this.handleChange(e);
+              // Also call the onChange prop directly with boolean value
+              if (this.props.onChange) {
+                this.props.onChange(isChecked);
+              }
+            }}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             {...props}

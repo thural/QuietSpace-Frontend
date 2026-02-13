@@ -5,35 +5,35 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React from 'react';
+import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { InputProps } from '../types';
-import { getSizeStyles } from '../utils';
+import { getSizeStyles, getBorderWidth, getRadius, getColor, getSpacing } from '../utils';
 
 // Styled component implementation
 const StyledInput = styled.input<{ theme: any; $props: InputProps }>`
   box-sizing: border-box;
-  border: 1px solid ${(props) => props.theme.colors?.border || '#ccc'};
-  border-radius: ${(props) => props.theme.radius?.md || '4px'};
-  padding: ${(props) => props.theme.spacing(props.theme.spacingFactor.sm)} ${(props) => props.theme.spacing(props.theme.spacingFactor.md)};
-  font-size: ${(props) => props.theme.typography.fontSize.primary};
+  border: ${(props) => getBorderWidth(props.theme, 'sm')} solid ${(props) => getColor(props.theme, 'border.light')};
+  border-radius: ${(props) => getRadius(props.theme, 'md')};
+  padding: ${(props) => getSpacing(props.theme, 'sm')} ${(props) => getSpacing(props.theme, 'md')};
+  font-size: ${(props) => props.theme.typography?.fontSize?.base || '16px'};
   font-family: inherit;
-  transition: all 0.2s ease;
+  transition: all ${(props) => props.theme.animation?.duration?.fast || '0.2s'} ${(props) => props.theme.animation?.easing?.ease || 'ease'};
   outline: none;
   
   &:focus {
-    border-color: ${(props) => props.theme.colors?.primary || '#007bff'};
-    box-shadow: 0 0 0 2px ${(props) => props.theme.colors?.primary + '20' || 'rgba(0, 123, 255, 0.2)'};
+    border-color: ${(props) => getColor(props.theme, 'brand.500')};
+    box-shadow: 0 0 0 ${(props) => getBorderWidth(props.theme, 'sm')} ${(props) => getColor(props.theme, 'brand.500')}20;
   }
   
   &:disabled {
-    background-color: ${(props) => props.theme.colors?.backgroundSecondary || '#f5f5f5'};
+    background-color: ${(props) => getColor(props.theme, 'background.secondary')};
     opacity: 0.6;
     cursor: not-allowed;
   }
   
   &:error {
-    border-color: ${(props) => props.theme.colors?.danger || '#dc3545'};
+    border-color: ${(props) => getColor(props.theme, 'semantic.error')};
   }
   
   ${(props) => getSizeStyles(props.$props.size || 'md', props.theme)}
@@ -48,88 +48,97 @@ const StyledInput = styled.input<{ theme: any; $props: InputProps }>`
  * @param props - Input props for styling and behavior
  * @returns JSX Element
  */
-export const Input: React.FC<InputProps> = (props) => {
-    const {
-        theme,
-        className,
-        testId,
-        disabled = false,
-        error = false,
-        type = 'text',
-        value,
-        defaultValue,
-        placeholder,
-        name,
-        id,
-        required = false,
-        readOnly = false,
-        maxLength,
-        minLength,
-        pattern,
-        autoComplete,
-        autoFocus = false,
-        helperText,
-        label,
-        startAdornment,
-        endAdornment,
-        onClick,
-        onFocus,
-        onBlur,
-        onChange,
-        ...inputProps
-    } = props;
+class Input extends PureComponent<InputProps> {
+    override render(): ReactNode {
+        const {
+            theme,
+            className,
+            testId,
+            disabled = false,
+            error = false,
+            type = 'text',
+            value,
+            defaultValue,
+            placeholder,
+            name,
+            id,
+            required = false,
+            readOnly = false,
+            maxLength,
+            minLength,
+            pattern,
+            autoComplete,
+            autoFocus = false,
+            helperText,
+            label,
+            startAdornment,
+            endAdornment,
+            onClick,
+            onFocus,
+            onBlur,
+            onChange,
+            ...inputProps
+        } = this.props;
 
-    return (
-        <div className={className} data-testid={testId}>
-            {label && (
-                <label htmlFor={id} style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>
-                    {label}
-                </label>
-            )}
-
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                {startAdornment && (
-                    <span style={{ marginRight: '8px' }}>{startAdornment}</span>
+        return (
+            <div className={className} data-testid={testId}>
+                {label && (
+                    <label htmlFor={id} style={{
+                        display: 'block',
+                        marginBottom: getSpacing(theme, 'xs'),
+                        fontSize: theme.typography?.fontSize?.sm || '14px',
+                        color: getColor(theme, 'text.primary')
+                    }}>
+                        {label}
+                    </label>
                 )}
 
-                <StyledInput
-                    theme={theme}
-                    $props={props}
-                    type={type}
-                    value={value}
-                    defaultValue={defaultValue}
-                    placeholder={placeholder}
-                    name={name}
-                    id={id}
-                    required={required}
-                    readOnly={readOnly}
-                    maxLength={maxLength}
-                    minLength={minLength}
-                    pattern={pattern}
-                    autoComplete={autoComplete}
-                    autoFocus={autoFocus}
-                    disabled={disabled}
-                    onClick={onClick}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    {...inputProps}
-                />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {startAdornment && (
+                        <span style={{ marginRight: getSpacing(theme, 'sm') }}>{startAdornment}</span>
+                    )}
 
-                {endAdornment && (
-                    <span style={{ marginLeft: '8px' }}>{endAdornment}</span>
+                    <StyledInput
+                        theme={theme}
+                        $props={this.props}
+                        type={type}
+                        value={value}
+                        defaultValue={defaultValue}
+                        placeholder={placeholder}
+                        name={name}
+                        id={id}
+                        required={required}
+                        readOnly={readOnly}
+                        maxLength={maxLength}
+                        minLength={minLength}
+                        pattern={pattern}
+                        autoComplete={autoComplete}
+                        autoFocus={autoFocus}
+                        disabled={disabled}
+                        onClick={onClick}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        {...inputProps}
+                    />
+
+                    {endAdornment && (
+                        <span style={{ marginLeft: getSpacing(theme, 'sm') }}>{endAdornment}</span>
+                    )}
+                </div>
+
+                {helperText && (
+                    <div style={{
+                        fontSize: theme.typography?.fontSize?.xs || '12px',
+                        marginTop: getSpacing(theme, 'xs'),
+                        color: error ? getColor(theme, 'semantic.error') : getColor(theme, 'text.secondary')
+                    }}>
+                        {helperText}
+                    </div>
                 )}
             </div>
-
-            {helperText && (
-                <div style={{ fontSize: '12px', marginTop: '4px', color: error ? '#dc3545' : '#666' }}>
-                    {helperText}
-                </div>
-            )}
-        </div>
-    );
-};
-
-Input.displayName = 'Input';
+        );
+    }
+}
 
 export default Input;

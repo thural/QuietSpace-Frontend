@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PureComponent, ReactNode, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
-interface SwitchProps extends BaseComponentProps {
+interface ISwitchProps extends BaseComponentProps {
     checked?: boolean;
     onChange?: (checked: boolean) => void;
     label?: string;
@@ -64,38 +64,70 @@ const SwitchLabel = styled.span<{ $size: string }>`
   user-select: none;
 `;
 
-export const Switch: React.FC<SwitchProps> = ({
-    checked = false,
-    onChange,
-    label,
-    labelPosition = 'right',
-    disabled = false,
-    size = 'md',
-    className,
-    style,
-    testId,
-}) => {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+class Switch extends PureComponent<ISwitchProps> {
+    /**
+     * Handle switch change event
+     */
+    private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const { onChange } = this.props;
         if (onChange) {
             onChange(e.target.checked);
         }
     };
 
-    const switchContent = (
-        <>
-            <SwitchInput
-                type="checkbox"
-                checked={checked}
-                onChange={handleChange}
-                disabled={disabled}
-            />
-            <SwitchTrack $checked={checked} $size={size} $disabled={disabled}>
-                <SwitchThumb $checked={checked} $size={size} />
-            </SwitchTrack>
-        </>
-    );
+    /**
+     * Render switch content
+     */
+    private renderSwitchContent = (): ReactNode => {
+        const { checked = false, disabled = false, size = 'md' } = this.props;
 
-    if (label) {
+        return (
+            <>
+                <SwitchInput
+                    type="checkbox"
+                    checked={checked}
+                    onChange={this.handleChange}
+                    disabled={disabled}
+                />
+                <SwitchTrack $checked={checked} $size={size} $disabled={disabled}>
+                    <SwitchThumb $checked={checked} $size={size} />
+                </SwitchTrack>
+            </>
+        );
+    };
+
+    override render(): ReactNode {
+        const {
+            checked = false,
+            label,
+            labelPosition = 'right',
+            disabled = false,
+            size = 'md',
+            className,
+            style,
+            testId
+        } = this.props;
+
+        if (label) {
+            return (
+                <SwitchContainer
+                    $size={size}
+                    $disabled={disabled}
+                    className={className}
+                    style={style}
+                    data-testid={testId}
+                >
+                    {labelPosition === 'left' && (
+                        <SwitchLabel $size={size}>{label}</SwitchLabel>
+                    )}
+                    {this.renderSwitchContent()}
+                    {labelPosition === 'right' && (
+                        <SwitchLabel $size={size}>{label}</SwitchLabel>
+                    )}
+                </SwitchContainer>
+            );
+        }
+
         return (
             <SwitchContainer
                 $size={size}
@@ -104,26 +136,10 @@ export const Switch: React.FC<SwitchProps> = ({
                 style={style}
                 data-testid={testId}
             >
-                {labelPosition === 'left' && (
-                    <SwitchLabel $size={size}>{label}</SwitchLabel>
-                )}
-                {switchContent}
-                {labelPosition === 'right' && (
-                    <SwitchLabel $size={size}>{label}</SwitchLabel>
-                )}
+                {this.renderSwitchContent()}
             </SwitchContainer>
         );
     }
+}
 
-    return (
-        <SwitchContainer
-            $size={size}
-            $disabled={disabled}
-            className={className}
-            style={style}
-            data-testid={testId}
-        >
-            {switchContent}
-        </SwitchContainer>
-    );
-};
+export default Switch;

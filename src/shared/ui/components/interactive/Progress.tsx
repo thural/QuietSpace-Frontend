@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
 
-interface ProgressProps extends BaseComponentProps {
-    value?: number;
-    max?: number;
-    size?: 'sm' | 'md' | 'lg';
-    color?: string;
-    striped?: boolean;
-    animated?: boolean;
+interface IProgressProps extends BaseComponentProps {
+  value?: number;
+  max?: number;
+  size?: 'sm' | 'md' | 'lg';
+  color?: string;
+  striped?: boolean;
+  animated?: boolean;
 }
 
 const ProgressContainer = styled.div<{ $size: string }>`
@@ -54,33 +54,46 @@ const ProgressBar = styled.div<{ $value: number; $size: string; $color: string; 
   }
 `;
 
-export const Progress: React.FC<ProgressProps> = ({
-    value = 0,
-    max = 100,
-    size = 'md',
-    color,
-    striped = false,
-    animated = false,
-    className,
-    style,
-    testId,
-}) => {
-    const percentage = max > 0 ? (value / max) * 100 : 0;
+class Progress extends PureComponent<IProgressProps> {
+  /**
+   * Calculate percentage value
+   */
+  private calculatePercentage = (value: number, max: number): number => {
+    return max > 0 ? (value / max) * 100 : 0;
+  };
+
+  override render(): ReactNode {
+    const {
+      value = 0,
+      max = 100,
+      size = 'md',
+      color,
+      striped = false,
+      animated = false,
+      className,
+      style,
+      testId
+    } = this.props;
+
+    const percentage = this.calculatePercentage(value, max);
 
     return (
-        <ProgressContainer
-            $size={size}
-            className={className}
-            style={style}
-            data-testid={testId}
-        >
-            <ProgressBar
-                $value={percentage}
-                $size={size}
-                $color={color}
-                $striped={striped}
-                $animated={animated}
-            />
-        </ProgressContainer>
+      <ProgressContainer
+        $size={size}
+        className={className}
+        style={style}
+        data-testid={testId}
+      >
+        <ProgressBar
+          $value={percentage}
+          $size={size}
+          $color={color}
+          $striped={striped}
+          $animated={animated}
+        />
+      </ProgressContainer>
     );
-};
+  }
+}
+
+export default Progress;

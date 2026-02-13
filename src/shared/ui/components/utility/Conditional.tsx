@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 
-interface ConditionalProps {
+interface IConditionalProps {
     isEnabled: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
-const Conditional: React.FC<ConditionalProps> = ({ isEnabled, children }) => {
-    return isEnabled && children ? <>{children}</> : null;
-};
+class Conditional extends PureComponent<IConditionalProps> {
+    override render(): ReactNode {
+        const { isEnabled, children } = this.props;
+        return isEnabled && children ? <>{children}</> : null;
+    }
+}
 
 export default Conditional;

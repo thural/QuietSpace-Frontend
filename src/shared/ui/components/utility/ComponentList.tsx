@@ -1,14 +1,19 @@
-import React from "react";
+import React, { PureComponent, ReactNode } from "react";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
-interface ComponentListProps extends GenericWrapper {
-    Component: React.ComponentType<any>
-    list: Array<Object>
+interface IComponentListProps extends GenericWrapper {
+    Component: React.ComponentType<any>;
+    list: Array<Object>;
 }
 
-const ComponentList: React.FC<ComponentListProps> = ({ Component, list, ...props }) => (
-    list.map((elemData: Object, index: number) =>
-        <Component key={index}  {...elemData} {...props} />)
-);
+class ComponentList extends PureComponent<IComponentListProps> {
+    override render(): ReactNode {
+        const { Component, list, ...props } = this.props;
 
-export default ComponentList
+        return list.map((elemData: Object, index: number) =>
+            <Component key={index} {...elemData} {...props} />
+        );
+    }
+}
+
+export default ComponentList;
