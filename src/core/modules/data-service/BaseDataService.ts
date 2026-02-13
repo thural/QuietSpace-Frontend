@@ -41,6 +41,7 @@ import { TYPES } from '@/core/modules/dependency-injection/types';
 import { useCustomInfiniteQuery } from '@/core/hooks/query';
 import { useCustomMutation } from '@/core/hooks/query';
 import { useCustomQuery } from '@/core/hooks/query';
+import { withPerformanceTiming, performanceMetrics } from './performance/PerformanceMetrics';
 
 
 
@@ -64,6 +65,7 @@ export abstract class BaseDataService implements IBaseDataService {
   protected cache: ICacheProvider;
   protected webSocket: IWebSocketService;
   protected container: Container;
+  protected performanceMetrics: PerformanceMetricsCollector;
 
   // Composed services following SRP
   protected cacheManager: ICacheManager;
@@ -79,19 +81,20 @@ export abstract class BaseDataService implements IBaseDataService {
     this.container = useDIContainer();
     this.cache = this.container.get<ICacheProvider>(TYPES.CACHE_SERVICE);
     this.webSocket = this.container.get<IWebSocketService>(TYPES.WEBSOCKET_SERVICE);
+    this.performanceMetrics = new PerformanceMetricsCollector();
+    this.stateManager = new DataStateManager();
 
     // Initialize composed services
     this.cacheManager = new CacheManager(this.cache);
     this.updateStrategy = new UpdateStrategy();
     this.webSocketManager = new WebSocketManager(this.webSocket, this.updateStrategy);
     this.queryExecutor = new QueryExecutor();
-    this.stateManager = new DataStateManager();
   }
 
   /**
    * Execute a query with intelligent caching and WebSocket integration
    *
-   * @param key Cache key for the query
+   * @param key Cache key for query
    * @param fetcher Function to fetch data
    * @param options Query options including cache strategy and WebSocket topics
    * @returns Query result
@@ -113,17 +116,50 @@ export abstract class BaseDataService implements IBaseDataService {
     // Set up WebSocket listeners for real-time updates
     this.setupWebSocketListeners(key, websocketTopics, updateStrategy);
 
-    // Execute query with optimal cache configuration
-    return useCustomQuery<T>(key, fetcher, {
-      ...cacheConfig,
+    /**
+   * Execute a query with intelligent caching and WebSocket integration
+   *
+   * @param key Cache key for query
+   * @param fetcher Function to fetch data
+   * @param options Query options including cache strategy and WebSocket topics
+   * @returns Query result
+   */
+  protected executeQuery<T>(
+      key: string | string[],
+      fetcher: () => Promise<T>,
+      options: IDataServiceQueryOptions<T> = {}
+    ) {
+    const {
+      cacheStrategy = 'USER_CONTENT',
+      websocketTopics = [],
+      updateStrategy = 'merge',
       ...queryOptions
-    });
+    } = options;
+
+    const cacheConfig = this.CACHE_CONFIG[cacheStrategy];
+
+    // Set up WebSocket listeners for real-time updates
+    this.setupWebSocketListeners(key, websocketTopics, updateStrategy);
+
+    // Execute query with optimal cache configuration and performance monitoring
+    return withPerformanceTiming(
+      `query:${Array.isArray(key) ? key.join(':') : key}`,
+      () => {
+        const result = fetcher();
+        this.performanceMetrics.recordCacheHit();
+        return result;
+      },
+      {
+        ...cacheConfig,
+        ...queryOptions
+      }
+    );
   }
 
   /**
    * Execute a mutation with optimistic updates and cache coordination
    *
-   * @param fetcher Function to perform the mutation
+   * @param fetcher Function to perform mutation
    * @param options Mutation options including invalidation and WebSocket events
    * @returns Mutation result
    */
@@ -138,20 +174,23 @@ export abstract class BaseDataService implements IBaseDataService {
       ...mutationOptions
     } = options;
 
-    return useCustomMutation<TData, TError, TVariables>(fetcher, {
-      ...mutationOptions,
-      invalidateQueries,
-      optimisticUpdate: optimisticUpdate ? (cache, variables) => {
-        return this.performOptimisticUpdate(cache, variables);
-      } : undefined,
-      cacheUpdate: (cache, data, variables) => {
-        this.updateCacheAfterMutation(cache, data, variables);
-      },
-      onSuccess: (data, variables) => {
-        this.emitWebSocketEvents(websocketEvents, data, variables);
-        mutationOptions.onSuccess?.(data, variables);
-      }
-    });
+    return withPerformanceTiming(
+      `mutation:${fetcher.name}`,
+      useCustomMutation<TData, TError, TVariables>(fetcher, {
+        ...mutationOptions,
+        invalidateQueries,
+        optimisticUpdate: optimisticUpdate ? (cache, variables) => {
+          return this.performOptimisticUpdate(cache, variables);
+        } : undefined,
+        cacheUpdate: (cache, data, variables) => {
+          this.updateCacheAfterMutation(cache, data, variables);
+        },
+        onSuccess: (data, variables) => {
+          this.emitWebSocketEvents(websocketEvents, data, variables);
+          mutationOptions.onSuccess?.(data, variables);
+        }
+      })
+    );
   }
 
   /**
