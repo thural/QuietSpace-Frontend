@@ -2,82 +2,100 @@
 
 ## Overview
 
-QuietSpace is a social media application designed for meaningful digital interactions through a simple interface. Built with modern web technologies, the platform focuses on user experience and demonstrates software engineering practices.
+QuietSpace is a social media application designed for meaningful digital interactions through a simple interface. Built with modern web technologies, the platform focuses on user experience and demonstrates enterprise-grade software engineering practices with comprehensive core modules.
 
 ## Key Features
 
 ### User Experience
-- **Secure Authentication**: User registration and login
-- **Responsive Design**: Works on multiple device sizes
-- **Dark Mode**: Theme switching with user preferences
-- **Accessibility**: WCAG 2.1 AA compliance
+- **Secure Authentication**: Multi-factor authentication with rate limiting and security
+- **Responsive Design**: Works seamlessly across all device sizes
+- **Dark Mode**: Theme switching with WCAG accessibility compliance
+- **Accessibility**: WCAG 2.1 AA compliance with high contrast and screen reader support
+- **Plugin Architecture**: Extensible theming system with sandboxed plugins
 
 ### Communication Capabilities
-- **Feed Management**: Create, edit, and delete posts with text, poll and image support
-- **WebSocket Communication**: Real-time chat and notifications
-- **Infinite Scrolling**: Efficient data loading using pagination
-- **Real-time Updates**: Live feed updates and instant messaging
+- **Feed Management**: Create, edit, and delete posts with rich media support
+- **WebSocket Communication**: Real-time chat with optimized connection management
+- **Infinite Scrolling**: Efficient data loading with predictive caching
+- **Real-time Updates**: Live feed updates and instant messaging with dependency management
 
-### Architecture
+### Advanced Architecture
 - **7-Layer Architecture**: Component → Hook → DI → Service → Data → Cache/Repository/WebSocket
-- **Layer Separation**: Each layer has single responsibility
-- **Dependency Injection**: Feature-specific containers
-- **Modular Structure**: Standardized organization
-- **Type-Safe Development**: TypeScript interfaces and typing
+- **Layer Separation**: Each layer maintains single responsibility with clean interfaces
+- **Dependency Injection**: Feature-specific containers with health monitoring
+- **Modular Structure**: Standardized organization with comprehensive testing
+- **Type-Safe Development**: TypeScript with strict typing and error handling
+- **Performance Optimization**: Memory pooling, leak detection, and advanced caching strategies
 
 ## Architecture Overview
 
 ### 7-Layer Architecture
 
-The project implements clean architecture with layer separation:
+The project implements clean architecture with enterprise-grade layer separation:
 
 ```
 Component Layer (Pure UI)
     ↓
 Hook Layer (UI Logic + DI Access)
     ↓
-DI Container (Dependency Resolution)
+DI Container (Dependency Resolution + Health Monitoring)
     ↓
-Service Layer (Business Logic)
+Service Layer (Business Logic + Validation)
     ↓
-Data Layer (Data Coordination)
+Data Layer (Data Coordination + Performance Monitoring)
     ↓
-Cache Layer (Data Storage)
+Cache Layer (Advanced Caching + Memory Optimization)
     ↓
-Repository Layer (Data Access)
+Repository Layer (Data Access + Input Validation)
     ↓
-WebSocket Layer (Real-time Communication)
+WebSocket Layer (Real-time Communication + Rate Limiting)
 ```
 
 **Layer Responsibilities:**
-- **Component Layer**: UI rendering and local state only
-- **Hook Layer**: UI logic, state transformation, DI container access
-- **Service Layer**: Business logic, validation, data layer dependency only
-- **Data Layer**: Data coordination between cache, repository, and WebSocket layers
-- **Cache Layer**: Data storage and retrieval
-- **Repository Layer**: Raw data access, external APIs
-- **WebSocket Layer**: Real-time communication and event streaming
+- **Component Layer**: UI rendering and local state management only
+- **Hook Layer**: UI logic, state transformation, DI container access with performance tracking
+- **Service Layer**: Business logic, validation, data layer dependency with comprehensive error handling
+- **Data Layer**: Data coordination between cache, repository, and WebSocket layers with performance metrics
+- **Cache Layer**: Advanced caching with warming, predictive algorithms, and memory optimization
+- **Repository Layer**: Data access with comprehensive input validation and security
+- **WebSocket Layer**: Real-time communication with rate limiting and connection optimization
 
-### Dependency Injection System
+### Advanced Dependency Injection System
 
 Feature-specific DI containers provide:
-- AuthContainer: Authentication and authorization services
-- AnalyticsContainer: Analytics and reporting services
-- NotificationContainer: Real-time notification management
-- ContentContainer: Content management and delivery
-- ThemeContainer: UI theming and personalization
+- **AuthContainer**: Authentication with MFA, rate limiting, and security monitoring
+- **AnalyticsContainer**: Performance analytics and reporting with data aggregation
+- **NotificationContainer**: Real-time notifications with priority queuing
+- **ContentContainer**: Content management with validation and optimization
+- **ThemeContainer**: UI theming with plugin architecture and accessibility features
+
+### Core Modules Architecture
+
+The project features a comprehensive core modules system at `src/core/modules/`:
+
+```
+src/core/modules/
+├── authentication/     # Auth with MFA, rate limiting, security
+├── caching/           # Advanced caching with warming, prediction, optimization
+├── dependency-injection/ # DI containers with health monitoring
+├── network/           # Network layer with validation, retry, error handling
+├── theming/           # Theme system with plugins, accessibility
+├── websocket/         # Real-time communication with optimization
+├── error/             # Centralized error handling and reporting
+└── logging/           # Comprehensive logging and performance tracking
+```
 
 ### Feature Structure
 
-Each feature follows standardized organization:
+Each feature follows standardized organization with enterprise patterns:
 ```
 src/features/[feature]/
 ├── domain/          # Business logic and entities
-├── data/            # Data access and external APIs
-├── application/     # Use cases and business rules
-├── presentation/    # UI components and pages
-├── di/              # Feature-specific DI container
-└── __tests__/       # Test suite
+├── data/            # Data access with validation and security
+├── application/     # Use cases with error handling and monitoring
+├── presentation/    # UI components with accessibility
+├── di/              # Feature-specific DI container with health checks
+└── __tests__/       # Comprehensive test suite with coverage
 ```
 
 ## Technology Stack
@@ -117,11 +135,65 @@ src/features/[feature]/
 - **React Input Emoji 5.6**: Enhanced input interactions
 
 ### Testing & Quality Assurance
-- **Jest 29.7**: Unit testing
-- **Playwright 1.57**: E2E testing
-- **Testing Library**: React testing utilities
-- **ESLint 9.11**: Code quality with React compiler
-- **TypeScript 5.5**: Strict typing
+- **Jest 29.7**: Unit testing with comprehensive coverage
+- **Playwright 1.57**: End-to-end testing with accessibility validation
+- **Testing Library**: React testing utilities with component testing
+- **ESLint 9.11**: Code quality with React compiler and strict rules
+- **TypeScript 5.5**: Strict typing with comprehensive error handling
+
+### Performance & Optimization
+- **Advanced Caching**: Multi-layer caching with warming and prediction
+- **Memory Management**: Object pooling, leak detection, and optimization
+- **Bundle Optimization**: Code splitting and lazy loading strategies
+- **Performance Monitoring**: Real-time performance metrics and analytics
+
+### Security & Validation
+- **Input Validation**: Comprehensive validation with XSS and SQL injection prevention
+- **Rate Limiting**: Advanced rate limiting with progressive delays
+- **Authentication Security**: MFA, session management, and threat detection
+- **Content Security**: CSP headers and security policies
+
+## Core Modules Documentation
+
+### Comprehensive Module System
+
+The project includes a comprehensive core modules system providing enterprise-grade functionality:
+
+#### Authentication Module (`src/core/modules/authentication/`)
+- **Multi-Factor Authentication**: TOTP, SMS, backup codes with unified orchestration
+- **Security Features**: Rate limiting, session management, threat detection
+- **Enterprise Patterns**: Service layer, repository pattern, dependency injection
+- **Documentation**: Complete API reference and usage examples
+
+#### Caching Module (`src/core/modules/caching/`)
+- **Advanced Caching**: Cache warming, predictive algorithms, dependency management
+- **Memory Optimization**: Object pooling, leak detection, garbage collection
+- **Analytics Dashboard**: Real-time performance metrics and health monitoring
+- **Enterprise Features**: Multi-provider support, configuration management
+
+#### Network Module (`src/core/modules/network/`)
+- **Input Validation**: Comprehensive validation with security measures
+- **Error Handling**: Centralized error management with retry strategies
+- **HTTP Client**: Advanced client with interceptors and validation middleware
+- **Performance**: Connection pooling, request optimization, caching strategies
+
+#### Theming Module (`src/core/modules/theming/`)
+- **Plugin Architecture**: Extensible theming with sandboxed plugins
+- **Accessibility**: WCAG 2.1 AA compliance with high contrast support
+- **Theme Composition**: Advanced composition with inheritance and validation
+- **Performance**: Optimized rendering with theme switching
+
+#### WebSocket Module (`src/core/modules/websocket/`)
+- **Connection Management**: Optimized connection handling with reconnection strategies
+- **Cache Integration**: WebSocket cache manager with dependency management
+- **Real-Time Updates**: Efficient event handling and message routing
+- **Performance**: Connection pooling and optimization strategies
+
+#### Error Module (`src/core/modules/error/`)
+- **Centralized Error Handling**: Unified error management across all modules
+- **Error Classification**: Comprehensive error categorization and handling
+- **Error Reporting**: Detailed error tracking and analytics
+- **Recovery Strategies**: Automatic error recovery with user feedback
 
 ## Project Structure
 
@@ -129,6 +201,37 @@ src/features/[feature]/
 QuietSpace-Frontend/
 │
 ├── public/                 # Static assets and entry point
+│   ├── index.html
+│   └── favicon.ico
+│
+├── src/                   # Application source code
+│   ├── app/              # Application setup and routing
+│   ├── components/        # Reusable UI components
+│   ├── features/          # Feature-specific implementations
+│   │   ├── auth/         # Authentication feature
+│   │   ├── feed/         # Feed management
+│   │   ├── chat/         # Real-time chat
+│   │   └── profile/      # User profile management
+│   ├── core/             # Core modules and infrastructure
+│   │   └── modules/       # Core module implementations
+│   ├── hooks/            # Custom React hooks
+│   ├── styles/           # Global styles and themes
+│   └── utils/            # Utility functions
+│
+├── docs/                  # Project documentation
+│   ├── architecture/    # Architecture guides and patterns
+│   ├── core-modules/     # Core modules documentation
+│   └── api/             # API documentation
+│
+├── test/                  # Test files and configurations
+│   ├── __tests__/       # Test suites
+│   ├── e2e/           # End-to-end tests
+│   └── components/     # Component tests
+│
+├── scripts/               # Build and development scripts
+├── config/               # Configuration files
+└── infrastructure/        # Deployment and infrastructure
+```
 ├── src/
 │   ├── features/           # Modular feature architecture
 │   │   ├── auth/           # Authentication system
@@ -172,27 +275,124 @@ The project follows the **Component → Hook → DI → Service → Data → Cac
 
 ## Development Guidelines
 
-### Layer Separation Rules
+### Enterprise Architecture Patterns
 
-Follow strict layer separation in all development:
+The project implements enterprise-grade architectural patterns:
 
-**Correct Patterns:**
-- **Components** should only use hooks for UI logic and data access
-- **Hooks** provide UI logic and access services through DI containers only
-- **Services** contain business logic and depend only on the Data Layer
-- **Data Layer** coordinates between cache, repository, and WebSocket layers
+#### Black Box Module Pattern
+- **Clean Interfaces**: Each module exposes only well-defined public APIs
+- **Hidden Implementation**: Internal details are completely hidden from consumers
+- **Dependency Injection**: All dependencies are injected through containers
+- **Single Responsibility**: Each module has a single, well-defined purpose
 
-**Incorrect Patterns:**
-- **Components** should not directly access services or repositories
-- **Services** should not directly access cache, repository, or WebSocket layers
-- Always follow the unidirectional dependency flow: Component → Hook → DI → Service → Data
+#### SOLID Principles
+- **Single Responsibility**: Each class and module has one reason to change
+- **Open/Closed**: Open for extension, closed for modification
+- **Liskov Substitution**: Derived classes can replace base classes
+- **Interface Segregation**: Small, focused interfaces
+- **Dependency Inversion**: Depend on abstractions, not concretions
+
+#### Clean Architecture
+- **Layer Separation**: Strict separation between architectural layers
+- **Dependency Inversion**: High-level modules don't depend on low-level modules
+- **Business Logic Isolation**: Business logic is isolated from UI and infrastructure concerns
+- **Testability**: All components are easily testable through dependency injection
 
 ### Code Quality Standards
 
-- **TypeScript**: Strict mode with comprehensive types
-- **ESLint**: React compiler integration with custom rules
-- **Testing**: Unit and integration tests
-- **Architecture**: Layer separation compliance
+- **TypeScript**: Strict mode with comprehensive error handling
+- **ESLint**: React compiler integration with custom rules and strict configuration
+- **Testing**: Comprehensive unit and integration tests with high coverage
+- **Documentation**: Complete API documentation with usage examples
+- **Performance**: Optimized rendering, caching, and memory management
+- **Security**: Input validation, rate limiting, and threat detection
+
+### Development Workflow
+
+1. **Feature Development**: Follow standardized feature structure
+2. **Code Review**: Architecture and code quality compliance
+3. **Testing**: Unit, integration, and E2E testing
+4. **Documentation**: Update relevant documentation
+5. **Quality Assurance**: Automated checks and validation
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ and npm
+- Modern web browser with ES2022+ support
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/QuietSpace-Frontend.git
+cd QuietSpace-Frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Development
+
+```bash
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+
+# Run E2E tests
+npm run test:e2e
+```
+
+## Documentation
+
+### Architecture Documentation
+- **Architecture Guide**: `docs/architecture/ARCHITECTURE_GUIDE.md`
+- **Development Guidelines**: `docs/architecture/DEV_GUIDELINES.md`
+- **Core Systems**: `docs/core-modules/CORE_SYSTEMS_GUIDE.md`
+
+### API Documentation
+- **Core Modules API**: `docs/api/`
+- **Component Library**: Component documentation in storybook
+- **Service APIs**: Service layer documentation
+
+### Core Modules Reference
+- **Authentication**: `docs/core-modules/authentication/`
+- **Caching**: `docs/core-modules/caching/`
+- **Network**: `docs/core-modules/network/`
+- **Theming**: `docs/core-modules/theming/`
+- **WebSocket**: `docs/core-modules/websocket/`
+
+## Contributing
+
+### Development Standards
+- Follow the established architecture patterns
+- Maintain strict layer separation
+- Write comprehensive tests
+- Update documentation
+- Follow code quality standards
+
+### Pull Request Process
+1. Create feature branch from main
+2. Implement changes following patterns
+3. Add comprehensive tests
+4. Update documentation
+5. Submit pull request for review
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+Built with modern web technologies and enterprise-grade architectural patterns to demonstrate software engineering best practices.
 
 ## Key Development Scripts
 

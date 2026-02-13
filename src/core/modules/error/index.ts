@@ -1,7 +1,7 @@
 /**
  * Error Module Index
- * 
- * Public API for the centralized error handling system.
+ *
+ * Centralized error handling system for all core modules.
  * Provides clean exports for all error handling functionality.
  */
 
@@ -22,3 +22,14 @@ export * from './utils/index';
 
 // Error constants
 export * from './constants/index';
+
+// Error messages
+export {
+    ErrorMessageGenerator,
+    initializeStandardErrorMessages,
+    getErrorMessage,
+    generateErrorMessage,
+    createStandardError,
+    StandardErrorMessages
+} from './messages/StandardErrorMessages';
+export type { ErrorMessageTemplate, ErrorSeverity, ErrorCategory, ErrorContext } from './messages/StandardErrorMessages';
