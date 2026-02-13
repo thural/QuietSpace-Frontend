@@ -1,6 +1,7 @@
 import React, { PureComponent, ReactNode, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { getSpacing, getColor, getRadius, getTransition, getTypography, getShadow } from '../utils';
 
 interface ISwitchProps extends BaseComponentProps {
     checked?: boolean;
@@ -14,7 +15,7 @@ interface ISwitchProps extends BaseComponentProps {
 const SwitchContainer = styled.div<{ $size: string; $disabled: boolean }>`
   display: inline-flex;
   align-items: center;
-  gap: ${props => props.$size === 'sm' ? '0.5rem' : props.$size === 'lg' ? '0.75rem' : '0.625rem'};
+  gap: ${props => getSpacing(props.theme, props.$size === 'sm' ? 'xs' : props.$size === 'lg' ? 'sm' : 'sm')};
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   opacity: ${props => props.$disabled ? 0.6 : 1};
 `;
@@ -31,36 +32,36 @@ const SwitchInput = styled.input`
 
 const SwitchTrack = styled.div<{ $checked: boolean; $size: string; $disabled: boolean }>`
   position: relative;
-  width: ${props => props.$size === 'sm' ? '2rem' : props.$size === 'lg' ? '3rem' : '2.5rem'};
-  height: ${props => props.$size === 'sm' ? '1rem' : props.$size === 'lg' ? '1.5rem' : '1.25rem'};
+  width: ${props => getSpacing(props.theme, props.$size === 'sm' ? '2xl' : props.$size === 'lg' ? '3xl' : '2.5xl')};
+  height: ${props => getSpacing(props.theme, props.$size === 'sm' ? 'lg' : props.$size === 'lg' ? 'xl' : '2xl')};
   background-color: ${props =>
         props.$disabled
-            ? props.theme.colors?.border || '#e1e4e8'
+            ? getColor(props.theme, 'border.light')
             : props.$checked
-                ? props.theme.colors?.primary || '#007bff'
-                : props.theme.colors?.border || '#e1e4e8'
+                ? getColor(props.theme, 'brand.500')
+                : getColor(props.theme, 'border.light')
     };
-  border-radius: ${props => props.$size === 'sm' ? '0.5rem' : props.$size === 'lg' ? '0.75rem' : '0.625rem'};
-  transition: all 0.2s ease;
+  border-radius: ${props => getRadius(props.theme, props.$size === 'sm' ? 'sm' : props.$size === 'lg' ? 'md' : 'sm')};
+  transition: ${props => getTransition(props.theme)};
 `;
 
 const SwitchThumb = styled.div<{ $checked: boolean; $size: string }>`
   position: absolute;
   top: 50%;
   transform: translateY(-50%) translateX(${props => props.$checked ?
-        (props.$size === 'sm' ? '1rem' : props.$size === 'lg' ? '1.5rem' : '1.25rem') : '0'
+        getSpacing(props.theme, props.$size === 'sm' ? 'lg' : props.$size === 'lg' ? 'xl' : '2xl') : '0'
     });
-  width: ${props => props.$size === 'sm' ? '0.75rem' : props.$size === 'lg' ? '1.125rem' : '0.9375rem'};
-  height: ${props => props.$size === 'sm' ? '0.75rem' : props.$size === 'lg' ? '1.125rem' : '0.9375rem'};
-  background-color: white;
-  border-radius: 50%;
-  transition: transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: ${props => getSpacing(props.theme, props.$size === 'sm' ? 'sm' : props.$size === 'lg' ? 'md' : 'sm')};
+  height: ${props => getSpacing(props.theme, props.$size === 'sm' ? 'sm' : props.$size === 'lg' ? 'md' : 'sm')};
+  background-color: ${props => getColor(props.theme, 'text.inverse')};
+  border-radius: ${getRadius(props.theme, 'full')};
+  transition: ${props => getTransition(props.theme, 'transform')};
+  box-shadow: ${props => getShadow(props.theme, 'sm')};
 `;
 
 const SwitchLabel = styled.span<{ $size: string }>`
-  font-size: ${props => props.$size === 'sm' ? '0.75rem' : props.$size === 'lg' ? '1rem' : '0.875rem'};
-  color: ${props => props.theme.colors?.text?.primary || '#1a1a1a'};
+  font-size: ${props => getTypography(props.theme, props.$size === 'sm' ? 'fontSize.xs' : props.$size === 'lg' ? 'fontSize.base' : 'fontSize.sm')};
+  color: ${props => getColor(props.theme, 'text.primary')};
   user-select: none;
 `;
 

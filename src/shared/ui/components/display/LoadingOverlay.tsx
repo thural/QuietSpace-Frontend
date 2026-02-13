@@ -9,6 +9,7 @@
 import type { ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
+import { getColor, getSpacing, getRadius, getShadow, getBorderWidth, getTypography } from '../utils';
 
 // Styled components
 interface OverlayContainerProps {
@@ -22,7 +23,7 @@ const OverlayContainer = styled.div<OverlayContainerProps>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${(props) => (props.theme as any)?.colors?.overlay || 'rgba(0, 0, 0, 0.5)'};
+  background-color: ${props => getColor(props.theme, 'overlay', 'rgba(0, 0, 0, 0.5)')};
   backdrop-filter: ${props => props.blur ? `blur(${props.blur}px)` : 'none'};
   display: ${props => props.visible ? 'flex' : 'none'};
   align-items: center;
@@ -34,19 +35,11 @@ const LoadingContent = styled.div<{ radius?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${(props) => (props.theme as any)?.spacing?.((props.theme as any)?.spacingFactor?.md) || '1rem'};
-  padding: ${(props) => (props.theme as any)?.spacing?.((props.theme as any)?.spacingFactor?.lg) || '1.5rem'};
-  background-color: ${(props) => (props.theme as any)?.colors?.background || '#ffffff'};
-  border-radius: ${(props) => {
-    switch (props.radius) {
-      case 'sm': return '4px';
-      case 'md': return '8px';
-      case 'lg': return '12px';
-      case 'xl': return '16px';
-      default: return props.radius || '8px';
-    }
-  }};
-  box-shadow: ${(props) => (props.theme as any)?.shadows?.lg || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+  gap: ${props => getSpacing(props.theme, 'md')};
+  padding: ${props => getSpacing(props.theme, 'lg')};
+  background-color: ${props => getColor(props.theme, 'background.primary')};
+  border-radius: ${props => getRadius(props.theme, props.radius || 'md')};
+  box-shadow: ${props => getShadow(props.theme, 'lg')};
 `;
 
 interface SpinnerProps {
@@ -55,11 +48,11 @@ interface SpinnerProps {
 }
 
 const Spinner = styled.div<SpinnerProps>`
-  width: ${props => props.size || '40px'};
-  height: ${props => props.size || '40px'};
-  border: 3px solid ${(props) => (props.theme as any)?.colors?.backgroundSecondary || '#f0f0f0'};
-  border-top: 3px solid ${props => props.color || (props.theme as any)?.colors?.primary || '#007bff'};
-  border-radius: 50%;
+  width: ${props => getSpacing(props.theme, props.size || 'xl')};
+  height: ${props => getSpacing(props.theme, props.size || 'xl')};
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${getColor(props.theme, 'background.secondary')};
+  border-top: ${props => getBorderWidth(props.theme, 'sm')} solid ${props.color || getColor(props.theme, 'brand.500')};
+  border-radius: ${getRadius(props.theme, 'full')};
   animation: spin 1s linear infinite;
   
   @keyframes spin {
@@ -103,7 +96,7 @@ interface ILoadingOverlayState extends IBaseComponentState {
 class LoadingOverlay extends BaseClassComponent<ILoadingOverlayProps, ILoadingOverlayState> {
   static defaultProps: Partial<ILoadingOverlayProps> = {
     visible: false,
-    size: '40px',
+    size: 'xl',
     radius: 'md',
     blur: 0
   };
@@ -191,9 +184,9 @@ class LoadingOverlay extends BaseClassComponent<ILoadingOverlayProps, ILoadingOv
               <Spinner size={size} {...(color !== undefined && { color })} />
               {message && (
                 <div style={{
-                  marginTop: '0.5rem',
-                  fontSize: '14px',
-                  color: (this.props as any).theme?.colors?.text?.primary || '#333',
+                  marginTop: getSpacing((this.props as any).theme, 'xs'),
+                  fontSize: getTypography((this.props as any).theme, 'fontSize.sm'),
+                  color: getColor((this.props as any).theme, 'text.primary'),
                   textAlign: 'center'
                 }}>
                   {message}

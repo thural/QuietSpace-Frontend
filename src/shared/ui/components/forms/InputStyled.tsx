@@ -1,10 +1,11 @@
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
-import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
-import { Input } from "@/shared/ui/components/interactive";
+import { GenericWrapperWithRef } from "../types";
+import Input from "../interactive/Input";
 import styled, { css } from 'styled-components';
-import { EnhancedTheme } from '@/core/modules/theming/internal/types';
+import { EnhancedTheme } from '@/core/modules/theming';
 import React, { PureComponent, ReactNode } from 'react';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
+import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getTransition } from '../utils';
 
 // Enterprise styled-components for enhanced input styling with theme tokens
 const InputStyledContainer = styled.div.withConfig({
@@ -24,22 +25,22 @@ const InputStyledContainer = styled.div.withConfig({
     width: 100%;
     font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
     font-weight: ${props => props.theme?.typography?.fontWeight?.normal || '400'};
-    color: ${props => props.theme?.colors?.text?.primary || '#212529'};
-    background: ${props => props.theme?.colors?.background?.primary || '#ffffff'};
-    border: 1px solid ${props => props.theme?.colors?.border?.medium || '#6c757d'};
-    border-radius: ${props => props.theme?.radius?.md || '6px'};
-    transition: all ${props => props.theme?.animation?.duration?.normal || '0.3s'} ${props => props.theme?.animation?.easing?.ease || 'ease'};
+    color: ${props => getColor(props.theme, 'text.primary')};
+    background: ${props => getColor(props.theme, 'background.primary')};
+    border: ${props => getBorderWidth(props.theme, 'xs')} solid ${props => getColor(props.theme, 'border.medium')};
+    border-radius: ${props => getRadius(props.theme, 'md')};
+    transition: ${props => getTransition(props.theme)};
     outline: none;
     
     /* Size variants using theme spacing tokens */
     ${props => {
     const size = props.size || 'md';
     const paddingMap = {
-      xs: `${props.theme?.spacing?.xs || '4px'} ${props.theme?.spacing?.sm || '8px'}`,
-      sm: `${props.theme?.spacing?.sm || '8px'} ${props.theme?.spacing?.md || '16px'}`,
-      md: `${props.theme?.spacing?.md || '16px'} ${props.theme?.spacing?.lg || '24px'}`,
-      lg: `${props.theme?.spacing?.lg || '24px'} ${props.theme?.spacing?.xl || '32px'}`,
-      xl: `${props.theme?.spacing?.xl || '32px'} ${props.theme?.spacing?.xl || '32px'}`
+      xs: `${getSpacing(props.theme, 'xs')} ${getSpacing(props.theme, 'sm')}`,
+      sm: `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'md')}`,
+      md: `${getSpacing(props.theme, 'md')} ${getSpacing(props.theme, 'lg')}`,
+      lg: `${getSpacing(props.theme, 'lg')} ${getSpacing(props.theme, 'xl')}`,
+      xl: `${getSpacing(props.theme, 'xl')} ${getSpacing(props.theme, '2xl')}`
     };
     return `padding: ${paddingMap[size]};`;
   }}
@@ -48,58 +49,58 @@ const InputStyledContainer = styled.div.withConfig({
     ${props => {
     const size = props.size || 'md';
     const fontSizeMap = {
-      xs: props.theme?.typography?.fontSize?.xs || '12px',
-      sm: props.theme?.typography?.fontSize?.sm || '14px',
-      md: props.theme?.typography?.fontSize?.base || '16px',
-      lg: props.theme?.typography?.fontSize?.lg || '18px',
-      xl: props.theme?.typography?.fontSize?.xl || '20px'
+      xs: getTypography(props.theme, 'fontSize.xs'),
+      sm: getTypography(props.theme, 'fontSize.sm'),
+      md: getTypography(props.theme, 'fontSize.base'),
+      lg: getTypography(props.theme, 'fontSize.lg'),
+      xl: getTypography(props.theme, 'fontSize.xl')
     };
     return `font-size: ${fontSizeMap[size]};`;
   }}
     
     &::placeholder {
-      color: ${props => props.theme?.colors?.text?.tertiary || '#6c757d'};
+      color: ${props => getColor(props.theme, 'text.tertiary')};
     }
     
     &:focus {
-      border-color: ${props => props.theme?.colors?.brand?.[500] || '#007bff'};
+      border-color: ${props => getColor(props.theme, 'brand.500')};
       box-shadow: 0 0 0 3px ${props => props.theme?.colors?.brand?.[200] || '#80bdff'};
     }
     
     &:hover:not(:focus):not(:disabled) {
-      border-color: ${props => props.theme?.colors?.border?.dark || '#495057'};
+      border-color: ${props => getColor(props.theme, 'border.dark')};
     }
     
     &:disabled {
-      background: ${props => props.theme?.colors?.background?.tertiary || '#e9ecef'};
-      color: ${props => props.theme?.colors?.text?.tertiary || '#6c757d'};
+      background: ${props => getColor(props.theme, 'background.tertiary')};
+      color: ${props => getColor(props.theme, 'text.tertiary')};
       cursor: not-allowed;
       opacity: 0.6;
     }
     
     /* Error state using theme semantic tokens */
     ${props => props.error && css`
-      border-color: ${props.theme?.colors?.semantic?.error || '#dc3545'};
+      border-color: ${props => getColor(props.theme, 'semantic.error')};
       
       &:focus {
-        border-color: ${props.theme?.colors?.semantic?.error || '#dc3545'};
-        box-shadow: 0 0 0 3px ${props.theme?.colors?.semantic?.error || '#f1b0b7'};
+        border-color: ${props => getColor(props.theme, 'semantic.error')};
+        box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'semantic.error')};
       }
     `}
     
     /* Variant styles */
     ${props => props.variant === 'outlined' && css`
       background: transparent;
-      border-width: 2px;
+      border-width: ${props => getBorderWidth(props.theme, 'sm')};
     `}
     
     ${props => props.variant === 'filled' && css`
-      background: ${props.theme?.colors?.background?.tertiary || '#e9ecef'};
+      background: ${props => getColor(props.theme, 'background.tertiary')};
       border: none;
       
       &:focus {
-        background: ${props.theme?.colors?.background?.primary || '#ffffff'};
-        border: 1px solid ${props.theme?.colors?.brand?.[500] || '#007bff'};
+        background: ${props => getColor(props.theme, 'background.primary')};
+        border: ${props => getBorderWidth(props.theme, 'xs')} solid ${props => getColor(props.theme, 'brand.500')};
       }
     `}
   }
@@ -110,16 +111,16 @@ const InputStyledContainer = styled.div.withConfig({
       ${props => {
     const size = props.size || 'md';
     const paddingMap = {
-      xs: `${props.theme?.spacing?.xs || '4px'} ${props.theme?.spacing?.xs || '4px'}`,
-      sm: `${props.theme?.spacing?.xs || '4px'} ${props.theme?.spacing?.sm || '8px'}`,
-      md: `${props.theme?.spacing?.sm || '8px'} ${props.theme?.spacing?.md || '16px'}`,
-      lg: `${props.theme?.spacing?.md || '16px'} ${props.theme?.spacing?.lg || '24px'}`,
-      xl: `${props.theme?.spacing?.lg || '24px'} ${props.theme?.spacing?.lg || '24px'}`
+      xs: `${getSpacing(props.theme, 'xs')} ${getSpacing(props.theme, 'xs')}`,
+      sm: `${getSpacing(props.theme, 'xs')} ${getSpacing(props.theme, 'sm')}`,
+      md: `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'md')}`,
+      lg: `${getSpacing(props.theme, 'md')} ${getSpacing(props.theme, 'lg')}`,
+      xl: `${getSpacing(props.theme, 'lg')} ${getSpacing(props.theme, 'lg')}`
     };
     return `padding: ${paddingMap[size]};`;
   }}
       
-      font-size: ${props => props.theme?.typography?.fontSize?.sm || '14px'};
+      font-size: ${props => getTypography(props.theme, 'fontSize.sm')};
     }
   }
 `;
@@ -135,6 +136,7 @@ interface IInputStyledProps extends GenericWrapperWithRef {
   disabled?: boolean;
   error?: boolean;
   helperText?: string;
+  id?: string; // Restrict id to string only for HTML input compatibility
 }
 
 class InputStyled extends PureComponent<IInputStyledProps> {
@@ -162,16 +164,16 @@ class InputStyled extends PureComponent<IInputStyledProps> {
   };
 
   private renderHelperText = (): ReactNode => {
-    const { error, helperText } = this.props;
+    const { error, helperText, theme } = this.props;
 
     if (!helperText) return null;
 
     return (
       <div
         style={{
-          fontSize: '12px',
-          marginTop: '4px',
-          color: error ? '#dc3544' : '#6b7280'
+          fontSize: getTypography(theme, 'fontSize.xs'),
+          marginTop: getSpacing(theme, 'xs'),
+          color: error ? getColor(theme, 'semantic.error') : getColor(theme, 'text.tertiary')
         }}
       >
         {helperText}

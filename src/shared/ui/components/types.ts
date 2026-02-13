@@ -5,7 +5,7 @@
  * extending the existing Theme system.
  */
 
-import { EnhancedTheme } from '@/core/theme';
+import { EnhancedTheme } from '@/core/modules/theming';
 
 // Base component props interface
 export interface BaseComponentProps {
@@ -17,6 +17,11 @@ export interface BaseComponentProps {
     onClick?: (event: React.MouseEvent) => void;
     style?: React.CSSProperties;
     ref?: React.Ref<HTMLElement>;
+}
+
+// Base interface for generic wrapper components with ref forwarding
+export interface GenericWrapperWithRef extends BaseComponentProps {
+    forwardedRef?: React.Ref<any>;
 }
 
 // Layout component props

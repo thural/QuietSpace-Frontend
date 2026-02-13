@@ -1,5 +1,14 @@
 import 'reflect-metadata';
 import * as React from 'react';
+import { getSpacing, getColor, getRadius, getShadow, getTypography, getTransition, getBorderWidth } from './utils';
+
+// Simple theme interface for ComponentLibrary
+interface ComponentTheme {
+  colors?: any;
+  spacing?: any;
+  borderRadius?: any;
+  shadows?: any;
+}
 
 // Base component interfaces
 interface IBaseComponent {
@@ -56,53 +65,52 @@ interface IErrorMessage extends IBaseComponent {
 
 // Theme service for consistent styling
 export class ComponentThemeService {
-  private theme = {
-    colors: {
-      primary: '#007bff',
-      secondary: '#6c757d',
-      danger: '#dc3545',
-      success: '#28a745',
-      warning: '#ffc107',
-      info: '#17a2b8',
-      light: '#f8f9fa',
-      dark: '#343a40',
-      white: '#ffffff',
-      gray: '#6c757d'
-    },
-    spacing: {
-      xs: '4px',
-      sm: '8px',
-      md: '16px',
-      lg: '24px',
-      xl: '32px'
-    },
-    borderRadius: {
-      sm: '4px',
-      md: '8px',
-      lg: '12px',
-      xl: '16px'
-    },
-    shadows: {
-      small: '0 1px 3px rgba(0,0,0,0.12)',
-      medium: '0 4px 6px rgba(0,0,0,0.16)',
-      large: '0 10px 20px rgba(0,0,0,0.19)'
-    }
-  };
+  private theme: ComponentTheme;
+
+  constructor(theme?: ComponentTheme) {
+    this.theme = theme || {} as ComponentTheme;
+  }
 
   getColors() {
-    return this.theme.colors;
+    return {
+      primary: getColor(this.theme, 'brand.500'),
+      secondary: getColor(this.theme, 'text.secondary'),
+      danger: getColor(this.theme, 'semantic.error'),
+      success: getColor(this.theme, 'semantic.success'),
+      warning: getColor(this.theme, 'semantic.warning'),
+      info: getColor(this.theme, 'semantic.info'),
+      light: getColor(this.theme, 'background.secondary'),
+      dark: getColor(this.theme, 'text.primary'),
+      white: getColor(this.theme, 'text.inverse'),
+      gray: getColor(this.theme, 'text.tertiary')
+    };
   }
 
   getSpacing() {
-    return this.theme.spacing;
+    return {
+      xs: getSpacing(this.theme, 'xs'),
+      sm: getSpacing(this.theme, 'sm'),
+      md: getSpacing(this.theme, 'md'),
+      lg: getSpacing(this.theme, 'lg'),
+      xl: getSpacing(this.theme, 'xl')
+    };
   }
 
   getBorderRadius() {
-    return this.theme.borderRadius;
+    return {
+      sm: getRadius(this.theme, 'sm'),
+      md: getRadius(this.theme, 'md'),
+      lg: getRadius(this.theme, 'lg'),
+      xl: getRadius(this.theme, 'xl')
+    };
   }
 
   getShadows() {
-    return this.theme.shadows;
+    return {
+      small: getShadow(this.theme, 'sm'),
+      medium: getShadow(this.theme, 'md'),
+      large: getShadow(this.theme, 'lg')
+    };
   }
 }
 
@@ -120,15 +128,16 @@ class Button extends React.PureComponent<IButton> {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
     const borderRadius = this.themeService.getBorderRadius();
+    const theme = this.themeService['theme'];
 
     const baseStyles: React.CSSProperties = {
-      padding: size === 'small' ? spacing.sm : size === 'large' ? spacing.lg : spacing.md,
+      padding: size === 'small' ? `${spacing.sm} ${spacing.md}` : size === 'large' ? `${spacing.lg} ${spacing.xl}` : `${spacing.md} ${spacing.lg}`,
       borderRadius: borderRadius.md,
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
-      fontSize: size === 'small' ? '14px' : size === 'large' ? '18px' : '16px',
+      fontSize: size === 'small' ? getTypography(theme, 'fontSize.sm') : size === 'large' ? getTypography(theme, 'fontSize.lg') : getTypography(theme, 'fontSize.base'),
       fontWeight: '500',
-      transition: 'all 0.2s ease',
+      transition: getTransition(theme),
       opacity: disabled ? 0.6 : 1,
       display: 'inline-flex',
       alignItems: 'center',
@@ -157,11 +166,12 @@ class Button extends React.PureComponent<IButton> {
           color: colors.white
         };
       case 'ghost':
+        const theme = this.themeService['theme'];
         return {
           ...baseStyles,
           backgroundColor: 'transparent',
           color: colors.primary,
-          border: `1px solid ${colors.primary}`
+          border: `${getBorderWidth(theme, 'xs')} solid ${colors.primary}`
         };
       default:
         return baseStyles;
@@ -200,15 +210,16 @@ class Input extends React.PureComponent<IInput> {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
     const borderRadius = this.themeService.getBorderRadius();
+    const theme = this.themeService['theme'];
 
     return {
       padding: spacing.md,
       borderRadius: borderRadius.md,
-      border: `1px solid ${error ? colors.danger : colors.gray}`,
-      fontSize: '16px',
+      border: `${getBorderWidth(theme, 'xs')} solid ${error ? colors.danger : colors.gray}`,
+      fontSize: getTypography(theme, 'fontSize.base'),
       width: '100%',
       outline: 'none',
-      transition: 'border-color 0.2s ease',
+      transition: getTransition(theme, 'border-color'),
       ...style
     };
   };
@@ -216,11 +227,12 @@ class Input extends React.PureComponent<IInput> {
   private getLabelStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
       display: 'block',
       marginBottom: spacing.xs,
-      fontSize: '14px',
+      fontSize: getTypography(theme, 'fontSize.sm'),
       fontWeight: '500',
       color: colors.dark
     };
@@ -229,10 +241,11 @@ class Input extends React.PureComponent<IInput> {
   private getErrorStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
       color: colors.danger,
-      fontSize: '12px',
+      fontSize: getTypography(theme, 'fontSize.xs'),
       marginTop: spacing.xs
     };
   };
@@ -291,6 +304,7 @@ class Card extends React.PureComponent<ICard> {
     const spacing = this.themeService.getSpacing();
     const borderRadius = this.themeService.getBorderRadius();
     const shadows = this.themeService.getShadows();
+    const theme = this.themeService['theme'];
 
     const paddingValue = padding === 'none' ? '0' : padding === 'small' ? spacing.sm : padding === 'large' ? spacing.lg : spacing.md;
 
@@ -306,9 +320,10 @@ class Card extends React.PureComponent<ICard> {
   private getTitleStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
-      fontSize: '18px',
+      fontSize: getTypography(theme, 'fontSize.lg'),
       fontWeight: 'bold',
       marginBottom: spacing.xs,
       color: colors.dark
@@ -318,9 +333,10 @@ class Card extends React.PureComponent<ICard> {
   private getSubtitleStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
-      fontSize: '14px',
+      fontSize: getTypography(theme, 'fontSize.sm'),
       color: colors.gray,
       marginBottom: spacing.md
     };
@@ -329,11 +345,12 @@ class Card extends React.PureComponent<ICard> {
   private getFooterStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
       marginTop: spacing.md,
       paddingTop: spacing.md,
-      borderTop: `1px solid ${colors.light}`,
+      borderTop: `${getBorderWidth(theme, 'xs')} solid ${colors.light}`,
       display: 'flex',
       justifyContent: 'flex-end',
       gap: spacing.sm
@@ -366,16 +383,18 @@ class LoadingSpinner extends React.PureComponent<ILoadingSpinner> {
   override render(): React.ReactNode {
     const { size = 'medium', color, className = '', style = {} } = this.props;
     const colors = this.themeService.getColors();
+    const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     const spinnerColor = color || colors.primary;
-    const spinnerSize = size === 'small' ? '16px' : size === 'large' ? '32px' : '24px';
+    const spinnerSize = size === 'small' ? spacing.sm : size === 'large' ? spacing.lg : spacing.md;
 
     const spinnerStyles: React.CSSProperties = {
       width: spinnerSize,
       height: spinnerSize,
-      border: `2px solid ${colors.light}`,
-      borderTop: `2px solid ${spinnerColor}`,
-      borderRadius: '50%',
+      border: `${getBorderWidth(theme, 'sm')} solid ${colors.light}`,
+      borderTop: `${getBorderWidth(theme, 'sm')} solid ${spinnerColor}`,
+      borderRadius: getRadius(theme, 'full'),
       animation: 'spin 1s linear infinite',
       ...style
     };
@@ -418,15 +437,16 @@ class ErrorMessage extends React.PureComponent<IErrorMessage> {
   private getRetryButtonStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
       backgroundColor: 'transparent',
       color: colors.white,
-      border: `1px solid ${colors.white}`,
+      border: `${getBorderWidth(theme, 'xs')} solid ${colors.white}`,
       padding: `${spacing.xs} ${spacing.sm}`,
       borderRadius: this.themeService.getBorderRadius().sm,
       cursor: 'pointer',
-      fontSize: '12px'
+      fontSize: getTypography(theme, 'fontSize.xs')
     };
   };
 
@@ -456,24 +476,28 @@ class Modal extends React.PureComponent<IModal> {
     this.themeService = new ComponentThemeService();
   }
 
-  private getOverlayStyles = (): React.CSSProperties => ({
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1000
-  });
+  private getOverlayStyles = (): React.CSSProperties => {
+    const theme = this.themeService['theme'];
+    return {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    };
+  };
 
   private getModalStyles = (): React.CSSProperties => {
     const { size = 'medium', style = {} } = this.props;
     const colors = this.themeService.getColors();
     const borderRadius = this.themeService.getBorderRadius();
     const shadows = this.themeService.getShadows();
+    const spacing = this.themeService.getSpacing();
 
     const sizeStyles = {
       small: { maxWidth: '400px', width: '90%' },
@@ -496,10 +520,11 @@ class Modal extends React.PureComponent<IModal> {
   private getHeaderStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
     const spacing = this.themeService.getSpacing();
+    const theme = this.themeService['theme'];
 
     return {
       padding: spacing.md,
-      borderBottom: `1px solid ${colors.light}`,
+      borderBottom: `${getBorderWidth(theme, 'xs')} solid ${colors.light}`,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
@@ -516,11 +541,12 @@ class Modal extends React.PureComponent<IModal> {
 
   private getCloseButtonStyles = (): React.CSSProperties => {
     const colors = this.themeService.getColors();
+    const theme = this.themeService['theme'];
 
     return {
       background: 'none',
       border: 'none',
-      fontSize: '24px',
+      fontSize: getTypography(theme, 'fontSize.2xl'),
       cursor: 'pointer',
       color: colors.gray,
       padding: 0,
