@@ -1,13 +1,7 @@
 import * as React from 'react';
 import { useFeed } from '../../../application/hooks/useFeed';
-import {
-  WideCard,
-  WideHeader,
-  WideAvatar,
-  WideContent,
-  WideActions,
-  WideStats
-} from '../wide/styles/PostCardWide.styles';
+import { PostCard } from '../../../../../shared/ui/components/social';
+import type { IPostCardProps } from '../../../../../shared/ui/components/social';
 
 // Mock post interface for demo
 interface Post {
@@ -49,57 +43,37 @@ const PostCardWide: React.FC<{ post: Post }> = ({ post }) => {
     return `${Math.floor(diff / 3600000)}h ago`;
   };
 
-  return (
-    <WideCard>
-      <WideContent>
-        <h3>{post.title}</h3>
-        <p>{post.content}</p>
-      </WideContent>
+  // Convert post data to PostCard props
+  const postCardProps: IPostCardProps = {
+    title: post.title,
+    content: post.content,
+    author: post.author,
+    timestamp: formatTime(post.createdAt),
+    metadata: {
+      likes: post.likes,
+      comments: post.comments,
+      shares: post.shares,
+    },
+    variant: 'detailed', // Wide layout variant
+    onClick: () => {
+      console.log(`Post clicked: ${post.id}`);
+    },
+    actions: (
+      <>
+        <button onClick={handleLike}>
+          ❤️ Like
+        </button>
+        <button onClick={handleComment}>
+          💬 Comment
+        </button>
+        <button onClick={handleShare}>
+          🔄 Share
+        </button>
+      </>
+    ),
+  };
 
-      <WideSidebar>
-        <WideHeader>
-          <WideAvatar>
-            {post.author.name.charAt(0).toUpperCase()}
-          </WideAvatar>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: '16px' }}>
-              {post.author.name}
-            </div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
-              {formatTime(post.createdAt)}
-            </div>
-          </div>
-        </WideHeader>
-
-        <WideActions>
-          <button onClick={handleLike}>
-            ❤️ Like
-          </button>
-          <button onClick={handleComment}>
-            💬 Comment
-          </button>
-          <button onClick={handleShare}>
-            🔄 Share
-          </button>
-        </WideActions>
-
-        <WideStats>
-          <div className="stat">
-            <span className="stat-label">Likes:</span>
-            <span>{post.likes}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Comments:</span>
-            <span>{post.comments}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Shares:</span>
-            <span>{post.shares}</span>
-          </div>
-        </WideStats>
-      </WideSidebar>
-    </WideCard>
-  );
+  return <PostCard {...postCardProps} />;
 };
 
 export { PostCardWide };

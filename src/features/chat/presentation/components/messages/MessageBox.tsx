@@ -1,9 +1,8 @@
 import React from 'react';
 import { MessageResponse } from "@/features/chat/data/models/chat";
 import useMessage from "@features/chat/application/hooks/useMessage";
-import { Message, Delete, Text } from "../../styles/MessageStyles";
-import Conditional from "@shared/Conditional";
-import { Text } from "../../../../shared/ui/components";
+import { MessageCard } from '../../../../../shared/ui/components/social';
+import type { IMessageCardProps } from '../../../../../shared/ui/components/social';
 import { ResId } from '@/shared/api/models/commonNative';
 import useHoverState from '@shared/hooks/useHoverState';
 
@@ -32,7 +31,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     style,
     onDelete
 }) => {
-    const { user, wasSeenRef } = useMessage(message);
+    const { user, messageSeenStatus } = useMessage(message);
     const {
         isHovering,
         handleMouseOver,
@@ -48,26 +47,32 @@ const MessageBox: React.FC<MessageBoxProps> = ({
         }
     };
 
+    // Convert message data to MessageCard props
+    const messageCardProps: IMessageCardProps = {
+        message: message.text,
+        sender: user ? {
+            name: user.username,
+        } : {
+            name: 'Unknown User',
+        },
+        timestamp: new Date(message.createDate || Date.now()).toLocaleString(),
+        isOwn: message.senderId === user?.id,
+        status: messageSeenStatus?.isSeen ? 'read' : 'sent',
+        showDelete: message.senderId === user?.id && isHovering,
+        onDelete: handleDeleteMessage,
+        onClick: () => {
+            console.log(`Message clicked: ${message.id}`);
+        },
+    };
+
     return (
-        <Message
-            id={message.id}
-            ref={wasSeenRef}
+        <div
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
             style={style}
         >
-            <Conditional isEnabled={message.senderId === user.id && isHovering}>
-                <Delete
-                    onClick={handleDeleteMessage}
-                >
-                    delete
-                </Delete>
-            </Conditional>
-
-            <Text>
-                <EnterpriseText>{message.text}</EnterpriseText>
-            </Text>
-        </Message>
+            <MessageCard {...messageCardProps} />
+        </div>
     );
 };
 

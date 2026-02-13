@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { useFeed } from '../../../application/hooks/useFeed';
-import {
-  MobileCard,
-  MobileHeader,
-  MobileAvatar,
-  MobileContent,
-  MobileActions
-} from './styles';
+import { PostCard } from '../../../../../shared/ui/components/social';
+import type { IPostCardProps } from '../../../../../shared/ui/components/social';
 
 // Mock post interface for demo
 interface Post {
@@ -42,37 +37,34 @@ const PostCardMobile: React.FC<{ post: Post }> = ({ post }) => {
     return `${Math.floor(diff / 3600000)}h ago`;
   };
 
-  return (
-    <MobileCard>
-      <MobileHeader>
-        <MobileAvatar>
-          {post.author.name.charAt(0).toUpperCase()}
-        </MobileAvatar>
-        <div>
-          <div style={{ fontWeight: 600, fontSize: '14px' }}>
-            {post.author.name}
-          </div>
-          <div style={{ fontSize: '12px', color: '#666' }}>
-            {formatTime(post.createdAt)}
-          </div>
-        </div>
-      </MobileHeader>
-
-      <MobileContent>
-        <h3>{post.title}</h3>
-        <p>{post.content}</p>
-      </MobileContent>
-
-      <MobileActions>
+  // Convert post data to PostCard props
+  const postCardProps: IPostCardProps = {
+    title: post.title,
+    content: post.content,
+    author: post.author,
+    timestamp: formatTime(post.createdAt),
+    metadata: {
+      likes: post.likes,
+      comments: post.comments,
+      shares: 0, // Not available in this interface
+    },
+    variant: 'compact', // Mobile-friendly variant
+    onClick: () => {
+      console.log(`Post clicked: ${post.id}`);
+    },
+    actions: (
+      <>
         <button onClick={handleLike}>
           ❤️ {post.likes}
         </button>
         <button onClick={handleComment}>
           💬 {post.comments}
         </button>
-      </MobileActions>
-    </MobileCard>
-  );
+      </>
+    ),
+  };
+
+  return <PostCard {...postCardProps} />;
 };
 
 export { PostCardMobile };

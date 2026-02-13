@@ -5,12 +5,11 @@
  * Handles user input events and provides search functionality.
  */
 
-import { EnterpriseInput } from "@/shared/ui/components";
+import { SearchBar as UISearchBar } from '../../../../../shared/ui/components/content';
+import type { ISearchBarProps } from '../../../../../shared/ui/components/content';
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { Container } from "@shared/ui/components/layout/Container";
 import { ChangeEventHandler, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
-import { PiMagnifyingGlassBold, PiMicrophone } from "react-icons/pi";
-import { SearchBarStyles } from "@/features/search/presentation/styles/SearchBarStyles";
 
 /**
  * SearchBarProps interface.
@@ -50,22 +49,38 @@ const SearchBar: React.FC<SearchBarProps> = ({
     handleInputChange,
     queryInputRef
 }) => {
+    // Convert to UI SearchBar props
+    const searchBarProps: ISearchBarProps = {
+        placeholder: "Search",
+        value: queryInputRef.current?.value || "",
+        onChange: (value: string) => {
+            // Simulate input change event
+            const syntheticEvent = {
+                target: { value }
+            } as React.ChangeEvent<HTMLInputElement>;
+            handleInputChange(syntheticEvent);
+        },
+        onSearch: (value: string) => {
+            // Handle search submission
+            console.log(`Searching for: ${value}`);
+        },
+        showClear: true,
+        showIcon: true,
+        showMicrophone: true,
+        onMicrophone: () => {
+            console.log('Voice search activated');
+        },
+        variant: 'default',
+        size: 'medium',
+        disabled: false,
+        loading: false,
+        ...(style && { style }),
+        className: '',
+    };
+
     return (
         <Container style={style || {}}>
-            <SearchBarStyles.searchbar>
-                <PiMagnifyingGlassBold className={SearchBarStyles.searchIconLarge} /> {/* Search icon */}
-                <EnterpriseInput
-                    placeholder="Search"
-                    inputRef={queryInputRef}
-                    onKeyDown={handleKeyDown}
-                    onBlur={handleInputBlur}
-                    onFocus={handleInputFocus}
-                    onChange={handleInputChange}
-                    className={SearchBarStyles.searchInput}
-                    useTheme={false}
-                />
-                <PiMicrophone className={SearchBarStyles.microphoneIcon} /> {/* Voice search icon */}
-            </SearchBarStyles.searchbar>
+            <UISearchBar {...searchBarProps} />
         </Container>
     );
 };

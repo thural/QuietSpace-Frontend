@@ -1,15 +1,14 @@
 import { CommentResponse } from "@/features/feed/data/models/comment";
 import { Container } from '@/shared/ui/components/layout/Container';
 import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
-import EmojiText from "@/shared/EmojiText";
+import { CommentCard } from '@/shared/ui/components/social';
+import type { ICommentCardProps } from '@/shared/ui/components/social';
 import ErrorComponent from "@/shared/errors/ErrorComponent";
 import Overlay from "@/shared/Overlay";
 import Typography from "@/shared/Typography";
 import UserAvatarPhoto from "@/shared/UserAvatarPhoto";
 import useComment from "@features/feed/application/hooks/useComment";
-import styles from "../../styles/commentStyles";
 import CreateCommentForm from "../forms/CreateCommentForm";
-import CommentControls from "./CommentControls";
 
 /**
  * Props for the CommentReply component.
@@ -32,7 +31,6 @@ interface CommentReplyProps {
  * @returns {JSX.Element} - The rendered comment reply component.
  */
 const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) => {
-    const classes = styles(true);
 
     let data;
 
@@ -54,27 +52,40 @@ const CommentReply: React.FC<CommentReplyProps> = ({ comment, repliedComment }) 
         isLiked,
     } = data;
 
+    // Convert comment data to CommentCard props
+    const commentCardProps: ICommentCardProps = {
+        content: comment.text,
+        author: {
+            name: user.name,
+            ...(user.avatar && { avatar: user.avatar }),
+        },
+        timestamp: new Date(comment.createDate || comment.updateDate || Date.now()).toLocaleString(),
+        isReply: !!repliedComment,
+        onReply: () => toggleCommentForm(),
+        onLike: () => handleLikeToggle(),
+        onDelete: () => handleDeleteComment(),
+        likes: comment.likeCount || 0,
+        isLiked: isLiked,
+        showActions: true,
+        variant: 'default',
+    };
+
     const CommentBody = () => (
-        <Container key={comment.id} className={classes.comment} style={appliedStyle}>
-            <Container className={classes.commentBody}>
-                <FlexContainer className={classes.replyCard}>
-                    <Container className="reply-card-indicator"></Container>
-                    <Typography className="reply-card-text" lineClamp={1}>{repliedComment?.text}</Typography>
-                </FlexContainer>
-                <EmojiText text={comment.text} />
+        <Container key={comment.id} style={appliedStyle}>
+            <Container className="comment-body">
+                {repliedComment && (
+                    <FlexContainer className="reply-card">
+                        <Container className="reply-card-indicator"></Container>
+                        <Typography className="reply-card-text" lineClamp={1}>{repliedComment.text}</Typography>
+                    </FlexContainer>
+                )}
+                <CommentCard {...commentCardProps} />
             </Container>
-            <CommentControls
-                isOwner={isOwner}
-                isLiked={isLiked}
-                handleLike={handleLikeToggle}
-                handleReply={toggleCommentForm}
-                hanldeDelete={handleDeleteComment}
-            />
         </Container>
     );
 
     return (
-        <FlexContainer className={classes.commentWrapper}>
+        <FlexContainer className="comment-wrapper">
             <CommentBody />
             <UserAvatarPhoto userId={user.id} />
             <Overlay onClose={toggleCommentForm} isOpen={commentFormView}>
