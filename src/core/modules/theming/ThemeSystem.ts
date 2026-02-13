@@ -48,11 +48,8 @@ export interface IThemeSystem {
 /**
  * Theme System Facade Implementation
  * 
- * Single Responsibility: Unified interface for all theme operations
- * Open/Closed: Extensible through dependency injection
- * Liskov Substitution: Can be substituted with mock implementations
- * Interface Segregation: Focused interface for theme system operations
- * Dependency Inversion: Depends on abstractions
+ * Provides unified interface for all theme operations while maintaining internal modularity.
+ * Enhanced with plugin architecture support and dependency injection.
  */
 export class ThemeSystem implements IThemeSystem {
     private static instance: ThemeSystem;

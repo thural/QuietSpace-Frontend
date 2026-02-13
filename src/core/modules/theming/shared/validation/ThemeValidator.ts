@@ -1,8 +1,7 @@
 /**
  * Theme Validation System
  *
- * Single Responsibility: Provides comprehensive theme validation
- * Follows SOLID principles with dependency injection support
+ * Provides comprehensive theme validation with dependency injection support.
  */
 
 import type { ThemeTokens } from '../../tokens';
@@ -78,7 +77,7 @@ export interface ValidationSummary {
 }
 
 /**
- * Theme Validator Interface - Dependency Inversion Principle
+ * Theme Validator Interface
  */
 export interface IThemeValidator {
     validateTheme(theme: Partial<ThemeTokens>): Promise<ValidationResult>;
@@ -92,11 +91,8 @@ export interface IThemeValidator {
 /**
  * Theme Validator Implementation
  * 
- * Single Responsibility: Theme validation and rule management
- * Open/Closed: Extensible through validation rules
- * Liskov Substitution: Can be substituted with mock implementations
- * Interface Segregation: Focused interface for validation operations
- * Dependency Inversion: Depends on abstractions
+ * Handles theme validation and rule management with dependency injection support.
+ * Uses extensible validation rules for comprehensive theme checking.
  */
 export class ThemeValidator implements IThemeValidator {
     private readonly colorUtils: IColorUtils;

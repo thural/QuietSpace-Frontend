@@ -1,15 +1,13 @@
 /**
  * Theme System Error Handling
  *
- * Single Responsibility: Provides structured error handling for theme system
- * Follows SOLID principles with comprehensive error types and recovery strategies
+ * Provides structured error handling for theme system with comprehensive error types and recovery strategies.
  */
 
 /**
  * Base Theme Error Class
  * 
- * Single Responsibility: Base error for all theme-related errors
- * Open/Closed: Extensible for specific error types
+ * Base error for all theme-related errors with extensible error types.
  */
 export abstract class ThemeError extends Error {
     public readonly code: string;
@@ -115,7 +113,7 @@ export interface ErrorDetails {
 /**
  * Theme Not Found Error
  * 
- * Single Responsibility: Handles missing theme variants
+ * Handles missing theme variants with available alternatives.
  */
 export class ThemeNotFoundError extends ThemeError {
     constructor(
@@ -136,7 +134,7 @@ export class ThemeNotFoundError extends ThemeError {
 /**
  * Theme Validation Error
  * 
- * Single Responsibility: Handles theme validation failures
+ * Handles theme validation failures with detailed error information.
  */
 export class ThemeValidationError extends ThemeError {
     constructor(
@@ -157,7 +155,7 @@ export class ThemeValidationError extends ThemeError {
 /**
  * Theme Composition Error
  * 
- * Single Responsibility: Handles theme composition failures
+ * Handles theme composition failures with operation context.
  */
 export class ThemeCompositionError extends ThemeError {
     constructor(
@@ -178,7 +176,7 @@ export class ThemeCompositionError extends ThemeError {
 /**
  * Theme Enhancement Error
  * 
- * Single Responsibility: Handles theme enhancement failures
+ * Handles theme enhancement failures with enhancement type context.
  */
 export class ThemeEnhancementError extends ThemeError {
     constructor(
@@ -199,7 +197,7 @@ export class ThemeEnhancementError extends ThemeError {
 /**
  * Cache Error
  * 
- * Single Responsibility: Handles caching-related errors
+ * Handles caching-related errors with operation context.
  */
 export class ThemeCacheError extends ThemeError {
     constructor(
@@ -220,7 +218,7 @@ export class ThemeCacheError extends ThemeError {
 /**
  * Performance Error
  * 
- * Single Responsibility: Handles performance-related issues
+ * Handles performance-related issues with operation and duration context.
  */
 export class ThemePerformanceError extends ThemeError {
     constructor(
@@ -242,7 +240,7 @@ export class ThemePerformanceError extends ThemeError {
 /**
  * Configuration Error
  * 
- * Single Responsibility: Handles configuration-related errors
+ * Handles configuration-related errors with path and value context.
  */
 export class ThemeConfigurationError extends ThemeError {
     constructor(
@@ -263,7 +261,7 @@ export class ThemeConfigurationError extends ThemeError {
 /**
  * Dependency Error
  * 
- * Single Responsibility: Handles dependency injection errors
+ * Handles dependency injection errors with dependency and required component context.
  */
 export class ThemeDependencyError extends ThemeError {
     constructor(
@@ -282,7 +280,7 @@ export class ThemeDependencyError extends ThemeError {
 }
 
 /**
- * Error Factory Interface - Dependency Inversion Principle
+ * Error Factory Interface
  */
 export interface IThemeErrorFactory {
     createThemeNotFoundError(variant: string, availableVariants: string[]): ThemeNotFoundError;
@@ -298,16 +296,12 @@ export interface IThemeErrorFactory {
 /**
  * Theme Error Factory Implementation
  * 
- * Single Responsibility: Creates theme error instances
- * Open/Closed: Extensible through interface
- * Liskov Substitution: Can be substituted with mock implementations
- * Interface Segregation: Focused interface for error creation
- * Dependency Inversion: No dependencies on concrete implementations
+ * Creates theme error instances with comprehensive error creation methods.
  */
 export class ThemeErrorFactory implements IThemeErrorFactory {
     private static instance: ThemeErrorFactory;
 
-    private constructor() {}
+    private constructor() { }
 
     /**
      * Get singleton instance

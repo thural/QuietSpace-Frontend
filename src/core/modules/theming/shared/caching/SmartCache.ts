@@ -58,11 +58,8 @@ export interface ISmartCache<T> {
 /**
  * Smart Cache Implementation
  * 
- * Single Responsibility: Intelligent caching with TTL and metrics
- * Open/Closed: Extensible through interface
- * Liskov Substitution: Can be substituted with mock implementations
- * Interface Segregation: Focused interface for cache operations
- * Dependency Inversion: Depends on abstractions, not concretions
+ * Provides intelligent caching with TTL and performance metrics.
+ * Uses dependency injection for better testability and flexibility.
  */
 export class SmartCache<T> implements ISmartCache<T> {
     private readonly cache = new Map<string, CacheEntry<T>>();
