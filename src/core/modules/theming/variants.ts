@@ -12,6 +12,8 @@ import {
   baseSpacing,
   baseBreakpoints,
   baseRadius,
+  baseBorder,
+  baseSize,
   baseAnimation
 } from './baseTokens';
 import { themeComposer } from './composer';
@@ -31,6 +33,8 @@ themeComposer.registerTheme({
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
+    border: baseBorder,
+    size: baseSize,
     animation: baseAnimation
   }
 });
@@ -101,6 +105,8 @@ themeComposer.registerTheme({
     },
     breakpoints: baseBreakpoints,
     radius: baseRadius,
+    border: baseBorder,
+    size: baseSize,
     animation: baseAnimation
   }
 });
@@ -171,6 +177,8 @@ themeComposer.registerTheme({
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
+    border: baseBorder,
+    size: baseSize,
     animation: baseAnimation
   }
 });
@@ -286,6 +294,8 @@ themeComposer.registerTheme({
     shadows: baseShadows,
     breakpoints: baseBreakpoints,
     radius: baseRadius,
+    border: baseBorder,
+    size: baseSize,
     animation: baseAnimation
   }
 });

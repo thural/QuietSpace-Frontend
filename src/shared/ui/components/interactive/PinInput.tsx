@@ -22,81 +22,49 @@ const PinInputContainer = styled.div<{ $size: string; theme?: any }>`
 `;
 
 const PinInputField = styled.input<{ $size: string; theme?: any }>`
-  ${props => {
-        const baseStyles = getInputFieldStyles(props.theme, props.$size as 'sm' | 'md' | 'lg');
-        return `
-      width: 3rem;
-      height: 3rem;
-      text-align: center;
-      font-size: ${getTypography(props.theme, 'fontSize.lg')};
-      font-weight: ${getTypography(props.theme, 'fontWeight.bold')};
-      ${Object.entries(baseStyles).map(([key, value]) => `${key}: ${value}`).join('; ')};
-      &:focus {
-        ${baseStyles['&:focus']};
-      }
-      &:disabled {
-        ${baseStyles['&:disabled']};
-      }
-    `;
-    }}
-`;
-width: ${
-    props => {
+  width: ${props => {
         switch (props.$size) {
-            case 'sm': return getSpacing(props.theme, 32);
-            case 'lg': return getSpacing(props.theme, 56);
-            default: return getSpacing(props.theme, 48);
+            case 'sm': return '2.5rem';
+            case 'lg': return '3.5rem';
+            default: return '3rem';
         }
-    }
-};
-height: ${
-    props => {
+    }};
+  height: ${props => {
         switch (props.$size) {
-            case 'sm': return getSpacing(props.theme, 32);
-            case 'lg': return getSpacing(props.theme, 56);
-            default: return getSpacing(props.theme, 48);
+            case 'sm': return '2.5rem';
+            case 'lg': return '3.5rem';
+            default: return '3rem';
         }
-    }
-};
-font - size: ${
-    props => {
+    }};
+  font-size: ${props => {
         switch (props.$size) {
             case 'sm': return getTypography(props.theme, 'fontSize.base');
             case 'lg': return getTypography(props.theme, 'fontSize.xl');
             default: return getTypography(props.theme, 'fontSize.lg');
         }
-    }
-};
-text - align: center;
-border: ${ props => getBorderWidth(props.theme, 'sm') } solid ${ props => getColor(props.theme, 'border.medium') };
-border - radius: ${
-    props => {
-        switch (props.$size) {
-            case 'sm': return getRadius(props.theme, 'sm');
-            case 'lg': return getRadius(props.theme, 'md');
-            default: return getRadius(props.theme, 'md');
-        }
-    }
-};
-background - color: ${ props => getColor(props.theme, 'background.primary') };
-color: ${ props => getColor(props.theme, 'text.primary') };
-transition: ${ props => getTransition(props.theme, 'all', 'fast', 'ease') };
+    }};
+  text-align: center;
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
+  border-radius: ${props => getRadius(props.theme, 'md')};
+  background-color: ${props => getColor(props.theme, 'background.primary')};
+  color: ${props => getColor(props.theme, 'text.primary')};
+  transition: ${props => getTransition(props.theme, 'all')};
   
   &:focus {
     outline: none;
-    border - color: ${ props => getColor(props.theme, 'brand.500') };
-    box - shadow: 0 0 0 ${ props => getBorderWidth(props.theme, 'md') } solid ${ props => getColor(props.theme, 'brand.200') };
-}
+    border-color: ${props => getColor(props.theme, 'brand.500')};
+    box-shadow: 0 0 0 2px ${props => getColor(props.theme, 'brand.500')}20;
+  }
   
   &:disabled {
-    background - color: ${ props => getColor(props.theme, 'background.tertiary') };
-    cursor: not - allowed;
-}
+    background-color: ${props => getColor(props.theme, 'background.tertiary')};
+    cursor: not-allowed;
+  }
   
   &::selection {
-    background - color: ${ props => getColor(props.theme, 'brand.500') };
-    color: ${ props => getColor(props.theme, 'text.inverse') };
-}
+    background-color: ${props => getColor(props.theme, 'brand.500')};
+    color: ${props => getColor(props.theme, 'text.inverse')};
+  }
 `;
 
 class PinInput extends PureComponent<IPinInputProps, IPinInputState> {

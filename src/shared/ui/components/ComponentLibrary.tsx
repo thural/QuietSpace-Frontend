@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as React from 'react';
-import { getSpacing, getColor, getRadius, getShadow, getTypography, getTransition, getBorderWidth } from './utils';
+import { getSpacing, getColor, getRadius, getShadow, getTypography, getTransition, getBorderWidth, getComponentSize } from './utils';
 
 // Simple theme interface for ComponentLibrary
 interface ComponentTheme {
@@ -477,14 +477,14 @@ class Modal extends React.PureComponent<IModal> {
   }
 
   private getOverlayStyles = (): React.CSSProperties => {
-    const theme = this.themeService['theme'];
+    const colors = this.themeService.getColors();
     return {
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)' // Overlay color - acceptable fallback
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -499,12 +499,8 @@ class Modal extends React.PureComponent<IModal> {
     const shadows = this.themeService.getShadows();
     const spacing = this.themeService.getSpacing();
 
-    const sizeStyles = {
-      small: { maxWidth: '400px', width: '90%' },
-      medium: { maxWidth: '600px', width: '90%' },
-      large: { maxWidth: '800px', width: '90%' },
-      fullscreen: { maxWidth: '100%', width: '100%', height: '100%' }
-    };
+    // Use theme tokens for modal sizes
+    const sizeStyles = getComponentSize(theme, 'modal', size);
 
     return {
       backgroundColor: colors.white,

@@ -1,10 +1,11 @@
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
 import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
+import { getSpacing, getColor, getRadius, getShadow, getTransition, getBorderWidth } from '../utils';
+import { EnhancedTheme } from '@/core/modules/theming';
 
-interface IFormStyledProps extends GenericWrapperWithRef {
+interface IFormStyledProps extends Omit<GenericWrapperWithRef, 'style'> {
   children?: ReactNode;
 }
 
@@ -12,36 +13,36 @@ interface IFormStyledProps extends GenericWrapperWithRef {
 const FormContainer = styled.form<{ theme: EnhancedTheme }>`
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.lg};
-  background: ${props => props.theme.colors.background.primary};
-  border: 1px solid ${props => props.theme.colors.border.medium};
-  border-radius: ${props => props.theme.radius.md};
-  box-shadow: ${props => props.theme.shadows.sm};
-  transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+  gap: ${props => getSpacing(props.theme, 'md')};
+  padding: ${props => getSpacing(props.theme, 'lg')};
+  background: ${props => getColor(props.theme, 'background.primary')};
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
+  border-radius: ${props => getRadius(props.theme, 'md')};
+  box-shadow: ${props => getShadow(props.theme, 'sm')};
+  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
   
   &:hover {
-    border-color: ${props => props.theme.colors.border.dark};
+    border-color: ${props => getColor(props.theme, 'border.dark')};
   }
   
   &:focus-within {
-    border-color: ${props => props.theme.colors.brand[500]};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.brand[200]};
+    border-color: ${props => getColor(props.theme, 'brand.500')};
+    box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'brand.200')};
   }
   
   // Responsive design
   @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    padding: ${props => props.theme.spacing.md};
-    gap: ${props => props.theme.spacing.sm};
+    padding: ${props => getSpacing(props.theme, 'md')};
+    gap: ${props => getSpacing(props.theme, 'sm')};
   }
 `;
 
 class FormStyled extends PureComponent<IFormStyledProps> {
   override render(): ReactNode {
-    const { forwardedRef, children, ...props } = this.props;
+    const { forwardedRef, children, className } = this.props;
 
     return (
-      <FormContainer ref={forwardedRef} {...props}>
+      <FormContainer ref={forwardedRef} className={className}>
         {children}
       </FormContainer>
     );

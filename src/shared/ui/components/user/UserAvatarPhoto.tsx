@@ -3,11 +3,13 @@ import { useGetUserById } from "@/services/data/useUserData";
 import { formatPhotoData } from "@/shared/utils/dataUtils";
 import UserAvatar from "./UserAvatar";
 import { toUpperFirstChar } from "@/shared/utils/stringUtils";
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
+import { getComponentSize, getRadius } from '../utils';
 
 interface IUserAvatarPhotoProps {
     userId: ResId;
     size?: string;
+    theme?: any;
 }
 
 interface IUserAvatarPhotoState {
@@ -87,15 +89,16 @@ class UserAvatarPhoto extends PureComponent<IUserAvatarPhotoProps, IUserAvatarPh
     };
 
     override render(): ReactNode {
-        const { size = "2.5rem" } = this.props;
+        const { size = "md", theme } = this.props;
         const { photoData, username } = this.state;
 
         return (
             <UserAvatar
-                size={size} // Set avatar size
-                src={photoData} // Set avatar source
-                radius="10rem" // Set border radius for the avatar
-                chars={username} // Set initials to display if no photo is available
+                size={theme ? getComponentSize(theme, 'avatar', size as any) : size}
+                src={photoData}
+                radius={theme ? getRadius(theme, 'round') : '50px'}
+                chars={username}
+                theme={theme}
             />
         );
     }

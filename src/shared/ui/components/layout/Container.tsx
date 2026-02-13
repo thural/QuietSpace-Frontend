@@ -9,7 +9,7 @@ import { PureComponent, ReactNode, RefObject } from 'react';
 import styled from 'styled-components';
 import { LayoutProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
-import { getSpacing } from '../utils';
+import { getSpacing, getBreakpoint } from '../utils';
 
 // Styled components with theme token integration
 const StyledContainer = styled.div<{
@@ -40,7 +40,7 @@ const StyledContainer = styled.div<{
             case 'constrained':
                 return `
           width: 100%;
-          max-width: ${props.theme?.breakpoints?.xl || '1280px'};
+          max-width: ${props.theme?.breakpoints?.xl || getBreakpoint(props.theme, 'lg')};
           margin: 0 auto;
           padding-left: ${getSpacing(props.theme, 'lg')};
           padding-right: ${getSpacing(props.theme, 'lg')};
@@ -89,7 +89,7 @@ const StyledContainer = styled.div<{
     }}
   
   /* Responsive design using theme breakpoints */
-  @media (max-width: ${props => props.theme?.breakpoints?.sm || '768px'}) {
+  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
     ${props => props.variant === 'constrained' && `
       padding-left: ${getSpacing(props.theme, 'md')};
       padding-right: ${getSpacing(props.theme, 'md')};
@@ -110,7 +110,7 @@ interface IContainerProps extends LayoutProps {
  * Container Component
  * 
  * A versatile layout container that provides consistent spacing,
- * positioning, and layout utilities across the application.
+ * positioning, and layout utilities across application.
  * Built using enterprise class-based pattern with theme token integration.
  */
 export class Container extends PureComponent<IContainerProps> {
@@ -139,7 +139,7 @@ export class Container extends PureComponent<IContainerProps> {
                 break;
             case 'constrained':
                 styles.width = '100%';
-                styles.maxWidth = theme?.breakpoints?.xl || '1280px';
+                styles.maxWidth = theme?.breakpoints?.xl || getBreakpoint(theme, 'lg');
                 styles.margin = '0 auto';
                 break;
         }
@@ -160,6 +160,7 @@ export class Container extends PureComponent<IContainerProps> {
             onClick,
             style,
             ref,
+            theme
         } = this.props;
 
         const containerStyles = { ...this.getContainerStyles(theme), ...style };
@@ -169,8 +170,8 @@ export class Container extends PureComponent<IContainerProps> {
                 ref={ref}
                 variant={variant || 'default'}
                 size={size || 'md'}
-                padding={padding}
-                margin={margin}
+                padding={padding || ''}
+                margin={margin || ''}
                 theme={theme}
                 className={className}
                 id={id?.toString()}

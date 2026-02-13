@@ -9,23 +9,23 @@ import styled from 'styled-components';
 import { EnhancedTheme } from '../../../../core/modules/theming';
 
 export const MessageCardContainer = styled.div<{ theme: EnhancedTheme; isOwn?: boolean; isDeleting?: boolean }>`
-  max-width: 200px;
+  max-width: ${(props: any) => props.theme.size?.messageCard?.maxWidth || '200px'};
   position: relative;
   display: flex;
   cursor: pointer;
   flex-flow: column nowrap;
   justify-items: center;
-  box-shadow: 0px 0px 16px -16px;
+  box-shadow: ${(props: any) => props.theme.shadows?.md || '0 4px 6px -1px rgba(0, 0, 0, 0.07)'};
   border-radius: ${(props: any) => props.theme.radius.md};
-  background-color: ${(props: any) => props.isOwn 
-    ? props.theme.colors.brand[500] 
+  background-color: ${(props: any) => props.isOwn
+    ? props.theme.colors.brand[500]
     : props.theme.colors.backgroundTransparentMax
   };
   border: 1px solid ${(props: any) => props.theme.colors.borderExtra};
   padding: ${(props: any) => props.theme.spacing(props.theme.spacingFactor.md * 0.8)};
   margin: ${(props: any) => props.theme.spacing(props.theme.spacingFactor.md * 0.3)} 0;
-  color: ${(props: any) => props.isOwn 
-    ? props.theme.colors.text.primary 
+  color: ${(props: any) => props.isOwn
+    ? props.theme.colors.text.primary
     : props.theme.colors.text
   };
   transition: all 0.2s ease;

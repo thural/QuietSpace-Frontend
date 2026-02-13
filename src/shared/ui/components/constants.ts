@@ -97,126 +97,139 @@ export const COMPONENT_COLORS = {
     WHITE: 'white',
 } as const;
 
-// Component spacing constants
+/**
+ * UI Components Constants - DEPRECATED
+ * 
+ * ⚠️  DEPRECATED: These constants are maintained for backward compatibility only.
+ * 📚 MIGRATION: Use theme utilities instead. See THEME_USAGE_GUIDE.md
+ * 
+ * Preferred usage:
+ * import { getSpacing } from './utils';
+ * const spacing = getSpacing(theme, 'md');
+ * 
+ * These constants will be removed in v2.0.0
+ */
+
+// Component spacing constants - DEPRECATED
 export const COMPONENT_SPACING = {
     // Button spacing
     BUTTON: {
         PADDING_X: {
-            XS: '0.5rem',
-            SM: '0.75rem',
-            MD: '1rem',
-            LG: '1.5rem',
-            XL: '2rem',
+            XS: '0.5rem', // TODO: Use getSpacing(theme, 'xs')
+            SM: '0.75rem', // TODO: Use getSpacing(theme, 'sm')
+            MD: '1rem', // TODO: Use getSpacing(theme, 'md')
+            LG: '1.5rem', // TODO: Use getSpacing(theme, 'lg')
+            XL: '2rem', // TODO: Use getSpacing(theme, 'xl')
         },
         PADDING_Y: {
-            XS: '0.25rem',
-            SM: '0.375rem',
-            MD: '0.5rem',
-            LG: '0.75rem',
-            XL: '1rem',
+            XS: '0.25rem', // TODO: Use getSpacing(theme, 'xs')
+            SM: '0.375rem', // TODO: Use getSpacing(theme, 'xs')
+            MD: '0.5rem', // TODO: Use getSpacing(theme, 'sm')
+            LG: '0.75rem', // TODO: Use getSpacing(theme, 'sm')
+            XL: '1rem', // TODO: Use getSpacing(theme, 'md')
         },
     },
 
     // Input spacing
     INPUT: {
         PADDING_X: {
-            SM: '0.75rem',
-            MD: '1rem',
-            LG: '1.25rem',
+            SM: '0.75rem', // TODO: Use getSpacing(theme, 'sm')
+            MD: '1rem', // TODO: Use getSpacing(theme, 'md')
+            LG: '1.25rem', // TODO: Use getSpacing(theme, 'lg')
         },
         PADDING_Y: {
-            SM: '0.5rem',
-            MD: '0.625rem',
-            LG: '0.75rem',
+            SM: '0.5rem', // TODO: Use getSpacing(theme, 'sm')
+            MD: '0.625rem', // TODO: Use getSpacing(theme, 'sm')
+            LG: '0.75rem', // TODO: Use getSpacing(theme, 'sm')
         },
     },
 
     // Container spacing
     CONTAINER: {
         PADDING: {
-            SM: '1rem',
-            MD: '1.5rem',
-            LG: '2rem',
-            XL: '3rem',
-            FULL: '4rem',
+            SM: '1rem', // TODO: Use getSpacing(theme, 'md')
+            MD: '1.5rem', // TODO: Use getSpacing(theme, 'lg')
+            LG: '2rem', // TODO: Use getSpacing(theme, 'xl')
+            XL: '3rem', // TODO: Use getSpacing(theme, '2xl')
+            FULL: '4rem', // TODO: Use getSpacing(theme, '3xl')
         },
         MARGIN: {
-            SM: '1rem',
-            MD: '1.5rem',
-            LG: '2rem',
-            XL: '3rem',
-            FULL: '4rem',
+            SM: '1rem', // TODO: Use getSpacing(theme, 'md')
+            MD: '1.5rem', // TODO: Use getSpacing(theme, 'lg')
+            LG: '2rem', // TODO: Use getSpacing(theme, 'xl')
+            XL: '3rem', // TODO: Use getSpacing(theme, '2xl')
+            FULL: '4rem', // TODO: Use getSpacing(theme, '3xl')
         },
     },
 } as const;
 
-// Component border radius constants
+// Component border radius constants - TODO: Replace with theme tokens
 export const COMPONENT_BORDER_RADIUS = {
     BUTTON: {
-        XS: '0.125rem',
-        SM: '0.25rem',
-        MD: '0.375rem',
-        LG: '0.5rem',
-        XL: '0.75rem',
-        FULL: '9999px',
+        XS: '0.125rem', // TODO: Use getRadius(theme, 'xs')
+        SM: '0.25rem', // TODO: Use getRadius(theme, 'sm')
+        MD: '0.375rem', // TODO: Use getRadius(theme, 'md')
+        LG: '0.5rem', // TODO: Use getRadius(theme, 'lg')
+        XL: '0.75rem', // TODO: Use getRadius(theme, 'xl')
+        FULL: '9999px', // TODO: Use getRadius(theme, 'full')
     },
     INPUT: {
-        SM: '0.25rem',
-        MD: '0.375rem',
-        LG: '0.5rem',
-        FULL: '9999px',
+        SM: '0.25rem', // TODO: Use getRadius(theme, 'sm')
+        MD: '0.375rem', // TODO: Use getRadius(theme, 'md')
+        LG: '0.5rem', // TODO: Use getRadius(theme, 'lg')
+        FULL: '9999px', // TODO: Use getRadius(theme, 'full')
     },
     AVATAR: {
-        XS: '0.125rem',
-        SM: '0.25rem',
-        MD: '0.375rem',
-        LG: '0.5rem',
-        XL: '0.75rem',
-        '2XL': '1rem',
-        FULL: '50%',
+        XS: '0.125rem', // TODO: Use getRadius(theme, 'xs')
+        SM: '0.25rem', // TODO: Use getRadius(theme, 'sm')
+        MD: '0.375rem', // TODO: Use getRadius(theme, 'md')
+        LG: '0.5rem', // TODO: Use getRadius(theme, 'lg')
+        XL: '0.75rem', // TODO: Use getRadius(theme, 'xl')
+        '2XL': '1rem', // TODO: Use getRadius(theme, '2xl')
+        FULL: '50%', // TODO: Use getRadius(theme, 'full')
     },
     CONTAINER: {
-        SM: '0.25rem',
-        MD: '0.5rem',
-        LG: '0.75rem',
-        XL: '1rem',
-        FULL: '9999px',
+        SM: '0.25rem', // TODO: Use getRadius(theme, 'xs')
+        MD: '0.5rem', // TODO: Use getRadius(theme, 'sm')
+        LG: '0.75rem', // TODO: Use getRadius(theme, 'lg')
+        XL: '1rem', // TODO: Use getRadius(theme, 'xl')
+        FULL: '9999px', // TODO: Use getRadius(theme, 'full')
     },
 } as const;
 
-// Component typography constants
+// Component typography constants - TODO: Replace with theme tokens
 export const COMPONENT_TYPOGRAPHY = {
     TEXT: {
         FONT_SIZES: {
-            XS: '0.75rem',
-            SM: '0.875rem',
-            MD: '1rem',
-            LG: '1.125rem',
-            XL: '1.25rem',
-            '2XL': '1.5rem',
-            '3XL': '1.875rem',
+            XS: '0.75rem', // TODO: Use getTypography(theme, 'fontSize.xs')
+            SM: '0.875rem', // TODO: Use getTypography(theme, 'fontSize.sm')
+            MD: '1rem', // TODO: Use getTypography(theme, 'fontSize.md')
+            LG: '1.125rem', // TODO: Use getTypography(theme, 'fontSize.lg')
+            XL: '1.25rem', // TODO: Use getTypography(theme, 'fontSize.xl')
+            '2XL': '1.5rem', // TODO: Use getTypography(theme, 'fontSize.2xl')
+            '3XL': '1.875rem', // TODO: Use getTypography(theme, 'fontSize.3xl')
         },
         FONT_WEIGHTS: {
-            LIGHT: 300,
-            NORMAL: 400,
-            MEDIUM: 500,
-            SEMIBOLD: 600,
-            BOLD: 700,
+            LIGHT: 300, // TODO: Use getTypography(theme, 'fontWeight.light')
+            NORMAL: 400, // TODO: Use getTypography(theme, 'fontWeight.normal')
+            MEDIUM: 500, // TODO: Use getTypography(theme, 'fontWeight.medium')
+            SEMIBOLD: 600, // TODO: Use getTypography(theme, 'fontWeight.semibold')
+            BOLD: 700, // TODO: Use getTypography(theme, 'fontWeight.bold')
         },
         LINE_HEIGHTS: {
-            TIGHT: 1.25,
-            NORMAL: 1.5,
-            RELAXED: 1.75,
+            TIGHT: 1.25, // TODO: Use getTypography(theme, 'lineHeight.tight')
+            NORMAL: 1.5, // TODO: Use getTypography(theme, 'lineHeight.normal')
+            RELAXED: 1.75, // TODO: Use getTypography(theme, 'lineHeight.relaxed')
         },
     },
     TITLE: {
         FONT_SIZES: {
-            H1: '2.25rem',
-            H2: '1.875rem',
-            H3: '1.5rem',
-            H4: '1.25rem',
-            H5: '1.125rem',
-            H6: '1rem',
+            H1: '2.25rem', // TODO: Use getTypography(theme, 'fontSize.2xl')
+            H2: '1.875rem', // TODO: Use getTypography(theme, 'fontSize.xl')
+            H3: '1.5rem', // TODO: Use getTypography(theme, 'fontSize.lg')
+            H4: '1.25rem', // TODO: Use getTypography(theme, 'fontSize.md')
+            H5: '1.125rem', // TODO: Use getTypography(theme, 'fontSize.sm')
+            H6: '1rem', // TODO: Use getTypography(theme, 'fontSize.sm')
         },
         FONT_WEIGHTS: {
             LIGHT: 300,

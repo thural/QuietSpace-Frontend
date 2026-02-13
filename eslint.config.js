@@ -13,7 +13,8 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
-      ...tseslint.configs.recommendedTypeChecked
+      ...tseslint.configs.recommendedTypeChecked,
+      './eslint-rules/theme-compliance-rules.js'
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

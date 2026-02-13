@@ -68,4 +68,13 @@ export interface SizeTokens {
         md: string;
         lg: string;
     };
+    messageCard: {
+        maxWidth: string;
+    };
+    modal: {
+        small: { maxWidth: string; width: string };
+        medium: { maxWidth: string; width: string };
+        large: { maxWidth: string; width: string };
+        fullscreen: { maxWidth: string; width: string; height: string };
+    };
 }

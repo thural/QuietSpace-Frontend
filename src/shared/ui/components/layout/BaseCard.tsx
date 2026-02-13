@@ -2,7 +2,7 @@ import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FlexStyled from "./FlexStyled";
 import styled from 'styled-components';
 import { PureComponent, ReactNode } from 'react';
-import { getColor, getBorderWidth, getRadius, getSpacing, getShadow, getTransition } from '../utils';
+import { getColor, getBorderWidth, getRadius, getSpacing, getShadow, getTransition, getBreakpoint } from '../utils';
 
 // Enterprise styled-components for base card styling
 const BaseCardContainer = styled.div<{ theme: any }>`
@@ -19,7 +19,7 @@ const BaseCardContainer = styled.div<{ theme: any }>`
   }
   
   // Responsive design
-  @media (max-width: ${props => props.theme?.breakpoints?.sm || '768px'}) {
+  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
     padding: ${props => getSpacing(props.theme, 'sm')};
   }
 `;

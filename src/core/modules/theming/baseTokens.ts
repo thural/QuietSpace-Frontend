@@ -42,7 +42,41 @@ export const baseRadius = {
     md: '0.375rem',
     lg: '0.5rem',
     xl: '0.75rem',
-    full: '9999px'
+    full: '50px',
+    round: '50px'
+};
+
+export const baseBorder = {
+    none: '0',
+    hairline: '1px',
+    xs: '1px',
+    sm: '2px',
+    md: '2px',
+    lg: '2px',
+    xl: '3px',
+    '2xl': '4px'
+};
+
+export const baseSize = {
+    skeleton: {
+        minWidth: '172px',
+        height: '256px'
+    },
+    avatar: {
+        xs: '24px',
+        sm: '32px',
+        md: '40px',
+        lg: '48px'
+    },
+    messageCard: {
+        maxWidth: '200px'
+    },
+    modal: {
+        small: { maxWidth: '400px', width: '90%' },
+        medium: { maxWidth: '600px', width: '90%' },
+        large: { maxWidth: '800px', width: '90%' },
+        fullscreen: { maxWidth: '100%', width: '100%', height: '100%' }
+    }
 };
 
 export const baseAnimation = {

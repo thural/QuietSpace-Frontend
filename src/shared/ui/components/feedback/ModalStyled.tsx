@@ -1,4 +1,4 @@
-import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import styled from 'styled-components';
 import { PureComponent, ReactNode } from 'react';
 import { getSpacing, getColor, getRadius, getBorderWidth, getShadow, getTransition } from '../utils';
@@ -8,14 +8,14 @@ const ModalContainer = styled.div<{ theme?: any }>`
   top: 50%;
   left: 50%;
   color: ${props => getColor(props.theme, 'text.primary')};
-  width: 640px;
+  width: 640px; // Fixed modal width
   max-width: 90vw;
   max-height: 100vh;
   border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.light')};
   margin: auto;
   display: flex;
   padding: ${props => getSpacing(props.theme, 'lg')};
-  z-index: 1000;
+  z-index: ${(props): number => (props.theme as any)?.zIndex?.modal || 1000};
   position: fixed;
   flex-direction: column;
   transform: translate(-50%, -50%);
@@ -25,9 +25,9 @@ const ModalContainer = styled.div<{ theme?: any }>`
   transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
   
   @media (max-width: 720px) {
-    gap: 1rem;
+    gap: ${props => getSpacing(props.theme, 'md')};
     width: 95vw;
-    padding: 1rem;
+    padding: ${props => getSpacing(props.theme, 'md')};
   }
 `;
 
@@ -37,20 +37,22 @@ const ModalOverlay = styled.div<{ theme?: any }>`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: ${props => getColor(props.theme, 'text.primary')}20;
-  z-index: 999;
+  background: ${props => getColor(props.theme, 'text.primary')}20; // 20% opacity
+  z-index: ${(props): number => (props.theme as any)?.zIndex?.overlay || 999};
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-interface IModalStyledProps extends GenericWrapperWithRef {
+interface IModalStyledProps extends GenericWrapper {
   children?: ReactNode;
+  forwardedRef?: any;
 }
 
 class ModalStyled extends PureComponent<IModalStyledProps> {
-  override render(): ReactNode {
-    const { children, forwardedRef } = this.props;
+  public override render(): ReactNode {
+    const props = this.props as IModalStyledProps;
+    const { children, forwardedRef } = props;
     return (
       <ModalOverlay theme={undefined}>
         <ModalContainer ref={forwardedRef} theme={undefined}>

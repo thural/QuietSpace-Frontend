@@ -8,7 +8,7 @@
 import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { InputProps } from '../types';
-import { getSizeStyles, getBorderWidth, getRadius, getColor, getSpacing } from '../utils';
+import { getColor, getSpacing, getRadius, getBorderWidth, getMicroSpacing, getTypography, getSizeStyles, getTransition } from '../utils';
 
 // Styled component implementation
 const StyledInput = styled.input<{ theme: any; $props: InputProps }>`
@@ -16,9 +16,9 @@ const StyledInput = styled.input<{ theme: any; $props: InputProps }>`
   border: ${(props) => getBorderWidth(props.theme, 'sm')} solid ${(props) => getColor(props.theme, 'border.light')};
   border-radius: ${(props) => getRadius(props.theme, 'md')};
   padding: ${(props) => getSpacing(props.theme, 'sm')} ${(props) => getSpacing(props.theme, 'md')};
-  font-size: ${(props) => props.theme.typography?.fontSize?.base || '16px'};
+  font-size: ${(props) => getTypography(props.theme, 'fontSize.base')};
   font-family: inherit;
-  transition: all ${(props) => props.theme.animation?.duration?.fast || '0.2s'} ${(props) => props.theme.animation?.easing?.ease || 'ease'};
+  transition: all ${(props) => getTransition(props.theme, 'all', 'fast', 'ease')};
   outline: none;
   
   &:focus {
@@ -77,6 +77,11 @@ class Input extends PureComponent<InputProps> {
             onFocus,
             onBlur,
             onChange,
+            size,
+            variant,
+            onMouseEnter,
+            onMouseLeave,
+            loading,
             ...inputProps
         } = this.props;
 
@@ -85,9 +90,9 @@ class Input extends PureComponent<InputProps> {
                 {label && (
                     <label htmlFor={id} style={{
                         display: 'block',
-                        marginBottom: getSpacing(theme, 'xs'),
-                        fontSize: theme.typography?.fontSize?.sm || '14px',
-                        color: getColor(theme, 'text.primary')
+                        marginBottom: getMicroSpacing(theme || {} as any, '4px'),
+                        fontSize: getTypography(theme || {} as any, 'fontSize.sm'),
+                        color: getColor(theme || {} as any, 'text.primary')
                     }}>
                         {label}
                     </label>
@@ -95,7 +100,7 @@ class Input extends PureComponent<InputProps> {
 
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     {startAdornment && (
-                        <span style={{ marginRight: getSpacing(theme, 'sm') }}>{startAdornment}</span>
+                        <span style={{ marginRight: getMicroSpacing(theme || {} as any, '8px') }}>{startAdornment}</span>
                     )}
 
                     <StyledInput
@@ -123,15 +128,15 @@ class Input extends PureComponent<InputProps> {
                     />
 
                     {endAdornment && (
-                        <span style={{ marginLeft: getSpacing(theme, 'sm') }}>{endAdornment}</span>
+                        <span style={{ marginLeft: getMicroSpacing(theme || {} as any, '8px') }}>{endAdornment}</span>
                     )}
                 </div>
 
                 {helperText && (
                     <div style={{
-                        fontSize: theme.typography?.fontSize?.xs || '12px',
-                        marginTop: getSpacing(theme, 'xs'),
-                        color: error ? getColor(theme, 'semantic.error') : getColor(theme, 'text.secondary')
+                        fontSize: getTypography(theme || {} as any, 'fontSize.xs'),
+                        marginTop: getMicroSpacing(theme || {} as any, '6px'),
+                        color: error ? getColor(theme || {} as any, 'semantic.error') : getColor(theme || {} as any, 'text.secondary')
                     }}>
                         {helperText}
                     </div>

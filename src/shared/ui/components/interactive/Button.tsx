@@ -8,7 +8,7 @@
 import { PureComponent, ReactNode, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { ButtonProps } from '../types';
-import { getButtonVariantStyles, getSizeStyles, getBorderWidth, getRadius, getColor } from '../utils';
+import { getButtonVariantStyles, getSizeStyles, getBorderWidth, getRadius, getColor, getTransition } from '../utils';
 
 // Styled component implementation
 const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
@@ -16,7 +16,7 @@ const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
   border: none;
   cursor: pointer;
   font-family: inherit;
-  transition: all ${(props) => props.theme.animation?.duration?.fast || '0.2s'} ${(props) => props.theme.animation?.easing?.ease || 'ease'};
+  transition: all ${(props) => getTransition(props.theme, 'all', 'fast', 'ease')};
   outline: none;
   
   &:disabled {
@@ -26,21 +26,21 @@ const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
   
   &:focus:not(:disabled) {
     outline: ${(props) => getBorderWidth(props.theme, 'md')} solid ${(props) => getColor(props.theme, 'brand.500')};
-    outline-offset: ${(props) => props.theme.spacing?.xs || '4px'};
+    outline-offset: ${(props) => getBorderWidth(props.theme, 'md')};
   }
   
   ${(props) => getButtonVariantStyles(props.$props.variant || 'primary', props.theme)}
   ${(props) => getSizeStyles(props.$props.size || 'md', props.theme)}
   
   ${(props) => props.$props.fullWidth && 'width: 100%;'}
-  ${(props) => props.$props.rounded && `border-radius: ${getRadius(props.theme, 'round')};`}
-  ${(props: any) => props.$props.outlined && `
+  ${(props) => props.$props.rounded && `border-radius: ${getRadius(props.theme, 'full')};`}
+  ${(props) => props.$props.outlined && `
     background: transparent;
-    border: ${(props: any) => getBorderWidth(props.theme, 'md')} solid;
+    border: ${getBorderWidth(props.theme, 'sm')} solid;
   `}
-  ${(props: any) => props.$props.gradient && `
-    background: ${props.theme.colors?.gradient || `linear-gradient(45deg, ${getColor(props.theme, 'brand.500')}, ${getColor(props.theme, 'brand.600')})`};
-    color: ${(props: any) => getColor(props.theme, 'text.inverse')};
+  ${(props) => props.$props.gradient && `
+    background: ${props.theme.colors?.gradient || 'linear-gradient(45deg, #007bff, #6f42c1)'};
+    color: white;
     border: none;
   `}
 `;

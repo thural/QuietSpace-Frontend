@@ -11,8 +11,6 @@ import {
     LayoutProps,
     FlexProps,
     TypographyProps,
-    ButtonProps,
-    InputProps,
     ComponentVariant,
     ComponentSize
 } from './types';
@@ -93,8 +91,6 @@ export const getTypography = (theme: EnhancedTheme, path?: string): any => {
  */
 export const getRadius = (theme: EnhancedTheme, size?: string): string => {
     if (!size) return theme.radius.md;
-
-    if (size === 'round') return '50%';
 
     if (theme.radius[size as keyof typeof theme.radius]) {
         return theme.radius[size as keyof typeof theme.radius];
@@ -432,9 +428,72 @@ export const getFocusStyles = (theme: EnhancedTheme, color: string = 'brand.500'
 };
 
 /**
+ * Get border width value from theme tokens
+ */
+export const getBorderWidth = (theme: EnhancedTheme, size?: string): string => {
+    if (!size) return theme.border?.md || '2px';
+
+    if (theme.border[size as keyof typeof theme.border]) {
+        return theme.border[size as keyof typeof theme.border];
+    }
+
+    const borderSizes = {
+        hairline: '1px',
+        xs: '1px',
+        sm: '2px',
+        md: '2px',
+        lg: '2px',
+        xl: '3px',
+        '2xl': '4px'
+    };
+    return borderSizes[size as keyof typeof borderSizes] || borderSizes.md;
+};
+
+/**
+ * Get micro spacing value from theme tokens
+ */
+export const getMicroSpacing = (theme: EnhancedTheme, size?: string): string => {
+    if (!size) return theme.spacing?.xs || '4px';
+
+    const microSizes = {
+        '2px': theme.spacing?.xs || '4px',
+        '4px': theme.spacing?.xs || '4px',
+        '6px': theme.spacing?.xs || '4px',
+        '8px': theme.spacing?.sm || '8px',
+        '12px': theme.spacing?.sm || '8px'
+    };
+    return microSizes[size as keyof typeof microSizes] || getSpacing(theme, size);
+};
+
+/**
+ * Get component-specific size from theme tokens
+ */
+export const getComponentSize = (theme: EnhancedTheme, component: string, size?: string): any => {
+    if (!theme.size || !theme.size[component as keyof typeof theme.size]) {
+        return {};
+    }
+
+    const componentSizes = theme.size[component as keyof typeof theme.size] as any;
+    if (!size) return componentSizes;
+
+    return componentSizes[size] || componentSizes.md || {};
+};
+
+/**
+ * Get skeleton component styles from theme tokens
+ */
+export const getSkeletonStyles = (theme: EnhancedTheme): string => {
+    const skeletonSize = getComponentSize(theme, 'skeleton');
+    return `
+        min-width: ${skeletonSize?.minWidth || '172px'};
+        height: ${skeletonSize?.height || '256px'};
+    `;
+};
+
+/**
  * Create disabled styles using modern theme tokens
  */
-export const getDisabledStyles = (theme: EnhancedTheme): string => {
+export const getDisabledStyles = (_theme: EnhancedTheme): string => {
     return `
         &:disabled {
             opacity: 0.6;
@@ -442,114 +501,6 @@ export const getDisabledStyles = (theme: EnhancedTheme): string => {
             pointer-events: none;
         }
     `;
-};
-
-/**
- * Get border width value from theme tokens
- */
-export const getBorderWidth = (theme: EnhancedTheme, width?: string): string => {
-    if (!width) return theme.border.md;
-
-    if (theme.border[width as keyof typeof theme.border]) {
-        return theme.border[width as keyof typeof theme.border];
-    }
-
-    return width;
-};
-
-/**
- * Get micro-spacing value for precise spacing adjustments
- */
-export const getMicroSpacing = (theme: EnhancedTheme, value?: string | number): string => {
-    if (value === undefined || value === null) return '0';
-
-    if (typeof value === 'string') {
-        // Handle direct token references
-        if (theme.spacing[value as keyof typeof theme.spacing]) {
-            return theme.spacing[value as keyof typeof theme.spacing];
-        }
-        return value;
-    }
-
-    // For micro-spacing, use smaller increments
-    if (typeof value === 'number') {
-        // Convert to rem for smaller values (assuming base 16px)
-        if (value < 8) {
-            return `${value / 16}rem`;
-        }
-        return `${value}px`;
-    }
-
-    return `${value}px`;
-};
-
-/**
- * Get component-specific size from theme tokens
- */
-export const getComponentSize = (theme: EnhancedTheme, component: keyof typeof theme.size, size?: string): string => {
-    const componentSizes = theme.size[component];
-
-    if (!componentSizes) {
-        console.warn(`Component size not found: ${String(component)}`);
-        return 'md';
-    }
-
-    if (!size) {
-        // Return default size for component
-        if (component === 'avatar') {
-            const avatarSizes = componentSizes as { xs: string; sm: string; md: string; lg: string; };
-            return avatarSizes.md;
-        }
-        if (component === 'skeleton') {
-            const skeletonSizes = componentSizes as { minWidth: string; height: string; };
-            return skeletonSizes.height;
-        }
-        return 'md';
-    }
-
-    if (componentSizes[size as keyof typeof componentSizes]) {
-        return componentSizes[size as keyof typeof componentSizes];
-    }
-
-    return size;
-};
-
-/**
- * Get skeleton component styles using theme tokens
- */
-export const getSkeletonStyles = (theme: EnhancedTheme, variant?: 'default' | 'circle' | 'text'): string => {
-    const baseStyles = `
-        background: linear-gradient(90deg, 
-            ${getColor(theme, 'background.tertiary')} 25%, 
-            ${getColor(theme, 'background.secondary')} 50%, 
-            ${getColor(theme, 'background.tertiary')} 75%
-        );
-        background-size: 200% 100%;
-        animation: skeleton-loading 1.5s ease-in-out infinite;
-        border-radius: ${theme.radius.md};
-    `;
-
-    const variantStyles = {
-        default: `
-            ${baseStyles}
-            min-width: ${theme.size.skeleton.minWidth};
-            height: ${theme.size.skeleton.height};
-        `,
-        circle: `
-            ${baseStyles}
-            border-radius: ${theme.radius.full};
-            width: 40px;
-            height: 40px;
-        `,
-        text: `
-            ${baseStyles}
-            height: 1rem;
-            border-radius: ${theme.radius.sm};
-            margin-bottom: ${theme.spacing.xs};
-        `
-    };
-
-    return variantStyles[variant || 'default'];
 };
 
 /**
@@ -607,6 +558,24 @@ export const getInputFieldStyles = (theme: EnhancedTheme, size: 'sm' | 'md' | 'l
             cursor: 'not-allowed'
         }
     };
+};
+
+/**
+ * Get breakpoint value from theme tokens or fallback
+ */
+export const getBreakpoint = (theme: EnhancedTheme, breakpoint: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'): string => {
+    if (!theme?.breakpoints) return '768px'; // fallback
+
+    const breakpointMap = {
+        xs: theme.breakpoints.xs || '480px',
+        sm: theme.breakpoints.sm || '768px',
+        md: theme.breakpoints.md || '1024px',
+        lg: theme.breakpoints.lg || '1280px',
+        xl: theme.breakpoints.xl || '1440px',
+        '2xl': theme.breakpoints['2xl'] || '1920px'
+    };
+
+    return breakpointMap[breakpoint] || '768px';
 };
 
 /**

@@ -1,8 +1,7 @@
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import React, { PureComponent, ReactNode, MouseEvent } from "react";
-import { Container } from '@/shared/ui/components/layout/Container';
 import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+import { getSpacing, getColor, getRadius, getShadow, getBorderWidth, getBreakpoint } from '../utils';
 
 /**
  * MenuListStyleProps interface.
@@ -79,29 +78,27 @@ const MenuIcon = styled.div<{ theme: EnhancedTheme }>`
 `;
 
 const MenuContent = styled.div<{
-  theme: EnhancedTheme;
+  theme: any;
   position?: string;
   width?: string;
   fontSize?: string;
   fontWeight?: string;
   radius?: string;
-  iconSize?: string;
-  padding?: string;
   display?: string;
 }>`
   position: ${props => props.position || 'absolute'};
   width: ${props => props.width || '200px'};
   font-size: ${props => props.fontSize || 'inherit'};
   font-weight: ${props => props.fontWeight || 'inherit'};
-  border-radius: ${props => props.radius || props.theme.radius.md};
-  background: ${props => props.theme.colors.background.primary};
-  border: 1px solid ${props => props.theme.colors.border.medium};
-  box-shadow: ${props => props.theme.shadows.md};
+  border-radius: ${props => props.radius || getRadius(props.theme, 'md')};
+  background: ${props => getColor(props.theme, 'background.primary')};
+  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
+  box-shadow: ${props => getShadow(props.theme, 'md')};
   z-index: 1000;
   display: ${props => props.display || 'none'};
   
   // Responsive design
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
     width: ${props => props.width || '180px'};
     font-size: ${props => props.theme.typography.fontSize.sm};
   }

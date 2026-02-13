@@ -1,6 +1,7 @@
 import { Avatar } from "@/shared/ui/components"
 import { GenericWrapper } from "@shared-types/sharedComponentTypes"
-import React, { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from 'react';
+import { getComponentSize, getRadius } from '../utils';
 
 interface IUserAvatarProps extends GenericWrapper {
     forwardedRef?: any;
@@ -9,17 +10,19 @@ interface IUserAvatarProps extends GenericWrapper {
     radius?: string;
     src?: string;
     chars?: string;
+    theme?: any;
 }
 
 class UserAvatar extends PureComponent<IUserAvatarProps> {
     override render(): ReactNode {
         const {
             forwardedRef,
-            size = "2.5rem",
+            size = "md",
             color = "black",
-            radius = "10rem",
+            radius = "round",
             src = "",
             chars = "U",
+            theme,
             ...props
         } = this.props;
 
@@ -27,8 +30,8 @@ class UserAvatar extends PureComponent<IUserAvatarProps> {
             <Avatar
                 ref={forwardedRef}
                 color={color}
-                size={size}
-                radius={radius}
+                size={theme ? getComponentSize(theme, 'avatar', size as any) : size}
+                radius={theme ? getRadius(theme, radius as any) : radius}
                 src={src}
                 {...props}
             >

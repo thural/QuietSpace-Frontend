@@ -7,8 +7,8 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "ES2022",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
@@ -109,6 +109,7 @@
     },
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "types": [
       "node",

@@ -40,17 +40,8 @@ const ProgressBar = styled.div<{ $value: number; $size: string; $color: string; 
   transition: ${props => getTransition(props.theme, 'width', 'normal', 'ease')};
   
   ${props => props.$striped && `
-    background-image: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.15) 25%,
-      transparent 25%,
-      transparent 50%,
-      rgba(255, 255, 255, 0.15) 50%,
-      rgba(255, 255, 255, 0.15) 75%,
-      transparent 75%,
-      transparent
-    );
-    background-size: ${props => getSpacing(props.theme, 16)} ${props => getSpacing(props.theme, 16)};
+    background-image: ${props => props.theme.colors?.gradient || 'linear-gradient(45deg, #007bff, #6f42c1)'};
+    background-size: ${props => getSpacing(props.theme, 'sm')} ${props => getSpacing(props.theme, 'sm')};
   `}
   
   ${props => props.$animated && props.$striped && `

@@ -7,21 +7,22 @@
 
 import styled from 'styled-components';
 import { EnhancedTheme } from '../../../../core/modules/theming';
+import { getSpacing, getColor, getTypography, getRadius, getShadow, getTransition, getBorderWidth } from '../utils';
 
 export const PostCardContainer = styled.div<{ theme: EnhancedTheme }>`
   padding: 0;
   position: relative;
-  font-size: ${(props: any) => props.theme.typography.fontSize.base};
-  margin: ${(props: any) => `${props.theme.spacing.md} 0`};
-  border-radius: ${(props: any) => props.theme.radius.md};
-  background-color: ${(props: any) => props.theme.colors.background.primary};
-  border: 1px solid ${(props: any) => props.theme.colors.border.light};
-  transition: all 0.2s ease;
+  font-size: ${(props: any) => getTypography(props.theme, 'fontSize.base')};
+  margin: ${(props: any) => `${getSpacing(props.theme, 'md')} 0`};
+  border-radius: ${(props: any) => getRadius(props.theme, 'md')};
+  background-color: ${(props: any) => getColor(props.theme, 'background.primary')};
+  border: ${(props: any) => getBorderWidth(props.theme, 'sm')} solid ${(props: any) => getColor(props.theme, 'border.light')};
+  transition: ${(props: any) => getTransition(props.theme, 'all', 'fast', 'ease')};
   cursor: ${(props: any) => props.onClick ? 'pointer' : 'default'};
 
   &:hover {
-    border-color: ${(props: any) => props.theme.colors.border.base};
-    box-shadow: ${(props: any) => props.theme.shadows.sm};
+    border-color: ${(props: any) => getColor(props.theme, 'border.base')};
+    box-shadow: ${(props: any) => getShadow(props.theme, 'sm')};
   }
 
   &.hovered {
@@ -31,32 +32,32 @@ export const PostCardContainer = styled.div<{ theme: EnhancedTheme }>`
 
 export const PostCardBadge = styled.div<{ theme: EnhancedTheme }>`
   position: absolute;
-  left: ${(props: any) => props.theme.spacing.sm};
-  bottom: ${(props: any) => props.theme.spacing.lg};
-  min-width: ${(props: any) => props.theme.spacing.sm};
-  height: ${(props: any) => props.theme.spacing.sm};
-  border-radius: ${(props: any) => props.theme.radius.full};
-  background-color: ${(props: any) => props.theme.colors.brand[500]};
-  color: ${(props: any) => props.theme.colors.text.primary};
+  left: ${(props: any) => getSpacing(props.theme, 'sm')};
+  bottom: ${(props: any) => getSpacing(props.theme, 'lg')};
+  min-width: ${(props: any) => getSpacing(props.theme, 'sm')};
+  height: ${(props: any) => getSpacing(props.theme, 'sm')};
+  border-radius: ${(props: any) => getRadius(props.theme, 'full')};
+  background-color: ${(props: any) => getColor(props.theme, 'brand.500')};
+  color: ${(props: any) => getColor(props.theme, 'text.primary')};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${(props: any) => props.theme.typography.fontSize.sm};
-  font-weight: ${(props: any) => props.theme.typography.fontWeight.bold};
-  box-shadow: ${(props: any) => props.theme.shadows.sm};
+  font-size: ${(props: any) => getTypography(props.theme, 'fontSize.sm')};
+  font-weight: ${(props: any) => getTypography(props.theme, 'fontWeight.bold')};
+  box-shadow: ${(props: any) => getShadow(props.theme, 'sm')};
   z-index: ${(props: any) => props.theme.zIndex.above};
 
   .badge-content {
-    background-color: ${(props: any) => props.theme.colors.border.light};
-    color: ${(props: any) => props.theme.colors.text.primary};
-    border-radius: ${(props: any) => props.theme.radius.sm};
-    padding: ${(props: any) => `${props.theme.spacing.xs} ${props.theme.spacing.sm}`};
-    font-size: ${(props: any) => props.theme.typography.fontSize.sm};
-    font-weight: ${(props: any) => props.theme.typography.fontWeight.normal};
+    background-color: ${(props: any) => getColor(props.theme, 'border.light')};
+    color: ${(props: any) => getColor(props.theme, 'text.primary')};
+    border-radius: ${(props: any) => getRadius(props.theme, 'sm')};
+    padding: ${(props: any) => `${getSpacing(props.theme, 'xs')} ${getSpacing(props.theme, 'sm')}`};
+    font-size: ${(props: any) => getTypography(props.theme, 'fontSize.sm')};
+    font-weight: ${(props: any) => getTypography(props.theme, 'fontWeight.normal')};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: ${(props: any) => props.theme.spacing.xl};
+    max-width: ${(props: any) => getSpacing(props.theme, 'xl')};
   }
 `;
 
@@ -64,61 +65,61 @@ export const PostCardHeader = styled.div<{ theme: EnhancedTheme }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: ${(props: any) => props.theme.spacing.sm};
-  padding: 0 ${(props: any) => props.theme.spacing.md};
+  margin-bottom: ${(props: any) => getSpacing(props.theme, 'sm')};
+  padding: 0 ${(props: any) => getSpacing(props.theme, 'md')};
 
   .author-info {
     display: flex;
     align-items: center;
-    gap: ${(props: any) => props.theme.spacing.sm};
+    gap: ${(props: any) => getSpacing(props.theme, 'sm')};
   }
 
   .author-avatar {
-    width: ${(props: any) => props.theme.spacing.lg};
-    height: ${(props: any) => props.theme.spacing.lg};
-    border-radius: ${(props: any) => props.theme.radius.full};
+    width: ${(props: any) => getSpacing(props.theme, 'lg')};
+    height: ${(props: any) => getSpacing(props.theme, 'lg')};
+    border-radius: ${(props: any) => getRadius(props.theme, 'full')};
     object-fit: cover;
   }
 
   .author-name {
-    font-weight: ${(props: any) => props.theme.typography.fontWeight.medium};
-    color: ${(props: any) => props.theme.colors.text.primary};
+    font-weight: ${(props: any) => getTypography(props.theme, 'fontWeight.medium')};
+    color: ${(props: any) => getColor(props.theme, 'text.primary')};
   }
 
   .post-timestamp {
-    font-size: ${(props: any) => props.theme.typography.fontSize.sm};
-    color: ${(props: any) => props.theme.colors.text.secondary};
+    font-size: ${(props: any) => getTypography(props.theme, 'fontSize.sm')};
+    color: ${(props: any) => getColor(props.theme, 'text.secondary')};
   }
 `;
 
 export const PostCardTitle = styled.h3<{ theme: EnhancedTheme }>`
-  font-size: ${(props: any) => props.theme.typography.fontSize.lg};
-  font-weight: ${(props: any) => props.theme.typography.fontWeight.bold};
-  color: ${(props: any) => props.theme.colors.text.primary};
+  font-size: ${(props: any) => getTypography(props.theme, 'fontSize.lg')};
+  font-weight: ${(props: any) => getTypography(props.theme, 'fontWeight.bold')};
+  color: ${(props: any) => getColor(props.theme, 'text.primary')};
   margin: 0;
-  line-height: ${(props: any) => props.theme.typography.lineHeight.tight};
+  line-height: ${(props: any) => getTypography(props.theme, 'lineHeight.tight')};
 `;
 
 export const PostCardContent = styled.div<{ theme: EnhancedTheme }>`
-  padding: ${(props: any) => props.theme.spacing.md};
-  background-color: ${(props: any) => props.theme.colors.background.primary};
-  border-radius: ${(props: any) => props.theme.radius.md};
-  border: 1px solid ${(props: any) => props.theme.colors.border.light};
-  margin-bottom: ${(props: any) => props.theme.spacing.sm};
-  transition: all 0.2s ease;
+  padding: ${(props: any) => getSpacing(props.theme, 'md')};
+  background-color: ${(props: any) => getColor(props.theme, 'background.primary')};
+  border-radius: ${(props: any) => getRadius(props.theme, 'md')};
+  border: ${(props: any) => getBorderWidth(props.theme, 'sm')} solid ${(props: any) => getColor(props.theme, 'border.light')};
+  margin-bottom: ${(props: any) => getSpacing(props.theme, 'sm')};
+  transition: ${(props: any) => getTransition(props.theme, 'all', 'fast', 'ease')};
 
   &:hover {
-    border-color: ${(props: any) => props.theme.colors.border.base};
-    box-shadow: ${(props: any) => props.theme.shadows.sm};
+    border-color: ${(props: any) => getColor(props.theme, 'border.base')};
+    box-shadow: ${(props: any) => getShadow(props.theme, 'sm')};
   }
 
   .post-body {
-    color: ${(props: any) => props.theme.colors.text.primary};
-    line-height: ${(props: any) => props.theme.typography.lineHeight.normal};
-    margin-bottom: ${(props: any) => props.theme.spacing.sm};
+    color: ${(props: any) => getColor(props.theme, 'text.primary')};
+    line-height: ${(props: any) => getTypography(props.theme, 'lineHeight.normal')};
+    margin-bottom: ${(props: any) => getSpacing(props.theme, 'sm')};
 
     p {
-      margin: 0 0 ${(props: any) => props.theme.spacing.sm} 0;
+      margin: 0 0 ${(props: any) => getSpacing(props.theme, 'sm')} 0;
 
       &:last-child {
         margin-bottom: 0;
@@ -131,37 +132,37 @@ export const PostCardFooter = styled.div<{ theme: EnhancedTheme }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${(props: any) => `${props.theme.spacing.sm} ${props.theme.spacing.md}`};
-  border-top: 1px solid ${(props: any) => props.theme.colors.border.light};
-  background-color: ${(props: any) => props.theme.colors.background.secondary};
-  border-radius: 0 0 ${(props: any) => props.theme.radius.md} ${(props: any) => props.theme.radius.md};
+  padding: ${(props: any) => `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'md')}`};
+  border-top: ${(props: any) => getBorderWidth(props.theme, 'sm')} solid ${(props: any) => getColor(props.theme, 'border.light')};
+  background-color: ${(props: any) => getColor(props.theme, 'background.secondary')};
+  border-radius: 0 0 ${(props: any) => getRadius(props.theme, 'md')} ${(props: any) => getRadius(props.theme, 'md')};
 
   .post-actions {
     display: flex;
     align-items: center;
-    gap: ${(props: any) => props.theme.spacing.sm};
+    gap: ${(props: any) => getSpacing(props.theme, 'sm')};
   }
 
   .action-button {
     background: none;
     border: none;
     cursor: pointer;
-    color: ${(props: any) => props.theme.colors.text.secondary};
-    font-size: ${(props: any) => props.theme.typography.fontSize.sm};
-    padding: ${(props: any) => props.theme.spacing.xs};
-    border-radius: ${(props: any) => props.theme.radius.sm};
-    transition: all 0.2s ease;
+    color: ${(props: any) => getColor(props.theme, 'text.secondary')};
+    font-size: ${(props: any) => getTypography(props.theme, 'fontSize.sm')};
+    padding: ${(props: any) => getSpacing(props.theme, 'xs')};
+    border-radius: ${(props: any) => getRadius(props.theme, 'sm')};
+    transition: ${(props: any) => getTransition(props.theme, 'all', 'fast', 'ease')};
     display: flex;
     align-items: center;
-    gap: ${(props: any) => props.theme.spacing.xs};
+    gap: ${(props: any) => getSpacing(props.theme, 'xs')};
 
     &:hover {
-      color: ${(props: any) => props.theme.colors.brand[500]};
-      background-color: ${(props: any) => props.theme.colors.background.secondary};
+      color: ${(props: any) => getColor(props.theme, 'brand.500')};
+      background-color: ${(props: any) => getColor(props.theme, 'background.secondary')};
     }
 
     &.liked {
-      color: #e74c3c;
+      color: ${(props: any) => getColor(props.theme, 'semantic.error')};
     }
 
     &:active {
@@ -172,15 +173,15 @@ export const PostCardFooter = styled.div<{ theme: EnhancedTheme }>`
   .post-meta {
     display: flex;
     align-items: center;
-    gap: ${(props: any) => props.theme.spacing.sm};
-    font-size: ${(props: any) => props.theme.typography.fontSize.sm};
-    color: ${(props: any) => props.theme.colors.text.secondary};
-    margin-top: ${(props: any) => props.theme.spacing.xs};
+    gap: ${(props: any) => getSpacing(props.theme, 'sm')};
+    font-size: ${(props: any) => getTypography(props.theme, 'fontSize.sm')};
+    color: ${(props: any) => getColor(props.theme, 'text.secondary')};
+    margin-top: ${(props: any) => getSpacing(props.theme, 'xs')};
 
     .meta-item {
       display: flex;
       align-items: center;
-      gap: ${(props: any) => props.theme.spacing.xs};
+      gap: ${(props: any) => getSpacing(props.theme, 'xs')};
     }
   }
 `;

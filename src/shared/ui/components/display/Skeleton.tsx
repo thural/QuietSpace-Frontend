@@ -62,7 +62,7 @@ const SkeletonContainer = styled.div.withConfig({
   }}
   
   /* Use getSkeletonStyles utility for consistent skeleton appearance */
-  ${props => getSkeletonStyles(props.theme, props.$variant === 'circular' ? 'circle' : props.$variant === 'text' ? 'text' : 'default')}
+  ${props => getSkeletonStyles(props.theme || {} as any)}
   
   /* Subtle animation on hover */
   &:hover {

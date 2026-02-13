@@ -9,7 +9,7 @@ import { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { FlexProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
-import { getSpacing } from '../utils';
+import { getSpacing, getBreakpoint } from '../utils';
 
 // Styled components with theme token integration
 const StyledFlexContainer = styled.div<{
@@ -93,7 +93,7 @@ const StyledFlexContainer = styled.div<{
     }}
   
   /* Responsive design using theme breakpoints */
-  @media (max-width: ${props => props.theme?.breakpoints?.sm || '768px'}) {
+  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
     flex-direction: ${props => (props.direction === 'row' || props.direction === 'row-reverse') ? 'column' : props.direction || 'column'};
     gap: ${props => {
         if (props.gap && typeof props.gap === 'string') {
