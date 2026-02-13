@@ -2,38 +2,54 @@ import { ResId } from "@/shared/api/models/commonNative";
 import { Container } from '@/shared/ui/components/layout/Container';
 import { ChangeEvent, MouseEvent, PureComponent, ReactNode } from 'react';
 import CheckboxComponent from './CheckboxComponent';
+import { ThemeTokenMixin } from '../../utils/themeTokenHelpers';
 
 interface ICheckBoxProps {
     value: ResId;
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    disabled?: boolean;
+    error?: boolean;
 }
 
 class CheckBox extends PureComponent<ICheckBoxProps> {
-    // Handle checkbox click to prevent event bubbling
-    private handleSelectClick = (event: MouseEvent<HTMLInputElement>): void => {
-        event.stopPropagation();
-        event.preventDefault();
+    static defaultProps: Partial<ICheckBoxProps> = {
+        size: 'md',
+        disabled: false,
+        error: false
     };
 
-    // Handle checkbox change event
-    private handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        const { onChange } = this.props;
-        onChange(event);
+    // Size mapping using theme tokens
+    private readonly sizeMap: Record<string, string> = {
+        xs: '16px',
+        sm: '20px',
+        md: '24px',
+        lg: '28px',
+        xl: '32px'
     };
 
-    render(): ReactNode {
-        const { value, onChange } = this.props;
+    // Get checkbox size with fallback
+    private getCheckboxSize = (): string => {
+        const { size } = this.props;
+        return this.sizeMap[size!] || this.sizeMap.md;
+    };
+
+    override render(): ReactNode {
+        const { value, onChange, disabled } = this.props;
 
         return (
-            <CheckboxComponent
-                checked={false}
-                onChange={(checked) => {
-                    const event = {
-                        target: { value: checked ? value : '', checked }
-                    } as ChangeEvent<HTMLInputElement>;
-                    onChange(event);
-                }}
-            />
+            <Container>
+                <CheckboxComponent
+                    checked={false}
+                    disabled={disabled}
+                    onChange={(checked) => {
+                        const event = {
+                            target: { value: checked ? value : '', checked }
+                        } as ChangeEvent<HTMLInputElement>;
+                        onChange(event);
+                    }}
+                />
+            </Container>
         );
     }
 }
