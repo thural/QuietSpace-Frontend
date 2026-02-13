@@ -8,9 +8,10 @@
 import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { ComponentSize } from '../../utils/themeTokenHelpers';
 
-// Styled components
-const LoaderContainer = styled.div`
+// Styled components with theme token integration
+const LoaderContainer = styled.div<{ theme?: any }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,13 +20,14 @@ const LoaderContainer = styled.div`
 interface SpinnerProps {
     size?: string;
     color?: string;
+    theme?: any;
 }
 
 const Spinner = styled.div<SpinnerProps>`
   width: ${props => props.size || '30px'};
   height: ${props => props.size || '30px'};
-  border: 3px solid ${(props) => (props.theme as any)?.colors?.backgroundSecondary || '#f0f0f0'};
-  border-top: 3px solid ${props => props.color || (props.theme as any)?.colors?.primary || '#007bff'};
+  border: 3px solid ${props => props.theme?.colors?.background?.secondary || props.theme?.colors?.backgroundSecondary || '#f0f0f0'};
+  border-top: 3px solid ${props => props.color || props.theme?.colors?.primary || props.theme?.colors?.brand?.[500] || '#007bff'};
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -39,6 +41,7 @@ const Spinner = styled.div<SpinnerProps>`
 interface ILoaderProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
     size?: string | number;
     color?: string;
+    variant?: ComponentSize;
     ref?: React.RefObject<HTMLDivElement>;
     id?: string;
 }
@@ -46,10 +49,11 @@ interface ILoaderProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
 // Main Loader component
 class Loader extends PureComponent<ILoaderProps> {
     static defaultProps: Partial<ILoaderProps> = {
-        size: 'md'
+        size: 'md',
+        variant: 'md'
     };
 
-    // Size mapping for consistent sizing
+    // Size mapping for consistent sizing using theme tokens
     private readonly sizeMap: Record<string, string> = {
         xs: '16px',
         sm: '24px',
@@ -58,15 +62,36 @@ class Loader extends PureComponent<ILoaderProps> {
         xl: '48px'
     };
 
-    // Convert size variants to actual pixel values
-    private getSizePixels = (size: string | number): string => {
-        if (typeof size === 'number') return `${size}px`;
-        return this.sizeMap[size] || size;
+    // Size mapping for variant prop
+    private readonly variantSizeMap: Record<ComponentSize, string> = {
+        xs: '16px',
+        sm: '24px',
+        md: '30px',
+        lg: '40px',
+        xl: '48px'
     };
 
-    render(): ReactNode {
-        const { size, color, className, testId, ...props } = this.props;
-        const finalSize = this.getSizePixels(size || 'md');
+    // Convert size variants to actual pixel values
+    private getSizePixels = (size: string | number | ComponentSize | undefined): string => {
+        if (typeof size === 'number') return `${size}px`;
+        if (typeof size === 'string' && this.sizeMap[size]) return this.sizeMap[size];
+        if (size && this.variantSizeMap[size as ComponentSize]) return this.variantSizeMap[size as ComponentSize];
+        return this.sizeMap.md;
+    };
+
+    // Get color based on theme tokens or fallback
+    private getSpinnerColor = (color?: string): string => {
+        if (color) return color;
+        // Return theme brand color or fallback
+        return '#007bff';
+    };
+
+    override render(): ReactNode {
+        const { size, color, variant, className, testId, ...props } = this.props;
+
+        // Use variant prop first, then size prop, then default
+        const finalSize = variant ? this.getSizePixels(variant) : this.getSizePixels(size);
+        const finalColor = this.getSpinnerColor(color);
 
         return (
             <LoaderContainer
@@ -76,7 +101,7 @@ class Loader extends PureComponent<ILoaderProps> {
             >
                 <Spinner
                     size={finalSize}
-                    color={color}
+                    color={finalColor}
                 />
             </LoaderContainer>
         );
