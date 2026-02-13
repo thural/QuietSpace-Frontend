@@ -40,6 +40,15 @@ export * from './components/typography';
 // Provider Components (NEW - migrated from core)
 export * from './components/providers';
 
+// Social Components (NEW - extracted from features)
+export * from './components/social';
+
+// Content Components (NEW - extracted from features)
+export * from './components/content';
+
+// Data Display Components (NEW - for future implementation)
+export * from './components/data-display';
+
 // ====================================================================
 // CORE COMPONENTS
 // ====================================================================
