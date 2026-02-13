@@ -3,6 +3,7 @@
  *
  * Composable theme system with inheritance, merging, and validation.
  * Supports theme variants, overrides, and composition patterns.
+ * Includes comprehensive accessibility features and WCAG compliance.
  */
 
 import { colors } from './appColors';
@@ -16,6 +17,14 @@ import {
 } from './baseTokens';
 
 import type { ThemeTokens } from './tokens';
+import {
+  AccessibilityThemeExtensions,
+  AccessibilityTestingUtils,
+  WCAGContrastCalculator,
+  type AccessibilityTokens,
+  type AccessibilityConfig,
+  type ContrastResult
+} from './accessibility/AccessibilityFeatures';
 
 export interface ThemeConfig {
   name: string;
@@ -23,16 +32,24 @@ export interface ThemeConfig {
   tokens: Partial<ThemeTokens>;
   extends?: string[];
   overrides?: Partial<ThemeTokens>;
+  accessibility?: AccessibilityConfig;
 }
 
 export interface ComposedTheme {
   name: string;
   version: string;
   tokens: ThemeTokens;
+  accessibility?: AccessibilityTokens;
   metadata: {
     createdAt: Date;
     updatedAt: Date;
     extends: string[];
+    accessibilityReport?: {
+      compliance: 'AA' | 'AAA' | 'PARTIAL' | 'FAIL';
+      passed: number;
+      failed: number;
+      total: number;
+    };
   };
 }
 
@@ -51,7 +68,7 @@ export class ThemeComposer {
   }
 
   /**
-   * Compose a theme with inheritance and overrides
+   * Compose a theme with inheritance, overrides, and accessibility features
    */
   composeTheme(name: string, overrides?: Partial<ThemeTokens>): ComposedTheme {
     const config = this.themes.get(name);
@@ -68,14 +85,35 @@ export class ThemeComposer {
     // Compose theme with inheritance
     const tokens = this.composeTokens(config, overrides);
 
+    // Generate accessibility tokens if configured
+    let accessibilityTokens: AccessibilityTokens | undefined;
+    let accessibilityReport: ComposedTheme['metadata']['accessibilityReport'] | undefined;
+
+    if (config.accessibility) {
+      // Convert ColorTokens to Record<string, string> for accessibility generation
+      const colorRecord = this.flattenColorTokens(tokens.colors);
+      accessibilityTokens = AccessibilityThemeExtensions.generateAccessibilityTokens(colorRecord);
+
+      // Generate accessibility report
+      const report = AccessibilityTestingUtils.generateAccessibilityReport(name, accessibilityTokens);
+      accessibilityReport = {
+        compliance: report.summary.compliance,
+        passed: report.summary.passed,
+        failed: report.summary.failed,
+        total: report.summary.total
+      };
+    }
+
     const composedTheme: ComposedTheme = {
       name: config.name,
       version: config.version,
       tokens,
+      accessibility: accessibilityTokens,
       metadata: {
         createdAt: new Date(),
         updatedAt: new Date(),
-        extends: config.extends || []
+        extends: config.extends || [],
+        accessibilityReport
       }
     };
 
@@ -172,6 +210,53 @@ export class ThemeComposer {
    */
   getThemeConfig(name: string): ThemeConfig | undefined {
     return this.themes.get(name);
+  }
+
+  /**
+   * Flatten ColorTokens to Record<string, string> for accessibility processing
+   */
+  private flattenColorTokens(colors: any): Record<string, string> {
+    const flattened: Record<string, string> = {};
+
+    const flatten = (obj: any, prefix = '') => {
+      for (const key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          flatten(obj[key], `${prefix}${key}.`);
+        } else {
+          flattened[`${prefix}${key}`] = obj[key];
+        }
+      }
+    };
+
+    flatten(colors);
+    return flattened;
+  }
+
+  /**
+   * Test color contrast for a theme
+   */
+  testColorContrast(themeName: string, combinations: Array<{ foreground: string; background: string }>): Array<{ name: string; result: ContrastResult; passes: boolean }> {
+    const theme = this.composedThemes.get(themeName);
+    if (!theme || !theme.accessibility) {
+      throw new Error(`Theme "${themeName}" not found or accessibility not enabled`);
+    }
+
+    return AccessibilityTestingUtils.testColorContrast(
+      this.flattenColorTokens(theme.tokens.colors),
+      combinations
+    );
+  }
+
+  /**
+   * Generate accessibility report for a theme
+   */
+  generateAccessibilityReport(themeName: string) {
+    const theme = this.composedThemes.get(themeName);
+    if (!theme || !theme.accessibility) {
+      throw new Error(`Theme "${themeName}" not found or accessibility not enabled`);
+    }
+
+    return AccessibilityTestingUtils.generateAccessibilityReport(themeName, theme.accessibility);
   }
 }
 

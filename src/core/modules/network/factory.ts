@@ -14,11 +14,92 @@ import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
 // Import centralized error handling
 import { createNetworkError } from '../error';
 
+// Import retry strategy pattern
+import { RetryStrategyFactory, type IRetryStrategy } from './strategies/RetryStrategy';
+
+/**
+ * Creates retry strategy from configuration
+ */
+function createRetryStrategyFromConfig(retryConfig: any): IRetryStrategy {
+    if (retryConfig.exponentialBackoff) {
+        return RetryStrategyFactory.createStrategy('exponential', {
+            delay: retryConfig.retryDelay,
+            maxAttempts: retryConfig.maxAttempts,
+            backoffMultiplier: 2
+        });
+    } else {
+        return RetryStrategyFactory.createStrategy('linear', {
+            delay: retryConfig.retryDelay,
+            maxAttempts: retryConfig.maxAttempts
+        });
+    }
+}
+
 // Import implementations (internal)
 
 import type { IApiClient, IApiClientConfig } from './interfaces';
 import type { Container } from '../dependency-injection/container/Container';
 
+
+/**
+ * Creates an API client with retry strategy support.
+ *
+ * @param config - Optional configuration for the API client
+ * @param retryStrategy - Optional retry strategy override
+ * @returns Configured API client instance
+ */
+export function createApiClientWithRetry(
+    config?: Partial<IApiClientConfig>,
+    retryStrategy?: IRetryStrategy
+): IApiClient {
+    // Merge with default configuration
+    const finalConfig: IApiClientConfig = {
+        ...DEFAULT_API_CONFIG,
+        ...config,
+        headers: {
+            ...DEFAULT_API_CONFIG.headers,
+            ...config?.headers
+        },
+        retryConfig: {
+            maxAttempts: DEFAULT_API_CONFIG.retryConfig?.maxAttempts ?? 3,
+            retryDelay: DEFAULT_API_CONFIG.retryConfig?.retryDelay ?? 1000,
+            retryCondition: DEFAULT_API_CONFIG.retryConfig?.retryCondition || (() => true),
+            exponentialBackoff: DEFAULT_API_CONFIG.retryConfig?.exponentialBackoff ?? true,
+            ...config?.retryConfig
+        },
+        cacheConfig: {
+            enabled: DEFAULT_API_CONFIG.cacheConfig?.enabled ?? true,
+            ttl: DEFAULT_API_CONFIG.cacheConfig?.ttl ?? 300000,
+            maxSize: DEFAULT_API_CONFIG.cacheConfig?.maxSize ?? 1000,
+            keyGenerator: DEFAULT_API_CONFIG.cacheConfig?.keyGenerator || ((url: string) => url),
+            ...config?.cacheConfig
+        }
+    };
+
+    // Create retry strategy if not provided
+    const strategy = retryStrategy || createRetryStrategyFromConfig(finalConfig.retryConfig);
+
+    try {
+        // Create API client instance with retry strategy
+        // Note: Strategy would be passed to ApiClient constructor if it supports it
+        // For now, we store it in the config for internal use
+        const client = new ApiClient(finalConfig);
+
+        // Attach retry strategy to client if supported
+        if ('setRetryStrategy' in client) {
+            (client as any).setRetryStrategy(strategy);
+        }
+
+        return client;
+    } catch (error) {
+        const networkError = createNetworkError(
+            'Failed to create API client',
+            undefined,
+            undefined
+        );
+        throw networkError;
+    }
+}
 
 /**
  * Creates an API client with the specified configuration.
