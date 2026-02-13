@@ -18,7 +18,6 @@ export interface IThemeEnhancer {
     enhance(theme: ComposedTheme): EnhancedTheme;
     addUtilities(theme: EnhancedTheme): EnhancedTheme;
     addComputedValues(theme: EnhancedTheme): EnhancedTheme;
-    addBackwardCompatibility(theme: EnhancedTheme): EnhancedTheme;
     validateEnhancedTheme(theme: EnhancedTheme): Promise<boolean>;
 }
 
@@ -103,21 +102,6 @@ export class ThemeEnhancer implements IThemeEnhancer {
     }
 
     /**
-     * Add backward compatibility properties
-     */
-    public addBackwardCompatibility(theme: EnhancedTheme): EnhancedTheme {
-        try {
-            return this.enhancementService.addBackwardCompatibility(theme);
-        } catch (error) {
-            throw this.errorFactory.createEnhancementError(
-                `Failed to add backward compatibility: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                'unknown',
-                'backward-compatibility'
-            );
-        }
-    }
-
-    /**
      * Validate enhanced theme asynchronously
      */
     public async validateEnhancedTheme(theme: EnhancedTheme): Promise<boolean> {
@@ -127,15 +111,6 @@ export class ThemeEnhancer implements IThemeEnhancer {
             for (const method of requiredMethods) {
                 if (typeof (theme as any)[method] !== 'function') {
                     console.error(`Missing required method: ${method}`);
-                    return false;
-                }
-            }
-
-            // Check required properties
-            const requiredProperties = ['primary', 'secondary', 'success', 'warning', 'error', 'info'];
-            for (const prop of requiredProperties) {
-                if (!(prop in theme)) {
-                    console.error(`Missing required property: ${prop}`);
                     return false;
                 }
             }
@@ -153,8 +128,11 @@ export class ThemeEnhancer implements IThemeEnhancer {
             return true;
 
         } catch (error) {
-            console.error('Theme validation error:', error);
-            return false;
+            throw this.errorFactory.createEnhancementError(
+                `Failed to validate enhanced theme: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                'unknown',
+                'validation'
+            );
         }
     }
 

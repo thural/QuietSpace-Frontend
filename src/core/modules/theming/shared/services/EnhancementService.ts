@@ -15,7 +15,6 @@ export interface IEnhancementService {
     enhance(theme: ComposedTheme): EnhancedTheme;
     addUtilities(theme: EnhancedTheme): EnhancedTheme;
     addComputedValues(theme: EnhancedTheme): EnhancedTheme;
-    addBackwardCompatibility(theme: EnhancedTheme): EnhancedTheme;
 }
 
 /**
@@ -50,9 +49,6 @@ export class EnhancementService implements IEnhancementService {
 
         // Add utility methods
         enhancedTheme = this.addUtilities(enhancedTheme);
-
-        // Add backward compatibility
-        enhancedTheme = this.addBackwardCompatibility(enhancedTheme);
 
         return enhancedTheme as EnhancedTheme;
     }
@@ -114,44 +110,6 @@ export class EnhancementService implements IEnhancementService {
             // Computed animation durations
             animationDurations: this.computeAnimationDurations(theme.animation)
         } as EnhancedTheme;
-    }
-
-    /**
-     * Add backward compatibility properties
-     */
-    public addBackwardCompatibility(theme: any): any {
-        return {
-            ...theme,
-            // Legacy color properties
-            primary: theme.colors.brand,
-            secondary: theme.colors.neutral,
-            success: theme.colors.semantic?.success || '#10b981',
-            warning: theme.colors.semantic?.warning || '#f59e0b',
-            error: theme.colors.semantic?.error || '#ef4444',
-            info: theme.colors.semantic?.info || '#3b82f6',
-
-            // Legacy spacing function
-            spacing: (factor: number) => this.computeSpacingFromFactor(theme.spacing, factor),
-
-            // Legacy breakpoint function
-            breakpoints: {
-                xs: this.parseBreakpointValue(theme.breakpoints.xs),
-                sm: this.parseBreakpointValue(theme.breakpoints.sm),
-                md: this.parseBreakpointValue(theme.breakpoints.md),
-                lg: this.parseBreakpointValue(theme.breakpoints.lg),
-                xl: this.parseBreakpointValue(theme.breakpoints.xl)
-            },
-
-            // Legacy radius values
-            radius: {
-                none: theme.radius.none,
-                sm: theme.radius.sm,
-                md: theme.radius.md,
-                lg: theme.radius.lg,
-                xl: theme.radius.xl,
-                full: theme.radius.full
-            }
-        };
     }
 
     /**
@@ -280,15 +238,6 @@ export class EnhancementService implements IEnhancementService {
         }
 
         return durations;
-    }
-
-    /**
-     * Compute spacing from factor (legacy support)
-     */
-    private computeSpacingFromFactor(spacing: ThemeTokens['spacing'], factor: number): string {
-        const baseSpacing = spacing.md || '16px';
-        const baseValue = parseInt(baseSpacing.replace('px', ''));
-        return `${baseValue * factor}px`;
     }
 }
 
