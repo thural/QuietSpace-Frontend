@@ -46,7 +46,6 @@ export { default as MigrationInfo } from './utility/MigrationInfo';
 // Theme integration - Clean API
 export type {
     ThemeTokens,
-    EnhancedTheme,
     ColorTokens,
     TypographyTokens,
     SpacingTokens,
@@ -54,13 +53,26 @@ export type {
     BreakpointTokens,
     RadiusTokens,
     AnimationTokens
-} from '@/core/theme';
+} from '@/core/modules/theming/tokens';
+
+export type {
+    EnhancedTheme
+} from '@/core/modules/theming/internal/types';
 
 // Essential hooks for UI integration
 export {
     useTheme,
     useThemeTokens
-} from '@/core/theme';
+} from '@/core/modules/theming';
+
+// Theme token helpers for class-based components
+export {
+    ThemeTokenHelper,
+    ThemedComponent,
+    ThemeTokenMixin,
+    ComponentSize,
+    ComponentVariant
+} from '../utils/themeTokenHelpers';
 
 // Legacy wildcard exports (deprecated - will be removed in next major version)
 export * from './types';

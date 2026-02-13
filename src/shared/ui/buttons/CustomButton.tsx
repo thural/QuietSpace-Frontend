@@ -1,6 +1,6 @@
-import { EnhancedTheme } from '@/core/modules/theming/internal/types';
-import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
-import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
+import type { EnhancedTheme } from '../../../core/modules/theming/internal/types';
+import withForwardedRefAndErrBoundary from "../../hooks/withForwardedRef";
+import { GenericWrapperWithRef } from "../../../shared/types/sharedComponentTypes";
 import { PureComponent, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { ComponentSize } from '../utils/themeTokenHelpers';

@@ -1,11 +1,105 @@
 import React, { PureComponent, ReactNode } from 'react';
-import { Container } from '@/shared/ui/components/layout/Container';
-import Typography from '@/shared/ui/components/utility/Typography';
-import OutlineButton from '@/shared/ui/buttons/OutlineButton';
+import styled from 'styled-components';
+import { BaseComponentProps } from '../types';
+import { ComponentSize } from '../../utils/themeTokenHelpers';
 
-interface IErrorFallbackProps {
+// Styled components with theme token integration
+const ErrorFallbackContainer = styled.div<{ theme?: any }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: ${props => props.theme?.colors?.background?.secondary || '#f8f9fa'};
+  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+`;
+
+const ErrorCard = styled.div<{ theme?: any }>`
+  max-width: 28rem;
+  width: 100%;
+  padding: ${props => props.theme?.spacing?.xl || '32px'};
+  background-color: ${props => props.theme?.colors?.background?.primary || '#ffffff'};
+  border-radius: ${props => props.theme?.radius?.lg || '8px'};
+  box-shadow: ${props => props.theme?.shadows?.md || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+`;
+
+const ErrorContent = styled.div<{ theme?: any }>`
+  text-align: center;
+`;
+
+const ErrorIconContainer = styled.div<{ theme?: any }>`
+  margin-bottom: ${props => props.theme?.spacing?.lg || '24px'};
+`;
+
+const ErrorTitle = styled.h3<{ theme?: any }>`
+  font-size: ${props => props.theme?.typography?.fontSize?.xl || '20px'};
+  font-weight: ${props => props.theme?.typography?.fontWeight?.semibold || '600'};
+  color: ${props => props.theme?.colors?.text?.primary || '#111827'};
+  margin-bottom: ${props => props.theme?.spacing?.sm || '8px'};
+`;
+
+const ErrorMessage = styled.p<{ theme?: any }>`
+  font-size: ${props => props.theme?.typography?.fontSize?.base || '16px'};
+  color: ${props => props.theme?.colors?.text?.secondary || '#6b7280'};
+  margin-bottom: ${props => props.theme?.spacing?.xl || '32px'};
+  line-height: ${props => props.theme?.typography?.lineHeight?.relaxed || '1.625'};
+`;
+
+const ActionButtonsContainer = styled.div<{ theme?: any }>`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme?.spacing?.md || '16px'};
+`;
+
+const StyledButton = styled.button<{ theme?: any; variant?: 'primary' | 'secondary' }>`
+  width: 100%;
+  padding: ${props => props.theme?.spacing?.md || '16px'} ${props => props.theme?.spacing?.lg || '24px'};
+  border: 2px solid ${props => props.variant === 'primary'
+        ? (props.theme?.colors?.brand?.[500] || '#007bff')
+        : (props.theme?.colors?.border?.medium || '#6c757d')};
+  background-color: ${props => props.variant === 'primary'
+        ? (props.theme?.colors?.brand?.[500] || '#007bff')
+        : 'transparent'};
+  color: ${props => props.variant === 'primary'
+        ? (props.theme?.colors?.text?.inverse || '#ffffff')
+        : (props.theme?.colors?.brand?.[500] || '#007bff')};
+  border-radius: ${props => props.theme?.radius?.md || '6px'};
+  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+  font-size: ${props => props.theme?.typography?.fontSize?.base || '16px'};
+  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
+  cursor: pointer;
+  transition: all ${props => props.theme?.animation?.duration?.fast || '0.2s'} ${props => props.theme?.animation?.easing?.ease || 'ease'};
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: ${props => props.theme?.shadows?.md || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+    ${props => props.variant === 'primary' && `
+      background-color: ${props.theme?.colors?.brand?.[600] || '#0056b3'};
+      border-color: ${props.theme?.colors?.brand?.[600] || '#0056b3'};
+    `}
+    ${props => props.variant === 'secondary' && `
+      background-color: ${props.theme?.colors?.background?.secondary || '#f8f9fa'};
+      border-color: ${props.theme?.colors?.border?.dark || '#495057'};
+      color: ${props.theme?.colors?.brand?.[500] || '#007bff'};
+    `}
+  }
+  
+  &:focus {
+    outline: 2px solid ${props => props.theme?.colors?.brand?.[300] || '#80bdff'};
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
+interface IErrorFallbackProps extends BaseComponentProps {
     error?: string;
     onRetry?: () => void;
+    variant?: 'default' | 'auth';
 }
 
 /**
@@ -16,7 +110,8 @@ interface IErrorFallbackProps {
  */
 class ErrorFallback extends PureComponent<IErrorFallbackProps> {
     static defaultProps: Partial<IErrorFallbackProps> = {
-        error: 'An error occurred'
+        error: 'An error occurred',
+        variant: 'default'
     };
 
     // Default retry handler - reloads the page
@@ -33,7 +128,12 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
     private renderErrorIcon = (): ReactNode => {
         return (
             <svg
-                className="w-16 h-16 mx-auto text-red-500"
+                style={{
+                    width: '64px',
+                    height: '64px',
+                    margin: '0 auto',
+                    color: '#ef4444'
+                }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -50,57 +150,56 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
 
     // Render action buttons
     private renderActionButtons = (): ReactNode => {
-        const { onRetry } = this.props;
+        const { onRetry, variant } = this.props;
+
+        if (variant === 'auth') {
+            return (
+                <ActionButtonsContainer>
+                    <StyledButton variant="secondary" onClick={this.handleGoToSignIn}>
+                        Go to Sign In
+                    </StyledButton>
+                </ActionButtonsContainer>
+            );
+        }
 
         return (
-            <Container className="space-y-3">
-                <OutlineButton
-                    name="Try Again"
-                    onClick={onRetry || this.handleRetry}
-                    className="w-full"
-                />
-
-                <OutlineButton
-                    name="Go to Sign In"
-                    onClick={this.handleGoToSignIn}
-                    className="w-full"
-                />
-            </Container>
+            <ActionButtonsContainer>
+                <StyledButton variant="primary" onClick={onRetry || this.handleRetry}>
+                    Try Again
+                </StyledButton>
+                <StyledButton variant="secondary" onClick={this.handleRetry}>
+                    Reload Page
+                </StyledButton>
+            </ActionButtonsContainer>
         );
     };
 
-    render(): ReactNode {
-        const { error } = this.props;
+    override render(): ReactNode {
+        const { error, variant, className, testId } = this.props;
 
         return (
-            <Container className="flex items-center justify-center min-h-screen bg-gray-50">
-                <Container className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-                    <Container className="text-center">
+            <ErrorFallbackContainer className={className} data-testid={testId}>
+                <ErrorCard>
+                    <ErrorContent>
                         {/* Error Icon */}
-                        <Container className="mb-4">
+                        <ErrorIconContainer>
                             {this.renderErrorIcon()}
-                        </Container>
+                        </ErrorIconContainer>
 
                         {/* Error Message */}
-                        <Typography
-                            type="h3"
-                            className="text-xl font-semibold text-gray-900 mb-2"
-                        >
-                            Authentication Error
-                        </Typography>
+                        <ErrorTitle>
+                            {variant === 'auth' ? 'Authentication Error' : 'Something went wrong'}
+                        </ErrorTitle>
 
-                        <Typography
-                            size="md"
-                            className="text-gray-600 mb-6"
-                        >
+                        <ErrorMessage>
                             {error}
-                        </Typography>
+                        </ErrorMessage>
 
                         {/* Action Buttons */}
                         {this.renderActionButtons()}
-                    </Container>
-                </Container>
-            </Container>
+                    </ErrorContent>
+                </ErrorCard>
+            </ErrorFallbackContainer>
         );
     }
 }

@@ -8,11 +8,13 @@
 import React, { PureComponent, ReactNode, RefObject } from 'react';
 import styled from 'styled-components';
 import { BaseComponentProps } from '../types';
+import { ComponentSize } from '../../utils/themeTokenHelpers';
 
-// Styled components
+// Styled components with theme token integration
 interface AvatarContainerProps {
     size?: string;
     radius?: string;
+    theme?: any;
 }
 
 const AvatarContainer = styled.div<AvatarContainerProps>`
@@ -22,12 +24,19 @@ const AvatarContainer = styled.div<AvatarContainerProps>`
   width: ${props => props.size || '40px'};
   height: ${props => props.size || '40px'};
   border-radius: ${props => props.radius || '50%'};
-  background-color: ${props => (props.theme as any)?.colors?.primary || '#007bff'};
-  color: white;
-  font-weight: 500;
+  background-color: ${props => props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff'};
+  color: ${props => props.theme?.colors?.text?.inverse || '#ffffff'};
+  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
   font-size: ${props => `calc(${props.size || '40px'} * 0.4)`};
+  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
   overflow: hidden;
   position: relative;
+  transition: all ${props => props.theme?.animation?.duration?.fast || '0.2s'} ${props => props.theme?.animation?.easing?.ease || 'ease'};
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: ${props => props.theme?.shadows?.md || '0 4px 6px rgba(0, 0, 0, 0.1)'};
+  }
 `;
 
 interface AvatarImageProps {
@@ -39,10 +48,12 @@ const AvatarImage = styled.img<AvatarImageProps>`
   height: 100%;
   object-fit: cover;
   border-radius: ${props => props.radius || '50%'};
+  transition: all ${props => props.theme?.animation?.duration?.fast || '0.2s'} ${props => props.theme?.animation?.easing?.ease || 'ease'};
 `;
 
 interface AvatarPlaceholderProps {
     color?: string;
+    theme?: any;
 }
 
 const AvatarPlaceholder = styled.div<AvatarPlaceholderProps>`
@@ -51,19 +62,21 @@ const AvatarPlaceholder = styled.div<AvatarPlaceholderProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.color || (props.theme as any)?.colors?.primary || '#007bff'};
-  color: white;
-  font-weight: 500;
+  background-color: ${props => props.color || props.theme?.colors?.brand?.[500] || props.theme?.colors?.primary || '#007bff'};
+  color: ${props => props.theme?.colors?.text?.inverse || '#ffffff'};
+  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
   text-transform: uppercase;
+  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
 `;
 
 // Props interfaces
 interface IAvatarProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
     src?: string;
     alt?: string;
-    size?: string | number;
+    size?: string | number | ComponentSize;
     radius?: string;
     color?: string;
+    variant?: 'circle' | 'square' | 'rounded';
     children?: ReactNode;
     ref?: RefObject<HTMLDivElement>;
     id?: string;
@@ -74,10 +87,10 @@ class Avatar extends PureComponent<IAvatarProps> {
     static defaultProps: Partial<IAvatarProps> = {
         alt: '',
         size: 'md',
-        radius: '50%',
+        variant: 'circle',
     };
 
-    // Size mapping for consistent sizing
+    // Size mapping for consistent sizing using theme tokens
     private readonly sizeMap: Record<string, string> = {
         xs: '24px',
         sm: '32px',
@@ -86,20 +99,49 @@ class Avatar extends PureComponent<IAvatarProps> {
         xl: '64px'
     };
 
+    // ComponentSize mapping
+    private readonly componentSizeMap: Record<ComponentSize, string> = {
+        xs: '24px',
+        sm: '32px',
+        md: '40px',
+        lg: '48px',
+        xl: '64px'
+    };
+
+    // Radius mapping for variants
+    private readonly radiusMap: Record<string, string> = {
+        circle: '50%',
+        square: '0%',
+        rounded: '8px'
+    };
+
     // Convert numeric size to string
     private convertSizeToString = (size: string | number): string => {
         return typeof size === 'number' ? `${size}px` : size;
     };
 
     // Get size in pixels with variant support
-    private getSizePixels = (size: string | number): string => {
+    private getSizePixels = (size: string | number | ComponentSize | undefined): string => {
         if (typeof size === 'number') return `${size}px`;
-        return this.sizeMap[size] || size;
+        if (typeof size === 'string' && this.sizeMap[size]) return this.sizeMap[size];
+        if (size && this.componentSizeMap[size as ComponentSize]) return this.componentSizeMap[size as ComponentSize];
+        return this.sizeMap.md;
     };
 
-    // Get final radius value
-    private getFinalRadius = (radius?: string): string => {
-        return radius === '50%' ? '50%' : (radius || '50%');
+    // Get final radius value based on variant
+    private getFinalRadius = (variant?: string, radius?: string): string => {
+        if (radius) return radius;
+        return this.radiusMap[variant || 'circle'] || '50%';
+    };
+
+    // Get initials from text
+    private getInitials = (text?: string): string => {
+        if (!text) return '';
+        const words = text.trim().split(/\s+/);
+        if (words.length === 1) {
+            return words[0].charAt(0).toUpperCase();
+        }
+        return words.slice(0, 2).map(word => word.charAt(0).toUpperCase()).join('');
     };
 
     // Render image component
@@ -117,16 +159,17 @@ class Avatar extends PureComponent<IAvatarProps> {
     private renderPlaceholder = (color?: string, children?: ReactNode): ReactNode => {
         return (
             <AvatarPlaceholder color={color}>
-                {children}
+                {children || '?'}
             </AvatarPlaceholder>
         );
     };
 
-    render(): ReactNode {
+    override render(): ReactNode {
         const {
             src,
             alt,
             size,
+            variant,
             radius,
             color,
             children,
@@ -135,8 +178,9 @@ class Avatar extends PureComponent<IAvatarProps> {
             ...props
         } = this.props;
 
-        const finalSize = this.getSizePixels(size || 'md');
-        const finalRadius = this.getFinalRadius(radius);
+        const finalSize = this.getSizePixels(size);
+        const finalRadius = this.getFinalRadius(variant, radius);
+        const placeholderContent = children || this.getInitials(alt);
 
         return (
             <AvatarContainer
@@ -148,7 +192,7 @@ class Avatar extends PureComponent<IAvatarProps> {
             >
                 {src ?
                     this.renderImage(src, alt || '', finalRadius) :
-                    this.renderPlaceholder(color, children)
+                    this.renderPlaceholder(color, placeholderContent)
                 }
             </AvatarContainer>
         );

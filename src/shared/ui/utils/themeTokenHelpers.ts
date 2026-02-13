@@ -5,8 +5,8 @@
  * in class-based components with proper fallbacks and type safety.
  */
 
-import type { EnhancedTheme } from '@/core/modules/theming/internal/types';
-import type { ThemeTokens } from '@/core/modules/theming/tokens';
+import type { EnhancedTheme } from '../../../core/modules/theming/internal/types';
+import type { ThemeTokens } from '../../../core/modules/theming/tokens';
 
 /**
  * Base theme token helper class for class-based components
@@ -28,11 +28,22 @@ export abstract class ThemeTokenHelper {
     protected getThemeToken(tokenPath: string, fallback?: any): any {
         if (!this.theme) return fallback;
 
-        const value = tokenPath.split('.').reduce((obj: any, key: string) => {
-            return obj && obj[key] !== undefined ? obj[key] : undefined;
-        }, this.theme);
+        try {
+            const keys = tokenPath.split('.');
+            let value: any = this.theme;
 
-        return value !== undefined ? value : fallback;
+            for (const key of keys) {
+                if (value && typeof value === 'object' && key in value) {
+                    value = value[key];
+                } else {
+                    return fallback;
+                }
+            }
+
+            return value;
+        } catch {
+            return fallback;
+        }
     }
 
     /**
