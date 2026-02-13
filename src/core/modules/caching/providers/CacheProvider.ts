@@ -29,6 +29,11 @@ import {
   type CacheAnalyticsConfig,
   type ExtendedCacheStats
 } from '../features/AdvancedCacheFeatures';
+import {
+  CacheMemoryManager,
+  type IMemoryPoolConfig,
+  type IMemoryUsageStats
+} from '../optimization/MemoryManagement';
 
 /**
  * Main cache provider implementation.
@@ -48,6 +53,7 @@ export class CacheProvider {
   private predictiveEngine?: PredictiveCacheEngine;
   private dependencyGraph?: CacheDependencyGraph;
   private analyticsDashboard?: CacheAnalyticsDashboard;
+  private memoryManager?: CacheMemoryManager;
 
   /**
    * Creates a new cache provider instance.

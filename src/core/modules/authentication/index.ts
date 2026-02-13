@@ -26,15 +26,20 @@ export {
 export {
     UnifiedMFAOrchestrator
 } from './mfa';
+
+// NEW: Security services
+export {
+    AuthRateLimiter,
+    RateLimiter,
+    InMemoryRateLimitStorage,
+    DefaultRateLimitConfigs
+} from './security/AuthRateLimiting';
 export type {
-    IMFAService,
-    ITOTPService,
-    ISMSService,
-    IBackupCodeService,
-    MFAMethod,
-    MFAEnrollment,
-    MFAChallenge
-} from './mfa';
+    IRateLimitConfig,
+    IRateLimitEntry,
+    IRateLimitResult,
+    IRateLimitStorage
+} from './security/AuthRateLimiting';
 
 // MFA Factory functions
 export {

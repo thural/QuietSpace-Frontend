@@ -15,7 +15,16 @@ import { DEFAULT_API_CONFIG, ENVIRONMENT_CONFIG } from './constants';
 import { createNetworkError } from '../error';
 
 // Import retry strategy pattern
-import { RetryStrategyFactory, type IRetryStrategy } from './strategies/RetryStrategy';
+import { RetryStrategyFactory, type IRetryStrategy, type RetryConfig } from './strategies/RetryStrategy';
+
+// Import input validation
+import {
+    InputValidator,
+    NetworkValidationMiddleware,
+    ValidationRules,
+    type IRequestValidationConfig,
+    type IValidationResult
+} from './validation/NetworkInputValidation';
 
 /**
  * Creates retry strategy from configuration
@@ -42,15 +51,17 @@ import type { Container } from '../dependency-injection/container/Container';
 
 
 /**
- * Creates an API client with retry strategy support.
+ * Creates an API client with retry strategy support and input validation.
  *
  * @param config - Optional configuration for the API client
  * @param retryStrategy - Optional retry strategy override
+ * @param validationConfig - Optional validation configuration
  * @returns Configured API client instance
  */
 export function createApiClientWithRetry(
     config?: Partial<IApiClientConfig>,
-    retryStrategy?: IRetryStrategy
+    retryStrategy?: IRetryStrategy,
+    validationConfig?: Partial<IRequestValidationConfig>
 ): IApiClient {
     // Merge with default configuration
     const finalConfig: IApiClientConfig = {
@@ -79,15 +90,47 @@ export function createApiClientWithRetry(
     // Create retry strategy if not provided
     const strategy = retryStrategy || createRetryStrategyFromConfig(finalConfig.retryConfig);
 
+    // Create validation middleware if enabled
+    let validationMiddleware: NetworkValidationMiddleware | undefined;
+    if (validationConfig?.enabled) {
+        const defaultValidationConfig: IRequestValidationConfig = {
+            enabled: true,
+            rules: [],
+            sanitization: {
+                sanitizeHTML: true,
+                preventSQLInjection: true,
+                preventXSS: true,
+                trimWhitespace: true,
+                removeNullBytes: true,
+                normalizeUnicode: true
+            },
+            maxRequestSize: 1024 * 1024, // 1MB
+            maxHeaderSize: 8192, // 8KB
+            allowedContentTypes: ['application/json', 'application/x-www-form-urlencoded', 'text/plain'],
+            blockedIPs: [],
+            rateLimiting: {
+                enabled: false,
+                maxRequests: 100,
+                windowMs: 60000 // 1 minute
+            }
+        };
+
+        const validator = new InputValidator({ ...defaultValidationConfig, ...validationConfig });
+        validationMiddleware = new NetworkValidationMiddleware(validator);
+    }
+
     try {
-        // Create API client instance with retry strategy
-        // Note: Strategy would be passed to ApiClient constructor if it supports it
-        // For now, we store it in the config for internal use
+        // Create API client instance with retry strategy and validation
         const client = new ApiClient(finalConfig);
 
         // Attach retry strategy to client if supported
         if ('setRetryStrategy' in client) {
             (client as any).setRetryStrategy(strategy);
+        }
+
+        // Attach validation middleware if available
+        if (validationMiddleware && 'setValidationMiddleware' in client) {
+            (client as any).setValidationMiddleware(validationMiddleware);
         }
 
         return client;
