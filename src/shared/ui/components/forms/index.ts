@@ -65,3 +65,7 @@ export type { ITwoFactorAuthProps, ITwoFactorAuthState } from './TwoFactorAuth';
 // FileUploader component with new decoupled structure
 export { FileUploader } from './FileUploader';
 export type { IFileUploaderProps, IFileUploaderState } from './FileUploader';
+
+// EnterpriseInput component with new decoupled structure
+export { EnterpriseInput } from './EnterpriseInput';
+export type { InputVariant, InputSize, InputState, IEnterpriseInputProps, IEnterpriseInputState } from './EnterpriseInput';

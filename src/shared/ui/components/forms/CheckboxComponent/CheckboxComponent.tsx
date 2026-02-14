@@ -1,34 +1,7 @@
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 import React, { ReactNode } from 'react';
-import { CheckboxWrapper, CheckboxInput, CheckboxLabel } from "./CheckboxStyles";
-
-interface ICheckboxProps extends IBaseComponentProps {
-  checked?: boolean;
-  disabled?: boolean;
-  variant?: 'default' | 'primary' | 'secondary';
-  label?: string;
-  onChange?: (checked: boolean) => void;
-  className?: string;
-  theme?: any;
-
-  // Enhanced props for CheckBox compatibility
-  value?: string | number;
-  name?: string;
-  required?: boolean;
-  autoFocus?: boolean;
-
-  // Event handling compatibility
-  onValueChange?: (value: string | number, checked: boolean) => void;
-
-  // Accessibility
-  ariaLabel?: string;
-  ariaDescribedBy?: string;
-  testId?: string;
-}
-
-interface ICheckboxState extends IBaseComponentState {
-  isFocused: boolean;
-}
+import { ICheckboxProps, ICheckboxState } from './interfaces';
+import { CheckboxWrapper, CheckboxInput, CheckboxLabel } from './styles';
 
 /**
  * Enterprise Checkbox Component
