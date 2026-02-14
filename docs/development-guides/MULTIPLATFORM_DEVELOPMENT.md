@@ -4,6 +4,11 @@
 
 This guide covers multiplatform development strategies for QuietSpace, including web, mobile, and desktop platforms with shared codebase and platform-specific optimizations.
 
+**📖 Related Documentation**: 
+- [Enterprise React Decoupling Guide](ENTERPRISE_REACT_DECOUPLING_GUIDE.md) - Cross-platform component architecture patterns
+- [Complete Development Guide](DEVELOPMENT_COMPLETE_GUIDE.md) - Development setup and standards
+- [Quality Assurance Guide](QUALITY_ASSURANCE.md) - Multiplatform testing strategies
+
 ---
 
 ## 📋 Table of Contents

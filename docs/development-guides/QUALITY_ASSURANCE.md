@@ -4,6 +4,11 @@
 
 This comprehensive guide covers quality assurance strategies, testing methodologies, code quality standards, and continuous integration practices for QuietSpace development.
 
+**📖 Related Documentation**: 
+- [Enterprise React Decoupling Guide](ENTERPRISE_REACT_DECOUPLING_GUIDE.md) - Component testing patterns for class-based architecture
+- [Complete Development Guide](DEVELOPMENT_COMPLETE_GUIDE.md) - Development setup and standards
+- [Multiplatform Development Guide](MULTIPLATFORM_DEVELOPMENT.md) - Cross-platform testing strategies
+
 ---
 
 ## 📋 Table of Contents

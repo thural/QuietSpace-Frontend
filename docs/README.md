@@ -16,6 +16,7 @@ Welcome to the comprehensive documentation center for QuietSpace Frontend. This 
 ### 🛠️ **Development Resources**
 - **[Multiplatform Development](development-guides/MULTIPLATFORM_DEVELOPMENT.md)** - Web, mobile, and desktop development
 - **[Quality Assurance](development-guides/QUALITY_ASSURANCE.md)** - Testing, CI/CD, and quality standards
+- **[Enterprise React Decoupling Guide](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md)** - Class-based component architecture patterns
 
 ### 🏗️ **Core Architecture**
 - **[Architecture Guide](architecture/ARCHITECTURE_GUIDE.md)** - Complete system architecture and patterns
@@ -115,10 +116,11 @@ We've successfully consolidated all documentation to ensure no sub-directory con
 - **[FEATURE_ARCHITECTURE.md](features/FEATURE_ARCHITECTURE.md)** - Feature architecture patterns
 - **[FEATURE_MIGRATION_STATUS.md](features/FEATURE_MIGRATION_STATUS.md)** - Migration progress and status
 
-**Development Guides Directory (8 files → 3 files)**
+**Development Guides Directory (8 files → 4 files)**
 - **[DEVELOPMENT_COMPLETE_GUIDE.md](development-guides/DEVELOPMENT_COMPLETE_GUIDE.md)** - Complete development guide
 - **[MULTIPLATFORM_DEVELOPMENT.md](development-guides/MULTIPLATFORM_DEVELOPMENT.md)** - Multiplatform development
 - **[QUALITY_ASSURANCE.md](development-guides/QUALITY_ASSURANCE.md)** - Quality assurance and testing
+- **[ENTERPRISE_REACT_DECOUPLING_GUIDE.md](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md)** - Class-based component architecture patterns
 
 #### **🗑️ Removed Redundant Files**
 All scattered documentation files have been consolidated into comprehensive guides, eliminating redundancy and improving maintainability.
@@ -320,7 +322,8 @@ The documentation is continuously updated to reflect the current state of the pr
 
 ---
 
-*Last Updated: January 26, 2026*  
-*Documentation Version: 2.0*  
+*Last Updated: February 14, 2026*  
+*Documentation Version: 2.1*  
 *Architecture Compliance: 90%*  
-*Documentation Coverage: 90%*
+*Documentation Coverage: 90%*  
+*New Feature: Enterprise React Decoupling Guide added*

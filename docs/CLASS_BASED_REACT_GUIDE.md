@@ -4,6 +4,8 @@
 
 This comprehensive guide covers class-based React development patterns, best practices, and migration strategies for building enterprise-grade React applications.
 
+**📖 Related Documentation**: For detailed decoupling patterns and enterprise architecture, see the [Enterprise React Decoupling Guide](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md).
+
 ---
 
 ## 📋 Table of Contents
@@ -653,6 +655,8 @@ class SearchComponent extends PureComponent<ISearchProps, ISearchState> {
 
 ## 🎨 Component Patterns
 
+**📖 For comprehensive decoupling patterns and enterprise architecture, see the [Enterprise React Decoupling Guide](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md)**
+
 ### **Container Component Pattern**
 ```typescript
 interface IContainerProps {
@@ -798,6 +802,8 @@ class List extends PureComponent<IListProps> {
 ---
 
 ## 🔄 Migration Strategies
+
+**📖 For detailed migration patterns and enterprise decoupling strategies, see the [Enterprise React Decoupling Guide](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md)**
 
 ### **From Functional to Class-Based**
 ```typescript
@@ -971,6 +977,8 @@ class DataComponent extends PureComponent<IDataComponentProps, IDataComponentSta
 
 ## ⚡ Performance Optimization
 
+**📖 For enterprise performance patterns and optimization strategies, see the [Enterprise React Decoupling Guide](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md)**
+
 ### **PureComponent Usage**
 ```typescript
 class OptimizedComponent extends PureComponent<IOptimizedComponentProps> {
@@ -1055,6 +1063,8 @@ class LazyLoadingComponent extends PureComponent<ILazyLoadingProps, ILazyLoading
 ---
 
 ## 🧪 Testing Class Components
+
+**📖 For comprehensive testing strategies and quality assurance patterns, see the [Quality Assurance Guide](development-guides/QUALITY_ASSURANCE.md)**
 
 ### **Unit Testing**
 ```typescript
@@ -1147,6 +1157,7 @@ describe('UserProfile Snapshots', () => {
 
 ### **Best Practices**
 - Follow the 16 best practices outlined above
+- **For comprehensive enterprise patterns**: See [Enterprise React Decoupling Guide](development-guides/ENTERPRISE_REACT_DECOUPLING_GUIDE.md)
 - Use TypeScript for type safety
 - Implement proper error handling
 - Write comprehensive tests
@@ -1154,6 +1165,7 @@ describe('UserProfile Snapshots', () => {
 
 ---
 
-**Last Updated**: February 2, 2026  
-**Version**: 1.0.0  
-**Best Practices**: 16/16 Implemented
+**Last Updated**: February 14, 2026  
+**Version**: 1.1.0  
+**Best Practices**: 16/16 Implemented  
+**New Feature**: Enterprise React Decoupling Guide integration
