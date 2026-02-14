@@ -12,7 +12,8 @@ export { default as SecurityStatus } from './SecurityStatus';
 
 // New reusable components
 export { default as UserProfileAvatar } from './UserProfileAvatar';
-export { default as UserAvatar } from './UserAvatar';
+export { UserAvatar } from './UserAvatar';
+export type { IUserAvatarProps } from './UserAvatar';
 export { default as UserAvatarPhoto } from './UserAvatarPhoto';
 export { default as UserCard } from './UserCard';
 export { default as UserDetails } from './UserDetails';
