@@ -9,7 +9,7 @@
  */
 
 import { ReactNode } from 'react';
-import { BaseComponentProps } from '../../types';
+import { IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 
 /**
  * Photo response interface for image data
@@ -26,7 +26,7 @@ export interface IPhotoResponse {
 /**
  * PhotoDisplay component props interface
  */
-export interface IPhotoDisplayProps extends BaseComponentProps {
+export interface IPhotoDisplayProps extends IBaseComponentProps {
   /** Photo response object containing image data */
   photoResponse?: IPhotoResponse | null;
 }
@@ -34,7 +34,7 @@ export interface IPhotoDisplayProps extends BaseComponentProps {
 /**
  * PhotoDisplay component internal state interface
  */
-export interface IPhotoDisplayState {
+export interface IPhotoDisplayState extends IBaseComponentState {
   /** Processed photo data URL or null if unavailable */
   photoData: string | null;
 }

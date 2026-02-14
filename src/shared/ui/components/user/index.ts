@@ -16,11 +16,11 @@ export type { ISecurityStatusProps, ISecurityStatusState } from './SecurityStatu
 // New reusable components
 export { UserProfileAvatar } from './UserProfileAvatar';
 export type { IUserProfileAvatarProps, UserStatusType } from './UserProfileAvatar';
-export { default as UserAvatar } from './UserAvatar';
-export { default as UserAvatarPhoto } from './UserAvatarPhoto';
-export { default as UserCard } from './UserCard';
-export { default as UserDetails } from './UserDetails';
+export { UserAvatar } from './UserAvatar';
+export { UserAvatarPhoto } from './UserAvatarPhoto';
+export { UserCard } from './UserCard';
+export { UserDetails } from './UserDetails';
 export type { IUserDetailsProps } from './UserDetails';
-export { default as UserQueryItem } from './UserQueryItem';
+export { UserQueryItem } from './UserQueryItem';
 export type { IUserQueryItemProps } from './UserQueryItem';
-export { default as PhotoDisplay } from './PhotoDisplay';
+export { PhotoDisplay } from './PhotoDisplay';

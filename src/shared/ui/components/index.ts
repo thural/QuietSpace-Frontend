@@ -38,9 +38,9 @@ export { default as LoadingSpinner } from './feedback/LoadingSpinner';
 export { default as UserProfileAvatar } from './user/UserProfileAvatar';
 
 // Export user components
-export { default as AuthStatus } from './user/AuthStatus';
-export { default as SecurityStatus } from './user/SecurityStatus';
-export { default as AuthenticatedActions } from './user/AuthenticatedActions';
+export { AuthStatus } from './user/AuthStatus';
+export { SecurityStatus } from './user/SecurityStatus';
+export { AuthenticatedActions } from './user/AuthenticatedActions';
 
 // Export utility components
 export { default as MigrationInfo } from './utility/MigrationInfo';

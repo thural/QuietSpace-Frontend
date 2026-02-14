@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
+import { ReactNode } from 'react';
 import { useTheme } from '@/core/modules/theming';
 import { IPhotoDisplayProps, IPhotoDisplayState, IPhotoResponse } from './interfaces';
 import {
@@ -18,20 +19,18 @@ import {
  * Enterprise-grade photo display component with comprehensive theme integration,
  * base64 encoding, loading states, and responsive design.
  */
-export class PhotoDisplay extends PureComponent<IPhotoDisplayProps, IPhotoDisplayState> {
-  constructor(props: IPhotoDisplayProps) {
-    super(props);
-
-    this.state = {
+export class PhotoDisplay extends BaseClassComponent<IPhotoDisplayProps, IPhotoDisplayState> {
+  protected override getInitialState(): Partial<IPhotoDisplayState> {
+    return {
       photoData: null
     };
   }
 
-  override componentDidMount(): void {
+  protected override componentDidMount(): void {
     this.processPhotoData();
   }
 
-  override componentDidUpdate(prevProps: IPhotoDisplayProps): void {
+  protected override componentDidUpdate(prevProps: IPhotoDisplayProps): void {
     const { photoResponse } = this.props;
     const { photoResponse: prevPhotoResponse } = prevProps;
 
@@ -49,13 +48,13 @@ export class PhotoDisplay extends PureComponent<IPhotoDisplayProps, IPhotoDispla
     if (photoResponse && photoResponse.data) {
       // Construct the base64 image source
       const photoData = `data:${photoResponse.type};base64,${photoResponse.data}`;
-      this.setState({ photoData });
+      this.safeSetState({ photoData });
     } else {
-      this.setState({ photoData: null });
+      this.safeSetState({ photoData: null });
     }
   };
 
-  override render(): ReactNode {
+  protected override renderContent(): ReactNode {
     const { photoResponse, className, testId, id, onClick, style } = this.props;
     const { photoData } = this.state;
     const theme = useTheme();
@@ -75,8 +74,8 @@ export class PhotoDisplay extends PureComponent<IPhotoDisplayProps, IPhotoDispla
       >
         {hasPhoto ? (
           <div css={photoDisplayImageContainerStyles(theme)}>
-            <img 
-              src={photoData} 
+            <img
+              src={photoData}
               alt={photoResponse?.name || 'Photo'}
               css={photoDisplayImageStyles(theme)}
             />
