@@ -7,13 +7,19 @@
 
 // Core display components
 export { default as Avatar } from './Avatar';
-export { default as Badge } from './Badge';
-export { default as Image } from './Image';
-export { default as LoadingOverlay } from './LoadingOverlay';
-export { default as Skeleton } from './Skeleton';
+export type { IAvatarProps } from './interfaces/Avatar';
 
-// New reusable components
-export { default as MetricCard } from './MetricCard';
-export { default as SystemStatusIndicator } from './SystemStatusIndicator';
-export { default as ResultItem } from './ResultItem';
-export { default as MetricsDashboard } from './MetricsDashboard';
+export { default as Badge } from './Badge';
+export type { IBadgeProps } from './interfaces/Badge';
+
+export { default as Image } from './Image';
+export type { IImageProps } from './interfaces/Image';
+
+export { default as LoadingOverlay } from './LoadingOverlay';
+export type { ILoadingOverlayProps } from './interfaces/LoadingOverlay';
+
+export { default as Skeleton } from './Skeleton';
+export type { ISkeletonProps } from './interfaces/Skeleton';
+
+export { default as Loader } from './Loader';
+export type { ILoaderProps } from './interfaces/Loader';
