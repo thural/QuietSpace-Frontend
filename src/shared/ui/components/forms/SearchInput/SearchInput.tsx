@@ -1,60 +1,17 @@
-/**
- * Search Input Component
- * 
- * A reusable search input component with debouncing, suggestions, and
- * real-time search capabilities. Provides flexible search functionality.
- */
-
 import React from 'react';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
-
-// Import reusable components from shared UI
 import { LoadingSpinner } from '@shared/ui/components';
+import { ISearchInputProps, ISearchInputState, ISearchSuggestion } from './interfaces';
+import {
+  SearchInputContainer,
+  SearchInputField,
+  SuggestionsDropdown,
+  SuggestionItem,
+  LoadingContainer
+} from './styles';
 
 /**
- * Search Suggestion interface
- */
-export interface ISearchSuggestion {
-  id: string;
-  text: string;
-  type: 'page' | 'user' | 'content' | 'tag';
-  url?: string;
-  metadata?: any;
-}
-
-/**
- * Search Input Props
- */
-export interface ISearchInputProps extends IBaseComponentProps {
-  placeholder?: string;
-  disabled?: boolean;
-  debounceMs?: number;
-  minQueryLength?: number;
-  maxSuggestions?: number;
-  onSearch?: (query: string) => Promise<ISearchSuggestion[]>;
-  onSuggestionClick?: (suggestion: ISearchSuggestion) => void;
-  onQueryChange?: (query: string) => void;
-  className?: string;
-  showSuggestions?: boolean;
-  autoFocus?: boolean;
-  clearOnSelect?: boolean;
-}
-
-/**
- * Search Input State
- */
-export interface ISearchInputState extends IBaseComponentState {
-  query: string;
-  suggestions: ISearchSuggestion[];
-  isLoading: boolean;
-  errorMessage: string | null;
-  isDropdownOpen: boolean;
-  selectedIndex: number;
-  showSuggestions: boolean;
-}
-
-/**
- * Search Input Component
+ * Enterprise SearchInput Component
  * 
  * Provides search functionality with:
  * - Debounced search input to prevent excessive API calls
@@ -71,7 +28,7 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
   private inputRef = React.createRef<HTMLInputElement>();
 
   protected override getInitialState(): Partial<ISearchInputState> {
-    const { 
+    const {
       showSuggestions = true,
       minQueryLength = 2,
       maxSuggestions = 10
@@ -247,7 +204,7 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
 
       case 'Enter':
         e.preventDefault();
-        if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+        if (selectedIndex >= 0 && selectedIndex < suggestions.length && suggestions[selectedIndex]) {
           this.handleSuggestionClick(suggestions[selectedIndex]);
         }
         break;
@@ -299,7 +256,7 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
   /**
    * Render suggestions dropdown
    */
-  private renderSuggestionsDropdown(): React.ReactNode {
+  private renderSuggestionsDropdown = (theme: any): React.ReactNode => {
     const { suggestions, isLoading, errorMessage, selectedIndex, isDropdownOpen } = this.state;
 
     if (!isDropdownOpen) {
@@ -307,25 +264,39 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
     }
 
     return (
-      <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-50 max-h-64 overflow-y-auto">
+      <div css={SuggestionsDropdown(theme)}>
         {/* Loading State */}
         {isLoading && (
-          <div className="flex items-center justify-center py-4">
+          <div css={LoadingContainer(theme)}>
             <LoadingSpinner size="sm" color="primary" />
-            <span className="ml-2 text-sm text-gray-600">Searching...</span>
+            <span style={{ marginLeft: '8px', fontSize: '14px', color: theme?.colors?.text?.secondary }}>
+              Searching...
+            </span>
           </div>
         )}
 
         {/* Error State */}
         {errorMessage && (
-          <div className="px-4 py-3 text-sm text-red-600" role="alert">
+          <div
+            role="alert"
+            style={{
+              padding: '12px 16px',
+              fontSize: '14px',
+              color: theme?.colors?.semantic?.error
+            }}
+          >
             {errorMessage}
           </div>
         )}
 
         {/* Suggestions */}
         {!isLoading && !errorMessage && suggestions.length === 0 && (
-          <div className="px-4 py-3 text-sm text-gray-500 text-center">
+          <div style={{
+            padding: '12px 16px',
+            fontSize: '14px',
+            color: theme?.colors?.text?.tertiary,
+            textAlign: 'center'
+          }}>
             No suggestions found
           </div>
         )}
@@ -337,21 +308,27 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
                 key={suggestion.id}
                 role="option"
                 aria-selected={selectedIndex === index}
-                className={`px-4 py-3 cursor-pointer border-b last:border-b-0 transition-colors ${
-                  selectedIndex === index
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'hover:bg-gray-50'
-                }`}
+                css={SuggestionItem(theme, selectedIndex === index)}
                 onClick={() => this.handleSuggestionClick(suggestion)}
               >
-                <div className="flex items-center space-x-3">
-                  <span className="text-lg">{this.getSuggestionIcon(suggestion.type)}</span>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '18px' }}>
+                    {this.getSuggestionIcon(suggestion.type)}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: theme?.colors?.text?.primary
+                    }}>
                       {suggestion.text}
                     </div>
                     {suggestion.metadata && (
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div style={{
+                        fontSize: '12px',
+                        color: theme?.colors?.text?.tertiary,
+                        marginTop: '4px'
+                      }}>
                         {suggestion.metadata.category || suggestion.type}
                       </div>
                     )}
@@ -366,20 +343,22 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
   };
 
   protected override renderContent(): React.ReactNode {
-    const { 
+    const {
       placeholder = 'Search...',
       disabled = false,
-      className = ''
+      className = '',
+      theme
     } = this.props;
 
     const { query, isLoading } = this.state;
 
     return (
-      <div className={`search-input relative ${className}`}>
+      <div css={SearchInputContainer(theme)} className={className}>
         {/* Search Input */}
-        <div className="relative">
+        <div style={{ position: 'relative' }}>
           <input
             ref={this.inputRef}
+            css={SearchInputField(theme)}
             type="text"
             value={query}
             onChange={this.handleInputChange}
@@ -388,9 +367,6 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
             onKeyDown={this.handleKeyDown}
             disabled={disabled}
             placeholder={placeholder}
-            className={`w-full px-4 py-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
-            }`}
             aria-label="Search"
             role="combobox"
             aria-expanded={this.state.isDropdownOpen}
@@ -399,7 +375,7 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
 
           {/* Loading Indicator */}
           {isLoading && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div css={LoadingContainer(theme)}>
               <LoadingSpinner size="sm" color="primary" />
             </div>
           )}
@@ -408,8 +384,9 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
           {!isLoading && query && (
             <button
               onClick={this.clearSearch}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              css={LoadingContainer(theme)}
               aria-label="Clear search"
+              style={{ cursor: 'pointer', color: theme?.colors?.text?.tertiary }}
             >
               ✕
             </button>
@@ -417,14 +394,14 @@ export class SearchInput extends BaseClassComponent<ISearchInputProps, ISearchIn
 
           {/* Search Icon */}
           {!isLoading && !query && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <div css={LoadingContainer(theme)}>
               🔍
             </div>
           )}
         </div>
 
         {/* Suggestions Dropdown */}
-        {this.renderSuggestionsDropdown()}
+        {this.renderSuggestionsDropdown(theme)}
       </div>
     );
   }
