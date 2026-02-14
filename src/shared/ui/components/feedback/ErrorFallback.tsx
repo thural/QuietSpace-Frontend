@@ -1,91 +1,91 @@
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
-import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getColor, getSpacing, getTypography, getRadius, getBorderWidth, getShadow, getTransition } from '../utils';
 
-// Styled components with theme token integration
-const ErrorFallbackContainer = styled.div<{ theme?: any }>`
+// Emotion CSS utility functions
+const createErrorFallbackContainerStyles = (theme: any) => css`
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: ${props => getColor(props.theme, 'background.secondary')};
-  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+  background-color: ${getColor(theme, 'background.secondary')};
+  font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
 `;
 
-const ErrorCard = styled.div<{ theme?: any }>`
+const createErrorCardStyles = (theme: any) => css`
   max-width: 28rem;
   width: 100%;
-  padding: ${props => getSpacing(props.theme, 'xl')};
-  background-color: ${props => getColor(props.theme, 'background.primary')};
-  border-radius: ${props => getRadius(props.theme, 'lg')};
-  box-shadow: ${props => getShadow(props.theme, 'md')};
+  padding: ${getSpacing(theme, 'xl')};
+  background-color: ${getColor(theme, 'background.primary')};
+  border-radius: ${getRadius(theme, 'lg')};
+  box-shadow: ${getShadow(theme, 'md')};
 `;
 
-const ErrorContent = styled.div<{ theme?: any }>`
+const createErrorContentStyles = () => css`
   text-align: center;
 `;
 
-const ErrorIconContainer = styled.div<{ theme?: any }>`
-  margin-bottom: ${props => getSpacing(props.theme, 'lg')};
+const createErrorIconContainerStyles = (theme: any) => css`
+  margin-bottom: ${getSpacing(theme, 'lg')};
 `;
 
-const ErrorTitle = styled.h3<{ theme?: any }>`
-  font-size: ${props => getTypography(props.theme, 'fontSize.xl')};
-  font-weight: ${props => props.theme?.typography?.fontWeight?.semibold || '600'};
-  color: ${props => getColor(props.theme, 'text.primary')};
-  margin-bottom: ${props => getSpacing(props.theme, 'sm')};
+const createErrorTitleStyles = (theme: any) => css`
+  font-size: ${getTypography(theme, 'fontSize.xl')};
+  font-weight: ${theme?.typography?.fontWeight?.semibold || '600'};
+  color: ${getColor(theme, 'text.primary')};
+  margin-bottom: ${getSpacing(theme, 'sm')};
 `;
 
-const ErrorMessage = styled.p<{ theme?: any }>`
-  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-  color: ${props => getColor(props.theme, 'text.secondary')};
-  margin-bottom: ${props => getSpacing(props.theme, 'xl')};
-  line-height: ${props => props.theme?.typography?.lineHeight?.relaxed || '1.625'};
+const createErrorMessageStyles = (theme: any) => css`
+  font-size: ${getTypography(theme, 'fontSize.base')};
+  color: ${getColor(theme, 'text.secondary')};
+  margin-bottom: ${getSpacing(theme, 'xl')};
+  line-height: ${theme?.typography?.lineHeight?.relaxed || '1.625'};
 `;
 
-const ActionButtonsContainer = styled.div<{ theme?: any }>`
+const createActionButtonsContainerStyles = (theme: any) => css`
   display: flex;
   flex-direction: column;
-  gap: ${props => getSpacing(props.theme, 'md')};
+  gap: ${getSpacing(theme, 'md')};
 `;
 
-const StyledButton = styled.button<{ theme?: any; variant?: 'primary' | 'secondary' }>`
+const createStyledButtonStyles = (theme: any, variant: 'primary' | 'secondary' = 'primary') => css`
   width: 100%;
-  padding: ${props => getSpacing(props.theme, 'md')} ${props => getSpacing(props.theme, 'lg')};
-  border: ${props => getBorderWidth(props.theme, 'md')} solid ${props => props.variant === 'primary'
-        ? getColor(props.theme, 'brand.500')
-        : getColor(props.theme, 'border.medium')};
-  background-color: ${props => props.variant === 'primary'
-        ? getColor(props.theme, 'brand.500')
+  padding: ${getSpacing(theme, 'md')} ${getSpacing(theme, 'lg')};
+  border: ${getBorderWidth(theme, 'md')} solid ${variant === 'primary'
+        ? getColor(theme, 'brand.500')
+        : getColor(theme, 'border.medium')};
+  background-color: ${variant === 'primary'
+        ? getColor(theme, 'brand.500')
         : 'transparent'};
-  color: ${props => props.variant === 'primary'
-        ? getColor(props.theme, 'text.inverse')
-        : getColor(props.theme, 'brand.500')};
-  border-radius: ${props => getRadius(props.theme, 'md')};
-  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
+  color: ${variant === 'primary'
+        ? getColor(theme, 'text.inverse')
+        : getColor(theme, 'brand.500')};
+  border-radius: ${getRadius(theme, 'md')};
+  font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+  font-size: ${getTypography(theme, 'fontSize.base')};
+  font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
   cursor: pointer;
-  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
+  transition: ${getTransition(theme, 'all', 'fast', 'ease')};
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: ${props => getShadow(props.theme, 'md')};
-    ${props => props.variant === 'primary' && `
-      background-color: ${getColor(props.theme, 'brand.600')};
-      border-color: ${getColor(props.theme, 'brand.600')};
+    box-shadow: ${getShadow(theme, 'md')};
+    ${variant === 'primary' && css`
+      background-color: ${getColor(theme, 'brand.600')};
+      border-color: ${getColor(theme, 'brand.600')};
     `}
-    ${props => props.variant === 'secondary' && `
-      background-color: ${getColor(props.theme, 'background.secondary')};
-      border-color: ${getColor(props.theme, 'border.dark')};
-      color: ${getColor(props.theme, 'brand.500')};
+    ${variant === 'secondary' && css`
+      background-color: ${getColor(theme, 'background.secondary')};
+      border-color: ${getColor(theme, 'border.dark')};
+      color: ${getColor(theme, 'brand.500')};
     `}
   }
   
   &:focus {
-    outline: 2px solid ${props => getColor(props.theme, 'brand.300')};
+    outline: 2px solid ${getColor(theme, 'brand.300')};
     outline-offset: 2px;
   }
   
@@ -127,13 +127,14 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
 
     // Render error icon SVG
     private renderErrorIcon = (): ReactNode => {
+        const { theme } = this.props;
         return (
             <svg
                 style={{
-                    width: getSpacing(this.props.theme || {}, 64),
-                    height: getSpacing(this.props.theme || {}, 64),
+                    width: getSpacing(theme, 64),
+                    height: getSpacing(theme, 64),
                     margin: '0 auto',
-                    color: getColor(this.props.theme || {}, 'semantic.error')
+                    color: getColor(theme, 'semantic.error')
                 }}
                 fill="none"
                 stroke="currentColor"
@@ -151,27 +152,36 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
 
     // Render action buttons
     private renderActionButtons = (): ReactNode => {
-        const { onRetry, variant } = this.props;
+        const { onRetry, variant, theme } = this.props;
 
         if (variant === 'auth') {
             return (
-                <ActionButtonsContainer>
-                    <StyledButton variant="secondary" onClick={this.handleGoToSignIn}>
+                <div css={createActionButtonsContainerStyles(theme || {} as any)}>
+                    <button
+                        css={createStyledButtonStyles(theme || {} as any, 'secondary')}
+                        onClick={this.handleGoToSignIn}
+                    >
                         Go to Sign In
-                    </StyledButton>
-                </ActionButtonsContainer>
+                    </button>
+                </div>
             );
         }
 
         return (
-            <ActionButtonsContainer>
-                <StyledButton variant="primary" onClick={onRetry || this.handleRetry}>
+            <div css={createActionButtonsContainerStyles(theme || {} as any)}>
+                <button
+                    css={createStyledButtonStyles(theme || {} as any, 'primary')}
+                    onClick={onRetry || this.handleRetry}
+                >
                     Try Again
-                </StyledButton>
-                <StyledButton variant="secondary" onClick={this.handleRetry}>
+                </button>
+                <button
+                    css={createStyledButtonStyles(theme || {} as any, 'secondary')}
+                    onClick={this.handleRetry}
+                >
                     Reload Page
-                </StyledButton>
-            </ActionButtonsContainer>
+                </button>
+            </div>
         );
     };
 
@@ -179,28 +189,26 @@ class ErrorFallback extends PureComponent<IErrorFallbackProps> {
         const { error, variant, className, testId, theme } = this.props;
 
         return (
-            <ErrorFallbackContainer className={className} data-testid={testId} theme={theme}>
-                <ErrorCard theme={theme}>
-                    <ErrorContent theme={theme}>
-                        {/* Error Icon */}
-                        <ErrorIconContainer theme={theme}>
+            <div
+                css={createErrorFallbackContainerStyles(theme || {} as any)}
+                className={className}
+                data-testid={testId}
+            >
+                <div css={createErrorCardStyles(theme || {} as any)}>
+                    <div css={createErrorContentStyles()}>
+                        <div css={createErrorIconContainerStyles(theme || {} as any)}>
                             {this.renderErrorIcon()}
-                        </ErrorIconContainer>
-
-                        {/* Error Message */}
-                        <ErrorTitle theme={theme}>
+                        </div>
+                        <div css={createErrorTitleStyles(theme || {} as any)}>
                             {variant === 'auth' ? 'Authentication Error' : 'Something went wrong'}
-                        </ErrorTitle>
-
-                        <ErrorMessage theme={theme}>
+                        </div>
+                        <div css={createErrorMessageStyles(theme || {} as any)}>
                             {error}
-                        </ErrorMessage>
-
-                        {/* Action Buttons */}
+                        </div>
                         {this.renderActionButtons()}
-                    </ErrorContent>
-                </ErrorCard>
-            </ErrorFallbackContainer>
+                    </div>
+                </div>
+            </div>
         );
     }
 }
