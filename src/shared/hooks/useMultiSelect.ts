@@ -1,34 +1,39 @@
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
+import { createMultiSelectHookService } from './MultiSelectHookService';
 
 /**
  * Custom hook to manage multiple selections of items.
  * 
+ * Now uses the MultiSelectHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
+ * 
  * @template T
- * @returns {Object} - An object containing the selected items and related methods.
+ * @returns {Object} - An object containing selected items and related methods.
  * @returns {T[]} selectedItems - The currently selected items.
- * @returns {function} toggleSelection - Function to toggle the selection of an item.
- * @returns {function} setSelectedItems - Function to set the selected items directly.
+ * @returns {function} toggleSelection - Function to toggle selection of an item.
+ * @returns {function} setSelectedItems - Function to set selected items directly.
  */
 const useMultiSelect = <T = string>() => {
-    const [selectedItems, setSelectedItems] = useState<T[]>([]);
+    const [service] = useState(() => createMultiSelectHookService<T>());
+    const [selectedItems, setSelectedItems] = useState(service.getSelectedItems());
 
-    /**
-     * Toggles the selection state of a given item.
-     * 
-     * If the item is currently selected, it will be removed from the selection.
-     * If the item is not selected, it will be added to the selection.
-     * 
-     * @param {T} item - The item to toggle in the selection.
-     */
-    const toggleSelection = useCallback((item: T) => {
-        setSelectedItems(prevSelected =>
-            prevSelected.includes(item)
-                ? prevSelected.filter(selectedItem => selectedItem !== item)
-                : [...prevSelected, item]
-        );
-    }, []);
+    useEffect(() => {
+        // Subscribe to selection changes
+        const unsubscribe = service.subscribe((newSelectedItems) => {
+            setSelectedItems(newSelectedItems);
+        });
 
-    return { selectedItems, toggleSelection, setSelectedItems };
+        return unsubscribe;
+    }, [service]);
+
+    return {
+        selectedItems,
+        toggleSelection: service.toggleSelection,
+        setSelectedItems: (items: T[]) => {
+            service.setSelectedItems(items);
+            setSelectedItems(items);
+        }
+    };
 };
 
 export default useMultiSelect;

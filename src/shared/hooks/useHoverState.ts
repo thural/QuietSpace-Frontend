@@ -1,38 +1,34 @@
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
+import { createHoverStateHookService } from './HoverStateHookService';
 
 /**
  * Custom hook to manage hover state for an element.
  * 
+ * Now uses the HoverStateHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
+ * 
  * @returns {Object} - An object containing hover state and handlers.
- * @returns {boolean} isHovering - Indicates if the element is currently being hovered over.
+ * @returns {boolean} isHovering - Indicates if element is currently being hovered over.
  * @returns {function} handleMouseOver - Function to handle mouse over events.
  * @returns {function} handleMouseOut - Function to handle mouse out events.
  */
 export const useHoverState = () => {
-    const [isHovering, setIsHovering] = useState(false);
+    const [service] = useState(() => createHoverStateHookService());
+    const [isHovering, setIsHovering] = useState(service.getHoverState());
 
-    /**
-     * Handles the mouse over event.
-     * 
-     * Sets the hover state to true.
-     */
-    const handleMouseOver = useCallback(() => {
-        setIsHovering(true);
-    }, []);
+    useEffect(() => {
+        // Subscribe to hover state changes
+        const unsubscribe = service.subscribe((newHoverState) => {
+            setIsHovering(newHoverState);
+        });
 
-    /**
-     * Handles the mouse out event.
-     * 
-     * Sets the hover state to false.
-     */
-    const handleMouseOut = useCallback(() => {
-        setIsHovering(false);
-    }, []);
+        return unsubscribe;
+    }, [service]);
 
     return {
         isHovering,
-        handleMouseOver,
-        handleMouseOut
+        handleMouseOver: service.handleMouseOver,
+        handleMouseOut: service.handleMouseOut
     };
 };
 
