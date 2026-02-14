@@ -1,59 +1,60 @@
+/** @jsxImportSource @emotion/react */
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import { PureComponent, ReactNode } from 'react';
 import InputEmoji from "react-input-emoji";
-import styled from 'styled-components';
-import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getTransition, getShadow } from '../utils';
+import { css } from '@emotion/react';
+import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getTransition, getShadow, getBreakpoint } from '../utils';
 
-// Enterprise styled-components using theme system
-const EmojiInputWrapper = styled.div<{ theme: any }>`
+// Enterprise Emotion CSS using theme system
+const emojiInputWrapperStyles = (theme?: any) => css`
   position: relative;
   
   .react-input-emoji--container {
-    background: ${props => getColor(props.theme, 'background.primary')};
-    border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
-    border-radius: ${props => getRadius(props.theme, 'md')};
-    transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
+    background: ${getColor(theme, 'background.primary')};
+    border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+    border-radius: ${getRadius(theme, 'md')};
+    transition: ${getTransition(theme, 'all', 'normal', 'ease')};
     
     &:focus-within {
-      border-color: ${props => getColor(props.theme, 'brand.500')};
-      box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'brand.200')};
+      border-color: ${getColor(theme, 'brand.500')};
+      box-shadow: 0 0 0 ${getSpacing(theme, 3)} solid ${getColor(theme, 'brand.200')};
     }
   }
   
   .react-emoji-picker--wrapper {
     position: absolute;
-    top: ${props => getSpacing(props.theme, 48)};
+    top: ${getSpacing(theme, 48)};
     right: 0;
-    height: ${props => getSpacing(props.theme, 435)};
-    width: ${props => getSpacing(props.theme, 352)};
+    height: ${getSpacing(theme, 435)};
+    width: ${getSpacing(theme, 352)};
     overflow: hidden;
     z-index: 10;
-    background: ${props => getColor(props.theme, 'background.primary')};
-    border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
-    border-radius: ${props => getRadius(props.theme, 'lg')};
-    box-shadow: ${props => getShadow(props.theme, 'xl')};
+    background: ${getColor(theme, 'background.primary')};
+    border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+    border-radius: ${getRadius(theme, 'lg')};
+    box-shadow: ${getShadow(theme, 'xl')};
   }
   
   .react-input-emoji--button {
-    color: ${props => getColor(props.theme, 'text.secondary')};
+    color: ${getColor(theme, 'text.secondary')};
     right: 0;
     width: fit-content;
     display: flex;
-    padding: ${props => getSpacing(props.theme, 'md')};
+    padding: ${getSpacing(theme, 'md')};
     position: absolute;
-    font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-    font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
+    font-size: ${getTypography(theme, 'fontSize.base')};
+    font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
     z-index: 1;
     background: none;
     border: none;
     cursor: pointer;
-    border-radius: ${props => getRadius(props.theme, 'md')};
-    transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
+    border-radius: ${getRadius(theme, 'md')};
+    transition: ${getTransition(theme, 'all', 'fast', 'ease')};
     
     &:hover {
-      background: ${props => getColor(props.theme, 'background.tertiary')};
-      color: ${props => getColor(props.theme, 'text.primary')};
+      background: ${getColor(theme, 'background.tertiary')};
+      color: ${getColor(theme, 'text.primary')};
     }
     
     &:active {
@@ -62,25 +63,25 @@ const EmojiInputWrapper = styled.div<{ theme: any }>`
   }
   
   .react-input-emoji--input {
-    padding: ${props => getSpacing(props.theme, 'md')} ${props => getSpacing(props.theme, 'lg')};
-    font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-    font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-    color: ${props => getColor(props.theme, 'text.primary')};
+    padding: ${getSpacing(theme, 'md')} ${getSpacing(theme, 'lg')};
+    font-size: ${getTypography(theme, 'fontSize.base')};
+    font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+    color: ${getColor(theme, 'text.primary')};
     background: transparent;
     border: none;
     outline: none;
     width: 100%;
     
     &::placeholder {
-      color: ${props => getColor(props.theme, 'text.tertiary')};
+      color: ${getColor(theme, 'text.tertiary')};
     }
   }
   
   // Responsive design
-  @media (max-width: ${props => props.theme?.breakpoints?.sm || '640px'}) {
+  @media (max-width: ${getBreakpoint(theme, 'sm')}) {
     .react-emoji-picker--wrapper {
-      width: ${props => getSpacing(props.theme, 280)};
-      height: ${props => getSpacing(props.theme, 350)};
+      width: ${getSpacing(theme, 280)};
+      height: ${getSpacing(theme, 350)};
     }
   }
 `;
@@ -125,7 +126,7 @@ class EmojiInput extends PureComponent<IEmojiInputProps> {
     } = this.props;
 
     return (
-      <EmojiInputWrapper theme={theme}>
+      <div css={emojiInputWrapperStyles(theme)}>
         <InputEmoji
           ref={forwardedRef}
           value={value || ''}
@@ -141,7 +142,7 @@ class EmojiInput extends PureComponent<IEmojiInputProps> {
           placeholder={placeholder}
           {...props}
         />
-      </EmojiInputWrapper>
+      </div>
     );
   }
 }

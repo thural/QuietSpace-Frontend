@@ -1,26 +1,27 @@
+/** @jsxImportSource @emotion/react */
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import FlexStyled from "./FlexStyled";
-import styled from 'styled-components';
 import { PureComponent, ReactNode } from 'react';
+import { css } from '@emotion/react';
 import { getColor, getBorderWidth, getRadius, getSpacing, getShadow, getTransition, getBreakpoint } from '../utils';
 
-// Enterprise styled-components for base card styling
-const BaseCardContainer = styled.div<{ theme: any }>`
-  background: ${props => getColor(props.theme, 'background.primary')};
-  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
-  border-radius: ${props => getRadius(props.theme, 'md')};
-  padding: ${props => getSpacing(props.theme, 'md')};
-  box-shadow: ${props => getShadow(props.theme, 'sm')};
-  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
+// Enterprise Emotion CSS for base card styling
+const baseCardContainerStyles = (theme?: any) => css`
+  background: ${getColor(theme, 'background.primary')};
+  border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+  border-radius: ${getRadius(theme, 'md')};
+  padding: ${getSpacing(theme, 'md')};
+  box-shadow: ${getShadow(theme, 'sm')};
+  transition: ${getTransition(theme, 'all', 'normal', 'ease')};
   
   &:hover {
-    box-shadow: ${props => getShadow(props.theme, 'md')};
-    border-color: ${props => getColor(props.theme, 'border.dark')};
+    box-shadow: ${getShadow(theme, 'md')};
+    border-color: ${getColor(theme, 'border.dark')};
   }
   
   // Responsive design
-  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
-    padding: ${props => getSpacing(props.theme, 'sm')};
+  @media (max-width: ${getBreakpoint(theme, 'sm')}) {
+    padding: ${getSpacing(theme, 'sm')};
   }
 `;
 
@@ -29,9 +30,9 @@ class BaseCard extends PureComponent<GenericWrapper> {
     const { children, theme } = this.props;
 
     return (
-      <BaseCardContainer theme={theme}>
+      <div css={baseCardContainerStyles(theme)}>
         <FlexStyled theme={theme}>{children}</FlexStyled>
-      </BaseCardContainer>
+      </div>
     );
   }
 }

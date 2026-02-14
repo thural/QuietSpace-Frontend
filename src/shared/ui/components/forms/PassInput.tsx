@@ -1,68 +1,72 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import React, { PureComponent, ReactNode, ChangeEvent } from 'react';
-import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+import { ChangeEvent, PureComponent, ReactNode } from 'react';
+import { getBorderWidth, getBreakpoint, getColor, getRadius, getSpacing, getTransition, getTypography } from '../utils';
 
-interface IPassInputProps extends GenericWrapper {
-    name?: string;
-    value?: string;
-    handleChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-// Enterprise styled-components for password input styling
-const PasswordInput = styled.input<{ theme: EnhancedTheme }>`
+// Enterprise Emotion CSS for password input styling
+const passwordInputStyles = (theme?: any) => css`
   width: 100%;
-  padding: ${props => props.theme.spacing.md};
-  font-size: ${props => props.theme.typography.fontSize.base};
-  font-family: ${props => props.theme.typography.fontFamily.sans.join(', ')};
-  color: ${props => props.theme.colors.text.primary};
-  background: ${props => props.theme.colors.background.primary};
-  border: 1px solid ${props => props.theme.colors.border.medium};
-  border-radius: ${props => props.theme.radius.md};
-  transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+  padding: ${getSpacing(theme, 'md')};
+  font-size: ${getTypography(theme, 'fontSize.base')};
+  font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+  color: ${getColor(theme, 'text.primary')};
+  background: ${getColor(theme, 'background.primary')};
+  border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+  border-radius: ${getRadius(theme, 'md')};
+  transition: ${getTransition(theme, 'all', 'normal', 'ease')};
   
   &::placeholder {
-    color: ${props => props.theme.colors.text.tertiary};
+    color: ${getColor(theme, 'text.tertiary')};
   }
   
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.brand[500]};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.brand[200]};
+    border-color: ${getColor(theme, 'brand.500')};
+    box-shadow: 0 0 0 ${getSpacing(theme, 3)} solid ${getColor(theme, 'brand.200')};
   }
   
   &:hover:not(:focus) {
-    border-color: ${props => props.theme.colors.border.dark};
+    border-color: ${getColor(theme, 'border.dark')};
   }
   
   &:disabled {
-    background: ${props => props.theme.colors.background.tertiary};
-    color: ${props => props.theme.colors.text.tertiary};
+    background: ${getColor(theme, 'background.tertiary')};
+    color: ${getColor(theme, 'text.tertiary')};
     cursor: not-allowed;
     opacity: 0.6;
   }
   
   // Responsive design
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    padding: ${props => props.theme.spacing.sm};
-    font-size: ${props => props.theme.typography.fontSize.sm};
+  @media (max-width: ${getBreakpoint(theme, 'sm')}) {
+    padding: ${getSpacing(theme, 'sm')};
+    font-size: ${getTypography(theme, 'fontSize.sm')};
   }
 `;
 
-class PassInput extends PureComponent<IPassInputProps> {
-    render(): ReactNode {
-        const { name, value, handleChange, ...props } = this.props;
+interface IPassInputProps extends GenericWrapper {
+  name?: string;
+  value?: string;
+  handleChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  theme?: any;
+}
 
-        return (
-            <PasswordInput
-                type='password'
-                name={name}
-                placeholder={name}
-                value={value}
-                onChange={handleChange}
-            />
-        );
-    }
+class PassInput extends PureComponent<IPassInputProps> {
+  override render(): ReactNode {
+    const { name, value, handleChange, theme, ...props } = this.props;
+
+    return (
+      <input
+        css={passwordInputStyles(theme)}
+        type='password'
+        name={name}
+        placeholder={name}
+        value={value}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+  }
 }
 
 export default PassInput;

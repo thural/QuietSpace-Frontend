@@ -5,55 +5,56 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
+/** @jsxImportSource @emotion/react */
 import { Children, PureComponent, ReactNode, isValidElement } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { getBorderWidth, getColor, getSpacing, getTransition, getTypography } from '../utils';
 
-const TabsContainer = styled.div<{ theme: any }>`
+const tabsContainerStyles = () => css`
   display: flex;
   flex-direction: column;
   width: 100%;
 `;
 
-const TabsList = styled.div<{ theme: any; justify?: 'center' | 'start' | 'end'; grow?: boolean }>`
+const tabsListStyles = (theme?: any, justify?: 'center' | 'start' | 'end', grow?: boolean) => css`
   display: flex;
-  justify-content: ${props => props.justify || 'start'};
-  ${props => props.grow && 'flex: 1;'}
-  border-bottom: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.light')};
-  margin-bottom: ${props => getSpacing(props.theme, 'md')};
+  justify-content: ${justify || 'start'};
+  ${grow && 'flex: 1;'}
+  border-bottom: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.light')};
+  margin-bottom: ${getSpacing(theme, 'md')};
 `;
 
-const TabButton = styled.button<{ theme: any; active?: boolean; color?: string }>`
+const tabButtonStyles = (theme?: any, active?: boolean, color?: string) => css`
   background: none;
   border: none;
-  padding: ${props => getSpacing(props.theme, 'sm')} ${props => getSpacing(props.theme, 'lg')};
+  padding: ${getSpacing(theme, 'sm')} ${getSpacing(theme, 'lg')};
   cursor: pointer;
-  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-  color: ${props => props.active ?
-        getColor(props.theme, props.color || 'brand.500') :
-        getColor(props.theme, 'text.secondary')};
-  border-bottom: ${props => getBorderWidth(props.theme, 'md')} solid ${props => props.active ?
-        getColor(props.theme, props.color || 'brand.500') :
+  font-size: ${getTypography(theme, 'fontSize.base')};
+  color: ${active ?
+        getColor(theme, color || 'brand.500') :
+        getColor(theme, 'text.secondary')};
+  border-bottom: ${getBorderWidth(theme, 'md')} solid ${active ?
+        getColor(theme, color || 'brand.500') :
         'transparent'};
-  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
+  transition: ${getTransition(theme, 'all', 'fast', 'ease')};
   display: flex;
   align-items: center;
-  gap: ${props => getSpacing(props.theme, 'sm')};
+  gap: ${getSpacing(theme, 'sm')};
 
   &:hover {
-    color: ${props => getColor(props.theme, props.color || 'brand.500')};
-    background-color: ${props => getColor(props.theme, 'background.secondary')};
+    color: ${getColor(theme, color || 'brand.500')};
+    background-color: ${getColor(theme, 'background.secondary')};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 ${props => getSpacing(props.theme, 2)} solid ${props => getColor(props.theme, 'brand.200')};
+    box-shadow: 0 0 0 ${getSpacing(theme, 2)} solid ${getColor(theme, 'brand.200')};
   }
 `;
 
-const TabPanel = styled.div<{ theme: any; active?: boolean }>`
-  display: ${props => props.active ? 'block' : 'none'};
+const tabPanelStyles = (theme?: any, active?: boolean) => css`
+  display: ${active ? 'block' : 'none'};
   width: 100%;
 `;
 
@@ -97,11 +98,14 @@ class Tab extends PureComponent<ITabProps> {
         const { value, label, leftSection, rightSection, disabled } = this.props;
 
         return (
-            <TabButton disabled={disabled} theme={undefined}>
+            <button
+                css={tabButtonStyles(undefined, false, undefined)}
+                disabled={disabled}
+            >
                 {leftSection}
                 {label}
                 {rightSection}
-            </TabButton>
+            </button>
         );
     }
 }
@@ -112,9 +116,9 @@ class TabsListInternal extends PureComponent<ITabsListProps> {
         const { children, justify, grow } = this.props;
 
         return (
-            <TabsList justify={justify} grow={grow} theme={undefined}>
+            <div css={tabsListStyles(undefined, justify, grow)}>
                 {children}
-            </TabsList>
+            </div>
         );
     }
 }
@@ -125,7 +129,7 @@ class TabPanelInternal extends PureComponent<ITabPanelProps> {
         const { value, children } = this.props;
 
         return (
-            <div style={{ display: 'none' }}>
+            <div css={tabPanelStyles(undefined, false)} style={{ display: 'none' }}>
                 {children}
             </div>
         );
@@ -185,17 +189,16 @@ class TabsInternal extends PureComponent<ITabsProps, ITabsState> {
                         if (isValidElement(listChild) && listChild.type === Tab) {
                             const isActive = listChild.props.value === activeValue;
                             tabs.push(
-                                <TabButton
+                                <button
                                     key={listChild.props.value}
-                                    active={isActive}
-                                    color={color}
+                                    css={tabButtonStyles(undefined, listChild.props.value === activeValue, color)}
                                     onClick={() => this.handleTabClick(listChild.props.value)}
                                     disabled={listChild.props.disabled}
                                 >
                                     {listChild.props.leftSection}
                                     {listChild.props.label}
                                     {listChild.props.rightSection}
-                                </TabButton>
+                                </button>
                             );
                             if (isActive) activeTabFound = true;
                         }
@@ -203,9 +206,9 @@ class TabsInternal extends PureComponent<ITabsProps, ITabsState> {
                 } else if (child.type === TabPanelInternal) {
                     const isActive = child.props.value === activeValue;
                     panels.push(
-                        <TabPanel key={child.props.value} active={isActive}>
+                        <div key={child.props.value} css={tabPanelStyles(undefined, child.props.value === activeValue)}>
                             {child.props.children}
-                        </TabPanel>
+                        </div>
                     );
                 }
             }
@@ -227,12 +230,12 @@ class TabsInternal extends PureComponent<ITabsProps, ITabsState> {
         const { tabs, panels } = this.processChildren();
 
         return (
-            <TabsContainer className={className} data-testid={testId} {...props}>
-                <TabsList justify={justify} grow={grow}>
+            <div css={tabsContainerStyles()} className={className} data-testid={testId} {...props}>
+                <div css={tabsListStyles(undefined, justify, grow)}>
                     {tabs}
-                </TabsList>
+                </div>
                 {panels}
-            </TabsContainer>
+            </div>
         );
     }
 }
@@ -292,17 +295,16 @@ class TabsComponent extends PureComponent<ITabsProps, ITabsState> {
                         if (isValidElement(listChild) && listChild.type === Tab) {
                             const isActive = listChild.props.value === activeValue;
                             tabs.push(
-                                <TabButton
+                                <button
                                     key={listChild.props.value}
-                                    active={isActive}
-                                    color={color}
+                                    css={tabButtonStyles(undefined, listChild.props.value === activeValue, color)}
                                     onClick={() => this.handleTabClick(listChild.props.value)}
                                     disabled={listChild.props.disabled}
                                 >
                                     {listChild.props.leftSection}
                                     {listChild.props.label}
                                     {listChild.props.rightSection}
-                                </TabButton>
+                                </button>
                             );
                             if (isActive) activeTabFound = true;
                         }
@@ -310,9 +312,9 @@ class TabsComponent extends PureComponent<ITabsProps, ITabsState> {
                 } else if (child.type === TabPanelInternal) {
                     const isActive = child.props.value === activeValue;
                     panels.push(
-                        <TabPanel key={child.props.value} active={isActive}>
+                        <div key={child.props.value} css={tabPanelStyles(undefined, child.props.value === activeValue)}>
                             {child.props.children}
-                        </TabPanel>
+                        </div>
                     );
                 }
             }
@@ -334,12 +336,12 @@ class TabsComponent extends PureComponent<ITabsProps, ITabsState> {
         const { tabs, panels } = this.processChildren();
 
         return (
-            <TabsContainer className={className} data-testid={testId} {...props}>
-                <TabsList justify={justify} grow={grow}>
+            <div css={tabsContainerStyles()} className={className} data-testid={testId} {...props}>
+                <div css={tabsListStyles(undefined, justify, grow)}>
                     {tabs}
-                </TabsList>
+                </div>
                 {panels}
-            </TabsContainer>
+            </div>
         );
     }
 }
