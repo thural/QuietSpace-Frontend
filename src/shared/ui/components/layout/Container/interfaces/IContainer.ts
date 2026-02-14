@@ -8,13 +8,14 @@
  * @version 1.0.0
  */
 
-import { ReactNode, RefObject } from 'react';
-import { LayoutProps, ComponentSize } from '../../../types';
+import { IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
+import { RefObject } from 'react';
+import { ComponentSize, LayoutProps } from '../../../types';
 
 /**
  * Container component props interface
  */
-export interface IContainerProps extends LayoutProps {
+export interface IContainerProps extends IBaseComponentProps, LayoutProps {
   /** Container variant for different layout behaviors */
   variant?: 'default' | 'centered' | 'fluid' | 'constrained';
   /** Container size for responsive design */
@@ -45,4 +46,11 @@ export interface IContainerProps extends LayoutProps {
   boxShadow?: string;
   /** Custom CSS class */
   containerClassName?: string;
+}
+
+/**
+ * Container component state interface
+ */
+export interface IContainerState extends IBaseComponentState {
+  // No additional state needed for this component
 }

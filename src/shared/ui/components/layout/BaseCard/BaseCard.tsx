@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
 import { baseCardContainerStyles } from './styles';
-import { IBaseCardProps } from './interfaces';
-import FlexStyled from '../FlexStyled';
+import { IBaseCardProps, IBaseCardState } from './interfaces';
+import { FlexStyled } from '../FlexStyled';
 
 /**
  * Enterprise BaseCard Component
@@ -19,17 +19,16 @@ import FlexStyled from '../FlexStyled';
  * </BaseCard>
  * ```
  */
-class BaseCard extends PureComponent<IBaseCardProps> {
-  /**
-   * Renders the card container with enterprise styling
-   * 
-   * @returns JSX element representing the card container
-   */
-  override render(): ReactNode {
+export class BaseCard extends BaseClassComponent<IBaseCardProps, IBaseCardState> {
+  protected override getInitialState(): Partial<IBaseCardState> {
+    return {};
+  }
+
+  protected override renderContent(): React.ReactNode {
     const { children, theme, className, ...props } = this.props;
 
     return (
-      <div 
+      <div
         css={baseCardContainerStyles(theme)}
         className={className}
         {...props}

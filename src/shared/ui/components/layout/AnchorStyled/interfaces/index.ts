@@ -4,4 +4,4 @@
  * Exports all interfaces for the AnchorStyled component
  */
 
-export { IAnchorStyledProps } from './IAnchorStyled';
+export { IAnchorStyledProps, IAnchorStyledState } from './IAnchorStyled';

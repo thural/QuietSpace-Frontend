@@ -7,4 +7,4 @@
  * @version 1.0.0
  */
 
-export { IContainerProps } from './IContainer';
+export { IContainerProps, IContainerState } from './IContainer';

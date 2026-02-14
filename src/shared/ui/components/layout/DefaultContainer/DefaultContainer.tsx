@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
-import { defaultContainerWrapperStyles } from './styles';
-import { IDefaultContainerProps } from './interfaces';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
 import Container from '../Container';
+import { IDefaultContainerProps, IDefaultContainerState } from './interfaces';
+import { defaultContainerWrapperStyles } from './styles';
 
 /**
  * Enterprise DefaultContainer Component
@@ -21,17 +21,16 @@ import Container from '../Container';
  * </DefaultContainer>
  * ```
  */
-class DefaultContainer extends PureComponent<IDefaultContainerProps> {
+export class DefaultContainer extends BaseClassComponent<IDefaultContainerProps, IDefaultContainerState> {
   static defaultProps: Partial<IDefaultContainerProps> = {
     size: "600px"
   };
 
-  /**
-   * Renders the default container with enterprise styling
-   * 
-   * @returns JSX element representing the default container
-   */
-  override render(): ReactNode {
+  protected override getInitialState(): Partial<IDefaultContainerState> {
+    return {};
+  }
+
+  protected override renderContent(): React.ReactNode {
     const { forwardedRef, size, children, className, ...props } = this.props;
 
     return (

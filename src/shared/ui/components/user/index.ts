@@ -8,19 +8,19 @@
 // Core user components
 export { AuthenticatedActions } from './AuthenticatedActions';
 export type { IAuthenticatedActionsProps, IAuthenticatedActionsState } from './AuthenticatedActions';
-export { default as AuthStatus } from './AuthStatus';
+export { AuthStatus } from './AuthStatus';
+export type { IAuthStatusProps, IAuthStatusState, IAuthUser } from './AuthStatus';
 export { SecurityStatus } from './SecurityStatus';
 export type { ISecurityStatusProps, ISecurityStatusState } from './SecurityStatus';
 
 // New reusable components
 export { UserProfileAvatar } from './UserProfileAvatar';
 export type { IUserProfileAvatarProps, UserStatusType } from './UserProfileAvatar';
-export { UserAvatar } from './UserAvatar';
-export type { IUserAvatarProps } from './UserAvatar';
+export { default as UserAvatar } from './UserAvatar';
 export { default as UserAvatarPhoto } from './UserAvatarPhoto';
 export { default as UserCard } from './UserCard';
-export { UserDetails } from './UserDetails';
+export { default as UserDetails } from './UserDetails';
 export type { IUserDetailsProps } from './UserDetails';
-export { UserQueryItem } from './UserQueryItem';
+export { default as UserQueryItem } from './UserQueryItem';
 export type { IUserQueryItemProps } from './UserQueryItem';
 export { default as PhotoDisplay } from './PhotoDisplay';

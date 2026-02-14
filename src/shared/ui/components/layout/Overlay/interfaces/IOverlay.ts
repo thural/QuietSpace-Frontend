@@ -9,7 +9,7 @@
  */
 
 import { ReactNode } from 'react';
-import { IBaseComponentProps } from '@/shared/components/base/BaseClassComponent';
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 import { ConsumerFn } from '@/shared/types/genericTypes';
 
 /**
@@ -22,4 +22,11 @@ export interface IOverlayProps extends IBaseComponentProps {
   onClose?: ConsumerFn;
   /** Optional children to render inside the overlay */
   children?: ReactNode;
+}
+
+/**
+ * Overlay component state interface
+ */
+export interface IOverlayState extends IBaseComponentState {
+  // No additional state needed for this component
 }

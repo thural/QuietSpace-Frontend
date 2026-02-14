@@ -9,7 +9,7 @@
  */
 
 // Component exports
-export { UserDetails, default } from './UserDetails';
+export { default as UserDetails } from './UserDetails';
 
 // Interface exports
 export type { IUserDetailsProps, IUserDetailsState } from './interfaces/IUserDetails';

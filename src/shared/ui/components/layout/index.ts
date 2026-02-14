@@ -7,11 +7,11 @@
 export { default as AnchorStyled } from './AnchorStyled';
 export { default as BaseCard } from './BaseCard';
 export { default as BoxStyled } from './BoxStyled';
-export { default as FlexStyled } from './FlexStyled';
+export { FlexStyled } from './FlexStyled';
 export { default as DefaultContainer } from './DefaultContainer';
 export { default as InfinateScrollContainer } from './InfinateScrollContainer';
-export { default as Overlay } from './Overlay';
-export { default as OverlayWithStore } from './OverlayWithStore';
+export { Overlay } from './Overlay';
+export { OverlayWithStore } from './OverlayWithStore';
 export { Container } from './Container';
 export { FlexContainer } from './FlexContainer';
 export { GridContainer } from './GridContainer';

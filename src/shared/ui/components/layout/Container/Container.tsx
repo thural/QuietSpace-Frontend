@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
 import { useTheme } from '@/core/modules/theming';
-import { IContainerProps } from './interfaces';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
+import { IContainerProps, IContainerState } from './interfaces';
 import {
+  containerAlignmentStyles,
+  containerAppearanceStyles,
   containerBaseStyles,
-  containerVariantStyles,
+  containerDimensionStyles,
+  containerMarginStyles,
+  containerOverflowStyles,
+  containerResponsiveStyles,
   containerSizeStyles,
   containerSpacingStyles,
-  containerMarginStyles,
-  containerAlignmentStyles,
-  containerResponsiveStyles,
-  containerDimensionStyles,
-  containerAppearanceStyles,
-  containerOverflowStyles
+  containerVariantStyles
 } from './styles';
 
 /**
@@ -22,13 +22,17 @@ import {
  * positioning, and layout utilities across application with comprehensive
  * variant support and responsive design.
  */
-export class Container extends PureComponent<IContainerProps> {
+export class Container extends BaseClassComponent<IContainerProps, IContainerState> {
   static defaultProps: Partial<IContainerProps> = {
     variant: 'default',
   };
 
-  override render(): ReactNode {
-    const { 
+  protected override getInitialState(): Partial<IContainerState> {
+    return {};
+  }
+
+  protected override renderContent(): React.ReactNode {
+    const {
       children,
       variant,
       size,

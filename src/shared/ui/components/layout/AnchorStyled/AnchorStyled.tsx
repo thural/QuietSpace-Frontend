@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
 import { anchorStyles } from './styles';
-import { IAnchorStyledProps } from './interfaces';
+import { IAnchorStyledProps, IAnchorStyledState } from './interfaces';
 
 /**
  * Enterprise AnchorStyled Component
@@ -21,13 +21,12 @@ import { IAnchorStyledProps } from './interfaces';
  * </AnchorStyled>
  * ```
  */
-class AnchorStyled extends PureComponent<IAnchorStyledProps> {
-  /**
-   * Renders the anchor element with enterprise styling
-   * 
-   * @returns JSX element representing the anchor
-   */
-  override render(): ReactNode {
+export class AnchorStyled extends BaseClassComponent<IAnchorStyledProps, IAnchorStyledState> {
+  protected override getInitialState(): Partial<IAnchorStyledState> {
+    return {};
+  }
+
+  protected override renderContent(): React.ReactNode {
     const {
       href = "",
       target = "_blank",

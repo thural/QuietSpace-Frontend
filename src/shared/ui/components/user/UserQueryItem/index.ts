@@ -9,7 +9,7 @@
  */
 
 // Component exports
-export { UserQueryItem, default } from './UserQueryItem';
+export { default as UserQueryItem } from './UserQueryItem';
 
 // Interface exports
 export type { IUserQueryItemProps, IUserQueryItemState } from './interfaces/IUserQueryItem';

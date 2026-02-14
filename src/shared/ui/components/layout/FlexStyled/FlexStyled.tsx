@@ -1,25 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
-import { boxContainerStyles } from './styles';
-import { IBoxStyledProps, IBoxStyledState } from './interfaces';
-import Container from '../Container';
+import { FlexContainer } from "@/shared/ui/components";
+import { flexContainerStyles } from './styles';
+import { IFlexStyledProps, IFlexStyledState } from './interfaces';
 
 /**
- * Enterprise BoxStyled Component
+ * Enterprise FlexStyled Component
  * 
- * A versatile box container component with enterprise-grade styling,
+ * A versatile flex container component with enterprise-grade styling,
  * theme integration, and responsive design. Built with Emotion CSS
  * for optimal performance and consistency.
  * 
  * @example
  * ```tsx
- * <BoxStyled className="custom-box">
+ * <FlexStyled className="custom-flex">
  *   <Content />
- * </BoxStyled>
+ * </FlexStyled>
  * ```
  */
-export class BoxStyled extends BaseClassComponent<IBoxStyledProps, IBoxStyledState> {
-  protected override getInitialState(): Partial<IBoxStyledState> {
+export class FlexStyled extends BaseClassComponent<IFlexStyledProps, IFlexStyledState> {
+  protected override getInitialState(): Partial<IFlexStyledState> {
     return {};
   }
 
@@ -27,16 +27,14 @@ export class BoxStyled extends BaseClassComponent<IBoxStyledProps, IBoxStyledSta
     const { forwardedRef, children, className, ...props } = this.props;
 
     return (
-      <div
-        css={boxContainerStyles(undefined)}
+      <FlexContainer 
         ref={forwardedRef}
         className={className}
+        css={flexContainerStyles}
         {...props}
       >
         {children}
-      </div>
+      </FlexContainer>
     );
   }
 }
-
-export default BoxStyled;

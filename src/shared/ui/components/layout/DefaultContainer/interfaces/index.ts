@@ -4,4 +4,4 @@
  * Exports all interfaces for the DefaultContainer component
  */
 
-export { IDefaultContainerProps } from './IDefaultContainer';
+export { IDefaultContainerProps, IDefaultContainerState } from './IDefaultContainer';
