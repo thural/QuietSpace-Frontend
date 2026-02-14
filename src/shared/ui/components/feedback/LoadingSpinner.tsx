@@ -1,34 +1,35 @@
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css, keyframes } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getSpacing, getColor, getBorderWidth, getTransition } from '../utils';
 
-// Styled components with theme token integration
-const LoadingSpinnerContainer = styled.div<{ theme?: any }>`
+// Emotion CSS utility functions
+const spinKeyframes = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const createLoadingSpinnerContainerStyles = (theme: any) => css`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => getSpacing(props.theme, 'md')};
+  padding: ${getSpacing(theme, 'md')};
 `;
 
-const SpinnerElement = styled.div<{
-  $size?: string;
-  $color?: string;
-  theme?: any;
-}>`
-  animation: spin 1s linear infinite;
+const createSpinnerElementStyles = (
+  theme: any,
+  size: string,
+  color: string
+) => css`
+  animation: ${spinKeyframes} 1s linear infinite;
   border-radius: 50%;
-  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'background.secondary')};
-  border-top: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => props.$color || getColor(props.theme, 'brand.500')};
-  width: ${props => props.$size || '24px'};
-  height: ${props => props.$size || '24px'};
-  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+  border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'background.secondary')};
+  border-top: ${getBorderWidth(theme, 'sm')} solid ${color};
+  width: ${size};
+  height: ${size};
+  transition: ${getTransition(theme, 'all', 'normal', 'ease')};
 `;
 
 /**
@@ -149,24 +150,29 @@ export class LoadingSpinner extends PureComponent<ILoadingSpinnerProps> {
     const size = this.getSizePixels(theme || {});
     const color = this.getColor(theme || {});
 
-    return (
-      <LoadingSpinnerContainer
-        className={className}
-        data-testid={testId || 'loading-spinner'}
-        theme={theme}
-      >
-        <SpinnerElement
-          $size={size}
-          $color={color}
-          theme={theme}
-          role="status"
-          aria-label="Loading"
-        >
-          <span style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
-            Loading...
-          </span>
-        </SpinnerElement>
-      </LoadingSpinnerContainer>
+    return React.createElement(
+      'div',
+      {
+        css: createLoadingSpinnerContainerStyles(theme || {} as any),
+        className,
+        'data-testid': testId || 'loading-spinner',
+        theme
+      },
+      React.createElement(
+        'div',
+        {
+          css: createSpinnerElementStyles(theme || {} as any, size, color),
+          role: 'status',
+          'aria-label': 'Loading'
+        },
+        React.createElement(
+          'span',
+          {
+            style: { position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: '0' }
+          },
+          'Loading...'
+        )
+      )
     );
   }
 }
