@@ -1,6 +1,6 @@
-import { OverlayWrapper, OverlayBackdrop, OverlayContent, OverlayCloseButton } from "./OverlayStyles";
+/** @jsxImportSource @emotion/react */
 import React, { PureComponent, ReactNode } from 'react';
-import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { overlayWrapperStyles, overlayBackdropStyles, overlayContentStyles, overlayCloseButtonStyles } from "./OverlayStyles";
 
 interface IOverlayProps {
   show: boolean;
@@ -35,7 +35,7 @@ class OverlayComponent extends PureComponent<IOverlayProps> {
     onClose?.();
   };
 
-  render(): ReactNode {
+  override render(): ReactNode {
     const {
       show,
       children,
@@ -51,19 +51,19 @@ class OverlayComponent extends PureComponent<IOverlayProps> {
     }
 
     return (
-      <OverlayWrapper>
+      <div css={overlayWrapperStyles({} as any)}>
         {backdrop && (
-          <OverlayBackdrop onClick={this.handleBackdropClick} />
+          <div css={overlayBackdropStyles({} as any)} onClick={this.handleBackdropClick} />
         )}
-        <OverlayContent className={className} {...props}>
+        <div css={overlayContentStyles({} as any)} className={className} {...props}>
           {closeable && (
-            <OverlayCloseButton onClick={this.handleClose}>
+            <button css={overlayCloseButtonStyles({} as any)} onClick={this.handleClose}>
               ×
-            </OverlayCloseButton>
+            </button>
           )}
           {children}
-        </OverlayContent>
-      </OverlayWrapper>
+        </div>
+      </div>
     );
   }
 }

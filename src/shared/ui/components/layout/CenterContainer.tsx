@@ -1,22 +1,16 @@
-/**
- * Enterprise CenterContainer Component
- * 
- * A centering container component that replaces the original Center component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import React, { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { LayoutProps } from '../types';
 import { layoutPropsToStyles } from '../utils';
 
-// Styled component implementation
-const StyledCenterContainer = styled.div<{ theme: any; $props: LayoutProps }>`
+// Emotion CSS implementation
+const centerContainerStyles = (theme?: any, layoutProps?: LayoutProps) => css`
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  ${(props) => layoutPropsToStyles(props.$props, props.theme)}
+  ${layoutPropsToStyles(layoutProps || {}, theme)}
 `;
 
 /**
@@ -36,14 +30,13 @@ class CenterContainer extends PureComponent<LayoutProps> {
         const { children, theme, className, testId, ...layoutProps } = this.props;
 
         return (
-            <StyledCenterContainer
-                theme={theme}
-                $props={layoutProps}
+            <div
+                css={centerContainerStyles(theme, layoutProps)}
                 className={className}
                 data-testid={testId}
             >
                 {children}
-            </StyledCenterContainer>
+            </div>
         );
     }
 }

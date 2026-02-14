@@ -1,36 +1,31 @@
+/** @jsxImportSource @emotion/react */
 import React, { ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 import { getSpacing, getColor, getTypography, getRadius, getTransition } from '../utils';
 
-// Enterprise styled-components for enhanced switch styling
-const SwitchStyledContainer = styled.div<{ theme: any; size?: 'md' | 'sm' | 'lg'; disabled?: boolean }>`
+// Enterprise Emotion CSS for enhanced switch styling
+const switchStyledContainerStyles = (theme?: any, size?: 'md' | 'sm' | 'lg', disabled?: boolean) => css`
   display: flex;
   align-items: center;
-  gap: ${props => getSpacing(props.theme, 'sm')};
-  opacity: ${props => props.disabled ? 0.6 : 1};
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  gap: ${getSpacing(theme, 'sm')};
+  opacity: ${disabled ? 0.6 : 1};
+  cursor: ${disabled ? 'not-allowed' : 'pointer'};
   
   .switch-label {
-    font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-    font-size: ${props => {
-    switch (props.size) {
-      case 'sm': return getTypography(props.theme, 'fontSize.sm');
-      case 'lg': return getTypography(props.theme, 'fontSize.lg');
-      default: return getTypography(props.theme, 'fontSize.base');
-    }
-  }};
-    font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
-    color: ${props => getColor(props.theme, props.disabled ? 'text.tertiary' : 'text.primary')};
+    font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+    font-size: ${size === 'sm' ? getTypography(theme || {}, 'fontSize.sm') : size === 'lg' ? getTypography(theme || {}, 'fontSize.lg') : getTypography(theme || {}, 'fontSize.base')};
+    font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
+    color: ${getColor(theme, disabled ? 'text.tertiary' : 'text.primary')};
     user-select: none;
-    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-    transition: ${props => getTransition(props.theme, 'color', 'fast', 'ease')};
+    cursor: ${disabled ? 'not-allowed' : 'pointer'};
+    transition: ${getTransition(theme, 'color', 'fast', 'ease')};
   }
   
   .switch-input {
     position: relative;
     display: inline-block;
-    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+    cursor: ${disabled ? 'not-allowed' : 'pointer'};
     
     input[type="checkbox"] {
       opacity: 0;
@@ -41,70 +36,34 @@ const SwitchStyledContainer = styled.div<{ theme: any; size?: 'md' | 'sm' | 'lg'
     .switch-slider {
       position: relative;
       display: inline-block;
-      cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-      background: ${props => getColor(props.theme, props.disabled ? 'border.light' : 'border.medium')};
-      border-radius: ${props => {
-    switch (props.size) {
-      case 'sm': return getRadius(props.theme, 'sm');
-      case 'lg': return getRadius(props.theme, 'lg');
-      default: return getRadius(props.theme, 'md');
-    }
-  }};
-      transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
+      cursor: ${disabled ? 'not-allowed' : 'pointer'};
+      background: ${getColor(theme, disabled ? 'border.light' : 'border.medium')};
+      border-radius: ${size === 'sm' ? getRadius(theme || {}, 'sm') : size === 'lg' ? getRadius(theme || {}, 'lg') : getRadius(theme || {}, 'md')};
+      transition: ${getTransition(theme, 'all', 'normal', 'ease')};
       
       &:before {
         position: absolute;
         content: "";
-        height: ${props => {
-    switch (props.size) {
-      case 'sm': return getSpacing(props.theme, 12);
-      case 'lg': return getSpacing(props.theme, 24);
-      default: return getSpacing(props.theme, 18);
-    }
-  }};
-        width: ${props => {
-    switch (props.size) {
-      case 'sm': return getSpacing(props.theme, 12);
-      case 'lg': return getSpacing(props.theme, 24);
-      default: return getSpacing(props.theme, 18);
-    }
-  }};
-        left: ${props => {
-    switch (props.size) {
-      case 'sm': return getSpacing(props.theme, 2);
-      case 'lg': return getSpacing(props.theme, 3);
-      default: return getSpacing(props.theme, 2);
-    }
-  }};
-        bottom: ${props => {
-    switch (props.size) {
-      case 'sm': return getSpacing(props.theme, 2);
-      case 'lg': return getSpacing(props.theme, 3);
-      default: return getSpacing(props.theme, 2);
-    }
-  }};
-        background-color: ${props => getColor(props.theme, 'text.inverse')};
+        height: ${size === 'sm' ? getSpacing(theme || {}, 12) : size === 'lg' ? getSpacing(theme || {}, 24) : getSpacing(theme || {}, 18)};
+        width: ${size === 'sm' ? getSpacing(theme || {}, 12) : size === 'lg' ? getSpacing(theme || {}, 24) : getSpacing(theme || {}, 18)};
+        left: ${size === 'sm' ? getSpacing(theme || {}, 2) : size === 'lg' ? getSpacing(theme || {}, 3) : getSpacing(theme || {}, 2)};
+        bottom: ${size === 'sm' ? getSpacing(theme || {}, 2) : size === 'lg' ? getSpacing(theme || {}, 3) : getSpacing(theme || {}, 2)};
+        background-color: ${getColor(theme, 'text.inverse')};
         border-radius: 50%;
-        transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
+        transition: ${getTransition(theme, 'all', 'normal', 'ease')};
       }
     }
     
     input:checked + .switch-slider {
-      background-color: ${props => getColor(props.theme, props.disabled ? 'border.light' : 'brand.500')};
+      background-color: ${getColor(theme, disabled ? 'border.light' : 'brand.500')};
       
       &:before {
-        transform: translateX(${props => {
-    switch (props.size) {
-      case 'sm': return getSpacing(props.theme, 16);
-      case 'lg': return getSpacing(props.theme, 32);
-      default: return getSpacing(props.theme, 24);
-    }
-  }});
+        transform: translateX(${size === 'sm' ? getSpacing(theme || {}, 16) : size === 'lg' ? getSpacing(theme || {}, 32) : getSpacing(theme || {}, 24)});
       }
     }
     
     input:focus + .switch-slider {
-      box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'brand.200')};
+      box-shadow: 0 0 0 3px ${getColor(theme, 'brand.200')};
     }
     
     input:disabled + .switch-slider {
@@ -120,7 +79,7 @@ interface ISwitchStyledProps extends IBaseComponentProps {
   size?: 'sm' | 'md' | 'lg';
   label?: string;
   labelPosition?: 'left' | 'right';
-  onChange?: (checked: boolean) => void;
+  onChange?: ((checked: boolean) => void) | React.ChangeEventHandler<HTMLInputElement>;
   className?: string;
   theme?: any;
 
@@ -136,6 +95,11 @@ interface ISwitchStyledProps extends IBaseComponentProps {
   // Accessibility
   ariaLabel?: string;
   ariaDescribedBy?: string;
+}
+
+// Type guard to check if onChange is the boolean signature
+function isBooleanOnChange(fn: any): fn is (checked: boolean) => void {
+  return typeof fn === 'function' && fn.length === 1;
 }
 
 interface ISwitchStyledState extends IBaseComponentState {
@@ -163,7 +127,7 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
   }
 
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { disabled, onValueChange, value } = this.props;
+    const { disabled, onChange, onValueChange, value } = this.props;
     const isChecked = event.target.checked;
 
     if (!disabled) {
@@ -171,11 +135,26 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
       if (onValueChange && value !== undefined) {
         onValueChange(value, isChecked);
       }
+
+      // Handle both onChange signatures using type guard
+      if (onChange) {
+        if (isBooleanOnChange(onChange)) {
+          // Boolean signature: (checked: boolean) => void
+          onChange(isChecked);
+        } else {
+          // Event handler signature: (event: ChangeEvent) => void
+          onChange(event);
+        }
+      }
     }
   };
 
   private handleFocus = (): void => {
     this.safeSetState({ isFocused: true });
+  };
+
+  private handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    this.handleChange(event);
   };
 
   private handleBlur = (): void => {
@@ -187,8 +166,10 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
    */
   public turnOn(): void {
     const { onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange?.(true);
+    if (!disabled && onChange) {
+      if (isBooleanOnChange(onChange)) {
+        onChange(true);
+      }
     }
   }
 
@@ -197,8 +178,10 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
    */
   public turnOff(): void {
     const { onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange?.(false);
+    if (!disabled && onChange) {
+      if (isBooleanOnChange(onChange)) {
+        onChange(false);
+      }
     }
   }
 
@@ -207,8 +190,10 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
    */
   public toggle(): void {
     const { checked, onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange?.(!checked);
+    if (!disabled && onChange) {
+      if (isBooleanOnChange(onChange)) {
+        onChange(!checked);
+      }
     }
   }
 
@@ -233,6 +218,8 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
       autoFocus,
       ariaLabel,
       ariaDescribedBy,
+      onChange,
+      onValueChange,
       testId,
       ...props
     } = this.props;
@@ -248,11 +235,9 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
     const currentSize = switchSize[size] || switchSize.md;
 
     return (
-      <SwitchStyledContainer
+      <div
+        css={switchStyledContainerStyles(theme, size, disabled)}
         className={className}
-        size={size}
-        disabled={disabled}
-        theme={theme}
         data-testid={testId || 'switch-styled'}
       >
         {label && labelPosition === 'left' && (
@@ -274,14 +259,7 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
             aria-label={ariaLabel}
             aria-describedby={ariaDescribedBy}
             aria-checked={checked}
-            onChange={(e) => {
-              const isChecked = e.target.checked;
-              this.handleChange(e);
-              // Also call the onChange prop directly with boolean value
-              if (this.props.onChange) {
-                this.props.onChange(isChecked);
-              }
-            }}
+            onChange={this.handleInputChange as React.ChangeEventHandler<HTMLInputElement>}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             {...props}
@@ -301,7 +279,7 @@ class SwitchStyled extends BaseClassComponent<ISwitchStyledProps, ISwitchStyledS
             {required && <span className="required-indicator" aria-label="required">*</span>}
           </label>
         )}
-      </SwitchStyledContainer>
+      </div>
     );
   }
 }

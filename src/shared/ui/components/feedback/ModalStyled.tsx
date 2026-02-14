@@ -1,44 +1,45 @@
+/** @jsxImportSource @emotion/react */
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import styled from 'styled-components';
 import { PureComponent, ReactNode } from 'react';
+import { css } from '@emotion/react';
 import { getSpacing, getColor, getRadius, getBorderWidth, getShadow, getTransition } from '../utils';
 
-const ModalContainer = styled.div<{ theme?: any }>`
-  gap: ${props => getSpacing(props.theme, 'md')};
+const modalContainerStyles = (theme?: any) => css`
+  gap: ${getSpacing(theme, 'md')};
   top: 50%;
   left: 50%;
-  color: ${props => getColor(props.theme, 'text.primary')};
+  color: ${getColor(theme, 'text.primary')};
   width: 640px; // Fixed modal width
   max-width: 90vw;
   max-height: 100vh;
-  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.light')};
+  border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.light')};
   margin: auto;
   display: flex;
-  padding: ${props => getSpacing(props.theme, 'lg')};
-  z-index: ${(props): number => (props.theme as any)?.zIndex?.modal || 1000};
+  padding: ${getSpacing(theme, 'lg')};
+  z-index: ${theme?.zIndex?.modal || 1000};
   position: fixed;
   flex-direction: column;
   transform: translate(-50%, -50%);
-  border-radius: ${props => getRadius(props.theme, 'md')};
-  background: ${props => getColor(props.theme, 'background.primary')};
-  box-shadow: ${props => getShadow(props.theme, 'lg')};
-  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
+  border-radius: ${getRadius(theme, 'md')};
+  background: ${getColor(theme, 'background.primary')};
+  box-shadow: ${getShadow(theme, 'lg')};
+  transition: ${getTransition(theme, 'all', 'normal', 'ease')};
   
   @media (max-width: 720px) {
-    gap: ${props => getSpacing(props.theme, 'md')};
+    gap: ${getSpacing(theme, 'md')};
     width: 95vw;
-    padding: ${props => getSpacing(props.theme, 'md')};
+    padding: ${getSpacing(theme, 'md')};
   }
 `;
 
-const ModalOverlay = styled.div<{ theme?: any }>`
+const modalOverlayStyles = (theme?: any) => css`
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: ${props => getColor(props.theme, 'text.primary')}20; // 20% opacity
-  z-index: ${(props): number => (props.theme as any)?.zIndex?.overlay || 999};
+  background: ${getColor(theme, 'text.primary')}20; // 20% opacity
+  z-index: ${theme?.zIndex?.overlay || 999};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,11 +55,11 @@ class ModalStyled extends PureComponent<IModalStyledProps> {
     const props = this.props as IModalStyledProps;
     const { children, forwardedRef } = props;
     return (
-      <ModalOverlay theme={undefined}>
-        <ModalContainer ref={forwardedRef} theme={undefined}>
+      <div css={modalOverlayStyles(undefined)}>
+        <div css={modalContainerStyles(undefined)} ref={forwardedRef}>
           {children}
-        </ModalContainer>
-      </ModalOverlay>
+        </div>
+      </div>
     );
   }
 }

@@ -1,27 +1,28 @@
+/** @jsxImportSource @emotion/react */
 import { Container } from "@/shared/ui/components/layout/Container";
-import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+import { css } from '@emotion/react';
 import React, { PureComponent, ReactNode } from 'react';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { getSpacing, getColor, getBorderWidth } from '../utils';
 
-// Enterprise styled-components for default container styling
-const DefaultContainerWrapper = styled.div<{ theme: EnhancedTheme }>`
-  padding-top: ${props => props.theme.spacing.xl};
+// Enterprise Emotion CSS for default container styling
+const defaultContainerWrapperStyles = (theme?: any) => css`
+  padding-top: ${getSpacing(theme, 'xl')};
   
   & hr {
     border: none;
     height: 0.1px;
-    background: ${props => props.theme.colors.border.medium};
-    margin-top: ${props => props.theme.spacing.md};
+    background: ${getColor(theme, 'border.medium')};
+    margin-top: ${getSpacing(theme, 'md')};
   }
   
   &:not(:last-child) {
-    border-bottom: 0.1px solid ${props => props.theme.colors.border.light};
+    border-bottom: ${getBorderWidth(theme, 'hairline')} solid ${getColor(theme, 'border.light')};
   }
   
   // Responsive design
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    padding-top: ${props => props.theme.spacing.lg};
+  @media (max-width: 768px) {
+    padding-top: ${getSpacing(theme, 'lg')};
   }
 `;
 
@@ -32,25 +33,25 @@ const DefaultContainerWrapper = styled.div<{ theme: EnhancedTheme }>`
  * following theme system patterns and class component best practices.
  */
 class DefaultContainer extends PureComponent<GenericWrapper> {
-    static defaultProps: Partial<GenericWrapper> = {
-        size: "600px"
-    };
+  static defaultProps: Partial<GenericWrapper> = {
+    size: "600px"
+  };
 
-    render(): ReactNode {
-        const { forwardRef, size, children, className, ...props } = this.props;
+  override render(): ReactNode {
+    const { forwardRef, size, children, className, ...props } = this.props;
 
-        return (
-            <DefaultContainerWrapper className={className}>
-                <Container
-                    ref={forwardRef}
-                    maxWidth={size}
-                    {...props}
-                >
-                    {children}
-                </Container>
-            </DefaultContainerWrapper>
-        );
-    }
+    return (
+      <div css={defaultContainerWrapperStyles()} className={className}>
+        <Container
+          ref={forwardRef}
+          maxWidth={size}
+          {...props}
+        >
+          {children}
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default DefaultContainer;

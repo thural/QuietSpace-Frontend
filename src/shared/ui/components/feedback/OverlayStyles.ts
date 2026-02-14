@@ -1,8 +1,9 @@
-import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import { getSpacing, getColor, getRadius, getShadow, getTransition, getTypography } from '../utils';
 
-// Enterprise styled-components for overlay styling
-export const OverlayWrapper = styled.div<{ theme: EnhancedTheme }>`
+// Enterprise Emotion CSS for overlay styling
+export const overlayWrapperStyles = (theme?: any) => css`
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +12,7 @@ export const OverlayWrapper = styled.div<{ theme: EnhancedTheme }>`
   z-index: 1000;
 `;
 
-export const OverlayBackdrop = styled.div<{ theme: EnhancedTheme }>`
+export const overlayBackdropStyles = (theme?: any) => css`
   position: fixed;
   top: 0;
   left: 0;
@@ -21,55 +22,55 @@ export const OverlayBackdrop = styled.div<{ theme: EnhancedTheme }>`
   display: block;
   backdrop-filter: blur(32px);
   background: rgba(128, 128, 128, 0.1);
-  transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
+  transition: all ${getTransition(theme, 'all', 'normal', 'ease')};
   
   &:hover {
     background: rgba(128, 128, 128, 0.15);
   }
 `;
 
-export const OverlayContent = styled.div<{ theme: EnhancedTheme }>`
+export const overlayContentStyles = (theme?: any) => css`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: ${props => props.theme.colors.background.primary};
-  border-radius: ${props => props.theme.radius.lg};
-  box-shadow: ${props => props.theme.shadows.lg};
-  padding: ${props => props.theme.spacing.lg};
+  background: ${getColor(theme, 'background.primary')};
+  border-radius: ${getRadius(theme, 'lg')};
+  box-shadow: ${getShadow(theme, 'lg')};
+  padding: ${getSpacing(theme, 'lg')};
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
   z-index: 1001;
   
   // Responsive design
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    padding: ${props => props.theme.spacing.md};
+  @media (max-width: 768px) {
+    padding: ${getSpacing(theme, 'md')};
     max-width: 95vw;
     max-height: 95vh;
   }
 `;
 
-export const OverlayCloseButton = styled.button<{ theme: EnhancedTheme }>`
+export const overlayCloseButtonStyles = (theme?: any) => css`
   position: absolute;
-  top: ${props => props.theme.spacing.sm};
-  right: ${props => props.theme.spacing.sm};
+  top: ${getSpacing(theme, 'sm')};
+  right: ${getSpacing(theme, 'sm')};
   background: transparent;
   border: none;
-  font-size: ${props => props.theme.typography.fontSize.lg};
-  color: ${props => props.theme.colors.text.secondary};
+  font-size: ${getTypography(theme, 'lg')};
+  color: ${getColor(theme, 'text.secondary')};
   cursor: pointer;
-  padding: ${props => props.theme.spacing.xs};
-  border-radius: ${props => props.theme.radius.sm};
-  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  padding: ${getSpacing(theme, 'xs')};
+  border-radius: ${getRadius(theme, 'sm')};
+  transition: all ${getTransition(theme, 'all', 'fast', 'ease')};
   
   &:hover {
-    background: ${props => props.theme.colors.background.secondary};
-    color: ${props => props.theme.colors.text.primary};
+    background: ${getColor(theme, 'background.secondary')};
+    color: ${getColor(theme, 'text.primary')};
   }
   
   &:focus {
-    outline: 2px solid ${props => props.theme.colors.brand[300]};
+    outline: 2px solid ${getColor(theme, 'brand.300')};
     outline-offset: 2px;
   }
 `;

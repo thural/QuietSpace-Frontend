@@ -1,8 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import { ConsumerFn } from "@/shared/types/genericTypes";
 import React, { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
-import { Container } from '@/shared/ui/components/layout/Container';
+import { css } from '@emotion/react';
+import { getSpacing, getColor, getRadius, getTransition, getTypography } from '../utils';
 
 interface CloseButtonProps {
   handleToggle: ConsumerFn;
@@ -30,46 +30,42 @@ class CloseButtonStyled extends PureComponent<CloseButtonProps> {
     }
   };
 
-  private getVariantStyles = (): string => {
-    const { variant } = this.props;
-    return `close-button-${variant}`;
-  };
-
-  render(): ReactNode {
+  override render(): ReactNode {
     const { className, disabled, variant } = this.props;
 
     return (
-      <CloseButtonContainer
+      <button
+        css={getCloseButtonStyles(undefined, variant, disabled)}
         onClick={this.handleClick}
         disabled={disabled}
-        className={`close-button ${className || ''} ${this.getVariantStyles()}`}
+        className={`close-button ${className || ''} close-button-${variant}`}
         aria-label="Close"
       >
         ×
-      </CloseButtonContainer>
+      </button>
     );
   }
 }
 
-// Enterprise styled-components for close button styling
-const CloseButtonContainer = styled.button<{ theme: EnhancedTheme }>`
+// Enterprise Emotion CSS for close button styling
+const getCloseButtonStyles = (theme?: any, variant?: string, disabled?: boolean) => css`
   display: none;
   position: fixed;
-  top: ${props => props.theme.spacing.xs};
-  right: ${props => props.theme.spacing.sm};
-  cursor: pointer;
-  font-size: ${props => props.theme.typography.fontSize.xl};
+  top: ${getSpacing(theme, 'xs')};
+  right: ${getSpacing(theme, 'sm')};
+  cursor: ${disabled ? 'not-allowed' : 'pointer'};
+  font-size: ${getTypography(theme, 'fontSize.xl')};
   background: none;
   border: none;
-  color: ${props => props.theme.colors.text.primary};
-  padding: ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.radius.md};
-  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  color: ${getColor(theme, 'text.primary')};
+  padding: ${getSpacing(theme, 'sm')};
+  border-radius: ${getRadius(theme, 'md')};
+  transition: all ${getTransition(theme, 'all', 'fast', 'ease')};
   z-index: 1000;
   
   &:hover {
-    background: ${props => props.theme.colors.background.tertiary};
-    color: ${props => props.theme.colors.text.secondary};
+    background: ${getColor(theme, 'background.tertiary')};
+    color: ${getColor(theme, 'text.secondary')};
     transform: scale(1.1);
   }
   
@@ -78,7 +74,7 @@ const CloseButtonContainer = styled.button<{ theme: EnhancedTheme }>`
   }
   
   &:focus {
-    outline: 2px solid ${props => props.theme.colors.brand[500]};
+    outline: 2px solid ${getColor(theme, 'brand.500')};
     outline-offset: 2px;
   }
   
@@ -88,7 +84,7 @@ const CloseButtonContainer = styled.button<{ theme: EnhancedTheme }>`
   }
   
   // Responsive design - show on mobile
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: 768px) {
     display: block;
   }
 `;

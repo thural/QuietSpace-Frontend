@@ -1,118 +1,66 @@
-/**
- * Enterprise FlexContainer Component
- * 
- * A flexible container component that replaces the original Flex component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { FlexProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getSpacing, getBreakpoint } from '../utils';
 
-// Styled components with theme token integration
-const StyledFlexContainer = styled.div<{
-    theme?: any;
-    direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
-    wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
-    justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
-    align?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
-    gap?: ComponentSize | string;
-    padding?: ComponentSize | string;
-    margin?: ComponentSize | string;
-}>`
-  box-sizing: border-box;
-  display: flex;
-  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-  
-  /* Flex direction */
-  flex-direction: ${props => props.direction || 'row'};
-  
-  /* Flex wrap */
-  flex-wrap: ${props => props.wrap || 'nowrap'};
-  
-  /* Justify content */
-  justify-content: ${props => props.justify || 'flex-start'};
-  
-  /* Align items */
-  align-items: ${props => props.align || 'stretch'};
-  
-  /* Gap using theme spacing tokens */
-  ${props => {
-        if (props.gap && typeof props.gap === 'string') {
-            const gapMap: Record<ComponentSize, string> = {
-                xs: getSpacing(props.theme, 'xs'),
-                sm: getSpacing(props.theme, 'sm'),
-                md: getSpacing(props.theme, 'md'),
-                lg: getSpacing(props.theme, 'lg'),
-                xl: getSpacing(props.theme, 'xl')
-            };
-            if (gapMap[props.gap as ComponentSize]) {
-                return `gap: ${gapMap[props.gap as ComponentSize]};`;
-            }
-            return `gap: ${props.gap};`;
-        }
-        return '';
-    }}
-  
-  /* Padding using theme spacing tokens */
-  ${props => {
-        if (props.padding && typeof props.padding === 'string') {
-            const paddingMap: Record<ComponentSize, string> = {
-                xs: getSpacing(props.theme, 'xs'),
-                sm: getSpacing(props.theme, 'sm'),
-                md: getSpacing(props.theme, 'md'),
-                lg: getSpacing(props.theme, 'lg'),
-                xl: getSpacing(props.theme, 'xl')
-            };
-            if (paddingMap[props.padding as ComponentSize]) {
-                return `padding: ${paddingMap[props.padding as ComponentSize]};`;
-            }
-            return `padding: ${props.padding};`;
-        }
-        return '';
-    }}
-  
-  /* Margin using theme spacing tokens */
-  ${props => {
-        if (props.margin && typeof props.margin === 'string') {
-            const marginMap: Record<ComponentSize, string> = {
-                xs: getSpacing(props.theme, 'xs'),
-                sm: getSpacing(props.theme, 'sm'),
-                md: getSpacing(props.theme, 'md'),
-                lg: getSpacing(props.theme, 'lg'),
-                xl: getSpacing(props.theme, 'xl')
-            };
-            if (marginMap[props.margin as ComponentSize]) {
-                return `margin: ${marginMap[props.margin as ComponentSize]};`;
-            }
-            return `margin: ${props.margin};`;
-        }
-        return '';
-    }}
-  
-  /* Responsive design using theme breakpoints */
-  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
-    flex-direction: ${props => (props.direction === 'row' || props.direction === 'row-reverse') ? 'column' : props.direction || 'column'};
-    gap: ${props => {
-        if (props.gap && typeof props.gap === 'string') {
-            const gapMap: Record<ComponentSize, string> = {
-                xs: getSpacing(props.theme, 'xs'),
-                sm: getSpacing(props.theme, 'sm'),
-                md: getSpacing(props.theme, 'md'),
-                lg: getSpacing(props.theme, 'lg'),
-                xl: getSpacing(props.theme, 'xl')
-            };
-            if (gapMap[props.gap as ComponentSize]) {
-                return gapMap[props.gap as ComponentSize];
-            }
-            return props.gap;
-        }
-        return getSpacing(props.theme, 'sm');
-    }};
-  }
-`;
+// Emotion CSS implementation with theme token integration
+const getFlexContainerStyles = (theme?: any, props?: any) => {
+    const { direction, wrap, justify, align, gap, padding, margin } = props || {};
+
+    const baseStyles = css`
+    box-sizing: border-box;
+    display: flex;
+    font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+    flex-direction: ${direction || 'row'};
+    flex-wrap: ${wrap || 'nowrap'};
+    justify-content: ${justify || 'flex-start'};
+    align-items: ${align || 'stretch'};
+  `;
+
+    const gapStyles = gap && typeof gap === 'string' && css`
+    gap: ${gap};
+  `;
+
+    const gapSizeStyles = gap && typeof gap !== 'string' && css`
+    gap: ${gap === 'xs' ? getSpacing(theme, 'xs') : gap === 'sm' ? getSpacing(theme, 'sm') : gap === 'md' ? getSpacing(theme, 'md') : gap === 'lg' ? getSpacing(theme, 'lg') : gap === 'xl' ? getSpacing(theme, 'xl') : ''};
+  `;
+
+    const paddingStyles = padding && typeof padding === 'string' && css`
+    padding: ${padding};
+  `;
+
+    const paddingSizeStyles = padding && typeof padding !== 'string' && css`
+    padding: ${padding === 'xs' ? getSpacing(theme, 'xs') : padding === 'sm' ? getSpacing(theme, 'sm') : padding === 'md' ? getSpacing(theme, 'md') : padding === 'lg' ? getSpacing(theme, 'lg') : padding === 'xl' ? getSpacing(theme, 'xl') : ''};
+  `;
+
+    const marginStyles = margin && typeof margin === 'string' && css`
+    margin: ${margin};
+  `;
+
+    const marginSizeStyles = margin && typeof margin !== 'string' && css`
+    margin: ${margin === 'xs' ? getSpacing(theme, 'xs') : margin === 'sm' ? getSpacing(theme, 'sm') : margin === 'md' ? getSpacing(theme, 'md') : margin === 'lg' ? getSpacing(theme, 'lg') : margin === 'xl' ? getSpacing(theme, 'xl') : ''};
+  `;
+
+    const responsiveStyles = css`
+    @media (max-width: ${getBreakpoint(theme, 'sm')}) {
+      flex-direction: ${(direction === 'row' || direction === 'row-reverse') ? 'column' : direction || 'column'};
+      gap: ${gap && typeof gap === 'string' ? gap : gap && typeof gap !== 'string' ? (gap === 'xs' ? getSpacing(theme, 'xs') : gap === 'sm' ? getSpacing(theme, 'sm') : gap === 'md' ? getSpacing(theme, 'md') : gap === 'lg' ? getSpacing(theme, 'lg') : gap === 'xl' ? getSpacing(theme, 'xl') : '') : getSpacing(theme, 'sm')};
+    }
+  `;
+
+    return css`
+    ${baseStyles}
+    ${gapStyles}
+    ${gapSizeStyles}
+    ${paddingStyles}
+    ${paddingSizeStyles}
+    ${marginStyles}
+    ${marginSizeStyles}
+    ${responsiveStyles}
+  `;
+};
 
 interface IFlexContainerProps extends FlexProps {
     direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
@@ -191,9 +139,15 @@ export class FlexContainer extends PureComponent<IFlexContainerProps> {
         };
 
         return (
-            <StyledFlexContainer {...containerProps}>
+            <div
+                css={getFlexContainerStyles(theme, { direction, wrap, justify, align, gap, padding, margin })}
+                className={className}
+                data-testid={testId}
+                onClick={onClick}
+                style={flexStyles}
+            >
                 {children}
-            </StyledFlexContainer>
+            </div>
         );
     }
 }

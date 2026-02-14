@@ -1,101 +1,82 @@
-/**
- * Enterprise Container Component
- * 
- * A flexible container component that replaces the original Box component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode, RefObject } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { LayoutProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getSpacing, getBreakpoint } from '../utils';
 
-// Styled components with theme token integration
-const StyledContainer = styled.div<{
-    theme?: any;
-    variant?: 'default' | 'centered' | 'fluid' | 'constrained';
-    size?: ComponentSize;
-    padding?: ComponentSize | string;
-    margin?: ComponentSize | string;
-}>`
-  box-sizing: border-box;
-  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-  
-  /* Variant styles using theme tokens */
-  ${props => {
-        switch (props.variant) {
-            case 'centered':
-                return `
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto;
-        `;
-            case 'fluid':
-                return `
-          width: 100%;
-          max-width: none;
-        `;
-            case 'constrained':
-                return `
-          width: 100%;
-          max-width: ${props.theme?.breakpoints?.xl || getBreakpoint(props.theme, 'lg')};
-          margin: 0 auto;
-          padding-left: ${getSpacing(props.theme, 'lg')};
-          padding-right: ${getSpacing(props.theme, 'lg')};
-        `;
-            default:
-                return `
-          position: relative;
-        `;
-        }
-    }}
-  
-  /* Size-based padding using theme tokens */
-  ${props => {
-        if (props.padding && typeof props.padding === 'string') {
-            const paddingMap: Record<ComponentSize, string> = {
-                xs: getSpacing(props.theme, 'xs'),
-                sm: getSpacing(props.theme, 'sm'),
-                md: getSpacing(props.theme, 'md'),
-                lg: getSpacing(props.theme, 'lg'),
-                xl: getSpacing(props.theme, 'xl')
-            };
-            if (paddingMap[props.padding as ComponentSize]) {
-                return `padding: ${paddingMap[props.padding as ComponentSize]};`;
-            }
-            return `padding: ${props.padding};`;
-        }
-        return '';
-    }}
-  
-  /* Size-based margin using theme tokens */
-  ${props => {
-        if (props.margin && typeof props.margin === 'string') {
-            const marginMap: Record<ComponentSize, string> = {
-                xs: getSpacing(props.theme, 'xs'),
-                sm: getSpacing(props.theme, 'sm'),
-                md: getSpacing(props.theme, 'md'),
-                lg: getSpacing(props.theme, 'lg'),
-                xl: getSpacing(props.theme, 'xl')
-            };
-            if (marginMap[props.margin as ComponentSize]) {
-                return `margin: ${marginMap[props.margin as ComponentSize]};`;
-            }
-            return `margin: ${props.margin};`;
-        }
-        return '';
-    }}
-  
-  /* Responsive design using theme breakpoints */
-  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
-    ${props => props.variant === 'constrained' && `
-      padding-left: ${getSpacing(props.theme, 'md')};
-      padding-right: ${getSpacing(props.theme, 'md')};
-    `}
-  }
-`;
+// Emotion CSS implementation with theme token integration
+const getContainerStyles = (theme?: any, props?: any) => {
+    const { variant, size, padding, margin } = props || {};
+
+    const variantStyles = css`
+    font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+  `;
+
+    const centeredStyles = variant === 'centered' && css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  `;
+
+    const fluidStyles = variant === 'fluid' && css`
+    width: 100%;
+    max-width: none;
+  `;
+
+    const constrainedStyles = variant === 'constrained' && css`
+    width: 100%;
+    max-width: ${theme?.breakpoints?.xl || getBreakpoint(theme, 'lg')};
+    margin: 0 auto;
+    padding-left: ${getSpacing(theme, 'lg')};
+    padding-right: ${getSpacing(theme, 'lg')};
+  `;
+
+    const defaultStyles = !variant && css`
+    position: relative;
+  `;
+
+    const paddingStyles = padding && typeof padding === 'string' && css`
+    padding: ${padding};
+  `;
+
+    const paddingSizeStyles = padding && typeof padding !== 'string' && css`
+    padding: ${padding === 'xs' ? getSpacing(theme, 'xs') : padding === 'sm' ? getSpacing(theme, 'sm') : padding === 'md' ? getSpacing(theme, 'md') : padding === 'lg' ? getSpacing(theme, 'lg') : padding === 'xl' ? getSpacing(theme, 'xl') : ''};
+  `;
+
+    const marginStyles = margin && typeof margin === 'string' && css`
+    margin: ${margin};
+  `;
+
+    const marginSizeStyles = margin && typeof margin !== 'string' && css`
+    margin: ${margin === 'xs' ? getSpacing(theme, 'xs') : margin === 'sm' ? getSpacing(theme, 'sm') : margin === 'md' ? getSpacing(theme, 'md') : margin === 'lg' ? getSpacing(theme, 'lg') : margin === 'xl' ? getSpacing(theme, 'xl') : ''};
+  `;
+
+    const responsiveStyles = css`
+    @media (max-width: ${getBreakpoint(theme, 'sm')}) {
+      ${variant === 'constrained' && css`
+        padding-left: ${padding === 'xs' ? getSpacing(theme, 'xs') : padding === 'sm' ? getSpacing(theme, 'sm') : padding === 'md' ? getSpacing(theme, 'md') : padding === 'lg' ? getSpacing(theme, 'lg') : padding === 'xl' ? getSpacing(theme, 'xl') : ''};
+        padding-right: ${padding === 'xs' ? getSpacing(theme, 'xs') : padding === 'sm' ? getSpacing(theme, 'sm') : padding === 'md' ? getSpacing(theme, 'md') : padding === 'lg' ? getSpacing(theme, 'lg') : padding === 'xl' ? getSpacing(theme, 'xl') : ''};
+        padding-right: ${getSpacing(theme, 'md')};
+      `}
+    }
+  `;
+
+    return css`
+    box-sizing: border-box;
+    ${variantStyles}
+    ${centeredStyles}
+    ${fluidStyles}
+    ${constrainedStyles}
+    ${defaultStyles}
+    ${paddingStyles}
+    ${paddingSizeStyles}
+    ${marginStyles}
+    ${marginSizeStyles}
+    ${responsiveStyles}
+  `;
+};
 
 interface IContainerProps extends LayoutProps {
     variant?: 'default' | 'centered' | 'fluid' | 'constrained';
@@ -166,13 +147,9 @@ export class Container extends PureComponent<IContainerProps> {
         const containerStyles = { ...this.getContainerStyles(theme), ...style };
 
         return (
-            <StyledContainer
+            <div
                 ref={ref}
-                variant={variant || 'default'}
-                size={size || 'md'}
-                padding={padding || ''}
-                margin={margin || ''}
-                theme={theme}
+                css={getContainerStyles(theme, { variant, size, padding, margin })}
                 className={className}
                 id={id?.toString()}
                 data-testid={testId}
@@ -180,7 +157,7 @@ export class Container extends PureComponent<IContainerProps> {
                 style={containerStyles}
             >
                 {children}
-            </StyledContainer>
+            </div>
         );
     }
 }
