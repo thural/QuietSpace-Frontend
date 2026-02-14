@@ -1,34 +1,42 @@
 import { useEffect, useState } from 'react';
-import { createPlaceholderCountService } from '../services/PlaceholderCountService';
+import { createPlaceholderCountHookService } from './PlaceholderCountHookService';
 
 /**
  * Enterprise usePlaceholderCount hook
  * 
- * Now uses the PlaceholderCountService for better performance and resource management.
- * Maintains backward compatibility while leveraging enterprise patterns.
+ * Now uses the PlaceholderCountHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
  *
  * @param {number} placeholderHeight - The height of a single placeholder element.
  * @returns {number} - The calculated number of placeholders that fit in the viewport.
  */
 const usePlaceholderCount = (placeholderHeight: number) => {
-    const [placeholders, setPlaceholders] = useState(0);
+    const [service, setService] = useState(() => createPlaceholderCountHookService({ placeholderHeight }));
+    const [count, setCount] = useState(service.getCount());
 
     useEffect(() => {
-        // Create the enterprise service
-        const service = createPlaceholderCountService(placeholderHeight);
-
         // Subscribe to count changes
-        const unsubscribe = service.subscribe((count) => {
-            setPlaceholders(count);
+        const unsubscribe = service.subscribe((newCount) => {
+            setCount(newCount);
         });
 
         return () => {
             unsubscribe();
-            service.destroy();
+        };
+    }, [service]);
+
+    // Update service if placeholderHeight changes
+    useEffect(() => {
+        const newService = createPlaceholderCountHookService({ placeholderHeight });
+        setService(newService);
+        setCount(newService.getCount());
+
+        return () => {
+            // Cleanup will be handled by the service's onUnmount
         };
     }, [placeholderHeight]);
 
-    return placeholders;
+    return count;
 };
 
 export default usePlaceholderCount;

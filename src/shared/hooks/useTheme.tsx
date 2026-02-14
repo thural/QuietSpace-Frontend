@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { getThemeService } from "../services/ThemeService";
-import { setLocalThemeMode } from "@/shared/utils/localStorageUtils";
+import { getThemeHookService } from "./ThemeHookService";
 
 /**
  * Enterprise useTheme hook
  * 
- * Now uses the ThemeService for better performance and resource management.
- * Maintains backward compatibility while leveraging enterprise patterns.
+ * Now uses the ThemeHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
  *
  * @returns {{
  *     theme: object,                                   // The current theme object (dark or light).
@@ -16,35 +15,24 @@ import { setLocalThemeMode } from "@/shared/utils/localStorageUtils";
  * }} - An object containing theme management utilities.
  */
 const useTheme = () => {
-    const service = getThemeService();
-    const [theme, setTheme] = useState(service.getCurrentTheme());
-    const [isDarkMode, setIsDarkMode] = useState(service.getIsDarkMode());
+    const service = getThemeHookService();
+    const [state, setState] = useState(service.getState());
 
     useEffect(() => {
-        // Subscribe to theme changes
-        const unsubscribe = service.subscribe((newTheme, newIsDarkMode) => {
-            setTheme(newTheme);
-            setIsDarkMode(newIsDarkMode);
+        // Subscribe to theme state changes
+        const unsubscribe = service.subscribe((newState) => {
+            setState(newState);
         });
 
         return unsubscribe;
     }, [service]);
 
-    /**
-     * Sets the theme mode and stores the preference in local storage.
-     *
-     * This function updates the theme mode based on the user's choice, 
-     * saves the preference in local storage, and reloads the window 
-     * to apply the changes.
-     *
-     * @param {boolean} isChecked - Indicates whether dark mode is enabled.
-     */
-    const setThemeMode = (isChecked: boolean) => {
-        service.setThemeMode(isChecked);
-        window.location.reload(); // Reload the page to apply the new theme
+    return {
+        theme: state.theme,
+        setThemeMode: service.setThemeMode.bind(service),
+        isDarkMode: state.isDarkMode,
+        setLocalThemeMode: require('../utils/localStorageUtils').setLocalThemeMode
     };
-
-    return { theme, setThemeMode, isDarkMode, setLocalThemeMode };
 };
 
 export default useTheme;

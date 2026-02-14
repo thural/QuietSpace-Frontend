@@ -1,23 +1,20 @@
-import { getNavigationService } from '../services/NavigationService';
+import { useState } from 'react';
+import { createNavigationHookService } from './NavigationHookService';
 
 /**
  * Enterprise useNavigation hook
  * 
- * Now uses NavigationService for better performance and resource management.
- * Maintains backward compatibility while leveraging enterprise patterns.
+ * Now uses the NavigationHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
  *
  * @returns {{
  *     navigatePath: (path: string) => void,     // Function to navigate to a path.
  * }} - An object containing navigation utilities.
  */
 const useNavigation = () => {
-    const service = getNavigationService();
+    const [service] = useState(() => createNavigationHookService());
 
-    const navigatePath = (path: string) => {
-        service.navigatePath(path);
-    };
-
-    return { navigatePath }
+    return service.getNavigationUtilities();
 };
 
 export default useNavigation;

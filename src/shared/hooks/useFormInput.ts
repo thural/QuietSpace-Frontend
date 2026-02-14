@@ -1,7 +1,11 @@
-import { useCallback, useState } from "react";
+import { useState, useEffect } from "react";
+import { createFormInputHookService } from './FormInputHookService';
 
 /**
  * Custom hook to manage the state of a form input.
+ * 
+ * Now uses the FormInputHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
  * 
  * @template T
  * @param {T} initialValue - The initial value of the input.
@@ -16,22 +20,33 @@ const useFormInput = <T = string>(
     initialValue: T,
     options: { preventDefault?: boolean } = { preventDefault: true }
 ) => {
-    const [value, setValue] = useState<T>(initialValue);
+    const [service, setService] = useState(() => createFormInputHookService({ initialValue, options }));
+    const [value, setValue] = useState(service.getValue());
 
-    /**
-     * Handles the change event for the input.
-     * 
-     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event from the input.
-     */
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        if (options.preventDefault) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        setValue(e.target.value as T);
-    }, [options.preventDefault]);
+    useEffect(() => {
+        // Subscribe to value changes
+        const unsubscribe = service.subscribe((newValue) => {
+            setValue(newValue);
+        });
 
-    return { value, setValue, handleChange };
+        return unsubscribe;
+    }, [service]);
+
+    // Update service if props change
+    useEffect(() => {
+        const newService = createFormInputHookService({ initialValue, options });
+        setService(newService);
+        setValue(newService.getValue());
+    }, [initialValue, options]);
+
+    return {
+        value,
+        setValue: (newValue: T) => {
+            service.setValue(newValue);
+            setValue(newValue);
+        },
+        handleChange: service.handleChange
+    };
 };
 
 export default useFormInput;
