@@ -9,7 +9,7 @@
  */
 
 import { ReactNode } from 'react';
-import { BaseComponentProps } from '../../types';
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 
 /**
  * User data interface for card display
@@ -30,7 +30,7 @@ export interface IUserCardData {
 /**
  * UserCard component props interface
  */
-export interface IUserCardProps extends BaseComponentProps {
+export interface IUserCardProps extends IBaseComponentProps {
   /** User data for the card */
   user?: IUserCardData;
   /** User ID for fetching user data */
@@ -48,7 +48,7 @@ export interface IUserCardProps extends BaseComponentProps {
 /**
  * UserCard component internal state interface
  */
-export interface IUserCardState {
+export interface IUserCardState extends IBaseComponentState {
   /** Loading state indicator */
   isLoading: boolean;
   /** User data object */

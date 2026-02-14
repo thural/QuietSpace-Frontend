@@ -9,12 +9,12 @@
  */
 
 import { ReactNode } from 'react';
-import { BaseComponentProps } from '../../types';
+import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 
 /**
  * UserAvatar component props interface
  */
-export interface IUserAvatarProps extends BaseComponentProps {
+export interface IUserAvatarProps extends IBaseComponentProps {
   /** Avatar size variant */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   /** Avatar background color */
@@ -27,4 +27,11 @@ export interface IUserAvatarProps extends BaseComponentProps {
   chars?: string;
   /** Forwarded ref for component composition */
   forwardedRef?: any;
+}
+
+/**
+ * UserAvatar component state interface
+ */
+export interface IUserAvatarState extends IBaseComponentState {
+  // No additional state needed for this component
 }

@@ -2,4 +2,4 @@
  * UserAvatar interfaces barrel export
  */
 
-export { IUserAvatarProps } from './IUserAvatar';
+export { IUserAvatarProps, IUserAvatarState } from './IUserAvatar';

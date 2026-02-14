@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
+import { ReactNode } from 'react';
 import { useTheme } from '@/core/modules/theming';
 import { IUserCardProps, IUserCardState, IUserCardData } from './interfaces';
 import {
@@ -25,17 +26,15 @@ import {
  * Enterprise-grade user card component with comprehensive theme integration,
  * data fetching, loading states, and responsive design.
  */
-export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
+export class UserCard extends BaseClassComponent<IUserCardProps, IUserCardState> {
   static defaultProps: Partial<IUserCardProps> = {
     isDisplayEmail: true,
     isDisplayName: true,
     isIgnoreNavigation: false,
   };
 
-  constructor(props: IUserCardProps) {
-    super(props);
-
-    this.state = {
+  protected override getInitialState(): Partial<IUserCardState> {
+    return {
       isLoading: true,
       user: undefined,
       signedUser: this.getMockSignedUser()
@@ -61,7 +60,7 @@ export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
   private fetchUserData = (): void => {
     const { userId } = this.props;
 
-    // Simulate data fetching
+    // Simulate API call
     setTimeout(() => {
       const mockUser = userId ? {
         id: userId,
@@ -71,7 +70,7 @@ export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
         role: 'User'
       } : undefined;
 
-      this.setState({
+      this.safeSetState({
         isLoading: false,
         user: mockUser,
         signedUser: this.getMockSignedUser()
@@ -113,17 +112,17 @@ export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
   }
 
   override render(): ReactNode {
-    const { 
-      user, 
-      isDisplayEmail = true, 
-      isDisplayName = true, 
-      isIgnoreNavigation = false, 
+    const {
+      user,
+      isDisplayEmail = true,
+      isDisplayName = true,
+      isIgnoreNavigation = false,
       children,
       className,
       testId,
       id,
       onClick,
-      style 
+      style
     } = this.props;
     const { isLoading, signedUser } = this.state;
     const theme = useTheme();
@@ -163,9 +162,9 @@ export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
       >
         <div css={userCardHeaderStyles(theme)}>
           <div css={userCardAvatarContainerStyles(theme)}>
-            <div style={{ 
-              width: '48px', 
-              height: '48px', 
+            <div style={{
+              width: '48px',
+              height: '48px',
               borderRadius: '50%',
               overflow: 'hidden',
               backgroundColor: user?.avatar ? 'transparent' : theme.colors?.primary || '#000',
@@ -180,15 +179,15 @@ export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
               userSelect: 'none'
             }}>
               {user?.avatar ? (
-                <img 
-                  src={user.avatar} 
+                <img
+                  src={user.avatar}
                   alt="User avatar"
-                  style={{ 
-                    width: '100%', 
-                    height: '100%', 
+                  style={{
+                    width: '100%',
+                    height: '100%',
                     objectFit: 'cover',
                     borderRadius: 'inherit'
-                  }} 
+                  }}
                 />
               ) : (
                 <span>{user.username.charAt(0).toUpperCase()}</span>
@@ -203,13 +202,13 @@ export class UserCard extends PureComponent<IUserCardProps, IUserCardState> {
                   {user.username}
                 </div>
               )}
-              
+
               {isDisplayEmail && user.email && (
                 <div css={userCardEmailStyles(theme)}>
                   {user.email}
                 </div>
               )}
-              
+
               {user.role && (
                 <div css={userCardRoleStyles(theme)}>
                   {user.role}

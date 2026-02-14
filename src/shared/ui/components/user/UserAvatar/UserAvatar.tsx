@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { PureComponent, ReactNode } from 'react';
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
+import { ReactNode } from 'react';
 import { useTheme } from '@/core/modules/theming';
-import { IUserAvatarProps } from './interfaces';
+import { IUserAvatarProps, IUserAvatarState } from './interfaces';
 import {
   userAvatarContainerStyles,
   userAvatarImageStyles,
@@ -15,7 +16,7 @@ import {
  * Enterprise-grade avatar component with comprehensive theme integration,
  * size variants, colors, and responsive design.
  */
-export class UserAvatar extends PureComponent<IUserAvatarProps> {
+export class UserAvatar extends BaseClassComponent<IUserAvatarProps, IUserAvatarState> {
   static defaultProps: Partial<IUserAvatarProps> = {
     size: 'md',
     color: 'black',
@@ -23,7 +24,11 @@ export class UserAvatar extends PureComponent<IUserAvatarProps> {
     chars: 'U',
   };
 
-  override render(): ReactNode {
+  protected override getInitialState(): Partial<IUserAvatarState> {
+    return {};
+  }
+
+  protected override renderContent(): ReactNode {
     const {
       forwardedRef,
       size = 'md',
@@ -55,8 +60,8 @@ export class UserAvatar extends PureComponent<IUserAvatarProps> {
         style={style}
       >
         {hasImage ? (
-          <img 
-            src={src} 
+          <img
+            src={src}
             alt="User avatar"
             css={userAvatarImageStyles(theme, size)}
           />
