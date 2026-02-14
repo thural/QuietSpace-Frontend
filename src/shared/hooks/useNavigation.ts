@@ -1,14 +1,23 @@
-import { useNavigate } from "react-router-dom";
+import { getNavigationService } from '../services/NavigationService';
 
-
+/**
+ * Enterprise useNavigation hook
+ * 
+ * Now uses NavigationService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise patterns.
+ *
+ * @returns {{
+ *     navigatePath: (path: string) => void,     // Function to navigate to a path.
+ * }} - An object containing navigation utilities.
+ */
 const useNavigation = () => {
-    const navigate = useNavigate();
+    const service = getNavigationService();
 
     const navigatePath = (path: string) => {
-        navigate(path);
+        service.navigatePath(path);
     };
 
     return { navigatePath }
-}
+};
 
-export default useNavigation
+export default useNavigation;

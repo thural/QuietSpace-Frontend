@@ -1,44 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { useEffect, useState } from 'react';
+import { getComponentInitialHeightService } from '../services/ComponentInitialHeightService';
 
 /**
- * Custom hook to calculate the height of a given component.
+ * Enterprise useComponentInitialHeight hook
+ * 
+ * Now uses ComponentInitialHeightService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise patterns.
  *
  * @param {React.ReactElement} component - The component to render and measure.
- * @returns {number} - The initial height of the component.
+ * @returns {number} - The initial height of component.
  */
 const useComponentInitialHeight = (component: React.ReactElement) => {
     const [height, setHeight] = useState<number>(0);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const service = getComponentInitialHeightService();
 
     useEffect(() => {
-        const container = document.createElement('div');
-        document.body.appendChild(container);
-        const root = ReactDOM.createRoot(container);
+        // Subscribe to height changes
+        const unsubscribe = service.subscribe((newHeight) => {
+            setHeight(newHeight);
+        });
 
-        root.render(
-            <div ref={containerRef} style={{ visibility: 'hidden', position: 'absolute' }}>
-                {component}
-            </div>
-        );
+        // Calculate initial height
+        service.calculateInitialHeight(component).then(calculatedHeight => {
+            setHeight(calculatedHeight);
+        });
 
-        const measureHeight = () => {
-            if (containerRef.current) {
-                setHeight(containerRef.current.clientHeight);
-                if (container.parentNode === document.body) {
-                    document.body.removeChild(container);
-                }
-            }
-        };
-
-        // Wait for the next animation frame before measuring height
-        requestAnimationFrame(measureHeight);
-
-        return () => {
-            if (container.parentNode === document.body) {
-                document.body.removeChild(container);
-            }
-        };
+        return unsubscribe;
     }, [component]);
 
     return height;

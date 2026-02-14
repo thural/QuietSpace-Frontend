@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/components/interactive";
+import { Button } from "@/shared/ui/components";
 import withForwardedRefAndErrBoundary from "@/shared/hooks/withForwardedRef";
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import React, { PureComponent, ReactNode } from 'react';

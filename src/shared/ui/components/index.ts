@@ -23,6 +23,9 @@ export * from './user';
 // Feedback components
 export * from './feedback';
 
+// Interactive components
+export { Button, Input, PinInput, Progress, Switch, FileInput } from './interactive';
+
 // Utility components
 export * from './utility';
 
