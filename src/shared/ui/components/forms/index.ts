@@ -9,7 +9,7 @@ export { Form } from './Form';
 export type { IFormConfig, IFormField, IFormValidationRule } from './Form';
 
 export { FormField } from './FormField';
-export type { IFormFieldProps, IFormFieldValidationRule as IFormFieldValidationRuleType } from './FormField';
+export type { IFormFieldProps, IFormFieldState, IFormFieldValidationRule as IFormFieldValidationRuleType } from './FormField';
 
 // PassInput component with new decoupled structure
 export { default as PassInput } from './PassInput';
@@ -61,3 +61,7 @@ export type { IDateRange, IDateRangePickerProps, IDateRangePickerState } from '.
 // TwoFactorAuth component with new decoupled structure
 export { TwoFactorAuth } from './TwoFactorAuth';
 export type { ITwoFactorAuthProps, ITwoFactorAuthState } from './TwoFactorAuth';
+
+// FileUploader component with new decoupled structure
+export { FileUploader } from './FileUploader';
+export type { IFileUploaderProps, IFileUploaderState } from './FileUploader';
