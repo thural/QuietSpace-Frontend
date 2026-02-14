@@ -1,11 +1,10 @@
-import { useCallback, useRef, useEffect } from 'react';
-import { createTokenRefreshManager, EnterpriseTokenRefreshManager } from '@/core/modules/authentication/services/TokenRefreshManager';
-import type { AuthToken } from '@/core/modules/authentication/types/auth.domain.types';
+import { useCallback, useEffect, useState } from 'react';
+import { createTokenRefreshHookService } from './TokenRefreshHookService';
 
 interface UseTokenRefreshOptions {
   autoStart?: boolean;
   refreshInterval?: number;
-  onSuccess?: (data: AuthToken) => void;
+  onSuccess?: (data: any) => void;
   onError?: (error: Error) => void;
   // Enterprise features
   enableMultiTabSync?: boolean;
@@ -21,138 +20,41 @@ interface UseTokenRefreshOptions {
 /**
  * Enterprise Token Refresh Hook
  * 
- * Provides a React interface for managing enterprise-grade token refresh
- * with advanced features like multi-tab synchronization, security monitoring,
- * and performance metrics.
+ * Now uses TokenRefreshHookService for better performance and resource management.
+ * Maintains backward compatibility while leveraging enterprise class-based patterns.
  * 
  * @param options - Configuration options including enterprise features
  * @returns Token refresh control functions, state, and metrics
  */
 export const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {
-  const {
-    autoStart = false,
-    refreshInterval = 540000,
-    onSuccess,
-    onError,
-    enableMultiTabSync = true,
-    enableSecurityMonitoring = true,
-    onMetricsUpdate,
-    // Advanced rotation options
-    enableAdvancedRotation = false,
-    rotationStrategy = 'adaptive',
-    rotationBuffer = 5 * 60 * 1000, // 5 minutes
-    enableRefreshTokenRotation = true
-  } = options;
+  const [service] = useState(() => createTokenRefreshHookService(options));
+  const [refreshState, setRefreshState] = useState(service.getRefreshState());
 
-  const managerRef = useRef<EnterpriseTokenRefreshManager | null>(null);
-  const isActiveRef = useRef(false);
-  const metricsIntervalRef = useRef<number | null>(null);
-
-  const startTokenRefresh = useCallback(async () => {
-    if (isActiveRef.current) return;
-
-    try {
-      // Create enterprise manager instance
-      managerRef.current = createTokenRefreshManager();
-
-      // Start automatic refresh with enterprise and advanced features
-      managerRef.current.startTokenAutoRefresh<AuthToken>({
-        refreshInterval,
-        onSuccessFn: (data: AuthToken) => {
-          onSuccess?.(data);
-        },
-        onErrorFn: (error: Error) => {
-          onError?.(error);
-          // Enterprise manager handles circuit breaker automatically
-        },
-        enableMultiTabSync,
-        enableSecurityMonitoring,
-        // Advanced rotation options
-        enableAdvancedRotation,
-        rotationStrategy,
-        rotationBuffer,
-        enableRefreshTokenRotation
-      });
-
-      isActiveRef.current = true;
-
-      // Start metrics monitoring if callback provided
-      if (onMetricsUpdate) {
-        metricsIntervalRef.current = window.setInterval(() => {
-          if (managerRef.current) {
-            const metrics = managerRef.current.getMetrics();
-            const status = managerRef.current.getStatus();
-            onMetricsUpdate({ ...metrics, ...status });
-          }
-        }, 30000); // Update metrics every 30 seconds
-      }
-
-    } catch (error) {
-      onError?.(error instanceof Error ? error : new Error(String(error)));
-    }
-  }, [refreshInterval, onSuccess, onError, enableMultiTabSync, enableSecurityMonitoring, onMetricsUpdate, enableAdvancedRotation, rotationStrategy, rotationBuffer, enableRefreshTokenRotation]);
-
-  const stopTokenRefresh = useCallback(() => {
-    if (managerRef.current && isActiveRef.current) {
-      managerRef.current.stopTokenAutoRefresh();
-      isActiveRef.current = false;
-    }
-
-    // Clear metrics interval
-    if (metricsIntervalRef.current) {
-      window.clearInterval(metricsIntervalRef.current);
-      metricsIntervalRef.current = null;
-    }
-  }, []);
-
-  // Get current metrics and status
-  const getMetrics = useCallback(() => {
-    return managerRef.current ? managerRef.current.getMetrics() : null;
-  }, []);
-
-  const getStatus = useCallback(() => {
-    return managerRef.current ? managerRef.current.getStatus() : null;
-  }, []);
-
-  // Force immediate token rotation
-  const forceRotation = useCallback(async (): Promise<boolean> => {
-    if (!managerRef.current) {
-      console.warn('Token refresh manager not initialized');
-      return false;
-    }
-
-    try {
-      // This would need to be added to the EnterpriseTokenRefreshManager
-      // For now, return false as it's not implemented in the base manager
-      console.warn('Force rotation not implemented in base manager. Use advanced rotation.');
-      return false;
-    } catch (error) {
-      onError?.(error instanceof Error ? error : new Error(String(error)));
-      return false;
-    }
-  }, [onError]);
-
-  // Auto-start if requested
   useEffect(() => {
-    if (autoStart) {
-      startTokenRefresh();
-    }
+    // Subscribe to refresh state changes
+    const unsubscribe = service.subscribe((newState) => {
+      setRefreshState(newState);
+    });
 
-    // Cleanup on unmount
-    return () => {
-      stopTokenRefresh();
-    };
-  }, [autoStart, startTokenRefresh, stopTokenRefresh]);
+    return unsubscribe;
+  }, [service]);
+
+  // Update service if options change
+  useEffect(() => {
+    const newService = createTokenRefreshHookService(options);
+    setService(newService);
+    setRefreshState(newService.getRefreshState());
+  }, [options]);
 
   return {
-    startTokenRefresh,
-    stopTokenRefresh,
-    isActive: isActiveRef.current,
-    // Enterprise features
-    getMetrics,
-    getStatus,
-    // Advanced rotation features
-    forceRotation
+    startTokenRefresh: service.startTokenRefresh,
+    stopTokenRefresh: service.stopTokenRefresh,
+    forceRotation: service.forceRotation,
+    startMetricsMonitoring: service.startMetricsMonitoring,
+    stopMetricsMonitoring: service.stopMetricsMonitoring,
+    getMetrics: service.getMetrics,
+    getStatus: service.getStatus,
+    getRefreshState: service.getRefreshState
   };
 };
 

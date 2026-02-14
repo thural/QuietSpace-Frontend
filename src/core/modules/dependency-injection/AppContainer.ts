@@ -22,6 +22,7 @@ import { ThemeService } from '../../services/ThemeService';
 import { UserService, UserRepository } from '../../services/UserService';
 import { createTheme } from '../theming';
 import { EnterpriseWebSocketService } from '../websocket/services/EnterpriseWebSocketService';
+import { registerHookServices } from './HookServiceRegistration';
 
 import { TYPES } from './types';
 
@@ -244,11 +245,14 @@ export function createAppContainer() {
   container.registerInstance('AuthOrchestrator', authOrchestrator);
   container.registerInstance('EnterpriseAuthService', authOrchestrator); // Backward compatibility
 
-  // Auth adapter is now handled by the auth service itself
+  // Auth adapter is now handled by auth service itself
 
   // Example of using typed string tokens for registration
   // This provides type safety - only valid TYPES values are allowed
   container.registerInstanceByToken(TYPES.AUTH_SERVICE, authOrchestrator);
+
+  // Register Hook Services for better integration
+  registerHookServices(container);
 
   // Feature containers (commented out until feature modules are created)
   // const feedContainer = registerFeedContainer(container);

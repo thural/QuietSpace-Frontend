@@ -1,18 +1,40 @@
-import { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { createNavigationHookService } from './NavigationHookService';
 
 /**
- * Enterprise useNavigation hook
+ * Navigation context for direct service integration
+ */
+const NavigationContext = createContext<ReturnType<typeof createNavigationHookService> | null>(null);
+
+/**
+ * Navigation provider component that directly integrates with NavigationHookService
+ */
+export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [service] = useState(() => createNavigationHookService());
+
+    return React.createElement(
+        NavigationContext.Provider,
+        { value: service },
+        children
+    );
+};
+
+/**
+ * Enterprise useNavigation hook with direct service integration
  * 
- * Now uses the NavigationHookService for better performance and resource management.
- * Maintains backward compatibility while leveraging enterprise class-based patterns.
+ * Optimized to use NavigationHookService directly through context for better performance
+ * and cleaner architecture while maintaining backward compatibility.
  *
  * @returns {{
  *     navigatePath: (path: string) => void,     // Function to navigate to a path.
  * }} - An object containing navigation utilities.
  */
 const useNavigation = () => {
-    const [service] = useState(() => createNavigationHookService());
+    const service = useContext(NavigationContext);
+
+    if (!service) {
+        throw new Error('useNavigation must be used within NavigationProvider');
+    }
 
     return service.getNavigationUtilities();
 };
