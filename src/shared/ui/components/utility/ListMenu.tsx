@@ -1,6 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { GenericWrapperWithRef } from "@shared-types/sharedComponentTypes";
 import React, { PureComponent, ReactNode, MouseEvent } from "react";
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { getSpacing, getColor, getRadius, getShadow, getBorderWidth, getBreakpoint } from '../utils';
 
 /**
@@ -56,51 +57,43 @@ interface IListMenuState {
  * @param {IListMenuProps} props - The component props.
  * @returns {JSX.Element} - The rendered ListMenu component.
  */
-// Enterprise styled-components for list menu styling
-const MenuContainer = styled.div<{ theme: EnhancedTheme }>`
+// Enterprise Emotion CSS for list menu styling
+const menuContainerStyles = (theme?: any) => css`
   position: relative;
   display: inline-block;
 `;
 
-const MenuIcon = styled.div<{ theme: EnhancedTheme }>`
+const menuIconStyles = (theme?: any) => css`
   cursor: pointer;
   margin: 0;
-  padding: ${props => props.theme.spacing.sm};
+  padding: ${getSpacing(theme, 'sm')};
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: ${props => props.theme.radius.sm};
-  transition: all ${props => props.theme.animation.duration.fast} ${props => props.theme.animation.easing.ease};
+  border-radius: ${getRadius(theme, 'sm')};
+  transition: all ${theme?.animation?.duration?.fast || '150ms'} ${theme?.animation?.easing?.ease || 'ease'};
   
   &:hover {
-    background: ${props => props.theme.colors.background.tertiary};
+    background: ${getColor(theme, 'background.tertiary')};
   }
 `;
 
-const MenuContent = styled.div<{
-  theme: any;
-  position?: string;
-  width?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  radius?: string;
-  display?: string;
-}>`
-  position: ${props => props.position || 'absolute'};
-  width: ${props => props.width || '200px'};
-  font-size: ${props => props.fontSize || 'inherit'};
-  font-weight: ${props => props.fontWeight || 'inherit'};
-  border-radius: ${props => props.radius || getRadius(props.theme, 'md')};
-  background: ${props => getColor(props.theme, 'background.primary')};
-  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
-  box-shadow: ${props => getShadow(props.theme, 'md')};
+const menuContentStyles = (theme?: any, styleProps?: IMenuListStyleProps) => css`
+  position: ${styleProps?.position || 'absolute'};
+  width: ${styleProps?.width || '200px'};
+  font-size: ${styleProps?.fontSize || 'inherit'};
+  font-weight: ${styleProps?.fontWeight || 'inherit'};
+  border-radius: ${styleProps?.radius || getRadius(theme, 'md')};
+  background: ${getColor(theme, 'background.primary')};
+  border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+  box-shadow: ${getShadow(theme, 'md')};
   z-index: 1000;
-  display: ${props => props.display || 'none'};
+  display: ${styleProps?.display || 'none'};
   
   // Responsive design
-  @media (max-width: ${props => getBreakpoint(props.theme, 'sm')}) {
-    width: ${props => props.width || '180px'};
-    font-size: ${props => props.theme.typography.fontSize.sm};
+  @media (max-width: ${getBreakpoint(theme, 'sm')}) {
+    width: ${styleProps?.width || '180px'};
+    font-size: ${theme?.typography?.fontSize?.sm || '14px'};
   }
 `;
 
@@ -138,16 +131,15 @@ class ListMenu extends PureComponent<IListMenuProps, IListMenuState> {
     const { display } = this.state;
 
     return (
-      <MenuContainer>
-        <MenuIcon onClick={this.toggleDisplay}>{menuIcon}</MenuIcon>
-        <MenuContent
-          {...styleProps}
-          display={display}
+      <div css={menuContainerStyles(undefined)}>
+        <div css={menuIconStyles(undefined)} onClick={this.toggleDisplay}>{menuIcon}</div>
+        <div
+          css={menuContentStyles(undefined, { ...styleProps, display })}
           onClick={this.hideMenu}
         >
           {children}
-        </MenuContent>
-      </MenuContainer>
+        </div>
+      </div>
     );
   }
 }

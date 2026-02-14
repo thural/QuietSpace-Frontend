@@ -75,7 +75,7 @@ class TextAreaStyled extends PureComponent<TextAreaStyledProps> {
       ...props
     } = this.props;
 
-    const textAreaContainerStyles = css`
+    const textAreaContainerStyles = (theme?: any, error?: boolean) => css`
             position: relative;
             width: 100%;
             
@@ -136,7 +136,7 @@ class TextAreaStyled extends PureComponent<TextAreaStyledProps> {
         `;
 
     return (
-      <div css={textAreaContainerStyles} className={className}>
+      <div css={textAreaContainerStyles(theme || {} as any, error)} className={className}>
         <textarea
           className="textarea-field"
           name={name}
@@ -148,13 +148,13 @@ class TextAreaStyled extends PureComponent<TextAreaStyledProps> {
           hidden={hidden}
           disabled={disabled}
           style={{
-            borderColor: error ? getColor(theme, 'semantic.error') : undefined,
-            boxShadow: error ? `0 0 0 3px ${getColor(theme, 'semantic.error')}20` : undefined
+            borderColor: error ? getColor(theme || {} as any, 'semantic.error') : undefined,
+            boxShadow: error ? `0 0 0 3px ${getColor(theme || {} as any, 'semantic.error')}20` : undefined
           }}
           rows={rows}
           {...props}
         />
-        {this.renderHelperText(theme)}
+        {this.renderHelperText(theme || {} as any)}
       </div>
     );
   }

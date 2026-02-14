@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 /**
  * Enterprise Text Component
  * 
@@ -5,8 +6,8 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { PureComponent, ReactNode } from 'react';
+import { css } from '@emotion/react';
 import { TypographyProps } from '../types';
 import { typographyPropsToStyles } from '../utils';
 
@@ -14,11 +15,11 @@ interface ITextProps extends TypographyProps {
     children?: ReactNode;
 }
 
-// Styled component implementation
-const StyledText = styled.p<{ theme: any; $props: TypographyProps }>`
+// Emotion CSS implementation
+const textStyles = (theme?: any, typographyProps?: TypographyProps) => css`
   margin: 0;
   box-sizing: border-box;
-  ${(props) => typographyPropsToStyles(props.$props, props.theme)}
+  ${typographyProps ? typographyPropsToStyles(typographyProps, theme) : ''}
 `;
 
 /**
@@ -35,18 +36,15 @@ class Text extends PureComponent<ITextProps> {
         const { children, theme, className, testId, ...typographyProps } = this.props;
 
         return (
-            <StyledText
-                theme={theme}
-                $props={typographyProps}
+            <p
+                css={textStyles(theme, typographyProps)}
                 className={className}
                 data-testid={testId}
             >
                 {children}
-            </StyledText>
+            </p>
         );
     }
 }
-
-Text.displayName = 'Text';
 
 export default Text;

@@ -1,9 +1,13 @@
-import { Loader } from "@/shared/ui/components";
-import React, { PureComponent, ReactNode } from 'react';
+/** @jsxImportSource @emotion/react */
+import Loader from "../display/Loader";
+import { PureComponent, ReactNode } from 'react';
+import { css } from '@emotion/react';
+import { getSpacing } from '../utils';
 
 interface ILoaderStyledProps {
     color?: string;
     size?: number | string;
+    theme?: any;
 }
 
 class LoaderStyled extends PureComponent<ILoaderStyledProps> {
@@ -12,10 +16,20 @@ class LoaderStyled extends PureComponent<ILoaderStyledProps> {
         size: 30
     };
 
-    render(): ReactNode {
-        const { color, size } = this.props;
+    override render(): ReactNode {
+        const { color, size, theme } = this.props;
+
+        const loaderWrapperStyles = css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: ${getSpacing(theme || {} as any, 'sm')};
+        `;
+
         return (
-            <Loader color={color} size={size} />
+            <div css={loaderWrapperStyles}>
+                <Loader color={color} size={size} />
+            </div>
         );
     }
 }

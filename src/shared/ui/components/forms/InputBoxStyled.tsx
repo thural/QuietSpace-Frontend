@@ -1,19 +1,27 @@
-import React, { PureComponent, ReactNode } from 'react';
-import { FlexContainer } from '@/shared/ui/components/layout/FlexContainer';
+/** @jsxImportSource @emotion/react */
+import { PureComponent, ReactNode } from 'react';
+import { css } from '@emotion/react';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
+import { getSpacing } from '../utils';
 
 interface IInputBoxStyledProps extends GenericWrapper {
     children?: ReactNode;
 }
 
 class InputBoxStyled extends PureComponent<IInputBoxStyledProps> {
-    render(): ReactNode {
-        const { children } = this.props;
+    override render(): ReactNode {
+        const { children, theme } = this.props;
+
+        const inputBoxStyles = css`
+            display: flex;
+            flex-direction: column;
+            gap: ${getSpacing(theme || {} as any, 'sm')};
+        `;
 
         return (
-            <FlexContainer flexDirection="column" gap="0.5rem">
+            <div css={inputBoxStyles}>
                 {children}
-            </FlexContainer>
+            </div>
         );
     }
 }

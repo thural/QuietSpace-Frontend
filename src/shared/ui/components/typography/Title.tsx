@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 /**
  * Enterprise Title Component
  * 
@@ -5,8 +6,8 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { PureComponent, ReactNode } from 'react';
+import { css } from '@emotion/react';
 import { TypographyProps } from '../types';
 import { typographyPropsToStyles } from '../utils';
 
@@ -14,12 +15,12 @@ interface ITitleProps extends TypographyProps {
     children?: ReactNode;
 }
 
-// Styled component implementation
-const StyledTitle = styled.h1<{ theme: any; $props: TypographyProps }>`
+// Emotion CSS implementation
+const titleStyles = (theme?: any, typographyProps?: TypographyProps) => css`
   margin: 0;
   box-sizing: border-box;
   font-weight: bold;
-  ${(props) => typographyPropsToStyles(props.$props, props.theme)}
+  ${typographyProps ? typographyPropsToStyles(typographyProps, theme) : ''}
 `;
 
 /**
@@ -36,18 +37,15 @@ class Title extends PureComponent<ITitleProps> {
         const { children, theme, className, testId, ...typographyProps } = this.props;
 
         return (
-            <StyledTitle
-                theme={theme}
-                $props={typographyProps}
+            <h1
+                css={titleStyles(theme, typographyProps)}
                 className={className}
                 data-testid={testId}
             >
                 {children}
-            </StyledTitle>
+            </h1>
         );
     }
 }
-
-Title.displayName = 'Title';
 
 export default Title;
