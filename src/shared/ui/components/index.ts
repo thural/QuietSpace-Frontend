@@ -30,8 +30,7 @@ export { Button, Input, PinInput, Progress, Switch, FileInput } from './interact
 export * from './utility';
 
 // Core exports
-export { default as TokenRefreshProvider } from './TokenRefreshProvider';
-export { default as TokenRefreshExample } from './TokenRefreshExample';
+export { TokenRefreshProvider } from './TokenRefreshProvider';
 
 // New enterprise components (highlighted for easy access)
 export { default as EnterpriseInput } from './forms/EnterpriseInput';

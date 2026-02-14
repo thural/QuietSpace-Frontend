@@ -1,8 +1,7 @@
 /**
  * Presentation Components
  * 
- * Example and widget components for presentation
+ * Widget components for presentation
  */
 
-export * from './examples';
 export * from './widgets';

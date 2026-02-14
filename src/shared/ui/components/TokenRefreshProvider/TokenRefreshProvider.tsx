@@ -1,22 +1,14 @@
-import React, { useEffect, useRef, useCallback, PureComponent, ReactNode } from 'react';
+/** @jsxImportSource @emotion/react */
+import { BaseClassComponent } from '@/shared/components/base/BaseClassComponent';
+import { useEffect, useRef, useCallback } from 'react';
+import { tokenRefreshProviderStyles } from './styles';
+import { ITokenRefreshProviderProps, ITokenRefreshProviderState } from './interfaces';
 import { createTokenRefreshManager, EnterpriseTokenRefreshManager } from '@/core/auth/services/TokenRefreshManager';
-
-interface ITokenRefreshProviderProps {
-  children: React.ReactNode;
-  enabled?: boolean;
-  refreshInterval?: number;
-  onTokenRefresh?: (data: unknown) => void;
-  onRefreshError?: (error: Error) => void;
-  // Enterprise features
-  enableMultiTabSync?: boolean;
-  enableSecurityMonitoring?: boolean;
-  onMetricsUpdate?: (metrics: any) => void;
-}
 
 /**
  * Enterprise Token Refresh Provider Component
  * 
- * An enterprise-grade React component that uses the EnterpriseTokenRefreshManager
+ * An enterprise-grade React component that uses EnterpriseTokenRefreshManager
  * to handle automatic token refresh for child components with advanced features.
  * 
  * This provides enterprise-grade token management with:
@@ -25,35 +17,27 @@ interface ITokenRefreshProviderProps {
  * - Circuit breaker pattern for reliability
  * - Performance metrics and monitoring
  * - Intelligent retry logic with exponential backoff
+ * 
+ * @example
+ * ```tsx
+ * <TokenRefreshProvider 
+ *   enabled={true}
+ *   refreshInterval={300000}
+ *   onTokenRefresh={handleRefresh}
+ * >
+ *   <App />
+ * </TokenRefreshProvider>
+ * ```
  */
-class TokenRefreshProvider extends PureComponent<ITokenRefreshProviderProps> {
+export class TokenRefreshProvider extends BaseClassComponent<ITokenRefreshProviderProps, ITokenRefreshProviderState> {
   private managerRef = useRef<EnterpriseTokenRefreshManager | null>(null);
-  private isActiveRef = useRef(false);
   private metricsIntervalRef = useRef<number | null>(null);
 
-  override componentDidMount(): void {
-    const { enabled = true } = this.props;
-
-    if (enabled) {
-      this.startTokenRefresh();
-    }
-  }
-
-  override componentDidUpdate(prevProps: ITokenRefreshProviderProps): void {
-    const { enabled = true } = this.props;
-    const { enabled: prevEnabled = true } = prevProps;
-
-    if (enabled !== prevEnabled) {
-      if (enabled) {
-        this.startTokenRefresh();
-      } else {
-        this.stopTokenRefresh();
-      }
-    }
-  }
-
-  override componentWillUnmount(): void {
-    this.stopTokenRefresh();
+  protected override getInitialState(): Partial<ITokenRefreshProviderState> {
+    return {
+      isActive: false,
+      manager: null
+    };
   }
 
   /**
@@ -70,7 +54,7 @@ class TokenRefreshProvider extends PureComponent<ITokenRefreshProviderProps> {
       onMetricsUpdate
     } = this.props;
 
-    if (!enabled || this.isActiveRef.current) return;
+    if (!enabled || this.state.isActive) return;
 
     try {
       // Create enterprise manager instance
@@ -83,14 +67,14 @@ class TokenRefreshProvider extends PureComponent<ITokenRefreshProviderProps> {
           onTokenRefresh?.(data);
         },
         onErrorFn: (error) => {
-          onRefreshError?.(error);
+          onRefreshError?.(error instanceof Error ? error : new Error(String(error)));
           // Enterprise manager handles circuit breaker automatically
         },
         enableMultiTabSync,
         enableSecurityMonitoring
       });
 
-      this.isActiveRef.current = true;
+      this.setState({ isActive: true });
 
       // Start metrics monitoring if callback provided
       if (onMetricsUpdate) {
@@ -112,9 +96,9 @@ class TokenRefreshProvider extends PureComponent<ITokenRefreshProviderProps> {
    * Stop token refresh process
    */
   private stopTokenRefresh = (): void => {
-    if (this.managerRef.current && this.isActiveRef.current) {
+    if (this.managerRef.current && this.state.isActive) {
       this.managerRef.current.stopTokenAutoRefresh();
-      this.isActiveRef.current = false;
+      this.setState({ isActive: false });
     }
 
     // Clear metrics interval
@@ -124,24 +108,56 @@ class TokenRefreshProvider extends PureComponent<ITokenRefreshProviderProps> {
     }
   };
 
-  override render(): ReactNode {
+  /**
+   * Handle component mount
+   */
+  protected override componentDidMount(): void {
+    const { enabled = true } = this.props;
+
+    if (enabled) {
+      this.startTokenRefresh();
+    }
+  }
+
+  /**
+   * Handle component updates
+   */
+  protected override componentDidUpdate(prevProps: ITokenRefreshProviderProps): void {
+    const { enabled = true } = this.props;
+    const { enabled: prevEnabled = true } = prevProps;
+
+    if (enabled !== prevEnabled) {
+      if (enabled) {
+        this.startTokenRefresh();
+      } else {
+        this.stopTokenRefresh();
+      }
+    }
+  }
+
+  /**
+   * Handle component unmount
+   */
+  protected override componentWillUnmount(): void {
+    this.stopTokenRefresh();
+  }
+
+  protected override renderContent(): React.ReactNode {
     const { children } = this.props;
 
     // Provide context for manual control if needed
     const contextValue = {
       startTokenRefresh: this.startTokenRefresh,
       stopTokenRefresh: this.stopTokenRefresh,
-      isActive: this.isActiveRef.current,
+      isActive: this.state.isActive,
       getMetrics: () => this.managerRef.current?.getMetrics(),
       getStatus: () => this.managerRef.current?.getStatus()
     };
 
     return (
-      <>
+      <div css={tokenRefreshProviderStyles}>
         {children}
-      </>
+      </div>
     );
   }
 }
-
-export default TokenRefreshProvider;

@@ -18,7 +18,6 @@ export { default } from './AuthPerformanceMonitor';
 
 // Security Analytics
 export { SecurityMonitor } from './SecurityMonitor';
-export { default as SecurityAnalyticsExample } from './SecurityAnalyticsExample';
 
 // Authentication Guards
 export {
@@ -69,33 +68,6 @@ export type {
   SessionTimeoutStatusProps
 } from '@features/auth/presentation/components/SessionTimeoutProvider';
 
-export { default as SessionTimeoutExample } from '@features/auth/presentation/components/SessionTimeoutExample';
-
-// Multi-Factor Authentication (MFA)
-export { MFAService, createMFAService } from '@core/auth/services/MFAService';
-export type {
-  MFAConfig,
-  MFAEnrollment,
-  MFAVerification,
-  MFAChallenge,
-  MFAMethod,
-  TOTPEnrollmentData,
-  SMSEnrollmentData,
-  BackupCodesEnrollmentData,
-  BiometricEnrollmentData,
-  SecurityKeyEnrollmentData,
-  EmailEnrollmentData
-} from '@core/auth/services/MFAService';
-
-export { useMFA, useMFAEnrollment, useMFAVerification, useMFAAnalytics } from '@features/auth/application/hooks/useMFA';
-export type {
-  UseMFAOptions,
-  UseMFAReturn
-} from '@features/auth/application/hooks/useMFA';
-
-export { default as MFAEnrollment } from '@features/auth/presentation/components/MFAEnrollment';
-export { default as MFAVerification, MFAManagement } from '@features/auth/presentation/components/MFAVerification';
-export { default as MFAExample } from '@features/auth/presentation/components/MFAExample';
 
 /**
  * Quick Start Guide
