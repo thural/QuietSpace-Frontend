@@ -6,10 +6,9 @@ import {
     REFRESH_TOKEN,
     RESEND_CODE,
     SIGNUP_URL
-} from "@/core/shared/apiPath";
+} from "@/shared/constants/apiPath";
 import { AuthRequest, AuthResponse, RefreshTokenResponse, RegisterRequest } from "@auth/data/models/auth";
-import { AuthResponseSchema, RefreshTokenResponseSchema } from "@features/auth/data/models/authZod";
-import { getRefreshToken } from "@/shared/utils/authStoreUtils";
+import { LocalAuthRepository } from "@/core/modules/authentication/repositories/LocalAuthRepository";
 import { IAuthRepository, UserSession, LoginAttempt, SecurityEvent, UserProfile, UserDevice, DeviceInfo, TwoFactorStatus, TwoFactorSetup, RateLimitResult, AuditEntry, ActivityEntry } from "@features/auth/domain/entities/IAuthRepository";
 
 /**
@@ -17,6 +16,8 @@ import { IAuthRepository, UserSession, LoginAttempt, SecurityEvent, UserProfile,
  * Implements enterprise-grade data access patterns with comprehensive security features
  */
 export class AuthRepository implements IAuthRepository {
+    private readonly localAuthRepository = new LocalAuthRepository();
+
     constructor(private apiClient: AxiosInstance) { }
 
     // Core authentication operations
@@ -26,7 +27,10 @@ export class AuthRepository implements IAuthRepository {
 
     async login(body: AuthRequest): Promise<AuthResponse> {
         const { data } = await this.apiClient.post(LOGIN_URL, body);
-        return AuthResponseSchema.parse(data);
+        return {
+            success: true,
+            data: data as any
+        };
     }
 
     async logout(): Promise<Response> {
@@ -34,9 +38,12 @@ export class AuthRepository implements IAuthRepository {
     }
 
     async refreshToken(): Promise<RefreshTokenResponse> {
-        const token = getRefreshToken();
+        const token = await this.localAuthRepository.getRefreshToken();
         const { data } = await this.apiClient.post(REFRESH_TOKEN, { token });
-        return RefreshTokenResponseSchema.parse(data);
+        return {
+            success: true,
+            data: data as any
+        };
     }
 
     // User registration and activation

@@ -15,9 +15,6 @@ export { useTimer } from './useTimer';
 export { default as useEnterpriseAuthHook } from './useEnterpriseAuthHook';
 export { useEnterpriseAuthWithSecurity } from './useEnterpriseAuthWithSecurity';
 
-// Migration Hook (for gradual transition)
-export { useAuthMigration, AuthMigrationUtils } from './useAuthMigration';
-
 // Re-export commonly used types and utilities
 export type { LoginBody, SignupBody } from '@shared/types/auth.dto';
 export type { AuthResponse, UserProfile, SecurityEvent } from '@features/auth/domain/entities/IAuthRepository';

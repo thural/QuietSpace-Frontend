@@ -4,7 +4,7 @@ import Overlay from "@/shared/Overlay";
 import useFeed from "@features/feed/application/hooks/useFeed";
 import withErrorBoundary from "@shared/hooks/withErrorBoundary";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
-import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
+import InfinateScrollContainer from "@/shared/ui/components/layout/InfinateScrollContainer/InfinateScrollContainer";
 import { LoadingSpinner } from "@/shared/ui/components";
 import CreatePostForm from "./forms/CreatePostForm";
 import ToggleFormSection from "./fragments/ToggleFormSection";

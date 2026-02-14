@@ -1,7 +1,7 @@
 import { PostResponse } from "@/features/feed/data/models/post";
 import FlexStyled from "@/shared/FlexStyled";
 import Typography from "@/shared/Typography";
-import UserCard from "@/shared/UserCard";
+import UserCard from "@/shared/ui/components/user/UserCard/UserCard";
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 /**

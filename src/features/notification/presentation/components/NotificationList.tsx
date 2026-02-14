@@ -1,6 +1,6 @@
 import { NotificationResponse } from "@/features/notification/data/models/notification";
 import { NotificationType } from "@/features/notification/data/models/notificationNative";
-import InfinateScrollContainer from "@shared/InfinateScrollContainer";
+import InfinateScrollContainer from "@/shared/ui/components/layout/InfinateScrollContainer/InfinateScrollContainer";
 import { useGetNotifications } from "@services/data/useNotificationData";
 import { Category, pickNotificationFilter } from "@/shared/utils/notificationUtils";
 import { Text } from "../../../../shared/ui/components";

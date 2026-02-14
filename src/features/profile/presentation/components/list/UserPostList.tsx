@@ -2,7 +2,7 @@ import { ResId } from "@/shared/api/models/commonNative";
 import { PostCard, PostReplyCard } from "@/features/post/presentation/components/post";
 import { RepostCard } from "@/features/post/presentation/components/repost";
 import ErrorComponent from "@/shared/errors/ErrorComponent";
-import InfinateScrollContainer from "@/shared/InfinateScrollContainer";
+import InfinateScrollContainer from "@/shared/ui/components/layout/InfinateScrollContainer/InfinateScrollContainer";
 import { LoadingSpinner } from "@/shared/ui/components";
 import { useGetPostsByUserId, useGetRepliedPostsByUserId, useGetSavedPostsByUserId } from "@/services/data/usePostData";
 

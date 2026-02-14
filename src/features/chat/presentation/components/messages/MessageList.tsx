@@ -1,7 +1,7 @@
 import { MessageResponse } from "@/features/chat/data/models/chat";
 import { ResId } from "@/shared/api/models/commonNative";
 import PostMessageCard from "@/features/feed/presentation/components/post/PostMessageCard";
-import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/shared/InfinateScrollContainer";
+import InfinateScrollContainer, { InfinateScrollContainerProps } from "@/shared/ui/components/layout/InfinateScrollContainer/InfinateScrollContainer";
 import { Messages } from "../../styles/MessageListStyles";
 import { extractId } from "@/shared/utils/stringUtils";
 import MessageBox from "./MessageBox";

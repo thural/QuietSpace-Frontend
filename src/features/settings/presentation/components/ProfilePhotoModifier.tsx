@@ -12,7 +12,7 @@ import { LoadingSpinner } from "@/shared/ui/components";
 import ModalStyled from "@/shared/ModalStyled";
 import Overlay from "@/shared/Overlay";
 import Typography from "@shared/Typography";
-import UserCard from "@shared/UserCard";
+import UserCard from "@/shared/ui/components/user/UserCard/UserCard";
 
 /**
  * ProfilePhotoModifier component.

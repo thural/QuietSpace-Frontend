@@ -6,7 +6,7 @@ import AnchorStyled from "@shared/AnchorStyled";
 import { Container } from "../../../../../shared/ui/components";
 import FlexStyled from "@shared/FlexStyled";
 import Typography from "@shared/Typography";
-import UserCard from "@shared/UserCard";
+import UserCard from "@/shared/ui/components/user/UserCard/UserCard";
 import React from "react";
 import ChatQueryInput from "./ChatQueryInput";
 import { PresenceIndicator } from "@features/chat/components/ChatPresenceComponents";

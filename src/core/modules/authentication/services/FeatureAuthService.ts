@@ -5,10 +5,9 @@
  * This eliminates direct store access and maintains proper separation of concerns.
  */
 
-import { TokenProvider } from '../../network/providers/TokenProvider';
+import { SimpleTokenProvider } from '../../network/authenticatedFactory';
 
-import type { Container } from '../../dependency-injection/factory';
-import type { ITokenProvider } from '../../network/interfaces';
+import type { ITokenProvider } from '../../network/authenticatedFactory';
 
 /**
  * Authentication service for feature modules
@@ -19,8 +18,8 @@ import type { ITokenProvider } from '../../network/interfaces';
 export class FeatureAuthService {
     private readonly tokenProvider: ITokenProvider;
 
-    constructor(container: Container) {
-        this.tokenProvider = new TokenProvider(container);
+    constructor() {
+        this.tokenProvider = new SimpleTokenProvider();
     }
 
     /**
@@ -66,7 +65,7 @@ export class FeatureAuthService {
      * @returns True if authenticated
      */
     isAuthenticated(): boolean {
-        return this.tokenProvider.isAuthenticated();
+        return this.tokenProvider.hasToken();
     }
 
     /**
@@ -107,7 +106,10 @@ export class FeatureAuthService {
      * @returns New token or null if refresh failed
      */
     async refreshToken(): Promise<string | null> {
-        return await this.tokenProvider.refreshToken();
+        // SimpleTokenProvider doesn't support auto-refresh
+        // This would need to be implemented with enterprise auth services
+        console.warn('Token refresh not supported by SimpleTokenProvider. Use enterprise auth services for auto-refresh.');
+        return null;
     }
 
     /**

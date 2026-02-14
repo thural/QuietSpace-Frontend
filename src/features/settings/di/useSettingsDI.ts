@@ -5,8 +5,8 @@
  * Follows enterprise patterns for service access
  */
 
-import { Container } from '@/core/modules/dependency-injection/container/Container';
 import { TYPES } from '@/core/modules/dependency-injection/types';
+import { useDIContainer } from '@/core/hooks/ui/dependency-injection';
 import type { SettingsDataService } from '../services/SettingsDataService';
 import type { SettingsFeatureService } from '../services/SettingsFeatureService';
 import type { ISettingsRepository } from '../domain/entities/SettingsRepository';
@@ -24,35 +24,4 @@ export const useSettingsServices = () => {
     settingsFeatureService: container.get<SettingsFeatureService>(TYPES.SETTINGS_FEATURE_SERVICE),
     settingsRepository: container.get<ISettingsRepository>(TYPES.SETTINGS_REPOSITORY)
   };
-};
-
-/**
- * Legacy Settings DI Hook.
- * 
- * Maintained for backward compatibility during migration
- * @deprecated Use useSettingsServices instead
- */
-export const useSettingsDI = () => {
-  console.warn('useSettingsDI is deprecated. Use useSettingsServices instead.');
-  return useSettingsServices();
-};
-
-/**
- * Hook to get settings repository from DI container.
- * @deprecated Use useSettingsServices instead
- */
-export const useSettingsRepository = () => {
-  console.warn('useSettingsRepository is deprecated. Use useSettingsServices instead.');
-  const { settingsRepository } = useSettingsServices();
-  return settingsRepository;
-};
-
-/**
- * Hook to get settings service from DI container.
- * @deprecated Use useSettingsServices instead
- */
-export const useSettingsService = () => {
-  console.warn('useSettingsService is deprecated. Use useSettingsServices instead.');
-  const { settingsFeatureService } = useSettingsServices();
-  return settingsFeatureService;
 };
