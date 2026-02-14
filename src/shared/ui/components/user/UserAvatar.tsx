@@ -1,7 +1,13 @@
-import { Avatar } from "@/shared/ui/components"
-import { GenericWrapper } from "@shared-types/sharedComponentTypes"
+/**
+ * UserAvatar Wrapper Component
+ * 
+ * Legacy wrapper for backward compatibility.
+ * New implementations should use the decoupled version from ./UserAvatar/
+ */
+
+import UserAvatar as DecoupledUserAvatar from './UserAvatar';
+import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { PureComponent, ReactNode } from 'react';
-import { getComponentSize, getRadius } from '../utils';
 
 interface IUserAvatarProps extends GenericWrapper {
     forwardedRef?: any;
@@ -13,32 +19,13 @@ interface IUserAvatarProps extends GenericWrapper {
     theme?: any;
 }
 
+/**
+ * @deprecated Use UserAvatar from ./UserAvatar/ instead
+ */
 class UserAvatar extends PureComponent<IUserAvatarProps> {
     override render(): ReactNode {
-        const {
-            forwardedRef,
-            size = "md",
-            color = "black",
-            radius = "round",
-            src = "",
-            chars = "U",
-            theme,
-            ...props
-        } = this.props;
-
-        return (
-            <Avatar
-                ref={forwardedRef}
-                color={color}
-                size={theme ? getComponentSize(theme, 'avatar', size as any) : size}
-                radius={theme ? getRadius(theme, radius as any) : radius}
-                src={src}
-                {...props}
-            >
-                {chars}
-            </Avatar>
-        )
+        return <DecoupledUserAvatar {...this.props} />;
     }
 }
 
-export default UserAvatar
+export default UserAvatar;

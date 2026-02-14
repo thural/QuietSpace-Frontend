@@ -6,32 +6,32 @@
  */
 
 import styled from 'styled-components';
-import { Theme } from '@/app/theme';
+import { EnhancedTheme } from '@core/modules/theming';
 
-export const Container = styled.div<{ theme: Theme }>`
-  padding: ${props => props.theme.spacing(props.theme.spacingFactor.md)};
+export const Container = styled.div<{ theme: EnhancedTheme }>`
+  padding: ${props => props.theme.spacing.md};
 `;
 
-export const Header = styled.div<{ theme: Theme }>`
+export const Header = styled.div<{ theme: EnhancedTheme }>`
   display: flex;
   align-items: center;
-  margin-bottom: ${props => props.theme.spacing(props.theme.spacingFactor.sm)};
+  margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
-export const Title = styled.h2<{ theme: Theme }>`
-  font-size: ${props => props.theme.typography.fontSize.xLarge};
+export const Title = styled.h2<{ theme: EnhancedTheme }>`
+  font-size: ${props => props.theme.typography.fontSize.xl};
   font-weight: bold;
   margin: 0;
 `;
 
-export const Content = styled.div<{ theme: Theme }>`
-  margin-top: ${props => props.theme.spacing(props.theme.spacingFactor.sm)};
+export const Content = styled.div<{ theme: EnhancedTheme }>`
+  margin-top: ${props => props.theme.spacing.sm};
 `;
 
 // Legacy export for backward compatibility during migration
 export const userDetailsSectionStyles = {
-    container: Container,
-    header: Header,
-    title: Title,
-    content: Content,
+  container: Container,
+  header: Header,
+  title: Title,
+  content: Content,
 };

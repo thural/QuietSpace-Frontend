@@ -6,16 +6,21 @@
  */
 
 // Core user components
-export { default as AuthenticatedActions } from './AuthenticatedActions';
+export { AuthenticatedActions } from './AuthenticatedActions';
+export type { IAuthenticatedActionsProps, IAuthenticatedActionsState } from './AuthenticatedActions';
 export { default as AuthStatus } from './AuthStatus';
-export { default as SecurityStatus } from './SecurityStatus';
+export { SecurityStatus } from './SecurityStatus';
+export type { ISecurityStatusProps, ISecurityStatusState } from './SecurityStatus';
 
 // New reusable components
-export { default as UserProfileAvatar } from './UserProfileAvatar';
+export { UserProfileAvatar } from './UserProfileAvatar';
+export type { IUserProfileAvatarProps, UserStatusType } from './UserProfileAvatar';
 export { UserAvatar } from './UserAvatar';
 export type { IUserAvatarProps } from './UserAvatar';
 export { default as UserAvatarPhoto } from './UserAvatarPhoto';
 export { default as UserCard } from './UserCard';
-export { default as UserDetails } from './UserDetails';
-export { default as UserQueryItem } from './UserQueryItem';
+export { UserDetails } from './UserDetails';
+export type { IUserDetailsProps } from './UserDetails';
+export { UserQueryItem } from './UserQueryItem';
+export type { IUserQueryItemProps } from './UserQueryItem';
 export { default as PhotoDisplay } from './PhotoDisplay';

@@ -15,7 +15,7 @@
     "isolatedModules": false,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "react",
+    "jsxImportSource": "@emotion/react",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -115,12 +115,15 @@
       "node",
       "react",
       "react-dom",
+      "@emotion/react",
+      "@emotion/styled",
       "@babel/core",
       "jest"
     ],
     "typeRoots": [
       "./node_modules/@types",
-      "./src/__mocks__"
+      "./src/__mocks__",
+      "./src/types"
     ]
   },
   "include": [
@@ -128,7 +131,8 @@
     "src/**/*",
     "src/vite-env.d.ts",
     "src/__mocks__/**/*.d.ts",
-    "src/shared/types/**/*.d.ts"
+    "src/shared/types/**/*.d.ts",
+    "src/types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
