@@ -1,64 +1,47 @@
-/**
- * Enterprise LoadingOverlay Component
- * 
- * A loading overlay component that replaces the original LoadingOverlay component
- * with enhanced theme integration and enterprise patterns.
- * Consolidated to handle both LoadingOverlay and FullLoadingOverlay use cases.
- */
-
+/** @jsxImportSource @emotion/react */
 import type { ReactNode } from 'react';
-import styled from 'styled-components';
+import { css, keyframes } from '@emotion/react';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 import { getColor, getSpacing, getRadius, getShadow, getBorderWidth, getTypography } from '../utils';
 
-// Styled components
-interface OverlayContainerProps {
-  visible?: boolean;
-  blur?: number;
-}
+// Emotion CSS utility functions
+const spinKeyframes = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 
-const OverlayContainer = styled.div<OverlayContainerProps>`
+const createOverlayContainerStyles = (theme: any, visible: boolean, blur?: number, overlayColor?: string) => css`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${props => getColor(props.theme, 'overlay', 'rgba(0, 0, 0, 0.5)')};
-  backdrop-filter: ${props => props.blur ? `blur(${props.blur}px)` : 'none'};
-  display: ${props => props.visible ? 'flex' : 'none'};
+  background-color: ${overlayColor || getColor(theme, 'overlay') || 'rgba(0, 0, 0, 0.5)'};
+  backdrop-filter: ${blur ? `blur(${blur}px)` : 'none'};
+  display: ${visible ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
   z-index: 1000;
 `;
 
-const LoadingContent = styled.div<{ radius?: string }>`
+const createLoadingContentStyles = (theme: any, radius?: string, backgroundColor?: string) => css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${props => getSpacing(props.theme, 'md')};
-  padding: ${props => getSpacing(props.theme, 'lg')};
-  background-color: ${props => getColor(props.theme, 'background.primary')};
-  border-radius: ${props => getRadius(props.theme, props.radius || 'md')};
-  box-shadow: ${props => getShadow(props.theme, 'lg')};
+  gap: ${getSpacing(theme, 'md')};
+  padding: ${getSpacing(theme, 'lg')};
+  background-color: ${backgroundColor || getColor(theme, 'background.primary')};
+  border-radius: ${getRadius(theme, radius || 'md')};
+  box-shadow: ${getShadow(theme, 'lg')};
 `;
 
-interface SpinnerProps {
-  size?: string;
-  color?: string;
-}
-
-const Spinner = styled.div<SpinnerProps>`
-  width: ${props => getSpacing(props.theme, props.size || 'xl')};
-  height: ${props => getSpacing(props.theme, props.size || 'xl')};
-  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${getColor(props.theme, 'background.secondary')};
-  border-top: ${props => getBorderWidth(props.theme, 'sm')} solid ${props.color || getColor(props.theme, 'brand.500')};
-  border-radius: ${getRadius(props.theme, 'full')};
-  animation: spin 1s linear infinite;
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+const createSpinnerStyles = (theme: any, size?: string, color?: string) => css`
+  width: ${getSpacing(theme, size || 'xl')};
+  height: ${getSpacing(theme, size || 'xl')};
+  border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'background.secondary')};
+  border-top: ${getBorderWidth(theme, 'sm')} solid ${color || getColor(theme, 'brand.500')};
+  border-radius: ${getRadius(theme, 'full')};
+  animation: ${spinKeyframes} 1s linear infinite;
 `;
 
 // Props interfaces
@@ -161,27 +144,20 @@ class LoadingOverlay extends BaseClassComponent<ILoadingOverlayProps, ILoadingOv
     }
 
     return (
-      <OverlayContainer
-        visible={shouldShow}
-        blur={blur}
-        style={{
-          backgroundColor: overlayColor || undefined
-        }}
+      <div
+        css={createOverlayContainerStyles((this.props as any).theme || {} as any, shouldShow, blur, overlayColor)}
         className={className}
         data-testid={testId || 'loading-overlay'}
         role="dialog"
         aria-modal={true}
         aria-label={ariaLabel}
       >
-        <LoadingContent
-          radius={radius}
-          style={{
-            backgroundColor: backgroundColor || undefined
-          }}
+        <div
+          css={createLoadingContentStyles((this.props as any).theme || {} as any, radius, backgroundColor)}
         >
           {children || (
             <>
-              <Spinner size={size} {...(color !== undefined && { color })} />
+              <div css={createSpinnerStyles((this.props as any).theme || {} as any, size, color)} />
               {message && (
                 <div style={{
                   marginTop: getSpacing((this.props as any).theme, 'xs'),
@@ -194,8 +170,8 @@ class LoadingOverlay extends BaseClassComponent<ILoadingOverlayProps, ILoadingOv
               )}
             </>
           )}
-        </LoadingContent>
-      </OverlayContainer>
+        </div>
+      </div>
     );
   }
 }

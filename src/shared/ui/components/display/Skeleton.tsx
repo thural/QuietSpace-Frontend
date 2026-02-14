@@ -5,70 +5,12 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getSpacing, getRadius, getTypography, getSkeletonStyles } from '../utils';
-
-// Styled components with theme token integration
-interface SkeletonContainerProps {
-  $width?: string | undefined;
-  $height?: string | undefined;
-  $radius?: string | undefined;
-  $variant?: 'text' | 'rectangular' | 'circular' | undefined;
-  $size?: ComponentSize | undefined;
-  theme?: any;
-}
-
-const SkeletonContainer = styled.div.withConfig({
-  shouldForwardProp: (prop) => !['$variant', '$size'].includes(prop),
-}) <SkeletonContainerProps>`n  width: ${props => props.$width || '100%'};
-  height: ${props => props.$height || '20px'};
-  border-radius: ${props => {
-    if (props.$variant === 'circular') return getRadius(props.theme, 'round');
-    if (props.$variant === 'text') return getRadius(props.theme, 'sm');
-    return getRadius(props.theme, props.$radius || 'md');
-  }};
-  
-  /* Size-based dimensions using theme tokens */
-  ${props => {
-    if (props.$size) {
-      const sizeMap = {
-        xs: { width: getSpacing(props.theme, 'xs'), height: getSpacing(props.theme, 'xs') },
-        sm: { width: getSpacing(props.theme, 'sm'), height: getSpacing(props.theme, 'sm') },
-        md: { width: getSpacing(props.theme, 'md'), height: getSpacing(props.theme, 'md') },
-        lg: { width: getSpacing(props.theme, 'lg'), height: getSpacing(props.theme, 'lg') },
-        xl: { width: getSpacing(props.theme, 'xl'), height: getSpacing(props.theme, 'xl') }
-      };
-      const dimensions = sizeMap[props.$size];
-      if (dimensions) {
-        return `
-          width: ${dimensions.width};
-          height: ${dimensions.height};
-        `;
-      }
-    }
-
-    if (props.$variant === 'text') {
-      return `
-        height: ${getTypography(props.theme, 'fontSize.base')};
-        width: 60%;
-        margin-bottom: ${getSpacing(props.theme, 'sm')};
-      `;
-    }
-
-    return '';
-  }}
-  
-  /* Use getSkeletonStyles utility for consistent skeleton appearance */
-  ${props => getSkeletonStyles(props.theme || {} as any)}
-  
-  /* Subtle animation on hover */
-  &:hover {
-    opacity: 0.8;
-  }
-`;
 
 // Props interfaces
 interface ISkeletonProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
@@ -129,19 +71,67 @@ class Skeleton extends PureComponent<ISkeletonProps> {
     const heightValue = this.convertDimension(theme, height);
     const defaultDimensions = this.getDefaultDimensions(theme, variant);
 
-    const containerProps: any = {
-      className,
-      'data-testid': testId,
-      $width: widthValue || defaultDimensions.width,
-      $height: heightValue || defaultDimensions.height,
-      $radius: radius,
-      $variant: variant || 'rectangular',
-      $size: size,
-      theme,
-      ...props
+    // Size-based dimensions using theme tokens
+    let sizeStyles = '';
+    if (size) {
+      const sizeMap = {
+        xs: { width: getSpacing(theme, 'xs'), height: getSpacing(theme, 'xs') },
+        sm: { width: getSpacing(theme, 'sm'), height: getSpacing(theme, 'sm') },
+        md: { width: getSpacing(theme, 'md'), height: getSpacing(theme, 'md') },
+        lg: { width: getSpacing(theme, 'lg'), height: getSpacing(theme, 'lg') },
+        xl: { width: getSpacing(theme, 'xl'), height: getSpacing(theme, 'xl') }
+      };
+      const dimensions = sizeMap[size];
+      if (dimensions) {
+        sizeStyles = `
+                    width: ${dimensions.width};
+                    height: ${dimensions.height};
+                `;
+      }
+    }
+
+    // Text variant styles
+    let textStyles = '';
+    if (variant === 'text') {
+      textStyles = `
+                height: ${getTypography(theme, 'fontSize.base')};
+                width: 60%;
+                margin-bottom: ${getSpacing(theme, 'sm')};
+            `;
+    }
+
+    // Border radius styles
+    const getRadiusValue = () => {
+      if (variant === 'circular') return getRadius(theme, 'round');
+      if (variant === 'text') return getRadius(theme, 'sm');
+      return getRadius(theme, radius || 'md');
     };
 
-    return <SkeletonContainer {...containerProps} />;
+    const skeletonStyles = css`
+            width: ${widthValue || defaultDimensions.width};
+            height: ${heightValue || defaultDimensions.height};
+            border-radius: ${getRadiusValue()};
+            
+            ${sizeStyles}
+            ${textStyles}
+            
+            /* Use getSkeletonStyles utility for consistent skeleton appearance */
+            ${getSkeletonStyles(theme || {} as any)}
+            
+            /* Subtle animation on hover */
+            &:hover {
+                opacity: 0.8;
+            }
+        `;
+
+    return (
+      <div
+        css={skeletonStyles}
+        className={className}
+        data-testid={testId}
+        {...props}
+      />
+    );
   }
 }
 

@@ -5,19 +5,16 @@
  * with enhanced theme integration and enterprise patterns.
  */
 
-import React, { PureComponent, ReactNode, RefObject } from 'react';
-import styled from 'styled-components';
+/** @jsxImportSource @emotion/react */
+import { PureComponent, ReactNode, RefObject } from 'react';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 
-// Styled components
-interface ImageContainerProps {
-    radius?: string;
-}
-
-const ImageContainer = styled.img<ImageContainerProps>`
+// Emotion CSS utility function
+const createImageStyles = (radius?: string) => css`
   max-width: 100%;
   height: auto;
-  border-radius: ${props => props.radius || '0'};
+  border-radius: ${radius || '0'};
   object-fit: cover;
   display: block;
 `;
@@ -42,7 +39,7 @@ class Image extends PureComponent<IImageProps> {
         fit: 'cover'
     };
 
-    render(): ReactNode {
+    override render(): ReactNode {
         const {
             src,
             alt,
@@ -57,12 +54,12 @@ class Image extends PureComponent<IImageProps> {
         } = this.props;
 
         return (
-            <ImageContainer
+            <img
+                css={createImageStyles(radius)}
                 src={src}
                 alt={alt}
                 width={width}
                 height={height}
-                radius={radius}
                 style={{
                     objectFit: fit,
                     ...style

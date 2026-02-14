@@ -1,49 +1,7 @@
-/**
- * Enterprise Button Component
- * 
- * A versatile button component that replaces the original Button component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode, MouseEvent } from 'react';
-import styled from 'styled-components';
 import { ButtonProps } from '../types';
-import { getButtonVariantStyles, getSizeStyles, getBorderWidth, getRadius, getColor, getTransition } from '../utils';
-
-// Styled component implementation
-const StyledButton = styled.button<{ theme: any; $props: ButtonProps }>`
-  box-sizing: border-box;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all ${(props) => getTransition(props.theme, 'all', 'fast', 'ease')};
-  outline: none;
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  &:focus:not(:disabled) {
-    outline: ${(props) => getBorderWidth(props.theme, 'md')} solid ${(props) => getColor(props.theme, 'brand.500')};
-    outline-offset: ${(props) => getBorderWidth(props.theme, 'md')};
-  }
-  
-  ${(props) => getButtonVariantStyles(props.$props.variant || 'primary', props.theme)}
-  ${(props) => getSizeStyles(props.$props.size || 'md', props.theme)}
-  
-  ${(props) => props.$props.fullWidth && 'width: 100%;'}
-  ${(props) => props.$props.rounded && `border-radius: ${getRadius(props.theme, 'full')};`}
-  ${(props) => props.$props.outlined && `
-    background: transparent;
-    border: ${getBorderWidth(props.theme, 'sm')} solid;
-  `}
-  ${(props) => props.$props.gradient && `
-    background: ${props.theme.colors?.gradient || 'linear-gradient(45deg, #007bff, #6f42c1)'};
-    color: white;
-    border: none;
-  `}
-`;
+import { createButtonStyles } from '../emotion-utils';
 
 /**
  * Button Component
@@ -75,6 +33,12 @@ class Button extends PureComponent<ButtonProps> {
       disabled = false,
       loading = false,
       type = 'button',
+      variant = 'primary',
+      size = 'md',
+      fullWidth = false,
+      rounded = false,
+      outlined = false,
+      gradient = false,
       onFocus,
       onBlur,
       onMouseEnter,
@@ -82,10 +46,17 @@ class Button extends PureComponent<ButtonProps> {
       ...buttonProps
     } = this.props;
 
+    const buttonStyles = createButtonStyles(theme || {} as any, variant, size, {
+      fullWidth,
+      rounded,
+      outlined,
+      gradient,
+      disabled: disabled || loading
+    });
+
     return (
-      <StyledButton
-        theme={theme}
-        $props={this.props}
+      <button
+        css={buttonStyles as any}
         className={className}
         data-testid={testId}
         disabled={disabled || loading}
@@ -98,7 +69,7 @@ class Button extends PureComponent<ButtonProps> {
         {...buttonProps}
       >
         {loading ? 'Loading...' : children}
-      </StyledButton>
+      </button>
     );
   }
 }

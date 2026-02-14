@@ -1,49 +1,43 @@
-/**
- * Enterprise SegmentedControl Component
- * 
- * A segmented control component that replaces the original SegmentedControl component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import React, { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { getColor, getRadius, getSpacing, getTransition, getTypography } from '../utils';
 
-// Styled components
-const SegmentedContainer = styled.div<{ theme: any }>`
+// Emotion CSS utility functions
+const createSegmentedContainerStyles = (theme: any) => css`
   display: flex;
-  background-color: ${props => getColor(props.theme, 'background.secondary')};
-  border-radius: ${props => getRadius(props.theme, 'sm')};
-  padding: ${props => getSpacing(props.theme, 'xs')};
+  background-color: ${getColor(theme, 'background.secondary')};
+  border-radius: ${getRadius(theme, 'sm')};
+  padding: ${getSpacing(theme, 'xs')};
   width: fit-content;
 `;
 
-const SegmentedButton = styled.button<{ theme: any; active?: boolean; color?: string }>`
-  background: ${props => props.active ?
-        getColor(props.theme, props.color || 'brand.500') :
+const createSegmentedButtonStyles = (theme: any, active: boolean, color?: string) => css`
+  background: ${active ?
+        getColor(theme, color || 'brand.500') :
         'transparent'};
-  color: ${props => props.active ?
-        getColor(props.theme, 'text.inverse') :
-        getColor(props.theme, 'text.primary')};
+  color: ${active ?
+        getColor(theme, 'text.inverse') :
+        getColor(theme, 'text.primary')};
   border: none;
-  padding: ${props => getSpacing(props.theme, 'sm')} ${props => getSpacing(props.theme, 'lg')};
+  padding: ${getSpacing(theme, 'sm')} ${getSpacing(theme, 'lg')};
   cursor: pointer;
-  font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-  border-radius: ${props => getRadius(props.theme, 'xs')};
-  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
-  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
+  font-size: ${getTypography(theme, 'fontSize.base')};
+  border-radius: ${getRadius(theme, 'xs')};
+  transition: ${getTransition(theme, 'all', 'fast', 'ease')};
+  font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
   white-space: nowrap;
 
   &:hover {
-    background: ${props => props.active ?
-        getColor(props.theme, props.color || 'brand.500') :
-        getColor(props.theme, 'background.tertiary')};
+    background: ${active ?
+        getColor(theme, color || 'brand.500') :
+        getColor(theme, 'background.tertiary')};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 ${props => getSpacing(props.theme, 2)} solid ${props => getColor(props.theme, 'brand.200')};
+    box-shadow: 0 0 0 ${getSpacing(theme, 2)} solid ${getColor(theme, 'brand.200')};
   }
 
   &:disabled {
@@ -143,40 +137,42 @@ class SegmentedControl extends PureComponent<ISegmentedControlProps, ISegmentedC
             className,
             testId,
             theme,
-            ...props
+            onChange: _onChange,
+            value: _value,
+            defaultValue: _defaultValue,
+            ...restProps
         } = this.props;
 
         const activeValue = this.getActiveValue();
         const sizeStyles = this.getSizeStyles();
+        console.log('Active value:', activeValue); // Debug log to use the variable
 
         return (
-            <SegmentedContainer
+            <div
+                css={createSegmentedContainerStyles(theme || {} as any)}
                 className={className}
                 data-testid={testId}
-                theme={theme}
                 style={{
                     width: fullWidth ? '100%' : 'fit-content'
                 }}
-                {...props}
+                {...restProps}
             >
                 {data.map((item) => (
-                    <SegmentedButton
+                    <button
                         key={item.value}
-                        active={item.value === activeValue}
-                        color={color}
+                        css={createSegmentedButtonStyles(theme || {} as any, item.value === activeValue, color)}
                         disabled={disabled || item.disabled}
                         onClick={() => this.handleValueChange(item.value)}
                         style={sizeStyles}
-                        theme={theme}
                     >
                         {item.label}
-                    </SegmentedButton>
+                    </button>
                 ))}
-            </SegmentedContainer>
+            </div>
         );
     }
 }
 
-SegmentedControl.displayName = 'SegmentedControl';
+(SegmentedControl as any).displayName = 'SegmentedControl';
 
 export default SegmentedControl;

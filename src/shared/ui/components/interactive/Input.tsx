@@ -1,43 +1,8 @@
-/**
- * Enterprise Input Component
- * 
- * A versatile input component that replaces the original Input component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { InputProps } from '../types';
-import { getColor, getSpacing, getRadius, getBorderWidth, getMicroSpacing, getTypography, getSizeStyles, getTransition } from '../utils';
-
-// Styled component implementation
-const StyledInput = styled.input<{ theme: any; $props: InputProps }>`
-  box-sizing: border-box;
-  border: ${(props) => getBorderWidth(props.theme, 'sm')} solid ${(props) => getColor(props.theme, 'border.light')};
-  border-radius: ${(props) => getRadius(props.theme, 'md')};
-  padding: ${(props) => getSpacing(props.theme, 'sm')} ${(props) => getSpacing(props.theme, 'md')};
-  font-size: ${(props) => getTypography(props.theme, 'fontSize.base')};
-  font-family: inherit;
-  transition: all ${(props) => getTransition(props.theme, 'all', 'fast', 'ease')};
-  outline: none;
-  
-  &:focus {
-    border-color: ${(props) => getColor(props.theme, 'brand.500')};
-    box-shadow: 0 0 0 ${(props) => getBorderWidth(props.theme, 'sm')} ${(props) => getColor(props.theme, 'brand.500')}20;
-  }
-  
-  &:disabled {
-    background-color: ${(props) => getColor(props.theme, 'background.secondary')};
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  &:error {
-    border-color: ${(props) => getColor(props.theme, 'semantic.error')};
-  }
-  
-  ${(props) => getSizeStyles(props.$props.size || 'md', props.theme)}
-`;
+import { createInputStyles } from '../emotion-utils';
 
 /**
  * Input Component
@@ -77,7 +42,7 @@ class Input extends PureComponent<InputProps> {
             onFocus,
             onBlur,
             onChange,
-            size,
+            size = 'md',
             variant,
             onMouseEnter,
             onMouseLeave,
@@ -85,27 +50,34 @@ class Input extends PureComponent<InputProps> {
             ...inputProps
         } = this.props;
 
+        const inputStyles = createInputStyles(theme || {} as any, size as 'sm' | 'md' | 'lg', {
+            error,
+            disabled
+        });
+
         return (
             <div className={className} data-testid={testId}>
                 {label && (
-                    <label htmlFor={id} style={{
-                        display: 'block',
-                        marginBottom: getMicroSpacing(theme || {} as any, '4px'),
-                        fontSize: getTypography(theme || {} as any, 'fontSize.sm'),
-                        color: getColor(theme || {} as any, 'text.primary')
-                    }}>
+                    <label
+                        htmlFor={id}
+                        css={css`
+                            display: block;
+                            margin-bottom: 4px;
+                            font-size: 14px;
+                            color: ${theme ? theme.colors.text.primary : '#333'};
+                        `}
+                    >
                         {label}
                     </label>
                 )}
 
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div css={css`display: flex; align-items: center;`}>
                     {startAdornment && (
-                        <span style={{ marginRight: getMicroSpacing(theme || {} as any, '8px') }}>{startAdornment}</span>
+                        <span css={css`margin-right: 8px;`}>{startAdornment}</span>
                     )}
 
-                    <StyledInput
-                        theme={theme}
-                        $props={this.props}
+                    <input
+                        css={inputStyles as any}
                         type={type}
                         value={value}
                         defaultValue={defaultValue}
@@ -128,16 +100,19 @@ class Input extends PureComponent<InputProps> {
                     />
 
                     {endAdornment && (
-                        <span style={{ marginLeft: getMicroSpacing(theme || {} as any, '8px') }}>{endAdornment}</span>
+                        <span css={css`margin-left: 8px;`}>{endAdornment}</span>
                     )}
                 </div>
 
                 {helperText && (
-                    <div style={{
-                        fontSize: getTypography(theme || {} as any, 'fontSize.xs'),
-                        marginTop: getMicroSpacing(theme || {} as any, '6px'),
-                        color: error ? getColor(theme || {} as any, 'semantic.error') : getColor(theme || {} as any, 'text.secondary')
-                    }}>
+                    <div css={css`
+                        font-size: 12px;
+                        margin-top: 6px;
+                        color: ${error
+                            ? (theme ? theme.colors.semantic.error : '#dc3545')
+                            : (theme ? theme.colors.text.secondary : '#666')
+                        };
+                    `}>
                         {helperText}
                     </div>
                 )}

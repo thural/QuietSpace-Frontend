@@ -1,7 +1,7 @@
-import { ConsumerFn } from "@/shared/types/genericTypes";
-import React, { PureComponent, ReactNode, ChangeEvent } from "react";
-import styled from 'styled-components';
-import { EnhancedTheme } from '@/core/theme';
+/** @jsxImportSource @emotion/react */
+import { PureComponent, ReactNode, ChangeEvent } from "react";
+import { css } from '@emotion/react';
+import { EnhancedTheme } from '../../../../../core/modules/theming/types/ProviderTypes';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 
 interface ITextInputStyledProps extends GenericWrapper {
@@ -15,46 +15,12 @@ interface ITextInputStyledProps extends GenericWrapper {
   isStyled?: boolean;
 }
 
-// Enterprise styled-components for text input styling
-const TextInput = styled.input<{ theme: EnhancedTheme }>`
-  width: 100%;
-  padding: ${props => props.theme.spacing.md};
-  font-size: ${props => props.theme.typography.fontSize.base};
-  font-family: ${props => props.theme.typography.fontFamily.sans.join(', ')};
-  color: ${props => props.theme.colors.text.primary};
-  background: ${props => props.theme.colors.background.primary};
-  border: 1px solid ${props => props.theme.colors.border.medium};
-  border-radius: ${props => props.theme.radius.md};
-  transition: all ${props => props.theme.animation.duration.normal} ${props => props.theme.animation.easing.ease};
-  
-  &::placeholder {
-    color: ${props => props.theme.colors.text.tertiary};
-  }
-  
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme.colors.brand[500]};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.brand[200]};
-  }
-  
-  &:hover:not(:focus) {
-    border-color: ${props => props.theme.colors.border.dark};
-  }
-  
-  &:disabled {
-    background: ${props => props.theme.colors.background.tertiary};
-    color: ${props => props.theme.colors.text.tertiary};
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-  
-  // Responsive design
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    padding: ${props => props.theme.spacing.sm};
-    font-size: ${props => props.theme.typography.fontSize.sm};
-  }
-`;
-
+/**
+ * Enterprise TextInput Component
+ * 
+ * Replaces styled-components based TextInput with Emotion CSS
+ * following theme system patterns and class component best practices.
+ */
 class TextInputStyled extends PureComponent<ITextInputStyledProps> {
   override render(): ReactNode {
     const {
@@ -69,8 +35,48 @@ class TextInputStyled extends PureComponent<ITextInputStyledProps> {
       ...props
     } = this.props;
 
+    const textInputStyles = (theme: EnhancedTheme) => css`
+            width: 100%;
+            padding: ${theme.spacing.md};
+            font-size: ${theme.typography.fontSize.base};
+            font-family: ${theme.typography.fontFamily.sans.join(',')};
+            color: ${theme.colors.text.primary};
+            background: ${theme.colors.background.primary};
+            border: 1px solid ${theme.colors.border.medium};
+            border-radius: ${theme.radius.md};
+            transition: all ${theme.animation.duration.normal} ${theme.animation.easing.ease};
+            
+            &::placeholder {
+                color: ${theme.colors.text.tertiary};
+            }
+            
+            &:focus {
+                outline: none;
+                border-color: ${theme.colors.brand[500]};
+                box-shadow: 0 0 0 3px ${theme.colors.brand[200]};
+            }
+            
+            &:hover:not(:focus) {
+                border-color: ${theme.colors.border.dark};
+            }
+            
+            &:disabled {
+                background: ${theme.colors.background.tertiary};
+                color: ${theme.colors.text.tertiary};
+                cursor: not-allowed;
+                opacity: 0.6;
+            }
+            
+            /* Responsive design */
+            @media (max-width: ${theme.breakpoints.sm}) {
+                padding: ${theme.spacing.sm};
+                font-size: ${theme.typography.fontSize.sm};
+            }
+        `;
+
     return (
-      <TextInput
+      <input
+        css={textInputStyles(props.theme || {} as any)}
         type='text'
         name={name}
         placeholder={placeholder ? placeholder : name}
@@ -79,6 +85,7 @@ class TextInputStyled extends PureComponent<ITextInputStyledProps> {
         hidden={hidden}
         maxLength={parseInt(maxLength)}
         minLength={parseInt(minLength)}
+        {...props}
       />
     );
   }

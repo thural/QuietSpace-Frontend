@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import { ChangeEvent, PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { getBorderWidth, getColor, getRadius, getSpacing, getTransition, getTypography } from '../utils';
 
@@ -13,78 +14,82 @@ interface IFileInputProps extends BaseComponentProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const FileInputContainer = styled.div<{ $size: string }>`
+const createFileInputContainerStyles = () => css`
   position: relative;
   display: inline-block;
   width: 100%;
 `;
 
-const FileInputInput = styled.input<{ $size: string }>`
+const createFileInputInputStyles = (disabled: boolean) => css`
   position: absolute;
   opacity: 0;
   width: 100%;
   height: 100%;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  cursor: ${disabled ? 'not-allowed' : 'pointer'};
   
   &:disabled {
     cursor: not-allowed;
   }
 `;
 
-const FileInputButton = styled.div<{ $size: string; $disabled: boolean; theme?: any }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${props => {
-    switch (props.$size) {
-      case 'sm': return getSpacing(props.theme, 'sm');
-      case 'lg': return getSpacing(props.theme, 'lg');
-      default: return getSpacing(props.theme, 'md');
-    }
-  }};
-  padding: ${props => {
-    switch (props.$size) {
-      case 'sm': return `${getSpacing(props.theme, 'sm')} ${getSpacing(props.theme, 'lg')}`;
-      case 'lg': return `${getSpacing(props.theme, 'lg')} ${getSpacing(props.theme, 'xl')}`;
-      default: return `${getSpacing(props.theme, 'md')} ${getSpacing(props.theme, 'xl')}`;
-    }
-  }};
-  border: ${props => getBorderWidth(props.theme, 'md')} dashed ${props => getColor(props.theme, props.$disabled ? 'border.light' : 'brand.500')};
-  border-radius: ${props => {
-    switch (props.$size) {
-      case 'sm': return getRadius(props.theme, 'sm');
-      case 'lg': return getRadius(props.theme, 'md');
-      default: return getRadius(props.theme, 'md');
-    }
-  }};
-  background-color: ${props => getColor(props.theme, 'background.primary')};
-  color: ${props => getColor(props.theme, props.$disabled ? 'text.secondary' : 'brand.500')};
-  font-size: ${props => {
-    switch (props.$size) {
-      case 'sm': return getTypography(props.theme, 'fontSize.sm');
-      case 'lg': return getTypography(props.theme, 'fontSize.base');
-      default: return getTypography(props.theme, 'fontSize.sm');
-    }
-  }};
-  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
-  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
-  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
-  
-  &:hover {
-    background-color: ${props => props.$disabled ? 'transparent' : `${getColor(props.theme, 'brand.500')}10`};
-  }
-`;
+const createFileInputButtonStyles = (theme: any, size: 'sm' | 'md' | 'lg', disabled: boolean) => {
+  const gapStyles = {
+    sm: getSpacing(theme, 'sm'),
+    lg: getSpacing(theme, 'lg'),
+    md: getSpacing(theme, 'md')
+  };
 
-const FileInputText = styled.span<{ $size: string; theme?: any }>`
-  font-size: ${props => {
-    switch (props.$size) {
-      case 'sm': return getTypography(props.theme, 'fontSize.sm');
-      case 'lg': return getTypography(props.theme, 'fontSize.base');
-      default: return getTypography(props.theme, 'fontSize.sm');
+  const paddingStyles = {
+    sm: `${getSpacing(theme, 'sm')} ${getSpacing(theme, 'lg')}`,
+    lg: `${getSpacing(theme, 'lg')} ${getSpacing(theme, 'xl')}`,
+    md: `${getSpacing(theme, 'md')} ${getSpacing(theme, 'xl')}`
+  };
+
+  const radiusStyles = {
+    sm: getRadius(theme, 'sm'),
+    lg: getRadius(theme, 'md'),
+    md: getRadius(theme, 'md')
+  };
+
+  const fontSizeStyles = {
+    sm: getTypography(theme, 'fontSize.sm'),
+    lg: getTypography(theme, 'fontSize.base'),
+    md: getTypography(theme, 'fontSize.sm')
+  };
+
+  return css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: ${gapStyles[size]};
+    padding: ${paddingStyles[size]};
+    border: ${getBorderWidth(theme, 'md')} dashed ${getColor(theme, disabled ? 'border.light' : 'brand.500')};
+    border-radius: ${radiusStyles[size]};
+    background-color: ${getColor(theme, 'background.primary')};
+    color: ${getColor(theme, disabled ? 'text.secondary' : 'brand.500')};
+    font-size: ${fontSizeStyles[size]};
+    font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
+    transition: ${getTransition(theme, 'all', 'fast', 'ease')};
+    cursor: ${disabled ? 'not-allowed' : 'pointer'};
+  
+    &:hover {
+      background-color: ${disabled ? 'transparent' : `${getColor(theme, 'brand.500')}10`};
     }
-  }};
-  color: ${props => getColor(props.theme, 'text.primary')};
-`;
+  `;
+};
+
+const createFileInputTextStyles = (theme: any, size: 'sm' | 'md' | 'lg') => {
+  const fontSizeStyles = {
+    sm: getTypography(theme, 'fontSize.sm'),
+    lg: getTypography(theme, 'fontSize.base'),
+    md: getTypography(theme, 'fontSize.sm')
+  };
+
+  return css`
+    font-size: ${fontSizeStyles[size]};
+    color: ${getColor(theme, 'text.primary')};
+  `;
+};
 
 class FileInput extends PureComponent<IFileInputProps> {
   /**
@@ -106,29 +111,31 @@ class FileInput extends PureComponent<IFileInputProps> {
       size = 'md',
       className,
       style,
-      testId
+      testId,
+      theme
     } = this.props;
 
     const displayText = value ? value.name : placeholder;
 
     return (
-      <FileInputContainer
+      <div
+        css={createFileInputContainerStyles()}
         className={className}
         style={style}
         data-testid={testId}
       >
-        <FileInputInput
+        <input
+          css={createFileInputInputStyles(disabled)}
           type="file"
-          $size={size}
           onChange={this.handleChange}
           accept={accept}
           disabled={disabled}
           multiple={multiple}
         />
-        <FileInputButton $size={size} $disabled={disabled} theme={undefined}>
-          <FileInputText $size={size} theme={undefined}>{displayText}</FileInputText>
-        </FileInputButton>
-      </FileInputContainer>
+        <div css={createFileInputButtonStyles(theme || {} as any, size, disabled)}>
+          <span css={createFileInputTextStyles(theme || {} as any, size)}>{displayText}</span>
+        </div>
+      </div>
     );
   }
 }

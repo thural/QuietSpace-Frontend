@@ -6,11 +6,20 @@
  */
 
 import { useContext } from 'react';
+import { createContext } from 'react';
 
-import { ThemeContext } from '../providers/ThemeContext';
+import type { EnhancedTheme } from '@/core/modules/theming/types/ProviderTypes';
 
-import type { ThemeContextValue } from '../providers/ThemeContext';
-import type { EnhancedTheme } from '../types/ProviderTypes';
+// Define ThemeContextValue interface locally since we can't import it
+export interface ThemeContextValue {
+    theme: EnhancedTheme;
+    currentVariant: string;
+    setVariant: (variant: string) => void;
+    availableVariants: string[];
+}
+
+// Create ThemeContext for export
+export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 /**
  * Hook for using enhanced theme context

@@ -6,13 +6,13 @@
  */
 
 import { memo, useState } from 'react';
-import { ThemeProvider as SCThemeProvider } from 'styled-components';
+import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 
 import { useThemeEnhancement } from '@/core/hooks/ui/theme';
 
-import { ThemeContext } from '../../../../core/modules/theming/providers/ThemeContext';
+import { ThemeContext } from '@/core/hooks/ui/theme/themeHooks';
 
-import type { ThemeProviderProps } from '../../../../core/modules/theming/types/ProviderTypes';
+import type { ThemeProviderProps } from '@/core/modules/theming/types/ProviderTypes';
 
 
 
@@ -39,9 +39,9 @@ export const ThemeProvider = memo<ThemeProviderProps>(({
 
     return (
         <ThemeContext.Provider value={contextValue}>
-            <SCThemeProvider theme={theme}>
+            <EmotionThemeProvider theme={theme}>
                 {children}
-            </SCThemeProvider>
+            </EmotionThemeProvider>
         </ThemeContext.Provider>
     );
 });

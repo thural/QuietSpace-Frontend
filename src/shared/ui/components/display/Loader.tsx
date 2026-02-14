@@ -1,43 +1,35 @@
-/**
- * Enterprise Loader Component
- * 
- * A loader/spinner component that replaces the original Loader component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode } from 'react';
-import styled from 'styled-components';
+import { css, keyframes } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getSpacing, getColor, getBorderWidth, getTransition } from '../utils';
 
-// Styled components with theme token integration
-const LoaderContainer = styled.div<{ theme?: any }>`
+// Emotion CSS utility functions
+const spinKeyframes = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+`;
+
+const createLoaderContainerStyles = () => css`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-interface SpinnerProps {
-    $size?: string;
-    $color?: string;
-    $borderWidth?: string;
-    theme?: any;
-}
-
-const Spinner = styled.div<SpinnerProps>`
-  width: ${props => props.$size || '30px'};
-  height: ${props => props.$size || '30px'};
-  border: ${props => props.$borderWidth || '3px'} solid ${props => getColor(props.theme, 'background.secondary')};
-  border-top: ${props => props.$borderWidth || '3px'} solid ${props => props.$color || getColor(props.theme, 'brand.500')};
+const createSpinnerStyles = (
+    theme: any,
+    size?: string,
+    color?: string,
+    borderWidth?: string
+) => css`
+  width: ${size || '30px'};
+  height: ${size || '30px'};
+  border: ${borderWidth || '3px'} solid ${getColor(theme, 'background.secondary')};
+  border-top: ${borderWidth || '3px'} solid ${color || getColor(theme, 'brand.500')};
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+  animation: ${spinKeyframes} 1s linear infinite;
+  transition: ${getTransition(theme, 'all', 'normal', 'ease')};
 `;
 
 // Props interfaces
@@ -117,19 +109,16 @@ class Loader extends PureComponent<ILoaderProps> {
         const finalBorderWidth = this.getBorderWidth(theme, borderWidth || 'normal');
 
         return (
-            <LoaderContainer
+            <div
+                css={createLoaderContainerStyles()}
                 className={className}
                 data-testid={testId}
-                theme={theme}
                 {...props}
             >
-                <Spinner
-                    $size={finalSize}
-                    $color={finalColor}
-                    $borderWidth={finalBorderWidth}
-                    theme={theme}
+                <div
+                    css={createSpinnerStyles(theme || {} as any, finalSize, finalColor, finalBorderWidth)}
                 />
-            </LoaderContainer>
+            </div>
         );
     }
 }

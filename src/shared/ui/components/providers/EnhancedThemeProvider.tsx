@@ -6,7 +6,7 @@
  */
 
 import { ReactNode, createContext, memo, useMemo, useState } from 'react';
-import { ThemeProvider as SCThemeProvider } from 'styled-components';
+import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 
 import { enhanceTheme } from '../../../../core/modules/theming/enhancers/themeEnhancers';
 import { getTheme, getThemeVariants } from '../../../../core/modules/theming/variants';
@@ -65,9 +65,9 @@ export const EnhancedThemeProvider = memo<EnhancedThemeProviderProps>(({
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <SCThemeProvider theme={memoizedTheme}>
+      <EmotionThemeProvider theme={memoizedTheme}>
         {children}
-      </SCThemeProvider>
+      </EmotionThemeProvider>
     </ThemeContext.Provider>
   );
 });

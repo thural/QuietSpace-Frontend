@@ -46,6 +46,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "axios": "^1.13.5",
     "date-fns": "^4.1.0",

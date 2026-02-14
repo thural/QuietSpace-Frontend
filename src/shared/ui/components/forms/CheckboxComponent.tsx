@@ -1,6 +1,6 @@
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '@/shared/components/base/BaseClassComponent';
 import React, { ReactNode } from 'react';
-import { CheckboxInput, CheckboxLabel, CheckboxWrapper } from "./CheckboxStyles";
+import { CheckboxWrapper, CheckboxInput, CheckboxLabel } from "./CheckboxStyles";
 
 interface ICheckboxProps extends IBaseComponentProps {
   checked?: boolean;
@@ -9,6 +9,7 @@ interface ICheckboxProps extends IBaseComponentProps {
   label?: string;
   onChange?: (checked: boolean) => void;
   className?: string;
+  theme?: any;
 
   // Enhanced props for CheckBox compatibility
   value?: string | number;
@@ -22,6 +23,7 @@ interface ICheckboxProps extends IBaseComponentProps {
   // Accessibility
   ariaLabel?: string;
   ariaDescribedBy?: string;
+  testId?: string;
 }
 
 interface ICheckboxState extends IBaseComponentState {
@@ -48,115 +50,72 @@ class CheckboxComponent extends BaseClassComponent<ICheckboxProps, ICheckboxStat
   }
 
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { disabled, onChange, onValueChange, value } = this.props;
-    const isChecked = event.target.checked;
+    const { onChange, onValueChange, value } = this.props;
+    const checked = event.target.checked;
 
-    if (!disabled) {
-      // Call the original onChange prop
-      onChange?.(isChecked);
+    // Call standard onChange
+    if (onChange) {
+      onChange(checked);
+    }
 
-      // Call the enhanced onValueChange prop for CheckBox compatibility
-      if (onValueChange && value !== undefined) {
-        onValueChange(value, isChecked);
-      }
+    // Call enhanced onValueChange if value is provided
+    if (onValueChange && value !== undefined) {
+      onValueChange(value, checked);
     }
   };
 
   private handleFocus = (): void => {
-    this.safeSetState({ isFocused: true });
+    this.setState({ isFocused: true });
   };
 
   private handleBlur = (): void => {
-    this.safeSetState({ isFocused: false });
+    this.setState({ isFocused: false });
   };
 
-  /**
-   * Public method to check the checkbox
-   */
-  public check(): void {
-    const { onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange?.(true);
-    }
-  }
-
-  /**
-   * Public method to uncheck the checkbox
-   */
-  public uncheck(): void {
-    const { onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange?.(false);
-    }
-  }
-
-  /**
-   * Public method to toggle the checkbox
-   */
-  public toggle(): void {
-    const { checked, onChange, disabled } = this.props;
-    if (!disabled) {
-      onChange?.(!checked);
-    }
-  }
-
-  /**
-   * Public method to get current checked state
-   */
-  public isChecked(): boolean {
-    return this.props.checked || false;
-  }
-
-  protected override renderContent(): ReactNode {
+  override render(): ReactNode {
     const {
       checked = false,
       disabled = false,
       variant = 'default',
       label,
-      className = '',
+      className,
+      theme,
       value,
       name,
       required,
       autoFocus,
       ariaLabel,
       ariaDescribedBy,
-      testId,
-      ...props
+      testId
     } = this.props;
 
-    const { isFocused } = this.state;
-
     return (
-      <CheckboxWrapper className={className}>
-        <CheckboxInput
-          type="checkbox"
-          checked={checked}
-          disabled={disabled}
-          variant={variant}
-          value={value}
-          name={name}
-          required={required}
-          autoFocus={autoFocus}
-          aria-label={ariaLabel}
-          aria-describedby={ariaDescribedBy}
-          aria-checked={checked}
-          data-testid={testId || 'checkbox-component'}
-          onChange={this.handleChange}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          {...props}
-        />
-        {label && (
-          <CheckboxLabel
-            variant={variant}
-            disabled={disabled}
-            focused={isFocused}
-          >
-            {label}
-            {required && <span className="required-indicator" aria-label="required">*</span>}
-          </CheckboxLabel>
-        )}
-      </CheckboxWrapper>
+      React.createElement('div', {
+        css: CheckboxWrapper(theme || {} as any),
+        className,
+        children: [
+          React.createElement('input', {
+            css: CheckboxInput(theme || {} as any, variant),
+            type: 'checkbox',
+            checked,
+            disabled,
+            onChange: this.handleChange,
+            onFocus: this.handleFocus,
+            onBlur: this.handleBlur,
+            value,
+            name,
+            required,
+            autoFocus,
+            'aria-label': ariaLabel || label,
+            'aria-describedby': ariaDescribedBy,
+            'data-testid': testId || 'checkbox-component'
+          }),
+          label && React.createElement('label', {
+            css: CheckboxLabel(theme || {} as any),
+            children: label
+          })
+        ]
+      })
     );
   }
 }

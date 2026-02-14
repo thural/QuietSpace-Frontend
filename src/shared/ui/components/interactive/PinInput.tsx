@@ -1,7 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import React, { PureComponent, ReactNode, createRef } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
-import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getTransition, getSizeBasedSpacing, getInputFieldStyles } from '../utils';
+import { getColor, getTypography, getRadius, getBorderWidth, getTransition, getSizeBasedSpacing } from '../utils';
 
 interface IPinInputProps extends BaseComponentProps {
     length?: number;
@@ -16,59 +17,51 @@ interface IPinInputState {
     pinValues: string[];
 }
 
-const PinInputContainer = styled.div<{ $size: string; theme?: any }>`
+const createPinInputContainerStyles = (theme: any, size: 'sm' | 'md' | 'lg') => css`
   display: flex;
-  gap: ${props => getSizeBasedSpacing(props.theme, props.$size as 'sm' | 'md' | 'lg')};
+  gap: ${getSizeBasedSpacing(theme, size)};
 `;
 
-const PinInputField = styled.input<{ $size: string; theme?: any }>`
-  width: ${props => {
-        switch (props.$size) {
-            case 'sm': return '2.5rem';
-            case 'lg': return '3.5rem';
-            default: return '3rem';
-        }
-    }};
-  height: ${props => {
-        switch (props.$size) {
-            case 'sm': return '2.5rem';
-            case 'lg': return '3.5rem';
-            default: return '3rem';
-        }
-    }};
-  font-size: ${props => {
-        switch (props.$size) {
-            case 'sm': return getTypography(props.theme, 'fontSize.base');
-            case 'lg': return getTypography(props.theme, 'fontSize.xl');
-            default: return getTypography(props.theme, 'fontSize.lg');
-        }
-    }};
-  text-align: center;
-  border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
-  border-radius: ${props => getRadius(props.theme, 'md')};
-  background-color: ${props => getColor(props.theme, 'background.primary')};
-  color: ${props => getColor(props.theme, 'text.primary')};
-  transition: ${props => getTransition(props.theme, 'all')};
+const createPinInputFieldStyles = (theme: any, size: 'sm' | 'md' | 'lg') => {
+    const sizeStyles = {
+        sm: { width: '2.5rem', height: '2.5rem', fontSize: getTypography(theme, 'fontSize.base') },
+        lg: { width: '3.5rem', height: '3.5rem', fontSize: getTypography(theme, 'fontSize.xl') },
+        md: { width: '3rem', height: '3rem', fontSize: getTypography(theme, 'fontSize.lg') }
+    };
+
+    const currentSize = sizeStyles[size];
+
+    return css`
+    width: ${currentSize.width};
+    height: ${currentSize.height};
+    font-size: ${currentSize.fontSize};
+    text-align: center;
+    border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+    border-radius: ${getRadius(theme, 'md')};
+    background-color: ${getColor(theme, 'background.primary')};
+    color: ${getColor(theme, 'text.primary')};
+    transition: ${getTransition(theme, 'all')};
   
-  &:focus {
-    outline: none;
-    border-color: ${props => getColor(props.theme, 'brand.500')};
-    box-shadow: 0 0 0 2px ${props => getColor(props.theme, 'brand.500')}20;
-  }
+    &:focus {
+      outline: none;
+      border-color: ${getColor(theme, 'brand.500')};
+      box-shadow: 0 0 0 2px ${getColor(theme, 'brand.500')}20;
+    }
   
-  &:disabled {
-    background-color: ${props => getColor(props.theme, 'background.tertiary')};
-    cursor: not-allowed;
-  }
+    &:disabled {
+      background-color: ${getColor(theme, 'background.tertiary')};
+      cursor: not-allowed;
+    }
   
-  &::selection {
-    background-color: ${props => getColor(props.theme, 'brand.500')};
-    color: ${props => getColor(props.theme, 'text.inverse')};
-  }
-`;
+    &::selection {
+      background-color: ${getColor(theme, 'brand.500')};
+      color: ${getColor(theme, 'text.inverse')};
+    }
+  `;
+};
 
 class PinInput extends PureComponent<IPinInputProps, IPinInputState> {
-    private inputRefs: React.RefObject<HTMLInputElement>[];
+    private inputRefs: React.RefObject<HTMLInputElement | null>[];
 
     constructor(props: IPinInputProps) {
         super(props);
@@ -120,10 +113,13 @@ class PinInput extends PureComponent<IPinInputProps, IPinInputState> {
             });
             this.setState({ pinValues: newPinValues });
 
-            // Focus the next empty input or the last filled one
+            // Focus next empty input or last filled one
             const nextEmptyIndex = newPinValues.findIndex((val, i) => i > index && val === '');
             const focusIndex = nextEmptyIndex === -1 ? length - 1 : nextEmptyIndex;
-            this.inputRefs[focusIndex].current?.focus();
+            const ref = this.inputRefs[focusIndex];
+            if (ref?.current) {
+                ref.current.focus();
+            }
 
             onChange?.(newPinValues.join(''));
         } else {
@@ -134,7 +130,10 @@ class PinInput extends PureComponent<IPinInputProps, IPinInputState> {
 
             // Move to next input if a character was entered
             if (filteredValue && index < length - 1) {
-                this.inputRefs[index + 1].current?.focus();
+                const nextRef = this.inputRefs[index + 1];
+                if (nextRef?.current) {
+                    nextRef.current.focus();
+                }
             }
 
             onChange?.(newPinValues.join(''));
@@ -161,15 +160,24 @@ class PinInput extends PureComponent<IPinInputProps, IPinInputState> {
                 // Move to previous input and clear it
                 newPinValues[index - 1] = '';
                 this.setState({ pinValues: newPinValues });
-                this.inputRefs[index - 1].current?.focus();
+                const prevRef = this.inputRefs[index - 1];
+                if (prevRef?.current) {
+                    prevRef.current.focus();
+                }
                 onChange?.(newPinValues.join(''));
             }
         } else if (e.key === 'ArrowLeft' && index > 0) {
             e.preventDefault();
-            this.inputRefs[index - 1].current?.focus();
+            const leftRef = this.inputRefs[index - 1];
+            if (leftRef?.current) {
+                leftRef.current.focus();
+            }
         } else if (e.key === 'ArrowRight' && index < length - 1) {
             e.preventDefault();
-            this.inputRefs[index + 1].current?.focus();
+            const rightRef = this.inputRefs[index + 1];
+            if (rightRef?.current) {
+                rightRef.current.focus();
+            }
         }
     };
 
@@ -192,10 +200,16 @@ class PinInput extends PureComponent<IPinInputProps, IPinInputState> {
      * Setup ref for input element
      */
     private setupRef = (index: number): (el: HTMLInputElement | null) => void => {
-        this.inputRefs[index].current = el;
+        return (el: HTMLInputElement | null) => {
+            const ref = this.inputRefs[index];
+            if (ref) {
+                ref.current = el;
+            }
+        };
     };
 
     override render(): ReactNode {
+        const { theme, ...restProps } = this.props;
         const {
             length = 6,
             disabled = false,
@@ -204,33 +218,34 @@ class PinInput extends PureComponent<IPinInputProps, IPinInputState> {
             style,
             testId,
             type = 'number'
-        } = this.props;
+        } = restProps;
 
         const { pinValues } = this.state;
 
         return (
-            <PinInputContainer
+            <div
+                css={createPinInputContainerStyles(theme || {} as any, size)}
                 className={className}
                 style={style}
                 data-testid={testId}
             >
                 {Array.from({ length }, (_, index) => (
-                    <PinInputField
+                    <input
                         key={index}
                         ref={this.setupRef(index)}
+                        css={createPinInputFieldStyles(theme || {} as any, size)}
                         type={type}
                         value={pinValues[index] || ''}
                         onChange={(e) => this.handleChange(index, e.target.value)}
                         onKeyDown={(e) => this.handleKeyDown(index, e)}
                         onPaste={this.handlePaste}
                         disabled={disabled}
-                        $size={size}
                         maxLength={1}
                         inputMode={type === 'number' ? 'numeric' : 'text'}
                         autoComplete="off"
                     />
                 ))}
-            </PinInputContainer>
+            </div>
         );
     }
 }

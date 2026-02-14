@@ -1,76 +1,9 @@
-/**
- * Enterprise Avatar Component
- * 
- * A versatile avatar component that replaces the original Avatar component
- * with enhanced theme integration and enterprise patterns.
- */
-
+/** @jsxImportSource @emotion/react */
 import { PureComponent, ReactNode, RefObject } from 'react';
-import styled from 'styled-components';
+import { css } from '@emotion/react';
 import { BaseComponentProps } from '../types';
 import { ComponentSize } from '../../utils/themeTokenHelpers';
 import { getComponentSize, getRadius, getColor, getSpacing, getTransition, getShadow } from '../utils';
-
-// Styled components with theme token integration
-interface AvatarContainerProps {
-    $size?: string;
-    $radius?: string;
-    $color?: string | undefined;
-    theme?: any;
-}
-
-const AvatarContainer = styled.div<AvatarContainerProps>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: ${props => props.$size || '40px'};
-  height: ${props => props.$size || '40px'};
-  border-radius: ${props => props.$radius || '50%'};
-  background-color: ${props => props.$color ? getColor(props.theme, props.$color) : getColor(props.theme, 'brand.500')};
-  color: ${props => getColor(props.theme, 'text.inverse')};
-  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
-  font-size: ${props => `calc(${props.$size || '40px'} * 0.4)`};
-  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-  overflow: hidden;
-  position: relative;
-  transition: ${props => getTransition(props.theme, 'transform', 'fast', 'ease')};
-  
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: ${props => getShadow(props.theme, 'md')};
-  }
-`;
-
-interface AvatarImageProps {
-    $radius?: string;
-    theme?: any;
-}
-
-const AvatarImage = styled.img<AvatarImageProps>`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: ${props => props.$radius || '50%'};
-  transition: ${props => getTransition(props.theme, 'all', 'fast', 'ease')};
-`;
-
-interface AvatarPlaceholderProps {
-    $color?: string;
-    theme?: any;
-}
-
-const AvatarPlaceholder = styled.div<AvatarPlaceholderProps>`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.$color || getColor(props.theme, 'brand.500')};
-  color: ${props => getColor(props.theme, 'text.inverse')};
-  font-weight: ${props => props.theme?.typography?.fontWeight?.medium || '500'};
-  text-transform: uppercase;
-  font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-`;
 
 // Props interfaces
 interface IAvatarProps extends Omit<BaseComponentProps, 'ref' | 'id'> {
@@ -119,7 +52,6 @@ class Avatar extends PureComponent<IAvatarProps> {
         rounded: 'md'
     };
 
-
     // Get size using theme tokens with variant support
     private getSize = (theme: any, size: string | number | ComponentSize | undefined): string => {
         if (typeof size === 'number') return getSpacing(theme, size);
@@ -151,12 +83,20 @@ class Avatar extends PureComponent<IAvatarProps> {
     };
 
     // Render image component
-    private renderImage = (src: string, alt: string, radius: string): ReactNode => {
+    private renderImage = (src: string, alt: string, radius: string, theme: any): ReactNode => {
+        const imageStyles = css`
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: ${radius};
+            transition: ${getTransition(theme, 'all', 'fast', 'ease')};
+        `;
+
         return (
-            <AvatarImage
+            <img
+                css={imageStyles}
                 src={src}
                 alt={alt}
-                $radius={radius}
             />
         );
     };
@@ -164,10 +104,23 @@ class Avatar extends PureComponent<IAvatarProps> {
     // Render placeholder component
     private renderPlaceholder = (theme: any, color?: string, children?: ReactNode): ReactNode => {
         const placeholderColor = color || getColor(theme, 'brand.500');
+        const placeholderStyles = css`
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: ${placeholderColor};
+            color: ${getColor(theme, 'text.inverse')};
+            font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
+            text-transform: uppercase;
+            font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+        `;
+
         return (
-            <AvatarPlaceholder $color={placeholderColor}>
+            <div css={placeholderStyles}>
                 {children || '?'}
-            </AvatarPlaceholder>
+            </div>
         );
     };
 
@@ -190,21 +143,40 @@ class Avatar extends PureComponent<IAvatarProps> {
         const finalRadius = this.getFinalRadius(theme, variant, radius);
         const placeholderContent = children || this.getInitials(alt);
 
+        const avatarContainerStyles = css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: ${finalSize};
+            height: ${finalSize};
+            border-radius: ${finalRadius};
+            background-color: ${color ? getColor(theme, color) : getColor(theme, 'brand.500')};
+            color: ${getColor(theme, 'text.inverse')};
+            font-weight: ${theme?.typography?.fontWeight?.medium || '500'};
+            font-size: calc(${finalSize} * 0.4);
+            font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+            overflow: hidden;
+            position: relative;
+            transition: ${getTransition(theme, 'transform', 'fast', 'ease')};
+            
+            &:hover {
+                transform: scale(1.05);
+                box-shadow: ${getShadow(theme, 'md')};
+            }
+        `;
+
         return (
-            <AvatarContainer
+            <div
+                css={avatarContainerStyles}
                 className={className}
                 data-testid={testId}
-                $size={finalSize}
-                $radius={finalRadius}
-                $color={color || ''}
-                theme={theme}
                 {...props}
             >
                 {src ?
-                    this.renderImage(src, alt || '', finalRadius) :
+                    this.renderImage(src, alt || '', finalRadius, theme) :
                     this.renderPlaceholder(theme, color, placeholderContent)
                 }
-            </AvatarContainer>
+            </div>
         );
     }
 }

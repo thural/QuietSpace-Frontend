@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import React, { PureComponent, ReactNode } from 'react';
-import styled, { css } from 'styled-components';
+import { css } from '@emotion/react';
 import { GenericWrapper } from "@shared-types/sharedComponentTypes";
 import { getSpacing, getColor, getTypography, getRadius, getBorderWidth, getTransition } from '../utils';
 
@@ -21,7 +22,7 @@ interface TextAreaStyledProps extends GenericWrapper {
 /**
  * Enterprise TextArea Component
  * 
- * Replaces JSS-based TextAreaStyled with enterprise styled-components
+ * Replaces JSS-based TextAreaStyled with Emotion CSS
  * following theme system patterns and class component best practices.
  */
 class TextAreaStyled extends PureComponent<TextAreaStyledProps> {
@@ -74,8 +75,68 @@ class TextAreaStyled extends PureComponent<TextAreaStyledProps> {
       ...props
     } = this.props;
 
+    const textAreaContainerStyles = css`
+            position: relative;
+            width: 100%;
+            
+            .textarea-field {
+                width: 100%;
+                resize: none;
+                outline: none;
+                box-sizing: border-box;
+                border-radius: ${getRadius(theme, 'md')};
+                padding: ${getSpacing(theme, 'md')} ${getSpacing(theme, 'lg')};
+                font-size: ${getTypography(theme, 'fontSize.base')};
+                font-family: ${theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
+                font-weight: ${theme?.typography?.fontWeight?.normal || '400'};
+                color: ${getColor(theme, 'text.primary')};
+                background: ${getColor(theme, 'background.primary')};
+                border: ${getBorderWidth(theme, 'sm')} solid ${getColor(theme, 'border.medium')};
+                transition: ${getTransition(theme, 'all', 'normal', 'ease')};
+                
+                &::placeholder {
+                    color: ${getColor(theme, 'text.tertiary')};
+                }
+                
+                &:focus {
+                    border-color: ${getColor(theme, 'brand.500')};
+                    box-shadow: 0 0 0 3px ${getColor(theme, 'brand.200')};
+                    outline: none;
+                }
+                
+                &:hover:not(:focus):not(:disabled) {
+                    border-color: ${getColor(theme, 'border.dark')};
+                }
+                
+                &:disabled {
+                    background: ${getColor(theme, 'background.tertiary')};
+                    color: ${getColor(theme, 'text.tertiary')};
+                    cursor: not-allowed;
+                    opacity: 0.6;
+                }
+                
+                ${error && css`
+                    border-color: ${getColor(theme, 'semantic.error')};
+                    box-shadow: 0 0 0 3px ${getColor(theme, 'semantic.error')}20;
+                    
+                    &:focus {
+                        border-color: ${getColor(theme, 'semantic.error')};
+                        box-shadow: 0 0 0 3px ${getColor(theme, 'semantic.error')}30;
+                    }
+                `}
+            }
+            
+            /* Responsive design */
+            @media (max-width: ${theme?.breakpoints?.sm || '640px'}) {
+                .textarea-field {
+                    padding: ${getSpacing(theme, 'sm')} ${getSpacing(theme, 'md')};
+                    font-size: ${getTypography(theme, 'fontSize.sm')};
+                }
+            }
+        `;
+
     return (
-      <TextAreaContainer className={className} theme={theme} disabled={disabled || false} error={error || false}>
+      <div css={textAreaContainerStyles} className={className}>
         <textarea
           className="textarea-field"
           name={name}
@@ -94,70 +155,9 @@ class TextAreaStyled extends PureComponent<TextAreaStyledProps> {
           {...props}
         />
         {this.renderHelperText(theme)}
-      </TextAreaContainer>
+      </div>
     );
   }
 }
 
-// Enterprise styled-components for textarea styling
-const TextAreaContainer = styled.div<{ theme: any; disabled?: boolean; error?: boolean }>`
-  position: relative;
-  width: 100%;
-  
-  .textarea-field {
-    width: 100%;
-    resize: none;
-    outline: none;
-    box-sizing: border-box;
-    border-radius: ${props => getRadius(props.theme, 'md')};
-    padding: ${props => getSpacing(props.theme, 'md')} ${props => getSpacing(props.theme, 'lg')};
-    font-size: ${props => getTypography(props.theme, 'fontSize.base')};
-    font-family: ${props => props.theme?.typography?.fontFamily?.sans?.join(', ') || 'system-ui, sans-serif'};
-    font-weight: ${props => props.theme?.typography?.fontWeight?.normal || '400'};
-    color: ${props => getColor(props.theme, 'text.primary')};
-    background: ${props => getColor(props.theme, 'background.primary')};
-    border: ${props => getBorderWidth(props.theme, 'sm')} solid ${props => getColor(props.theme, 'border.medium')};
-    transition: ${props => getTransition(props.theme, 'all', 'normal', 'ease')};
-    
-    &::placeholder {
-      color: ${props => getColor(props.theme, 'text.tertiary')};
-    }
-    
-    &:focus {
-      border-color: ${props => getColor(props.theme, 'brand.500')};
-      box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'brand.200')};
-      outline: none;
-    }
-    
-    &:hover:not(:focus):not(:disabled) {
-      border-color: ${props => getColor(props.theme, 'border.dark')};
-    }
-    
-    &:disabled {
-      background: ${props => getColor(props.theme, 'background.tertiary')};
-      color: ${props => getColor(props.theme, 'text.tertiary')};
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    
-    ${props => props.error && css`
-      border-color: ${props => getColor(props.theme, 'semantic.error')};
-      box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'semantic.error')}20;
-      
-      &:focus {
-        border-color: ${props => getColor(props.theme, 'semantic.error')};
-        box-shadow: 0 0 0 3px ${props => getColor(props.theme, 'semantic.error')}30;
-      }
-    `}
-  }
-  
-  // Responsive design
-  @media (max-width: ${props => props.theme?.breakpoints?.sm || '640px'}) {
-    .textarea-field {
-      padding: ${props => getSpacing(props.theme, 'sm')} ${props => getSpacing(props.theme, 'md')};
-      font-size: ${props => getTypography(props.theme, 'fontSize.sm')};
-    }
-  }
-`;
-
-export default TextAreaStyled
+export default TextAreaStyled;
