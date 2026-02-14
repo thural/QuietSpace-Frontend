@@ -1,5 +1,5 @@
 import React from 'react';
-import { getThemeHookService } from '../../hooks/ThemeHookService';
+import { getEnterpriseThemeService } from '../../services/EnterpriseThemeService';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '../base/BaseClassComponent';
 
 /**
@@ -35,16 +35,18 @@ export function withTheme<P extends IBaseComponentProps>(
 ) {
     return (WrappedComponent: React.ComponentType<P & IWithThemeProps>) => {
         return class WithTheme extends BaseClassComponent<P, IBaseComponentState> {
-            private themeService = getThemeHookService();
+            private themeService = getEnterpriseThemeService();
 
             protected override onMount(): void {
-                const state = this.themeService.getState();
+                const currentTheme = this.themeService.getCurrentTheme();
+                const isDarkMode = this.themeService.getIsDarkMode();
 
                 // Apply basic theme validation if enabled
-                if (options.validateTheme && state.theme) {
+                if (options.validateTheme && currentTheme) {
                     const validThemes = ['light', 'dark', 'auto'];
-                    if (!validThemes.includes(state.theme)) {
-                        console.warn(`Invalid theme: ${state.theme}`);
+                    const themeVariant = isDarkMode ? 'dark' : 'light';
+                    if (!validThemes.includes(themeVariant)) {
+                        console.warn(`Invalid theme: ${themeVariant}`);
                         if (options.fallbackTheme) {
                             this.themeService.setThemeMode(options.fallbackTheme === 'dark');
                         }
@@ -78,11 +80,13 @@ export function withTheme<P extends IBaseComponentProps>(
             };
 
             protected override renderContent(): React.ReactNode {
-                const state = this.themeService.getState();
+                const currentTheme = this.themeService.getCurrentTheme();
+                const isDarkMode = this.themeService.getIsDarkMode();
+
                 const themeProps: IWithThemeProps = {
-                    theme: state.theme,
+                    theme: currentTheme,
                     setThemeMode: this.handleSetTheme,
-                    isDarkMode: state.isDarkMode,
+                    isDarkMode: isDarkMode,
                     setLocalThemeMode: require('../../../utils/localStorageUtils').setLocalThemeMode
                 };
 

@@ -1,8 +1,9 @@
 /**
- * Enterprise Theme Service
+ * @deprecated Use EnterpriseThemeService instead
+ * Legacy Theme Service - Replaced by EnterpriseThemeService
  * 
- * A class-based service that replaces the useTheme hook
- * with enterprise patterns for theme management and persistence.
+ * This service is deprecated and will be removed in a future version.
+ * Please use EnterpriseThemeService which leverages the core theming module.
  */
 
 import { createThemeWithVariant } from "../../core/modules/theming";

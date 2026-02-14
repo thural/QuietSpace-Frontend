@@ -1,7 +1,5 @@
 import React from 'react';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '../components/base/BaseClassComponent';
-import { createFileUploadHookService } from '../hooks/FileUploadHookService';
-import { useDIContainer } from '../ui/components/providers/DIProvider';
 
 /**
  * Props for FileUploadContainer
@@ -25,7 +23,7 @@ export interface IFileUploadContainerState extends IBaseComponentState {
     status: 'idle' | 'uploading' | 'error' | 'success';
     response: any;
     progress: number;
-    error: string | null;
+    uploadError: string | null;
 }
 
 /**
@@ -35,8 +33,8 @@ export interface IFileUploadContainerState extends IBaseComponentState {
  * progress tracking, error handling, and enterprise-grade features.
  */
 export class FileUploadContainer extends BaseClassComponent<IFileUploadContainerProps, IFileUploadContainerState> {
-    private uploadService = createFileUploadHookService({ 
-        fetchCallback: async () => ({ success: true }) 
+    private uploadService = createFileUploadHookService({
+        fetchCallback: async () => ({ success: true })
     });
     private diContainer = useDIContainer();
     private abortController: AbortController | null = null;
@@ -53,10 +51,10 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
 
     protected override onMount(): void {
         const { fetchCallback } = this.props;
-        
+
         // Update upload service with provided callback
         this.uploadService = createFileUploadHookService({ fetchCallback });
-        
+
         // Subscribe to upload service changes
         this.uploadService.subscribe(() => {
             const utilities = this.uploadService.getUploadUtilities();
@@ -87,7 +85,7 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
 
     private validateFile = (file: File): { isValid: boolean; error: string | null } => {
         const { accept, maxSize } = this.props;
-        
+
         // File size validation
         if (maxSize && file.size > maxSize) {
             return {
@@ -129,30 +127,30 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
     private handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const files = e.target.files;
         if (!files || files.length === 0) {
-            this.safeSetState({ 
-                file: null, 
-                status: 'idle', 
-                error: null 
+            this.safeSetState({
+                file: null,
+                status: 'idle',
+                error: null
             });
             return;
         }
 
         const file = this.props.multiple ? files[0] : files[0];
         const validation = this.validateFile(file);
-        
+
         if (!validation.isValid) {
-            this.safeSetState({ 
-                file: null, 
-                status: 'error', 
-                error: validation.error 
+            this.safeSetState({
+                file: null,
+                status: 'error',
+                error: validation.error
             });
             return;
         }
 
-        this.safeSetState({ 
-            file, 
-            status: 'idle', 
-            error: null 
+        this.safeSetState({
+            file,
+            status: 'idle',
+            error: null
         });
 
         // Auto-upload if enabled
@@ -163,18 +161,18 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
 
     private handleUpload = async (): Promise<void> => {
         const { file } = this.state;
-        
+
         if (!file) {
-            this.safeSetState({ 
-                error: 'No file selected for upload' 
+            this.safeSetState({
+                error: 'No file selected for upload'
             });
             return;
         }
 
         const validation = this.validateFile(file);
         if (!validation.isValid) {
-            this.safeSetState({ 
-                error: validation.error 
+            this.safeSetState({
+                error: validation.error
             });
             return;
         }
@@ -182,11 +180,11 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
         try {
             // Create abort controller for this upload
             this.abortController = new AbortController();
-            
-            this.safeSetState({ 
-                status: 'uploading', 
+
+            this.safeSetState({
+                status: 'uploading',
                 error: null,
-                progress: 0 
+                progress: 0
             });
 
             const formData = new FormData();
@@ -198,17 +196,17 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
             const utilities = this.uploadService.getUploadUtilities();
             await utilities.handleFileUpload();
 
-            this.safeSetState({ 
-                status: 'success', 
+            this.safeSetState({
+                status: 'success',
                 error: null,
-                progress: 100 
+                progress: 100
             });
 
         } catch (error) {
             console.error('Upload error:', error);
-            this.safeSetState({ 
-                status: 'error', 
-                error: error.message || 'Upload failed' 
+            this.safeSetState({
+                status: 'error',
+                error: error.message || 'Upload failed'
             });
         }
     };
@@ -260,7 +258,7 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
                         disabled={status === 'uploading'}
                         className="file-input"
                     />
-                    
+
                     {file && (
                         <div className="file-info">
                             <div className="file-name">{file.name}</div>
@@ -271,24 +269,24 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
                 </div>
 
                 <div className="upload-controls">
-                    <button 
+                    <button
                         onClick={this.handleUpload}
                         disabled={!file || status === 'uploading'}
                         className="upload-button"
                     >
                         {status === 'uploading' ? 'Uploading...' : 'Upload File'}
                     </button>
-                    
+
                     {status !== 'idle' && (
-                        <button 
+                        <button
                             onClick={this.handleRetry}
                             className="retry-button"
                         >
                             Retry
                         </button>
                     )}
-                    
-                    <button 
+
+                    <button
                         onClick={this.handleClear}
                         className="clear-button"
                     >
@@ -299,8 +297,8 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
                 {showProgress && status === 'uploading' && (
                     <div className="progress-container">
                         <div className="progress-bar">
-                            <div 
-                                className="progress-fill" 
+                            <div
+                                className="progress-fill"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -328,12 +326,12 @@ export class FileUploadContainer extends BaseClassComponent<IFileUploadContainer
 
     private formatFileSize = (bytes: number): string => {
         if (bytes === 0) return '0 Bytes';
-        
+
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         const size = parseFloat((bytes / Math.pow(k, i)).toFixed(2));
-        
+
         return `${size} ${sizes[i]}`;
     };
 }

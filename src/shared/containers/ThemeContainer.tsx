@@ -1,7 +1,6 @@
 import React from 'react';
 import { BaseClassComponent, IBaseComponentProps, IBaseComponentState } from '../components/base/BaseClassComponent';
-import { getThemeHookService } from '../hooks/ThemeHookService';
-import { useDIContainer } from '../ui/components/providers/DIProvider';
+import { getEnterpriseThemeService } from '../services/EnterpriseThemeService';
 
 /**
  * Props for ThemeContainer
@@ -29,42 +28,41 @@ export interface IThemeContainerState extends IBaseComponentState {
  * persistence, and enterprise-grade error handling.
  */
 export class ThemeContainer extends BaseClassComponent<IThemeContainerProps, IThemeContainerState> {
-    private themeService = getThemeHookService();
-    private diContainer = useDIContainer();
+    private themeService = getEnterpriseThemeService();
     private mediaQuery: MediaQueryList | null = null;
 
     protected override getInitialState(): Partial<IThemeContainerState> {
         const { theme, autoDetect = true } = this.props;
-        
+
         // Determine initial theme
         let initialTheme = theme;
         if (!initialTheme && autoDetect) {
             initialTheme = this.getSystemTheme();
         }
 
-        const state = this.themeService.getState();
-        
+        const isDarkMode = this.themeService.getIsDarkMode();
+
         return {
-            theme: initialTheme || state.theme,
-            isDarkMode: initialTheme === 'dark' || state.isDarkMode,
+            theme: initialTheme || isDarkMode ? 'dark' : 'light',
+            isDarkMode: isDarkMode,
             systemPreference: this.getSystemTheme()
         };
     }
 
     protected override onMount(): void {
         const { storageKey = 'app-theme' } = this.props;
-        
+
         // Set up system theme detection
         this.setupSystemDetection();
-        
+
         // Load persisted theme if available
         this.loadPersistedTheme(storageKey);
-        
+
         // Subscribe to theme service changes
-        this.themeService.subscribe((state) => {
+        this.themeService.subscribe((_theme, isDarkMode) => {
             this.safeSetState({
-                theme: state.theme,
-                isDarkMode: state.isDarkMode
+                theme: isDarkMode ? 'dark' : 'light',
+                isDarkMode: isDarkMode
             });
         });
 
@@ -106,12 +104,12 @@ export class ThemeContainer extends BaseClassComponent<IThemeContainerProps, ITh
     private handleSystemThemeChange = (): void => {
         const systemTheme = this.getSystemTheme();
         const { autoDetect } = this.props;
-        
+
         if (autoDetect && !this.props.theme) {
             // Auto-switch based on system preference
             this.setTheme(systemTheme);
         }
-        
+
         this.safeSetState({ systemPreference: systemTheme });
     };
 
@@ -128,28 +126,25 @@ export class ThemeContainer extends BaseClassComponent<IThemeContainerProps, ITh
 
     private setTheme(theme: string): void {
         const { storageKey = 'app-theme' } = this.props;
-        
+
         // Update theme service
         this.themeService.setThemeMode(theme === 'dark');
-        
+
         // Persist to storage
         try {
             localStorage.setItem(storageKey, theme);
         } catch (error) {
             console.error('Failed to persist theme:', error);
         }
-        
+
         // Update state
         this.safeSetState({
             theme,
             isDarkMode: theme === 'dark'
         });
 
-        // Notify DI container if needed
-        const themeService = this.diContainer.get('ThemeService');
-        if (themeService && typeof themeService.setTheme === 'function') {
-            themeService.setTheme(theme);
-        }
+        // Theme service is already updated through setThemeMode
+        // No need for additional DI container notification
     };
 
     private toggleTheme = (): void => {

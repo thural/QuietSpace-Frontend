@@ -55,6 +55,31 @@ export interface AuthActions {
   setAuthData: (authData: AuthResponse) => void;
 }
 
+// Theme State interface
+export interface ThemeState {
+  isDarkMode: boolean;
+  setThemeStore: (isDarkMode: boolean) => void;
+}
+
+/**
+ * Theme Store for Zustand state management
+ * 
+ * This store manages theme state and is used by the deprecated ThemeService
+ * for backward compatibility. Consider using EnterpriseThemeService instead.
+ */
+export const useThemeStore = create<ThemeState>()(
+  persist(
+    (set) => ({
+      isDarkMode: false,
+      setThemeStore: (isDarkMode: boolean) => set({ isDarkMode })
+    }),
+    {
+      name: 'theme-storage'
+    }
+  )
+);
+
+
 /**
  * Consolidated Authentication Store
  *
